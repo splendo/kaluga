@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricConductance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.frequency.frequency
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Hertz
 import kotlin.jvm.JvmName
 
 @JvmName("conductanceDivCapacitance")
-infix operator fun <ConductanceUnit : ElectricConductance, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+infix operator fun <ConductanceUnit : ElectricConductance, CapacitanceUnit : ElectricCapacitance> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.div(
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = Hertz.frequency(this, capacitance)

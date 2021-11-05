@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.illuminance.times
 import com.splendo.kaluga.scientific.unit.Area
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Illuminance
 import kotlin.jvm.JvmName
 
 @JvmName("areaTimesIlluminance")
-infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = illuminance * this

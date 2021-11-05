@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.magneticFlux
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.MagneticFlux
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     FluxUnit : MagneticFlux
     > FluxUnit.flux(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = flux(voltage, time, ::DefaultScientificValue)
 
 @JvmName("fluxFromVoltageAndTime")
@@ -42,9 +42,9 @@ fun <
     VoltageUnit : Voltage,
     TimeUnit : Time,
     FluxUnit : MagneticFlux,
-    Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
     > FluxUnit.flux(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, FluxUnit) -> Value
 ) = byMultiplying(voltage, time, factory)

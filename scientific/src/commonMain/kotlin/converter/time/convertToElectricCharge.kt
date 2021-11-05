@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.times
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -27,14 +27,14 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesAbampere")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
     current * this
 
 @JvmName("timeTimesBiot")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
     current * this
 
 @JvmName("timeTimesCurrent")
-infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
 ) = current * this

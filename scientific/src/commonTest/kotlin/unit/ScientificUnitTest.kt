@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.length.div
 import com.splendo.kaluga.scientific.converter.speed.times
@@ -174,7 +174,7 @@ class ScientificUnitTest {
         print(string)
         assertEquals(LengthUnitQuestion(Meter, Inch), Json.decodeFromString(serializer, string))
 
-        val unitSerializer = AbstractScientificUnit.serializer(MeasurementType.Length.serializer())
+        val unitSerializer = AbstractScientificUnit.serializer(PhysicalQuantity.Length.serializer())
         val unitString = Json.encodeToString(unitSerializer, Meter)
         assertEquals(Meter, Json.decodeFromString(unitSerializer, unitString))
     }
@@ -213,7 +213,7 @@ class ScientificUnitTest {
     }
 }
 
-fun <Type : MeasurementType> assertScientificUnit(
+fun <Type : PhysicalQuantity> assertScientificUnit(
     max: Int,
     inputUnit: ScientificUnit<Type>,
     outputUnit: ScientificUnit<Type>,
@@ -232,7 +232,7 @@ fun <Type : MeasurementType> assertScientificUnit(
 
 @Serializable
 sealed class UnitQuestion<
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     MetricUnit,
     ImperialUnit
     > where
@@ -246,4 +246,4 @@ ImperialUnit : MeasurementUsage.UsedInUSCustomary {
 }
 
 @Serializable
-data class LengthUnitQuestion(override val metricScientificUnit: MetricLength, override val imperialScientificUnit: ImperialLength) : UnitQuestion<MeasurementType.Length, MetricLength, ImperialLength>()
+data class LengthUnitQuestion(override val metricScientificUnit: MetricLength, override val imperialScientificUnit: ImperialLength) : UnitQuestion<PhysicalQuantity.Length, MetricLength, ImperialLength>()

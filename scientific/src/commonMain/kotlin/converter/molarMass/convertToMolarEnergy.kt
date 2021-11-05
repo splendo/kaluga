@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.molarMass
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
 import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
@@ -29,26 +29,26 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
 import kotlin.jvm.JvmName
 
 @JvmName("molarMassTimesMetricSpecificEnergy")
-infix operator fun <MolarMassUnit : MolarMass> ScientificValue<MeasurementType.MolarMass, MolarMassUnit>.times(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.times(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>
 ) = specificEnergy * this
 
 @JvmName("molarMassTimesImperialSpecificEnergy")
-infix operator fun <MolarMassUnit : MolarMass> ScientificValue<MeasurementType.MolarMass, MolarMassUnit>.times(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.times(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>
 ) = specificEnergy * this
 
 @JvmName("molarMassTimesUKImperialSpecificEnergy")
-infix operator fun <MolarMassUnit : MolarMass> ScientificValue<MeasurementType.MolarMass, MolarMassUnit>.times(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.times(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>
 ) = specificEnergy * this
 
 @JvmName("molarMassTimesUSCustomarySpecificEnergy")
-infix operator fun <MolarMassUnit : MolarMass> ScientificValue<MeasurementType.MolarMass, MolarMassUnit>.times(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.times(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>
 ) = specificEnergy * this
 
 @JvmName("molarMassTimesSpecificEnergy")
-infix operator fun <SpecificEnergyUnit : SpecificEnergy, MolarMassUnit : MolarMass> ScientificValue<MeasurementType.MolarMass, MolarMassUnit>.times(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+infix operator fun <SpecificEnergyUnit : SpecificEnergy, MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.times(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
 ) = specificEnergy * this

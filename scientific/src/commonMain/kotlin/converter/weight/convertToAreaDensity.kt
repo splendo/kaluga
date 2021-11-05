@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.areaDensity.areaDensity
 import com.splendo.kaluga.scientific.unit.Area
@@ -34,26 +34,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricArea")
-infix operator fun <WeightUnit : MetricWeight, AreaUnit : MetricArea> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <WeightUnit : MetricWeight, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit per area.unit).areaDensity(this, area)
 
 @JvmName("imperialWeightDivImperialArea")
-infix operator fun <WeightUnit : ImperialWeight, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <WeightUnit : ImperialWeight, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit per area.unit).areaDensity(this, area)
 
 @JvmName("ukImperialWeightDivImperialArea")
-infix operator fun <WeightUnit : UKImperialWeight, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <WeightUnit : UKImperialWeight, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit per area.unit).areaDensity(this, area)
 
 @JvmName("usCustomaryWeightDivImperialArea")
-infix operator fun <WeightUnit : USCustomaryWeight, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <WeightUnit : USCustomaryWeight, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit per area.unit).areaDensity(this, area)
 
 @JvmName("weightDivArea")
-infix operator fun <WeightUnit : Weight, AreaUnit : Area> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <WeightUnit : Weight, AreaUnit : Area> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (Kilogram per SquareMeter).areaDensity(this, area)

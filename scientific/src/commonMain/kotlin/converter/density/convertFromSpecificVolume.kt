@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.density
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.unit.Density
@@ -31,15 +31,15 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     DensityUnit : Density
     > DensityUnit.density(
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
 ) = density(specificVolume, ::DefaultScientificValue)
 
 @JvmName("densityFromInverseSpecificVolume")
 fun <
     SpecificVolumeUnit : SpecificVolume,
     DensityUnit : Density,
-    Value : ScientificValue<MeasurementType.Density, DensityUnit>
+    Value : ScientificValue<PhysicalQuantity.Density, DensityUnit>
     > DensityUnit.density(
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     factory: (Decimal, DensityUnit) -> Value
 ) = byInverting(specificVolume, factory)

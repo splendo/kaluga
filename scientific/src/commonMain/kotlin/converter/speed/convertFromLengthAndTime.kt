@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.speed
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Length
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     SpeedUnit : Speed
     > SpeedUnit.speed(
-    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = speed(distance, time, ::DefaultScientificValue)
 
 @JvmName("speedFromDistanceAndTime")
@@ -42,9 +42,9 @@ fun <
     LengthUnit : Length,
     TimeUnit : Time,
     SpeedUnit : Speed,
-    Value : ScientificValue<MeasurementType.Speed, SpeedUnit>
+    Value : ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
     > SpeedUnit.speed(
-    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, SpeedUnit) -> Value
 ) = byDividing(distance, time, factory)

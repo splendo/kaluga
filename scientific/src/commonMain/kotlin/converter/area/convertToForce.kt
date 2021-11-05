@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.unit.Area
@@ -42,64 +42,64 @@ import com.splendo.kaluga.scientific.unit.USTonSquareInch
 import kotlin.jvm.JvmName
 
 @JvmName("squareCentimeterTimesBarye")
-infix operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.times(pressure: ScientificValue<MeasurementType.Pressure, Barye>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>) =
     pressure * this
 
 @JvmName("squareCentimeterTimesBaryeMultiple")
-infix operator fun <BaryeUnit> ScientificValue<MeasurementType.Area, SquareCentimeter>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> =
+infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
+) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     pressure * this
 
 @JvmName("metricAreaTimesMetricPressure")
-infix operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = pressure * this
 
 @JvmName("imperialAreaTimesOunceSquareInch")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>) =
     pressure * this
 
 @JvmName("imperialAreaTimesKipSquareInch")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, KipSquareInch>) =
     pressure * this
 
 @JvmName("imperialAreaTimesKipSquareFeet")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareFoot>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, KipSquareFoot>) =
     pressure * this
 
 @JvmName("imperialAreaTimesUsTonSquareInch")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, USTonSquareInch>) =
     pressure * this
 
 @JvmName("imperialAreaTimesUsTonSquareFeet")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFoot>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, USTonSquareFoot>) =
     pressure * this
 
 @JvmName("imperialAreaTimesImperialTonSquareInch")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareInch>) =
     pressure * this
 
 @JvmName("imperialAreaTimesImperialTonSquareFeet")
-infix operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFoot>) =
+infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareFoot>) =
     pressure * this
 
 @JvmName("imperialAreaTimesImperialPressure")
-infix operator fun <Pressure : ImperialPressure, Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Pressure : ImperialPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = pressure * this
 
 @JvmName("imperialAreaTimesUKImperialPressure")
-infix operator fun <Pressure : UKImperialPressure, Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Pressure : UKImperialPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = pressure * this
 
 @JvmName("imperialAreaTimesUSCustomaryPressure")
-infix operator fun <Pressure : USCustomaryPressure, Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Pressure : USCustomaryPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = pressure * this
 
 @JvmName("areaTimesPressure")
-infix operator fun <PressureUnit : Pressure, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <PressureUnit : Pressure, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this

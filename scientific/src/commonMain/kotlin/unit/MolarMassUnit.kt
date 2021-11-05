@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricMolarMassUnits: Set<MetricMolarMass> get() = MetricWeightUnits.flatMap { weight ->
@@ -43,31 +43,31 @@ val MolarMassUnits: Set<MolarMass> get() = MetricMolarMassUnits +
     USCustomaryMolarMassUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class MolarMass : AbstractScientificUnit<MeasurementType.MolarMass>() {
+sealed class MolarMass : AbstractScientificUnit<PhysicalQuantity.MolarMass>() {
     abstract val weight: Weight
     abstract val per: AmountOfSubstance
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.MolarMass
+    override val type = PhysicalQuantity.MolarMass
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricMolarMass(override val weight: MetricWeight, override val per: AmountOfSubstance) : MolarMass(), MetricScientificUnit<MeasurementType.MolarMass> {
+data class MetricMolarMass(override val weight: MetricWeight, override val per: AmountOfSubstance) : MolarMass(), MetricScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialMolarMass(override val weight: ImperialWeight, override val per: AmountOfSubstance) : MolarMass(), ImperialScientificUnit<MeasurementType.MolarMass> {
+data class ImperialMolarMass(override val weight: ImperialWeight, override val per: AmountOfSubstance) : MolarMass(), ImperialScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = weight.ukImperial per per
     val usCustomary get() = weight.usCustomary per per
 }
 @Serializable
-data class USCustomaryMolarMass(override val weight: USCustomaryWeight, override val per: AmountOfSubstance) : MolarMass(), USCustomaryScientificUnit<MeasurementType.MolarMass> {
+data class USCustomaryMolarMass(override val weight: USCustomaryWeight, override val per: AmountOfSubstance) : MolarMass(), USCustomaryScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialMolarMass(override val weight: UKImperialWeight, override val per: AmountOfSubstance) : MolarMass(), UKImperialScientificUnit<MeasurementType.MolarMass> {
+data class UKImperialMolarMass(override val weight: UKImperialWeight, override val per: AmountOfSubstance) : MolarMass(), UKImperialScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.UKImperial
 }
 

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.weight.mass
 import com.splendo.kaluga.scientific.unit.ImperialMomentum
@@ -31,22 +31,22 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMomentum
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricSpeed")
-infix operator fun ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) =
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) =
     unit.mass.mass(this, speed)
 
 @JvmName("imperialMomentumDivImperialSpeed")
-infix operator fun ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) =
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
     unit.mass.mass(this, speed)
 
 @JvmName("ukImperialMomentumDivImperialSpeed")
-infix operator fun ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) =
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
     unit.mass.mass(this, speed)
 
 @JvmName("usCustomaryMomentumDivImperialSpeed")
-infix operator fun ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) =
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
     unit.mass.mass(this, speed)
 
 @JvmName("momentumDivSpeed")
-infix operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+infix operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>.div(
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
 ) = unit.mass.mass(this, speed)

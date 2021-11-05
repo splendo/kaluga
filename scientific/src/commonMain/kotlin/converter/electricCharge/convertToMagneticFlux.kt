@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -27,10 +27,10 @@ import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombTimesAbohm")
-infix operator fun ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.times(resistance: ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>) =
     resistance * this
 
 @JvmName("chargeTimesResistance")
-infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.times(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.times(
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
 ) = resistance * this

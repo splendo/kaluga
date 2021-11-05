@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricAndImperialMolarEnergyUnits: Set<MetricAndImperialMolarEnergy> get() = MetricAndImperialEnergyUnits.flatMap { energy ->
@@ -38,27 +38,27 @@ val MolarEnergyUnits: Set<MolarEnergy> get() = MetricAndImperialMolarEnergyUnits
     ImperialMolarEnergyUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 @Serializable
-sealed class MolarEnergy : AbstractScientificUnit<MeasurementType.MolarEnergy>() {
+sealed class MolarEnergy : AbstractScientificUnit<PhysicalQuantity.MolarEnergy>() {
     abstract val energy: Energy
     abstract val per: AmountOfSubstance
-    override val type = MeasurementType.MolarEnergy
+    override val type = PhysicalQuantity.MolarEnergy
     override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricAndImperialMolarEnergy(override val energy: MetricAndImperialEnergy, override val per: AmountOfSubstance) : MolarEnergy(), MetricAndImperialScientificUnit<MeasurementType.MolarEnergy> {
+data class MetricAndImperialMolarEnergy(override val energy: MetricAndImperialEnergy, override val per: AmountOfSubstance) : MolarEnergy(), MetricAndImperialScientificUnit<PhysicalQuantity.MolarEnergy> {
     override val system = MeasurementSystem.MetricAndImperial
     val metric get() = energy.metric per per
     val imperial get() = energy.imperial per per
 }
 @Serializable
-data class MetricMolarEnergy(override val energy: MetricEnergy, override val per: AmountOfSubstance) : MolarEnergy(), MetricScientificUnit<MeasurementType.MolarEnergy> {
+data class MetricMolarEnergy(override val energy: MetricEnergy, override val per: AmountOfSubstance) : MolarEnergy(), MetricScientificUnit<PhysicalQuantity.MolarEnergy> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialMolarEnergy(override val energy: ImperialEnergy, override val per: AmountOfSubstance) : MolarEnergy(), ImperialScientificUnit<MeasurementType.MolarEnergy> {
+data class ImperialMolarEnergy(override val energy: ImperialEnergy, override val per: AmountOfSubstance) : MolarEnergy(), ImperialScientificUnit<PhysicalQuantity.MolarEnergy> {
     override val system = MeasurementSystem.Imperial
 }
 

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.speed
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Momentum
@@ -33,8 +33,8 @@ fun <
     SpeedUnit : Speed,
     MomentumUnit : Momentum
     > SpeedUnit.speed(
-    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
-    mass: ScientificValue<MeasurementType.Weight, WeightUnit>
+    momentum: ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = speed(momentum, mass, ::DefaultScientificValue)
 
 @JvmName("speedFromMomentumAndMass")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
     MomentumUnit : Momentum,
-    Value : ScientificValue<MeasurementType.Speed, SpeedUnit>
+    Value : ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
     > SpeedUnit.speed(
-    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
-    mass: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    momentum: ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     factory: (Decimal, SpeedUnit) -> Value
 ) = byDividing(momentum, mass, factory)

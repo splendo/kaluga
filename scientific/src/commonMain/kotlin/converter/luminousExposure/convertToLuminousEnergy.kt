@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousExposure
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.illuminance.times
 import com.splendo.kaluga.scientific.converter.luminousEnergy.luminousEnergy
@@ -32,16 +32,16 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricExposureTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = ((1(unit.illuminance) * 1(area.unit)).unit x unit.time).luminousEnergy(this, area)
 
 @JvmName("imperialExposureTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = ((1(unit.illuminance) * 1(area.unit)).unit x unit.time).luminousEnergy(this, area)
 
 @JvmName("exposureTimesArea")
-infix operator fun <ExposureUnit : LuminousExposure, AreaUnit : Area> ScientificValue<MeasurementType.LuminousExposure, ExposureUnit>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <ExposureUnit : LuminousExposure, AreaUnit : Area> ScientificValue<PhysicalQuantity.LuminousExposure, ExposureUnit>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = ((1(unit.illuminance) * 1(area.unit)).unit x unit.time).luminousEnergy(this, area)

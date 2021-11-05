@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.magneticInduction
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Area
@@ -33,8 +33,8 @@ fun <
     AreaUnit : Area,
     InductionUnit : MagneticInduction
     > InductionUnit.induction(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = induction(flux, area, ::DefaultScientificValue)
 
 @JvmName("inductionFromFluxAndArea")
@@ -42,9 +42,9 @@ fun <
     FluxUnit : MagneticFlux,
     AreaUnit : Area,
     InductionUnit : MagneticInduction,
-    Value : ScientificValue<MeasurementType.MagneticInduction, InductionUnit>
+    Value : ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>
     > InductionUnit.induction(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     factory: (Decimal, InductionUnit) -> Value
 ) = byDividing(flux, area, factory)

@@ -28,7 +28,7 @@ import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.convert
 import kotlinx.serialization.Serializable
 
-interface ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> : Comparable<ScientificValue<Type, *>> {
+interface ScientificValue<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : Comparable<ScientificValue<Type, *>>, com.splendo.kaluga.base.utils.Serializable {
     val value: Number
     val unit: Unit
 
@@ -38,7 +38,7 @@ interface ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> :
 }
 
 @Serializable
-data class DefaultScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>>(
+data class DefaultScientificValue<Type : PhysicalQuantity, Unit : ScientificUnit<Type>>(
     override val value: Double,
     override val unit: Unit
 ) : ScientificValue<Type, Unit> {
@@ -48,21 +48,21 @@ data class DefaultScientificValue<Type : MeasurementType, Unit : ScientificUnit<
 // Creation
 
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>
     > Number.invoke(unit: UnitType) = this.toDecimal()(unit)
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, UnitType>
     > Number.invoke(unit: UnitType, factory: (Decimal, UnitType) -> ValueType) = this.toDecimal()(unit, factory)
 
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>
     > Decimal.invoke(unit: UnitType) = this(unit, ::DefaultScientificValue)
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, UnitType>
     > Decimal.invoke(unit: UnitType, factory: (Decimal, UnitType) -> ValueType) = factory(this, unit)
@@ -70,7 +70,7 @@ operator fun <
 // Conversion
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>,
     TargetValue : ScientificValue<Type, TargetUnit>
@@ -80,13 +80,13 @@ fun <
 ): TargetValue = factory(convertValue(target), target)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.convert(target: TargetUnit) = convert(target, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.convertValue(target: TargetUnit): Decimal {
@@ -96,218 +96,218 @@ fun <
 // Calculation
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.plus(factor: Number) = this + factor.toDecimal()
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > Number.plus(unit: ScientificValue<Type, Unit>) = toDecimal() + unit
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > ScientificValue<Type, Unit>.plus(factor: Decimal) = add(factor, ::DefaultScientificValue)
+    > ScientificValue<Type, Unit>.plus(factor: Decimal) = plus(factor, ::DefaultScientificValue)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > Decimal.plus(unit: ScientificValue<Type, Unit>) = unit.add(this, ::DefaultScientificValue)
+    > Decimal.plus(unit: ScientificValue<Type, Unit>) = unit.plus(this, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > ScientificValue<Type, Unit>.add(
+    > ScientificValue<Type, Unit>.plus(
     factor: Decimal,
     factory: (Decimal, Unit) -> ValueType
 ) = factory(decimalValue + factor, unit)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>
-    > ScientificValue<Type, Left>.plus(right: ScientificValue<Type, Right>) = unit.add(this, right, ::DefaultScientificValue)
+    > ScientificValue<Type, Left>.plus(right: ScientificValue<Type, Right>) = unit.plus(this, right, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > Unit.add(
+    > Unit.plus(
     left: ScientificValue<Type, Left>,
     right: ScientificValue<Type, Right>,
     factory: (Decimal, Unit) -> ValueType
 ) = byAdding(left, right, factory)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.minus(value: Number) = this - value.toDecimal()
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > Number.minus(unit: ScientificValue<Type, Unit>) = toDecimal() - unit
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > ScientificValue<Type, Unit>.minus(value: Decimal) = subtract(value, ::DefaultScientificValue)
+    > ScientificValue<Type, Unit>.minus(value: Decimal) = minus(value, ::DefaultScientificValue)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > Decimal.minus(unit: ScientificValue<Type, Unit>) = subtract(unit, ::DefaultScientificValue)
+    > Decimal.minus(unit: ScientificValue<Type, Unit>) = minus(unit, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > Decimal.subtract(
+    > Decimal.minus(
     value: ScientificValue<Type, Unit>,
     factory: (Decimal, Unit) -> ValueType
 ) = factory(this - value.decimalValue, value.unit)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > ScientificValue<Type, Unit>.subtract(
+    > ScientificValue<Type, Unit>.minus(
     value: Decimal,
     factory: (Decimal, Unit) -> ValueType
 ) = factory(decimalValue - value, unit)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>
-    > ScientificValue<Type, Left>.minus(right: ScientificValue<Type, Right>) = unit.subtract(this, right, ::DefaultScientificValue)
+    > ScientificValue<Type, Left>.minus(right: ScientificValue<Type, Right>) = unit.minus(this, right, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > Unit.subtract(
+    > Unit.minus(
     left: ScientificValue<Type, Left>,
     right: ScientificValue<Type, Right>,
     factory: (Decimal, Unit) -> ValueType
 ) = bySubtracting(left, right, factory)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.times(factor: Number) = this * factor.toDecimal()
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > Number.times(unit: ScientificValue<Type, Unit>) = toDecimal() * unit
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > ScientificValue<Type, Unit>.times(factor: Decimal) = multiply(factor, ::DefaultScientificValue)
+    > ScientificValue<Type, Unit>.times(factor: Decimal) = times(factor, ::DefaultScientificValue)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > Decimal.times(unit: ScientificValue<Type, Unit>) = unit.multiply(this, ::DefaultScientificValue)
+    > Decimal.times(unit: ScientificValue<Type, Unit>) = unit.times(this, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > ScientificValue<Type, Unit>.multiply(
+    > ScientificValue<Type, Unit>.times(
     factor: Decimal,
     factory: (Decimal, Unit) -> ValueType
 ) = factory(decimalValue * factor, unit)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>
-    > ScientificValue<Type, Left>.times(right: ScientificValue<Type, Right>) = unit.multiply(this, right, ::DefaultScientificValue)
+    > ScientificValue<Type, Left>.times(right: ScientificValue<Type, Right>) = unit.times(this, right, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > Unit.multiply(
+    > Unit.times(
     left: ScientificValue<Type, Left>,
     right: ScientificValue<Type, Right>,
     factory: (Decimal, Unit) -> ValueType
 ) = byMultiplying(left, right, factory)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.div(factor: Number) = this / factor.toDecimal()
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
     > Number.div(unit: ScientificValue<Type, Unit>) = toDecimal() / unit
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > ScientificValue<Type, Unit>.div(factor: Decimal) = divide(factor, ::DefaultScientificValue)
+    > ScientificValue<Type, Unit>.div(factor: Decimal) = div(factor, ::DefaultScientificValue)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>
-    > Decimal.div(unit: ScientificValue<Type, Unit>) = divide(unit, ::DefaultScientificValue)
+    > Decimal.div(unit: ScientificValue<Type, Unit>) = div(unit, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > Decimal.divide(
+    > Decimal.div(
     factor: ScientificValue<Type, Unit>,
     factory: (Decimal, Unit) -> ValueType
 ) = factory(this / factor.decimalValue, factor.unit)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > ScientificValue<Type, Unit>.divide(
+    > ScientificValue<Type, Unit>.div(
     factor: Decimal,
     factory: (Decimal, Unit) -> ValueType
 ) = factory(decimalValue / factor, unit)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>
-    > ScientificValue<Type, Left>.div(right: ScientificValue<Type, Right>) = unit.divide(this, right, ::DefaultScientificValue)
+    > ScientificValue<Type, Left>.div(right: ScientificValue<Type, Right>) = unit.div(this, right, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Left : ScientificUnit<Type>,
     Right : ScientificUnit<Type>,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    > Unit.divide(
+    > Unit.div(
     left: ScientificValue<Type, Left>,
     right: ScientificValue<Type, Right>,
     factory: (Decimal, Unit) -> ValueType
 ) = byDividing(left, right, factory)
 
 internal fun <
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     Unit : ScientificUnit<TargetType>,
     ValueType : ScientificValue<TargetType, Unit>,
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightUnit : ScientificUnit<RightType>
     > Unit.byAdding(
     left: ScientificValue<LeftType, LeftUnit>,
@@ -316,12 +316,12 @@ internal fun <
 ) = fromSIUnit(left.unit.toSIUnit(left.decimalValue) + right.unit.toSIUnit(right.decimalValue))(this, factory)
 
 internal fun <
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     Unit : ScientificUnit<TargetType>,
     ValueType : ScientificValue<TargetType, Unit>,
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightUnit : ScientificUnit<RightType>
     > Unit.bySubtracting(
     left: ScientificValue<LeftType, LeftUnit>,
@@ -330,12 +330,12 @@ internal fun <
 ) = fromSIUnit(left.unit.toSIUnit(left.decimalValue) - right.unit.toSIUnit(right.decimalValue))(this, factory)
 
 internal fun <
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     Unit : ScientificUnit<TargetType>,
     ValueType : ScientificValue<TargetType, Unit>,
-    NominatorType : MeasurementType,
+    NominatorType : PhysicalQuantity,
     NominatorUnit : ScientificUnit<NominatorType>,
-    DividerType : MeasurementType,
+    DividerType : PhysicalQuantity,
     DividerUnit : ScientificUnit<DividerType>
     > Unit.byDividing(
     nominator: ScientificValue<NominatorType, NominatorUnit>,
@@ -344,12 +344,12 @@ internal fun <
 ) = fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this, factory)
 
 internal fun <
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     Unit : ScientificUnit<TargetType>,
     ValueType : ScientificValue<TargetType, Unit>,
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightUnit : ScientificUnit<RightType>
     > Unit.byMultiplying(
     left: ScientificValue<LeftType, LeftUnit>,
@@ -358,9 +358,9 @@ internal fun <
 ) = fromSIUnit(left.unit.toSIUnit(left.decimalValue) * right.unit.toSIUnit(right.decimalValue))(this, factory)
 
 internal fun <
-    InverseType : MeasurementType,
+    InverseType : PhysicalQuantity,
     InverseUnit : ScientificUnit<InverseType>,
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
     > Unit.byInverting(

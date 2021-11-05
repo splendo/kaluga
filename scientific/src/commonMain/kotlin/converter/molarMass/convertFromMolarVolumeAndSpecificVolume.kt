@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.molarMass
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.MolarMass
@@ -33,8 +33,8 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     MolarMassUnit : MolarMass
     > MolarMassUnit.molarMass(
-    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
 ) = molarMass(molarVolume, specificVolume, ::DefaultScientificValue)
 
 @JvmName("molarMassFromMolarVolumeAndSpecificVolume")
@@ -42,9 +42,9 @@ fun <
     MolarVolumeUnit : MolarVolume,
     SpecificVolumeUnit : SpecificVolume,
     MolarMassUnit : MolarMass,
-    Value : ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
     > MolarMassUnit.molarMass(
-    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     factory: (Decimal, MolarMassUnit) -> Value
 ) = byDividing(molarVolume, specificVolume, factory)

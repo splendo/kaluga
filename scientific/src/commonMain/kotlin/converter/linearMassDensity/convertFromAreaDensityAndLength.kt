@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.linearMassDensity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AreaDensity
@@ -33,8 +33,8 @@ fun <
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity
     > LinearMassDensityUnit.linearMassDensity(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = linearMassDensity(areaDensity, length, ::DefaultScientificValue)
 
 @JvmName("linearMassDensityFromAreaDensityAndLength")
@@ -42,9 +42,9 @@ fun <
     AreaDensityUnit : AreaDensity,
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity,
-    Value : ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>
+    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
     > LinearMassDensityUnit.linearMassDensity(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     factory: (Decimal, LinearMassDensityUnit) -> Value
 ) = byMultiplying(areaDensity, length, factory)

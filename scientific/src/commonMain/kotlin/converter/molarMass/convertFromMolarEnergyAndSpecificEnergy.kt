@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.molarMass
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.MolarEnergy
@@ -33,8 +33,8 @@ fun <
     SpecificEnergyUnit : SpecificEnergy,
     MolarMassUnit : MolarMass
     > MolarMassUnit.molarMass(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>,
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
 ) = molarMass(molarEnergy, specificEnergy, ::DefaultScientificValue)
 
 @JvmName("molarMassFromMolarEnergyAndSpecificEnergy")
@@ -42,9 +42,9 @@ fun <
     MolarEnergyUnit : MolarEnergy,
     SpecificEnergyUnit : SpecificEnergy,
     MolarMassUnit : MolarMass,
-    Value : ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
     > MolarMassUnit.molarMass(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>,
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
     factory: (Decimal, MolarMassUnit) -> Value
 ) = byDividing(molarEnergy, specificEnergy, factory)

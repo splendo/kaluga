@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
@@ -36,34 +36,34 @@ val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
 )
 
 @Serializable
-sealed class CatalysticActivity : AbstractScientificUnit<MeasurementType.CatalysticActivity>(), MetricAndImperialScientificUnit<MeasurementType.CatalysticActivity>
+sealed class CatalysticActivity : AbstractScientificUnit<PhysicalQuantity.CatalysticActivity>(), MetricAndImperialScientificUnit<PhysicalQuantity.CatalysticActivity>
 
 @Serializable
-object Katal : CatalysticActivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity> {
+object Katal : CatalysticActivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity> {
     override val symbol = "kat"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.CatalysticActivity
+    override val type = PhysicalQuantity.CatalysticActivity
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Nano(Katal)
+object Nanokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Nano(Katal)
 @Serializable
-object Microkatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Micro(Katal)
+object Microkatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Micro(Katal)
 @Serializable
-object Millikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Milli(Katal)
+object Millikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Milli(Katal)
 @Serializable
-object Centikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Centi(Katal)
+object Centikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Centi(Katal)
 @Serializable
-object Decikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Deci(Katal)
+object Decikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Deci(Katal)
 @Serializable
-object Decakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Deca(Katal)
+object Decakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Deca(Katal)
 @Serializable
-object Hectokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Hecto(Katal)
+object Hectokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Hecto(Katal)
 @Serializable
-object Kilokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Kilo(Katal)
+object Kilokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Kilo(Katal)
 @Serializable
-object Megakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Mega(Katal)
+object Megakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Mega(Katal)
 @Serializable
-object Gigakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Giga(Katal)
+object Gigakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Giga(Katal)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.surfaceTension
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.Area
@@ -37,45 +37,45 @@ import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("metricSurfaceTensionTimesSquareCentimeter")
-infix operator fun ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>.times(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) =
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>.times(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) =
     Erg.energy(this, area)
 
 @JvmName("metricSurfaceTensionTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Joule.energy(this, area)
 
 @JvmName("imperialSurfaceTensionTimesSquareInch")
-infix operator fun ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, SquareInch>
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, SquareInch>
 ) = InchPoundForce.energy(this, area)
 
 @JvmName("ukImperialSurfaceTensionTimesSquareInch")
-infix operator fun ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, SquareInch>
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, SquareInch>
 ) = InchPoundForce.energy(this, area)
 
 @JvmName("usCustomarySurfaceTensionTimesSquareInch")
-infix operator fun ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, SquareInch>
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, SquareInch>
 ) = InchPoundForce.energy(this, area)
 
 @JvmName("imperialSurfaceTensionTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = FootPoundForce.energy(this, area)
 
 @JvmName("ukImperialSurfaceTensionTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = FootPoundForce.energy(this, area)
 
 @JvmName("usCustomarySurfaceTensionTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = FootPoundForce.energy(this, area)
 
 @JvmName("surfaceTensionTimesArea")
-infix operator fun <SurfaceTensionUnit : SurfaceTension, AreaUnit : Area> ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <SurfaceTensionUnit : SurfaceTension, AreaUnit : Area> ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Joule.energy(this, area)

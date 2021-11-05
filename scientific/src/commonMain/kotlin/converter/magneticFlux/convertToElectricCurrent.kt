@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivAbhenry")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(inductance: ScientificValue<MeasurementType.ElectricInductance, Abhenry>) =
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) =
     Abampere.current(this, inductance)
 
 @JvmName("fluxDivInductance")
-infix operator fun <FluxUnit : MagneticFlux, InductanceUnit : ElectricInductance> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
-    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
+infix operator fun <FluxUnit : MagneticFlux, InductanceUnit : ElectricInductance> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
 ) = Ampere.current(this, inductance)

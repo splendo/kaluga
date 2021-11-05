@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.angle
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Angle
@@ -32,17 +32,17 @@ fun <
     AngleUnit : Angle,
     TimeUnit : Time,
     > AngleUnit.angle(
-    velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = angle(velocity, time, ::DefaultScientificValue)
 
 @JvmName("angleFromAngularVelocityAndTime")
 fun <
     AngleUnit : Angle,
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.Angle, AngleUnit>
+    Value : ScientificValue<PhysicalQuantity.Angle, AngleUnit>
     > AngleUnit.angle(
-    velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, AngleUnit) -> Value
 ) = byMultiplying(velocity, time, factory)

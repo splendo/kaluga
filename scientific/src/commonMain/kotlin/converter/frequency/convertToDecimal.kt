@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.frequency
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.unit.Frequency
@@ -29,6 +29,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesTime")
-infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ): Decimal = convertValue(Hertz) * time.convertValue(Second)

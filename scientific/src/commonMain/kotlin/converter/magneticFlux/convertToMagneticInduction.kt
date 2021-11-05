@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.magneticInduction.induction
 import com.splendo.kaluga.scientific.unit.Area
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Tesla
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivSquareCentimeter")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) =
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) =
     Gauss.induction(this, area)
 
 @JvmName("fluxDivArea")
-infix operator fun <FluxUnit : MagneticFlux, AreaUnit : Area> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <FluxUnit : MagneticFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Tesla.induction(this, area)

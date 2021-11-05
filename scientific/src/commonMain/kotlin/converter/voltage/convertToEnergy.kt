@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCharge.times
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -27,10 +27,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbcoulomb")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.times(charge: ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>) =
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) =
     charge * this
 
 @JvmName("voltageTimesCharge")
-infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
 ) = charge * this

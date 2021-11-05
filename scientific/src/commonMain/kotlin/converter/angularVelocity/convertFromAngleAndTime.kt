@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.angularVelocity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Angle
@@ -32,17 +32,17 @@ fun <
     AngleUnit : Angle,
     TimeUnit : Time
     > AngularVelocity.velocity(
-    angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    angle: ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = velocity(angle, time, ::DefaultScientificValue)
 
 @JvmName("angularVelocityFromAngleAndTime")
 fun <
     AngleUnit : Angle,
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>
+    Value : ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>
     > AngularVelocity.velocity(
-    angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    angle: ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, AngularVelocity) -> Value
 ) = byDividing(angle, time, factory)

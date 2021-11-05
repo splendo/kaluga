@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.density
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Density
@@ -33,8 +33,8 @@ fun <
     VolumeUnit : Volume,
     DensityUnit : Density
     > DensityUnit.density(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = density(weight, volume, ::DefaultScientificValue)
 
 @JvmName("densityFromWeightAndVolume")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     VolumeUnit : Volume,
     DensityUnit : Density,
-    Value : ScientificValue<MeasurementType.Density, DensityUnit>
+    Value : ScientificValue<PhysicalQuantity.Density, DensityUnit>
     > DensityUnit.density(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     factory: (Decimal, DensityUnit) -> Value
 ) = byDividing(weight, volume, factory)

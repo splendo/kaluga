@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.yank.times
 import com.splendo.kaluga.scientific.unit.ImperialYank
@@ -29,22 +29,22 @@ import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, MetricYank>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(yank: ScientificValue<PhysicalQuantity.Yank, MetricYank>) =
     yank * this
 
 @JvmName("timeTimesImperialYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, ImperialYank>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(yank: ScientificValue<PhysicalQuantity.Yank, ImperialYank>) =
     yank * this
 
 @JvmName("timeTimesUKImperialYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, UKImperialYank>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(yank: ScientificValue<PhysicalQuantity.Yank, UKImperialYank>) =
     yank * this
 
 @JvmName("timeTimesUSCustomaryYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, USCustomaryYank>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(yank: ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>) =
     yank * this
 
 @JvmName("timeTimesYank")
-infix operator fun <YankUnit : Yank, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    yank: ScientificValue<MeasurementType.Yank, YankUnit>
+infix operator fun <YankUnit : Yank, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>
 ) = yank * this

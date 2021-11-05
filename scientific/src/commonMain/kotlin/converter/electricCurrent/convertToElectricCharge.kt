@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCurrent
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCharge.charge
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -29,16 +29,16 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, Abampere>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Abcoulomb.charge(this, time)
 
 @JvmName("biotTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, Biot>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Abcoulomb.charge(this, time)
 
 @JvmName("currentTimesTime")
-infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Coulomb.charge(this, time)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.energy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Energy
@@ -33,8 +33,8 @@ fun <
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy
     > EnergyUnit.energy(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = energy(specificEnergy, weight, ::DefaultScientificValue)
 
 @JvmName("energyFromSpecificEnergyAndWeight")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy,
-    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
     > EnergyUnit.energy(
-    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     factory: (Decimal, EnergyUnit) -> Value
 ) = byMultiplying(specificEnergy, weight, factory)

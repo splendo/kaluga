@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.area
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Area
@@ -32,8 +32,8 @@ fun <
     WidthUnit : Length,
     AreaUnit : Area
     > AreaUnit.area(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
-    width: ScientificValue<MeasurementType.Length, WidthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>
 ) = area(length, width, ::DefaultScientificValue)
 
 @JvmName("areaFromLengthAndWidth")
@@ -41,9 +41,9 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area,
-    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
     > AreaUnit.area(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
-    width: ScientificValue<MeasurementType.Length, WidthUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
     factory: (Decimal, AreaUnit) -> Value
 ) = byMultiplying(length, width, factory)

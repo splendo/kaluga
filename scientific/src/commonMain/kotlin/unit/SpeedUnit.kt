@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
@@ -35,22 +35,22 @@ val ImperialSpeedUnits: Set<ImperialSpeed> get() = ImperialLengthUnits.flatMap {
 val SpeedUnits: Set<Speed> get() = MetricSpeedUnits + ImperialSpeedUnits
 
 @Serializable
-sealed class Speed : AbstractScientificUnit<MeasurementType.Speed>() {
+sealed class Speed : AbstractScientificUnit<PhysicalQuantity.Speed>() {
     abstract val distance: Length
     abstract val per: Time
-    override val type = MeasurementType.Speed
+    override val type = PhysicalQuantity.Speed
     override val symbol: String by lazy { "${distance.symbol} / ${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(distance.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = distance.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricSpeed(override val distance: MetricLength, override val per: Time) : Speed(), MetricScientificUnit<MeasurementType.Speed> {
+data class MetricSpeed(override val distance: MetricLength, override val per: Time) : Speed(), MetricScientificUnit<PhysicalQuantity.Speed> {
     override val system = MeasurementSystem.Metric
 }
 
 @Serializable
-data class ImperialSpeed(override val distance: ImperialLength, override val per: Time) : Speed(), ImperialScientificUnit<MeasurementType.Speed> {
+data class ImperialSpeed(override val distance: ImperialLength, override val per: Time) : Speed(), ImperialScientificUnit<PhysicalQuantity.Speed> {
     override val system = MeasurementSystem.Imperial
 }
 

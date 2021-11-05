@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volumetricFlow.volumetricFlow
 import com.splendo.kaluga.scientific.unit.Area
@@ -31,26 +31,26 @@ import com.splendo.kaluga.scientific.unit.VolumetricFlux
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFluxTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit.volumetricFlow).volumetricFlow(this, area)
 
 @JvmName("imperialVolumetricFluxTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit.volumetricFlow).volumetricFlow(this, area)
 
 @JvmName("ukImperialVolumetricFluxTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlux, UKImperialVolumetricFlux>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit.volumetricFlow).volumetricFlow(this, area)
 
 @JvmName("usCustomaryVolumetricFluxTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlux, USCustomaryVolumetricFlux>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit.volumetricFlow).volumetricFlow(this, area)
 
 @JvmName("volumetricFluxTimesArea")
-infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (unit.volumetricFlow).volumetricFlow(this, area)

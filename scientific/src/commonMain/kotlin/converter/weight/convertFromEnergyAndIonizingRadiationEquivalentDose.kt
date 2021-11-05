@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Energy
@@ -33,8 +33,8 @@ fun <
     WeightUnit : Weight,
     EquivalentDoseUnit : IonizingRadiationEquivalentDose
     > WeightUnit.weight(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
 ) = weight(energy, equivalentDose, ::DefaultScientificValue)
 
 @JvmName("weightFromEnergyAndEquivalentDose")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
-    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
     > WeightUnit.weight(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
     factory: (Decimal, WeightUnit) -> Value
 ) = byDividing(energy, equivalentDose, factory)

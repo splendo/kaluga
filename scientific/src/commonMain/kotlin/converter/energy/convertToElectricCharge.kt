@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCharge.charge
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -31,14 +31,14 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivAbvolt")
-infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
     Abcoulomb.charge(this, voltage)
 
 @JvmName("ergMultipleDivAbvolt")
-infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     Abcoulomb.charge(this, voltage)
 
 @JvmName("energyDivVoltage")
-infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = Coulomb.charge(this, voltage)

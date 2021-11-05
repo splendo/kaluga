@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricResistance
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.unit.ElectricConductance
@@ -31,15 +31,15 @@ fun <
     ResistanceUnit : ElectricResistance,
     ConductanceUnit : ElectricConductance
     > ResistanceUnit.resistance(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
 ) = resistance(conductance, ::DefaultScientificValue)
 
 @JvmName("electricResistanceFromInvertedConductance")
 fun <
     ResistanceUnit : ElectricResistance,
     ConductanceUnit : ElectricConductance,
-    Value : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
     > ResistanceUnit.resistance(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
     factory: (Decimal, ResistanceUnit) -> Value
 ) = byInverting(conductance, factory)

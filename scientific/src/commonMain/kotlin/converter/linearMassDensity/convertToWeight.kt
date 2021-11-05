@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.linearMassDensity
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.weight.mass
 import com.splendo.kaluga.scientific.unit.ImperialLength
@@ -32,26 +32,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryLinearMassDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricLinearMassDensityTimesMetricLength")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.weight.mass(this, length)
 
 @JvmName("imperialLinearMassDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.weight.mass(this, length)
 
 @JvmName("ukImperialLinearMassDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.weight.mass(this, length)
 
 @JvmName("usCustomaryLinearMassDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.weight.mass(this, length)
 
 @JvmName("linearMassDensityTimesLength")
-infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = Kilogram.mass(this, length)

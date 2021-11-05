@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.surfaceTension
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.force
 import com.splendo.kaluga.scientific.unit.ImperialLength
@@ -32,26 +32,26 @@ import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("metricSurfaceTensionTimesMetricLength")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.force.force(this, length)
 
 @JvmName("imperialSurfaceTensionTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.force.force(this, length)
 
 @JvmName("ukImperialSurfaceTensionTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.force.force(this, length)
 
 @JvmName("usCustomarySurfaceTensionTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = unit.force.force(this, length)
 
 @JvmName("surfaceTensionTimesLength")
-infix operator fun <SurfaceTensionUnit : SurfaceTension, LengthUnit : Length> ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <SurfaceTensionUnit : SurfaceTension, LengthUnit : Length> ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = Newton.force(this, length)

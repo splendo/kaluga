@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.massFlowRate.times
 import com.splendo.kaluga.scientific.unit.ImperialMassFlowRate
@@ -29,26 +29,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MetricMassFlowRate>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>
 ) = massFlowRate * this
 
 @JvmName("timeTimesImperialMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>
 ) = massFlowRate * this
 
 @JvmName("timeUKImperialMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, UKImperialMassFlowRate>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>
 ) = massFlowRate * this
 
 @JvmName("timeTimesUSCustomaryMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, USCustomaryMassFlowRate>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>
 ) = massFlowRate * this
 
 @JvmName("timeTimesMassFlowRate")
-infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>
+infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>
 ) = massFlowRate * this

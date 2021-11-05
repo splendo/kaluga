@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.frequency.frequency
 import com.splendo.kaluga.scientific.unit.BeatsPerMinute
@@ -27,8 +27,8 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("minuteFrequency")
-fun ScientificValue<MeasurementType.Time, Minute>.frequency() = BeatsPerMinute.frequency(this)
+fun ScientificValue<PhysicalQuantity.Time, Minute>.frequency() = BeatsPerMinute.frequency(this)
 
 @JvmName("frequency")
-fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.frequency() =
+fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.frequency() =
     Hertz.frequency(this)

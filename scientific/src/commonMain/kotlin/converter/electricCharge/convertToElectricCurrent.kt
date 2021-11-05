@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -28,11 +28,11 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Abampere.current(this, time)
 
 @JvmName("chargeDivTime")
-infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Ampere.current(this, time)

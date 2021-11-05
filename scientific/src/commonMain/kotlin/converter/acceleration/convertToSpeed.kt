@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.acceleration
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.speed.speed
 import com.splendo.kaluga.scientific.unit.Acceleration
@@ -30,16 +30,16 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAccelerationTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.speed.speed(this, time)
 
 @JvmName("imperialAccelerationTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.speed.speed(this, time)
 
 @JvmName("speedTimesTime")
-infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Meter per Second).speed(this, time)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.specificEnergy
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.molality.molality
 import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
@@ -31,26 +31,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyDivMolarEnergy")
-infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>.div(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>
+infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>.div(
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("imperialSpecificEnergyDivMolarEnergy")
-infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.div(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>
+infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.div(
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("ukImperialSpecificEnergyDivMolarEnergy")
-infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.div(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>
+infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>.div(
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("usCustomarySpecificEnergyDivMolarEnergy")
-infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.div(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>
+infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>.div(
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("specificEnergyDivMolarEnergy")
-infix operator fun <SpecificEnergyUnit : SpecificEnergy, MolarEnergyUnit : MolarEnergy> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.div(
-    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>
+infix operator fun <SpecificEnergyUnit : SpecificEnergy, MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.div(
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
 ) = (molarEnergy.unit.per per Kilogram).molality(this, molarEnergy)

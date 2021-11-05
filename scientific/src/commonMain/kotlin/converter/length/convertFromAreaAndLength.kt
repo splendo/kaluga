@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.length
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Area
@@ -32,8 +32,8 @@ fun <
     WidthUnit : Length,
     AreaUnit : Area
     > WidthUnit.width(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = width(area, length, ::DefaultScientificValue)
 
 @JvmName("widthFromAreaAndLength")
@@ -41,9 +41,9 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area,
-    Value : ScientificValue<MeasurementType.Length, WidthUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, WidthUnit>
     > WidthUnit.width(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     factory: (Decimal, WidthUnit) -> Value
 ) = byDividing(area, length, factory)

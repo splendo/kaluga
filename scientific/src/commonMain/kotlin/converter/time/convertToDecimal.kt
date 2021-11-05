@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.radioactivity.times
@@ -28,11 +28,11 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesFrequency")
-infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ): Decimal = frequency * this
 
 @JvmName("timeTimesRadioactivity")
-infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
 ): Decimal = radioactivity * this

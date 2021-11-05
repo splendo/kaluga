@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.radioactivity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.unit.Becquerel
@@ -29,8 +29,8 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("radioactivityTimesTime")
-infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ): Decimal = convertValue(
     Becquerel
 ) * time.convertValue(Second)

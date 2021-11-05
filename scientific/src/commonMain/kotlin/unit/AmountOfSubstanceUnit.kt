@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlin.native.concurrent.ThreadLocal
 
@@ -38,37 +38,37 @@ val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
 )
 
 @Serializable
-sealed class AmountOfSubstance : AbstractScientificUnit<MeasurementType.AmountOfSubstance>(), MetricAndImperialScientificUnit<MeasurementType.AmountOfSubstance>
+sealed class AmountOfSubstance : AbstractScientificUnit<PhysicalQuantity.AmountOfSubstance>(), MetricAndImperialScientificUnit<PhysicalQuantity.AmountOfSubstance>
 
 @Serializable
-object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance> {
+object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance> {
     override val symbol = "mol"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.AmountOfSubstance
+    override val type = PhysicalQuantity.AmountOfSubstance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Nano(Mole)
+object Nanomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Nano(Mole)
 @Serializable
-object Micromole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Micro(Mole)
+object Micromole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Micro(Mole)
 @Serializable
-object Millimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Milli(Mole)
+object Millimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Milli(Mole)
 @Serializable
-object Centimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Centi(Mole)
+object Centimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Centi(Mole)
 @Serializable
-object Decimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Deci(Mole)
+object Decimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Deci(Mole)
 @Serializable
-object Decamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Deca(Mole)
+object Decamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Deca(Mole)
 @Serializable
-object Hectomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Hecto(Mole)
+object Hectomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Hecto(Mole)
 @Serializable
-object Kilomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Kilo(Mole)
+object Kilomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Kilo(Mole)
 @Serializable
-object Megamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Mega(Mole)
+object Megamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Mega(Mole)
 @Serializable
-object Gigamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Giga(Mole)
+object Gigamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Giga(Mole)
 
 @ThreadLocal
 val AvogadroConstant = 6.02214076e23.toDecimal()

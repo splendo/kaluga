@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.catalysticActivity.times
 import com.splendo.kaluga.scientific.unit.CatalysticActivity
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesCatalysticActivity")
-infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>
+infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>
 ) = catalysis * this

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricCurrent
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCharge
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     ChargeUnit : ElectricCharge
     > CurrentUnit.current(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    per: ScientificValue<MeasurementType.Time, TimeUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
+    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = current(charge, per, ::DefaultScientificValue)
 
 @JvmName("currentFromChargeAndTime")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge,
-    Value : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
     > CurrentUnit.current(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    per: ScientificValue<MeasurementType.Time, TimeUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
+    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, CurrentUnit) -> Value
 ) = byDividing(charge, per, factory)

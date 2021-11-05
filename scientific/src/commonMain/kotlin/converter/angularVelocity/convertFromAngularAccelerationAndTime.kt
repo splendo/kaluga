@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.angularVelocity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
@@ -31,16 +31,16 @@ import kotlin.jvm.JvmName
 fun <
     TimeUnit : Time,
     > AngularVelocity.velocity(
-    acceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    acceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = velocity(acceleration, time, ::DefaultScientificValue)
 
 @JvmName("angularVelocityFromAngularAccelerationAndTime")
 fun <
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>
+    Value : ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>
     > AngularVelocity.velocity(
-    acceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    acceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, AngularVelocity) -> Value
 ) = byMultiplying(acceleration, time, factory)

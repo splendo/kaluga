@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricDynamicViscosityUnits: Set<MetricDynamicViscosity> get() = MetricPressureUnits.flatMap { pressure ->
@@ -43,31 +43,31 @@ val DynamicViscosityUnits: Set<DynamicViscosity> get() = MetricDynamicViscosityU
     USCustomaryDynamicViscosityUnits.filter { it.pressure !is USCustomaryImperialPressureWrapper }.toSet()
 
 @Serializable
-sealed class DynamicViscosity : AbstractScientificUnit<MeasurementType.DynamicViscosity>() {
+sealed class DynamicViscosity : AbstractScientificUnit<PhysicalQuantity.DynamicViscosity>() {
     abstract val pressure: Pressure
     abstract val time: Time
-    override val type = MeasurementType.DynamicViscosity
+    override val type = PhysicalQuantity.DynamicViscosity
     override val symbol: String by lazy { "${pressure.symbol}⋅${time.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = time.fromSIUnit(pressure.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = pressure.toSIUnit(time.toSIUnit(value))
 }
 
 @Serializable
-data class MetricDynamicViscosity(override val pressure: MetricPressure, override val time: Time) : DynamicViscosity(), MetricScientificUnit<MeasurementType.DynamicViscosity> {
+data class MetricDynamicViscosity(override val pressure: MetricPressure, override val time: Time) : DynamicViscosity(), MetricScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialDynamicViscosity(override val pressure: ImperialPressure, override val time: Time) : DynamicViscosity(), ImperialScientificUnit<MeasurementType.DynamicViscosity> {
+data class ImperialDynamicViscosity(override val pressure: ImperialPressure, override val time: Time) : DynamicViscosity(), ImperialScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = pressure.ukImperial x time
     val usCustomary get() = pressure.usCustomary x time
 }
 @Serializable
-data class UKImperialDynamicViscosity(override val pressure: UKImperialPressure, override val time: Time) : DynamicViscosity(), UKImperialScientificUnit<MeasurementType.DynamicViscosity> {
+data class UKImperialDynamicViscosity(override val pressure: UKImperialPressure, override val time: Time) : DynamicViscosity(), UKImperialScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomaryDynamicViscosity(override val pressure: USCustomaryPressure, override val time: Time) : DynamicViscosity(), USCustomaryScientificUnit<MeasurementType.DynamicViscosity> {
+data class USCustomaryDynamicViscosity(override val pressure: USCustomaryPressure, override val time: Time) : DynamicViscosity(), USCustomaryScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.USCustomary
 }
 

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.areaDensity.times
 import com.splendo.kaluga.scientific.unit.AreaDensity
@@ -31,26 +31,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthTimesMetricAreaDensity")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>
+infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>
 ) = areaDensity * this
 
 @JvmName("imperialLengthTimesImperialAreaDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
 ) = areaDensity * this
 
 @JvmName("imperialLengthTimesUKImperialAreaDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
 ) = areaDensity * this
 
 @JvmName("imperialLengthTimesUSCustomaryAreaDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
 ) = areaDensity * this
 
 @JvmName("lengthTimesAreaDensity")
-infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
+infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>
 ) = areaDensity * this

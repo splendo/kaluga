@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.area
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Area
@@ -33,8 +33,8 @@ fun <
     AreaUnit : Area,
     PressureUnit : Pressure
     > AreaUnit.area(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = area(force, pressure, ::DefaultScientificValue)
 
 @JvmName("areaFromForceAndPressure")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     AreaUnit : Area,
     PressureUnit : Pressure,
-    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
     > AreaUnit.area(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
     factory: (Decimal, AreaUnit) -> Value
 ) = byDividing(force, pressure, factory)

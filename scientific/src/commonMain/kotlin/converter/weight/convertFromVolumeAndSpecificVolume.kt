@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.SpecificVolume
@@ -33,8 +33,8 @@ fun <
     WeightUnit : Weight,
     SpecificVolumeUnit : SpecificVolume
     > WeightUnit.weight(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
 ) = weight(volume, specificVolume, ::DefaultScientificValue)
 
 @JvmName("weightFromVolumeAndSpecificVolume")
@@ -42,9 +42,9 @@ fun <
     VolumeUnit : Volume,
     WeightUnit : Weight,
     SpecificVolumeUnit : SpecificVolume,
-    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
     > WeightUnit.weight(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     factory: (Decimal, WeightUnit) -> Value
 ) = byDividing(volume, specificVolume, factory)

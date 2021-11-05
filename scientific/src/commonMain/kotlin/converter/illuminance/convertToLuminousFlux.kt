@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminousFlux.flux
 import com.splendo.kaluga.scientific.unit.Area
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Lumen
 import kotlin.jvm.JvmName
 
 @JvmName("illuminanceTimesArea")
-infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Lumen.flux(this, area)

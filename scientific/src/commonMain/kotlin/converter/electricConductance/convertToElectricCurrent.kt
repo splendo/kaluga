@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricConductance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("absiemensTimesAbvolt")
-infix operator fun ScientificValue<MeasurementType.ElectricConductance, Absiemens>.times(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricConductance, Absiemens>.times(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
     Abampere.current(this, voltage)
 
 @JvmName("conductanceTimesVoltage")
-infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.times(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.times(
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = Ampere.current(this, voltage)

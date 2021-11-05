@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousExposure
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.Illuminance
@@ -29,16 +29,16 @@ import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
 import kotlin.jvm.JvmName
 
 @JvmName("metricLuminousExposureDivMetricIlluminance")
-infix operator fun <IlluminanceUnit : MetricIlluminance> ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>.div(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <IlluminanceUnit : MetricIlluminance> ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>.div(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = unit.time.time(this, illuminance)
 
 @JvmName("imperialLuminousExposureDivImperialIlluminance")
-infix operator fun <IlluminanceUnit : ImperialIlluminance> ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>.div(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <IlluminanceUnit : ImperialIlluminance> ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>.div(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = unit.time.time(this, illuminance)
 
 @JvmName("luminousExposureDivIlluminance")
-infix operator fun <IlluminanceUnit : Illuminance> ScientificValue<MeasurementType.LuminousExposure, LuminousExposure>.div(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <IlluminanceUnit : Illuminance> ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposure>.div(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = unit.time.time(this, illuminance)

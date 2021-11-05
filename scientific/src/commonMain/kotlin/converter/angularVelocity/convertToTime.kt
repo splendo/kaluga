@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.angularVelocity
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityDivAngularAcceleration")
-infix operator fun ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.div(
-    angularAcceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>
+infix operator fun ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>.div(
+    angularAcceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>
 ) = Second.time(this, angularAcceleration)

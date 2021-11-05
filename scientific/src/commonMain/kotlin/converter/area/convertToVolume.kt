@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volume.volume
 import com.splendo.kaluga.scientific.unit.Acre
@@ -75,80 +75,80 @@ import com.splendo.kaluga.scientific.unit.Yard
 import kotlin.jvm.JvmName
 
 @JvmName("squareMeterTimesMeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMeter>.times(height: ScientificValue<MeasurementType.Length, Meter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMeter>.times(height: ScientificValue<PhysicalQuantity.Length, Meter>) =
     CubicMeter.volume(this, height)
 
 @JvmName("squareNanometerTimesNanometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareNanometer>.times(height: ScientificValue<MeasurementType.Length, Nanometer>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareNanometer>.times(height: ScientificValue<PhysicalQuantity.Length, Nanometer>) =
     CubicNanometer.volume(this, height)
 
 @JvmName("squareMicrometerTimesMicrometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMicrometer>.times(height: ScientificValue<MeasurementType.Length, Micrometer>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMicrometer>.times(height: ScientificValue<PhysicalQuantity.Length, Micrometer>) =
     CubicMillimeter.volume(this, height)
 
 @JvmName("squareMillimeterTimesMillimeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMillimeter>.times(height: ScientificValue<MeasurementType.Length, Millimeter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMillimeter>.times(height: ScientificValue<PhysicalQuantity.Length, Millimeter>) =
     CubicMillimeter.volume(this, height)
 
 @JvmName("squareCentimeterTimesCentimeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.times(height: ScientificValue<MeasurementType.Length, Centimeter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.times(height: ScientificValue<PhysicalQuantity.Length, Centimeter>) =
     CubicCentimeter.volume(this, height)
 
 @JvmName("squareDecimeterTimesDecimeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareDecimeter>.times(height: ScientificValue<MeasurementType.Length, Decimeter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareDecimeter>.times(height: ScientificValue<PhysicalQuantity.Length, Decimeter>) =
     CubicDecimeter.volume(this, height)
 
 @JvmName("squareDecameterTimesDecameter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareDecameter>.times(height: ScientificValue<MeasurementType.Length, Decameter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareDecameter>.times(height: ScientificValue<PhysicalQuantity.Length, Decameter>) =
     CubicDecameter.volume(this, height)
 
 @JvmName("squareHectometerTimesHectometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareHectometer>.times(height: ScientificValue<MeasurementType.Length, Hectometer>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareHectometer>.times(height: ScientificValue<PhysicalQuantity.Length, Hectometer>) =
     CubicHectometer.volume(this, height)
 
 @JvmName("squareKilometerTimesKilometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareKilometer>.times(height: ScientificValue<MeasurementType.Length, Kilometer>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareKilometer>.times(height: ScientificValue<PhysicalQuantity.Length, Kilometer>) =
     CubicKilometer.volume(this, height)
 
 @JvmName("squareMegameterTimesMegameter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMegameter>.times(height: ScientificValue<MeasurementType.Length, Megameter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMegameter>.times(height: ScientificValue<PhysicalQuantity.Length, Megameter>) =
     CubicMegameter.volume(this, height)
 
 @JvmName("squareGigameterTimesGigameter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareGigameter>.times(height: ScientificValue<MeasurementType.Length, Gigameter>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareGigameter>.times(height: ScientificValue<PhysicalQuantity.Length, Gigameter>) =
     CubicGigameter.volume(this, height)
 
 @JvmName("metricAreaTimesMetricLength")
-infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    height: ScientificValue<MeasurementType.Length, HeightUnit>
+infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
 ) = CubicMeter.volume(this, height)
 
 @JvmName("squareInchTimesInch")
-infix operator fun ScientificValue<MeasurementType.Area, SquareInch>.times(height: ScientificValue<MeasurementType.Length, Inch>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareInch>.times(height: ScientificValue<PhysicalQuantity.Length, Inch>) =
     CubicInch.volume(this, height)
 
 @JvmName("squareFootTimesFoot")
-infix operator fun ScientificValue<MeasurementType.Area, SquareFoot>.times(height: ScientificValue<MeasurementType.Length, Foot>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareFoot>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) =
     CubicFoot.volume(this, height)
 
 @JvmName("squareYardTimesYard")
-infix operator fun ScientificValue<MeasurementType.Area, SquareYard>.times(height: ScientificValue<MeasurementType.Length, Yard>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareYard>.times(height: ScientificValue<PhysicalQuantity.Length, Yard>) =
     CubicYard.volume(this, height)
 
 @JvmName("squareMileTimesMile")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMile>.times(height: ScientificValue<MeasurementType.Length, Mile>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMile>.times(height: ScientificValue<PhysicalQuantity.Length, Mile>) =
     CubicMile.volume(this, height)
 
 @JvmName("acreTimesFoot")
-infix operator fun ScientificValue<MeasurementType.Area, Acre>.times(height: ScientificValue<MeasurementType.Length, Foot>) =
+infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) =
     AcreFoot.volume(this, height)
 
 @JvmName("imperialAreaTimesImperialLength")
-infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    height: ScientificValue<MeasurementType.Length, HeightUnit>
+infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
 ) = CubicFoot.volume(this, height)
 
 @JvmName("areaTimesLength")
-infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    height: ScientificValue<MeasurementType.Length, HeightUnit>
+infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
 ) = CubicMeter.volume(this, height)

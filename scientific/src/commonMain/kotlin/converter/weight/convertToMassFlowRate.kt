@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.massFlowRate.massFlowRate
 import com.splendo.kaluga.scientific.unit.ImperialWeight
@@ -31,26 +31,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivTime")
-infix operator fun <WeightUnit : MetricWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <WeightUnit : MetricWeight, TimeUnit : Time> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit per time.unit).massFlowRate(this, time)
 
 @JvmName("imperialWeightDivTime")
-infix operator fun <WeightUnit : ImperialWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <WeightUnit : ImperialWeight, TimeUnit : Time> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit per time.unit).massFlowRate(this, time)
 
 @JvmName("ukImperialWeightDivTime")
-infix operator fun <WeightUnit : UKImperialWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <WeightUnit : UKImperialWeight, TimeUnit : Time> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit per time.unit).massFlowRate(this, time)
 
 @JvmName("usCustomaryWeightDivTime")
-infix operator fun <WeightUnit : USCustomaryWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <WeightUnit : USCustomaryWeight, TimeUnit : Time> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit per time.unit).massFlowRate(this, time)
 
 @JvmName("weightDivTime")
-infix operator fun <WeightUnit : Weight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <WeightUnit : Weight, TimeUnit : Time> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Kilogram per time.unit).massFlowRate(this, time)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.frequency
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
@@ -33,8 +33,8 @@ fun <
     ConductanceUnit : ElectricConductance,
     FrequencyUnit : Frequency
     > FrequencyUnit.frequency(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = frequency(conductance, capacitance, ::DefaultScientificValue)
 
 @JvmName("frequencyFromConductanceAndCapacity")
@@ -42,9 +42,9 @@ fun <
     CapacitanceUnit : ElectricCapacitance,
     ConductanceUnit : ElectricConductance,
     FrequencyUnit : Frequency,
-    Value : ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
     > FrequencyUnit.frequency(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
     factory: (Decimal, FrequencyUnit) -> Value
 ) = byDividing(conductance, capacitance, factory)

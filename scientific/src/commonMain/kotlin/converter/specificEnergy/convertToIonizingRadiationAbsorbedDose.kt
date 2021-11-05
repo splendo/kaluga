@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.specificEnergy
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.absorbedDose
 import com.splendo.kaluga.scientific.unit.Gray
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
 
-fun <SpecificEnergyUnit : SpecificEnergy> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.asAbsorbedDose() =
+fun <SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.asAbsorbedDose() =
     Gray.absorbedDose(this)

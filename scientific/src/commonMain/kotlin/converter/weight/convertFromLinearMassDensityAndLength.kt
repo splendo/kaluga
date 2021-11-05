@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Length
@@ -33,8 +33,8 @@ fun <
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity
     > WeightUnit.mass(
-    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = mass(linearMassDensity, length, ::DefaultScientificValue)
 
 @JvmName("weightFromLinearMassDensityAndLength")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity,
-    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
     > WeightUnit.mass(
-    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     factory: (Decimal, WeightUnit) -> Value
 ) = byMultiplying(linearMassDensity, length, factory)

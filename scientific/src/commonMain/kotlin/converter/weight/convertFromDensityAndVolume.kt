@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Density
@@ -33,8 +33,8 @@ fun <
     DensityUnit : Density,
     VolumeUnit : Volume
     > MassUnit.mass(
-    density: ScientificValue<MeasurementType.Density, DensityUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = mass(density, volume, ::DefaultScientificValue)
 
 @JvmName("weightFromDensityAndVolume")
@@ -42,9 +42,9 @@ fun <
     MassUnit : Weight,
     DensityUnit : Density,
     VolumeUnit : Volume,
-    Value : ScientificValue<MeasurementType.Weight, MassUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, MassUnit>
     > MassUnit.mass(
-    density: ScientificValue<MeasurementType.Density, DensityUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     factory: (Decimal, MassUnit) -> Value
 ) = byMultiplying(density, volume, factory)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.energy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
@@ -34,8 +34,8 @@ fun <
     TemperatureUnit : Temperature,
     HeatCapacityUnit : HeatCapacity
     > EnergyUnit.energy(
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
-    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
 ) = energy(heatCapacity, temperature, ::DefaultScientificValue)
 
 @JvmName("energyFromHeatCapacityAndTemperature")
@@ -43,9 +43,9 @@ fun <
     EnergyUnit : Energy,
     TemperatureUnit : Temperature,
     HeatCapacityUnit : HeatCapacity,
-    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
     > EnergyUnit.energy(
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
-    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
     factory: (Decimal, EnergyUnit) -> Value
 ) = byMultiplying(heatCapacity, temperature.deltaValueInKelvin(), factory)

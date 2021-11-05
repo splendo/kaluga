@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricInductance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.ElectricInductance
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("inductanceDivResistance")
-infix operator fun <InductanceUnit : ElectricInductance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+infix operator fun <InductanceUnit : ElectricInductance, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>.div(
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
 ) = Second.time(this, resistance)

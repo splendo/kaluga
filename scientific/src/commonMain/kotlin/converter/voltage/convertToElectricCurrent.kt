@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricConductance.times
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
@@ -32,19 +32,19 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbsiemens")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.times(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) =
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(conductance: ScientificValue<PhysicalQuantity.ElectricConductance, Absiemens>) =
     conductance * this
 
 @JvmName("voltageTimesConductance")
-infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
+infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>
 ) = conductance * this
 
 @JvmName("abvoltDivAbohm")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(resistance: ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>) =
     Abampere.current(this, resistance)
 
 @JvmName("voltageDivResistance")
-infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.div(
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
 ) = Ampere.current(this, resistance)

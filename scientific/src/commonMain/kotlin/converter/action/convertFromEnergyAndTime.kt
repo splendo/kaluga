@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.action
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Action
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     EnergyUnit : Energy
     > ActionUnit.action(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = action(energy, time, ::DefaultScientificValue)
 
 @JvmName("actionFromEnergyAndTime")
@@ -42,9 +42,9 @@ fun <
     ActionUnit : Action,
     TimeUnit : Time,
     EnergyUnit : Energy,
-    Value : ScientificValue<MeasurementType.Action, ActionUnit>
+    Value : ScientificValue<PhysicalQuantity.Action, ActionUnit>
     > ActionUnit.action(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, ActionUnit) -> Value
 ) = byMultiplying(energy, time, factory)

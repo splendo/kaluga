@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.jolt
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Jolt
@@ -33,8 +33,8 @@ fun <
     JoltUnit : Jolt,
     YankUnit : Yank
     > JoltUnit.jolt(
-    yank: ScientificValue<MeasurementType.Yank, YankUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = jolt(yank, weight, ::DefaultScientificValue)
 
 @JvmName("joltFromYankAndMass")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
     YankUnit : Yank,
-    Value : ScientificValue<MeasurementType.Jolt, JoltUnit>
+    Value : ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
     > JoltUnit.jolt(
-    yank: ScientificValue<MeasurementType.Yank, YankUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     factory: (Decimal, JoltUnit) -> Value
 ) = byDividing(yank, weight, factory)

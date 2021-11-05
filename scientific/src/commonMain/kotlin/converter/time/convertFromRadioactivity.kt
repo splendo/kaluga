@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific.converter.time
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
@@ -37,16 +37,16 @@ fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity
     > TimeUnit.time(
-    radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
 ) = time(radioactivity, ::DefaultScientificValue)
 
 @JvmName("timeFromInvertedRadioactivity")
 fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
-    radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>,
+    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = byInverting(radioactivity, factory)
 
@@ -55,15 +55,15 @@ fun <
     TimeUnit : Time
     > TimeUnit.time(
     decay: Decimal,
-    at: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+    at: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
 ) = time(decay, at, ::DefaultScientificValue)
 
 fun <
     RadioactivityUnit : Radioactivity,
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
     decay: Decimal,
-    at: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>,
+    at: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = (decay / at.convertValue(Becquerel))(Second).convert(this, factory)

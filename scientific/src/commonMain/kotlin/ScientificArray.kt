@@ -26,7 +26,7 @@ import com.splendo.kaluga.scientific.unit.convert
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-interface ScientificArray<ValueType : Number, Type : MeasurementType, Unit : ScientificUnit<Type>> {
+interface ScientificArray<ValueType : Number, Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : com.splendo.kaluga.base.utils.Serializable {
     operator fun get(index: Int): ValueType
     val size: Int
     val unit: Unit
@@ -42,7 +42,7 @@ interface ScientificArray<ValueType : Number, Type : MeasurementType, Unit : Sci
     }
 }
 
-interface ByteScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>> : ScientificArray<Byte, Type, Unit> {
+interface ByteScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : ScientificArray<Byte, Type, Unit> {
     val values: ByteArray
 
     override val size: Int
@@ -52,7 +52,7 @@ interface ByteScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type
     override fun iterator(): Iterator<Byte> = values.iterator()
 }
 
-interface DoubleScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>> : ScientificArray<Double, Type, Unit> {
+interface DoubleScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : ScientificArray<Double, Type, Unit> {
     val values: DoubleArray
 
     override val size: Int
@@ -62,7 +62,7 @@ interface DoubleScientificArray<Type : MeasurementType, Unit : ScientificUnit<Ty
     override fun iterator(): Iterator<Double> = values.iterator()
 }
 
-interface FloatScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>> : ScientificArray<Float, Type, Unit> {
+interface FloatScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : ScientificArray<Float, Type, Unit> {
     val values: FloatArray
 
     override val size: Int
@@ -72,7 +72,7 @@ interface FloatScientificArray<Type : MeasurementType, Unit : ScientificUnit<Typ
     override fun iterator(): Iterator<Float> = values.iterator()
 }
 
-interface IntScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>> : ScientificArray<Int, Type, Unit> {
+interface IntScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : ScientificArray<Int, Type, Unit> {
     val values: IntArray
 
     override val size: Int
@@ -82,7 +82,7 @@ interface IntScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>
     override fun iterator(): Iterator<Int> = values.iterator()
 }
 
-interface ShortScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>> : ScientificArray<Short, Type, Unit> {
+interface ShortScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : ScientificArray<Short, Type, Unit> {
     val values: ShortArray
 
     override val size: Int
@@ -92,7 +92,7 @@ interface ShortScientificArray<Type : MeasurementType, Unit : ScientificUnit<Typ
     override fun iterator(): Iterator<Short> = values.iterator()
 }
 
-interface LongScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>> : ScientificArray<Long, Type, Unit> {
+interface LongScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>> : ScientificArray<Long, Type, Unit> {
     val values: LongArray
 
     override val size: Int
@@ -103,7 +103,7 @@ interface LongScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type
 }
 
 @Serializable
-data class DefaultScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>>(
+data class DefaultScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>>(
     override val values: DoubleArray,
     override val unit: Unit
 ) : DoubleScientificArray<Type, Unit> {
@@ -131,13 +131,13 @@ data class DefaultScientificArray<Type : MeasurementType, Unit : ScientificUnit<
 // Creation
 @JvmName("scientificArrayFromListOfNumberDefault")
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>
     > List<Number>.invoke(unit: UnitType) = this.toDecimalList()(unit)
 
 @JvmName("scientificArrayFromListOfNumber")
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     NumberType : Number,
     ValueType : ScientificArray<NumberType, Type, UnitType>
@@ -145,13 +145,13 @@ operator fun <
 
 @JvmName("scientificArrayFromListOfDecimalDefault")
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>
     > List<Decimal>.invoke(unit: UnitType) = this(unit, ::DefaultScientificArray)
 
 @JvmName("scientificArrayFromListOfDecimal")
 operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     NumberType : Number,
     ValueType : ScientificArray<NumberType, Type, UnitType>
@@ -160,7 +160,7 @@ operator fun <
 // Group and Split
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     TargetUnitType : ScientificUnit<Type>
     > List<ScientificValue<Type, UnitType>>.toScientificArray(
@@ -168,7 +168,7 @@ fun <
 ) = toScientificArray(unit, ::DefaultScientificArray)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     TargetUnitType : ScientificUnit<Type>,
     NumberType : Number,
@@ -179,13 +179,13 @@ fun <
 ) = factory(map { it.unit.convert(it.decimalValue, unit) }, unit)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     NumberType : Number
     > ScientificArray<NumberType, Type, UnitType>.split() = split(unit, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     NumberType : Number,
     TargetUnitType : ScientificUnit<Type>
@@ -194,7 +194,7 @@ fun <
 ) = split(targetUnit, ::DefaultScientificValue)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     UnitType : ScientificUnit<Type>,
     NumberType : Number,
     TargetUnitType : ScientificUnit<Type>,
@@ -213,7 +213,7 @@ fun <
 // Conversion
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
@@ -222,7 +222,7 @@ fun <
 ) = convert(target, ::DefaultScientificArray)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>,
@@ -236,7 +236,7 @@ fun <
 }
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
@@ -251,20 +251,20 @@ fun <
 }
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>
     > ScientificArray<NumberType, Type, Unit>.map(
     transform: ScientificValue<Type, Unit>.() -> ScientificValue<TargetType, TargetUnit>
 ) = map(1(unit).transform().unit, ::DefaultScientificArray, transform)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>,
     TargetNumberType : Number,
     ArrayType : ScientificArray<TargetNumberType, TargetType, TargetUnit>
@@ -274,10 +274,10 @@ fun <
 ) = map(1(unit).transform().unit, factory, transform)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>
     > ScientificArray<NumberType, Type, Unit>.map(
     unit: TargetUnit,
@@ -285,10 +285,10 @@ fun <
 ) = map(unit, ::DefaultScientificArray, transform)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>,
     TargetNumberType : Number,
     ArrayType : ScientificArray<TargetNumberType, TargetType, TargetUnit>
@@ -305,13 +305,13 @@ fun <
 }
 
 fun <
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftNumberType : Number,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightNumberType : Number,
     RightUnit : ScientificUnit<RightType>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>
     > ScientificArray<LeftNumberType, LeftType, LeftUnit>.combine(
     right: ScientificArray<RightNumberType, RightType, RightUnit>,
@@ -319,13 +319,13 @@ fun <
 ) = combine(right, 1(unit).transform(1(right.unit)).unit, ::DefaultScientificArray, transform)
 
 fun <
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftNumberType : Number,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightNumberType : Number,
     RightUnit : ScientificUnit<RightType>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>,
     TargetNumberType : Number,
     ArrayType : ScientificArray<TargetNumberType, TargetType, TargetUnit>
@@ -336,13 +336,13 @@ fun <
 ) = combine(right, 1(unit).transform(1(right.unit)).unit, factory, transform)
 
 fun <
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftNumberType : Number,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightNumberType : Number,
     RightUnit : ScientificUnit<RightType>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>
     > ScientificArray<LeftNumberType, LeftType, LeftUnit>.combine(
     right: ScientificArray<RightNumberType, RightType, RightUnit>,
@@ -351,13 +351,13 @@ fun <
 ) = combine(right, unit, ::DefaultScientificArray, transform)
 
 fun <
-    LeftType : MeasurementType,
+    LeftType : PhysicalQuantity,
     LeftNumberType : Number,
     LeftUnit : ScientificUnit<LeftType>,
-    RightType : MeasurementType,
+    RightType : PhysicalQuantity,
     RightNumberType : Number,
     RightUnit : ScientificUnit<RightType>,
-    TargetType : MeasurementType,
+    TargetType : PhysicalQuantity,
     TargetUnit : ScientificUnit<TargetType>,
     TargetNumberType : Number,
     ArrayType : ScientificArray<TargetNumberType, TargetType, TargetUnit>
@@ -377,28 +377,28 @@ fun <
 }
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     RightUnit : ScientificUnit<Type>
     > ScientificArray<NumberType, Type, Unit>.plus(right: ScientificArray<NumberType, Type, RightUnit>) = concat(right)
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     RightUnit : ScientificUnit<Type>
     > ScientificArray<NumberType, Type, Unit>.plus(right: ScientificValue<Type, RightUnit>) = concat(listOf(right).toScientificArray(right.unit))
 
 infix operator fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     RightUnit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.plus(right: ScientificArray<NumberType, Type, RightUnit>) = listOf(this).toScientificArray(unit).concat(right)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     Unit : ScientificUnit<Type>,
     RightUnit : ScientificUnit<Type>,
     > ScientificArray<*, Type, Unit>.concat(
@@ -406,7 +406,7 @@ fun <
 ) = concat(right, unit)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     ArrayType : ScientificArray<NumberType, Type, Unit>
@@ -416,7 +416,7 @@ fun <
 ) = concat(right, unit, factory)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     LeftUnit : ScientificUnit<Type>,
     RightUnit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
@@ -426,7 +426,7 @@ fun <
 ) = concat(right, targetUnit, ::DefaultScientificArray)
 
 fun <
-    Type : MeasurementType,
+    Type : PhysicalQuantity,
     LeftUnit : ScientificUnit<Type>,
     RightUnit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>,

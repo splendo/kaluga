@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Force
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     YankUnit : Yank
     > TimeUnit.time(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    yank: ScientificValue<MeasurementType.Yank, YankUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>
 ) = time(force, yank, ::DefaultScientificValue)
 
 @JvmName("timeFromForceAndYank")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     TimeUnit : Time,
     YankUnit : Yank,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    yank: ScientificValue<MeasurementType.Yank, YankUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = byDividing(force, yank, factory)

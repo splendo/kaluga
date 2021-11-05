@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.voltage
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
@@ -33,8 +33,8 @@ fun <
     VoltageUnit : Voltage,
     ResistanceUnit : ElectricResistance
     > VoltageUnit.voltage(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
 ) = voltage(current, resistance, ::DefaultScientificValue)
 
 @JvmName("voltageFromCurrentAndResistance")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ResistanceUnit : ElectricResistance,
-    Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
+    Value : ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
     > VoltageUnit.voltage(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     factory: (Decimal, VoltageUnit) -> Value
 ) = byMultiplying(current, resistance, factory)

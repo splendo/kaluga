@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricLengthUnits: Set<MetricLength> get() = setOf(
@@ -49,63 +49,63 @@ val ImperialLengthUnits: Set<ImperialLength> get() = setOf(
 val LengthUnits: Set<Length> get() = MetricLengthUnits + ImperialLengthUnits
 
 @Serializable
-sealed class Length : AbstractScientificUnit<MeasurementType.Length>()
+sealed class Length : AbstractScientificUnit<PhysicalQuantity.Length>()
 
 @Serializable
-sealed class MetricLength : Length(), MetricScientificUnit<MeasurementType.Length>
+sealed class MetricLength : Length(), MetricScientificUnit<PhysicalQuantity.Length>
 
 @Serializable
-sealed class ImperialLength(override val symbol: String) : Length(), ImperialScientificUnit<MeasurementType.Length> {
+sealed class ImperialLength(override val symbol: String) : Length(), ImperialScientificUnit<PhysicalQuantity.Length> {
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Length
+    override val type = PhysicalQuantity.Length
 }
 
 // Metric Length
 @Serializable
-object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Length> {
+object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Length> {
     override val symbol: String = "m"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Length
+    override val type = PhysicalQuantity.Length
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Nano(Meter)
+object Nanometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Nano(Meter)
 
 @Serializable
-object Micrometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Micro(Meter)
+object Micrometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Micro(Meter)
 
 @Serializable
-object Millimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Milli(Meter)
+object Millimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Milli(Meter)
 
 @Serializable
-object Centimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Centi(Meter)
+object Centimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Centi(Meter)
 
 @Serializable
-object Decimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Deci(Meter)
+object Decimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deci(Meter)
 
 @Serializable
-object Decameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Deca(Meter)
+object Decameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deca(Meter)
 
 @Serializable
-object Hectometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Hecto(Meter)
+object Hectometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Hecto(Meter)
 
 @Serializable
-object Kilometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Kilo(Meter)
+object Kilometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Kilo(Meter)
 
 @Serializable
-object Megameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Mega(Meter)
+object Megameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Mega(Meter)
 
 @Serializable
-object Gigameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Giga(Meter)
+object Gigameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Giga(Meter)
 
 @Serializable
 object NauticalMile : MetricLength() {
     private const val METER_IN_NAUTICAL_MILE = 1852
     override val symbol: String = "nmi"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Length
+    override val type = PhysicalQuantity.Length
     override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_NAUTICAL_MILE.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_NAUTICAL_MILE.toDecimal()
 }

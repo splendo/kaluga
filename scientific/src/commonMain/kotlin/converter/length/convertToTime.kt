@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.Length
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Speed
 import kotlin.jvm.JvmName
 
 @JvmName("lengthDivSpeed")
-infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<MeasurementType.Length, LengthUnit>.div(
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
 ) = speed.unit.per.time(this, speed)

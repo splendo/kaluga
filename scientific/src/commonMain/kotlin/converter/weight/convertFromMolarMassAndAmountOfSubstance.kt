@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -33,8 +33,8 @@ fun <
     WeightUnit : Weight,
     MolarMassUnit : MolarMass
     > WeightUnit.mass(
-    molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = mass(molarMass, amountOfSubstance, ::DefaultScientificValue)
 
 @JvmName("weightFromMolarMassAndAmountOfSubstance")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolarMassUnit : MolarMass,
-    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
     > WeightUnit.mass(
-    molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     factory: (Decimal, WeightUnit) -> Value
 ) = byMultiplying(molarMass, amountOfSubstance, factory)

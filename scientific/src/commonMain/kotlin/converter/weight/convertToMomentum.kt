@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.momentum.momentum
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
@@ -36,26 +36,26 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightTimesMetricSpeed")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, MetricSpeed>
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>
 ) = (unit x speed.unit).momentum(this, speed)
 
 @JvmName("imperialWeightTimesImperialSpeed")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
 ) = (unit x speed.unit).momentum(this, speed)
 
 @JvmName("ukImperialWeightTimesImperialSpeed")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
 ) = (unit x speed.unit).momentum(this, speed)
 
 @JvmName("usCustomaryWeightTimesImperialSpeed")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
 ) = (unit x speed.unit).momentum(this, speed)
 
 @JvmName("weightTimesSpeed")
-infix operator fun <WeightUnit : Weight, SpeedUnit : Speed> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+infix operator fun <WeightUnit : Weight, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
 ) = (Kilogram x (Meter per Second)).momentum(this, speed)

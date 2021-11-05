@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.yank
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Jolt
@@ -33,8 +33,8 @@ fun <
     JoltUnit : Jolt,
     YankUnit : Yank
     > YankUnit.yank(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
 ) = yank(weight, jolt, ::DefaultScientificValue)
 
 @JvmName("yankFromMassAndJolt")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
     YankUnit : Yank,
-    Value : ScientificValue<MeasurementType.Yank, YankUnit>
+    Value : ScientificValue<PhysicalQuantity.Yank, YankUnit>
     > YankUnit.yank(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
     factory: (Decimal, YankUnit) -> Value
 ) = byMultiplying(weight, jolt, factory)

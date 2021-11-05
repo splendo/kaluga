@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminance.luminance
 import com.splendo.kaluga.scientific.unit.FootLambert
@@ -33,27 +33,27 @@ import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("photDivSolidAngle")
-infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.Illuminance, Phot>.div(
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, Phot>.div(
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
 ) = Stilb.luminance(this, solidAngle)
 
 @JvmName("photMultipleDivSolidAngle")
-infix operator fun <PhotUnit, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.Illuminance, PhotUnit>.div(
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
-) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> =
+infix operator fun <PhotUnit, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>.div(
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
     Stilb.luminance(this, solidAngle)
 
 @JvmName("metricIlluminanceDivSolidAngle")
-infix operator fun <IlluminanceUnit : MetricIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.div(
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+infix operator fun <IlluminanceUnit : MetricIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
 ) = Nit.luminance(this, solidAngle)
 
 @JvmName("imperialIlluminanceDivSolidAngle")
-infix operator fun <IlluminanceUnit : ImperialIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.div(
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+infix operator fun <IlluminanceUnit : ImperialIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
 ) = FootLambert.luminance(this, solidAngle)
 
 @JvmName("illuminanceDivSolidAngle")
-infix operator fun <IlluminanceUnit : Illuminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.div(
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+infix operator fun <IlluminanceUnit : Illuminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
 ) = Nit.luminance(this, solidAngle)

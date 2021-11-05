@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
@@ -40,43 +40,43 @@ val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
 )
 
 @Serializable
-sealed class MagneticInduction : AbstractScientificUnit<MeasurementType.MagneticInduction>(), MetricAndImperialScientificUnit<MeasurementType.MagneticInduction>
+sealed class MagneticInduction : AbstractScientificUnit<PhysicalQuantity.MagneticInduction>(), MetricAndImperialScientificUnit<PhysicalQuantity.MagneticInduction>
 
 @Serializable
-object Tesla : MagneticInduction(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction> {
+object Tesla : MagneticInduction(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction> {
     override val symbol = "T"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.MagneticInduction
+    override val type = PhysicalQuantity.MagneticInduction
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Nano(Tesla)
+object Nanotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Nano(Tesla)
 @Serializable
-object Microtesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Micro(Tesla)
+object Microtesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Micro(Tesla)
 @Serializable
-object Millitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Milli(Tesla)
+object Millitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Milli(Tesla)
 @Serializable
-object Centitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Centi(Tesla)
+object Centitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Centi(Tesla)
 @Serializable
-object Decitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Deci(Tesla)
+object Decitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Deci(Tesla)
 @Serializable
-object Decatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Deca(Tesla)
+object Decatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Deca(Tesla)
 @Serializable
-object Hectotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Hecto(Tesla)
+object Hectotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Hecto(Tesla)
 @Serializable
-object Kilotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Kilo(Tesla)
+object Kilotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Kilo(Tesla)
 @Serializable
-object Megatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Mega(Tesla)
+object Megatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Mega(Tesla)
 @Serializable
-object Gigatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Giga(Tesla)
+object Gigatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Giga(Tesla)
 @Serializable
 object Gauss : MagneticInduction() {
     private const val GAUSS_IN_TESLA = 10000.0
     override val symbol = "G"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.MagneticInduction
+    override val type = PhysicalQuantity.MagneticInduction
     override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA.toDecimal()
 }

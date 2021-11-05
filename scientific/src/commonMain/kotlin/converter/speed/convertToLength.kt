@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.speed
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.length.distance
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
@@ -27,15 +27,15 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpeedTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     unit.distance.distance(this, time)
 
 @JvmName("imperialSpeedTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.distance.distance(this, time)
 
 @JvmName("speedTimesTime")
-infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<MeasurementType.Speed, SpeedUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.distance.distance(this, time)

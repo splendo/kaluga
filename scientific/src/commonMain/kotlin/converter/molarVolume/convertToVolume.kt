@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.molarVolume
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volume.volume
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -30,26 +30,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMolarVolume
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolarVolumeTimesAmountOfSubstance")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.MolarVolume, MetricMolarVolume>.times(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, MetricMolarVolume>.times(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("imperialMolarVolumeTimesAmountOfSubstance")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>.times(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, ImperialMolarVolume>.times(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("ukImperialMolarVolumeTimesAmountOfSubstance")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>.times(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>.times(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("usCustomaryMolarVolumeTimesAmountOfSubstance")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>.times(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.times(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("molarVolumeTimesAmountOfSubstance")
-infix operator fun <MolarVolumeUnit : MolarVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.times(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <MolarVolumeUnit : MolarVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.times(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = CubicMeter.volume(this, amountOfSubstance)

@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricAndUKImperialHeatCapacityUnits: Set<MetricAndUKImperialHeatCapacity> get() = MetricAndImperialEnergyUnits.flatMap { energy ->
@@ -43,31 +43,31 @@ val HeatCapacityUnits: Set<HeatCapacity> get() = MetricAndUKImperialHeatCapacity
     USCustomaryHeatCapacityUnits
 
 @Serializable
-sealed class HeatCapacity : AbstractScientificUnit<MeasurementType.HeatCapacity>() {
+sealed class HeatCapacity : AbstractScientificUnit<PhysicalQuantity.HeatCapacity>() {
     abstract val energy: Energy
     abstract val per: Temperature
-    override val type = MeasurementType.HeatCapacity
+    override val type = PhysicalQuantity.HeatCapacity
     override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.deltaToSIUnitDelta(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.deltaFromSIUnitDelta(value))
 }
 
 @Serializable
-data class MetricAndUKImperialHeatCapacity(override val energy: MetricAndImperialEnergy, override val per: MetricAndUKImperialTemperature) : HeatCapacity(), MetricAndUKImperialScientificUnit<MeasurementType.HeatCapacity> {
+data class MetricAndUKImperialHeatCapacity(override val energy: MetricAndImperialEnergy, override val per: MetricAndUKImperialTemperature) : HeatCapacity(), MetricAndUKImperialScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.MetricAndUKImperial
     val metric get() = energy.metric per per
     val ukImperial get() = energy.imperial per per
 }
 @Serializable
-data class MetricHeatCapacity(override val energy: MetricEnergy, override val per: MetricAndUKImperialTemperature) : HeatCapacity(), MetricScientificUnit<MeasurementType.HeatCapacity> {
+data class MetricHeatCapacity(override val energy: MetricEnergy, override val per: MetricAndUKImperialTemperature) : HeatCapacity(), MetricScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class UKImperialHeatCapacity(override val energy: ImperialEnergy, override val per: MetricAndUKImperialTemperature) : HeatCapacity(), UKImperialScientificUnit<MeasurementType.HeatCapacity> {
+data class UKImperialHeatCapacity(override val energy: ImperialEnergy, override val per: MetricAndUKImperialTemperature) : HeatCapacity(), UKImperialScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomaryHeatCapacity(override val energy: ImperialEnergy, override val per: USCustomaryTemperature) : HeatCapacity(), USCustomaryScientificUnit<MeasurementType.HeatCapacity> {
+data class USCustomaryHeatCapacity(override val energy: ImperialEnergy, override val per: USCustomaryTemperature) : HeatCapacity(), USCustomaryScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.USCustomary
 }
 

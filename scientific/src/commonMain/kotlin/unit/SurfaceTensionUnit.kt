@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricSurfaceTensionUnits: Set<MetricSurfaceTension> get() = MetricForceUnits.flatMap { force ->
@@ -43,31 +43,31 @@ val SurfaceTensionUnits: Set<SurfaceTension> get() = MetricSurfaceTensionUnits +
     USCustomarySurfaceTensionUnits.filter { it.force !is USCustomaryImperialForceWrapper }.toSet()
 
 @Serializable
-sealed class SurfaceTension : AbstractScientificUnit<MeasurementType.SurfaceTension>() {
+sealed class SurfaceTension : AbstractScientificUnit<PhysicalQuantity.SurfaceTension>() {
     abstract val force: Force
     abstract val per: Length
     override val symbol: String by lazy { "${force.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.SurfaceTension
+    override val type = PhysicalQuantity.SurfaceTension
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(force.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = force.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricSurfaceTension(override val force: MetricForce, override val per: MetricLength) : SurfaceTension(), MetricScientificUnit<MeasurementType.SurfaceTension> {
+data class MetricSurfaceTension(override val force: MetricForce, override val per: MetricLength) : SurfaceTension(), MetricScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialSurfaceTension(override val force: ImperialForce, override val per: ImperialLength) : SurfaceTension(), ImperialScientificUnit<MeasurementType.SurfaceTension> {
+data class ImperialSurfaceTension(override val force: ImperialForce, override val per: ImperialLength) : SurfaceTension(), ImperialScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = force.ukImperial per per
     val usCustomary get() = force.usCustomary per per
 }
 @Serializable
-data class USCustomarySurfaceTension(override val force: USCustomaryForce, override val per: ImperialLength) : SurfaceTension(), USCustomaryScientificUnit<MeasurementType.SurfaceTension> {
+data class USCustomarySurfaceTension(override val force: USCustomaryForce, override val per: ImperialLength) : SurfaceTension(), USCustomaryScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialSurfaceTension(override val force: UKImperialForce, override val per: ImperialLength) : SurfaceTension(), UKImperialScientificUnit<MeasurementType.SurfaceTension> {
+data class UKImperialSurfaceTension(override val force: UKImperialForce, override val per: ImperialLength) : SurfaceTension(), UKImperialScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.UKImperial
 }
 

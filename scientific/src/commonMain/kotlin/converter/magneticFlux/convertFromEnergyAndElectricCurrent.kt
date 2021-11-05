@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.magneticFlux
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
@@ -33,8 +33,8 @@ fun <
     CurrentUnit : ElectricCurrent,
     FluxUnit : MagneticFlux
     > FluxUnit.flux(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
 ) = flux(energy, current, ::DefaultScientificValue)
 
 @JvmName("fluxFromEnergyAndCurrent")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     CurrentUnit : ElectricCurrent,
     FluxUnit : MagneticFlux,
-    Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
     > FluxUnit.flux(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
     factory: (Decimal, FluxUnit) -> Value
 ) = byDividing(energy, current, factory)

@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricMassFlowRateUnits: Set<MetricMassFlowRate> get() = MetricWeightUnits.flatMap { weight ->
@@ -43,31 +43,31 @@ val MassFlowRateUnits: Set<MassFlowRate> get() = MetricMassFlowRateUnits +
     USCustomaryMassFlowRateUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class MassFlowRate : AbstractScientificUnit<MeasurementType.MassFlowRate>() {
+sealed class MassFlowRate : AbstractScientificUnit<PhysicalQuantity.MassFlowRate>() {
     abstract val weight: Weight
     abstract val per: Time
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.MassFlowRate
+    override val type = PhysicalQuantity.MassFlowRate
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricMassFlowRate(override val weight: MetricWeight, override val per: Time) : MassFlowRate(), MetricScientificUnit<MeasurementType.MassFlowRate> {
+data class MetricMassFlowRate(override val weight: MetricWeight, override val per: Time) : MassFlowRate(), MetricScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialMassFlowRate(override val weight: ImperialWeight, override val per: Time) : MassFlowRate(), ImperialScientificUnit<MeasurementType.MassFlowRate> {
+data class ImperialMassFlowRate(override val weight: ImperialWeight, override val per: Time) : MassFlowRate(), ImperialScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = weight.ukImperial per per
     val usCustomary get() = weight.usCustomary per per
 }
 @Serializable
-data class USCustomaryMassFlowRate(override val weight: USCustomaryWeight, override val per: Time) : MassFlowRate(), USCustomaryScientificUnit<MeasurementType.MassFlowRate> {
+data class USCustomaryMassFlowRate(override val weight: USCustomaryWeight, override val per: Time) : MassFlowRate(), USCustomaryScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialMassFlowRate(override val weight: UKImperialWeight, override val per: Time) : MassFlowRate(), UKImperialScientificUnit<MeasurementType.MassFlowRate> {
+data class UKImperialMassFlowRate(override val weight: UKImperialWeight, override val per: Time) : MassFlowRate(), UKImperialScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.UKImperial
 }
 

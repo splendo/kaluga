@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.molality
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Molality
@@ -33,8 +33,8 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     MolalityUnit : Molality
     > MolalityUnit.molality(
-    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>,
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
 ) = molality(molarity, specificVolume, ::DefaultScientificValue)
 
 @JvmName("molalityFromMolarityAndSpecificVolume")
@@ -42,9 +42,9 @@ fun <
     MolarityUnit : Molarity,
     SpecificVolumeUnit : SpecificVolume,
     MolalityUnit : Molality,
-    Value : ScientificValue<MeasurementType.Molality, MolalityUnit>
+    Value : ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
     > MolalityUnit.molality(
-    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>,
-    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     factory: (Decimal, MolalityUnit) -> Value
 ) = byMultiplying(molarity, specificVolume, factory)

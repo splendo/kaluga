@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricAreaDensityUnits: Set<MetricAreaDensity> get() = MetricWeightUnits.flatMap { weight ->
@@ -43,31 +43,31 @@ val AreaDensityUnits: Set<AreaDensity> get() = MetricAreaDensityUnits +
     USCustomaryAreaDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class AreaDensity : AbstractScientificUnit<MeasurementType.AreaDensity>() {
+sealed class AreaDensity : AbstractScientificUnit<PhysicalQuantity.AreaDensity>() {
     abstract val weight: Weight
     abstract val per: Area
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.AreaDensity
+    override val type = PhysicalQuantity.AreaDensity
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricAreaDensity(override val weight: MetricWeight, override val per: MetricArea) : AreaDensity(), MetricScientificUnit<MeasurementType.AreaDensity> {
+data class MetricAreaDensity(override val weight: MetricWeight, override val per: MetricArea) : AreaDensity(), MetricScientificUnit<PhysicalQuantity.AreaDensity> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialAreaDensity(override val weight: ImperialWeight, override val per: ImperialArea) : AreaDensity(), ImperialScientificUnit<MeasurementType.AreaDensity> {
+data class ImperialAreaDensity(override val weight: ImperialWeight, override val per: ImperialArea) : AreaDensity(), ImperialScientificUnit<PhysicalQuantity.AreaDensity> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = weight.ukImperial per per
     val usCustomary get() = weight.usCustomary per per
 }
 @Serializable
-data class USCustomaryAreaDensity(override val weight: USCustomaryWeight, override val per: ImperialArea) : AreaDensity(), USCustomaryScientificUnit<MeasurementType.AreaDensity> {
+data class USCustomaryAreaDensity(override val weight: USCustomaryWeight, override val per: ImperialArea) : AreaDensity(), USCustomaryScientificUnit<PhysicalQuantity.AreaDensity> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialAreaDensity(override val weight: UKImperialWeight, override val per: ImperialArea) : AreaDensity(), UKImperialScientificUnit<MeasurementType.AreaDensity> {
+data class UKImperialAreaDensity(override val weight: UKImperialWeight, override val per: ImperialArea) : AreaDensity(), UKImperialScientificUnit<PhysicalQuantity.AreaDensity> {
     override val system = MeasurementSystem.UKImperial
 }
 

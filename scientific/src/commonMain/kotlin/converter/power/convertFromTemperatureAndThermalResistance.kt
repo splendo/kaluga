@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.power
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
@@ -34,8 +34,8 @@ fun <
     PowerUnit : Power,
     ThermalResistanceUnit : ThermalResistance
     > PowerUnit.power(
-    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
-    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>
 ) = power(temperature, thermalResistance, ::DefaultScientificValue)
 
 @JvmName("powerFromTemperatureAndThermalResistance")
@@ -43,9 +43,9 @@ fun <
     TemperatureUnit : Temperature,
     PowerUnit : Power,
     ThermalResistanceUnit : ThermalResistance,
-    Value : ScientificValue<MeasurementType.Power, PowerUnit>
+    Value : ScientificValue<PhysicalQuantity.Power, PowerUnit>
     > PowerUnit.power(
-    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
-    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>,
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>,
     factory: (Decimal, PowerUnit) -> Value
 ) = byDividing(temperature.deltaValueInKelvin(), thermalResistance, factory)

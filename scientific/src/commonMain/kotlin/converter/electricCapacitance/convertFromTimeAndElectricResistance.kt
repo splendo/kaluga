@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricCapacitance
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     ResistanceUnit : ElectricResistance
     > CapacitanceUnit.capacitance(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
 ) = capacitance(time, resistance, ::DefaultScientificValue)
 
 @JvmName("capacitanceFromTimeAndResistance")
@@ -42,9 +42,9 @@ fun <
     CapacitanceUnit : ElectricCapacitance,
     TimeUnit : Time,
     ResistanceUnit : ElectricResistance,
-    Value : ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
     > CapacitanceUnit.capacitance(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     factory: (Decimal, CapacitanceUnit) -> Value
 ) = byDividing(time, resistance, factory)

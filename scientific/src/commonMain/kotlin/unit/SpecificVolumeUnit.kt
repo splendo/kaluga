@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricSpecificVolumeUnits: Set<MetricSpecificVolume> get() = MetricVolumeUnits.flatMap { volume ->
@@ -43,31 +43,31 @@ val SpecificVolumeUnits: Set<SpecificVolume> get() = MetricSpecificVolumeUnits +
     USCustomarySpecificVolumeUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper || it.per !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class SpecificVolume : AbstractScientificUnit<MeasurementType.SpecificVolume>() {
+sealed class SpecificVolume : AbstractScientificUnit<PhysicalQuantity.SpecificVolume>() {
     abstract val volume: Volume
     abstract val per: Weight
     override val symbol: String by lazy { "${volume.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.SpecificVolume
+    override val type = PhysicalQuantity.SpecificVolume
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volume.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricSpecificVolume(override val volume: MetricVolume, override val per: MetricWeight) : SpecificVolume(), MetricScientificUnit<MeasurementType.SpecificVolume> {
+data class MetricSpecificVolume(override val volume: MetricVolume, override val per: MetricWeight) : SpecificVolume(), MetricScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialSpecificVolume(override val volume: ImperialVolume, override val per: ImperialWeight) : SpecificVolume(), ImperialScientificUnit<MeasurementType.SpecificVolume> {
+data class ImperialSpecificVolume(override val volume: ImperialVolume, override val per: ImperialWeight) : SpecificVolume(), ImperialScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = volume.ukImperial per per.ukImperial
     val usCustomary get() = volume.usCustomary per per.usCustomary
 }
 @Serializable
-data class USCustomarySpecificVolume(override val volume: USCustomaryVolume, override val per: USCustomaryWeight) : SpecificVolume(), USCustomaryScientificUnit<MeasurementType.SpecificVolume> {
+data class USCustomarySpecificVolume(override val volume: USCustomaryVolume, override val per: USCustomaryWeight) : SpecificVolume(), USCustomaryScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialSpecificVolume(override val volume: UKImperialVolume, override val per: UKImperialWeight) : SpecificVolume(), UKImperialScientificUnit<MeasurementType.SpecificVolume> {
+data class UKImperialSpecificVolume(override val volume: UKImperialVolume, override val per: UKImperialWeight) : SpecificVolume(), UKImperialScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.UKImperial
 }
 

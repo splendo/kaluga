@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific.converter.radioactivity
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
@@ -37,16 +37,16 @@ fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity
     > RadioactivityUnit.radioactivity(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = radioactivity(time, ::DefaultScientificValue)
 
 @JvmName("radioactivityFromInvertedTime")
 fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
-    Value : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
     > RadioactivityUnit.radioactivity(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, RadioactivityUnit) -> Value
 ) = byInverting(time, factory)
 
@@ -55,15 +55,15 @@ fun <
     TimeUnit : Time
     > RadioactivityUnit.radioactivity(
     decays: Decimal,
-    per: ScientificValue<MeasurementType.Time, TimeUnit>
+    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = radioactivity(decays, per, ::DefaultScientificValue)
 
 fun <
     RadioactivityUnit : Radioactivity,
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
     > RadioactivityUnit.radioactivity(
     decays: Decimal,
-    per: ScientificValue<MeasurementType.Time, TimeUnit>,
+    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, RadioactivityUnit) -> Value
 ) = (decays / per.convertValue(Second))(Becquerel).convert(this, factory)

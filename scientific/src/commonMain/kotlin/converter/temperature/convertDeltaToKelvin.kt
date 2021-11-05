@@ -19,19 +19,19 @@ package com.splendo.kaluga.scientific.converter.temperature
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.Temperature
 
 fun <
     TemperatureUnit : Temperature
-    > ScientificValue<MeasurementType.Temperature, TemperatureUnit>.deltaValueInKelvin() =
+    > ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.deltaValueInKelvin() =
     deltaValueInKelvin(::DefaultScientificValue)
 
 fun <
     TemperatureUnit : Temperature,
-    Value : ScientificValue<MeasurementType.Temperature, Kelvin>
-    > ScientificValue<MeasurementType.Temperature, TemperatureUnit>.deltaValueInKelvin(
+    Value : ScientificValue<PhysicalQuantity.Temperature, Kelvin>
+    > ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.deltaValueInKelvin(
     factory: (Decimal, Kelvin) -> Value
 ) = factory(unit.deltaToSIUnitDelta(decimalValue), Kelvin)

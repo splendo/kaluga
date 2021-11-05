@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.Force
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("forceDivYank")
-infix operator fun <ForceUnit : Force, YankUnit : Yank> ScientificValue<MeasurementType.Force, ForceUnit>.div(
-    yank: ScientificValue<MeasurementType.Yank, YankUnit>
+infix operator fun <ForceUnit : Force, YankUnit : Yank> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>
 ) = yank.unit.per.time(this, yank)

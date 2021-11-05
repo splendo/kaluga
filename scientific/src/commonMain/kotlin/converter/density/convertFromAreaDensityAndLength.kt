@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.density
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AreaDensity
@@ -33,8 +33,8 @@ fun <
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity
     > DensityUnit.density(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = density(areaDensity, length, ::DefaultScientificValue)
 
 @JvmName("densityFromAreaDensityAndLength")
@@ -42,9 +42,9 @@ fun <
     DensityUnit : Density,
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity,
-    Value : ScientificValue<MeasurementType.Density, DensityUnit>
+    Value : ScientificValue<PhysicalQuantity.Density, DensityUnit>
     > DensityUnit.density(
-    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     factory: (Decimal, DensityUnit) -> Value
 ) = byDividing(areaDensity, length, factory)

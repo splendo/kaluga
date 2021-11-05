@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricCurrent
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.ElectricConductance
@@ -33,8 +33,8 @@ fun <
     VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance
     > CurrentUnit.current(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = current(conductance, voltage, ::DefaultScientificValue)
 
 @JvmName("currentFromVoltageAndConductance")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance,
-    Value : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
     > CurrentUnit.current(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
     factory: (Decimal, CurrentUnit) -> Value
 ) = byMultiplying(conductance, voltage, factory)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.length
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.converter.area.area
@@ -35,8 +35,8 @@ fun <
     AreaUnit : Area,
     VolumeUnit : Volume
     > HeightUnit.height(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = height(volume, area, ::DefaultScientificValue)
 
 @JvmName("heightFromVolumeAndArea")
@@ -44,10 +44,10 @@ fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume,
-    Value : ScientificValue<MeasurementType.Length, HeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, HeightUnit>
     > HeightUnit.height(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     factory: (Decimal, HeightUnit) -> Value
 ) = byDividing(volume, area, factory)
 
@@ -58,9 +58,9 @@ fun <
     WidthUnit : Length,
     VolumeUnit : Volume
     > HeightUnit.height(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
-    width: ScientificValue<MeasurementType.Length, WidthUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
 ) = height(volume, length, width, ::DefaultScientificValue)
 
 @JvmName("heightFromVolumeLengthAndWidth")
@@ -69,10 +69,10 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     VolumeUnit : Volume,
-    Value : ScientificValue<MeasurementType.Length, HeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, HeightUnit>
     > HeightUnit.height(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
-    width: ScientificValue<MeasurementType.Length, WidthUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
+    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
     factory: (Decimal, HeightUnit) -> Value
 ) = height(volume, SquareMeter.area(length, width), factory)

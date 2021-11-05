@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCurrent
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.magneticFlux.times
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -28,14 +28,14 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesMaxwell")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Abampere>.times(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(flux: ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>) =
     flux * this
 
 @JvmName("biotTimesMaxwell")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Biot>.times(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times(flux: ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>) =
     flux * this
 
 @JvmName("currentTimesFlux")
-infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
 ) = flux * this

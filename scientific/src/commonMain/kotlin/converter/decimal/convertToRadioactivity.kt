@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
 import com.splendo.kaluga.scientific.unit.Becquerel
@@ -27,9 +27,9 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("numberDivTime")
-infix fun <TimeUnit : Time> Number.decaysPer(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Radioactivity, Becquerel> =
+infix fun <TimeUnit : Time> Number.decaysPer(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Radioactivity, Becquerel> =
     toDecimal().decaysPer(time)
 
 @JvmName("decimalDivTime")
-infix fun <TimeUnit : Time> Decimal.decaysPer(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Radioactivity, Becquerel> =
+infix fun <TimeUnit : Time> Decimal.decaysPer(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Radioactivity, Becquerel> =
     Becquerel.radioactivity(this, time)

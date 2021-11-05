@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
@@ -37,34 +37,34 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
 )
 
 @Serializable
-sealed class SolidAngle : AbstractScientificUnit<MeasurementType.SolidAngle>(), MetricAndImperialScientificUnit<MeasurementType.SolidAngle>
+sealed class SolidAngle : AbstractScientificUnit<PhysicalQuantity.SolidAngle>(), MetricAndImperialScientificUnit<PhysicalQuantity.SolidAngle>
 
 @Serializable
-object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle> {
+object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
     override val symbol = "sr"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.SolidAngle
+    override val type = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanosteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Nano(Steradian)
+object Nanosteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Nano(Steradian)
 @Serializable
-object Microsteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Micro(Steradian)
+object Microsteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Micro(Steradian)
 @Serializable
-object Millisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Milli(Steradian)
+object Millisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Milli(Steradian)
 @Serializable
-object Centisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Centi(Steradian)
+object Centisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Centi(Steradian)
 @Serializable
-object Decisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Deci(Steradian)
+object Decisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Deci(Steradian)
 
 @Serializable
-object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle> {
+object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
     private const val STERADIAN_IN_SPAT = 4.0 * PI
     override val symbol = "sp"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.SolidAngle
+    override val type = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = value / STERADIAN_IN_SPAT.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * STERADIAN_IN_SPAT.toDecimal()
 }
@@ -73,7 +73,7 @@ object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
 object SquareDegree : SolidAngle() {
     override val symbol = "°2"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.SolidAngle
+    override val type = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = Degree.fromSIUnit(Degree.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Degree.toSIUnit(Degree.toSIUnit(value))
 }

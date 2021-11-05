@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricJoltUnits: Set<MetricJolt> get() = MetricAccelerationUnits.flatMap { acceleration ->
@@ -33,10 +33,10 @@ val JoltUnits: Set<Jolt> get() = MetricJoltUnits +
     ImperialJoltUnits
 
 @Serializable
-sealed class Jolt : AbstractScientificUnit<MeasurementType.Jolt>() {
+sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
     abstract val acceleration: Acceleration
     abstract val per: Time
-    override val type = MeasurementType.Jolt
+    override val type = PhysicalQuantity.Jolt
     override val symbol: String by lazy {
         val perSymbol = when {
             per == acceleration.per && acceleration.speed.per == per -> "${per.symbol}3"
@@ -52,12 +52,12 @@ sealed class Jolt : AbstractScientificUnit<MeasurementType.Jolt>() {
 }
 
 @Serializable
-data class MetricJolt(override val acceleration: MetricAcceleration, override val per: Time) : Jolt(), MetricScientificUnit<MeasurementType.Jolt> {
+data class MetricJolt(override val acceleration: MetricAcceleration, override val per: Time) : Jolt(), MetricScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.Metric
 }
 
 @Serializable
-data class ImperialJolt(override val acceleration: ImperialAcceleration, override val per: Time) : Jolt(), ImperialScientificUnit<MeasurementType.Jolt> {
+data class ImperialJolt(override val acceleration: ImperialAcceleration, override val per: Time) : Jolt(), ImperialScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.Imperial
 }
 

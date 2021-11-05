@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.MagneticFlux
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("fluxDivVoltage")
-infix operator fun <FluxUnit : MagneticFlux, VoltageUnit : Voltage> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+infix operator fun <FluxUnit : MagneticFlux, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = Second.time(this, voltage)

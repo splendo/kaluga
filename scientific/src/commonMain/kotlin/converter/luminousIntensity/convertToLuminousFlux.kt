@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousIntensity
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminousFlux.flux
 import com.splendo.kaluga.scientific.unit.Lumen
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.SolidAngle
 import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityTimesSolidAngle")
-infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>.times(
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>.times(
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
 ) = Lumen.flux(this, solidAngle)

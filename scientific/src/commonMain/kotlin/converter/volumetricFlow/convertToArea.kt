@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlow
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
@@ -33,46 +33,46 @@ import com.splendo.kaluga.scientific.unit.VolumetricFlux
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowDivMetricVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, MetricVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("imperialVolumetricFlowDivImperialVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("imperialVolumetricFlowDivUKImperialVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, UKImperialVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("imperialVolumetricFlowDivUSCustomaryVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, USCustomaryVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("ukImperialVolumetricFlowDivImperialVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, UKImperialVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("ukImperialVolumetricFlowDivUKImperialVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, UKImperialVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, UKImperialVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("usCustomaryVolumetricFlowDivImperialVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, USCustomaryVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("usCustomaryVolumetricFlowDivUSCustomaryVolumetricFlux")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>
+infix operator fun ScientificValue<PhysicalQuantity.VolumetricFlow, USCustomaryVolumetricFlow>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, USCustomaryVolumetricFlux>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)
 
 @JvmName("volumetricFlowDivVolumetricFlux")
-infix operator fun <VolumetricFlowUnit : VolumetricFlow, VolumetricFluxUnit : VolumetricFlux> ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>.div(
-    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>
+infix operator fun <VolumetricFlowUnit : VolumetricFlow, VolumetricFluxUnit : VolumetricFlux> ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>.div(
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>
 ) = volumetricFlux.unit.per.area(this, volumetricFlux)

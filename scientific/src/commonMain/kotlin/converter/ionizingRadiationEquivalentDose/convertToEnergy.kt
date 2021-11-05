@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.Erg
@@ -30,17 +30,17 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("roentgenEquivalentManTimesWeight")
-infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = Erg.energy(this, weight)
 
 @JvmName("roentgenEquivalentManMultipleTimesWeight")
-infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
-) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
+infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
     Erg.energy(this, weight)
 
 @JvmName("equivalentDoseTimesWeight")
-infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = Joule.energy(this, weight)

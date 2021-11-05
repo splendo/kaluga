@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.frequency
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricInductance
@@ -33,8 +33,8 @@ fun <
     FrequencyUnit : Frequency,
     InductanceUnit : ElectricInductance
     > FrequencyUnit.frequency(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
 ) = frequency(resistance, inductance, ::DefaultScientificValue)
 
 @JvmName("frequencyFromResistanceAndInductance")
@@ -42,9 +42,9 @@ fun <
     ResistanceUnit : ElectricResistance,
     FrequencyUnit : Frequency,
     InductanceUnit : ElectricInductance,
-    Value : ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
     > FrequencyUnit.frequency(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
     factory: (Decimal, FrequencyUnit) -> Value
 ) = byDividing(resistance, inductance, factory)

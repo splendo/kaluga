@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.energy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Energy
@@ -33,8 +33,8 @@ fun <
     ForceUnit : Force,
     LengthUnit : Length
     > EnergyUnit.energy(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = energy(force, distance, ::DefaultScientificValue)
 
 @JvmName("energyFromForceAndDistance")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
     LengthUnit : Length,
-    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
     > EnergyUnit.energy(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     factory: (Decimal, EnergyUnit) -> Value
 ) = byMultiplying(force, distance, factory)

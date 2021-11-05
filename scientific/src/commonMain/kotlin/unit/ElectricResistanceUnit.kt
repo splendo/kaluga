@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
@@ -37,38 +37,38 @@ val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
 )
 
 @Serializable
-sealed class ElectricResistance : AbstractScientificUnit<MeasurementType.ElectricResistance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricResistance>
+sealed class ElectricResistance : AbstractScientificUnit<PhysicalQuantity.ElectricResistance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricResistance>
 
 @Serializable
-object Ohm : ElectricResistance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance> {
+object Ohm : ElectricResistance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance> {
     override val symbol = "Ω"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.ElectricResistance
+    override val type = PhysicalQuantity.ElectricResistance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanoohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Nano(Ohm)
+object Nanoohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Nano(Ohm)
 @Serializable
-object Abohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Nano(Ohm) {
+object Abohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Nano(Ohm) {
     override val symbol = "abΩ"
 }
 @Serializable
-object Microohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Micro(Ohm)
+object Microohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Micro(Ohm)
 @Serializable
-object Milliohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Milli(Ohm)
+object Milliohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Milli(Ohm)
 @Serializable
-object Centiohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Centi(Ohm)
+object Centiohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Centi(Ohm)
 @Serializable
-object Deciohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Deci(Ohm)
+object Deciohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Deci(Ohm)
 @Serializable
-object Decaohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Deca(Ohm)
+object Decaohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Deca(Ohm)
 @Serializable
-object HectoOhm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Hecto(Ohm)
+object HectoOhm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Hecto(Ohm)
 @Serializable
-object Kiloohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Kilo(Ohm)
+object Kiloohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Kilo(Ohm)
 @Serializable
-object Megaohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Mega(Ohm)
+object Megaohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Mega(Ohm)
 @Serializable
-object Gigaohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricResistance, Ohm> by Giga(Ohm)
+object Gigaohm : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Giga(Ohm)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.angularVelocity
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.angle.angle
 import com.splendo.kaluga.scientific.unit.AngularVelocity
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.angle.angle(this, time)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.molarVolume
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.molarity.molarity
 import com.splendo.kaluga.scientific.unit.CubicMeter
@@ -31,21 +31,21 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolarVolumeMolarity")
-fun ScientificValue<MeasurementType.MolarVolume, MetricMolarVolume>.molarity() =
+fun ScientificValue<PhysicalQuantity.MolarVolume, MetricMolarVolume>.molarity() =
     (unit.per per unit.volume).molarity(this)
 
 @JvmName("imperialMolarVolumeMolarity")
-fun ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>.molarity() =
+fun ScientificValue<PhysicalQuantity.MolarVolume, ImperialMolarVolume>.molarity() =
     (unit.per per unit.volume).molarity(this)
 
 @JvmName("ukImperialMolarVolumeMolarity")
-fun ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>.molarity() =
+fun ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>.molarity() =
     (unit.per per unit.volume).molarity(this)
 
 @JvmName("usCustomaryMolarVolumeMolarity")
-fun ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>.molarity() =
+fun ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.molarity() =
     (unit.per per unit.volume).molarity(this)
 
 @JvmName("molarVolumeMolarity")
-fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.molarity() =
+fun <MolarVolumeUnit : MolarVolume> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.molarity() =
     (Mole per CubicMeter).molarity(this)

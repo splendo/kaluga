@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricInductance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.magneticFlux.flux
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -30,14 +30,14 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("abhenryTimesAbampere")
-infix operator fun ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
     Maxwell.flux(this, current)
 
 @JvmName("abhenryTimesBiot")
-infix operator fun ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
     Maxwell.flux(this, current)
 
 @JvmName("inductanceTimesCurrent")
-infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>.times(
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
 ) = Weber.flux(this, current)

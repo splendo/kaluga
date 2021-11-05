@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.areaDensity
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.weight.mass
 import com.splendo.kaluga.scientific.unit.Area
@@ -32,26 +32,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDensityTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = unit.weight.mass(this, area)
 
 @JvmName("imperialAreaDensityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = unit.weight.mass(this, area)
 
 @JvmName("ukImperialAreaDensityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = unit.weight.mass(this, area)
 
 @JvmName("usCustomaryAreaDensityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = unit.weight.mass(this, area)
 
 @JvmName("areaDensityTimesArea")
-infix operator fun <AreaDensityUnit : AreaDensity, AreaUnit : Area> ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>.times(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaDensityUnit : AreaDensity, AreaUnit : Area> ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>.times(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Kilogram.mass(this, area)

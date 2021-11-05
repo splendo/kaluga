@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.density
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.areaDensity.areaDensity
 import com.splendo.kaluga.scientific.converter.volume.div
@@ -36,26 +36,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMetricLength")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Density, MetricDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Density, MetricDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("imperialDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Density, ImperialDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("ukImperialDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Density, UKImperialDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("usCustomaryDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("densityTimesLength")
-infix operator fun <DensityUnit : Density, LengthUnit : Length> ScientificValue<MeasurementType.Density, DensityUnit>.times(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+infix operator fun <DensityUnit : Density, LengthUnit : Length> ScientificValue<PhysicalQuantity.Density, DensityUnit>.times(
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = (Kilogram per SquareMeter).areaDensity(this, length)

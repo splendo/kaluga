@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousEnergy
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
@@ -29,16 +29,16 @@ import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
 import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivMetricExposure")
-infix operator fun ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
-    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>
+infix operator fun ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>
 ) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
 
 @JvmName("luminousEnergyDivImperialExposure")
-infix operator fun ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
-    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>
+infix operator fun ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>
 ) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
 
 @JvmName("luminousEnergyDivExposure")
-infix operator fun <ExposureUnit : LuminousExposure> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
-    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ExposureUnit>
+infix operator fun <ExposureUnit : LuminousExposure> ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ExposureUnit>
 ) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)

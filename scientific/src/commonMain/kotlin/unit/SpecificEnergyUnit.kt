@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricSpecificEnergyUnits: Set<MetricSpecificEnergy> get() = MetricEnergyUnits.flatMap { energy ->
@@ -43,31 +43,31 @@ val SpecificEnergyUnits: Set<SpecificEnergy> get() = MetricSpecificEnergyUnits +
     USCustomarySpecificEnergyUnits.filter { it.per !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class SpecificEnergy : AbstractScientificUnit<MeasurementType.SpecificEnergy>() {
+sealed class SpecificEnergy : AbstractScientificUnit<PhysicalQuantity.SpecificEnergy>() {
     abstract val energy: Energy
     abstract val per: Weight
-    override val type = MeasurementType.SpecificEnergy
+    override val type = PhysicalQuantity.SpecificEnergy
     override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricSpecificEnergy(override val energy: MetricEnergy, override val per: MetricWeight) : SpecificEnergy(), MetricScientificUnit<MeasurementType.SpecificEnergy> {
+data class MetricSpecificEnergy(override val energy: MetricEnergy, override val per: MetricWeight) : SpecificEnergy(), MetricScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialSpecificEnergy(override val energy: ImperialEnergy, override val per: ImperialWeight) : SpecificEnergy(), ImperialScientificUnit<MeasurementType.SpecificEnergy> {
+data class ImperialSpecificEnergy(override val energy: ImperialEnergy, override val per: ImperialWeight) : SpecificEnergy(), ImperialScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = energy per per.ukImperial
     val usCustomary get() = energy per per.usCustomary
 }
 @Serializable
-data class UKImperialSpecificEnergy(override val energy: ImperialEnergy, override val per: UKImperialWeight) : SpecificEnergy(), UKImperialScientificUnit<MeasurementType.SpecificEnergy> {
+data class UKImperialSpecificEnergy(override val energy: ImperialEnergy, override val per: UKImperialWeight) : SpecificEnergy(), UKImperialScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomarySpecificEnergy(override val energy: ImperialEnergy, override val per: USCustomaryWeight) : SpecificEnergy(), USCustomaryScientificUnit<MeasurementType.SpecificEnergy> {
+data class USCustomarySpecificEnergy(override val energy: ImperialEnergy, override val per: USCustomaryWeight) : SpecificEnergy(), USCustomaryScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.USCustomary
 }
 

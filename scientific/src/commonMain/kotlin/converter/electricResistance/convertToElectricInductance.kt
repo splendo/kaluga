@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricInductance.inductance
 import com.splendo.kaluga.scientific.unit.Abhenry
@@ -29,21 +29,21 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abohmDivFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, Abohm>.div(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.div(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = Abhenry.inductance(this, frequency)
 
 @JvmName("resistanceDivFrequency")
-infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.div(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.div(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = Henry.inductance(this, frequency)
 
 @JvmName("abohmTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Abhenry.inductance(this, time)
 
 @JvmName("resistanceTimesTime")
-infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Henry.inductance(this, time)

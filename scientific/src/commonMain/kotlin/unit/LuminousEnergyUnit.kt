@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val LuminousEnergyUnits: Set<LuminousEnergy> get() = LuminousFluxUnits.flatMap { flux ->
@@ -26,10 +26,10 @@ val LuminousEnergyUnits: Set<LuminousEnergy> get() = LuminousFluxUnits.flatMap {
 }.toSet()
 
 @Serializable
-class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) : MetricAndImperialScientificUnit<MeasurementType.LuminousEnergy> {
+class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) : MetricAndImperialScientificUnit<PhysicalQuantity.LuminousEnergy> {
     override val symbol: String = "${luminousFlux.symbol}⋅${time.symbol}"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.LuminousEnergy
+    override val type = PhysicalQuantity.LuminousEnergy
     override fun fromSIUnit(value: Decimal): Decimal = luminousFlux.fromSIUnit(time.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = time.toSIUnit(luminousFlux.toSIUnit(value))
 }

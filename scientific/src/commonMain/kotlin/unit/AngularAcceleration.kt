@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val AngularAccelerationUnits: Set<AngularAcceleration> get() = AngularVelocityUnits.flatMap { angularVelocity ->
@@ -26,8 +26,8 @@ val AngularAccelerationUnits: Set<AngularAcceleration> get() = AngularVelocityUn
 }.toSet()
 
 @Serializable
-data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<MeasurementType.AngularAcceleration>(), MetricAndImperialScientificUnit<MeasurementType.AngularAcceleration> {
-    override val type = MeasurementType.AngularAcceleration
+data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<PhysicalQuantity.AngularAcceleration>(), MetricAndImperialScientificUnit<PhysicalQuantity.AngularAcceleration> {
+    override val type = PhysicalQuantity.AngularAcceleration
     override val system = MeasurementSystem.MetricAndImperial
     override val symbol: String by lazy {
         if (angularVelocity.per == per) {

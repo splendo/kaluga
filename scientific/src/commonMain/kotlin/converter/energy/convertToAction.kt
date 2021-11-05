@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.action.action
 import com.splendo.kaluga.scientific.unit.Energy
@@ -30,21 +30,21 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyTimesTime")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit x time.unit).action(this, time)
 
 @JvmName("metricEnergyTimesTime")
-infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit x time.unit).action(this, time)
 
 @JvmName("imperialEnergyTimesTime")
-infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit x time.unit).action(this, time)
 
 @JvmName("energyTimesTime")
-infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Joule x time.unit).action(this, time)

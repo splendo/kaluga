@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.voltage.times
 import com.splendo.kaluga.scientific.unit.Abvolt
@@ -26,10 +26,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesAbvolt")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
     voltage * this
 
 @JvmName("timeTimesVoltage")
-infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = voltage * this

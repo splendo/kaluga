@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Illuminance
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     IlluminanceUnit : Illuminance
     > TimeUnit.time(
-    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = time(luminousExposure, illuminance, ::DefaultScientificValue)
 
 @JvmName("timeFromLuminousExposureAndIlluminance")
@@ -42,9 +42,9 @@ fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
     IlluminanceUnit : Illuminance,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
-    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = byDividing(luminousExposure, illuminance, factory)

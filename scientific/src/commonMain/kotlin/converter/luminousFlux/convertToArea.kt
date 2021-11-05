@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.Illuminance
@@ -33,27 +33,27 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import kotlin.jvm.JvmName
 
 @JvmName("fluxDivPhot")
-infix operator fun <FluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    phot: ScientificValue<MeasurementType.Illuminance, Phot>
+infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    phot: ScientificValue<PhysicalQuantity.Illuminance, Phot>
 ) = SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivPhotMultiple")
-infix operator fun <FluxUnit : LuminousFlux, PhotUnit> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    phot: ScientificValue<MeasurementType.Illuminance, PhotUnit>
-) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> =
+infix operator fun <FluxUnit : LuminousFlux, PhotUnit> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    phot: ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>
+) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
     SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivMetricIlluminance")
-infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : MetricIlluminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : MetricIlluminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = SquareMeter.area(this, illuminance)
 
 @JvmName("fluxDivImperialIlluminance")
-infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = SquareFoot.area(this, illuminance)
 
 @JvmName("fluxDivIlluminance")
-infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : Illuminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : Illuminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
 ) = SquareMeter.area(this, illuminance)

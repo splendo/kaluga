@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.angularAcceleration
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.angularVelocity.velocity
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("angularAccelerationTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.angularVelocity.velocity(this, time)

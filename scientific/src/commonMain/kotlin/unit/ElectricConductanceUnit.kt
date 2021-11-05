@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
@@ -37,38 +37,38 @@ val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
 )
 
 @Serializable
-sealed class ElectricConductance : AbstractScientificUnit<MeasurementType.ElectricConductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricConductance>
+sealed class ElectricConductance : AbstractScientificUnit<PhysicalQuantity.ElectricConductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricConductance>
 
 @Serializable
-object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> {
+object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance> {
     override val symbol = "S"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.ElectricConductance
+    override val type = PhysicalQuantity.ElectricConductance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Nano(Siemens)
+object Nanosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Nano(Siemens)
 @Serializable
-object Microsiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Micro(Siemens)
+object Microsiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Micro(Siemens)
 @Serializable
-object Millisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Milli(Siemens)
+object Millisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Milli(Siemens)
 @Serializable
-object Centisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Centi(Siemens)
+object Centisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Centi(Siemens)
 @Serializable
-object Decisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deci(Siemens)
+object Decisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Deci(Siemens)
 @Serializable
-object Decasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deca(Siemens)
+object Decasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Deca(Siemens)
 @Serializable
-object Hectosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Hecto(Siemens)
+object Hectosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Hecto(Siemens)
 @Serializable
-object Kilosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Kilo(Siemens)
+object Kilosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Kilo(Siemens)
 @Serializable
-object Megasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Mega(Siemens)
+object Megasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Mega(Siemens)
 @Serializable
-object Gigasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Giga(Siemens)
+object Gigasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens)
 @Serializable
-object Absiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Giga(Siemens) {
+object Absiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens) {
     override val symbol: String = "abS"
 }

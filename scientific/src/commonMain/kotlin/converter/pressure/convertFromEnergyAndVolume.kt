@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.pressure
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Energy
@@ -33,8 +33,8 @@ fun <
     VolumeUnit : Volume,
     PressureUnit : Pressure
     > PressureUnit.pressure(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = pressure(energy, volume, ::DefaultScientificValue)
 
 @JvmName("pressureFromEnergyAndVolume")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     VolumeUnit : Volume,
     PressureUnit : Pressure,
-    Value : ScientificValue<MeasurementType.Pressure, PressureUnit>
+    Value : ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
     > PressureUnit.pressure(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     factory: (Decimal, PressureUnit) -> Value
 ) = byDividing(energy, volume, factory)

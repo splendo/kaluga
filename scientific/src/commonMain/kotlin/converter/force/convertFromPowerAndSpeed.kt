@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.force
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Force
@@ -33,8 +33,8 @@ fun <
     SpeedUnit : Speed,
     PowerUnit : Power
     > ForceUnit.force(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>,
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
 ) = force(power, speed, ::DefaultScientificValue)
 
 @JvmName("forceFromPowerAndSpeed")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     SpeedUnit : Speed,
     PowerUnit : Power,
-    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>
     > ForceUnit.force(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>,
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
     factory: (Decimal, ForceUnit) -> Value
 ) = byDividing(power, speed, factory)

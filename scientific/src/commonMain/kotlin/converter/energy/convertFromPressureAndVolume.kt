@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.energy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Energy
@@ -33,8 +33,8 @@ fun <
     PressureUnit : Pressure,
     VolumeUnit : Volume
     > EnergyUnit.energy(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = energy(pressure, volume, ::DefaultScientificValue)
 
 @JvmName("energyFromPressureAndVolume")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     PressureUnit : Pressure,
     VolumeUnit : Volume,
-    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
     > EnergyUnit.energy(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     factory: (Decimal, EnergyUnit) -> Value
 ) = byMultiplying(pressure, volume, factory)

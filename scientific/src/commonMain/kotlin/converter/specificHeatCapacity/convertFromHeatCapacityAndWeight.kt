@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.specificHeatCapacity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.HeatCapacity
@@ -33,8 +33,8 @@ fun <
     WeightUnit : Weight,
     SpecificHeatCapacityUnit : SpecificHeatCapacity
     > SpecificHeatCapacityUnit.specificHeatCapacity(
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = specificHeatCapacity(heatCapacity, weight, ::DefaultScientificValue)
 
 @JvmName("specificHeatCapacityFromHeatCapacityAndWeight")
@@ -42,9 +42,9 @@ fun <
     HeatCapacityUnit : HeatCapacity,
     WeightUnit : Weight,
     SpecificHeatCapacityUnit : SpecificHeatCapacity,
-    Value : ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>
     > SpecificHeatCapacityUnit.specificHeatCapacity(
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     factory: (Decimal, SpecificHeatCapacityUnit) -> Value
 ) = byDividing(heatCapacity, weight, factory)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.molarVolume
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.unit.MolarVolume
@@ -31,15 +31,15 @@ fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume,
     > MolarVolumeUnit.molarVolume(
-    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
 ) = molarVolume(molarity, ::DefaultScientificValue)
 
 @JvmName("molarVolumeFromInvertedMolarity")
 fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume,
-    Value : ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
     > MolarVolumeUnit.molarVolume(
-    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>,
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
     factory: (Decimal, MolarVolumeUnit) -> Value
 ) = byInverting(molarity, factory)

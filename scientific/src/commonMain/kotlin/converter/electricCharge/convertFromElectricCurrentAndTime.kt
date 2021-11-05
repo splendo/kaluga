@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricCharge
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.ElectricCharge
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     ChargeUnit : ElectricCharge
     > ChargeUnit.charge(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = charge(current, time, ::DefaultScientificValue)
 
 @JvmName("chargeFromCurrentAndTime")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge,
-    Value : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
     > ChargeUnit.charge(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, ChargeUnit) -> Value
 ) = byMultiplying(current, time, factory)

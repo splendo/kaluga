@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.acceleration
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Acceleration
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     AccelerationUnit : Acceleration
     > AccelerationUnit.acceleration(
-    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = acceleration(jolt, time, ::DefaultScientificValue)
 
 @JvmName("accelerationFromJoltAndTime")
@@ -42,9 +42,9 @@ fun <
     JoltUnit : Jolt,
     TimeUnit : Time,
     AccelerationUnit : Acceleration,
-    Value : ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
+    Value : ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>
     > AccelerationUnit.acceleration(
-    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, AccelerationUnit) -> Value
 ) = byMultiplying(jolt, time, factory)

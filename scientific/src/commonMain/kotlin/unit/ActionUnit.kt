@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricAndImperialActionUnits: Set<MetricAndImperialAction> get() = MetricAndImperialEnergyUnits.flatMap { energy ->
@@ -38,27 +38,27 @@ val ActionUnits: Set<Action> get() = MetricAndImperialActionUnits +
     ImperialActionUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 @Serializable
-sealed class Action : AbstractScientificUnit<MeasurementType.Action>() {
+sealed class Action : AbstractScientificUnit<PhysicalQuantity.Action>() {
     abstract val energy: Energy
     abstract val time: Time
-    override val type = MeasurementType.Action
+    override val type = PhysicalQuantity.Action
     override val symbol: String by lazy { "${energy.symbol}⋅${time.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = time.fromSIUnit(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(time.toSIUnit(value))
 }
 
 @Serializable
-data class MetricAndImperialAction(override val energy: MetricAndImperialEnergy, override val time: Time) : Action(), MetricAndImperialScientificUnit<MeasurementType.Action> {
+data class MetricAndImperialAction(override val energy: MetricAndImperialEnergy, override val time: Time) : Action(), MetricAndImperialScientificUnit<PhysicalQuantity.Action> {
     override val system = MeasurementSystem.MetricAndImperial
     val metric get() = energy.metric x time
     val imperial get() = energy.imperial x time
 }
 @Serializable
-data class MetricAction(override val energy: MetricEnergy, override val time: Time) : Action(), MetricScientificUnit<MeasurementType.Action> {
+data class MetricAction(override val energy: MetricEnergy, override val time: Time) : Action(), MetricScientificUnit<PhysicalQuantity.Action> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialAction(override val energy: ImperialEnergy, override val time: Time) : Action(), ImperialScientificUnit<MeasurementType.Action> {
+data class ImperialAction(override val energy: ImperialEnergy, override val time: Time) : Action(), ImperialScientificUnit<PhysicalQuantity.Action> {
     override val system = MeasurementSystem.Imperial
 }
 

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricCurrent
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
@@ -33,8 +33,8 @@ fun <
     ElectricCurrentUnit : ElectricCurrent,
     PowerUnit : Power
     > ElectricCurrentUnit.current(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = current(power, voltage, ::DefaultScientificValue)
 
 @JvmName("currentFromPowerAndVoltage")
@@ -42,9 +42,9 @@ fun <
     VoltageUnit : Voltage,
     ElectricCurrentUnit : ElectricCurrent,
     PowerUnit : Power,
-    Value : ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, ElectricCurrentUnit>
     > ElectricCurrentUnit.current(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
     factory: (Decimal, ElectricCurrentUnit) -> Value
 ) = byDividing(power, voltage, factory)

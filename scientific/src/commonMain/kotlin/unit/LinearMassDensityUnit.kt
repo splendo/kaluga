@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricLinearMassDensityUnits: Set<MetricLinearMassDensity> get() = MetricWeightUnits.flatMap { weight ->
@@ -43,31 +43,31 @@ val LinearMassDensityUnits: Set<LinearMassDensity> get() = MetricLinearMassDensi
     USCustomaryLinearMassDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class LinearMassDensity : AbstractScientificUnit<MeasurementType.LinearMassDensity>() {
+sealed class LinearMassDensity : AbstractScientificUnit<PhysicalQuantity.LinearMassDensity>() {
     abstract val weight: Weight
     abstract val per: Length
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.LinearMassDensity
+    override val type = PhysicalQuantity.LinearMassDensity
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricLinearMassDensity(override val weight: MetricWeight, override val per: MetricLength) : LinearMassDensity(), MetricScientificUnit<MeasurementType.LinearMassDensity> {
+data class MetricLinearMassDensity(override val weight: MetricWeight, override val per: MetricLength) : LinearMassDensity(), MetricScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialLinearMassDensity(override val weight: ImperialWeight, override val per: ImperialLength) : LinearMassDensity(), ImperialScientificUnit<MeasurementType.LinearMassDensity> {
+data class ImperialLinearMassDensity(override val weight: ImperialWeight, override val per: ImperialLength) : LinearMassDensity(), ImperialScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = weight.ukImperial per per
     val usCustomary get() = weight.usCustomary per per
 }
 @Serializable
-data class USCustomaryLinearMassDensity(override val weight: USCustomaryWeight, override val per: ImperialLength) : LinearMassDensity(), USCustomaryScientificUnit<MeasurementType.LinearMassDensity> {
+data class USCustomaryLinearMassDensity(override val weight: USCustomaryWeight, override val per: ImperialLength) : LinearMassDensity(), USCustomaryScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialLinearMassDensity(override val weight: UKImperialWeight, override val per: ImperialLength) : LinearMassDensity(), UKImperialScientificUnit<MeasurementType.LinearMassDensity> {
+data class UKImperialLinearMassDensity(override val weight: UKImperialWeight, override val per: ImperialLength) : LinearMassDensity(), UKImperialScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.UKImperial
 }
 

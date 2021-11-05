@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.acceleration
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.Acceleration
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Jolt
 import kotlin.jvm.JvmName
 
 @JvmName("speedDivAcceleration")
-infix operator fun <AccelerationUnit : Acceleration, JoltUnit : Jolt> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.div(
-    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>
+infix operator fun <AccelerationUnit : Acceleration, JoltUnit : Jolt> ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>.div(
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
 ) = jolt.unit.per.time(this, jolt)

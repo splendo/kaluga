@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricMolarVolumeUnits: Set<MetricMolarVolume> get() = MetricVolumeUnits.flatMap { volume ->
@@ -43,31 +43,31 @@ val MolarVolumeUnits: Set<MolarVolume> get() = MetricMolarVolumeUnits +
     USCustomaryMolarVolumeUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper }.toSet()
 
 @Serializable
-sealed class MolarVolume : AbstractScientificUnit<MeasurementType.MolarVolume>() {
+sealed class MolarVolume : AbstractScientificUnit<PhysicalQuantity.MolarVolume>() {
     abstract val volume: Volume
     abstract val per: AmountOfSubstance
     override val symbol: String by lazy { "${volume.symbol} / ${per.symbol}" }
-    override val type = MeasurementType.MolarVolume
+    override val type = PhysicalQuantity.MolarVolume
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volume.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricMolarVolume(override val volume: MetricVolume, override val per: AmountOfSubstance) : MolarVolume(), MetricScientificUnit<MeasurementType.MolarVolume> {
+data class MetricMolarVolume(override val volume: MetricVolume, override val per: AmountOfSubstance) : MolarVolume(), MetricScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialMolarVolume(override val volume: ImperialVolume, override val per: AmountOfSubstance) : MolarVolume(), ImperialScientificUnit<MeasurementType.MolarVolume> {
+data class ImperialMolarVolume(override val volume: ImperialVolume, override val per: AmountOfSubstance) : MolarVolume(), ImperialScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = volume.ukImperial per per
     val usCustomary get() = volume.usCustomary per per
 }
 @Serializable
-data class USCustomaryMolarVolume(override val volume: USCustomaryVolume, override val per: AmountOfSubstance) : MolarVolume(), USCustomaryScientificUnit<MeasurementType.MolarVolume> {
+data class USCustomaryMolarVolume(override val volume: USCustomaryVolume, override val per: AmountOfSubstance) : MolarVolume(), USCustomaryScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.USCustomary
 }
 @Serializable
-data class UKImperialMolarVolume(override val volume: UKImperialVolume, override val per: AmountOfSubstance) : MolarVolume(), UKImperialScientificUnit<MeasurementType.MolarVolume> {
+data class UKImperialMolarVolume(override val volume: UKImperialVolume, override val per: AmountOfSubstance) : MolarVolume(), UKImperialScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.UKImperial
 }
 

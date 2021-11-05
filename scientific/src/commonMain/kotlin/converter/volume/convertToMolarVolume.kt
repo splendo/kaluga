@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.volume
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.molarVolume.molarVolume
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -32,26 +32,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeDivAmountOfSubstance")
-infix operator fun <VolumeUnit : MetricVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <VolumeUnit : MetricVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("imperialVolumeDivAmountOfSubstance")
-infix operator fun <VolumeUnit : ImperialVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <VolumeUnit : ImperialVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("ukImperialVolumeDivAmountOfSubstance")
-infix operator fun <VolumeUnit : UKImperialVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <VolumeUnit : UKImperialVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("usCustomaryVolumeDivAmountOfSubstance")
-infix operator fun <VolumeUnit : USCustomaryVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <VolumeUnit : USCustomaryVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("volumeDivAmountOfSubstance")
-infix operator fun <VolumeUnit : Volume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <VolumeUnit : Volume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (CubicMeter per Mole).molarVolume(this, amountOfSubstance)

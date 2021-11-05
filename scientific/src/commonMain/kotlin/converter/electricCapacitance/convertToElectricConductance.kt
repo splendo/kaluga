@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCapacitance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricConductance.conductance
 import com.splendo.kaluga.scientific.unit.Abfarad
@@ -28,11 +28,11 @@ import com.splendo.kaluga.scientific.unit.Siemens
 import kotlin.jvm.JvmName
 
 @JvmName("abfaradTimesFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>.times(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>.times(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = Absiemens.conductance(this, frequency)
 
 @JvmName("capacitanceTimesFrequency")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>.times(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = Siemens.conductance(this, frequency)

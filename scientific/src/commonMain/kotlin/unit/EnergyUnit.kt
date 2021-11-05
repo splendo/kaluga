@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> get() = setOf(
@@ -95,142 +95,142 @@ val ImperialEnergyUnits: Set<ImperialEnergy> get() = setOf(
 val EnergyUnits: Set<Energy> get() = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 @Serializable
-sealed class Energy : AbstractScientificUnit<MeasurementType.Energy>()
+sealed class Energy : AbstractScientificUnit<PhysicalQuantity.Energy>()
 
 @Serializable
-sealed class MetricEnergy : Energy(), MetricScientificUnit<MeasurementType.Energy>
+sealed class MetricEnergy : Energy(), MetricScientificUnit<PhysicalQuantity.Energy>
 @Serializable
-sealed class ImperialEnergy : Energy(), ImperialScientificUnit<MeasurementType.Energy>
+sealed class ImperialEnergy : Energy(), ImperialScientificUnit<PhysicalQuantity.Energy>
 @Serializable
-sealed class MetricAndImperialEnergy : Energy(), MetricAndImperialScientificUnit<MeasurementType.Energy>
+sealed class MetricAndImperialEnergy : Energy(), MetricAndImperialScientificUnit<PhysicalQuantity.Energy>
 
 @Serializable
-object Joule : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Energy> {
+object Joule : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
     override val symbol: String = "J"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 @Serializable
-object Nanojoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Nano(Joule)
+object Nanojoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Nano(Joule)
 @Serializable
-object Microjoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Micro(Joule)
+object Microjoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Micro(Joule)
 @Serializable
-object Millijoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Milli(Joule)
+object Millijoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Milli(Joule)
 @Serializable
-object Centijoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Centi(Joule)
+object Centijoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Centi(Joule)
 @Serializable
-object Decijoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Deci(Joule)
+object Decijoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Deci(Joule)
 @Serializable
-object Decajoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Deca(Joule)
+object Decajoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Deca(Joule)
 @Serializable
-object Hectojoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Hecto(Joule)
+object Hectojoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Hecto(Joule)
 @Serializable
-object Kilojoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Kilo(Joule)
+object Kilojoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Kilo(Joule)
 @Serializable
-object Megajoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Mega(Joule)
+object Megajoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Mega(Joule)
 @Serializable
-object Gigajoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Joule> by Giga(Joule)
+object Gigajoule : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Giga(Joule)
 
 @Serializable
-object Erg : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Energy> {
+object Erg : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
     const val ERG_IN_JOULE = 10000000
     override val symbol: String = "erg"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = value * ERG_IN_JOULE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / ERG_IN_JOULE.toDecimal()
 }
 
 @Serializable
-object Nanoerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Nano(Erg)
+object Nanoerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Nano(Erg)
 @Serializable
-object Microerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Micro(Erg)
+object Microerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Micro(Erg)
 @Serializable
-object Millierg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Milli(Erg)
+object Millierg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Milli(Erg)
 @Serializable
-object Centierg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Centi(Erg)
+object Centierg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Centi(Erg)
 @Serializable
-object Decierg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Deci(Erg)
+object Decierg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Deci(Erg)
 @Serializable
-object Decaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Deca(Erg)
+object Decaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Deca(Erg)
 @Serializable
-object Hectoerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Hecto(Erg)
+object Hectoerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Hecto(Erg)
 @Serializable
-object Kiloerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Kilo(Erg)
+object Kiloerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Kilo(Erg)
 @Serializable
-object Megaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Mega(Erg)
+object Megaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Mega(Erg)
 @Serializable
-object Gigaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> by Giga(Erg)
+object Gigaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Giga(Erg)
 
 @Serializable
-object WattHour : MetricAndImperialEnergy(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy> {
+object WattHour : MetricAndImperialEnergy(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy> {
     override val symbol: String = "Wh"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Hour.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Hour.toSIUnit(value)
 }
 @Serializable
-object NanowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Nano(WattHour)
+object NanowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Nano(WattHour)
 @Serializable
-object MicrowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Micro(WattHour)
+object MicrowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Micro(WattHour)
 @Serializable
-object MilliwattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Milli(WattHour)
+object MilliwattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Milli(WattHour)
 @Serializable
-object CentiwattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Centi(WattHour)
+object CentiwattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Centi(WattHour)
 @Serializable
-object DeciwattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Deci(WattHour)
+object DeciwattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Deci(WattHour)
 @Serializable
-object DecawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Deca(WattHour)
+object DecawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Deca(WattHour)
 @Serializable
-object HectowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Hecto(WattHour)
+object HectowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Hecto(WattHour)
 @Serializable
-object KilowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Kilo(WattHour)
+object KilowattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Kilo(WattHour)
 @Serializable
-object MegawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Mega(WattHour)
+object MegawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Mega(WattHour)
 @Serializable
-object GigawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, WattHour> by Giga(WattHour)
+object GigawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Giga(WattHour)
 
 @Serializable
-object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Energy> {
+object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
     override val symbol: String = "eV"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = value.div(elementaryCharge.decimalValue, 29)
     override fun toSIUnit(value: Decimal): Decimal = value.times(elementaryCharge.decimalValue, 29)
 }
 
 @Serializable
-object Nanoelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Nano(Electronvolt)
+object Nanoelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Nano(Electronvolt)
 @Serializable
-object Microelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Micro(Electronvolt)
+object Microelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Micro(Electronvolt)
 @Serializable
-object Millielectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Milli(Electronvolt)
+object Millielectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Milli(Electronvolt)
 @Serializable
-object Centielectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Centi(Electronvolt)
+object Centielectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Centi(Electronvolt)
 @Serializable
-object Decielectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Deci(Electronvolt)
+object Decielectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Deci(Electronvolt)
 @Serializable
-object Decaelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Deca(Electronvolt)
+object Decaelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Deca(Electronvolt)
 @Serializable
-object Hectoelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Hecto(Electronvolt)
+object Hectoelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Hecto(Electronvolt)
 @Serializable
-object Kiloelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Kilo(Electronvolt)
+object Kiloelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Kilo(Electronvolt)
 @Serializable
-object Megaelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Mega(Electronvolt)
+object Megaelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Mega(Electronvolt)
 @Serializable
-object Gigaelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Electronvolt> by Giga(Electronvolt)
+object Gigaelectronvolt : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Giga(Electronvolt)
 
-interface CalorieUnit : MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy>
+interface CalorieUnit : MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy>
 @Serializable
 object Calorie : MetricAndImperialEnergy(), CalorieUnit by CalorieBase(4.184.toDecimal()) {
 
     internal class CalorieBase(val jouleInCalorie: Decimal, symbolPostfix: String = "") : CalorieUnit {
         override val symbol: String = "Cal$symbolPostfix"
         override val system = MeasurementSystem.MetricAndImperial
-        override val type = MeasurementType.Energy
+        override val type = PhysicalQuantity.Energy
         override fun fromSIUnit(value: Decimal): Decimal = value / jouleInCalorie
         override fun toSIUnit(value: Decimal): Decimal = value * jouleInCalorie
     }
@@ -239,26 +239,26 @@ object Calorie : MetricAndImperialEnergy(), CalorieUnit by CalorieBase(4.184.toD
     object IT : MetricAndImperialEnergy(), CalorieUnit by CalorieBase(4.1868.toDecimal(), "-IT")
 }
 @Serializable
-object Millicalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, Calorie> by Milli(Calorie) {
+object Millicalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie> by Milli(Calorie) {
     @Serializable
-    object IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, Calorie.IT> by Milli(Calorie.IT)
+    object IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie.IT> by Milli(Calorie.IT)
 }
 @Serializable
-object Kilocalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, Calorie> by Kilo(Calorie) {
+object Kilocalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie> by Kilo(Calorie) {
     @Serializable
-    object IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, Calorie.IT> by Kilo(Calorie.IT)
+    object IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie.IT> by Kilo(Calorie.IT)
 }
 @Serializable
-object Megacalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, Calorie> by Mega(Calorie) {
+object Megacalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie> by Mega(Calorie) {
     @Serializable
-    object IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Energy, Calorie.IT> by Mega(Calorie.IT)
+    object IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie.IT> by Mega(Calorie.IT)
 }
 
 @Serializable
 object FootPoundal : ImperialEnergy() {
     override val symbol: String = "ftpdl"
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(Poundal.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Poundal.toSIUnit(Foot.toSIUnit(value))
 }
@@ -266,7 +266,7 @@ object FootPoundal : ImperialEnergy() {
 object FootPoundForce : ImperialEnergy() {
     override val symbol: String = "ftlbf"
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(PoundForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(Foot.toSIUnit(value))
 }
@@ -274,7 +274,7 @@ object FootPoundForce : ImperialEnergy() {
 object InchPoundForce : ImperialEnergy() {
     override val symbol: String = "inlbf"
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Inch.fromSIUnit(PoundForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(Inch.toSIUnit(value))
 }
@@ -282,7 +282,7 @@ object InchPoundForce : ImperialEnergy() {
 object InchOunceForce : ImperialEnergy() {
     override val symbol: String = "inozf"
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Inch.fromSIUnit(OunceForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = OunceForce.toSIUnit(Inch.toSIUnit(value))
 }
@@ -290,29 +290,29 @@ object InchOunceForce : ImperialEnergy() {
 object HorsepowerHour : ImperialEnergy() {
     override val symbol: String = "hph"
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = WattHour.fromSIUnit(Horsepower.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Horsepower.toSIUnit(WattHour.toSIUnit(value))
 }
 @Serializable
-object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> by BritishThermalUnitBase(Calorie.IT) {
+object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> by BritishThermalUnitBase(Calorie.IT) {
 
-    internal class BritishThermalUnitBase(private val calorieUnit: CalorieUnit, symbolPostfix: String = "") : SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> {
+    internal class BritishThermalUnitBase(private val calorieUnit: CalorieUnit, symbolPostfix: String = "") : SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> {
         override val symbol: String = "Btu$symbolPostfix"
         override val system = MeasurementSystem.Imperial
-        override val type = MeasurementType.Energy
+        override val type = PhysicalQuantity.Energy
         override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(Rankine.fromSIUnit(Kilo(calorieUnit).fromSIUnit(value)))
         override fun toSIUnit(value: Decimal): Decimal = Kilo(calorieUnit).toSIUnit(Rankine.toSIUnit(Pound.toSIUnit(value)))
     }
 
     @Serializable
-    object Thermal : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> by BritishThermalUnitBase(Calorie, "-th")
+    object Thermal : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> by BritishThermalUnitBase(Calorie, "-th")
 }
 
 @Serializable
 data class MetricMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: MetricAndImperialEnergy) : MetricEnergy() {
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override val symbol: String = metricAndImperialEnergy.symbol
     override fun fromSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.toSIUnit(value)
@@ -323,7 +323,7 @@ val <EnergyUnit : MetricAndImperialEnergy> EnergyUnit.metric get() = MetricMetri
 @Serializable
 data class ImperialMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: MetricAndImperialEnergy) : ImperialEnergy() {
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Energy
+    override val type = PhysicalQuantity.Energy
     override val symbol: String = metricAndImperialEnergy.symbol
     override fun fromSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.toSIUnit(value)

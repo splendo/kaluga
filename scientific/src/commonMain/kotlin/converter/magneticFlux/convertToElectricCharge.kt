@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCharge.charge
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivAbohm")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(resistance: ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>) =
     Abcoulomb.charge(this, resistance)
 
 @JvmName("fluxDivResistance")
-infix operator fun <FluxUnit : MagneticFlux, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+infix operator fun <FluxUnit : MagneticFlux, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
 ) = Coulomb.charge(this, resistance)

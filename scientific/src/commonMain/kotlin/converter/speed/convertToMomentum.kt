@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.speed
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
@@ -31,26 +31,26 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpeedTimesMetricWeight")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = weight * this
 
 @JvmName("imperialSpeedTimesImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = weight * this
 
 @JvmName("imperialSpeedTimesUKImperialWeight")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = weight * this
 
 @JvmName("imperialSpeedTimesUSCustomaryWeight")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = weight * this
 
 @JvmName("speedTimesWeight")
-infix operator fun <WeightUnit : Weight, SpeedUnit : Speed> ScientificValue<MeasurementType.Speed, SpeedUnit>.times(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+infix operator fun <WeightUnit : Weight, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = weight * this

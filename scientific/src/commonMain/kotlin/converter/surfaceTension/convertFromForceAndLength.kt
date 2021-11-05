@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.surfaceTension
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Force
@@ -33,8 +33,8 @@ fun <
     LengthUnit : Length,
     SurfaceTensionUnit : SurfaceTension
     > SurfaceTensionUnit.surfaceTension(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
 ) = surfaceTension(force, length, ::DefaultScientificValue)
 
 @JvmName("surfaceTensionFromForceAndLength")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     LengthUnit : Length,
     SurfaceTensionUnit : SurfaceTension,
-    Value : ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
+    Value : ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
     > SurfaceTensionUnit.surfaceTension(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     factory: (Decimal, SurfaceTensionUnit) -> Value
 ) = byDividing(force, length, factory)

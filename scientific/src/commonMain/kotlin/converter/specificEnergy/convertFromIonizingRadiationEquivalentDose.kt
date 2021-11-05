@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.specificEnergy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
@@ -35,16 +35,16 @@ fun <
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
     SpecificEnergyUnit : SpecificEnergy
     > SpecificEnergyUnit.specificEnergy(
-    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
 ) = specificEnergy(equivalentDose, ::DefaultScientificValue)
 
 @JvmName("specificEnergyFromEquivalentDose")
 fun <
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
     SpecificEnergyUnit : SpecificEnergy,
-    Value : ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
     > SpecificEnergyUnit.specificEnergy(
-    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value
 ) = DefaultScientificValue(equivalentDose.convert(Sievert).value, Joule per Kilogram).convert(
     this,

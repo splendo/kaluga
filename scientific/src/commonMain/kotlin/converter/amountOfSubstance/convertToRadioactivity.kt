@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
 import com.splendo.kaluga.scientific.unit.Becquerel
 import com.splendo.kaluga.scientific.unit.Time
 
-infix fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.decaysWithHalfLife(
-    halfLife: ScientificValue<MeasurementType.Time, TimeUnit>
+infix fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.decaysWithHalfLife(
+    halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Becquerel.radioactivity(this, halfLife)

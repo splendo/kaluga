@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlow
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volume.volume
 import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
@@ -29,26 +29,26 @@ import com.splendo.kaluga.scientific.unit.VolumetricFlow
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, MetricVolumetricFlow>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.volume.volume(this, time)
 
 @JvmName("imperialVolumetricFlowTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.volume.volume(this, time)
 
 @JvmName("ukImperialVolumetricFlowTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, UKImperialVolumetricFlow>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.volume.volume(this, time)
 
 @JvmName("usCustomaryVolumetricFlowTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, USCustomaryVolumetricFlow>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.volume.volume(this, time)
 
 @JvmName("volumetricFlowTimesTime")
-infix operator fun <VolumetricFlowUnit : VolumetricFlow, TimeUnit : Time> ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <VolumetricFlowUnit : VolumetricFlow, TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.volume.volume(this, time)

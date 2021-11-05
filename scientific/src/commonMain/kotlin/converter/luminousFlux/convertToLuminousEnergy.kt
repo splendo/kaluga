@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminousEnergy.luminousEnergy
 import com.splendo.kaluga.scientific.unit.LuminousFlux
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("LuminousFluxTimesTime")
-infix operator fun <LuminousFluxUnit : LuminousFlux, TimeUnit : Time> ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <LuminousFluxUnit : LuminousFlux, TimeUnit : Time> ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (unit x time.unit).luminousEnergy(this, time)

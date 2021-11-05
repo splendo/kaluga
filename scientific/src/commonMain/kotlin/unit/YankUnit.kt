@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricYankUnits: Set<MetricYank> get() = MetricForceUnits.flatMap { force ->
@@ -43,31 +43,31 @@ val YankUnits: Set<Yank> get() = MetricYankUnits +
     USCustomaryYankUnits.filter { it.force !is USCustomaryImperialForceWrapper }.toSet()
 
 @Serializable
-sealed class Yank : AbstractScientificUnit<MeasurementType.Yank>() {
+sealed class Yank : AbstractScientificUnit<PhysicalQuantity.Yank>() {
     abstract val force: Force
     abstract val per: Time
-    override val type = MeasurementType.Yank
+    override val type = PhysicalQuantity.Yank
     override val symbol: String by lazy { "${force.symbol} / ${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(force.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = force.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricYank(override val force: MetricForce, override val per: Time) : Yank(), MetricScientificUnit<MeasurementType.Yank> {
+data class MetricYank(override val force: MetricForce, override val per: Time) : Yank(), MetricScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialYank(override val force: ImperialForce, override val per: Time) : Yank(), ImperialScientificUnit<MeasurementType.Yank> {
+data class ImperialYank(override val force: ImperialForce, override val per: Time) : Yank(), ImperialScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = UKImperialYank(force.ukImperial, per)
     val usCustomary get() = USCustomaryYank(force.usCustomary, per)
 }
 @Serializable
-data class UKImperialYank(override val force: UKImperialForce, override val per: Time) : Yank(), UKImperialScientificUnit<MeasurementType.Yank> {
+data class UKImperialYank(override val force: UKImperialForce, override val per: Time) : Yank(), UKImperialScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomaryYank(override val force: USCustomaryForce, override val per: Time) : Yank(), USCustomaryScientificUnit<MeasurementType.Yank> {
+data class USCustomaryYank(override val force: USCustomaryForce, override val per: Time) : Yank(), USCustomaryScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.USCustomary
 }
 

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricInductance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
 import com.splendo.kaluga.scientific.unit.Abhenry
@@ -29,21 +29,21 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abhenryTimesFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>.times(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = Abohm.resistance(this, frequency)
 
 @JvmName("inductanceTimesFrequency")
-infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>.times(
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = Ohm.resistance(this, frequency)
 
 @JvmName("abhenryDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, Abhenry>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Abohm.resistance(this, time)
 
 @JvmName("inductanceDivTime")
-infix operator fun <InductanceUnit : ElectricInductance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <InductanceUnit : ElectricInductance, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Ohm.resistance(this, time)

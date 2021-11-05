@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -30,14 +30,14 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltDivAbampere")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
     Abohm.resistance(this, current)
 
 @JvmName("abvoltDivBiot")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
     Abohm.resistance(this, current)
 
 @JvmName("voltageDivCurrent")
-infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.div(
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
 ) = Ohm.resistance(this, current)

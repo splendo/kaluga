@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.Barye
@@ -53,121 +53,121 @@ import com.splendo.kaluga.scientific.unit.USTonSquareInch
 import kotlin.jvm.JvmName
 
 @JvmName("metricForceDivBarye")
-infix operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) =
+infix operator fun <Force : MetricForce> ScientificValue<PhysicalQuantity.Force, Force>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>) =
     SquareCentimeter.area(this, pressure)
 
 @JvmName("metricForceDivBaryeMultiple")
-infix operator fun <Force : MetricForce, BaryeUnit> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> =
+infix operator fun <Force : MetricForce, BaryeUnit> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
+) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     SquareCentimeter.area(this, pressure)
 
 @JvmName("metricForceDivMetricPressure")
-infix operator fun <Force : MetricForce, Pressure : MetricPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : MetricForce, Pressure : MetricPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareMeter.area(this, pressure)
 
 @JvmName("imperialForcePoundSquareInch")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareInch>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("imperialForceDivPoundSquareFeet")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFoot>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("imperialForceDivKiloPoundSquareInch")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, KiloPoundSquareInch>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("imperialForceDivOunceSquareFeet")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("imperialForceDivInchOfMercury")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, InchOfMercury>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, InchOfMercury>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("imperialForceDivInchOfWater")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, InchOfWater>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, InchOfWater>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("imperialForceDivFootOfWater")
-infix operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, FootOfWater>
+infix operator fun <Force : ImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, FootOfWater>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("usCustomaryForceDivKipSquareInch")
-infix operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>
+infix operator fun <Force : USCustomaryForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, KipSquareInch>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("usCustomaryForceDivPoundSquareFeet")
-infix operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, KipSquareFoot>
+infix operator fun <Force : USCustomaryForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, KipSquareFoot>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("usCustomaryForceDivUSTonSquareInch")
-infix operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>
+infix operator fun <Force : USCustomaryForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, USTonSquareInch>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("usCustomaryForceDivUSTonSquareFeet")
-infix operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFoot>
+infix operator fun <Force : USCustomaryForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, USTonSquareFoot>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("ukImperialForceDivImperialTonSquareInch")
-infix operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>
+infix operator fun <Force : UKImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareInch>
 ) = SquareInch.area(this, pressure)
 
 @JvmName("ukImperialForceDivImperialTonSquareFeet")
-infix operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFoot>
+infix operator fun <Force : UKImperialForce> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareFoot>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("imperialForceDivImperialPressure")
-infix operator fun <Force : ImperialForce, Pressure : ImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : ImperialForce, Pressure : ImperialPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("imperialForceDivUKImperialPressure")
-infix operator fun <Force : ImperialForce, Pressure : UKImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : ImperialForce, Pressure : UKImperialPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("imperialForceDivUSCustomaryPressure")
-infix operator fun <Force : ImperialForce, Pressure : USCustomaryPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : ImperialForce, Pressure : USCustomaryPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("ukImperialForceDivImperialPressure")
-infix operator fun <Force : UKImperialForce, Pressure : ImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : UKImperialForce, Pressure : ImperialPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("ukImperialForceDivUKImperialPressure")
-infix operator fun <Force : UKImperialForce, Pressure : UKImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : UKImperialForce, Pressure : UKImperialPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("usCustomaryForceDivImperialPressure")
-infix operator fun <Force : USCustomaryForce, Pressure : ImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : USCustomaryForce, Pressure : ImperialPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("usCustomaryForceDivUSCustomaryPressure")
-infix operator fun <Force : USCustomaryForce, Pressure : USCustomaryPressure> ScientificValue<MeasurementType.Force, Force>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, Pressure>
+infix operator fun <Force : USCustomaryForce, Pressure : USCustomaryPressure> ScientificValue<PhysicalQuantity.Force, Force>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
 ) = SquareFoot.area(this, pressure)
 
 @JvmName("forceDivPressure")
-infix operator fun <ForceUnit : Force, PressureUnit : Pressure> ScientificValue<MeasurementType.Force, ForceUnit>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <ForceUnit : Force, PressureUnit : Pressure> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = SquareMeter.area(this, pressure)

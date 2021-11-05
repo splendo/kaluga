@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.surfaceTension
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Area
@@ -33,8 +33,8 @@ fun <
     AreaUnit : Area,
     SurfaceTensionUnit : SurfaceTension
     > SurfaceTensionUnit.surfaceTension(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = surfaceTension(energy, area, ::DefaultScientificValue)
 
 @JvmName("surfaceTensionFromEnergyAndArea")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     AreaUnit : Area,
     SurfaceTensionUnit : SurfaceTension,
-    Value : ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
+    Value : ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
     > SurfaceTensionUnit.surfaceTension(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     factory: (Decimal, SurfaceTensionUnit) -> Value
 ) = byDividing(energy, area, factory)

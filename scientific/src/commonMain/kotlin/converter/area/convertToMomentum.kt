@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.times
 import com.splendo.kaluga.scientific.unit.Area
@@ -31,26 +31,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricDynamicViscosity")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, MetricDynamicViscosity>
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>
 ) = dynamicViscosity * this
 
 @JvmName("imperialAreaTimesImperialDynamicViscosity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, ImperialDynamicViscosity>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>
 ) = dynamicViscosity * this
 
 @JvmName("imperialAreaTimesUKImperialDynamicViscosity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, UKImperialDynamicViscosity>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, UKImperialDynamicViscosity>
 ) = dynamicViscosity * this
 
 @JvmName("imperialAreaTimesUSCustomaryDynamicViscosity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, USCustomaryDynamicViscosity>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, USCustomaryDynamicViscosity>
 ) = dynamicViscosity * this
 
 @JvmName("areaTimesDynamicViscosity")
-infix operator fun <DynamicViscosityUnit : DynamicViscosity, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>
+infix operator fun <DynamicViscosityUnit : DynamicViscosity, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>
 ) = dynamicViscosity * this

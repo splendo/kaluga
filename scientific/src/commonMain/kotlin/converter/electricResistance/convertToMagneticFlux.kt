@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.magneticFlux.flux
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("abohmTimesAbcoulomb")
-infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(charge: ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.times(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) =
     Maxwell.flux(this, charge)
 
 @JvmName("resistanceTimesCharge")
-infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
 ) = Weber.flux(this, charge)

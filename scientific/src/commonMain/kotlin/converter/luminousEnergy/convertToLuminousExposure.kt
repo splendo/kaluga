@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousEnergy
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminousExposure.luminousExposure
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
@@ -30,16 +30,16 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = ((1(unit.luminousFlux) / 1(area.unit)).unit x unit.time).luminousExposure(this, area)
 
 @JvmName("luminousEnergyDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = ((1(unit.luminousFlux) / 1(area.unit)).unit x unit.time).luminousExposure(this, area)
 
 @JvmName("luminousEnergyDivArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <AreaUnit : Area> ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = ((1(unit.luminousFlux) / 1(area.unit)).unit x unit.time).luminousExposure(this, area)

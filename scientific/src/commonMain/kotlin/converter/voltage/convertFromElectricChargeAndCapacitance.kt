@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.voltage
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
@@ -33,8 +33,8 @@ fun <
     VoltageUnit : Voltage,
     CapacitanceUnit : ElectricCapacitance
     > VoltageUnit.voltage(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = voltage(charge, capacitance, ::DefaultScientificValue)
 
 @JvmName("voltageFromChargeAndCapacitance")
@@ -42,9 +42,9 @@ fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
     CapacitanceUnit : ElectricCapacitance,
-    Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
+    Value : ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
     > VoltageUnit.voltage(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
     factory: (Decimal, VoltageUnit) -> Value
 ) = byDividing(charge, capacitance, factory)

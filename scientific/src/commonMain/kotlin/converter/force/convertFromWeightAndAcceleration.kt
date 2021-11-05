@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.force
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Acceleration
@@ -33,8 +33,8 @@ fun <
     AccelerationUnit : Acceleration,
     ForceUnit : Force
     > ForceUnit.force(
-    mass: ScientificValue<MeasurementType.Weight, MassUnit>,
-    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, MassUnit>,
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>
 ) = force(mass, acceleration, ::DefaultScientificValue)
 
 @JvmName("forceFromMassAndAcceleration")
@@ -42,9 +42,9 @@ fun <
     MassUnit : Weight,
     AccelerationUnit : Acceleration,
     ForceUnit : Force,
-    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>
     > ForceUnit.force(
-    mass: ScientificValue<MeasurementType.Weight, MassUnit>,
-    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
+    mass: ScientificValue<PhysicalQuantity.Weight, MassUnit>,
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
     factory: (Decimal, ForceUnit) -> Value
 ) = byMultiplying(mass, acceleration, factory)

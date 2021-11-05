@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Angle
@@ -32,17 +32,17 @@ fun <
     AngleUnit : Angle,
     TimeUnit : Time
     > TimeUnit.time(
-    angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
-    velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>
+    angle: ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
+    velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>
 ) = time(angle, velocity, ::DefaultScientificValue)
 
 @JvmName("timeFromAngleAndAngularVelocity")
 fun <
     AngleUnit : Angle,
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
-    angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
-    velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>,
+    angle: ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
+    velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
     factory: (Decimal, TimeUnit) -> Value
 ) = byDividing(angle, velocity, factory)

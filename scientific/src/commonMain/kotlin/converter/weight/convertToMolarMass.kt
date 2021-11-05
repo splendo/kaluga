@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.molarMass.molarMass
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -32,26 +32,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivAmountOfSubstance")
-infix operator fun <WeightUnit : MetricWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <WeightUnit : MetricWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("imperialWeightDivAmountOfSubstance")
-infix operator fun <WeightUnit : ImperialWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <WeightUnit : ImperialWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("ukImperialWeightDivAmountOfSubstance")
-infix operator fun <WeightUnit : UKImperialWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <WeightUnit : UKImperialWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("usCustomaryWeightDivAmountOfSubstance")
-infix operator fun <WeightUnit : USCustomaryWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <WeightUnit : USCustomaryWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("weightDivAmountOfSubstance")
-infix operator fun <WeightUnit : Weight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+infix operator fun <WeightUnit : Weight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = (Kilogram per Mole).molarMass(this, amountOfSubstance)

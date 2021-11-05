@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.volume
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -33,8 +33,8 @@ fun <
     VolumeUnit : Volume,
     MolarVolumeUnit : MolarVolume
     > VolumeUnit.volume(
-    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = volume(molarVolume, amountOfSubstance, ::DefaultScientificValue)
 
 @JvmName("volumeFromMolarVolumeAndAmountOfSubstance")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     VolumeUnit : Volume,
     MolarVolumeUnit : MolarVolume,
-    Value : ScientificValue<MeasurementType.Volume, VolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
     > VolumeUnit.volume(
-    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     factory: (Decimal, VolumeUnit) -> Value
 ) = byMultiplying(molarVolume, amountOfSubstance, factory)

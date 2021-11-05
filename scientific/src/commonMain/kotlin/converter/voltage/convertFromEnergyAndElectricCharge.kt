@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.voltage
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCharge
@@ -33,8 +33,8 @@ fun <
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge
     > VoltageUnit.voltage(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
 ) = voltage(energy, charge, ::DefaultScientificValue)
 
 @JvmName("voltageFromEnergyAndCharge")
@@ -42,9 +42,9 @@ fun <
     VoltageUnit : Voltage,
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge,
-    Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
+    Value : ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
     > VoltageUnit.voltage(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
     factory: (Decimal, VoltageUnit) -> Value
 ) = byDividing(energy, charge, factory)

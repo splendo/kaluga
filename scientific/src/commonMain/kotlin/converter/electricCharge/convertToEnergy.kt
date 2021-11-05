@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombTimesAbvolt")
-infix operator fun ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.times(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.times(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
     Erg.energy(this, voltage)
 
 @JvmName("chargeTimesVoltage")
-infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.times(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.times(
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = Joule.energy(this, voltage)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.ImperialMassFlowRate
@@ -33,36 +33,36 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricMassFlowRate")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MetricMassFlowRate>
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>
 ) = massFlowRate.unit.per.time(this, massFlowRate)
 
 @JvmName("imperialWeightDivImperialMassFlowRate")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>
 ) = massFlowRate.unit.per.time(this, massFlowRate)
 
 @JvmName("ukImperialWeightDivImperialMassFlowRate")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>
 ) = massFlowRate.unit.per.time(this, massFlowRate)
 
 @JvmName("ukImperialWeightDivUKImperialMassFlowRate")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, UKImperialMassFlowRate>
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>
 ) = massFlowRate.unit.per.time(this, massFlowRate)
 
 @JvmName("usCustomaryWeightDivImperialMassFlowRate")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>
 ) = massFlowRate.unit.per.time(this, massFlowRate)
 
 @JvmName("usCustomaryWeightDivUSCustomaryMassFlowRate")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, USCustomaryMassFlowRate>
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>
 ) = massFlowRate.unit.per.time(this, massFlowRate)
 
 @JvmName("weightDivMassFlowRate")
-infix operator fun <WeightUnit : Weight, MassFlowRateUnit : MassFlowRate> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>
+infix operator fun <WeightUnit : Weight, MassFlowRateUnit : MassFlowRate> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>
 ) = massFlowRate.unit.per.time(this, massFlowRate)

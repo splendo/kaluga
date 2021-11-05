@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.yank
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.weight.mass
@@ -33,22 +33,22 @@ import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("metricYankDivMetricJolt")
-infix operator fun ScientificValue<MeasurementType.Yank, MetricYank>.div(jolt: ScientificValue<MeasurementType.Jolt, MetricJolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.Yank, MetricYank>.div(jolt: ScientificValue<PhysicalQuantity.Jolt, MetricJolt>) =
     (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)
 
 @JvmName("imperialYankDivImperialJolt")
-infix operator fun ScientificValue<MeasurementType.Yank, ImperialYank>.div(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>) =
     (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)
 
 @JvmName("ukImperialYankDivImperialJolt")
-infix operator fun ScientificValue<MeasurementType.Yank, UKImperialYank>.div(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.Yank, UKImperialYank>.div(jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>) =
     (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)
 
 @JvmName("usCustomaryYankDivImperialJolt")
-infix operator fun ScientificValue<MeasurementType.Yank, USCustomaryYank>.div(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.div(jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>) =
     (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)
 
 @JvmName("yankDivJolt")
-infix operator fun <YankUnit : Yank, JoltUnit : Jolt> ScientificValue<MeasurementType.Yank, YankUnit>.div(
-    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>
+infix operator fun <YankUnit : Yank, JoltUnit : Jolt> ScientificValue<PhysicalQuantity.Yank, YankUnit>.div(
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
 ) = (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)

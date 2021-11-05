@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -33,8 +33,8 @@ fun <
     WeightUnit : Weight,
     MolalityUnit : Molality
     > AmountOfSubstanceUnit.amountOfSubstance(
-    molality: ScientificValue<MeasurementType.Molality, MolalityUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
 ) = amountOfSubstance(molality, weight, ::DefaultScientificValue)
 
 @JvmName("amountOfSubstanceFromMolalityAndWeight")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolalityUnit : Molality,
-    Value : ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
     > AmountOfSubstanceUnit.amountOfSubstance(
-    molality: ScientificValue<MeasurementType.Molality, MolalityUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     factory: (Decimal, AmountOfSubstanceUnit) -> Value
 ) = byMultiplying(molality, weight, factory)

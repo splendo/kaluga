@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.area
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Area
@@ -33,8 +33,8 @@ fun <
     AreaUnit : Area,
     LuminanceUnit : Luminance
     > AreaUnit.area(
-    luminousIntensity: ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>,
-    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+    luminousIntensity: ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>,
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
 ) = area(luminousIntensity, luminance, ::DefaultScientificValue)
 
 @JvmName("areaFromLuminousIntensityAndLuminance")
@@ -42,9 +42,9 @@ fun <
     LuminousIntensityUnit : LuminousIntensity,
     AreaUnit : Area,
     LuminanceUnit : Luminance,
-    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
     > AreaUnit.area(
-    luminousIntensity: ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>,
-    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>,
+    luminousIntensity: ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>,
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
     factory: (Decimal, AreaUnit) -> Value
 ) = byDividing(luminousIntensity, luminance, factory)

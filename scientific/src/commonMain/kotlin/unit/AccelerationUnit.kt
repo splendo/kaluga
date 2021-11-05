@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
@@ -36,10 +36,10 @@ val AccelerationUnits: Set<Acceleration> get() = MetricAccelerationUnits +
     ImperialAccelerationUnits
 
 @Serializable
-sealed class Acceleration : AbstractScientificUnit<MeasurementType.Acceleration>() {
+sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration>() {
     abstract val speed: Speed
     abstract val per: Time
-    override val type = MeasurementType.Acceleration
+    override val type = PhysicalQuantity.Acceleration
     override val symbol: String by lazy {
         if (speed.per == per) {
             "${speed.distance.symbol} / ${per.symbol}2"
@@ -55,7 +55,7 @@ sealed class Acceleration : AbstractScientificUnit<MeasurementType.Acceleration>
 data class MetricAcceleration(
     override val speed: MetricSpeed,
     override val per: Time
-) : Acceleration(), MetricScientificUnit<MeasurementType.Acceleration> {
+) : Acceleration(), MetricScientificUnit<PhysicalQuantity.Acceleration> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -63,7 +63,7 @@ data class MetricAcceleration(
 data class ImperialAcceleration(
     override val speed: ImperialSpeed,
     override val per: Time
-) : Acceleration(), ImperialScientificUnit<MeasurementType.Acceleration> {
+) : Acceleration(), ImperialScientificUnit<PhysicalQuantity.Acceleration> {
     override val system = MeasurementSystem.Imperial
 }
 

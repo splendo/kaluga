@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
@@ -37,38 +37,38 @@ val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
 )
 
 @Serializable
-sealed class ElectricInductance : AbstractScientificUnit<MeasurementType.ElectricInductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricInductance>
+sealed class ElectricInductance : AbstractScientificUnit<PhysicalQuantity.ElectricInductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricInductance>
 
 @Serializable
-object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance> {
+object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance> {
     override val symbol = "H"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.ElectricInductance
+    override val type = PhysicalQuantity.ElectricInductance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Nano(Henry)
+object Nanohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry)
 @Serializable
-object Abhenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Nano(Henry) {
+object Abhenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry) {
     override val symbol: String = "abH"
 }
 @Serializable
-object Microhenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Micro(Henry)
+object Microhenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Micro(Henry)
 @Serializable
-object Millihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Milli(Henry)
+object Millihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Milli(Henry)
 @Serializable
-object Centihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Centi(Henry)
+object Centihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Centi(Henry)
 @Serializable
-object Decihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Deci(Henry)
+object Decihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Deci(Henry)
 @Serializable
-object Decahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Deca(Henry)
+object Decahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Deca(Henry)
 @Serializable
-object Hectohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Hecto(Henry)
+object Hectohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Hecto(Henry)
 @Serializable
-object Kilohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Kilo(Henry)
+object Kilohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Kilo(Henry)
 @Serializable
-object Megahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Mega(Henry)
+object Megahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Mega(Henry)
 @Serializable
-object Gigahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Giga(Henry)
+object Gigahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Giga(Henry)

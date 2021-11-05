@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricIlluminanceUnits: Set<MetricIlluminance> get() = setOf(
@@ -53,78 +53,78 @@ val ImperialIlluminanceUnits: Set<ImperialIlluminance> get() = setOf(
 val IlluminanceUnits: Set<Illuminance> get() = MetricIlluminanceUnits + ImperialIlluminanceUnits
 
 @Serializable
-sealed class Illuminance : AbstractScientificUnit<MeasurementType.Illuminance>()
+sealed class Illuminance : AbstractScientificUnit<PhysicalQuantity.Illuminance>()
 
 @Serializable
-sealed class MetricIlluminance : Illuminance(), MetricScientificUnit<MeasurementType.Illuminance>
+sealed class MetricIlluminance : Illuminance(), MetricScientificUnit<PhysicalQuantity.Illuminance>
 @Serializable
-sealed class ImperialIlluminance : Illuminance(), ImperialScientificUnit<MeasurementType.Illuminance>
+sealed class ImperialIlluminance : Illuminance(), ImperialScientificUnit<PhysicalQuantity.Illuminance>
 
 @Serializable
-object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Illuminance> {
+object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
     override val symbol = "lx"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Illuminance
+    override val type = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Nano(Lux)
+object Nanolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Nano(Lux)
 @Serializable
-object Microlux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Micro(Lux)
+object Microlux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Micro(Lux)
 @Serializable
-object Millilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Milli(Lux)
+object Millilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Milli(Lux)
 @Serializable
-object Centilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Centi(Lux)
+object Centilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Centi(Lux)
 @Serializable
-object Decilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Deci(Lux)
+object Decilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deci(Lux)
 @Serializable
-object Decalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Deca(Lux)
+object Decalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deca(Lux)
 @Serializable
-object Hectolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Hecto(Lux)
+object Hectolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Hecto(Lux)
 @Serializable
-object Kilolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Kilo(Lux)
+object Kilolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Kilo(Lux)
 @Serializable
-object Megalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Mega(Lux)
+object Megalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Mega(Lux)
 @Serializable
-object Gigalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Giga(Lux)
+object Gigalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Giga(Lux)
 
 @Serializable
-object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Illuminance> {
+object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
     override val symbol = "ph"
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Illuminance
+    override val type = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = SquareCentimeter.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareCentimeter.fromSIUnit(value)
 }
 
 @Serializable
-object Nanophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Nano(Phot)
+object Nanophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Nano(Phot)
 @Serializable
-object Microphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Micro(Phot)
+object Microphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Micro(Phot)
 @Serializable
-object Milliphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Milli(Phot)
+object Milliphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Milli(Phot)
 @Serializable
-object Centiphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Centi(Phot)
+object Centiphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Centi(Phot)
 @Serializable
-object Deciphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Deci(Phot)
+object Deciphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deci(Phot)
 @Serializable
-object Decaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Deca(Phot)
+object Decaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deca(Phot)
 @Serializable
-object Hectophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Hecto(Phot)
+object Hectophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Hecto(Phot)
 @Serializable
-object Kilophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Kilo(Phot)
+object Kilophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Kilo(Phot)
 @Serializable
-object Megaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Mega(Phot)
+object Megaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Mega(Phot)
 @Serializable
-object Gigaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Giga(Phot)
+object Gigaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Giga(Phot)
 
 @Serializable
 object FootCandle : ImperialIlluminance() {
     override val symbol: String = "fc"
     override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Illuminance
+    override val type = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = SquareFoot.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(value)
 }

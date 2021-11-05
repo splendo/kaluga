@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.unit.ImperialPressure
@@ -28,21 +28,21 @@ import com.splendo.kaluga.scientific.unit.UKImperialPressure
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricPressure")
-infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this
 
 @JvmName("timeTimesImperialPressure")
-infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this
 
 @JvmName("timeTimesUKImperialPressure")
-infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this
 
 @JvmName("timeTimesPressure")
-infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this

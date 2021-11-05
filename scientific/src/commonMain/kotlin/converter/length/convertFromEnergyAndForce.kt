@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.length
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Energy
@@ -33,8 +33,8 @@ fun <
     ForceUnit : Force,
     LengthUnit : Length
     > LengthUnit.distance(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    force: ScientificValue<MeasurementType.Force, ForceUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = distance(energy, force, ::DefaultScientificValue)
 
 @JvmName("lengthFromEnergyAndForce")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
     LengthUnit : Length,
-    Value : ScientificValue<MeasurementType.Length, LengthUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, LengthUnit>
     > LengthUnit.distance(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
     factory: (Decimal, LengthUnit) -> Value
 ) = byDividing(energy, force, factory)

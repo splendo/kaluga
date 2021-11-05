@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricVolumetricFluxUnits: Set<MetricVolumetricFlux> get() = MetricVolumetricFlowUnits.flatMap { volumetricFlow ->
@@ -43,31 +43,31 @@ val VolumetricFluxUnits: Set<VolumetricFlux> get() = MetricVolumetricFluxUnits +
     USCustomaryVolumetricFluxUnits.filter { it.volumetricFlow.volume !is USCustomaryImperialVolumeWrapper }.toSet()
 
 @Serializable
-sealed class VolumetricFlux : AbstractScientificUnit<MeasurementType.VolumetricFlux>() {
+sealed class VolumetricFlux : AbstractScientificUnit<PhysicalQuantity.VolumetricFlux>() {
     abstract val volumetricFlow: VolumetricFlow
     abstract val per: Area
-    override val type = MeasurementType.VolumetricFlux
+    override val type = PhysicalQuantity.VolumetricFlux
     override val symbol: String by lazy { "${volumetricFlow.symbol}⋅${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volumetricFlow.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = volumetricFlow.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricVolumetricFlux(override val volumetricFlow: MetricVolumetricFlow, override val per: MetricArea) : VolumetricFlux(), MetricScientificUnit<MeasurementType.VolumetricFlux> {
+data class MetricVolumetricFlux(override val volumetricFlow: MetricVolumetricFlow, override val per: MetricArea) : VolumetricFlux(), MetricScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialVolumetricFlux(override val volumetricFlow: ImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), ImperialScientificUnit<MeasurementType.VolumetricFlux> {
+data class ImperialVolumetricFlux(override val volumetricFlow: ImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), ImperialScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = volumetricFlow.ukImperial per per
     val usCustomary get() = volumetricFlow.usCustomary per per
 }
 @Serializable
-data class UKImperialVolumetricFlux(override val volumetricFlow: UKImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), UKImperialScientificUnit<MeasurementType.VolumetricFlux> {
+data class UKImperialVolumetricFlux(override val volumetricFlow: UKImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), UKImperialScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomaryVolumetricFlux(override val volumetricFlow: USCustomaryVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), USCustomaryScientificUnit<MeasurementType.VolumetricFlux> {
+data class USCustomaryVolumetricFlux(override val volumetricFlow: USCustomaryVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.USCustomary
 }
 

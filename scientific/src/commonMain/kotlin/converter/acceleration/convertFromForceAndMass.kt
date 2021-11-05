@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.acceleration
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Acceleration
@@ -33,8 +33,8 @@ fun <
     AccelerationUnit : Acceleration,
     ForceUnit : Force
     > AccelerationUnit.acceleration(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    mass: ScientificValue<MeasurementType.Weight, MassUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    mass: ScientificValue<PhysicalQuantity.Weight, MassUnit>
 ) = acceleration(force, mass, ::DefaultScientificValue)
 
 @JvmName("accelerationFromForceAndMass")
@@ -42,9 +42,9 @@ fun <
     MassUnit : Weight,
     AccelerationUnit : Acceleration,
     ForceUnit : Force,
-    Value : ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
+    Value : ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>
     > AccelerationUnit.acceleration(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    mass: ScientificValue<MeasurementType.Weight, MassUnit>,
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
+    mass: ScientificValue<PhysicalQuantity.Weight, MassUnit>,
     factory: (Decimal, AccelerationUnit) -> Value
 ) = byDividing(force, mass, factory)

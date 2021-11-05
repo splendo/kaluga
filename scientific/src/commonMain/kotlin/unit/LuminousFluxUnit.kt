@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
@@ -36,34 +36,34 @@ val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
 )
 
 @Serializable
-sealed class LuminousFlux : AbstractScientificUnit<MeasurementType.LuminousFlux>(), MetricAndImperialScientificUnit<MeasurementType.LuminousFlux>
+sealed class LuminousFlux : AbstractScientificUnit<PhysicalQuantity.LuminousFlux>(), MetricAndImperialScientificUnit<PhysicalQuantity.LuminousFlux>
 
 @Serializable
-object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux> {
+object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux> {
     override val symbol = "lm"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.LuminousFlux
+    override val type = PhysicalQuantity.LuminousFlux
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Nano(Lumen)
+object Nanolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Nano(Lumen)
 @Serializable
-object Microlumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Micro(Lumen)
+object Microlumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Micro(Lumen)
 @Serializable
-object Millilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Milli(Lumen)
+object Millilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Milli(Lumen)
 @Serializable
-object Centilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Centi(Lumen)
+object Centilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Centi(Lumen)
 @Serializable
-object Decilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Deci(Lumen)
+object Decilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Deci(Lumen)
 @Serializable
-object Decalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Deca(Lumen)
+object Decalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Deca(Lumen)
 @Serializable
-object Hectolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Hecto(Lumen)
+object Hectolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Hecto(Lumen)
 @Serializable
-object Kilolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Kilo(Lumen)
+object Kilolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Kilo(Lumen)
 @Serializable
-object Megalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Mega(Lumen)
+object Megalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Mega(Lumen)
 @Serializable
-object Gigalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Giga(Lumen)
+object Gigalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Giga(Lumen)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.action
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.Action
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Energy
 import kotlin.jvm.JvmName
 
 @JvmName("actionDivEnergy")
-infix operator fun <ActionUnit : Action, EnergyUnit : Energy> ScientificValue<MeasurementType.Action, ActionUnit>.div(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>
+infix operator fun <ActionUnit : Action, EnergyUnit : Energy> ScientificValue<PhysicalQuantity.Action, ActionUnit>.div(
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
 ) = unit.time.time(this, energy)

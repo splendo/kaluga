@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("resistanceTimesCapacitance")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+infix operator fun <CapacitanceUnit : ElectricCapacitance, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = capacitance * this

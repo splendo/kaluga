@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.luminance
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Illuminance
@@ -33,8 +33,8 @@ fun <
     SolidAngleUnit : SolidAngle,
     IlluminanceUnit : Illuminance
     > LuminanceUnit.luminance(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
 ) = luminance(illuminance, solidAngle, ::DefaultScientificValue)
 
 @JvmName("luminanceFromIlluminanceAndSolidAngle")
@@ -42,9 +42,9 @@ fun <
     LuminanceUnit : Luminance,
     SolidAngleUnit : SolidAngle,
     IlluminanceUnit : Illuminance,
-    Value : ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+    Value : ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
     > LuminanceUnit.luminance(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>,
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
     factory: (Decimal, LuminanceUnit) -> Value
 ) = byDividing(illuminance, solidAngle, factory)

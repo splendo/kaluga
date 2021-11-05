@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.energy.times
 import com.splendo.kaluga.scientific.unit.Energy
@@ -28,21 +28,21 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricAndImperialEnergy")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>
+infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
 ) = energy * this
 
 @JvmName("timeTimesMetricEnergy")
-infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>
+infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
 ) = energy * this
 
 @JvmName("timeTimesImperialEnergy")
-infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>
+infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
 ) = energy * this
 
 @JvmName("timeTimesEnergy")
-infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>
+infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
 ) = energy * this

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity
     > TimeUnit.time(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
-    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>
 ) = time(amountOfSubstance, catalysis, ::DefaultScientificValue)
 
 @JvmName("timeFromAmountOfSubstanceAndCatalysticActivity")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
-    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>,
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = byDividing(amountOfSubstance, catalysis, factory)

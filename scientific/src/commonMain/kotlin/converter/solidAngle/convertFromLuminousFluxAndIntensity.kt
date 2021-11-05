@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.solidAngle
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.LuminousFlux
@@ -33,8 +33,8 @@ fun <
     SolidAngleUnit : SolidAngle,
     FluxUnit : LuminousFlux
     > SolidAngleUnit.solidAngle(
-    flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
-    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>
+    flux: ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>,
+    intensity: ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>
 ) = solidAngle(flux, intensity, ::DefaultScientificValue)
 
 @JvmName("solidAngleFromLuminousFluxAndIntensity")
@@ -42,9 +42,9 @@ fun <
     IntensityUnit : LuminousIntensity,
     SolidAngleUnit : SolidAngle,
     FluxUnit : LuminousFlux,
-    Value : ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+    Value : ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
     > SolidAngleUnit.solidAngle(
-    flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
-    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>,
+    flux: ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>,
+    intensity: ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>,
     factory: (Decimal, SolidAngleUnit) -> Value
 ) = byDividing(flux, intensity, factory)

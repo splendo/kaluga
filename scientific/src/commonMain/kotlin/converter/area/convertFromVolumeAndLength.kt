@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.area
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Area
@@ -33,8 +33,8 @@ fun <
     AreaUnit : Area,
     VolumeUnit : Volume
     > AreaUnit.area(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    height: ScientificValue<MeasurementType.Length, HeightUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
 ) = area(volume, height, ::DefaultScientificValue)
 
 @JvmName("areaFromVolumeAndHeight")
@@ -42,9 +42,9 @@ fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume,
-    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
     > AreaUnit.area(
-    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
-    height: ScientificValue<MeasurementType.Length, HeightUnit>,
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
     factory: (Decimal, AreaUnit) -> Value
 ) = byDividing(volume, height, factory)

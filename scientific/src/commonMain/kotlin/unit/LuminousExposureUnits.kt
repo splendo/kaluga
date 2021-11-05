@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricLuminousExposureUnits: Set<MetricLuminousExposure> get() = MetricIlluminanceUnits.flatMap { illuminance ->
@@ -32,22 +32,22 @@ val ImperialLuminousExposureUnits: Set<ImperialLuminousExposure> get() = Imperia
 val LuminousExposureUnits: Set<LuminousExposure> get() = MetricLuminousExposureUnits + ImperialLuminousExposureUnits
 
 @Serializable
-abstract class LuminousExposure : ScientificUnit<MeasurementType.LuminousExposure> {
+abstract class LuminousExposure : ScientificUnit<PhysicalQuantity.LuminousExposure> {
     abstract val illuminance: Illuminance
     abstract val time: Time
     override val symbol: String get() = "${illuminance.symbol}⋅${time.symbol}"
-    override val type = MeasurementType.LuminousExposure
+    override val type = PhysicalQuantity.LuminousExposure
     override fun fromSIUnit(value: Decimal): Decimal = illuminance.fromSIUnit(time.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = time.toSIUnit(illuminance.toSIUnit(value))
 }
 
 @Serializable
-class MetricLuminousExposure(override val illuminance: MetricIlluminance, override val time: Time) : LuminousExposure(), MetricScientificUnit<MeasurementType.LuminousExposure> {
+class MetricLuminousExposure(override val illuminance: MetricIlluminance, override val time: Time) : LuminousExposure(), MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Metric
 }
 
 @Serializable
-class ImperialLuminousExposure(override val illuminance: ImperialIlluminance, override val time: Time) : LuminousExposure(), ImperialScientificUnit<MeasurementType.LuminousExposure> {
+class ImperialLuminousExposure(override val illuminance: ImperialIlluminance, override val time: Time) : LuminousExposure(), ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Imperial
 }
 

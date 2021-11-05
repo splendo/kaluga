@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricVolumeUnits: Set<MetricVolume> get() = setOf(
@@ -84,128 +84,128 @@ val VolumeUnits: Set<Volume> get() = MetricVolumeUnits +
     UKImperialVolumeUnits.filter { it !is UKImperialImperialVolumeWrapper }.toSet()
 
 @Serializable
-sealed class Volume : AbstractScientificUnit<MeasurementType.Volume>()
+sealed class Volume : AbstractScientificUnit<PhysicalQuantity.Volume>()
 
 @Serializable
-sealed class MetricVolume : Volume(), MetricScientificUnit<MeasurementType.Volume>
+sealed class MetricVolume : Volume(), MetricScientificUnit<PhysicalQuantity.Volume>
 
 @Serializable
-sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<MeasurementType.Volume> {
-    override val type = MeasurementType.Volume
+sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQuantity.Volume> {
+    override val type = PhysicalQuantity.Volume
     override val system = MeasurementSystem.USCustomary
 }
 
 @Serializable
-sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<MeasurementType.Volume> {
-    override val type = MeasurementType.Volume
+sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuantity.Volume> {
+    override val type = PhysicalQuantity.Volume
     override val system = MeasurementSystem.UKImperial
 }
 
 @Serializable
-sealed class ImperialVolume : Volume(), ImperialScientificUnit<MeasurementType.Volume>
+sealed class ImperialVolume : Volume(), ImperialScientificUnit<PhysicalQuantity.Volume>
 
-class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit: U) : SystemScientificUnit<S, MeasurementType.Volume> {
+class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
     override val symbol: String = "${unit.symbol}3"
     override val system: S = unit.system
-    override val type = MeasurementType.Volume
+    override val type = PhysicalQuantity.Volume
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(unit.fromSIUnit(value)))
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(unit.toSIUnit(unit.toSIUnit(value)))
 }
 
 // Metric Volume
 @Serializable
-object CubicMeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Meter)
+object CubicMeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Meter)
 
 @Serializable
-object CubicDecimeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Deci(Meter))
+object CubicDecimeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Deci(Meter))
 
 @Serializable
-object CubicCentimeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Centi(Meter)) {
+object CubicCentimeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Centi(Meter)) {
     override val symbol: String = "cc"
 }
 
 @Serializable
-object CubicMillimeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Milli(Meter))
+object CubicMillimeter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Milli(Meter))
 
 @Serializable
-object CubicMicrometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Micro(Meter))
+object CubicMicrometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Micro(Meter))
 
 @Serializable
-object CubicNanometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Nano(Meter))
+object CubicNanometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Nano(Meter))
 
 @Serializable
-object CubicDecameter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Deca(Meter))
+object CubicDecameter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Deca(Meter))
 
 @Serializable
-object CubicHectometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Hecto(Meter))
+object CubicHectometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Hecto(Meter))
 
 @Serializable
-object CubicKilometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Kilo(Meter))
+object CubicKilometer : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Kilo(Meter))
 
 @Serializable
-object CubicMegameter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Mega(Meter))
+object CubicMegameter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Mega(Meter))
 
 @Serializable
-object CubicGigameter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Volume> by Cubic(Giga(Meter))
+object CubicGigameter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> by Cubic(Giga(Meter))
 
 @Serializable
-object Liter : MetricVolume(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Volume> {
+object Liter : MetricVolume(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume> {
     override val symbol: String = "l"
     private const val LITERS_IN_CUBIC_METER = 1000.0
     override val system = MeasurementSystem.Metric
-    override val type = MeasurementType.Volume
+    override val type = PhysicalQuantity.Volume
     override fun toSIUnit(value: Decimal): Decimal = value / LITERS_IN_CUBIC_METER.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * LITERS_IN_CUBIC_METER.toDecimal()
 }
 
 @Serializable
-object Deciliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Deci(Liter)
+object Deciliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deci(Liter)
 
 @Serializable
-object Centiliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Centi(Liter)
+object Centiliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Centi(Liter)
 
 @Serializable
-object Milliliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Milli(Liter)
+object Milliliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Milli(Liter)
 
 @Serializable
-object Microliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Micro(Liter)
+object Microliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Micro(Liter)
 
 @Serializable
-object Nanoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Nano(Liter)
+object Nanoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Nano(Liter)
 
 @Serializable
-object Decaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Deca(Liter)
+object Decaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deca(Liter)
 
 @Serializable
-object Hectoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Hecto(Liter)
+object Hectoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Hecto(Liter)
 
 @Serializable
-object Kiloliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Kilo(Liter)
+object Kiloliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Kilo(Liter)
 
 @Serializable
-object Megaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Mega(Liter)
+object Megaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Mega(Liter)
 
 @Serializable
-object Gigaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Volume, Liter> by Giga(Liter)
+object Gigaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Giga(Liter)
 
 // Imperial
 @Serializable
-object CubicInch : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Inch) {
+object CubicInch : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Volume> by Cubic(Inch) {
     override val symbol: String = "cu in"
 }
 
 @Serializable
-object CubicFoot : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Foot) {
+object CubicFoot : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Volume> by Cubic(Foot) {
     override val symbol: String = "cu ft"
 }
 
 @Serializable
-object CubicYard : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Yard) {
+object CubicYard : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Volume> by Cubic(Yard) {
     override val symbol: String = "cu yd"
 }
 
 @Serializable
-object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Mile) {
+object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Volume> by Cubic(Mile) {
     override val symbol: String = "cu mi"
 }
 

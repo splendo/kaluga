@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.solidAngle.solidAngle
 import com.splendo.kaluga.scientific.unit.Illuminance
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.jvm.JvmName
 
 @JvmName("illuminanceDivLuminance")
-infix operator fun <IlluminanceUnit : Illuminance, LuminanceUnit : Luminance> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.div(
-    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+infix operator fun <IlluminanceUnit : Illuminance, LuminanceUnit : Luminance> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
 ) = Steradian.solidAngle(this, luminance)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.force
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Area
@@ -33,8 +33,8 @@ fun <
     AreaUnit : Area,
     PressureUnit : Pressure
     > ForceUnit.force(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = force(pressure, area, ::DefaultScientificValue)
 
 @JvmName("forceFromPressureAndArea")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     AreaUnit : Area,
     PressureUnit : Pressure,
-    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>
     > ForceUnit.force(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     factory: (Decimal, ForceUnit) -> Value
 ) = byMultiplying(pressure, area, factory)

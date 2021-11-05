@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.energy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.ElectricCharge
@@ -33,8 +33,8 @@ fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage
     > EnergyUnit.energy(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = energy(charge, voltage, ::DefaultScientificValue)
 
 @JvmName("energyFromChargeAndVoltage")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
-    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
     > EnergyUnit.energy(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
     factory: (Decimal, EnergyUnit) -> Value
 ) = byMultiplying(charge, voltage, factory)

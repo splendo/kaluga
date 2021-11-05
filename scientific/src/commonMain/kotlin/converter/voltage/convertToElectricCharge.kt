@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
 import com.splendo.kaluga.scientific.unit.Abfarad
@@ -27,10 +27,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbfarad")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>) =
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>) =
     capacitance * this
 
 @JvmName("voltageTimesCapacitance")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = capacitance * this

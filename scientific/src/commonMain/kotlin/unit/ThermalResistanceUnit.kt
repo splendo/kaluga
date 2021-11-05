@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricAndUKImperialThermalResistanceUnits: Set<MetricAndUKImperialThermalResistance> get() = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
@@ -43,31 +43,31 @@ val ThermalResistanceUnits: Set<ThermalResistance> get() = MetricAndUKImperialTh
     USCustomaryThermalResistanceUnits
 
 @Serializable
-sealed class ThermalResistance : AbstractScientificUnit<MeasurementType.ThermalResistance>() {
+sealed class ThermalResistance : AbstractScientificUnit<PhysicalQuantity.ThermalResistance>() {
     abstract val temperature: Temperature
     abstract val per: Power
-    override val type = MeasurementType.ThermalResistance
+    override val type = PhysicalQuantity.ThermalResistance
     override val symbol: String by lazy { "${temperature.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(temperature.deltaFromSIUnitDelta(value))
     override fun toSIUnit(value: Decimal): Decimal = temperature.deltaToSIUnitDelta(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricAndUKImperialThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: MetricAndImperialPower) : ThermalResistance(), MetricAndUKImperialScientificUnit<MeasurementType.ThermalResistance> {
+data class MetricAndUKImperialThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: MetricAndImperialPower) : ThermalResistance(), MetricAndUKImperialScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.MetricAndUKImperial
     val metric get() = temperature per per.metric
     val ukImperial get() = temperature per per.imperial
 }
 @Serializable
-data class MetricThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: MetricPower) : ThermalResistance(), MetricScientificUnit<MeasurementType.ThermalResistance> {
+data class MetricThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: MetricPower) : ThermalResistance(), MetricScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class UKImperialThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: ImperialPower) : ThermalResistance(), UKImperialScientificUnit<MeasurementType.ThermalResistance> {
+data class UKImperialThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: ImperialPower) : ThermalResistance(), UKImperialScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomaryThermalResistance(override val temperature: USCustomaryTemperature, override val per: ImperialPower) : ThermalResistance(), USCustomaryScientificUnit<MeasurementType.ThermalResistance> {
+data class USCustomaryThermalResistance(override val temperature: USCustomaryTemperature, override val per: ImperialPower) : ThermalResistance(), USCustomaryScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.USCustomary
 }
 

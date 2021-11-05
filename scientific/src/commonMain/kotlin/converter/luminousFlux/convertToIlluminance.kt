@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.illuminance.illuminance
 import com.splendo.kaluga.scientific.unit.Area
@@ -31,21 +31,21 @@ import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import kotlin.jvm.JvmName
 
 @JvmName("lumenDivSquareCentimeter")
-infix operator fun <FluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    squareCentimeter: ScientificValue<MeasurementType.Area, SquareCentimeter>
+infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    squareCentimeter: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
 ) = Phot.illuminance(this, squareCentimeter)
 
 @JvmName("lumenDivMetricArea")
-infix operator fun <FluxUnit : LuminousFlux, AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <FluxUnit : LuminousFlux, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Lux.illuminance(this, area)
 
 @JvmName("lumenDivImperialArea")
-infix operator fun <FluxUnit : LuminousFlux, AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <FluxUnit : LuminousFlux, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = FootCandle.illuminance(this, area)
 
 @JvmName("lumenDivArea")
-infix operator fun <FluxUnit : LuminousFlux, AreaUnit : Area> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
+infix operator fun <FluxUnit : LuminousFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Lux.illuminance(this, area)

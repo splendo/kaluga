@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.massFlowRate
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.weight.mass
 import com.splendo.kaluga.scientific.unit.ImperialMassFlowRate
@@ -30,26 +30,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
 import kotlin.jvm.JvmName
 
 @JvmName("metricMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, MetricMassFlowRate>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.weight.mass(this, time)
 
 @JvmName("imperialMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.weight.mass(this, time)
 
 @JvmName("ukImperialMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, UKImperialMassFlowRate>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.weight.mass(this, time)
 
 @JvmName("usCustomaryMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, USCustomaryMassFlowRate>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = unit.weight.mass(this, time)
 
 @JvmName("massFlowRateTimesTime")
-infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Kilogram.mass(this, time)

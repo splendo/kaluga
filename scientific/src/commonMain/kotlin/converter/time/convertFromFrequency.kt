@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific.converter.time
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
@@ -37,16 +37,16 @@ fun <
     TimeUnit : Time,
     FrequencyUnit : Frequency,
     > TimeUnit.time(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = time(frequency, ::DefaultScientificValue)
 
 @JvmName("timeFromInvertedFrequency")
 fun <
     TimeUnit : Time,
     FrequencyUnit : Frequency,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>,
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = byInverting(frequency, factory)
 
@@ -55,15 +55,15 @@ fun <
     TimeUnit : Time
     > TimeUnit.time(
     cycle: Decimal,
-    at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+    at: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = time(cycle, at, ::DefaultScientificValue)
 
 fun <
     FrequencyUnit : Frequency,
     TimeUnit : Time,
-    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
     > TimeUnit.time(
     cycle: Decimal,
-    at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>,
+    at: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
     factory: (Decimal, TimeUnit) -> Value
 ) = (cycle / at.convertValue(Hertz))(Second).convert(this, factory)

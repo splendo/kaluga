@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.voltage.voltage
 import com.splendo.kaluga.scientific.unit.Abcoulomb
@@ -29,10 +29,10 @@ import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivAbfarad")
-infix operator fun ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.div(capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>) =
     Abvolt.voltage(this, capacitance)
 
 @JvmName("chargeDivCapacitance")
-infix operator fun <ChargeUnit : ElectricCharge, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+infix operator fun <ChargeUnit : ElectricCharge, CapacitanceUnit : ElectricCapacitance> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = Volt.voltage(this, capacitance)

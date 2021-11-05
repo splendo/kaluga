@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.momentum.momentum
 import com.splendo.kaluga.scientific.unit.Centimeter
@@ -57,78 +57,78 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("dyneTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, Dyne>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, Dyne>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Gram x (Centimeter per Second)).momentum(this, time)
 
 @JvmName("dyneMultipleTimesTime")
-infix operator fun <DyneUnit, TimeUnit : Time> ScientificValue<MeasurementType.Force, DyneUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> =
+infix operator fun <DyneUnit, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     (Gram x (Centimeter per Second)).momentum(this, time)
 
 @JvmName("tonneForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, TonneForce>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, TonneForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Tonne x (Meter per Second)).momentum(this, time)
 
 @JvmName("gramForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, GramForce>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, GramForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Gram x (Meter per Second)).momentum(this, time)
 
 @JvmName("milligramForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, MilligramForce>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, MilligramForce>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Milligram x (Meter per Second)).momentum(this, time)
 
 @JvmName("metricForceTimesTime")
-infix operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Kilogram x (Meter per Second)).momentum(this, time)
 
 @JvmName("poundalTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, Poundal>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, Poundal>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Pound x (Foot per Second)).momentum(this, time)
 
 @JvmName("poundForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, PoundForce>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, PoundForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Pound x (Foot per Second)).momentum(this, time)
 
 @JvmName("ounceForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, OunceForce>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, OunceForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Ounce x (Foot per Second)).momentum(this, time)
 
 @JvmName("grainForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, GrainForce>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, GrainForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Grain x (Foot per Second)).momentum(this, time)
 
 @JvmName("kipTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, Kip>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, Kip>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (Pound x (Foot per Second)).momentum(this, time)
 
 @JvmName("usTonForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, UsTonForce>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, UsTonForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (UsTon x (Foot per Second)).momentum(this, time)
 
 @JvmName("imperialTonForceTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Force, ImperialTonForce>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ImperialTonForce>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (ImperialTon x (Foot per Second)).momentum(this, time)
 
 @JvmName("imperialForceTimesTime")
-infix operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Pound x (Foot per Second)).momentum(this, time)
 
 @JvmName("ukImperialForceTimesTime")
-infix operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Pound x (Foot per Second)).momentum(this, time)
 
 @JvmName("usCustomaryForceTimesTime")
-infix operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Pound x (Foot per Second)).momentum(this, time)
 
 @JvmName("forceTimesTime")
-infix operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+infix operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = (Kilogram x (Meter per Second)).momentum(this, time)

@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.electricInductance
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
@@ -33,8 +33,8 @@ fun <
     CurrentUnit : ElectricCurrent,
     InductanceUnit : ElectricInductance
     > InductanceUnit.inductance(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
 ) = inductance(flux, current, ::DefaultScientificValue)
 
 @JvmName("inductanceFromFluxAndCurrent")
@@ -42,9 +42,9 @@ fun <
     FluxUnit : MagneticFlux,
     CurrentUnit : ElectricCurrent,
     InductanceUnit : ElectricInductance,
-    Value : ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
     > InductanceUnit.inductance(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
     factory: (Decimal, InductanceUnit) -> Value
 ) = byDividing(flux, current, factory)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.power.power
 import com.splendo.kaluga.scientific.unit.Dyne
@@ -38,34 +38,34 @@ import com.splendo.kaluga.scientific.unit.metric
 import kotlin.jvm.JvmName
 
 @JvmName("dyneTimesMetricSpeed")
-infix operator fun ScientificValue<MeasurementType.Force, Dyne>.times(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) =
+infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) =
     ErgPerSecond.metric.power(this, speed)
 
 @JvmName("dyneMultipleTimesMetricSpeed")
-infix operator fun <DyneUnit> ScientificValue<MeasurementType.Force, DyneUnit>.times(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     ErgPerSecond.metric.power(this, speed)
 
 @JvmName("metricForceTimesMetricSpeed")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, MetricSpeed>
+infix operator fun <ForceUnit : MetricForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>
 ) = Watt.metric.power(this, speed)
 
 @JvmName("imperialForceTimesImperialSpeed")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
 ) = FootPoundForcePerSecond.power(this, speed)
 
 @JvmName("ukImperialForceTimesImperialSpeed")
-infix operator fun <ForceUnit : UKImperialForce> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+infix operator fun <ForceUnit : UKImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
 ) = FootPoundForcePerSecond.power(this, speed)
 
 @JvmName("usCustomaryForceTimesImperialSpeed")
-infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
 ) = FootPoundForcePerSecond.power(this, speed)
 
 @JvmName("forceTimesSpeed")
-infix operator fun <ForceUnit : Force, SpeedUnit : Speed> ScientificValue<MeasurementType.Force, ForceUnit>.times(
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+infix operator fun <ForceUnit : Force, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
 ) = Watt.power(this, speed)

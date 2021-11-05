@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.magneticFlux
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.ElectricCharge
@@ -33,8 +33,8 @@ fun <
     ChargeUnit : ElectricCharge,
     FluxUnit : MagneticFlux
     > FluxUnit.flux(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
 ) = flux(resistance, charge, ::DefaultScientificValue)
 
 @JvmName("fluxFromResistanceAndCharge")
@@ -42,9 +42,9 @@ fun <
     ResistanceUnit : ElectricResistance,
     ChargeUnit : ElectricCharge,
     FluxUnit : MagneticFlux,
-    Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
     > FluxUnit.flux(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
     factory: (Decimal, FluxUnit) -> Value
 ) = byMultiplying(resistance, charge, factory)

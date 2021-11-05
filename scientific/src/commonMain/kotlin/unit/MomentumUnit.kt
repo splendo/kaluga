@@ -18,7 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val MetricMomentumUnits: Set<MetricMomentum> get() = MetricWeightUnits.flatMap { weight ->
@@ -51,34 +51,34 @@ val MomentumUnits: Set<Momentum> get() = MetricMomentumUnits +
     USCustomaryMomentumUnits.filter { it.mass !is USCustomaryImperialWeightWrapper }.toSet()
 
 @Serializable
-sealed class Momentum : AbstractScientificUnit<MeasurementType.Momentum>() {
+sealed class Momentum : AbstractScientificUnit<PhysicalQuantity.Momentum>() {
     abstract val mass: Weight
     abstract val speed: Speed
-    override val type = MeasurementType.Momentum
+    override val type = PhysicalQuantity.Momentum
     override val symbol: String by lazy { "${mass.symbol}⋅${speed.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = speed.fromSIUnit(mass.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = mass.toSIUnit(speed.toSIUnit(value))
 }
 
 @Serializable
-data class MetricMomentum(override val mass: MetricWeight, override val speed: MetricSpeed) : Momentum(), MetricScientificUnit<MeasurementType.Momentum> {
+data class MetricMomentum(override val mass: MetricWeight, override val speed: MetricSpeed) : Momentum(), MetricScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.Metric
 }
 
 @Serializable
-data class ImperialMomentum(override val mass: ImperialWeight, override val speed: ImperialSpeed) : Momentum(), ImperialScientificUnit<MeasurementType.Momentum> {
+data class ImperialMomentum(override val mass: ImperialWeight, override val speed: ImperialSpeed) : Momentum(), ImperialScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = UKImperialMomentum(mass.ukImperial, speed)
     val usCustomary get() = USCustomaryMomentum(mass.usCustomary, speed)
 }
 
 @Serializable
-data class UKImperialMomentum(override val mass: UKImperialWeight, override val speed: ImperialSpeed) : Momentum(), UKImperialScientificUnit<MeasurementType.Momentum> {
+data class UKImperialMomentum(override val mass: UKImperialWeight, override val speed: ImperialSpeed) : Momentum(), UKImperialScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.UKImperial
 }
 
 @Serializable
-data class USCustomaryMomentum(override val mass: USCustomaryWeight, override val speed: ImperialSpeed) : Momentum(), USCustomaryScientificUnit<MeasurementType.Momentum> {
+data class USCustomaryMomentum(override val mass: USCustomaryWeight, override val speed: ImperialSpeed) : Momentum(), USCustomaryScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.USCustomary
 }
 

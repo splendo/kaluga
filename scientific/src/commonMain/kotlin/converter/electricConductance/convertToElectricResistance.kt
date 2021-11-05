@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricConductance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
 import com.splendo.kaluga.scientific.unit.Abohm
@@ -27,9 +27,9 @@ import com.splendo.kaluga.scientific.unit.Ohm
 import kotlin.jvm.JvmName
 
 @JvmName("abSiemensResistance")
-fun ScientificValue<MeasurementType.ElectricConductance, Absiemens>.resistance() =
+fun ScientificValue<PhysicalQuantity.ElectricConductance, Absiemens>.resistance() =
     Abohm.resistance(this)
 
 @JvmName("resistance")
-fun <ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.resistance() =
+fun <ConductanceUnit : ElectricConductance> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.resistance() =
     Ohm.resistance(this)

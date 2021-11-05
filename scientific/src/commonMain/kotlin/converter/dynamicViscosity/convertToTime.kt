@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.dynamicViscosity
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.DynamicViscosity
@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.Pressure
 import kotlin.jvm.JvmName
 
 @JvmName("dynamicViscosityDivPressure")
-infix operator fun <DynamicViscosityUnit : DynamicViscosity, PressureUnit : Pressure> ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>.div(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+infix operator fun <DynamicViscosityUnit : DynamicViscosity, PressureUnit : Pressure> ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>.div(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = unit.time.time(this, pressure)

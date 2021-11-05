@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val FrequencyUnits: Set<Frequency> get() = setOf(
@@ -40,41 +40,41 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
 )
 
 @Serializable
-sealed class Frequency : ScientificUnit<MeasurementType.Frequency>, MetricAndImperialScientificUnit<MeasurementType.Frequency>
+sealed class Frequency : ScientificUnit<PhysicalQuantity.Frequency>, MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
 
-object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> {
+object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency> {
     override val symbol: String = "Hz"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.Frequency
+    override val type = PhysicalQuantity.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Nano(Hertz)
+object Nanohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Nano(Hertz)
 @Serializable
-object Microhertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Micro(Hertz)
+object Microhertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Micro(Hertz)
 @Serializable
-object Millihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Milli(Hertz)
+object Millihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Milli(Hertz)
 @Serializable
-object Centihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Centi(Hertz)
+object Centihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Centi(Hertz)
 @Serializable
-object Decihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Deci(Hertz)
+object Decihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deci(Hertz)
 @Serializable
-object Decahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Deca(Hertz)
+object Decahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deca(Hertz)
 @Serializable
-object Hectohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Hecto(Hertz)
+object Hectohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Hecto(Hertz)
 @Serializable
-object Kilohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Kilo(Hertz)
+object Kilohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Kilo(Hertz)
 @Serializable
-object Megahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Mega(Hertz)
+object Megahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Mega(Hertz)
 @Serializable
-object Gigahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Giga(Hertz)
+object Gigahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Giga(Hertz)
 @Serializable
 object BeatsPerMinute : Frequency() {
     override val symbol: String = "bpm"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.Frequency
+    override val type = PhysicalQuantity.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value * 60.0.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()
 }

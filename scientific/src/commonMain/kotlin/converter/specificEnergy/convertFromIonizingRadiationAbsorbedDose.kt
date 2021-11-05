@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.specificEnergy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.unit.Gray
@@ -35,16 +35,16 @@ fun <
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     SpecificEnergyUnit : SpecificEnergy
     > SpecificEnergyUnit.specificEnergy(
-    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
 ) = specificEnergy(absorbedDose, ::DefaultScientificValue)
 
 @JvmName("specificEnergyFromAbsorbedDose")
 fun <
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     SpecificEnergyUnit : SpecificEnergy,
-    Value : ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
     > SpecificEnergyUnit.specificEnergy(
-    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value
 ) = DefaultScientificValue(absorbedDose.convert(Gray).value, Joule per Kilogram).convert(
     this,

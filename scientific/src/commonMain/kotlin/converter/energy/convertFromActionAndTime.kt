@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.energy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Action
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     EnergyUnit : Energy
     > EnergyUnit.energy(
-    action: ScientificValue<MeasurementType.Action, ActionUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    action: ScientificValue<PhysicalQuantity.Action, ActionUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = energy(action, time, ::DefaultScientificValue)
 
 @JvmName("energyFromActionAndTime")
@@ -42,9 +42,9 @@ fun <
     ActionUnit : Action,
     TimeUnit : Time,
     EnergyUnit : Energy,
-    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
     > EnergyUnit.energy(
-    action: ScientificValue<MeasurementType.Action, ActionUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    action: ScientificValue<PhysicalQuantity.Action, ActionUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, EnergyUnit) -> Value
 ) = byDividing(action, time, factory)

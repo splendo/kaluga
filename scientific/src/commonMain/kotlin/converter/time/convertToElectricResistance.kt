@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
 import com.splendo.kaluga.scientific.unit.Abfarad
@@ -28,10 +28,10 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeDivAbfarad")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>) =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.div(capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>) =
     Abohm.resistance(this, capacitance)
 
 @JvmName("timeDivCapacitance")
-infix operator fun <TimeUnit : Time, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.Time, TimeUnit>.div(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+infix operator fun <TimeUnit : Time, CapacitanceUnit : ElectricCapacitance> ScientificValue<PhysicalQuantity.Time, TimeUnit>.div(
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
 ) = Ohm.resistance(this, capacitance)

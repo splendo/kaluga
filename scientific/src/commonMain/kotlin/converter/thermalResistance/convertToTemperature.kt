@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.thermalResistance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.temperature.temperature
 import com.splendo.kaluga.scientific.unit.ImperialPower
@@ -33,41 +33,41 @@ import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialThermalResistanceTimesPower")
-infix operator fun <PowerUnit : Power> ScientificValue<MeasurementType.ThermalResistance, MetricAndUKImperialThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>
+infix operator fun <PowerUnit : Power> ScientificValue<PhysicalQuantity.ThermalResistance, MetricAndUKImperialThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("metricThermalResistanceTimesMetricAndImperialPower")
-infix operator fun ScientificValue<MeasurementType.ThermalResistance, MetricThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>
+infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, MetricAndImperialPower>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("metricThermalResistanceTimesMetricPower")
-infix operator fun ScientificValue<MeasurementType.ThermalResistance, MetricThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, MetricPower>
+infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, MetricPower>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("ukImperialThermalResistanceTimesMetricAndImperialPower")
-infix operator fun ScientificValue<MeasurementType.ThermalResistance, UKImperialThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>
+infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, MetricAndImperialPower>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("ukImperialThermalResistanceTimesImperialPower")
-infix operator fun ScientificValue<MeasurementType.ThermalResistance, UKImperialThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, ImperialPower>
+infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, ImperialPower>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("usCustomaryThermalResistanceTimesMetricAndImperialPower")
-infix operator fun ScientificValue<MeasurementType.ThermalResistance, USCustomaryThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>
+infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, MetricAndImperialPower>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("usCustomaryThermalResistanceTimesImperialPower")
-infix operator fun ScientificValue<MeasurementType.ThermalResistance, USCustomaryThermalResistance>.times(
-    power: ScientificValue<MeasurementType.Power, ImperialPower>
+infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, ImperialPower>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("thermalResistanceTimesPower")
-infix operator fun <ThermalResistanceUnit : ThermalResistance, PowerUnit : Power> ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>.times(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>
+infix operator fun <ThermalResistanceUnit : ThermalResistance, PowerUnit : Power> ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = Kelvin.temperature(this, power)

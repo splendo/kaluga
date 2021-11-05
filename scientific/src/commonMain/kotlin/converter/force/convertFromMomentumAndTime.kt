@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.force
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.Force
@@ -33,8 +33,8 @@ fun <
     TimeUnit : Time,
     MomentumUnit : Momentum
     > ForceUnit.force(
-    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    momentum: ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = force(momentum, time, ::DefaultScientificValue)
 
 @JvmName("forceFromMomentumAndTime")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     TimeUnit : Time,
     MomentumUnit : Momentum,
-    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>
     > ForceUnit.force(
-    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    momentum: ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, ForceUnit) -> Value
 ) = byDividing(momentum, time, factory)

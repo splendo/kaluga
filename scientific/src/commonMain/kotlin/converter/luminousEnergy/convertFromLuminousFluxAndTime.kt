@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.luminousEnergy
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.LuminousEnergy
@@ -32,17 +32,17 @@ fun <
     TimeUnit : Time,
     LuminousFluxUnit : LuminousFlux
     > LuminousEnergy.luminousEnergy(
-    luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
+    luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = luminousEnergy(luminousFlux, time, ::DefaultScientificValue)
 
 @JvmName("luminousEnergyFromLuminousFluxAndTime")
 fun <
     TimeUnit : Time,
     LuminousFluxUnit : LuminousFlux,
-    Value : ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>
+    Value : ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>
     > LuminousEnergy.luminousEnergy(
-    luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>,
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     factory: (Decimal, LuminousEnergy) -> Value
 ) = byMultiplying(luminousFlux, time, factory)

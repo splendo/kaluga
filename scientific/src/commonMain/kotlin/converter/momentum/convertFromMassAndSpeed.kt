@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.converter.momentum
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.Momentum
@@ -33,8 +33,8 @@ fun <
     SpeedUnit : Speed,
     MomentumUnit : Momentum
     > MomentumUnit.momentum(
-    mass: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
 ) = momentum(mass, speed, ::DefaultScientificValue)
 
 @JvmName("momentumFromMassAndSpeed")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
     MomentumUnit : Momentum,
-    Value : ScientificValue<MeasurementType.Momentum, MomentumUnit>
+    Value : ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>
     > MomentumUnit.momentum(
-    mass: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
     factory: (Decimal, MomentumUnit) -> Value
 ) = byMultiplying(mass, speed, factory)

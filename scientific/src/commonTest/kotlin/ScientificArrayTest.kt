@@ -101,6 +101,6 @@ class ScientificArrayTest {
     }
 }
 
-class MockIntScientificArray<Type : MeasurementType, Unit : ScientificUnit<Type>>(decimals: List<Decimal>, override val unit: Unit) : IntScientificArray<Type, Unit> {
+class MockIntScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>>(decimals: List<Decimal>, override val unit: Unit) : IntScientificArray<Type, Unit> {
     override val values: IntArray = decimals.toIntArray()
 }

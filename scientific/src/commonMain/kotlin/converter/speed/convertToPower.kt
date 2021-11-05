@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.speed
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.unit.Dyne
@@ -34,34 +34,34 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpeedTimesDyne")
-infix operator fun ScientificValue<MeasurementType.Speed, MetricSpeed>.times(force: ScientificValue<MeasurementType.Force, Dyne>) =
+infix operator fun ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(force: ScientificValue<PhysicalQuantity.Force, Dyne>) =
     force * this
 
 @JvmName("metricSpeedTimesDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(force: ScientificValue<MeasurementType.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     force * this
 
 @JvmName("metricSpeedTimesMetricForce")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>
+infix operator fun <ForceUnit : MetricForce> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = force * this
 
 @JvmName("imperialSpeedTimesImperialForce")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = force * this
 
 @JvmName("imperialSpeedTimesUKImperialForce")
-infix operator fun <ForceUnit : UKImperialForce> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>
+infix operator fun <ForceUnit : UKImperialForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = force * this
 
 @JvmName("imperialSpeedTimesUSCustomaryForce")
-infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>
+infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = force * this
 
 @JvmName("speedTimesMetricForce")
-infix operator fun <ForceUnit : Force, SpeedUnit : Speed> ScientificValue<MeasurementType.Speed, SpeedUnit>.times(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>
+infix operator fun <ForceUnit : Force, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = force * this

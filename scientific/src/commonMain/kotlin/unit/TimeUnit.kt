@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
 val TimeUnits: Set<Time> get() = setOf(
@@ -36,38 +36,38 @@ val TimeUnits: Set<Time> get() = setOf(
 )
 
 @Serializable
-sealed class Time : AbstractScientificUnit<MeasurementType.Time>(), MetricAndImperialScientificUnit<MeasurementType.Time>
+sealed class Time : AbstractScientificUnit<PhysicalQuantity.Time>(), MetricAndImperialScientificUnit<PhysicalQuantity.Time>
 
 @Serializable
-object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time> {
+object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time> {
     override val symbol = "s"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.Time
+    override val type = PhysicalQuantity.Time
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Decisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Deci(Second)
+object Decisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Deci(Second)
 
 @Serializable
-object Centisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Centi(Second)
+object Centisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Centi(Second)
 
 @Serializable
-object Millisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Milli(Second)
+object Millisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Milli(Second)
 
 @Serializable
-object Microsecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Micro(Second)
+object Microsecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Micro(Second)
 
 @Serializable
-object Nanosecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Nano(Second)
+object Nanosecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Nano(Second)
 
 @Serializable
 object Minute : Time() {
     private const val SECOND_PER_MINUTE = 60.0
     override val symbol: String = "min"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.Time
+    override val type = PhysicalQuantity.Time
     override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_MINUTE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_MINUTE.toDecimal()
 }
@@ -77,7 +77,7 @@ object Hour : Time() {
     private const val SECOND_PER_HOUR = 3600.0
     override val symbol: String = "h"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = MeasurementType.Time
+    override val type = PhysicalQuantity.Time
     override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_HOUR.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_HOUR.toDecimal()
 }

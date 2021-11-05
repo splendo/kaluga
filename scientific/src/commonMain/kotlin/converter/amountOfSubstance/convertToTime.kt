@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.AmountOfSubstance
@@ -26,6 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivCatalysticActivity")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, CatalysisUnit : CatalysticActivity> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>
 ) = Second.time(this, catalysis)

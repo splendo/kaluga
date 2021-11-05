@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.electricCurrent
 
-import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricConductance.conductance
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -30,14 +30,14 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abampereDivAbvolt")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Abampere>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
     Absiemens.conductance(this, voltage)
 
 @JvmName("biotDivAbvolt")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Biot>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
     Absiemens.conductance(this, voltage)
 
 @JvmName("currentDivVoltage")
-infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.div(
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
 ) = Siemens.conductance(this, voltage)
