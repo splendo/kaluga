@@ -17,9 +17,16 @@
 
 package com.splendo.kaluga.base.utils
 
+@JsModule("js-big-decimal")
+@JsNonModule
+external class bigDecimal(value: Double){
+    fun add(other: bigDecimal): bigDecimal
+    fun getValue(): String
+}
+
 actual data class Decimal(val double: Double)
 
-actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(this.double + value.double)
+actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(bigDecimal(this.double).add(bigDecimal(value.double)).getValue().toDouble())
 
 actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this + value
 

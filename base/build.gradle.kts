@@ -32,5 +32,10 @@ kotlin {
                 implementation(project(":test-utils", ""))
             }
         }
+        getByName("jsMain") {
+            dependencies {
+                implementation(npm("js-big-decimal", "1.3.4"))
+            }
+        }
     }
 }
