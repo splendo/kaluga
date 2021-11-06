@@ -82,26 +82,26 @@ sealed class MetricForce : Force(), MetricScientificUnit<PhysicalQuantity.Force>
 @Serializable
 sealed class ImperialForce : Force(), ImperialScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
 }
 
 @Serializable
 sealed class USCustomaryForce : Force(), USCustomaryScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.USCustomary
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
 }
 
 @Serializable
 sealed class UKImperialForce : Force(), UKImperialScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.UKImperial
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
 }
 
 @Serializable
 object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
     override val symbol: String = "N"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -131,7 +131,7 @@ object Giganewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, 
 object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
     override val symbol: String = "dyn"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
     override fun fromSIUnit(value: Decimal): Decimal = value * 100000.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 100000.toDecimal()
 }
@@ -161,7 +161,7 @@ object Gigadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, Ph
 object KilogramForce : MetricForce() {
     override val symbol: String = "kgf"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
     override fun fromSIUnit(value: Decimal): Decimal = value / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = value * MetricStandardGravityAcceleration.decimalValue
 }
@@ -169,7 +169,7 @@ object KilogramForce : MetricForce() {
 object TonneForce : MetricForce() {
     override val symbol: String = "tf"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
     override fun fromSIUnit(value: Decimal): Decimal = Tonne.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Tonne.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
@@ -177,7 +177,7 @@ object TonneForce : MetricForce() {
 object GramForce : MetricForce() {
     override val symbol: String = "gf"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
     override fun fromSIUnit(value: Decimal): Decimal = Gram.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Gram.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
@@ -185,7 +185,7 @@ object GramForce : MetricForce() {
 object MilligramForce : MetricForce() {
     override val symbol: String = "gf"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Force
+    override val quantity = PhysicalQuantity.Force
     override fun fromSIUnit(value: Decimal): Decimal = Milligram.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Milligram.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }

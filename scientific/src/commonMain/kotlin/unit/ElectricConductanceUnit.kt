@@ -43,7 +43,7 @@ sealed class ElectricConductance : AbstractScientificUnit<PhysicalQuantity.Elect
 object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance> {
     override val symbol = "S"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.ElectricConductance
+    override val quantity = PhysicalQuantity.ElectricConductance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

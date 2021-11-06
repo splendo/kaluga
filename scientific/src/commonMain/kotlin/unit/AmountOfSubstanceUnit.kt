@@ -44,7 +44,7 @@ sealed class AmountOfSubstance : AbstractScientificUnit<PhysicalQuantity.AmountO
 object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance> {
     override val symbol = "mol"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.AmountOfSubstance
+    override val quantity = PhysicalQuantity.AmountOfSubstance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

@@ -46,7 +46,7 @@ sealed class MagneticInduction : AbstractScientificUnit<PhysicalQuantity.Magneti
 object Tesla : MagneticInduction(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction> {
     override val symbol = "T"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.MagneticInduction
+    override val quantity = PhysicalQuantity.MagneticInduction
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -76,7 +76,7 @@ object Gauss : MagneticInduction() {
     private const val GAUSS_IN_TESLA = 10000.0
     override val symbol = "G"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.MagneticInduction
+    override val quantity = PhysicalQuantity.MagneticInduction
     override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA.toDecimal()
 }

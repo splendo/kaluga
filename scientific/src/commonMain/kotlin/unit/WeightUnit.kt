@@ -74,19 +74,19 @@ sealed class MetricWeight : Weight(), MetricScientificUnit<PhysicalQuantity.Weig
 @Serializable
 sealed class ImperialWeight(override val symbol: String) : Weight(), ImperialScientificUnit<PhysicalQuantity.Weight> {
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Weight
+    override val quantity = PhysicalQuantity.Weight
 }
 
 @Serializable
 sealed class USCustomaryWeight(override val symbol: String) : Weight(), USCustomaryScientificUnit<PhysicalQuantity.Weight> {
     override val system = MeasurementSystem.USCustomary
-    override val type = PhysicalQuantity.Weight
+    override val quantity = PhysicalQuantity.Weight
 }
 
 @Serializable
 sealed class UKImperialWeight(override val symbol: String) : Weight(), UKImperialScientificUnit<PhysicalQuantity.Weight> {
     override val system = MeasurementSystem.UKImperial
-    override val type = PhysicalQuantity.Weight
+    override val quantity = PhysicalQuantity.Weight
 }
 
 // Metric Weight
@@ -96,7 +96,7 @@ object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQ
     override val symbol: String = "g"
     private const val GRAMS_IN_KILOGRAM = 1000.0
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Weight
+    override val quantity = PhysicalQuantity.Weight
     override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * GRAMS_IN_KILOGRAM.toDecimal()
 }
@@ -131,7 +131,7 @@ object Tonne : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, Phys
 object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
     override val symbol: String = "Da"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Weight
+    override val quantity = PhysicalQuantity.Weight
     override fun toSIUnit(value: Decimal): Decimal = Gram.toSIUnit(value) / AvogadroConstant
     override fun fromSIUnit(value: Decimal): Decimal = Gram.fromSIUnit(value) * AvogadroConstant
 }

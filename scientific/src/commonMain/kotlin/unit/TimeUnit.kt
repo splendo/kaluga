@@ -42,7 +42,7 @@ sealed class Time : AbstractScientificUnit<PhysicalQuantity.Time>(), MetricAndIm
 object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time> {
     override val symbol = "s"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Time
+    override val quantity = PhysicalQuantity.Time
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -67,7 +67,7 @@ object Minute : Time() {
     private const val SECOND_PER_MINUTE = 60.0
     override val symbol: String = "min"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Time
+    override val quantity = PhysicalQuantity.Time
     override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_MINUTE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_MINUTE.toDecimal()
 }
@@ -77,7 +77,7 @@ object Hour : Time() {
     private const val SECOND_PER_HOUR = 3600.0
     override val symbol: String = "h"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Time
+    override val quantity = PhysicalQuantity.Time
     override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_HOUR.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_HOUR.toDecimal()
 }

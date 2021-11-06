@@ -36,7 +36,7 @@ val JoltUnits: Set<Jolt> get() = MetricJoltUnits +
 sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
     abstract val acceleration: Acceleration
     abstract val per: Time
-    override val type = PhysicalQuantity.Jolt
+    override val quantity = PhysicalQuantity.Jolt
     override val symbol: String by lazy {
         val perSymbol = when {
             per == acceleration.per && acceleration.speed.per == per -> "${per.symbol}3"

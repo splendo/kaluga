@@ -45,7 +45,7 @@ sealed class ElectricCharge : AbstractScientificUnit<PhysicalQuantity.ElectricCh
 object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge> {
     override val symbol = "C"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.ElectricCharge
+    override val quantity = PhysicalQuantity.ElectricCharge
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

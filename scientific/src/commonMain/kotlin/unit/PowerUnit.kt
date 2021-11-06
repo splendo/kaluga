@@ -68,7 +68,7 @@ sealed class ImperialPower : Power(), ImperialScientificUnit<PhysicalQuantity.Po
 object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power> {
     override val symbol: String = "W"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -97,7 +97,7 @@ object Gigawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem
 object ErgPerSecond : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power> {
     override val symbol: String = "erg/s"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = Erg.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Erg.toSIUnit(value)
 }
@@ -107,7 +107,7 @@ object MetricHorsepower : MetricPower() {
     private const val KILOGRAM_FORCE_METER_SECOND_TO_WATT = 75.0
     override val symbol: String = "PS"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = KilogramForce.fromSIUnit(value) / KILOGRAM_FORCE_METER_SECOND_TO_WATT.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = KilogramForce.toSIUnit(value * KILOGRAM_FORCE_METER_SECOND_TO_WATT.toDecimal())
 }
@@ -117,7 +117,7 @@ object Horsepower : ImperialPower() {
     private const val FOOTPOUND_PER_MINUTE = 33000
     override val symbol: String = "hp"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = FootPoundForce.fromSIUnit(Minute.toSIUnit(value)) / FOOTPOUND_PER_MINUTE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Minute.toSIUnit(FootPoundForce.fromSIUnit(value * FOOTPOUND_PER_MINUTE.toDecimal()))
 }
@@ -126,7 +126,7 @@ object Horsepower : ImperialPower() {
 object FootPoundForcePerSecond : ImperialPower() {
     override val symbol: String = "${FootPoundForce.symbol} / ${Second.symbol}"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = FootPoundForce.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = FootPoundForce.toSIUnit(value)
 }
@@ -135,7 +135,7 @@ object FootPoundForcePerSecond : ImperialPower() {
 object FootPoundForcePerMinute : ImperialPower() {
     override val symbol: String = "${FootPoundForce.symbol} / ${Minute.symbol}"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = Minute.toSIUnit(FootPoundForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = FootPoundForce.toSIUnit(Minute.fromSIUnit(value))
 }
@@ -144,7 +144,7 @@ object FootPoundForcePerMinute : ImperialPower() {
 object BritishThermalUnitPerSecond : ImperialPower() {
     override val symbol: String = "${BritishThermalUnit.symbol} / ${Second.symbol}"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = BritishThermalUnit.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = BritishThermalUnit.toSIUnit(value)
 }
@@ -153,7 +153,7 @@ object BritishThermalUnitPerSecond : ImperialPower() {
 object BritishThermalUnitPerMinute : ImperialPower() {
     override val symbol: String = "${BritishThermalUnit.symbol} / ${Minute.symbol}"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = Minute.toSIUnit(BritishThermalUnit.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = BritishThermalUnit.toSIUnit(Minute.fromSIUnit(value))
 }
@@ -162,14 +162,14 @@ object BritishThermalUnitPerMinute : ImperialPower() {
 object BritishThermalUnitPerHour : ImperialPower() {
     override val symbol: String = "${BritishThermalUnit.symbol} / ${Hour.symbol}"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = Hour.toSIUnit(BritishThermalUnit.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = BritishThermalUnit.toSIUnit(Hour.fromSIUnit(value))
 }
 @Serializable
 data class MetricMetricAndImperialPowerWrapper(val metricAndImperialPower: MetricAndImperialPower) : MetricPower() {
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override val symbol: String = metricAndImperialPower.symbol
     override fun fromSIUnit(value: Decimal): Decimal = metricAndImperialPower.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialPower.toSIUnit(value)
@@ -180,7 +180,7 @@ val <PowerUnit : MetricAndImperialPower> PowerUnit.metric get() = MetricMetricAn
 @Serializable
 data class ImperialMetricAndImperialPowerWrapper(val metricAndImperialPower: MetricAndImperialPower) : ImperialPower() {
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Power
+    override val quantity = PhysicalQuantity.Power
     override val symbol: String = metricAndImperialPower.symbol
     override fun fromSIUnit(value: Decimal): Decimal = metricAndImperialPower.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialPower.toSIUnit(value)

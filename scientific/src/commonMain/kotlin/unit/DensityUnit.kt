@@ -47,7 +47,7 @@ sealed class Density : AbstractScientificUnit<PhysicalQuantity.Density>() {
     abstract val weight: Weight
     abstract val per: Volume
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = PhysicalQuantity.Density
+    override val quantity = PhysicalQuantity.Density
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }

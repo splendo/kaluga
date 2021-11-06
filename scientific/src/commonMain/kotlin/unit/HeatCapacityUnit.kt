@@ -46,7 +46,7 @@ val HeatCapacityUnits: Set<HeatCapacity> get() = MetricAndUKImperialHeatCapacity
 sealed class HeatCapacity : AbstractScientificUnit<PhysicalQuantity.HeatCapacity>() {
     abstract val energy: Energy
     abstract val per: Temperature
-    override val type = PhysicalQuantity.HeatCapacity
+    override val quantity = PhysicalQuantity.HeatCapacity
     override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.deltaToSIUnitDelta(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.deltaFromSIUnitDelta(value))

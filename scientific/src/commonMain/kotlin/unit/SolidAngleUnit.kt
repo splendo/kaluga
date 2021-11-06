@@ -43,7 +43,7 @@ sealed class SolidAngle : AbstractScientificUnit<PhysicalQuantity.SolidAngle>(),
 object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
     override val symbol = "sr"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.SolidAngle
+    override val quantity = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -64,7 +64,7 @@ object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
     private const val STERADIAN_IN_SPAT = 4.0 * PI
     override val symbol = "sp"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.SolidAngle
+    override val quantity = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = value / STERADIAN_IN_SPAT.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * STERADIAN_IN_SPAT.toDecimal()
 }
@@ -73,7 +73,7 @@ object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
 object SquareDegree : SolidAngle() {
     override val symbol = "°2"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.SolidAngle
+    override val quantity = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = Degree.fromSIUnit(Degree.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Degree.toSIUnit(Degree.toSIUnit(value))
 }

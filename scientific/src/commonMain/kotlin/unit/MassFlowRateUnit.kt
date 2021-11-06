@@ -47,7 +47,7 @@ sealed class MassFlowRate : AbstractScientificUnit<PhysicalQuantity.MassFlowRate
     abstract val weight: Weight
     abstract val per: Time
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = PhysicalQuantity.MassFlowRate
+    override val quantity = PhysicalQuantity.MassFlowRate
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }

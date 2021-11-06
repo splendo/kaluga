@@ -42,7 +42,7 @@ sealed class CatalysticActivity : AbstractScientificUnit<PhysicalQuantity.Cataly
 object Katal : CatalysticActivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity> {
     override val symbol = "kat"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.CatalysticActivity
+    override val quantity = PhysicalQuantity.CatalysticActivity
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

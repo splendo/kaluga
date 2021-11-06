@@ -64,7 +64,7 @@ sealed class ImperialIlluminance : Illuminance(), ImperialScientificUnit<Physica
 object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
     override val symbol = "lx"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Illuminance
+    override val quantity = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -94,7 +94,7 @@ object Gigalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metri
 object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
     override val symbol = "ph"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Illuminance
+    override val quantity = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = SquareCentimeter.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareCentimeter.fromSIUnit(value)
 }
@@ -124,7 +124,7 @@ object Gigaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metr
 object FootCandle : ImperialIlluminance() {
     override val symbol: String = "fc"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Illuminance
+    override val quantity = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = SquareFoot.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(value)
 }

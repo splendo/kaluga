@@ -61,7 +61,7 @@ sealed class ImperialLuminance : Luminance(), ImperialScientificUnit<PhysicalQua
 @Serializable
 object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance> {
     override val symbol: String = "nt"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
@@ -91,7 +91,7 @@ object Giganit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric,
 @Serializable
 object Stilb : MetricLuminance() {
     override val symbol: String = "sb"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
     override fun fromSIUnit(value: Decimal): Decimal = SquareCentimeter.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareCentimeter.fromSIUnit(value)
@@ -101,7 +101,7 @@ object Stilb : MetricLuminance() {
 object Apostilb : MetricLuminance() {
     private const val APOSTILB_IN_NIT = PI
     override val symbol: String = "asb"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
     override fun fromSIUnit(value: Decimal): Decimal = value * APOSTILB_IN_NIT.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / APOSTILB_IN_NIT.toDecimal()
@@ -110,7 +110,7 @@ object Apostilb : MetricLuminance() {
 @Serializable
 object Lambert : MetricLuminance() {
     override val symbol: String = "L"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
     override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(Stilb.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Stilb.toSIUnit(Apostilb.toSIUnit(value))
@@ -120,7 +120,7 @@ object Lambert : MetricLuminance() {
 object Skot : MetricLuminance() {
     private const val SKOT_IN_APOSTILB = 1000.0
     override val symbol: String = "sk"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
     override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * SKOT_IN_APOSTILB.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / SKOT_IN_APOSTILB.toDecimal())
@@ -130,7 +130,7 @@ object Skot : MetricLuminance() {
 object Bril : MetricLuminance() {
     private const val BRIL_IN_APOSTILB = 10000000.0
     override val symbol: String = "Bril"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
     override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * BRIL_IN_APOSTILB.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / BRIL_IN_APOSTILB.toDecimal())
@@ -139,7 +139,7 @@ object Bril : MetricLuminance() {
 @Serializable
 object FootLambert : ImperialLuminance() {
     override val symbol: String = "fL"
-    override val type = PhysicalQuantity.Luminance
+    override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Imperial
     override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(SquareFoot.toSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(Apostilb.toSIUnit(value))

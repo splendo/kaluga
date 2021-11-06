@@ -22,36 +22,36 @@ import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
-sealed interface ScientificUnit<Type : PhysicalQuantity> : MeasurementUsage, com.splendo.kaluga.base.utils.Serializable {
+sealed interface ScientificUnit<Quantity : PhysicalQuantity> : MeasurementUsage, com.splendo.kaluga.base.utils.Serializable {
     val symbol: String
     val system: MeasurementSystem
-    val type: Type
+    val quantity: Quantity
     fun toSIUnit(value: Decimal): Decimal
     fun fromSIUnit(value: Decimal): Decimal
 }
 
-interface SystemScientificUnit<System : MeasurementSystem, Type : PhysicalQuantity> : ScientificUnit<Type> {
+interface SystemScientificUnit<System : MeasurementSystem, Quantity : PhysicalQuantity> : ScientificUnit<Quantity> {
     override val system: System
 }
 
-interface MetricScientificUnit<Type : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.Metric, Type>, MeasurementUsage.UsedInMetric
-interface ImperialScientificUnit<Type : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.Imperial, Type>, MeasurementUsage.UsedInImperial
-interface USCustomaryScientificUnit<Type : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.USCustomary, Type>, MeasurementUsage.UsedInUSCustomary
-interface UKImperialScientificUnit<Type : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.UKImperial, Type>, MeasurementUsage.UsedInUKImperial
-interface MetricAndUKImperialScientificUnit<Type : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.MetricAndUKImperial, Type>, MeasurementUsage.UsedInMetricAndUKImperial
-interface MetricAndImperialScientificUnit<Type : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.MetricAndImperial, Type>, MeasurementUsage.UsedInMetricAndImperial
+interface MetricScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.Metric, Quantity>, MeasurementUsage.UsedInMetric
+interface ImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.Imperial, Quantity>, MeasurementUsage.UsedInImperial
+interface USCustomaryScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.USCustomary, Quantity>, MeasurementUsage.UsedInUSCustomary
+interface UKImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.UKImperial, Quantity>, MeasurementUsage.UsedInUKImperial
+interface MetricAndUKImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.MetricAndUKImperial, Quantity>, MeasurementUsage.UsedInMetricAndUKImperial
+interface MetricAndImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.MetricAndImperial, Quantity>, MeasurementUsage.UsedInMetricAndImperial
 
 @Serializable
-sealed class AbstractScientificUnit<Type : PhysicalQuantity> : ScientificUnit<Type>
+sealed class AbstractScientificUnit<Quantity : PhysicalQuantity> : ScientificUnit<Quantity>
 
-fun <Unit : PhysicalQuantity> ScientificUnit<Unit>.convert(
+fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Number,
-    to: ScientificUnit<Unit>
+    to: ScientificUnit<Quantity>
 ) = convert(value.toDecimal(), to).toDouble()
 
-fun <Unit : PhysicalQuantity> ScientificUnit<Unit>.convert(
+fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Decimal,
-    to: ScientificUnit<Unit>
+    to: ScientificUnit<Quantity>
 ) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 val Units: Set<ScientificUnit<*>> get() = AccelerationUnits +

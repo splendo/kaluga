@@ -113,26 +113,26 @@ sealed class MetricPressure : Pressure(), MetricScientificUnit<PhysicalQuantity.
 @Serializable
 sealed class ImperialPressure : Pressure(), ImperialScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
 }
 
 @Serializable
 sealed class UKImperialPressure : Pressure(), UKImperialScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.UKImperial
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
 }
 
 @Serializable
 sealed class USCustomaryPressure : Pressure(), USCustomaryScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.USCustomary
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
 }
 
 @Serializable
 object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
     override val symbol: String = "P"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -161,7 +161,7 @@ object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physical
     private const val BAR_PER_PASCAL = 0.00001
     override val symbol: String = "bar"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = value * BAR_PER_PASCAL.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / BAR_PER_PASCAL.toDecimal()
 }
@@ -192,7 +192,7 @@ object Barye : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physic
     private const val BARYE_PER_PASCAL = 10
     override val symbol: String = "Ba"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = value * BARYE_PER_PASCAL.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / BARYE_PER_PASCAL.toDecimal()
 }
@@ -223,7 +223,7 @@ object Atmosphere : MetricPressure() {
     private const val PASCAL_PER_ATMOSPHERE = 101325
     override val symbol: String = "atm"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = value / PASCAL_PER_ATMOSPHERE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * PASCAL_PER_ATMOSPHERE.toDecimal()
 }
@@ -232,7 +232,7 @@ object Torr : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physica
     private const val TORR_PER_ATMOSPHERE = 760
     override val symbol: String = "Torr"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = Atmosphere.fromSIUnit(value) * TORR_PER_ATMOSPHERE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Atmosphere.toSIUnit(value / TORR_PER_ATMOSPHERE.toDecimal())
 }
@@ -263,7 +263,7 @@ object MillimeterOfMercury : MetricPressure() {
     private const val PASCAL_PER_MMHG = 133.322387415
     override val symbol: String = "mmHg"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = value / PASCAL_PER_MMHG.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * PASCAL_PER_MMHG.toDecimal()
 }
@@ -271,7 +271,7 @@ object MillimeterOfMercury : MetricPressure() {
 object CentimeterOfWater : MetricPressure() {
     override val symbol: String = "cmH2O"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = MillimeterOfWater.fromSIUnit(value) * 10.0.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = MillimeterOfWater.toSIUnit(value / 10.0.toDecimal())
 }
@@ -280,7 +280,7 @@ object MillimeterOfWater : MetricPressure() {
     private const val PASCAL_PER_MMH2O = 9.80665
     override val symbol: String = "mmH2O"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Pressure
+    override val quantity = PhysicalQuantity.Pressure
     override fun fromSIUnit(value: Decimal): Decimal = value / PASCAL_PER_MMH2O.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * PASCAL_PER_MMH2O.toDecimal()
 }

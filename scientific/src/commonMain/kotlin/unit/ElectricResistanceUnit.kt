@@ -43,7 +43,7 @@ sealed class ElectricResistance : AbstractScientificUnit<PhysicalQuantity.Electr
 object Ohm : ElectricResistance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance> {
     override val symbol = "Ω"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.ElectricResistance
+    override val quantity = PhysicalQuantity.ElectricResistance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

@@ -39,7 +39,7 @@ val AccelerationUnits: Set<Acceleration> get() = MetricAccelerationUnits +
 sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration>() {
     abstract val speed: Speed
     abstract val per: Time
-    override val type = PhysicalQuantity.Acceleration
+    override val quantity = PhysicalQuantity.Acceleration
     override val symbol: String by lazy {
         if (speed.per == per) {
             "${speed.distance.symbol} / ${per.symbol}2"

@@ -108,7 +108,7 @@ sealed class MetricAndImperialEnergy : Energy(), MetricAndImperialScientificUnit
 object Joule : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
     override val symbol: String = "J"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -138,7 +138,7 @@ object Erg : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQu
     const val ERG_IN_JOULE = 10000000
     override val symbol: String = "erg"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = value * ERG_IN_JOULE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / ERG_IN_JOULE.toDecimal()
 }
@@ -168,7 +168,7 @@ object Gigaerg : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, Ph
 object WattHour : MetricAndImperialEnergy(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy> {
     override val symbol: String = "Wh"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Hour.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Hour.toSIUnit(value)
 }
@@ -197,7 +197,7 @@ object GigawattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementS
 object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
     override val symbol: String = "eV"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = value.div(elementaryCharge.decimalValue, 29)
     override fun toSIUnit(value: Decimal): Decimal = value.times(elementaryCharge.decimalValue, 29)
 }
@@ -230,7 +230,7 @@ object Calorie : MetricAndImperialEnergy(), CalorieUnit by CalorieBase(4.184.toD
     internal class CalorieBase(val jouleInCalorie: Decimal, symbolPostfix: String = "") : CalorieUnit {
         override val symbol: String = "Cal$symbolPostfix"
         override val system = MeasurementSystem.MetricAndImperial
-        override val type = PhysicalQuantity.Energy
+        override val quantity = PhysicalQuantity.Energy
         override fun fromSIUnit(value: Decimal): Decimal = value / jouleInCalorie
         override fun toSIUnit(value: Decimal): Decimal = value * jouleInCalorie
     }
@@ -258,7 +258,7 @@ object Megacalorie : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSy
 object FootPoundal : ImperialEnergy() {
     override val symbol: String = "ftpdl"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(Poundal.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Poundal.toSIUnit(Foot.toSIUnit(value))
 }
@@ -266,7 +266,7 @@ object FootPoundal : ImperialEnergy() {
 object FootPoundForce : ImperialEnergy() {
     override val symbol: String = "ftlbf"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(PoundForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(Foot.toSIUnit(value))
 }
@@ -274,7 +274,7 @@ object FootPoundForce : ImperialEnergy() {
 object InchPoundForce : ImperialEnergy() {
     override val symbol: String = "inlbf"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Inch.fromSIUnit(PoundForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(Inch.toSIUnit(value))
 }
@@ -282,7 +282,7 @@ object InchPoundForce : ImperialEnergy() {
 object InchOunceForce : ImperialEnergy() {
     override val symbol: String = "inozf"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = Inch.fromSIUnit(OunceForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = OunceForce.toSIUnit(Inch.toSIUnit(value))
 }
@@ -290,7 +290,7 @@ object InchOunceForce : ImperialEnergy() {
 object HorsepowerHour : ImperialEnergy() {
     override val symbol: String = "hph"
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override fun fromSIUnit(value: Decimal): Decimal = WattHour.fromSIUnit(Horsepower.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Horsepower.toSIUnit(WattHour.toSIUnit(value))
 }
@@ -300,7 +300,7 @@ object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSy
     internal class BritishThermalUnitBase(private val calorieUnit: CalorieUnit, symbolPostfix: String = "") : SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> {
         override val symbol: String = "Btu$symbolPostfix"
         override val system = MeasurementSystem.Imperial
-        override val type = PhysicalQuantity.Energy
+        override val quantity = PhysicalQuantity.Energy
         override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(Rankine.fromSIUnit(Kilo(calorieUnit).fromSIUnit(value)))
         override fun toSIUnit(value: Decimal): Decimal = Kilo(calorieUnit).toSIUnit(Rankine.toSIUnit(Pound.toSIUnit(value)))
     }
@@ -312,7 +312,7 @@ object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSy
 @Serializable
 data class MetricMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: MetricAndImperialEnergy) : MetricEnergy() {
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override val symbol: String = metricAndImperialEnergy.symbol
     override fun fromSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.toSIUnit(value)
@@ -323,7 +323,7 @@ val <EnergyUnit : MetricAndImperialEnergy> EnergyUnit.metric get() = MetricMetri
 @Serializable
 data class ImperialMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: MetricAndImperialEnergy) : ImperialEnergy() {
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Energy
+    override val quantity = PhysicalQuantity.Energy
     override val symbol: String = metricAndImperialEnergy.symbol
     override fun fromSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.toSIUnit(value)

@@ -91,13 +91,13 @@ sealed class MetricVolume : Volume(), MetricScientificUnit<PhysicalQuantity.Volu
 
 @Serializable
 sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQuantity.Volume> {
-    override val type = PhysicalQuantity.Volume
+    override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.USCustomary
 }
 
 @Serializable
 sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuantity.Volume> {
-    override val type = PhysicalQuantity.Volume
+    override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -107,7 +107,7 @@ sealed class ImperialVolume : Volume(), ImperialScientificUnit<PhysicalQuantity.
 class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
     override val symbol: String = "${unit.symbol}3"
     override val system: S = unit.system
-    override val type = PhysicalQuantity.Volume
+    override val quantity = PhysicalQuantity.Volume
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(unit.fromSIUnit(value)))
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(unit.toSIUnit(unit.toSIUnit(value)))
 }
@@ -153,7 +153,7 @@ object Liter : MetricVolume(), MetricBaseUnit<MeasurementSystem.Metric, Physical
     override val symbol: String = "l"
     private const val LITERS_IN_CUBIC_METER = 1000.0
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Volume
+    override val quantity = PhysicalQuantity.Volume
     override fun toSIUnit(value: Decimal): Decimal = value / LITERS_IN_CUBIC_METER.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * LITERS_IN_CUBIC_METER.toDecimal()
 }

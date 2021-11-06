@@ -36,7 +36,7 @@ abstract class LuminousExposure : ScientificUnit<PhysicalQuantity.LuminousExposu
     abstract val illuminance: Illuminance
     abstract val time: Time
     override val symbol: String get() = "${illuminance.symbol}⋅${time.symbol}"
-    override val type = PhysicalQuantity.LuminousExposure
+    override val quantity = PhysicalQuantity.LuminousExposure
     override fun fromSIUnit(value: Decimal): Decimal = illuminance.fromSIUnit(time.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = time.toSIUnit(illuminance.toSIUnit(value))
 }

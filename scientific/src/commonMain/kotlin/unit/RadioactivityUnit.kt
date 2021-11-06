@@ -57,7 +57,7 @@ sealed class Radioactivity : AbstractScientificUnit<PhysicalQuantity.Radioactivi
 object Becquerel : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity> {
     override val symbol = "Bq"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Radioactivity
+    override val quantity = PhysicalQuantity.Radioactivity
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -88,7 +88,7 @@ object Rutherford : Radioactivity() {
     private const val RUTHERFORD_IN_BECQUEREL = 0.000001
     override val symbol = "Rd"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Radioactivity
+    override val quantity = PhysicalQuantity.Radioactivity
     override fun fromSIUnit(value: Decimal): Decimal = value * RUTHERFORD_IN_BECQUEREL.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / RUTHERFORD_IN_BECQUEREL.toDecimal()
 }
@@ -98,7 +98,7 @@ object Curie : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperi
     private const val BECQUEREL_IN_CURIE = 3.7e10
     override val symbol = "Ci"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Radioactivity
+    override val quantity = PhysicalQuantity.Radioactivity
     override fun fromSIUnit(value: Decimal): Decimal = value / BECQUEREL_IN_CURIE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * BECQUEREL_IN_CURIE.toDecimal()
 }

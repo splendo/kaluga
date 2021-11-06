@@ -29,7 +29,7 @@ val LuminousEnergyUnits: Set<LuminousEnergy> get() = LuminousFluxUnits.flatMap {
 class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) : MetricAndImperialScientificUnit<PhysicalQuantity.LuminousEnergy> {
     override val symbol: String = "${luminousFlux.symbol}⋅${time.symbol}"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.LuminousEnergy
+    override val quantity = PhysicalQuantity.LuminousEnergy
     override fun fromSIUnit(value: Decimal): Decimal = luminousFlux.fromSIUnit(time.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = time.toSIUnit(luminousFlux.toSIUnit(value))
 }

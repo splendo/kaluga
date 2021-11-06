@@ -47,7 +47,7 @@ sealed class MolarMass : AbstractScientificUnit<PhysicalQuantity.MolarMass>() {
     abstract val weight: Weight
     abstract val per: AmountOfSubstance
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
-    override val type = PhysicalQuantity.MolarMass
+    override val quantity = PhysicalQuantity.MolarMass
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }

@@ -41,7 +41,7 @@ val ActionUnits: Set<Action> get() = MetricAndImperialActionUnits +
 sealed class Action : AbstractScientificUnit<PhysicalQuantity.Action>() {
     abstract val energy: Energy
     abstract val time: Time
-    override val type = PhysicalQuantity.Action
+    override val quantity = PhysicalQuantity.Action
     override val symbol: String by lazy { "${energy.symbol}⋅${time.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = time.fromSIUnit(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(time.toSIUnit(value))

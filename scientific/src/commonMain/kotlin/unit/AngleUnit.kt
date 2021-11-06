@@ -51,7 +51,7 @@ sealed class Angle : AbstractScientificUnit<PhysicalQuantity.Angle>(), MetricAnd
 object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Angle
+    override val quantity = PhysicalQuantity.Angle
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -72,7 +72,7 @@ object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Physi
     private const val RADIAN_IN_TURN = 2.0 * PI
     override val symbol = "tr"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Angle
+    override val quantity = PhysicalQuantity.Angle
     override fun fromSIUnit(value: Decimal): Decimal = value / RADIAN_IN_TURN.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * RADIAN_IN_TURN.toDecimal()
 }
@@ -93,7 +93,7 @@ object Degree : Angle() {
     private const val DEGREE_IN_TURN = 360.0
     override val symbol = "°"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Angle
+    override val quantity = PhysicalQuantity.Angle
     override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * DEGREE_IN_TURN.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / DEGREE_IN_TURN.toDecimal())
 }
@@ -103,7 +103,7 @@ object Gradian : Angle() {
     private const val GRADIAN_IN_TURN = 400.0
     override val symbol = "gon"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Angle
+    override val quantity = PhysicalQuantity.Angle
     override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * GRADIAN_IN_TURN.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / GRADIAN_IN_TURN.toDecimal())
 }
@@ -113,7 +113,7 @@ object ArcMinute : Angle() {
     private const val ARCMINUTE_IN_TURN = 21600.0
     override val symbol = "′"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Angle
+    override val quantity = PhysicalQuantity.Angle
     override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCMINUTE_IN_TURN.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCMINUTE_IN_TURN.toDecimal())
 }
@@ -123,7 +123,7 @@ object ArcSecond : Angle() {
     private const val ARCSECOND_IN_TURN = 1296000.0
     override val symbol = "″"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Angle
+    override val quantity = PhysicalQuantity.Angle
     override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCSECOND_IN_TURN.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCSECOND_IN_TURN.toDecimal())
 }

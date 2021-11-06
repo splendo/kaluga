@@ -46,7 +46,7 @@ val SpecificEnergyUnits: Set<SpecificEnergy> get() = MetricSpecificEnergyUnits +
 sealed class SpecificEnergy : AbstractScientificUnit<PhysicalQuantity.SpecificEnergy>() {
     abstract val energy: Energy
     abstract val per: Weight
-    override val type = PhysicalQuantity.SpecificEnergy
+    override val quantity = PhysicalQuantity.SpecificEnergy
     override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.fromSIUnit(value))

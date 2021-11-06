@@ -46,7 +46,7 @@ val DynamicViscosityUnits: Set<DynamicViscosity> get() = MetricDynamicViscosityU
 sealed class DynamicViscosity : AbstractScientificUnit<PhysicalQuantity.DynamicViscosity>() {
     abstract val pressure: Pressure
     abstract val time: Time
-    override val type = PhysicalQuantity.DynamicViscosity
+    override val quantity = PhysicalQuantity.DynamicViscosity
     override val symbol: String by lazy { "${pressure.symbol}⋅${time.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = time.fromSIUnit(pressure.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = pressure.toSIUnit(time.toSIUnit(value))

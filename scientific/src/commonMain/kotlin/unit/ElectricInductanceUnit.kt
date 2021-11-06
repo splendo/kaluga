@@ -43,7 +43,7 @@ sealed class ElectricInductance : AbstractScientificUnit<PhysicalQuantity.Electr
 object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance> {
     override val symbol = "H"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.ElectricInductance
+    override val quantity = PhysicalQuantity.ElectricInductance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

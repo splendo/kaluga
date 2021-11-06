@@ -42,7 +42,7 @@ sealed class LuminousFlux : AbstractScientificUnit<PhysicalQuantity.LuminousFlux
 object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux> {
     override val symbol = "lm"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.LuminousFlux
+    override val quantity = PhysicalQuantity.LuminousFlux
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

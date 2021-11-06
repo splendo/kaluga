@@ -44,7 +44,7 @@ sealed class ElectricCurrent : AbstractScientificUnit<PhysicalQuantity.ElectricC
 object Ampere : ElectricCurrent(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCurrent> {
     override val symbol = "A"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.ElectricCurrent
+    override val quantity = PhysicalQuantity.ElectricCurrent
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

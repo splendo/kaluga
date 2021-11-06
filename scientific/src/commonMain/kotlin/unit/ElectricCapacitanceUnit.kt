@@ -42,7 +42,7 @@ sealed class ElectricCapacitance : AbstractScientificUnit<PhysicalQuantity.Elect
 object Farad : ElectricCapacitance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance> {
     override val symbol = "F"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.ElectricCapacitance
+    override val quantity = PhysicalQuantity.ElectricCapacitance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

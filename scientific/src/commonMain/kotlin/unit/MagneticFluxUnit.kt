@@ -43,7 +43,7 @@ sealed class MagneticFlux : AbstractScientificUnit<PhysicalQuantity.MagneticFlux
 object Weber : MagneticFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux> {
     override val symbol = "Wb"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.MagneticFlux
+    override val quantity = PhysicalQuantity.MagneticFlux
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -72,7 +72,7 @@ object Gigaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAn
 object Maxwell : MagneticFlux() {
     override val symbol = "Mx"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.MagneticFlux
+    override val quantity = PhysicalQuantity.MagneticFlux
     override fun fromSIUnit(value: Decimal): Decimal = Abvolt.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Abvolt.toSIUnit(value)
 }

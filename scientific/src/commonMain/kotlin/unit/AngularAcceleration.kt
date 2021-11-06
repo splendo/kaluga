@@ -27,7 +27,7 @@ val AngularAccelerationUnits: Set<AngularAcceleration> get() = AngularVelocityUn
 
 @Serializable
 data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<PhysicalQuantity.AngularAcceleration>(), MetricAndImperialScientificUnit<PhysicalQuantity.AngularAcceleration> {
-    override val type = PhysicalQuantity.AngularAcceleration
+    override val quantity = PhysicalQuantity.AngularAcceleration
     override val system = MeasurementSystem.MetricAndImperial
     override val symbol: String by lazy {
         if (angularVelocity.per == per) {

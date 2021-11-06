@@ -42,7 +42,7 @@ sealed class LuminousIntensity : AbstractScientificUnit<PhysicalQuantity.Luminou
 object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity> {
     override val symbol = "cd"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.LuminousIntensity
+    override val quantity = PhysicalQuantity.LuminousIntensity
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }

@@ -46,7 +46,7 @@ sealed class Voltage : AbstractScientificUnit<PhysicalQuantity.Voltage>(), Metri
 object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage> {
     override val symbol = "V"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Voltage
+    override val quantity = PhysicalQuantity.Voltage
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -58,7 +58,7 @@ object Abvolt : Voltage() {
     private const val ABVOLT_IN_VOLT = 100000000.0
     override val symbol = "abV"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Voltage
+    override val quantity = PhysicalQuantity.Voltage
     override fun fromSIUnit(value: Decimal): Decimal = value * ABVOLT_IN_VOLT.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / ABVOLT_IN_VOLT.toDecimal()
 }

@@ -56,7 +56,7 @@ sealed class IonizingRadiationAbsorbedDose : AbstractScientificUnit<PhysicalQuan
 object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
     override val symbol = "Gy"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.IonizingRadiationAbsorbedDose
+    override val quantity = PhysicalQuantity.IonizingRadiationAbsorbedDose
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -87,7 +87,7 @@ object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.M
     const val GRAY_IN_RAD = 0.01
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.IonizingRadiationAbsorbedDose
+    override val quantity = PhysicalQuantity.IonizingRadiationAbsorbedDose
     override fun fromSIUnit(value: Decimal): Decimal = value / GRAY_IN_RAD.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * GRAY_IN_RAD.toDecimal()
 }

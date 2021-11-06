@@ -57,7 +57,7 @@ sealed class MetricLength : Length(), MetricScientificUnit<PhysicalQuantity.Leng
 @Serializable
 sealed class ImperialLength(override val symbol: String) : Length(), ImperialScientificUnit<PhysicalQuantity.Length> {
     override val system = MeasurementSystem.Imperial
-    override val type = PhysicalQuantity.Length
+    override val quantity = PhysicalQuantity.Length
 }
 
 // Metric Length
@@ -65,7 +65,7 @@ sealed class ImperialLength(override val symbol: String) : Length(), ImperialSci
 object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Length> {
     override val symbol: String = "m"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Length
+    override val quantity = PhysicalQuantity.Length
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
 }
@@ -105,7 +105,7 @@ object NauticalMile : MetricLength() {
     private const val METER_IN_NAUTICAL_MILE = 1852
     override val symbol: String = "nmi"
     override val system = MeasurementSystem.Metric
-    override val type = PhysicalQuantity.Length
+    override val quantity = PhysicalQuantity.Length
     override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_NAUTICAL_MILE.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_NAUTICAL_MILE.toDecimal()
 }

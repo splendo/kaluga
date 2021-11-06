@@ -46,7 +46,7 @@ val VolumetricFlowUnits: Set<VolumetricFlow> get() = MetricVolumetricFlowUnits +
 sealed class VolumetricFlow : AbstractScientificUnit<PhysicalQuantity.VolumetricFlow>() {
     abstract val volume: Volume
     abstract val per: Time
-    override val type = PhysicalQuantity.VolumetricFlow
+    override val quantity = PhysicalQuantity.VolumetricFlow
     override val symbol: String by lazy { "${volume.symbol} / ${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volume.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(per.fromSIUnit(value))

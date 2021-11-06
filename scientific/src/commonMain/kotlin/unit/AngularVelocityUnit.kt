@@ -27,7 +27,7 @@ val AngularVelocityUnits: Set<AngularVelocity> get() = AngleUnits.flatMap { angl
 
 @Serializable
 data class AngularVelocity(val angle: Angle, val per: Time) : AbstractScientificUnit<PhysicalQuantity.AngularVelocity>(), MetricAndImperialScientificUnit<PhysicalQuantity.AngularVelocity> {
-    override val type = PhysicalQuantity.AngularVelocity
+    override val quantity = PhysicalQuantity.AngularVelocity
     override val system = MeasurementSystem.MetricAndImperial
     override val symbol: String by lazy { "${angle.symbol} / ${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(angle.fromSIUnit(value))

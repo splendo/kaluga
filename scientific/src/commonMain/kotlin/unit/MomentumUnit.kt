@@ -54,7 +54,7 @@ val MomentumUnits: Set<Momentum> get() = MetricMomentumUnits +
 sealed class Momentum : AbstractScientificUnit<PhysicalQuantity.Momentum>() {
     abstract val mass: Weight
     abstract val speed: Speed
-    override val type = PhysicalQuantity.Momentum
+    override val quantity = PhysicalQuantity.Momentum
     override val symbol: String by lazy { "${mass.symbol}⋅${speed.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = speed.fromSIUnit(mass.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = mass.toSIUnit(speed.toSIUnit(value))

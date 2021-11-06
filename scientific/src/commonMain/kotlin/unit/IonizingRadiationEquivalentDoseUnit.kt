@@ -56,7 +56,7 @@ sealed class IonizingRadiationEquivalentDose : AbstractScientificUnit<PhysicalQu
 object Sievert : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose> {
     override val symbol = "Sv"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.IonizingRadiationEquivalentDose
+    override val quantity = PhysicalQuantity.IonizingRadiationEquivalentDose
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -87,7 +87,7 @@ object RoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricBaseUnit
     const val SIEVERT_IN_REM = 0.01
     override val symbol = "rem"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.IonizingRadiationEquivalentDose
+    override val quantity = PhysicalQuantity.IonizingRadiationEquivalentDose
     override fun fromSIUnit(value: Decimal): Decimal = value / SIEVERT_IN_REM.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * SIEVERT_IN_REM.toDecimal()
 }

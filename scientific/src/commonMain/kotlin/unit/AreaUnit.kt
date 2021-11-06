@@ -59,7 +59,7 @@ sealed class ImperialArea : Area(), ImperialScientificUnit<PhysicalQuantity.Area
 class Square<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Area> {
     override val symbol: String = "${unit.symbol}2"
     override val system: S = unit.system
-    override val type = PhysicalQuantity.Area
+    override val quantity = PhysicalQuantity.Area
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(unit.toSIUnit(value))
 }
@@ -127,7 +127,7 @@ object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imper
 object Acre : ImperialArea() {
     override val symbol: String = "acre"
     val ACRES_IN_SQUARE_MILE = 640.0
-    override val type = PhysicalQuantity.Area
+    override val quantity = PhysicalQuantity.Area
     override val system = MeasurementSystem.Imperial
     override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()

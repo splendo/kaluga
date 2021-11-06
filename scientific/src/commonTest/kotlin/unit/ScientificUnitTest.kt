@@ -153,7 +153,7 @@ class ScientificUnitTest {
 
     @Test
     fun testEnergy() {
-        assertScientificUnit(1000, Joule, Electronvolt, 6.2415090744607621e+18, 10000.0)
+        assertScientificUnit(10, Joule, Electronvolt, 6.2415090744607621e+18, 10000.0)
         assertScientificUnit(1000, Joule, FootPoundal, 23.730360404231938, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Joule, HorsepowerHour, 3.72506136e-7, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Joule, BritishThermalUnit, 0.000947817120313, unitTranslationErrorTolerance)

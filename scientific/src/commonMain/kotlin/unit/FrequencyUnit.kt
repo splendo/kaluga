@@ -45,7 +45,7 @@ sealed class Frequency : ScientificUnit<PhysicalQuantity.Frequency>, MetricAndIm
 object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency> {
     override val symbol: String = "Hz"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Frequency
+    override val quantity = PhysicalQuantity.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
@@ -74,7 +74,7 @@ object Gigahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndIm
 object BeatsPerMinute : Frequency() {
     override val symbol: String = "bpm"
     override val system = MeasurementSystem.MetricAndImperial
-    override val type = PhysicalQuantity.Frequency
+    override val quantity = PhysicalQuantity.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value * 60.0.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()
 }
