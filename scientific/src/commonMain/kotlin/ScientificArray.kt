@@ -197,6 +197,15 @@ fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
     NumberType : Number,
+    TargetValue : ScientificValue<Quantity, Unit>
+    > ScientificArray<NumberType, Quantity, Unit>.split(
+    factory: (Decimal, Unit) -> TargetValue
+) = split(unit, factory)
+
+fun <
+    Quantity : PhysicalQuantity,
+    Unit : ScientificUnit<Quantity>,
+    NumberType : Number,
     TargetUnit : ScientificUnit<Quantity>,
     TargetValue : ScientificValue<Quantity, TargetUnit>
     > ScientificArray<NumberType, Quantity, Unit>.split(
