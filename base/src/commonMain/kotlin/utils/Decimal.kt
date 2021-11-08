@@ -16,8 +16,6 @@
  */
 package com.splendo.kaluga.base.utils
 
-import kotlin.jvm.JvmName
-
 expect class Decimal : Comparable<Decimal>
 
 expect operator fun Decimal.plus(value: Decimal): Decimal
@@ -59,7 +57,6 @@ expect fun Decimal.pow(
     scale: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
-
 
 sealed class RoundingMode {
     object RoundDown : RoundingMode()
