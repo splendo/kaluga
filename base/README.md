@@ -124,7 +124,7 @@ assertTrue(today < tomorrow)
 ### Decimal
 
 Kaluga includes a `Decimal` class to manage decimal numbers with high precision.
-Decimal can be created from any `Number` using `toDecimal()` or back to a `Double`/`Int` using `toDouble()`/`toInt()` respecively.
+Decimal can be created from any `Number` using `toDecimal()` or back to a `Double`/`Int` using `toDouble()`/`toInt()` respectively.
 
 Use Decimals to do standard arithmetic operations. A Rounding mode or scale can be provided for these calculations.
 
