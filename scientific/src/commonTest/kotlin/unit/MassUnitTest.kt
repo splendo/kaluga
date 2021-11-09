@@ -57,13 +57,13 @@ class MassUnitTest {
         assertEquals(7_000.0, Pound.convert(1.0, Grain))
         assertEquals(256.0, Pound.convert(1.0, Dram))
         assertEquals(16.0, Pound.convert(1.0, Ounce))
-        assertEquals(0.07142857142857142, Pound.convert(1.0, Stone))
-        assertEquals(0.031080950171567253, Pound.convert(1.0, Slug))
+        assertEquals(0.07142857, Pound.convert(1.0, Stone, 8))
+        assertEquals(0.03108095, Pound.convert(1.0, Slug, 8))
 
         // uk ton
-        assertEquals(4.464285714285714e-4, Pound.convert(1.0, ImperialTon))
+        assertEquals(0.00044643, Pound.convert(1.0, ImperialTon, 8))
         // us ton
-        assertEquals(5.0e-4, Pound.convert(1.0, UsTon))
+        assertEquals(0.0005, Pound.convert(1.0, UsTon))
     }
 
     // ##### Mixed mass unit table conversions #####
@@ -85,17 +85,17 @@ class MassUnitTest {
 
     @Test
     fun kilogramToPoundConversionTest() {
-        assertEquals(15_432.35835294143, Kilogram.convert(1.0, Grain))
-        assertEquals(564.3833911932866, Kilogram.convert(1.0, Dram))
-        assertEquals(35.27396194958041, Kilogram.convert(1.0, Ounce))
-        assertEquals(2.2046226218487757, Kilogram.convert(1.0, Pound))
-        assertEquals(0.15747304441776971, Kilogram.convert(1.0, Stone))
-        assertEquals(0.06852176585679176, Kilogram.convert(1.0, Slug))
+        assertEquals(15_432.35835294, Kilogram.convert(1.0, Grain, 8))
+        assertEquals(564.38339119, Kilogram.convert(1.0, Dram, 8))
+        assertEquals(35.27396195, Kilogram.convert(1.0, Ounce, 8))
+        assertEquals(2.20462262, Kilogram.convert(1.0, Pound, 8))
+        assertEquals(0.15747304, Kilogram.convert(1.0, Stone, 8))
+        assertEquals(0.06852177, Kilogram.convert(1.0, Slug, 8))
 
         // uk ton
-        assertEquals(9.842065276110606e-4, Kilogram.convert(1.0, ImperialTon))
+        assertEquals(0.00098421, Kilogram.convert(1.0, ImperialTon, 8))
         // us ton
-        assertEquals(0.001102311310924388, Kilogram.convert(1.0, UsTon))
+        assertEquals(0.00110231, Kilogram.convert(1.0, UsTon, 8))
     }
 
     @Test
@@ -138,9 +138,9 @@ class MassUnitTest {
         assertEquals(45.359237, Pound.convert(1.0, Decagram))
         assertEquals(4.5359237, Pound.convert(1.0, Hectogram))
         assertEquals(0.45359237, Pound.convert(1.0, Kilogram))
-        assertEquals(4.5359237e-4, Pound.convert(1.0, Megagram))
-        assertEquals(4.5359237e-4, Pound.convert(1.0, Tonne))
-        assertEquals(4.5359237e-7, Pound.convert(1.0, Gigagram))
+        assertEquals(0.00045359, Pound.convert(1.0, Megagram, 8))
+        assertEquals(0.00045359, Pound.convert(1.0, Tonne, 8))
+        assertEquals(0.00000045, Pound.convert(1.0, Gigagram, 8))
     }
 
     @Test
