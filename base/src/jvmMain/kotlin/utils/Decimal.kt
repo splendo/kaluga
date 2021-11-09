@@ -85,11 +85,9 @@ actual fun Decimal.times(
 ).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
-    this.round(
-        MathContext(
-            scale + this.toInt().length(),
-            NativeRoundingMode.valueOf(roundingMode.java)
-        )
+    this.setScale(
+        scale,
+        NativeRoundingMode.valueOf(roundingMode.java)
     )
 
 actual infix fun Decimal.pow(n: Int): Decimal = this.pow(n, MathContext.DECIMAL128)
