@@ -17,6 +17,8 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.RoundingMode
+import com.splendo.kaluga.base.utils.round
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.PhysicalQuantity
@@ -48,6 +50,13 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Number,
     to: ScientificUnit<Quantity>
 ) = convert(value.toDecimal(), to).toDouble()
+
+fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
+    value: Number,
+    to: ScientificUnit<Quantity>,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+) = convert(value.toDecimal(), to).round(round, roundingMode).toDouble()
 
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Decimal,
