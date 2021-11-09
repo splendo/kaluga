@@ -31,6 +31,7 @@ val MetricWeightUnits: Set<MetricWeight> get() = setOf(
     Milligram,
     Centigram,
     Decigram,
+    Gram,
     Decagram,
     Hectogram,
     Megagram,

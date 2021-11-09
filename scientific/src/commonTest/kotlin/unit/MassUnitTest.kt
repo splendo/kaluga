@@ -31,6 +31,7 @@ class MassUnitTest {
         assertEquals(1e+6, Kilogram.convert(1.0, Milligram))
         assertEquals(100_000.0, Kilogram.convert(1.0, Centigram))
         assertEquals(10_000.0, Kilogram.convert(1.0, Decigram))
+        assertEquals(1_000.0, Kilogram.convert(1.0, Gram))
         assertEquals(100.0, Kilogram.convert(1.0, Decagram))
         assertEquals(10.0, Kilogram.convert(1.0, Hectogram))
         assertEquals(0.001, Kilogram.convert(1.0, Megagram))
