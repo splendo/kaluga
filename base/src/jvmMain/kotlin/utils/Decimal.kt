@@ -106,7 +106,7 @@ actual fun Decimal.pow(
     )
 ).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
 
-actual fun Number.toDecimal() = BigDecimal.valueOf(this.toDouble())
+actual fun Number.toDecimal() = BigDecimal(this.toString())
 actual fun String.toDecimal() = BigDecimal(this)
 
 actual fun Decimal.toDouble() = this.toDouble()

@@ -189,7 +189,7 @@ else
         )
     )
 
-actual fun Number.toDecimal() = Decimal(NSDecimalNumber(this.toDouble()))
+actual fun Number.toDecimal() = Decimal(NSDecimalNumber(this.toString()))
 actual fun String.toDecimal() = Decimal(NSDecimalNumber(this))
 
 actual fun Decimal.toDouble() = nsDecimal.toString().toDouble()
