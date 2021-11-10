@@ -59,6 +59,7 @@ val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
 val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
     setOf(
         AcreFoot,
+        AcreInch,
         UsFluidDram,
         UsFluidOunce,
         UsCustomaryCup,
@@ -228,6 +229,13 @@ object AcreFoot : USCustomaryVolume() {
 }
 
 @Serializable
+object AcreInch : USCustomaryVolume() {
+    override val symbol: String = "ac in"
+    override fun toSIUnit(value: Decimal): Decimal = Inch.toSIUnit(Acre.toSIUnit(value))
+    override fun fromSIUnit(value: Decimal): Decimal = Acre.fromSIUnit(Inch.fromSIUnit(value))
+}
+
+@Serializable
 object UsFluidDram : USCustomaryVolume() {
     override val symbol: String = "fl dr"
     private const val US_DRAMS_IN_FLUID_OUNCE = 8
@@ -256,7 +264,7 @@ object UsLegalCup : USCustomaryVolume() {
     override val symbol: String = "cup"
     private const val MILLILITERS_IN_CUP = 240
     override fun toSIUnit(value: Decimal): Decimal = Milliliter.toSIUnit(value * MILLILITERS_IN_CUP.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = UsLiquidGallon.fromSIUnit(value) / MILLILITERS_IN_CUP.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = Milliliter.fromSIUnit(value) / MILLILITERS_IN_CUP.toDecimal()
 }
 
 @Serializable
