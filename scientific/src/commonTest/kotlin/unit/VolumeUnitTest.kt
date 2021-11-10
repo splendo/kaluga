@@ -83,6 +83,8 @@ class VolumeUnitTest {
 
     // ##### Mixed mass unit table conversions #####
 
+    // Cubic Meter
+
     @Test
     fun cubicMeterToLiterConversionTest() {
         assertEquals(1e+12, CubicMeter.convert(1.0, Nanoliter))
@@ -132,5 +134,43 @@ class VolumeUnitTest {
         assertEquals(1759.75, CubicMeter.convert(1.0, ImperialPint, 2))
         assertEquals(879.88, CubicMeter.convert(1.0, ImperialQuart, 2))
         assertEquals(219.97, CubicMeter.convert(1.0, ImperialGallon, 2))
+    }
+
+    // Liter
+
+    @Test
+    fun literToCubicFeetConversionTest() {
+        assertEquals(61.02, Liter.convert(1.0, CubicInch, 2))
+        assertEquals(0.035315, Liter.convert(1.0, CubicFoot, 6))
+        assertEquals(0.001308, Liter.convert(1.0, CubicYard, 6))
+        assertEquals(2.4e-13, Liter.convert(1.0, CubicMile, 15))
+    }
+
+    @Test
+    fun literToUsCustomaryConversionTest() {
+        assertEquals(8.1e-7, Liter.convert(1.0, AcreFoot, 8))
+        assertEquals(0.00000973, Liter.convert(1.0, AcreInch, 8))
+
+        assertEquals(33.81, Liter.convert(1.0, UsFluidOunce, 2))
+        assertEquals(270.51, Liter.convert(1.0, UsFluidDram, 2))
+
+        assertEquals(4.23, Liter.convert(1.0, UsCustomaryCup, 2))
+        assertEquals(4.17, Liter.convert(1.0, UsLegalCup, 2))
+
+        assertEquals(2.11, Liter.convert(1.0, UsLiquidPint, 2))
+        assertEquals(1.06, Liter.convert(1.0, UsLiquidQuart, 2))
+        assertEquals(0.26, Liter.convert(1.0, UsLiquidGallon, 2))
+    }
+
+    @Test
+    fun literToUkImperialConversionTest() {
+        assertEquals(35.2, Liter.convert(1.0, ImperialFluidOunce, 2))
+        assertEquals(281.56, Liter.convert(1.0, ImperialFluidDram, 2))
+
+        assertEquals(4.0, Liter.convert(1.0, MetricCup))
+
+        assertEquals(1.76, Liter.convert(1.0, ImperialPint, 2))
+        assertEquals(0.88, Liter.convert(1.0, ImperialQuart, 2))
+        assertEquals(0.22, Liter.convert(1.0, ImperialGallon, 2))
     }
 }
