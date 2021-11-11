@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.links
 
+import com.splendo.kaluga.links.manager.DataTypesValues
 import com.splendo.kaluga.links.manager.MockLinksBuilder
-import com.splendo.kaluga.links.manager.Person
 import com.splendo.kaluga.links.manager.TestConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,14 +30,14 @@ class LinksTest {
 
     @Test
     fun testIncomingLinkErrorTransaction() {
-        val result = links.handleIncomingLink("http://invalid.com", Person.serializer())
+        val result = links.handleIncomingLink("http://invalid.com", DataTypesValues.serializer())
         assertEquals(null, result)
     }
 
     @Test
     fun testIncomingTransaction() {
-        val result = links.handleIncomingLink(Person.dummyUrl, Person.serializer())
-        assertEquals(Person.dummyPerson, result)
+        val result = links.handleIncomingLink(DataTypesValues.url, DataTypesValues.serializer())
+        assertEquals(DataTypesValues.expectedValidValues, result)
     }
 
     @Test

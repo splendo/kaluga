@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.links.manager.LinksManager
-import com.splendo.kaluga.links.manager.ParametersDecoder
 import com.splendo.kaluga.links.manager.PlatformLinksHandler
+import com.splendo.kaluga.links.models.LinksManager
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 
@@ -56,7 +55,4 @@ class Links(
     }
 }
 
-expect class LinksBuilder(
-    platformLinksHandler: PlatformLinksHandler,
-    parametersDecoder: ParametersDecoder
-) : Links.Builder
+expect class LinksBuilder(platformLinksHandler: PlatformLinksHandler) : Links.Builder

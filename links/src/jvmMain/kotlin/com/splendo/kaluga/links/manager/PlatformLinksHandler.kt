@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.models.LinksHandler
+import com.splendo.kaluga.links.models.ParametersNameValue
+
 actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun extractQueryAsList(url: String): List<NameValue> {
+    override fun extractQueryAsList(url: String): ParametersNameValue {
         TODO("Not yet implemented")
     }
 }

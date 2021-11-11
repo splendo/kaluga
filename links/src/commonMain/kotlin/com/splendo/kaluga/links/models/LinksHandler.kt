@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.links.manager
+package com.splendo.kaluga.links.models
 
 /**
- * Corresponds to urlParameterName and urlParameterValue.
+ * Corresponds to a map of urlParameterValue grouped by urlParameterName.
  */
-typealias NameValue = Pair<String, Any>
+typealias ParametersNameValue = Map<String, String>
 
 interface LinksHandler {
     fun isValid(url: String): Boolean
-    fun extractQueryAsList(url: String): List<NameValue>
+    fun extractQueryAsList(url: String): ParametersNameValue
 }

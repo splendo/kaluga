@@ -18,12 +18,13 @@
 package com.splendo.kaluga.links.manager
 
 import com.splendo.kaluga.links.Links
+import com.splendo.kaluga.links.models.LinksManager
 import kotlinx.serialization.KSerializer
 
 class MockLinksManager : LinksManager {
     override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
         return when (url) {
-            Person.dummyUrl -> Person.dummyPerson as T
+            DataTypesValues.url -> DataTypesValues.expectedValidValues as T
             else -> null
         }
     }

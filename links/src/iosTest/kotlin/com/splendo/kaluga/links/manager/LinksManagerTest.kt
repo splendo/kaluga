@@ -22,23 +22,23 @@ import kotlin.test.assertEquals
 
 class LinksManagerTestIOS {
 
-    private val linksManager = LinksManagerBuilder(
-        PlatformLinksHandler(),
-        DefaultParametersDecoder()
-    ).create()
+    private val linksManager = LinksManagerBuilder(PlatformLinksHandler()).create()
 
     @Test
     fun testHandleIncomingLinkSucceed() {
-        val result = linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
+        val result = linksManager.handleIncomingLink(
+            DataTypesValues.url,
+            DataTypesValues.serializer()
+        )
 
-        assertEquals(Person.dummyPerson, result)
+        assertEquals(DataTypesValues.expectedValidValues, result)
     }
 
     @Test
     fun testHandleIncomingLinkFailed() {
         val query = ""
 
-        val result = linksManager.handleIncomingLink(query, Person.serializer())
+        val result = linksManager.handleIncomingLink(query, DataTypesValues.serializer())
         assertEquals(null, result)
     }
 

@@ -17,20 +17,22 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.models.LinksHandler
+import com.splendo.kaluga.links.models.LinksManager
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.properties.Properties
 
 class DefaultLinksManager(
-    private val linksHandler: LinksHandler,
-    private val defaultParametersDecoder: ParametersDecoder
+    private val linksHandler: LinksHandler
 ) : LinksManager {
 
     override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
-        val list = linksHandler.extractQueryAsList(url)
-        if (list.isEmpty()) {
+        val map = linksHandler.extractQueryAsList(url)
+        if (map.isEmpty()) {
             return null
         }
 
-        return defaultParametersDecoder.decodeFromList(list, serializer)
+        return Properties.decodeFromStringMap(serializer, map)
     }
 
     override fun validateLink(url: String): String? {
@@ -43,10 +45,9 @@ class DefaultLinksManager(
 }
 
 class LinksManagerBuilder(
-    private val platformLinksHandler: PlatformLinksHandler,
-    private val parametersDecoder: ParametersDecoder
+    private val platformLinksHandler: LinksHandler
 ) : LinksManager.Builder {
-    override fun create(): LinksManager = DefaultLinksManager(platformLinksHandler, parametersDecoder)
+    override fun create(): LinksManager = DefaultLinksManager(platformLinksHandler)
 }
 
 expect class PlatformLinksHandler constructor() : LinksHandler

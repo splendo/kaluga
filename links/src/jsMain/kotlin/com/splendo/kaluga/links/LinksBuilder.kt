@@ -17,12 +17,10 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.links.manager.ParametersDecoder
 import com.splendo.kaluga.links.manager.PlatformLinksHandler
 
 actual class LinksBuilder actual constructor(
-    platformLinksHandler: PlatformLinksHandler,
-    parametersDecoder: ParametersDecoder
+    platformLinksHandler: PlatformLinksHandler
 ) : Links.Builder {
     override fun create(): Links {
         TODO("Not yet implemented")

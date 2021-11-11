@@ -48,7 +48,7 @@ class AndroidLinksHandlerTest {
         val url = "https://test.io?list_1=first&list_2=second&list_3=third"
 
         assertEquals(
-            listOf("list_1" to "first", "list_2" to "second", "list_3" to "third"),
+            mapOf("list_1" to "first", "list_2" to "second", "list_3" to "third"),
             linksValidator.extractQueryAsList(url)
         )
     }
@@ -57,6 +57,6 @@ class AndroidLinksHandlerTest {
     fun testQueryExtractorEmptyQuery() {
         val url = "https://test.io"
 
-        assertEquals(emptyList(), linksValidator.extractQueryAsList(url))
+        assertEquals(emptyMap(), linksValidator.extractQueryAsList(url))
     }
 }

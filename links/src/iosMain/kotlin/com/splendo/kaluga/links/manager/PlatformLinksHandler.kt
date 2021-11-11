@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.models.LinksHandler
+import com.splendo.kaluga.links.models.ParametersNameValue
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
 import platform.Foundation.NSURLConnection
@@ -29,10 +31,10 @@ actual class PlatformLinksHandler : LinksHandler {
         return NSURLConnection.canHandleRequest(NSURLRequest.requestWithURL(_url))
     }
 
-    override fun extractQueryAsList(url: String): List<NameValue> {
+    override fun extractQueryAsList(url: String): ParametersNameValue {
         val urlComponents = NSURLComponents(url)
-        val queryItems = urlComponents.queryItems as List<NSURLQueryItem>? ?: return emptyList()
-
-        return queryItems.map { it.name to (it.value as Any) }
+        val queryItems = urlComponents.queryItems as List<NSURLQueryItem>? ?: return emptyMap()
+        val result = queryItems.map { it.name to (it.value as String) }
+        return result.toMap()
     }
 }
