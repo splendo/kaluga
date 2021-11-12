@@ -34,7 +34,7 @@ actual class PlatformLinksHandler : LinksHandler {
     override fun extractQuery(url: String): ParametersNameValue {
         val urlComponents = NSURLComponents(url)
         val queryItems = urlComponents.queryItems as List<NSURLQueryItem>? ?: return emptyMap()
-        val result = queryItems.map { it.name to (it.value as String) }
+        val result = queryItems.filterNot { it.value == null }.map { it.name to (it.value as String) }
         return result.toMap()
     }
 }
