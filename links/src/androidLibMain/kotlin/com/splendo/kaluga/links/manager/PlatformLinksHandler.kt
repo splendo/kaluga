@@ -25,7 +25,7 @@ import com.splendo.kaluga.links.models.ParametersNameValue
 actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
 
-    override fun extractQueryAsList(url: String): ParametersNameValue {
+    override fun extractQuery(url: String): ParametersNameValue {
         val params = UrlQuerySanitizer(url)
 
         if (params.parameterList == null) {

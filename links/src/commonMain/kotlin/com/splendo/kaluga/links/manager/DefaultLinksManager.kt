@@ -27,7 +27,7 @@ class DefaultLinksManager(
 ) : LinksManager {
 
     override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
-        val map = linksHandler.extractQueryAsList(url)
+        val map = linksHandler.extractQuery(url)
         if (map.isEmpty()) {
             return null
         }
@@ -50,4 +50,4 @@ class LinksManagerBuilder(
     override fun create(): LinksManager = DefaultLinksManager(platformLinksHandler)
 }
 
-expect class PlatformLinksHandler constructor() : LinksHandler
+expect class PlatformLinksHandler : LinksHandler

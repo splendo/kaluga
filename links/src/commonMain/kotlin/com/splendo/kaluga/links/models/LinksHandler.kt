@@ -24,5 +24,5 @@ typealias ParametersNameValue = Map<String, String>
 
 interface LinksHandler {
     fun isValid(url: String): Boolean
-    fun extractQueryAsList(url: String): ParametersNameValue
+    fun extractQuery(url: String): ParametersNameValue
 }

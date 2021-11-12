@@ -25,7 +25,7 @@ actual class PlatformLinksHandler : LinksHandler {
         TODO("Not yet implemented")
     }
 
-    override fun extractQueryAsList(url: String): ParametersNameValue {
+    override fun extractQuery(url: String): ParametersNameValue {
         TODO("Not yet implemented")
     }
 }
