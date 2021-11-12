@@ -72,6 +72,7 @@ data class DataTypesValues(
                 enumValue=A&
                 listValue.0=zero&
                 listValue.1=first&
-                listValue.2=second""".lines().joinToString("") { it.trim() }
+                listValue.2=second&
+                nullableValue""".lines().joinToString("") { it.trim() }
     }
 }
