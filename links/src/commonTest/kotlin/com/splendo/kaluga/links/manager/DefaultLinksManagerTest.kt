@@ -23,12 +23,12 @@ import kotlin.test.assertEquals
 
 class DefaultLinksManagerTest {
 
-    private val linksHandlerBuilder = MockLinksManagerBuilder()
-    private val linksHandler = linksHandlerBuilder.create()
+    private val linksManagerBuilder = MockLinksManagerBuilder()
+    private val linksManager = linksManagerBuilder.create()
 
     @Test
     fun test_handle_incoming_link_succeed() {
-        val result = linksHandler.handleIncomingLink(
+        val result = linksManager.handleIncomingLink(
             DataTypesValues.url,
             DataTypesValues.serializer()
         )
@@ -38,7 +38,7 @@ class DefaultLinksManagerTest {
 
     @Test
     fun test_handle_incoming_link_url_is_empty() {
-        val result = linksHandler.handleIncomingLink(
+        val result = linksManager.handleIncomingLink(
             DataTypesValues.urlHost,
             DataTypesValues.serializer()
         )
@@ -48,14 +48,14 @@ class DefaultLinksManagerTest {
 
     @Test
     fun test_handle_incoming_link_is_valid() {
-        val result = linksHandler.validateLink(DataTypesValues.url)
+        val result = linksManager.validateLink(DataTypesValues.url)
 
         assertEquals(DataTypesValues.url, result)
     }
 
     @Test
     fun test_handle_incoming_link_is_invalid() {
-        val result = linksHandler.validateLink("")
+        val result = linksManager.validateLink("")
 
         assertEquals(null, result)
     }

@@ -18,8 +18,10 @@
 package com.splendo.kaluga.links.manager
 
 import com.splendo.kaluga.links.DataTypesValues
+import kotlinx.serialization.SerializationException
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class LinksManagerTestAndroid {
 
@@ -34,10 +36,40 @@ class LinksManagerTestAndroid {
 
     @Test
     fun testHandleIncomingLinkFailed() {
-        val query = ""
+        val url = ""
 
-        val result = linksManager.handleIncomingLink(query, DataTypesValues.serializer())
+        val result = linksManager.handleIncomingLink(url, DataTypesValues.serializer())
         assertEquals(null, result)
+    }
+
+    @Test
+    fun test_throw_exception_when_field_is_missing() {
+        val url = DataTypesValues.url
+            .split("&")
+            .filterNot { it.contains("enumValue") }
+            .joinToString("&")
+
+        assertFailsWith<SerializationException> {
+            // MissingFieldException is internal in kotlinx.serialization
+            linksManager.handleIncomingLink(url, DataTypesValues.serializer())
+        }
+    }
+
+    @Test
+    fun test_throw_exception_when_field_is_unknown() {
+        val url = DataTypesValues.url
+            .split("&").joinToString("&") {
+                if (it.contains("enumValue")) {
+                    "unknownField=idk"
+                } else {
+                    it
+                }
+            }
+
+        assertFailsWith<SerializationException> {
+            // UnknownFieldException is internal in kotlinx.serialization
+            linksManager.handleIncomingLink(url, DataTypesValues.serializer())
+        }
     }
 
     @Test
