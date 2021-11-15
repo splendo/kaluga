@@ -56,7 +56,6 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
-import com.splendo.kaluga.links.manager.DefaultParametersDecoder
 import com.splendo.kaluga.links.manager.PlatformLinksHandler
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
@@ -269,10 +268,7 @@ class KNArchitectureFramework {
         completion: (() -> Unit)? = null
     ): LinksViewModel {
         return LinksViewModel(
-            LinksBuilder(
-                PlatformLinksHandler(),
-                DefaultParametersDecoder()
-            ),
+            LinksBuilder(PlatformLinksHandler()),
             alertPresenter,
             ViewControllerNavigator(parent) { action ->
                 when (action) {
