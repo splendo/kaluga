@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.DataTypesValues
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.models.LinksManager
 import kotlinx.serialization.KSerializer

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.DataTypesValues
 import org.junit.Test
 import kotlin.test.assertEquals
 
