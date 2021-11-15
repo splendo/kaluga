@@ -19,29 +19,26 @@ package com.splendo.kaluga.links.manager
 
 import com.splendo.kaluga.links.DataTypesValues
 import com.splendo.kaluga.links.Links
+import com.splendo.kaluga.links.models.LinksHandler
 import com.splendo.kaluga.links.models.LinksManager
-import kotlinx.serialization.KSerializer
+import com.splendo.kaluga.links.models.ParametersNameValue
 
-class MockLinksManager : LinksManager {
-    override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
-        return when (url) {
-            DataTypesValues.url -> DataTypesValues.expectedValidValues as T
-            else -> null
-        }
+class MockLinksHandler : LinksHandler {
+    override fun isValid(url: String): Boolean = when (url) {
+        DataTypesValues.url -> true
+        else -> TestConstants.VALID_URLS.contains(url)
     }
 
-    override fun validateLink(url: String): String? {
-        return if (TestConstants.VALID_URLS.contains(url)) {
-            url
-        } else {
-            null
+    override fun extractQuery(url: String): ParametersNameValue =
+        when (url) {
+            DataTypesValues.url -> DataTypesValues.validParameters
+            else -> emptyMap()
         }
-    }
 }
 
 class MockLinksManagerBuilder : LinksManager.Builder {
     override fun create(): LinksManager {
-        return MockLinksManager()
+        return DefaultLinksManager(MockLinksHandler())
     }
 }
 

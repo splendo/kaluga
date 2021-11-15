@@ -43,16 +43,16 @@ data class DataTypesValues(
     companion object {
         val validParameters = mapOf(
             "stringValue" to "Test",
-            "intValue" to 0,
-            "longValue" to 3L,
-            "floatValue" to 3.14f,
-            "doubleValue" to 3.14,
-            "booleanValue" to true,
+            "intValue" to "0",
+            "longValue" to "3",
+            "floatValue" to "3.14",
+            "doubleValue" to "3.14",
+            "booleanValue" to "true",
             "enumValue" to "A",
             "listValue.0" to "zero",
             "listValue.1" to "first",
-            "listValue.2" to "second",
-            "nullableValue" to null // can also be excluded from values since has default value.
+            "listValue.2" to "second"
+            // nullableValue is excluded to simulate its nullability.
         )
         val expectedValidValues = DataTypesValues(
             "Test",
@@ -66,8 +66,8 @@ data class DataTypesValues(
             null
         )
 
-        val url = """https://test.io?
-                stringValue=Test&
+        val urlHost = "https://test.io/"
+        val urlQuery = """stringValue=Test&
                 intValue=0&
                 longValue=3&
                 floatValue=3.14&
@@ -76,8 +76,9 @@ data class DataTypesValues(
                 enumValue=A&
                 listValue.0=zero&
                 listValue.1=first&
-                listValue.2=second&
-                nullableValue""".lines().joinToString("") { it.trim() }
+                listValue.2=second""".lines().joinToString("") { it.trim() }
+
+        val url = "$urlHost?$urlQuery"
     }
 }
 
