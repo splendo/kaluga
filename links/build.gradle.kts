@@ -41,7 +41,7 @@ kotlin {
                 implementation(project(":logging", ""))
                 implementation(project(":architecture", ""))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
             }
         }
         commonTest {
