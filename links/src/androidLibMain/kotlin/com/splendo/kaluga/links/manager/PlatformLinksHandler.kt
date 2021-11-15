@@ -32,6 +32,6 @@ actual class PlatformLinksHandler : LinksHandler {
             return emptyMap()
         }
 
-        return params.parameterList.filterNot {it.mValue == "" }.map { it.mParameter to it.mValue }.toMap()
+        return params.parameterList.filterNot { it.mValue == "" }.map { it.mParameter to it.mValue }.toMap()
     }
 }
