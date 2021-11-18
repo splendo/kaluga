@@ -32,7 +32,7 @@ val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get()
     Centigray,
     Decigray,
     Decagray,
-    HectoGray,
+    Hectogray,
     Kilogray,
     Megagray,
     Gigagray,
@@ -74,7 +74,7 @@ object Decigray : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<Measuremen
 @Serializable
 object Decagray : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Deca(Gray)
 @Serializable
-object HectoGray : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Hecto(Gray)
+object Hectogray : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Hecto(Gray)
 @Serializable
 object Kilogray : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Kilo(Gray)
 @Serializable
