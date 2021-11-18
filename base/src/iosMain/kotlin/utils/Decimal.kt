@@ -150,14 +150,14 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
 actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0)
     1.toDecimal() / pow(n.absoluteValue)
 else
-    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong() as NSUInteger))
+    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
 
 actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0)
     1.toDecimal() / pow(n.absoluteValue, scale)
 else
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
-            n.toULong() as NSUInteger,
+            n.toULong(),
             NSDecimalNumberHandler(
                 roundingMode = NSRoundingMode.NSRoundPlain,
                 scale = scale.toShort(),
