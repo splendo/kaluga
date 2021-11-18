@@ -103,11 +103,7 @@ class EnergyUnitTest {
         assertEquals(859.85, WattHour.convert(1.0, Calorie.IT, 2))
         assertEquals(3600.0, WattHour.convert(1.0, Joule))
         assertEquals(3.6e+10, WattHour.convert(1.0, Erg))
-        // todo: CARMELO -> Check why round is failing
-        // expected:<2.25> but was:<2.2469432668058747E22>
-        // Expected :2.25
-        // Actual   :2.2469432668058747E22
-        // assertEquals(2.25, WattHour.convert(1.0, Electronvolt, 2))
+        assertEquals(2.2469432668058747E22, WattHour.convert(1.0, Electronvolt, 2))
         assertEquals(85429.3, WattHour.convert(1.0, FootPoundal, 2))
         assertEquals(2655.22, WattHour.convert(1.0, FootPoundForce, 2))
         assertEquals(31862.68, WattHour.convert(1.0, InchPoundForce, 2))
@@ -120,11 +116,7 @@ class EnergyUnitTest {
     fun calorieOtherEnergyConversionTest() {
         assertEquals(4.18, Calorie.convert(1.0, Joule, 2))
         assertEquals(4.184e+7, Calorie.convert(1.0, Erg))
-        // todo: CARMELO -> Check why round is failing
-        // expected:<2.25> but was:<2.6114473967543833E19>
-        // Expected :2.61
-        // Actual   :2.6114473967543833E19
-        // assertEquals(2.61, Calorie.convert(1.0, Electronvolt, 2))
+        assertEquals(2.6114473967543833E19, Calorie.convert(1.0, Electronvolt, 2))
         assertEquals(99.29, Calorie.convert(1.0, FootPoundal, 2))
         assertEquals(3.09, Calorie.convert(1.0, FootPoundForce, 2))
         assertEquals(37.03, Calorie.convert(1.0, InchPoundForce, 2))
@@ -137,11 +129,7 @@ class EnergyUnitTest {
     fun calorieITOtherEnergyConversionTest() {
         assertEquals(4.19, Calorie.IT.convert(1.0, Joule, 2))
         assertEquals(4.1868e+7, Calorie.IT.convert(1.0, Erg))
-        // todo: CARMELO -> Check why round is failing
-        // expected:<2.61> but was:<2.613195019295232E19>
-        // Expected :2.61
-        // Actual   :2.613195019295232E19
-        // assertEquals(2.61, Calorie.IT.convert(1.0, Electronvolt, 2))
+        assertEquals(2.613195019295232E19, Calorie.IT.convert(1.0, Electronvolt, 2))
         assertEquals(99.35, Calorie.IT.convert(1.0, FootPoundal, 2))
         assertEquals(3.09, Calorie.IT.convert(1.0, FootPoundForce, 2))
         assertEquals(37.06, Calorie.IT.convert(1.0, InchPoundForce, 2))
@@ -153,11 +141,7 @@ class EnergyUnitTest {
     @Test
     fun jouleToOtherEnergyConversionTest() {
         assertEquals(1.0e+7, Joule.convert(1.0, Erg))
-        // todo: CARMELO -> Check why round is failing
-        // expected:<2.61> but was:<6.2415090744607621E18>
-        // Expected :2.61
-        // Actual   :6.2415090744607621E18
-        // assertEquals(2.61, Joule.convert(1.0, Electronvolt, 2))
+        assertEquals(6.2415090744607621E18, Joule.convert(1.0, Electronvolt, 2))
         assertEquals(23.73, Joule.convert(1.0, FootPoundal, 2))
         assertEquals(0.74, Joule.convert(1.0, FootPoundForce, 2))
         assertEquals(8.85, Joule.convert(1.0, InchPoundForce, 2))
