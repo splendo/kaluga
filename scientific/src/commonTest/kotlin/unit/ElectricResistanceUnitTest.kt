@@ -20,12 +20,20 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class DensityUnitTest {
+class ElectricResistanceUnitTest {
 
     @Test
-    fun densityConversionTest() {
-        assertEquals(0.001, (Kilogram per CubicMeter).convert(1, Gram per CubicCentimeter))
-        assertEquals(0.00925926, (Pound per CubicFoot).convert(1, Ounce per CubicInch, 8))
-        assertEquals(0.062428, (Kilogram per CubicMeter).convert(1, Pound per CubicFoot,6))
+    fun electricResistanceUnitTestConversionTest() {
+        assertEquals(1e+9, Ohm.convert(1, Nanoohm))
+        assertEquals(1e+6, Ohm.convert(1, Microohm))
+        assertEquals(1000.0, Ohm.convert(1, Milliohm))
+        assertEquals(100.0, Ohm.convert(1, Centiohm))
+        assertEquals(10.0, Ohm.convert(1, Deciohm))
+        assertEquals(0.1, Ohm.convert(1, Decaohm))
+        assertEquals(0.01, Ohm.convert(1, HectoOhm))
+        assertEquals(0.001, Ohm.convert(1, Kiloohm))
+        assertEquals(1e-6, Ohm.convert(1, Megaohm))
+        assertEquals(1e-9, Ohm.convert(1, Gigaohm))
+        assertEquals(1000000000.0, Ohm.convert(1, Abohm))
     }
 }

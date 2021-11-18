@@ -20,12 +20,19 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class DensityUnitTest {
+class ElectricCapacitanceUnitTest {
 
     @Test
-    fun densityConversionTest() {
-        assertEquals(0.001, (Kilogram per CubicMeter).convert(1, Gram per CubicCentimeter))
-        assertEquals(0.00925926, (Pound per CubicFoot).convert(1, Ounce per CubicInch, 8))
-        assertEquals(0.062428, (Kilogram per CubicMeter).convert(1, Pound per CubicFoot,6))
+    fun electricCapacitanceConversionTest() {
+        assertEquals(1000000000.0, Farad.convert(1, Nanofarad))
+        assertEquals(1000000.0, Farad.convert(1, Microfarad))
+        assertEquals(1000.0, Farad.convert(1, Millifarad))
+        assertEquals(100.0, Farad.convert(1, Centifarad))
+        assertEquals(10.0, Farad.convert(1, Decifarad))
+        assertEquals(0.1, Farad.convert(1, Decafarad))
+        assertEquals(0.01, Farad.convert(1, Hectofarad))
+        assertEquals(0.001, Farad.convert(1, Kilofarad))
+        assertEquals(0.000001, Farad.convert(1, Megafarad))
+        assertEquals(1e-9, Farad.convert(1, Gigafarad))
     }
 }

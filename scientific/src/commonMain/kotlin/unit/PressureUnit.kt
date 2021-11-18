@@ -73,7 +73,7 @@ val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     Megatorr,
     Gigatorr,
     MillimeterOfMercury,
-    MillimeterOfMercury,
+    MillimeterOfMercury, // FIXME duplicate?
     CentimeterOfWater
 )
 
