@@ -21,10 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /** Provides timer instances. */
-@ExperimentalTime
 object TimerProvider {
     /**
      * @param duration timer duration

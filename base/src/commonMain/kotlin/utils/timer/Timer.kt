@@ -22,10 +22,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /** A timer ticking a certain [duration]. */
-@ExperimentalTime
 interface Timer {
     /** Timer duration. */
     val duration: Duration
@@ -52,7 +50,6 @@ interface Timer {
 }
 
 /** Time elapsed from the timer start. */
-@ExperimentalTime
 fun Timer.elapsed(): Flow<Duration> = state.flatMapLatest { state ->
     when (state) {
         is Timer.State.NotRunning -> flowOf(state.elapsed)
@@ -61,7 +58,6 @@ fun Timer.elapsed(): Flow<Duration> = state.flatMapLatest { state ->
 }
 
 /** Awaits for the timer to finish. */
-@ExperimentalTime
 suspend fun Timer.awaitFinish() {
     state.firstInstance<Timer.State.NotRunning.Finished>()
 }

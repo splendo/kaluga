@@ -16,6 +16,13 @@ version = ext["library_version"]!!
 kotlin {
     sourceSets {
 
+        all {
+            languageSettings {
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+                useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
+        }
+
         val ext = (gradle as ExtensionAware).extra
 
         getByName("commonMain") {

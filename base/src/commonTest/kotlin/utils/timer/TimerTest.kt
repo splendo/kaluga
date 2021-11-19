@@ -15,13 +15,9 @@
 
  */
 
-package utils.timer
+package com.splendo.kaluga.base.utils.timer
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.timer.Timer
-import com.splendo.kaluga.base.utils.timer.TimerProvider
-import com.splendo.kaluga.base.utils.timer.awaitFinish
-import com.splendo.kaluga.base.utils.timer.elapsed
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -32,9 +28,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class TimerTest {
     @Test
     fun testInstantTimerAwaitFinish(): Unit = runBlocking {

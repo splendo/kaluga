@@ -16,6 +16,8 @@
  */
 package com.splendo.kaluga.base.utils.timer
 
+import com.splendo.kaluga.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,11 +32,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 import com.splendo.kaluga.state.State as KalugaState
 
-@ExperimentalTime
 /** Timer based on the system clock. */
 internal class MonotonicTimer(
     duration: Duration,
@@ -54,8 +54,7 @@ internal class MonotonicTimer(
         takeAndChangeState { state ->
             when (state) {
                 is State.NotRunning.Paused -> suspend {
-                    val finishJob = launchFinishJob(state.totalDuration - state.elapsed)
-                    state.start(finishJob)
+                    state.start(coroutineScope, ::finish)
                 }
                 is State.NotRunning.Finished, is State.Running -> state.remain()
             }
@@ -70,13 +69,6 @@ internal class MonotonicTimer(
             }
         }
     }
-
-    private fun launchFinishJob(finishIn: Duration) =
-        coroutineScope.launch {
-            // suspend for remaining duration and finish
-            delay(finishIn)
-            finish()
-        }
 
     private suspend fun finish() {
         takeAndChangeState { state ->
@@ -98,8 +90,10 @@ internal class MonotonicTimer(
                 elapsedSoFar: Duration,
                 override val totalDuration: Duration
             ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
-                fun start(finishJob: Job): Running =
-                    Running(elapsed, totalDuration, finishJob)
+                fun start(
+                    coroutineScope: CoroutineScope,
+                    finishCallback: suspend () -> Unit
+                ): Running = Running(elapsed, totalDuration, coroutineScope, finishCallback)
                 internal fun finish(): Finished = Finished(totalDuration)
             }
 
@@ -113,20 +107,30 @@ internal class MonotonicTimer(
         class Running(
             elapsedSoFar: Duration,
             override val totalDuration: Duration,
-            private val finishJob: Job
-        ) : State(), Timer.State.Running {
+            private val coroutineScope: CoroutineScope,
+            private val finishCallback: suspend () -> Unit
+        ) : State(), Timer.State.Running, HandleAfterNewStateIsSet<State>, HandleBeforeOldStateIsRemoved<State> {
             override val elapsed: Flow<Duration> = tickProvider(elapsedSoFar, totalDuration)
+            private lateinit var finishJob: Job
 
             internal suspend fun pause(): NotRunning.Paused {
-                finishJob.cancel()
                 return NotRunning.Paused(elapsed.first(), totalDuration)
             }
             internal fun finish(): NotRunning.Finished = NotRunning.Finished(totalDuration)
+
+            override suspend fun beforeOldStateIsRemoved(oldState: State) {
+                finishJob = coroutineScope.launch {
+                    delay(totalDuration - elapsed.first())
+                    finishCallback()
+                }
+            }
+            override suspend fun afterNewStateIsSet(newState: State) {
+                finishJob.cancel()
+            }
         }
     }
 }
 
-@ExperimentalTime
 private fun tickProvider(offset: Duration, max: Duration): Flow<Duration> {
     val mark = TimeSource.Monotonic.markNow()
 
