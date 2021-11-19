@@ -14,25 +14,28 @@
     limitations under the License.
 
  */
+@file:JsModule("@yaffle/bigdecimal")
+@file:JsNonModule
 package com.splendo.kaluga.base.utils
 
-data class Rounding(
-    val maximumFractionDigits: Int,
-    val maximumSignificantDigits: Int,
-    val roundingMode: String
-)
+external class BigDecimal(a: Any, b: Any) {
+    var significand: Any
+    var exponent: Any
 
-@JsModule("@yaffle/bigdecimal")
-//@JsModule("BigDecimal2")
-@JsNonModule
-external class BigDecimal {
-    val significand: Any
-    val exponent: Any
-    open fun BigDecimal(value: Any): BigDecimal
-    open fun add(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
-    open fun subtract(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
-    open fun divide(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
-    open fun multiply(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
-    open fun toFixed(fractionDigits: Int, roundingMode: String = definedExternally): Int
-    open fun toNumber(a: BigDecimal): Double
+    companion object {
+        fun BigDecimal(a: Any): BigDecimal
+        fun add(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
+        fun subtract(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
+        fun divide(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
+        fun multiply(a: BigDecimal, b: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
+        fun round(a: BigDecimal, rounding: Rounding? = definedExternally): BigDecimal
+        fun toNumber(a: BigDecimal): Double
+        fun greaterThan(a: BigDecimal, b: BigDecimal): Boolean
+        fun lessThan(a: BigDecimal, b: BigDecimal): Boolean
+        fun compare(a: BigDecimal, b: BigDecimal): Boolean
+        fun equal(a: BigDecimal, b: BigDecimal): Boolean
+    }
+
+    fun toFixed(fractionDigits: Int, roundingMode: String = definedExternally): Int
+    override fun toString(): String
 }
