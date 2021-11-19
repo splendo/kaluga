@@ -16,7 +16,9 @@
  */
 package com.splendo.kaluga.base.utils.timer
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -26,13 +28,15 @@ import kotlin.time.ExperimentalTime
 object TimerProvider {
     /**
      * @param duration timer duration
-     * @param coroutineContext
+     * @param coroutineScope a parent coroutine scope for the timer
+     * @param coroutineContext a coroutine context for the timer state machine
      * @return a timer based on the system clock
      */
     fun monotonic(
         duration: Duration,
+        coroutineScope: CoroutineScope = MainScope(),
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ): Timer = MonotonicTimer(duration, coroutineContext)
+    ): Timer = MonotonicTimer(duration, coroutineScope, coroutineContext)
 
     /**
      * @param duration timer duration

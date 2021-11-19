@@ -17,8 +17,10 @@
 package com.splendo.kaluga.base.utils.timer
 
 import com.splendo.kaluga.state.HotStateFlowRepo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +38,7 @@ import com.splendo.kaluga.state.State as KalugaState
 /** Timer based on the system clock. */
 internal class MonotonicTimer(
     duration: Duration,
+    private val coroutineScope: CoroutineScope = MainScope(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : Timer, HotStateFlowRepo<MonotonicTimer.State>(
     coroutineContext,
@@ -51,11 +54,7 @@ internal class MonotonicTimer(
         takeAndChangeState { state ->
             when (state) {
                 is State.NotRunning.Paused -> suspend {
-                    val finishJob = launch {
-                        // suspend for remaining duration and finish
-                        delay(state.totalDuration - state.elapsed)
-                        finish()
-                    }
+                    val finishJob = launchFinishJob(state.totalDuration - state.elapsed)
                     state.start(finishJob)
                 }
                 is State.NotRunning.Finished, is State.Running -> state.remain()
@@ -71,6 +70,13 @@ internal class MonotonicTimer(
             }
         }
     }
+
+    private fun launchFinishJob(finishIn: Duration) =
+        coroutineScope.launch {
+            // suspend for remaining duration and finish
+            delay(finishIn)
+            finish()
+        }
 
     private suspend fun finish() {
         takeAndChangeState { state ->

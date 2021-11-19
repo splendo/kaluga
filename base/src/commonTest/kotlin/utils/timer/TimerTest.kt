@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -44,21 +45,21 @@ class TimerTest {
     }
 
     @Test
-    fun testInstantTimerStates() = runBlocking {
+    fun testInstantTimerStates(): Unit = runBlocking {
         val timer = TimerProvider.instant(duration = Duration.INFINITE)
-        assertTrue(timer.state.value is Timer.State.NotRunning.Finished, "timer was not finished")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "timer was not finished")
         timer.start()
-        assertTrue(timer.state.value is Timer.State.NotRunning.Finished, "was able to start timer")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to start timer")
         timer.pause()
-        assertTrue(timer.state.value is Timer.State.NotRunning.Finished, "was able to pause timer")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to pause timer")
     }
 
     @Test
-    fun testInstantTimerElapsedFlow() = runBlocking {
+    fun testInstantTimerElapsedFlow(): Unit = runBlocking {
         val duration = Duration.seconds(5)
         val timer = TimerProvider.instant(duration)
 
-        val result = timer.elapsed().captureFor(Duration.milliseconds(1000))
+        val result = timer.elapsed().captureFor(Duration.milliseconds(500))
         assertEquals(listOf(duration), result)
     }
 
@@ -76,28 +77,36 @@ class TimerTest {
     }
 
     @Test
-    fun testMonotonicTimerStates() = runBlocking {
-        val timer = TimerProvider.monotonic(Duration.milliseconds(100))
-        assertTrue(timer.state.value is Timer.State.NotRunning.Paused, "timer was not paused after creation")
+    fun testMonotonicTimerStates(): Unit = runBlocking {
+        val timer = TimerProvider.monotonic(
+            duration = Duration.milliseconds(100),
+            coroutineScope = this,
+            coroutineContext = this.coroutineContext
+        )
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after creation")
         timer.start()
-        assertTrue(timer.state.value is Timer.State.Running, "timer is not running after start")
+        assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
         timer.pause()
-        assertTrue(timer.state.value is Timer.State.NotRunning.Paused, "timer was not paused after pause")
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after pause")
         delay(200)
-        assertTrue(timer.state.value is Timer.State.NotRunning.Paused, "timer pause is not working")
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer pause is not working")
         timer.start()
-        assertTrue(timer.state.value is Timer.State.Running, "timer is not running after start")
+        assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
         delay(200)
-        assertTrue(timer.state.value is Timer.State.NotRunning.Finished, "timer was not finished after time elapsed")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "timer was not finished after time elapsed")
         timer.start()
-        assertTrue(timer.state.value is Timer.State.NotRunning.Finished, "was able to start timer after finish")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to start timer after finish")
         timer.pause()
-        assertTrue(timer.state.value is Timer.State.NotRunning.Finished, "was able to pause timer after finish")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to pause timer after finish")
     }
 
     @Test
     fun testMonotonicTimerAwaitFinish(): Unit = runBlocking {
-        val timer = TimerProvider.monotonic(duration = Duration.milliseconds(100))
+        val timer = TimerProvider.monotonic(
+            duration = Duration.milliseconds(100),
+            coroutineScope = this,
+            coroutineContext = this.coroutineContext
+        )
 
         withTimeout(Duration.milliseconds(200)) {
             timer.start()
@@ -106,12 +115,16 @@ class TimerTest {
     }
 
     @Test
-    fun testMonotonicTimerElapsedFlow() = runBlocking {
+    fun testMonotonicTimerElapsedFlow(): Unit = runBlocking {
         fun List<Duration>.isAscending(): Boolean =
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
         val duration = Duration.milliseconds(1000)
-        val timer = TimerProvider.monotonic(duration)
+        val timer = TimerProvider.monotonic(
+            duration = duration,
+            coroutineScope = this,
+            coroutineContext = this.coroutineContext
+        )
 
         // capture and validate an initial state
         val initial = timer.elapsed().captureFor(Duration.milliseconds(100))
