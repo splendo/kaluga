@@ -26,11 +26,17 @@ import kotlin.time.ExperimentalTime
 object TimerProvider {
     /**
      * @param duration timer duration
-     * @return a timer based on the system clock. */
+     * @param coroutineContext
+     * @return a timer based on the system clock
+     */
     fun monotonic(
         duration: Duration,
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate
     ): Timer = MonotonicTimer(duration, coroutineContext)
 
+    /**
+     * @param duration timer duration
+     * @return a timer that finishes instantly
+     */
     fun instant(duration: Duration): Timer = InstantTimer(duration)
 }

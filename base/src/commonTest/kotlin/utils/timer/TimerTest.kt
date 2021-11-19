@@ -78,7 +78,7 @@ class TimerTest {
     @Test
     fun testMonotonicTimerStates() = runBlocking {
         val timer = TimerProvider.monotonic(Duration.milliseconds(100))
-        assertTrue(timer.state.value is Timer.State.NotRunning.Paused, "timer was not paused after creation" )
+        assertTrue(timer.state.value is Timer.State.NotRunning.Paused, "timer was not paused after creation")
         timer.start()
         assertTrue(timer.state.value is Timer.State.Running, "timer is not running after start")
         timer.pause()

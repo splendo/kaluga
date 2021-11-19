@@ -38,15 +38,15 @@ interface Timer {
     suspend fun pause()
 
     sealed interface State {
-        sealed interface Running: State {
+        sealed interface Running : State {
             val elapsed: Flow<Duration>
         }
 
-        sealed interface NotRunning: State {
+        sealed interface NotRunning : State {
             val elapsed: Duration
 
             interface Paused : NotRunning
-            interface Finished: NotRunning
+            interface Finished : NotRunning
         }
     }
 }
@@ -65,6 +65,3 @@ fun Timer.elapsed(): Flow<Duration> = state.flatMapLatest { state ->
 suspend fun Timer.awaitFinish() {
     state.firstInstance<Timer.State.NotRunning.Finished>()
 }
-
-
-

@@ -17,15 +17,14 @@
 
 package com.splendo.kaluga.base.utils.timer
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-internal class InstantTimer(override val duration: Duration): Timer {
+/** This timer finishes instantly. */
+internal class InstantTimer(override val duration: Duration) : Timer {
     override val state: StateFlow<Timer.State> = MutableStateFlow(
         object : Timer.State.NotRunning.Finished {
             override val elapsed: Duration = duration
