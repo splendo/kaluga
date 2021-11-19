@@ -35,7 +35,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common", "${ext["kotlin_version"]}"))
                 // JavaScript BigDecimal lib based on native BigInt
-                implementation(npm("@yaffle/bigdecimal", "${ext["js_bigdecimal_version"]}"))
+                implementation(npm("@splendo/bigdecimal", "${ext["js_bigdecimal_version"]}"))
             }
         }
         getByName("jsTest") {

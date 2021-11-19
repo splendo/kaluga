@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-@file:JsModule("@yaffle/bigdecimal")
+@file:JsModule("@splendo/bigdecimal")
 @file:JsNonModule
 package com.splendo.kaluga.base.utils
 
