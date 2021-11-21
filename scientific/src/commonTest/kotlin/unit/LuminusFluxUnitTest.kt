@@ -20,20 +20,19 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FrequencyUnitTest {
+class LuminusFluxUnitTest {
 
     @Test
-    fun frequencyConversionTest() {
-        assertEquals(1e+9, Hertz.convert(1, Nanohertz))
-        assertEquals(1e+6, Hertz.convert(1, Microhertz))
-        assertEquals(1000.0, Hertz.convert(1, Millihertz))
-        assertEquals(100.0, Hertz.convert(1, Centihertz))
-        assertEquals(10.0, Hertz.convert(1, Decihertz))
-        assertEquals(0.1, Hertz.convert(1, Decahertz))
-        assertEquals(0.01, Hertz.convert(1, Hectohertz))
-        assertEquals(0.001, Hertz.convert(1, Kilohertz))
-        assertEquals(1e-6, Hertz.convert(1, Megahertz))
-        assertEquals(1e-9, Hertz.convert(1, Gigahertz))
-        assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+    fun luminusFluxConversionTest() {
+        assertEquals(1e+9, Lumen.convert(1, Nanolumen))
+        assertEquals(1e+6, Lumen.convert(1, Microlumen))
+        assertEquals(1000.0, Lumen.convert(1, Millilumen))
+        assertEquals(100.0, Lumen.convert(1, Centilumen))
+        assertEquals(10.0, Lumen.convert(1, Decilumen))
+        assertEquals(0.1, Lumen.convert(1, Decalumen))
+        assertEquals(0.01, Lumen.convert(1, Hectolumen))
+        assertEquals(0.001, Lumen.convert(1, Kilolumen))
+        assertEquals(1e-6, Lumen.convert(1, Megalumen))
+        assertEquals(1e-9, Lumen.convert(1, Gigalumen))
     }
 }

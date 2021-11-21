@@ -20,20 +20,19 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FrequencyUnitTest {
+class SolidAngleUnitTest {
 
     @Test
-    fun frequencyConversionTest() {
-        assertEquals(1e+9, Hertz.convert(1, Nanohertz))
-        assertEquals(1e+6, Hertz.convert(1, Microhertz))
-        assertEquals(1000.0, Hertz.convert(1, Millihertz))
-        assertEquals(100.0, Hertz.convert(1, Centihertz))
-        assertEquals(10.0, Hertz.convert(1, Decihertz))
-        assertEquals(0.1, Hertz.convert(1, Decahertz))
-        assertEquals(0.01, Hertz.convert(1, Hectohertz))
-        assertEquals(0.001, Hertz.convert(1, Kilohertz))
-        assertEquals(1e-6, Hertz.convert(1, Megahertz))
-        assertEquals(1e-9, Hertz.convert(1, Gigahertz))
-        assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+    fun solidAngleConversionTest() {
+        assertEquals(1e+9, Steradian.convert(1, Nanosteradian))
+        assertEquals(1e+6, Steradian.convert(1, Microsteradian))
+        assertEquals(1000.0, Steradian.convert(1, Millisteradian))
+        assertEquals(100.0, Steradian.convert(1, Centisteradian))
+        assertEquals(10.0, Steradian.convert(1, Decisteradian))
+
+        assertEquals(0.0796, Steradian.convert(1, Spat, 4))
+        assertEquals(3282.8063500117, Steradian.convert(1, SquareDegree, 10))
+
+        assertEquals(41253.0, Spat.convert(1, SquareDegree,0))
     }
 }

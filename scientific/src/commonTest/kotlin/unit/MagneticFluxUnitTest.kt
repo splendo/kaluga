@@ -20,20 +20,20 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FrequencyUnitTest {
+class MagneticFluxUnitTest {
 
     @Test
-    fun frequencyConversionTest() {
-        assertEquals(1e+9, Hertz.convert(1, Nanohertz))
-        assertEquals(1e+6, Hertz.convert(1, Microhertz))
-        assertEquals(1000.0, Hertz.convert(1, Millihertz))
-        assertEquals(100.0, Hertz.convert(1, Centihertz))
-        assertEquals(10.0, Hertz.convert(1, Decihertz))
-        assertEquals(0.1, Hertz.convert(1, Decahertz))
-        assertEquals(0.01, Hertz.convert(1, Hectohertz))
-        assertEquals(0.001, Hertz.convert(1, Kilohertz))
-        assertEquals(1e-6, Hertz.convert(1, Megahertz))
-        assertEquals(1e-9, Hertz.convert(1, Gigahertz))
-        assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+    fun luminusIntensityConversionTest() {
+        assertEquals(1e+9, Weber.convert(1, Nanoweber))
+        assertEquals(1e+6, Weber.convert(1, Microweber))
+        assertEquals(1000.0, Weber.convert(1, Milliweber))
+        assertEquals(100.0, Weber.convert(1, Centiweber))
+        assertEquals(10.0, Weber.convert(1, Deciweber))
+        assertEquals(0.1, Weber.convert(1, Decaweber))
+        assertEquals(0.01, Weber.convert(1, Hectoweber))
+        assertEquals(0.001, Weber.convert(1, Kiloweber))
+        assertEquals(1e-6, Weber.convert(1, Megaweber))
+        assertEquals(1e-9, Weber.convert(1, Gigaweber))
+        assertEquals(100000000.0, Weber.convert(1, Maxwell))
     }
 }

@@ -20,20 +20,11 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FrequencyUnitTest {
+class LinearMassDensityUnitTest {
 
     @Test
-    fun frequencyConversionTest() {
-        assertEquals(1e+9, Hertz.convert(1, Nanohertz))
-        assertEquals(1e+6, Hertz.convert(1, Microhertz))
-        assertEquals(1000.0, Hertz.convert(1, Millihertz))
-        assertEquals(100.0, Hertz.convert(1, Centihertz))
-        assertEquals(10.0, Hertz.convert(1, Decihertz))
-        assertEquals(0.1, Hertz.convert(1, Decahertz))
-        assertEquals(0.01, Hertz.convert(1, Hectohertz))
-        assertEquals(0.001, Hertz.convert(1, Kilohertz))
-        assertEquals(1e-6, Hertz.convert(1, Megahertz))
-        assertEquals(1e-9, Hertz.convert(1, Gigahertz))
-        assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+    fun linearMassDensityConversionTest() {
+        // assertEquals(6.022e+23, (Gram per Meter).convert(1, Dalton per Meter, 0)) FIXME
+        // assertEquals(2.20462, (Kilogram per Meter).convert(1, Pound per Meter,5)) FIXME
     }
 }

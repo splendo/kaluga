@@ -20,20 +20,20 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FrequencyUnitTest {
+class MagneticInductionUnitTest {
 
     @Test
-    fun frequencyConversionTest() {
-        assertEquals(1e+9, Hertz.convert(1, Nanohertz))
-        assertEquals(1e+6, Hertz.convert(1, Microhertz))
-        assertEquals(1000.0, Hertz.convert(1, Millihertz))
-        assertEquals(100.0, Hertz.convert(1, Centihertz))
-        assertEquals(10.0, Hertz.convert(1, Decihertz))
-        assertEquals(0.1, Hertz.convert(1, Decahertz))
-        assertEquals(0.01, Hertz.convert(1, Hectohertz))
-        assertEquals(0.001, Hertz.convert(1, Kilohertz))
-        assertEquals(1e-6, Hertz.convert(1, Megahertz))
-        assertEquals(1e-9, Hertz.convert(1, Gigahertz))
-        assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+    fun magneticInductionConversionTest() {
+        assertEquals(1e+9, Tesla.convert(1, Nanotesla))
+        assertEquals(1e+6, Tesla.convert(1, Microtesla))
+        assertEquals(1000.0, Tesla.convert(1, Millitesla))
+        assertEquals(100.0, Tesla.convert(1, Centitesla))
+        assertEquals(10.0, Tesla.convert(1, Decitesla))
+        assertEquals(0.1, Tesla.convert(1, Decatesla))
+        assertEquals(0.01, Tesla.convert(1, Hectotesla))
+        assertEquals(0.001, Tesla.convert(1, Kilotesla))
+        assertEquals(1e-6, Tesla.convert(1, Megatesla))
+        assertEquals(1e-9, Tesla.convert(1, Gigatesla))
+        assertEquals(10000.0, Tesla.convert(1, Gauss))
     }
 }
