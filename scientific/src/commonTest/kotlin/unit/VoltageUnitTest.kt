@@ -43,31 +43,31 @@ class VoltageUnitTest {
     @Test
     fun voltConvertWattConversionTest() {
         // convertToElectricCharge
-        assertEquals(1(Abcoulomb), 1(Abvolt) * 1(Abfarad))
-        assertEquals(1(Coulomb), 1(Volt) * 1(Farad))
+        assertEquals(4(Abcoulomb), 2(Abvolt) * 2(Abfarad))
+        assertEquals(4(Coulomb), 2(Volt) * 2(Farad))
 
         // convertToElectricCurrent
-        assertEquals(1(Abampere), 1(Abvolt) * 1(Absiemens))
-        assertEquals(1(Ampere), 1(Volt) * 1(Siemens))
-        assertEquals(1(Abampere), 1(Abvolt) / 1(Abohm))
-        assertEquals(1(Ampere), 1(Volt) / 1(Ohm))
+        assertEquals(4(Abampere), 2(Abvolt) * 2(Absiemens))
+        assertEquals(4(Ampere), 2(Volt) * 2(Siemens))
+        assertEquals(1(Abampere), 2(Abvolt) / 2(Abohm))
+        assertEquals(1(Ampere), 2(Volt) / 2(Ohm))
 
         // convertToElectricResistance
-        assertEquals(1(Abohm), 1(Abvolt) / 1(Abampere))
-        assertEquals(1(Abohm), 1(Abvolt) / 1(Biot))
+        assertEquals(1(Abohm), 2(Abvolt) / 2(Abampere))
+        assertEquals(1(Abohm), 2(Abvolt) / 2(Biot))
         assertEquals(1(Ohm), 1(Volt) / 1(Ampere))
 
         // convertToEnergy
-        assertEquals(1(Erg), 1(Abvolt) * 1(Abcoulomb))
-        assertEquals(1(Joule), 1(Volt) * 1(Coulomb))
+        assertEquals(4(Erg), 2(Abvolt) * 2(Abcoulomb))
+        assertEquals(4(Joule), 2(Volt) * 2(Coulomb))
 
         // convertToMagneticFlux
-        assertEquals(1(Maxwell), 1(Abvolt) * 1(Second))
-        assertEquals(1(Weber), 1(Volt) * 1(Second))
+        assertEquals(4(Maxwell), 2(Abvolt) * 2(Second))
+        assertEquals(4(Weber), 2(Volt) * 2(Second))
 
         // convertToPower
-        assertEquals(1(ErgPerSecond), 1(Abvolt) * 1(Abampere))
-        assertEquals(1(ErgPerSecond), 1(Abvolt) * 1(Biot))
-        assertEquals(1(Watt), 1(Volt) * 1(Ampere))
+        assertEquals(4(ErgPerSecond), 2(Abvolt) * 2(Abampere))
+        assertEquals(4(ErgPerSecond), 2(Abvolt) * 2(Biot))
+        assertEquals(4(Watt), 2(Volt) * 2(Ampere))
     }
 }
