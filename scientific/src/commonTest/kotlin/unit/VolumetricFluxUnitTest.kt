@@ -17,14 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.PhysicalQuantity
-import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.converter.voltage.times
-import com.splendo.kaluga.scientific.converter.volumetricFlow.times
-import com.splendo.kaluga.scientific.converter.volumetricFlow.volumetricFlow
 import com.splendo.kaluga.scientific.converter.volumetricFlux.times
 import com.splendo.kaluga.scientific.invoke
-import kotlin.jvm.JvmName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -45,7 +39,6 @@ class VolumetricFluxUnitTest {
         assertEquals(4(ImperialFluidOunce per Second), 2(ImperialFluidOunce per Second per SquareInch) * 2(SquareInch))
         assertEquals(4(AcreInch per Second), 2(AcreInch per Second per SquareInch) * 2(SquareInch))
 
-        val calculated = 2(CubicMeter per Second per SquareMeter) * 2(SquareInch)
-        assertEquals(2(CubicMeter per Second), calculated)
+        assertEquals(0.00258064(CubicMeter per Second), 2(CubicMeter per Second per SquareMeter) * 2(SquareInch))
     }
 }

@@ -21,13 +21,16 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volumetricFlow.volumetricFlow
 import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.CubicMeter
 import com.splendo.kaluga.scientific.unit.ImperialArea
 import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlux
 import com.splendo.kaluga.scientific.unit.MetricArea
 import com.splendo.kaluga.scientific.unit.MetricVolumetricFlux
+import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlux
 import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlux
 import com.splendo.kaluga.scientific.unit.VolumetricFlux
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFluxTimesMetricArea")
@@ -53,4 +56,4 @@ infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Vo
 @JvmName("volumetricFluxTimesArea")
 infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>.times(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = (unit.volumetricFlow).volumetricFlow(this, area)
+) = (CubicMeter per Second).volumetricFlow(this, area)
