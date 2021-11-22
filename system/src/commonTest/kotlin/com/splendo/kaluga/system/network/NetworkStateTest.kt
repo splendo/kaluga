@@ -43,7 +43,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         assertInitialValue(this)
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Wifi())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
         }
 
         test {
@@ -52,7 +52,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         }
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Absent)
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
         }
 
         test {
@@ -61,7 +61,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         }
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Cellular())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
         }
 
         test {
@@ -75,7 +75,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         assertInitialValue(this)
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Wifi())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
         }
 
         test {
@@ -84,7 +84,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         }
 
         action {
-            networkStateRepo.onNetworkStateChange(
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(
                 Network.Unknown.WithLastNetwork(
                     Network.Known.Wifi(),
                     Network.Unknown.Reason.NOT_CLEAR
@@ -100,7 +100,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         resetStateTo<NetworkState.Available>(networkStateRepo, Network.Known.Wifi(), this)
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Cellular())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
         }
 
         test {
@@ -109,7 +109,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         }
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Absent)
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
         }
 
         test {
@@ -123,7 +123,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         assertInitialValue(this)
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Absent)
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
         }
 
         test {
@@ -132,7 +132,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         }
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Cellular())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
         }
 
         test {
@@ -142,7 +142,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         resetStateTo<NetworkState.Unavailable>(networkStateRepo, Network.Known.Absent, this)
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Wifi())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
         }
 
         test {
@@ -163,7 +163,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         }
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Cellular())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
         }
 
         test {
@@ -179,7 +179,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         )
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Wifi())
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
         }
 
         test {
@@ -196,7 +196,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
         )
 
         action {
-            networkStateRepo.onNetworkStateChange(Network.Known.Absent)
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
         }
 
         test {
@@ -207,7 +207,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
 
     private suspend inline fun <reified T> resetStateTo(networkStateRepo: NetworkStateRepo, network: Network, testBlock: FlowTest<NetworkState, NetworkStateRepo>) {
         testBlock.action {
-            networkStateRepo.onNetworkStateChange(network)
+            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(network)
         }
         testBlock.test {
             assertTrue { it is T }
