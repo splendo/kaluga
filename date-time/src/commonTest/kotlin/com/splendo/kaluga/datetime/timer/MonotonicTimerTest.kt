@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils.timer
+package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.TimeoutCancellationException
@@ -29,49 +29,10 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 
-class TimerTest {
-    @Test
-    fun testInstantTimerAwaitFinish(): Unit = runBlocking {
-        val timer = TimerProvider.instant(duration = Duration.INFINITE)
-        withTimeout(Duration.milliseconds(100)) {
-            timer.awaitFinish()
-        }
-    }
+class MonotonicTimerTest {
 
     @Test
-    fun testInstantTimerStates(): Unit = runBlocking {
-        val timer = TimerProvider.instant(duration = Duration.INFINITE)
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "timer was not finished")
-        timer.start()
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to start timer")
-        timer.pause()
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to pause timer")
-    }
-
-    @Test
-    fun testInstantTimerElapsedFlow(): Unit = runBlocking {
-        val duration = Duration.seconds(5)
-        val timer = TimerProvider.instant(duration)
-
-        val result = timer.elapsed().captureFor(Duration.milliseconds(500))
-        assertEquals(listOf(duration), result)
-    }
-
-    private suspend fun <T> Flow<T>.captureFor(duration: Duration): List<T> {
-        val output = mutableListOf<T>()
-
-        try {
-            withTimeout(duration) {
-                collect { output += it }
-            }
-        } catch (e: TimeoutCancellationException) {
-            // ignore
-        }
-        return output
-    }
-
-    @Test
-    fun testMonotonicTimerStates(): Unit = runBlocking {
+    fun stateTransitions(): Unit = runBlocking {
         val timer = TimerProvider.monotonic(
             duration = Duration.milliseconds(100),
             coroutineScope = this,
@@ -95,7 +56,7 @@ class TimerTest {
     }
 
     @Test
-    fun testMonotonicTimerAwaitFinish(): Unit = runBlocking {
+    fun awaitFinish(): Unit = runBlocking {
         val timer = TimerProvider.monotonic(
             duration = Duration.milliseconds(100),
             coroutineScope = this,
@@ -109,7 +70,7 @@ class TimerTest {
     }
 
     @Test
-    fun testMonotonicTimerElapsedFlow(): Unit = runBlocking {
+    fun elapsedFlow(): Unit = runBlocking {
         fun List<Duration>.isAscending(): Boolean =
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 

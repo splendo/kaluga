@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.utils.timer
+package com.splendo.kaluga.datetime.timer
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

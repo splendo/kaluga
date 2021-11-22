@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.base.utils.timer
+package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.utils.firstInstance
 import kotlinx.coroutines.flow.Flow

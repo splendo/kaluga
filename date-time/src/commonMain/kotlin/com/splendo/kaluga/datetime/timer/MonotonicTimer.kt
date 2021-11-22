@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.base.utils.timer
+package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
