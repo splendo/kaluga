@@ -41,7 +41,7 @@ class VoltageUnitTest {
     }
 
     @Test
-    fun voltConvertWattConversionTest() {
+    fun voltToXConversionTest() {
         // convertToElectricCharge
         assertEquals(4(Abcoulomb), 2(Abvolt) * 2(Abfarad))
         assertEquals(4(Coulomb), 2(Volt) * 2(Farad))
