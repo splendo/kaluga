@@ -16,6 +16,10 @@ version = ext["library_version"]!!
 dependencies {}
 
 kotlin {
+    js {
+        nodejs()
+    }
+
     sourceSets {
         getByName("commonMain") {
             dependencies {

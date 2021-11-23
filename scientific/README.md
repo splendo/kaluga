@@ -26,7 +26,7 @@ This library contains a `ScientificUnit` sealed class that describes units accor
 val meterInFoot = Meter.convert(10, Foot)
 ```
 
-There are 59 `PhysicalQuantities` supported by this library. Each has a equaly named sealed class that contains units that measure the given quantity. Depending on the quantity, this may be further split into sealed classes that contain only units used in a `MeasurementSystem` (e.g. `Metric`, `USCustomary`).
+There are 59 `PhysicalQuantities` supported by this library. Each has a equally named sealed class that contains units that measure the given quantity. Depending on the quantity, this may be further split into sealed classes that contain only units used in a `MeasurementSystem` (e.g. `Metric`, `USCustomary`).
 
 See [PhysicalQuantity.kt](src/commonMain/kotlin/PhysicalQuantity.kt) for a list of all supported quantities. This library supports all seven [base quantities](https://en.wikipedia.org/wiki/Physical_quantity#Base_quantities) as well as a large set of [derived quantities](https://en.wikipedia.org/wiki/SI_derived_unit).
 

@@ -27,49 +27,56 @@
                  android:requestLegacyExternalStorage="true" tools:targetApi="q">
 
     <activity android:name="com.splendo.kaluga.androidtesthelper.AndroidTestHelperActivity"
-              android:label="Empty, use the instrumentation tests">
+              android:label="Empty, use the instrumentation tests"
+              android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
 
-    <activity android:name="com.splendo.kaluga.hud.TestActivity">
+    <activity android:name="com.splendo.kaluga.hud.TestActivity"
+        android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
 
-    <activity android:name="com.splendo.kaluga.alerts.TestActivity">
+    <activity android:name="com.splendo.kaluga.alerts.TestActivity"
+        android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
 
-    <activity android:name="com.splendo.kaluga.datetimepicker.TestActivity">
+    <activity android:name="com.splendo.kaluga.datetimepicker.TestActivity"
+        android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
 
-    <activity android:name="com.splendo.kaluga.resources.TestActivity">
+    <activity android:name="com.splendo.kaluga.resources.TestActivity"
+        android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
 
-    <activity android:name="com.splendo.kaluga.architecture.TestActivity">
+    <activity android:name="com.splendo.kaluga.architecture.TestActivity"
+        android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
 
-    <activity android:name="com.splendo.kaluga.keyboard.TestActivity">
+    <activity android:name="com.splendo.kaluga.keyboard.TestActivity"
+        android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN"/>
             <category android:name="android.intent.category.LAUNCHER"/>
