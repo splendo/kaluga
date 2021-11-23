@@ -25,21 +25,11 @@ class SpecificVolumeUnitTest {
     @Test
     fun metricSpecificVolumeConversionTest() {
         assertEquals(1_000.0, (CubicMeter per Kilogram).convert(1.0, Liter per Kilogram, 2))
-        assertEquals(1_000.0, (CubicMeter per Kilogram).convert(1.0, CubicMeter per Tonne))
-        assertEquals(1_000.0, (CubicMeter per Dalton).convert(1.0, Liter per Dalton, 2))
-        assertEquals(1_000.0, (CubicMeter per Dalton).convert(1.0, CubicMeter per Kilodalton))
-
-        assertEquals(0.001, (Liter per Kilogram).convert(1.0, CubicMeter per Kilogram))
-        assertEquals(1_000.0, (Liter per Kilogram).convert(1.0, Liter per Tonne))
-        assertEquals(0.001, (Liter per Dalton).convert(1.0, CubicMeter per Dalton))
-        assertEquals(1_000.0, (Liter per Dalton).convert(1.0, Liter per Kilodalton))
     }
 
     @Test
     fun imperialSpecificVolumeConversionTest() {
-        assertEquals(0.06, (CubicFoot per Pound).convert(1.0, CubicFoot per Ounce, 2))
         assertEquals(1728.0, (CubicFoot per Pound).convert(1.0, CubicInch per Pound, 2))
-        assertEquals(2240.0, (CubicFoot per Pound).convert(1.0, CubicFoot per ImperialTon, 2))
     }
 
     @Test
@@ -49,31 +39,6 @@ class SpecificVolumeUnitTest {
 
     @Test
     fun usCustomarySpecificVolumeConversionTest() {
-        assertEquals(0.06, (AcreFoot per Pound).convert(1.0, AcreFoot per Ounce, 2))
-        assertEquals(2_000.0, (AcreFoot per Pound).convert(1.0, AcreFoot per UsTon, 2))
         assertEquals(12.0, (AcreFoot per Pound).convert(1.0, AcreInch per Pound, 2))
-        assertEquals(0.06, (AcreInch per Pound).convert(1.0, AcreInch per Ounce, 2))
-        assertEquals(2_000.0, (AcreInch per Pound).convert(1.0, AcreInch per UsTon, 2))
-
-        assertEquals(0.06, (UsFluidDram per Pound).convert(1.0, UsFluidDram per Ounce, 2))
-        assertEquals(2_000.0, (UsFluidDram per Pound).convert(1.0, UsFluidDram per UsTon, 2))
-        assertEquals(0.12, (UsFluidDram per Pound).convert(1.0, UsFluidOunce per Pound, 2))
-        assertEquals(0.06, (UsFluidOunce per Pound).convert(1.0, UsFluidOunce per Ounce, 2))
-        assertEquals(2_000.0, (UsFluidOunce per Pound).convert(1.0, UsFluidOunce per UsTon, 2))
-
-        assertEquals(0.06, (UsCustomaryCup per Pound).convert(1.0, UsCustomaryCup per Ounce, 2))
-        assertEquals(2_000.0, (UsCustomaryCup per Pound).convert(1.0, UsCustomaryCup per UsTon, 2))
-        assertEquals(0.99, (UsCustomaryCup per Pound).convert(1.0, UsLegalCup per Pound, 2))
-        assertEquals(0.06, (UsLegalCup per Pound).convert(1.0, UsLegalCup per Ounce, 2))
-        assertEquals(2_000.0, (UsLegalCup per Pound).convert(1.0, UsLegalCup per UsTon, 2))
-
-        assertEquals(0.06, (UsLiquidPint per Pound).convert(1.0, UsLiquidPint per Ounce, 2))
-        assertEquals(2_000.0, (UsLiquidPint per Pound).convert(1.0, UsLiquidPint per UsTon, 2))
-        assertEquals(0.5, (UsLiquidPint per Pound).convert(1.0, UsLiquidQuart per Pound, 2))
-        assertEquals(0.13, (UsLiquidPint per Pound).convert(1.0, UsLiquidGallon per Pound, 2))
-        assertEquals(0.06, (UsLiquidQuart per Pound).convert(1.0, UsLiquidQuart per Ounce, 2))
-        assertEquals(2_000.0, (UsLiquidQuart per Pound).convert(1.0, UsLiquidQuart per UsTon, 2))
-        assertEquals(0.06, (UsLiquidGallon per Pound).convert(1.0, UsLiquidGallon per Ounce, 2))
-        assertEquals(2_000.0, (UsLiquidGallon per Pound).convert(1.0, UsLiquidGallon per UsTon, 2))
     }
 }
