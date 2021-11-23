@@ -17,38 +17,26 @@
 package com.splendo.kaluga.datetime.timer
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /** Provides timer instances. */
 object TimerProvider {
     /**
      * @param duration timer duration
+     * @param interval timer tick interval
      * @param coroutineScope a parent coroutine scope for the timer
-     * @param coroutineContext a coroutine context for the timer state machine
      * @return a timer based on the system clock
      */
     fun monotonic(
         duration: Duration,
-        interval: Duration = Duration.Companion.milliseconds(500),
-        tickCorrection: TickCorrection = TickCorrection.Adaptive,
-        coroutineScope: CoroutineScope = MainScope(),
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ): Timer = MonotonicTimer(duration, interval, tickCorrection, coroutineScope, coroutineContext)
+        interval: Duration = Duration.milliseconds(500),
+        coroutineScope: CoroutineScope = MainScope()
+    ): Timer = MonotonicTimer(duration, interval, coroutineScope)
 
     /**
      * @param duration timer duration
      * @return a timer that finishes instantly
      */
     fun instant(duration: Duration): Timer = InstantTimer(duration)
-}
-
-/** Timer tick interval correction. */
-sealed class TickCorrection {
-    /** Static correction of [offset]. */
-    data class Offset(val offset: Duration) : TickCorrection()
-    /** Adaptive correction that depends on the consumer speed. */
-    object Adaptive : TickCorrection()
 }

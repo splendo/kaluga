@@ -20,16 +20,13 @@ import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 import com.splendo.kaluga.state.State as KalugaState
@@ -38,11 +35,9 @@ import com.splendo.kaluga.state.State as KalugaState
 internal class MonotonicTimer(
     duration: Duration,
     private val interval: Duration,
-    private val tickCorrection: TickCorrection = TickCorrection.Adaptive,
-    private val coroutineScope: CoroutineScope = MainScope(),
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    private val coroutineScope: CoroutineScope
 ) : Timer, HotStateFlowRepo<MonotonicTimer.State>(
-    coroutineContext,
+    coroutineScope.coroutineContext,
     {
         State.NotRunning.Paused(elapsedSoFar = Duration.ZERO, totalDuration = duration)
     }
@@ -55,7 +50,7 @@ internal class MonotonicTimer(
         takeAndChangeState { state ->
             when (state) {
                 is State.NotRunning.Paused -> suspend {
-                    state.start(interval, tickCorrection, coroutineScope, ::finish)
+                    state.start(interval, coroutineScope, ::finish)
                 }
                 is State.NotRunning.Finished, is State.Running -> state.remain()
             }
@@ -93,14 +88,12 @@ internal class MonotonicTimer(
             ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
                 fun start(
                     interval: Duration,
-                    tickCorrection: TickCorrection,
                     coroutineScope: CoroutineScope,
                     finishCallback: suspend () -> Unit
                 ): Running = Running(
                     elapsedSoFar = elapsed,
                     totalDuration = totalDuration,
                     interval = interval,
-                    tickCorrection = tickCorrection,
                     coroutineScope = coroutineScope,
                     finishCallback = finishCallback
                 )
@@ -118,15 +111,13 @@ internal class MonotonicTimer(
             elapsedSoFar: Duration,
             override val totalDuration: Duration,
             interval: Duration,
-            tickCorrection: TickCorrection,
             private val coroutineScope: CoroutineScope,
             private val finishCallback: suspend () -> Unit
         ) : State(), Timer.State.Running, HandleAfterNewStateIsSet<State>, HandleBeforeOldStateIsRemoved<State> {
             override val elapsed: Flow<Duration> = tickProvider(
                 offset = elapsedSoFar,
                 max = totalDuration,
-                interval = interval,
-                correction = tickCorrection
+                interval = interval
             )
             private lateinit var finishJob: Job
 
@@ -148,62 +139,28 @@ internal class MonotonicTimer(
     }
 }
 
-private fun tickProviderWithOffsetCorrection(
-    offset: Duration,
-    max: Duration,
-    interval: Duration,
-    correctionOffset: Duration
-): Flow<Duration> {
-    val mark = TimeSource.Monotonic.markNow()
-    return flow {
-        while (true) {
-            val elapsed = offset + mark.elapsedNow()
-            emit(elapsed.coerceAtMost(max))
-            if (max <= elapsed) break
-
-            delay(interval + correctionOffset)
-        }
-    }
-}
-
-internal fun tickProviderWithAdaptiveCorrection(
+private fun tickProvider(
     offset: Duration,
     max: Duration,
     interval: Duration
 ): Flow<Duration> {
     val mark = TimeSource.Monotonic.markNow()
+
+    fun newElapsed() = offset + mark.elapsedNow()
+
     return flow {
         var expectedElapsed = offset
         while (true) {
-            val elapsed = offset + mark.elapsedNow()
+            // obtain and deliver a new elapsed time value
+            val elapsed = newElapsed()
             emit(elapsed.coerceAtMost(max))
+            // quit if reached the max
             if (max <= elapsed) break
-
-            val correction = expectedElapsed - (offset + mark.elapsedNow())
-
+            // adaptive correction reduces the interval by time spent delivering emitted value
+            val correction = expectedElapsed - newElapsed()
+            // wait for the next iteration
             delay(interval + correction)
             expectedElapsed += interval
         }
-    }
-}
-
-private fun tickProvider(
-    offset: Duration,
-    max: Duration,
-    interval: Duration,
-    correction: TickCorrection
-): Flow<Duration> {
-    return when (correction) {
-        is TickCorrection.Offset -> tickProviderWithOffsetCorrection(
-            offset = offset,
-            max = max,
-            interval = interval,
-            correctionOffset = correction.offset
-        )
-        is TickCorrection.Adaptive -> tickProviderWithAdaptiveCorrection(
-            offset = offset,
-            max = max,
-            interval = interval
-        )
     }
 }

@@ -28,13 +28,12 @@ import kotlin.time.Duration
 
 class MonotonicTimerTest {
 
-    private fun checkStateTransitions(tickCorrection: TickCorrection): Unit = runBlocking {
+    @Test
+    fun stateTransitions(): Unit = runBlocking {
         val timer = TimerProvider.monotonic(
             duration = Duration.milliseconds(100),
             interval = Duration.milliseconds(10),
-            tickCorrection = tickCorrection,
-            coroutineScope = this,
-            coroutineContext = this.coroutineContext
+            coroutineScope = this
         )
         assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after creation")
         timer.start()
@@ -54,17 +53,10 @@ class MonotonicTimerTest {
     }
 
     @Test
-    fun stateTransitions() {
-        checkStateTransitions(TickCorrection.Offset(-Duration.milliseconds(5)))
-        checkStateTransitions(TickCorrection.Adaptive)
-    }
-
-    @Test
     fun awaitFinish(): Unit = runBlocking {
         val timer = TimerProvider.monotonic(
             duration = Duration.milliseconds(100),
-            coroutineScope = this,
-            coroutineContext = this.coroutineContext
+            coroutineScope = this
         )
 
         withTimeout(Duration.milliseconds(200)) {
@@ -73,7 +65,8 @@ class MonotonicTimerTest {
         }
     }
 
-    private fun checkElapsedFlow(tickCorrection: TickCorrection): Unit = runBlocking {
+    @Test
+    fun elapsedFlow(): Unit = runBlocking {
         fun List<Duration>.isAscending(): Boolean =
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
@@ -81,9 +74,7 @@ class MonotonicTimerTest {
         val timer = TimerProvider.monotonic(
             duration = duration,
             interval = Duration.milliseconds(50),
-            tickCorrection = tickCorrection,
-            coroutineScope = this,
-            coroutineContext = this.coroutineContext
+            coroutineScope = this
         )
 
         // capture and validate an initial state
@@ -109,11 +100,5 @@ class MonotonicTimerTest {
         val final = timer.elapsed().captureFor(Duration.milliseconds(100))
         assertEquals(listOf(duration), final, "timer did not finish in the right state")
         assertTrue(result1.last() <= final.first(), "values are not in ascending order")
-    }
-
-    @Test
-    fun elapsedFlow() {
-        checkElapsedFlow(TickCorrection.Offset(-Duration.milliseconds(5)))
-        checkElapsedFlow(TickCorrection.Adaptive)
     }
 }
