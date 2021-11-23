@@ -13,7 +13,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga:date:$kalugaVersion")
+    implementation("com.splendo.kaluga:date-time:$kalugaVersion")
 }
 ```
 

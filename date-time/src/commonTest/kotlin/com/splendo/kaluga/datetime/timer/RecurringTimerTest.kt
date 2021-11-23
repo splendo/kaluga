@@ -26,11 +26,11 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 
-class MonotonicTimerTest {
+class RecurringTimerTest {
 
     @Test
     fun stateTransitions(): Unit = runBlocking {
-        val timer = TimerProvider.monotonic(
+        val timer = TimerProvider.recurring(
             duration = Duration.milliseconds(100),
             interval = Duration.milliseconds(10),
             coroutineScope = this
@@ -54,7 +54,7 @@ class MonotonicTimerTest {
 
     @Test
     fun awaitFinish(): Unit = runBlocking {
-        val timer = TimerProvider.monotonic(
+        val timer = TimerProvider.recurring(
             duration = Duration.milliseconds(100),
             coroutineScope = this
         )
@@ -71,7 +71,7 @@ class MonotonicTimerTest {
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
         val duration = Duration.milliseconds(1000)
-        val timer = TimerProvider.monotonic(
+        val timer = TimerProvider.recurring(
             duration = duration,
             interval = Duration.milliseconds(50),
             coroutineScope = this

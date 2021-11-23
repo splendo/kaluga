@@ -27,16 +27,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.TimeSource
 import com.splendo.kaluga.state.State as KalugaState
 
 /** Timer based on the system clock. */
-internal class MonotonicTimer(
+internal class RecurringTimer(
     duration: Duration,
     private val interval: Duration,
     private val coroutineScope: CoroutineScope
-) : Timer, HotStateFlowRepo<MonotonicTimer.State>(
+) : Timer, HotStateFlowRepo<RecurringTimer.State>(
     coroutineScope.coroutineContext,
     {
         State.NotRunning.Paused(elapsedSoFar = Duration.ZERO, totalDuration = duration)
@@ -47,31 +48,37 @@ internal class MonotonicTimer(
     override val duration: Duration get() = stateFlow.value.totalDuration
 
     override suspend fun start() {
-        takeAndChangeState { state ->
-            when (state) {
-                is State.NotRunning.Paused -> suspend {
-                    state.start(interval, coroutineScope, ::finish)
+        withContext(coroutineScope.coroutineContext) {
+            takeAndChangeState { state ->
+                when (state) {
+                    is State.NotRunning.Paused -> suspend {
+                        state.start(interval, coroutineScope, ::finish)
+                    }
+                    is State.NotRunning.Finished, is State.Running -> state.remain()
                 }
-                is State.NotRunning.Finished, is State.Running -> state.remain()
             }
         }
     }
 
     override suspend fun pause() {
-        takeAndChangeState { state ->
-            when (state) {
-                is State.Running -> state::pause
-                is State.NotRunning -> state.remain()
+        withContext(coroutineScope.coroutineContext) {
+            takeAndChangeState { state ->
+                when (state) {
+                    is State.Running -> state::pause
+                    is State.NotRunning -> state.remain()
+                }
             }
         }
     }
 
     private suspend fun finish() {
-        takeAndChangeState { state ->
-            when (state) {
-                is State.NotRunning.Finished -> state.remain()
-                is State.Running -> state::finish
-                is State.NotRunning.Paused -> state::finish
+        withContext(coroutineScope.coroutineContext) {
+            takeAndChangeState { state ->
+                when (state) {
+                    is State.NotRunning.Finished -> state.remain()
+                    is State.Running -> state::finish
+                    is State.NotRunning.Paused -> state::finish
+                }
             }
         }
     }

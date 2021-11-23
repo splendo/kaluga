@@ -26,13 +26,13 @@ object TimerProvider {
      * @param duration timer duration
      * @param interval timer tick interval
      * @param coroutineScope a parent coroutine scope for the timer
-     * @return a timer based on the system clock
+     * @return a recurring timer based on the system clock
      */
-    fun monotonic(
-        duration: Duration,
-        interval: Duration = Duration.milliseconds(500),
+    fun recurring(
+        duration: Duration = Duration.INFINITE,
+        interval: Duration = Duration.seconds(1),
         coroutineScope: CoroutineScope = MainScope()
-    ): Timer = MonotonicTimer(duration, interval, coroutineScope)
+    ): Timer = RecurringTimer(duration, interval, coroutineScope)
 
     /**
      * @param duration timer duration
