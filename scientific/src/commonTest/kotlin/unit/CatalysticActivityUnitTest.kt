@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
+import com.splendo.kaluga.scientific.converter.catalysticActivity.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,5 +37,10 @@ class CatalysticActivityUnitTest {
         assertEquals(0.001, Katal.convert(1, Kilokatal))
         assertEquals(0.000001, Katal.convert(1, Megakatal))
         assertEquals(0.000000001, Katal.convert(1, Gigakatal))
+    }
+
+    @Test
+    fun catalysticActivityFromAmountOfSubstanceDivTimeTest() {
+        assertEquals(1(Katal), 2(Mole) / 2(Second))
     }
 }

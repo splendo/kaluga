@@ -149,4 +149,9 @@ class EnergyUnitTest {
         assertEquals(0.00094782, Joule.convert(1.0, BritishThermalUnit, 8))
         assertEquals(0.00094845, Joule.convert(1.0, BritishThermalUnit.Thermal, 8))
     }
+
+    @Test
+    fun energyFromAmountOfSubstanceTimesEnergyTest() {
+        // assertEquals(4(Joule), 2(Mole) * 2(Joule per Mole)) FIXME type inference error
+    }
 }

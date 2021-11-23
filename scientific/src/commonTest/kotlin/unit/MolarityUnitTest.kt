@@ -17,33 +17,25 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
-import com.splendo.kaluga.scientific.converter.speed.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TimeUnitTest {
+class MolarityUnitTest {
 
     @Test
-    fun secondConversionTest() {
-        assertEquals(1e+9, Second.convert(1.0, Nanosecond))
-        assertEquals(1e+6, Second.convert(1.0, Microsecond))
-        assertEquals(1_000.0, Second.convert(1.0, Millisecond))
-        assertEquals(100.0, Second.convert(1.0, Centisecond))
-        assertEquals(10.0, Second.convert(1.0, Decisecond))
-        assertEquals(0.017, Second.convert(1.0, Minute, 3))
-        assertEquals(0.00028, Second.convert(1.0, Hour, 5))
-     }
-
-    @Test
-    fun timeFromSpeedDivAccelerationTest() {
-        assertEqualScientificValue(1(Second), 2(Meter per Second) / 2(Meter per Second per Second))
+    fun molarityConversionTest() {
+        assertEquals(1.63871e-5, (Mole per CubicMeter).convert(1, Mole per CubicInch, 10))
     }
 
     @Test
-    fun timeFromAmountOfSubstanceDivCatalysticActivityTest() {
-        assertEquals(1(Second), 2(Mole) / 2(Katal))
+    fun molarityFromAmountOfSubstanceDivMetricVolume(){
+        assertEquals(1(Mole per CubicMeter),2(Mole) / 2(CubicMeter))
+    }
+
+    @Test
+    fun molarityFromAmountOfSubstanceDivImperialVolume(){
+        assertEquals(1(Mole per CubicInch),2(Mole) / 2(CubicInch))
     }
 }

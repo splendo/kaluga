@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -172,5 +175,10 @@ class VolumeUnitTest {
         assertEquals(1.76, Liter.convert(1.0, ImperialPint, 2))
         assertEquals(0.88, Liter.convert(1.0, ImperialQuart, 2))
         assertEquals(0.22, Liter.convert(1.0, ImperialGallon, 2))
+    }
+
+    @Test
+    fun volumeFromAmountOfSubstanceDivMetricMolarity(){
+        assertEqualScientificValue(1(CubicMeter), 2(Mole) / 2(Mole per CubicMeter))
     }
 }

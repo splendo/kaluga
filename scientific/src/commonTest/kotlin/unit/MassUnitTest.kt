@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -157,5 +160,15 @@ class MassUnitTest {
         assertEquals(2.7315970998020013e+23, Pound.convert(1.0, Kilodalton))
         assertEquals(2.731597099802001e+20, Pound.convert(1.0, Megadalton))
         assertEquals(2.73159709980200128e+17, Pound.convert(1.0, Gigadalton))
+    }
+
+    @Test
+    fun massFromAmountOfSubstanceDivMetricMolality() {
+        assertEqualScientificValue(1(Kilogram), 2(Mole) / 2(Mole per Kilogram))
+    }
+
+    @Test
+    fun massFromAmountOfSubstanceDivImperialMolality() {
+        assertEqualScientificValue(1(Pound), 2(Mole) / 2(Mole per Pound))
     }
 }

@@ -17,9 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.round
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.force.div
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.catalysticActivity.times
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.molality.times
+import com.splendo.kaluga.scientific.converter.molarity.times
+import com.splendo.kaluga.scientific.converter.volume.div
+import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,14 +46,31 @@ class AmountOfSubstanceUnitTest {
 
     @Test
     fun amountOfSubstanceFromCatalysisAndTimeTest() {
-        assertEquals(1(Meter per Second per Second), 2(Newton) / 2(Kilogram))
-        assertEquals(
-            32.17(Foot per Second per Second).decimalValue,
-            (2(PoundForce) / 2(Pound)).decimalValue.round(2)
-        )
-        assertEquals(
-            9.80665(Meter per Second per Second).decimalValue,
-            (2(PoundForce) / 2(Pound)).convert(Meter per Second per Second).decimalValue.round(5)
-        )
+        assertEquals(240(Mole), 2(Katal) * 2(Minute))
+    }
+
+    @Test
+    fun amountOfSubstanceFromEnergyAndMolarEnergyTest() {
+        assertEqualScientificValue(1(Mole), (2(WattHour) / 2(WattHour per Mole)))
+    }
+
+    @Test
+    fun amountOfSubstanceFromMolalityAndWeightTest() {
+        assertEqualScientificValue(4(Mole), 2(Mole per Kilogram) * 2(Kilogram))
+    }
+
+    @Test
+    fun amountOfSubstanceFromMolarityAndVolumeTest() {
+        assertEqualScientificValue(4(Mole), 2(Mole per CubicMeter) * 2(CubicMeter))
+    }
+
+    @Test
+    fun amountOfSubstanceFromVolumeAndMolarVolumeTest() {
+        assertEqualScientificValue(1(Mole), (2(CubicMeter) / 2(CubicMeter per Mole)))
+    }
+
+    @Test
+    fun amountOfSubstanceFromWeightAndMolarMassTest() {
+        assertEqualScientificValue(1(Mole), 2(Kilogram) / 2(Kilogram per Mole))
     }
 }

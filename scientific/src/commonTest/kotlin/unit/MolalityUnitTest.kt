@@ -17,33 +17,25 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
-import com.splendo.kaluga.scientific.converter.speed.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TimeUnitTest {
+class MolalityUnitTest {
 
     @Test
-    fun secondConversionTest() {
-        assertEquals(1e+9, Second.convert(1.0, Nanosecond))
-        assertEquals(1e+6, Second.convert(1.0, Microsecond))
-        assertEquals(1_000.0, Second.convert(1.0, Millisecond))
-        assertEquals(100.0, Second.convert(1.0, Centisecond))
-        assertEquals(10.0, Second.convert(1.0, Decisecond))
-        assertEquals(0.017, Second.convert(1.0, Minute, 3))
-        assertEquals(0.00028, Second.convert(1.0, Hour, 5))
-     }
-
-    @Test
-    fun timeFromSpeedDivAccelerationTest() {
-        assertEqualScientificValue(1(Second), 2(Meter per Second) / 2(Meter per Second per Second))
+    fun molalityConversionTest() {
+        assertEquals(0.0283495, (Mole per Kilogram).convert(1, Mole per Ounce, 7))
     }
 
     @Test
-    fun timeFromAmountOfSubstanceDivCatalysticActivityTest() {
-        assertEquals(1(Second), 2(Mole) / 2(Katal))
+    fun molalityFromAmountOfSubstanceDivMetricWeight(){
+        assertEquals(1(Mole per Kilogram),2(Mole) / 2(Kilogram))
+    }
+
+    @Test
+    fun molalityFromAmountOfSubstanceDivImperialWeight(){
+        assertEquals(1(Mole per Pound),2(Mole) / 2(Pound))
     }
 }

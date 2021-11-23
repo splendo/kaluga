@@ -57,7 +57,7 @@ class RadioActivityUnitTest {
         assertEquals(0.001, Becquerel.convert(1, Kilobecquerel))
         assertEquals(1e-6, Becquerel.convert(1, Megabecquerel))
         assertEquals(1e-9, Becquerel.convert(1, Gigabecquerel))
-        assertEquals(2.7027027027027E-11, Becquerel.convert(1, Curie,24))
+        assertEquals(2.7027027027027E-11, Becquerel.convert(1, Curie, 24))
 
         assertEquals(1e+9, Curie.convert(1, Nanocurie))
         assertEquals(1e+6, Curie.convert(1, Microcurie))
@@ -69,5 +69,10 @@ class RadioActivityUnitTest {
         assertEquals(0.001, Curie.convert(1, Kilocurie))
         assertEquals(1e-6, Curie.convert(1, Megacurie))
         assertEquals(1e-9, Curie.convert(1, Gigacurie))
+    }
+
+    @Test
+    fun radioActivityFromAmountOfSubstanceDivTimeTest() {
+        // assertEquals(1(Becquerel), 2(Mole) / 2(Minute)) FIXME type inference (assertEqualScientificValue does not work also)
     }
 }
