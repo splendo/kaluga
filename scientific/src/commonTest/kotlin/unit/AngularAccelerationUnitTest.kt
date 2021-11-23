@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.angularVelocity.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -31,5 +33,10 @@ class AngularAccelerationUnitTest {
         assertEquals(57.2958, (Radian per Second per Second).convert(1, Degree per Second per Second, 4))
         assertEquals(63.662, (Radian per Second per Second).convert(1, Gradian per Second per Second, 3))
         assertEquals(3437.75, (Radian per Second per Second).convert(1, ArcMinute per Second per Second, 2))
+    }
+
+    @Test
+    fun angularAccelerationFromAngularVelocityAndTime(){
+        assertEquals(1((Radian per Second per Second)), 2(Radian per Second) / 2(Second) )
     }
 }

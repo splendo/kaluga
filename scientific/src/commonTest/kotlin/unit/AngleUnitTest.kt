@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.angularVelocity.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -40,4 +43,10 @@ class AngleUnitTest {
         assertEquals(3437.75, Radian.convert(1, ArcMinute, 2))
         assertEquals(206265.0, Radian.convert(1, ArcSecond, 0))
     }
+
+    @Test
+    fun angleFromAngularVelocityAndTimeTest() {
+        assertEqualScientificValue(4(Radian), 2(Radian per Second) * 2(Second))
+    }
+
 }

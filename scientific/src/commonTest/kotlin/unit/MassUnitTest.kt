@@ -163,12 +163,12 @@ class MassUnitTest {
     }
 
     @Test
-    fun massFromAmountOfSubstanceDivMetricMolality() {
+    fun massFromAmountOfSubstanceDivMetricMolalityTest() {
         assertEqualScientificValue(1(Kilogram), 2(Mole) / 2(Mole per Kilogram))
     }
 
     @Test
-    fun massFromAmountOfSubstanceDivImperialMolality() {
+    fun massFromAmountOfSubstanceDivImperialMolalityTest() {
         assertEqualScientificValue(1(Pound), 2(Mole) / 2(Mole per Pound))
     }
 }

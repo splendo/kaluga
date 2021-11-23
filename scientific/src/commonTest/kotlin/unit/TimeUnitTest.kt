@@ -19,6 +19,8 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
+import com.splendo.kaluga.scientific.converter.angle.div
+import com.splendo.kaluga.scientific.converter.angularVelocity.div
 import com.splendo.kaluga.scientific.converter.speed.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -35,7 +37,7 @@ class TimeUnitTest {
         assertEquals(10.0, Second.convert(1.0, Decisecond))
         assertEquals(0.017, Second.convert(1.0, Minute, 3))
         assertEquals(0.00028, Second.convert(1.0, Hour, 5))
-     }
+    }
 
     @Test
     fun timeFromSpeedDivAccelerationTest() {
@@ -45,5 +47,15 @@ class TimeUnitTest {
     @Test
     fun timeFromAmountOfSubstanceDivCatalysticActivityTest() {
         assertEquals(1(Second), 2(Mole) / 2(Katal))
+    }
+
+    @Test
+    fun timeFromAngleDivAngularVelocityTest() {
+        assertEquals(1(Second), 2(Radian) / 2(Radian per Second))
+    }
+
+    @Test
+    fun timeFromAngularVelocityDivAngularAccelerationTest() {
+        assertEquals(1(Second), 2(Radian per Second) / 2(Radian per Second per Second))
     }
 }
