@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.electricConductance.times
+import com.splendo.kaluga.scientific.converter.voltage.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -37,5 +40,35 @@ class ElectricCurrentUnitTest {
 
         assertEquals(0.1, Ampere.convert(1, Biot))
         assertEquals(0.1, Ampere.convert(1, Abampere))
+    }
+
+    @Test
+    fun currentFromChargeAndTimeTest() {
+        // 1(Coulomb) / 1(Second) FIXME
+    }
+
+    @Test
+    fun currentFromEnergyAndFluxTest() {
+        // 1(Joule) / 1(Weber) FIXME
+    }
+
+    @Test
+    fun currentFromFluxAndInductanceTest() {
+        // 2(Weber) / 2(Henry) FIXME
+    }
+
+    @Test
+    fun currentFromPowerAndVoltageTest() {
+        // 2(Watt) / 2(Volt) FIXME
+    }
+
+    @Test
+    fun currentFromVoltageAndConductanceTest() {
+        assertEquals(4(Ampere), 2(Siemens) * 2(Volt))
+    }
+
+    @Test
+    fun currentFromVoltageAndResistanceTest() {
+        assertEquals(4(Ampere), 2(Volt) / 2(Ohm))
     }
 }

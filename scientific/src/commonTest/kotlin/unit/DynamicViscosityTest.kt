@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.momentum.div
+import com.splendo.kaluga.scientific.converter.pressure.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -24,6 +27,21 @@ class DynamicViscosityTest {
 
     @Test
     fun dynamicViscosityConversionTest() {
-        // TODO
+        // assertEquals(1.0, (Bar x Second).convert(2.9,PoundSquareFoot x Second,4)) FIXME
+    }
+
+    @Test
+    fun dynamicViscosityFromMomentumAndAreaTest(){
+        assertEquals(1(Pascal x Second), 2(Kilogram x (Meter per Second)) / 2(SquareMeter))
+        // FIXME does that yield PoundSquareInch? PoundSquareFoot does not work, result is also not 1
+        // assertEquals(1(PoundSquareInch x Second), 2(Pound x (Foot per Second)) / 2(SquareFoot))
+    }
+
+    @Test
+    fun dynamicViscosityFromPressureAndTimeTest(){
+        assertEquals(4(Pascal x Second), 2(Pascal) * 2(Second))
+        assertEquals(4(PoundSquareFoot x Second), 2(PoundSquareFoot) * 2(Second))
+        assertEquals(4(KipSquareFoot x Second), 2(KipSquareFoot) * 2(Second))
+        assertEquals(4(ImperialTonSquareFoot x Second), 2(ImperialTonSquareFoot) * 2(Second))
     }
 }

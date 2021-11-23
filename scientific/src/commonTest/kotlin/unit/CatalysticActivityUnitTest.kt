@@ -40,7 +40,7 @@ class CatalysticActivityUnitTest {
     }
 
     @Test
-    fun catalysticActivityFromAmountOfSubstanceDivTimeTest() {
+    fun catalysticActivityFromAmountOfSubstanceAndTimeTest() {
         assertEquals(1(Katal), 2(Mole) / 2(Second))
     }
 }

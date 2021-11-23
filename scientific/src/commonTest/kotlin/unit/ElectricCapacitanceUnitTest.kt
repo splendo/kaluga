@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.electricCharge.div
+import com.splendo.kaluga.scientific.converter.electricConductance.div
+import com.splendo.kaluga.scientific.converter.time.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,5 +38,20 @@ class ElectricCapacitanceUnitTest {
         assertEquals(0.001, Farad.convert(1, Kilofarad))
         assertEquals(0.000001, Farad.convert(1, Megafarad))
         assertEquals(1e-9, Farad.convert(1, Gigafarad))
+    }
+
+    @Test
+    fun capacitanceFromChargeAndVoltageTest() {
+        assertEquals(1(Farad), 2(Coulomb) / 2(Volt))
+    }
+
+    @Test
+    fun capacitanceFromConductanceAndFrequencyTest() {
+        assertEquals(1(Farad), 2(Siemens) / 2(Hertz))
+    }
+
+    @Test
+    fun capacitanceFromTimeAndResistanceTest() {
+        assertEquals(1(Farad), 2(Second) / 2(Ohm))
     }
 }
