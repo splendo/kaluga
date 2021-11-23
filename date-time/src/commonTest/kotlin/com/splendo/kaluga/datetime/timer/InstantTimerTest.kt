@@ -18,15 +18,10 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
-import kotlin.test.assertTrue
 import kotlin.time.Duration
 
 class InstantTimerTest {

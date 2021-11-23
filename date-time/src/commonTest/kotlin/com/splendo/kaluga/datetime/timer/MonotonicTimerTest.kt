@@ -18,10 +18,7 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,10 +28,11 @@ import kotlin.time.Duration
 
 class MonotonicTimerTest {
 
-    @Test
-    fun stateTransitions(): Unit = runBlocking {
+    private fun checkStateTransitions(tickCorrection: TickCorrection): Unit = runBlocking {
         val timer = TimerProvider.monotonic(
             duration = Duration.milliseconds(100),
+            interval = Duration.milliseconds(10),
+            tickCorrection = tickCorrection,
             coroutineScope = this,
             coroutineContext = this.coroutineContext
         )
@@ -56,6 +54,13 @@ class MonotonicTimerTest {
     }
 
     @Test
+    fun stateTransitions() {
+        checkStateTransitions(TickCorrection.None)
+        checkStateTransitions(TickCorrection.Offset(-Duration.milliseconds(5)))
+        checkStateTransitions(TickCorrection.Adaptive)
+    }
+
+    @Test
     fun awaitFinish(): Unit = runBlocking {
         val timer = TimerProvider.monotonic(
             duration = Duration.milliseconds(100),
@@ -69,14 +74,15 @@ class MonotonicTimerTest {
         }
     }
 
-    @Test
-    fun elapsedFlow(): Unit = runBlocking {
+    private fun checkElapsedFlow(tickCorrection: TickCorrection): Unit = runBlocking {
         fun List<Duration>.isAscending(): Boolean =
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
         val duration = Duration.milliseconds(1000)
         val timer = TimerProvider.monotonic(
             duration = duration,
+            interval = Duration.milliseconds(50),
+            tickCorrection = tickCorrection,
             coroutineScope = this,
             coroutineContext = this.coroutineContext
         )
@@ -104,5 +110,12 @@ class MonotonicTimerTest {
         val final = timer.elapsed().captureFor(Duration.milliseconds(100))
         assertEquals(listOf(duration), final, "timer did not finish in the right state")
         assertTrue(result1.last() <= final.first(), "values are not in ascending order")
+    }
+
+    @Test
+    fun elapsedFlow() {
+        checkElapsedFlow(TickCorrection.None)
+        checkElapsedFlow(TickCorrection.Offset(-Duration.milliseconds(5)))
+        checkElapsedFlow(TickCorrection.Adaptive)
     }
 }
