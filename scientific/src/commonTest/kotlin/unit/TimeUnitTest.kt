@@ -17,26 +17,14 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.acceleration.div
+import com.splendo.kaluga.scientific.converter.speed.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class JoltUnitTest {
-
+class TimeUnitTest {
     @Test
-    fun joltTest() {
-        assertEquals(100.0, (Meter per Second per Second per Second).convert(1, Centimeter per Second per Second per Second))
-        assertEquals(3.2808399, (Meter per Second per Second per Second).convert(1, Foot per Second per Second per Second,7))
-    }
-
-    @Test
-    fun joltFromMetricAccelerationDivTimeTest() {
-        assertEquals(1.0(Meter per Second per Second per Second), (2(Meter per Second per Second) / 2(Second)))
-    }
-
-    @Test
-    fun joltFromImperialAccelerationDivTimeTest() {
-        assertEquals(1.0(Foot per Second per Second per Second), (2(Foot per Second per Second) / 2(Second)))
+    fun timeFromSpeedDivAccelerationTest() {
+        // assertEquals(4(Second), 2(Meter per Second) / 2(Meter per Second per Second)) FIXME
     }
 }

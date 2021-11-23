@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.scientific.converter.weight.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -53,26 +56,56 @@ class ForceUnitTest {
         assertEquals(1e-9, Dyne.convert(1, Gigadyne))
 
         assertEquals(1.01972e-6, Dyne.convert(1, KilogramForce, 11))
-        assertEquals(7.23301e-5, Dyne.convert(1, Poundal,10))
-        assertEquals(2.248089431e-9, Dyne.convert(1, Kip,18))
+        assertEquals(7.23301e-5, Dyne.convert(1, Poundal, 10))
+        assertEquals(2.248089431e-9, Dyne.convert(1, Kip, 18))
         // assertEquals(0.000000001, Dyne.convert(1, UsTonForce)) FIXME
 
         assertEquals(1000.0, KilogramForce.convert(1, GramForce))
         assertEquals(1000000.0, KilogramForce.convert(1, MilligramForce))
         assertEquals(0.001, KilogramForce.convert(1, TonneForce))
 
-        assertEquals(70.9316, KilogramForce.convert(1, Poundal,4))
-        assertEquals(0.0022, KilogramForce.convert(1, Kip,4))
+        assertEquals(70.9316, KilogramForce.convert(1, Poundal, 4))
+        assertEquals(0.0022, KilogramForce.convert(1, Kip, 4))
         // assertEquals(1000.0, KilogramForce.convert(1, UsTonForce)) FIXME
 
         assertEquals(0.031081, Poundal.convert(1, PoundForce, 6))
-        assertEquals(0.497295, Poundal.convert(1, OunceForce,6))
+        assertEquals(0.497295, Poundal.convert(1, OunceForce, 6))
         // assertEquals(217.39130435, Poundal.convert(1, GrainForce,8)) FIXME
 
         // assertEquals(0.000031080949294433, Poundal.convert(1, Kip)) FIXME
         // assertEquals(1e+9, Poundal.convert(1, ImperialTonForce)) FIXME
 
-        assertEquals(0.5, Kip.convert(1, UsTonForce,1))
-        assertEquals(0.4464, Kip.convert(1, ImperialTonForce,4))
+        assertEquals(0.5, Kip.convert(1, UsTonForce, 1))
+        assertEquals(0.4464, Kip.convert(1, ImperialTonForce, 4))
+    }
+
+    @Test
+    fun forceFromAccelerationTimesPoundTest() {
+        assertEquals(0.124323801(PoundForce).decimalValue, (2(Pound) * 2(Foot per Second per Second)).decimalValue.round(9))
+    }
+
+    @Test
+    fun forceFromAccelerationTimesGramTest() {
+        assertEquals(4.0(Newton), (2(Kilogram) * 2(Meter per Second per Second)))
+    }
+
+    @Test
+    fun forceFromAccelerationTimesOunceTest() {
+        assertEquals(0.124323801(OunceForce).decimalValue, (2(Ounce) * 2(Foot per Second per Second)).decimalValue.round(9))
+    }
+
+    @Test
+    fun forceFromAccelerationTimesGrainTest() {
+        assertEquals(0.124323801(GrainForce).decimalValue, (2(Grain) * 2(Foot per Second per Second)).decimalValue.round(9))
+    }
+
+    @Test
+    fun forceFromAccelerationTimesUSTonTest() {
+        assertEquals(0.124323801(UsTonForce).decimalValue, (2(UsTon) * 2(Foot per Second per Second)).decimalValue.round(9))
+    }
+
+    @Test
+    fun forceFromAccelerationTimesImperialTonTest() {
+        assertEquals(0.124323801(ImperialTonForce).decimalValue, (2(ImperialTon) * 2(Foot per Second per Second)).decimalValue.round(9))
     }
 }
