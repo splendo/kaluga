@@ -21,9 +21,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DecimalTest {
-
     @Test
     fun test() {
+        assertEquals(0.1.toDecimal().plus(0.2.toDecimal()).toDouble(), 0.3)
         assertEquals(1.99.toDecimal().round(1).toDouble(), 2.0)
         assertEquals(1.91.toDecimal().round(1).toDouble(), 1.9)
 

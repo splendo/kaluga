@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class NetworkStateRepo(
+open class NetworkStateRepo(
     private val networkManagerBuilder: BaseNetworkManager.Builder,
 ) : ColdStateRepo<NetworkState>() {
 
@@ -79,7 +79,7 @@ class NetworkStateRepo(
         }
     }
 
-    internal fun onNetworkStateChange(network: Network) {
+    protected fun onNetworkStateChange(network: Network) {
         runBlocking {
             takeAndChangeState { state: NetworkState ->
                 when (state) {
