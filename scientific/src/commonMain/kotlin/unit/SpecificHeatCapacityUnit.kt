@@ -44,8 +44,8 @@ sealed class SpecificHeatCapacity : AbstractScientificUnit<PhysicalQuantity.Spec
     abstract val perWeight: Weight
     override val quantity = PhysicalQuantity.SpecificHeatCapacity
     override val symbol: String by lazy { "${energy.symbol}/(${perTemperature.symbol}⋅${perWeight.symbol})" }
-    override fun fromSIUnit(value: Decimal): Decimal = perWeight.toSIUnit(perTemperature.deltaToSIUnitDelta(energy.fromSIUnit(value)))
-    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(perTemperature.deltaFromSIUnitDelta(perWeight.fromSIUnit(value)))
+    override fun fromSIUnit(value: Decimal): Decimal = perWeight.fromSIUnit(perTemperature.deltaToSIUnitDelta(energy.fromSIUnit(value)))
+    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(perTemperature.deltaFromSIUnitDelta(perWeight.toSIUnit(value)))
 }
 
 @Serializable

@@ -119,7 +119,7 @@ object Horsepower : ImperialPower() {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = FootPoundForce.fromSIUnit(Minute.toSIUnit(value)) / FOOTPOUND_PER_MINUTE.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Minute.toSIUnit(FootPoundForce.fromSIUnit(value * FOOTPOUND_PER_MINUTE.toDecimal()))
+    override fun toSIUnit(value: Decimal): Decimal = Minute.fromSIUnit(FootPoundForce.toSIUnit(value * FOOTPOUND_PER_MINUTE.toDecimal()))
 }
 
 @Serializable
