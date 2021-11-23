@@ -38,7 +38,6 @@ class VolumetricFluxUnitTest {
         assertEquals(4(CubicInch per Second), 2(CubicInch per Second per SquareInch) * 2(SquareInch))
         assertEquals(4(ImperialFluidOunce per Second), 2(ImperialFluidOunce per Second per SquareInch) * 2(SquareInch))
         assertEquals(4(AcreInch per Second), 2(AcreInch per Second per SquareInch) * 2(SquareInch))
-
         assertEquals(0.00258064(CubicMeter per Second), 2(CubicMeter per Second per SquareMeter) * 2(SquareInch))
     }
 }
