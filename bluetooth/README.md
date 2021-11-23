@@ -39,3 +39,31 @@ bluetooth.devices()[someUUID].services()[serviceUUID].characteristics()[characte
 
 bluetooth.devices()[someUUID].disconnect()
 ```
+
+### Android
+You may notice that when you ask for kaluga's `Permission.Bluetooth` the android request alert will prompt `Location` permission. This behaviour is encountered because Android system requires Location to access the hardware identifiers of nearby external devices via Bluetooth.
+
+In order to setup a bluetooth repo on android you need to do the following:
+```kotlin
+// Somewhere in Android code
+val permissions = Permissions(
+    PermissionsBuilder().apply {
+        registerBluetoothPermission()
+        registerLocationPermission()
+    }
+)
+
+val bluetoothBuilder = BluetoothBuilder(permissions = permissions)
+CommonViewModel(bluetoothBuilder)
+...
+
+// Common code
+class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseViewModel() {
+    private val repo: Bluetooth = bltBuilder.create(
+        connectionSettings = ConnectionSettings(
+            ConnectionSettings.ReconnectionSettings.Never
+        ),
+        autoRequestPermission = false
+    )
+} 
+```

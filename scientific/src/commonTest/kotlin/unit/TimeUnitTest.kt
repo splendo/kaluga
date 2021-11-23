@@ -17,12 +17,22 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.speed.div
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TimeUnitTest {
+
+    @Test
+    fun secondConversionTest() {
+        assertEquals(1e+9, Second.convert(1.0, Nanosecond))
+        assertEquals(1e+6, Second.convert(1.0, Microsecond))
+        assertEquals(1_000.0, Second.convert(1.0, Millisecond))
+        assertEquals(100.0, Second.convert(1.0, Centisecond))
+        assertEquals(10.0, Second.convert(1.0, Decisecond))
+        assertEquals(0.017, Second.convert(1.0, Minute, 3))
+        assertEquals(0.00028, Second.convert(1.0, Hour, 5))
+     }
+
     @Test
     fun timeFromSpeedDivAccelerationTest() {
         // assertEquals(4(Second), 2(Meter per Second) / 2(Meter per Second per Second)) FIXME

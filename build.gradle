@@ -15,6 +15,7 @@ plugins {
     id "convention.publication"
     id 'org.jlleitschuh.gradle.ktlint'
     id 'org.jlleitschuh.gradle.ktlint-idea'
+    id 'org.jetbrains.kotlin.multiplatform' apply false
 }
 
 allprojects {
