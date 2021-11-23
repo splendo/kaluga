@@ -33,7 +33,7 @@ object TimerProvider {
     fun monotonic(
         duration: Duration,
         interval: Duration = Duration.Companion.milliseconds(500),
-        tickCorrection: TickCorrection = TickCorrection.None,
+        tickCorrection: TickCorrection = TickCorrection.Adaptive,
         coroutineScope: CoroutineScope = MainScope(),
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate
     ): Timer = MonotonicTimer(duration, interval, tickCorrection, coroutineScope, coroutineContext)
@@ -47,8 +47,6 @@ object TimerProvider {
 
 /** Timer tick interval correction. */
 sealed class TickCorrection {
-    /** No correction. */
-    object None : TickCorrection()
     /** Static correction of [offset]. */
     data class Offset(val offset: Duration) : TickCorrection()
     /** Adaptive correction that depends on the consumer speed. */

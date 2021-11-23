@@ -55,7 +55,6 @@ class MonotonicTimerTest {
 
     @Test
     fun stateTransitions() {
-        checkStateTransitions(TickCorrection.None)
         checkStateTransitions(TickCorrection.Offset(-Duration.milliseconds(5)))
         checkStateTransitions(TickCorrection.Adaptive)
     }
@@ -114,7 +113,6 @@ class MonotonicTimerTest {
 
     @Test
     fun elapsedFlow() {
-        checkElapsedFlow(TickCorrection.None)
         checkElapsedFlow(TickCorrection.Offset(-Duration.milliseconds(5)))
         checkElapsedFlow(TickCorrection.Adaptive)
     }

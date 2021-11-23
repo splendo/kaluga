@@ -38,7 +38,7 @@ import com.splendo.kaluga.state.State as KalugaState
 internal class MonotonicTimer(
     duration: Duration,
     private val interval: Duration,
-    private val tickCorrection: TickCorrection = TickCorrection.None,
+    private val tickCorrection: TickCorrection = TickCorrection.Adaptive,
     private val coroutineScope: CoroutineScope = MainScope(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : Timer, HotStateFlowRepo<MonotonicTimer.State>(
@@ -194,12 +194,6 @@ private fun tickProvider(
     correction: TickCorrection
 ): Flow<Duration> {
     return when (correction) {
-        is TickCorrection.None -> tickProviderWithOffsetCorrection(
-            offset = offset,
-            max = max,
-            interval = interval,
-            correctionOffset = Duration.ZERO
-        )
         is TickCorrection.Offset -> tickProviderWithOffsetCorrection(
             offset = offset,
             max = max,
