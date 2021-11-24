@@ -35,5 +35,12 @@ class PowerUnitTest {
         assertEquals(1e-6, Watt.convert(1, Megawatt))
         assertEquals(1e-9, Watt.convert(1, Gigawatt))
         assertEquals(10000000.0, Watt.convert(1, ErgPerSecond))
+
+        assertEquals(0.1, Watt.convert(1, FootPoundForcePerSecond))
+        assertEquals(0.1, Watt.convert(1, FootPoundForcePerMinute))
+        assertEquals(0.1, Watt.convert(1, Horsepower))
+        assertEquals(0.1, Watt.convert(1, BritishThermalUnitPerSecond))
+        assertEquals(0.1, Watt.convert(1, BritishThermalUnitPerMinute))
+        assertEquals(0.1, Watt.convert(1, BritishThermalUnitPerHour))
     }
 }

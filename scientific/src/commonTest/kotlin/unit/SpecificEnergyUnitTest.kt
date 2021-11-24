@@ -23,22 +23,9 @@ import kotlin.test.assertEquals
 class SpecificEnergyUnitTest {
 
     @Test
-    fun metricSpecificEnergyConversionTest() {
-        assertEquals(1.0e+7, (Joule per Kilogram).convert(1.0, Erg per Kilogram))
-    }
-
-    @Test
-    fun metricAndImperialSpecificEnergyConversionTest() {
+    fun specificEnergyConversionTest() {
+        assertEquals(0.28, (Joule per Milligram).convert(1.0, WattHour per Gram, 2))
         assertEquals(860.42, (WattHour per Pound).convert(1.0, Calorie per Pound, 2))
-    }
-
-    @Test
-    fun ukImperialSpecificEnergyConversionTest() {
-        assertEquals(1.0007, (BritishThermalUnit per ImperialTon).convert(1.0, BritishThermalUnit.Thermal per ImperialTon, 4))
-    }
-
-    @Test
-    fun usCustomarySpecificEnergyConversionTest() {
-        assertEquals(1_980_000.0, (HorsepowerHour per UsTon).convert(1.0, FootPoundForce per UsTon))
+        assertEquals(2851.67, (HorsepowerHour per UsTon).convert(1.0, BritishThermalUnit.Thermal per ImperialTon, 2))
     }
 }
