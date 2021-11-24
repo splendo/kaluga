@@ -20,25 +20,20 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MolarMassUnitTest {
+class MolarEnergyUnitTest {
 
     @Test
-    fun metricMolarMassConversionTest() {
-        assertEquals(0.001, (Kilogram per Mole).convert(1.0, Tonne per Mole))
+    fun metricMolarEnergyConversionTest() {
+        assertEquals(1.0e+7, (Joule per Mole).convert(1.0, Erg per Mole))
     }
 
     @Test
-    fun imperialMolarMassConversionTest() {
-        assertEquals(16.0, (Pound per Mole).convert(1.0, Ounce per Mole))
+    fun metricAndImperialMolarEnergyConversionTest() {
+        assertEquals(860.42, (WattHour per Mole).convert(1.0, Calorie per Mole, 2))
     }
 
     @Test
-    fun ukImperialMolarMassConversionTest() {
-        assertEquals(2240.0, (ImperialTon per Mole).convert(1.0, Pound per Mole))
-    }
-
-    @Test
-    fun usCustomaryMolarMassConversionTest() {
-        assertEquals(2000.0, (UsTon per Mole).convert(1.0, Pound per Mole))
+    fun imperialMolarEnergyConversionTest() {
+        assertEquals(0.083, (InchPoundForce per Mole).convert(1.0, FootPoundForce per Mole, 3))
     }
 }
