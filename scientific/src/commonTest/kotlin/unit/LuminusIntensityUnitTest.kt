@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.luminance.times
+import com.splendo.kaluga.scientific.converter.luminousFlux.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,5 +37,16 @@ class LuminusIntensityUnitTest {
         assertEquals(0.001, Candela.convert(1, Kilocandela))
         assertEquals(1e-6, Candela.convert(1, Megacandela))
         assertEquals(1e-9, Candela.convert(1, Gigacandela))
+    }
+
+    @Test
+    fun luminousIntensityFromLuminanceAndArea() {
+        assertEquals(4(Candela),2(Nit) * 2(SquareMeter))
+        // assertEquals(4(Candela),2(FootLambert) * 2(SquareFoot)) FIXME find expected value
+    }
+
+    @Test
+    fun luminousIntensityFromLuminousFluxAndSolidAngleTest() {
+        assertEquals(1(Candela),2(Lumen) / 2(Steradian))
     }
 }

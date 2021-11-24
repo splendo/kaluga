@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.area.div
+import com.splendo.kaluga.scientific.converter.areaDensity.times
+import com.splendo.kaluga.scientific.converter.density.times
+import com.splendo.kaluga.scientific.converter.weight.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -24,7 +29,31 @@ class LinearMassDensityUnitTest {
 
     @Test
     fun linearMassDensityConversionTest() {
-        // assertEquals(6.022e+23, (Gram per Meter).convert(1, Dalton per Meter, 0)) FIXME
-        // assertEquals(2.20462, (Kilogram per Meter).convert(1, Pound per Meter,5)) FIXME
+        // assertEquals(6.022e+23, (Gram per Meter).convert(1, Dalton per Meter, 0)) FIXME yields diff
+        // assertEquals(2.20462, (Kilogram per Meter).convert(1, Pound per Meter,5)) FIXME yields diff
+    }
+
+    @Test
+    fun linearMassDensityFromAreaAndSpecificVolumeTest() {
+        assertEquals(1(Kilogram per Meter), 2(SquareMeter) / 2(CubicMeter per Kilogram))
+        assertEquals(1(Pound per Foot), 2(SquareFoot) / 2(CubicFoot per Pound))
+    }
+
+    @Test
+    fun linearMassDensityFromAreaDensityAndLengthTest() {
+        assertEquals(4(Kilogram per Meter), 2(Kilogram per SquareMeter) * 2(Meter))
+        assertEquals(4(Pound per Foot), 2(Pound per SquareFoot) * 2(Foot))
+    }
+
+    @Test
+    fun linearMassDensityFromDensityAndLengthTest() {
+        assertEquals(4(Kilogram per Meter), 2(Kilogram per CubicMeter) * 2(SquareMeter))
+        assertEquals(4(Pound per Foot), 2(Pound per CubicFoot) * 2(SquareFoot))
+    }
+
+    @Test
+    fun linearMassDensityFromWeightAndAreaTest() {
+        assertEquals(1(Kilogram per Meter), 2(Kilogram) / 2(Meter))
+        assertEquals(1(Pound per Foot), 2(Pound) / 2(Foot))
     }
 }

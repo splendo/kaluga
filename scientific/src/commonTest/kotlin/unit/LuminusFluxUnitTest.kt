@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.illuminance.times
+import com.splendo.kaluga.scientific.converter.luminousEnergy.div
+import com.splendo.kaluga.scientific.converter.luminousIntensity.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,5 +39,21 @@ class LuminusFluxUnitTest {
         assertEquals(0.001, Lumen.convert(1, Kilolumen))
         assertEquals(1e-6, Lumen.convert(1, Megalumen))
         assertEquals(1e-9, Lumen.convert(1, Gigalumen))
+    }
+
+    @Test
+    fun luminousFluxFromIlluminanceAndAreaTest() {
+        assertEquals(4(Lumen),2(Lux) * 2(SquareMeter))
+        assertEquals(4(Lumen),2(FootCandle) * 2(SquareFoot))
+    }
+
+    @Test
+    fun luminousFluxFromLuminousEnergyAndTimeTest() {
+        assertEqualScientificValue(1(Lumen),2(Lumen x Second) / 2(Second))
+    }
+
+    @Test
+    fun luminousFluxFromIntensityAndSolidAngleTest() {
+        assertEquals(4(Lumen), 2(Candela) * 2(Steradian))
     }
 }

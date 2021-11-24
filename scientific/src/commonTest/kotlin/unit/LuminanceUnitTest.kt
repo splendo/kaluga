@@ -17,11 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.scientific.converter.illuminance.div
+import com.splendo.kaluga.scientific.converter.luminousIntensity.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class LuminanceUnitTest {
-    
+
     @Test
     fun luminanceConversionTest() {
         assertEquals(1e+9, Nit.convert(1, Nanonit))
@@ -35,20 +39,32 @@ class LuminanceUnitTest {
         assertEquals(1e-6, Nit.convert(1, Meganit))
         assertEquals(1e-9, Nit.convert(1, Giganit))
 
-        assertEquals(3.14159265359, Nit.convert(1, Apostilb,11))
-        assertEquals(0.0003141593, Nit.convert(1, Lambert,10))
-        assertEquals(3141.5927, Nit.convert(1, Skot,4))
-        assertEquals(31415926.536, Nit.convert(1, Bril,3))
+        assertEquals(3.14159265359, Nit.convert(1, Apostilb, 11))
+        assertEquals(0.0003141593, Nit.convert(1, Lambert, 10))
+        assertEquals(3141.5927, Nit.convert(1, Skot, 4))
+        assertEquals(31415926.536, Nit.convert(1, Bril, 3))
 
-        assertEquals(31415.9265, Stilb.convert(1, Apostilb,4))
-        assertEquals( 3.1415926535898, Stilb.convert(1, Lambert,13))
-        assertEquals(31415926.536, Stilb.convert(1, Skot,3))
-        assertEquals(314159265359.0, Stilb.convert(1, Bril,0))
+        assertEquals(31415.9265, Stilb.convert(1, Apostilb, 4))
+        assertEquals(3.1415926535898, Stilb.convert(1, Lambert, 13))
+        assertEquals(31415926.536, Stilb.convert(1, Skot, 3))
+        assertEquals(314159265359.0, Stilb.convert(1, Bril, 0))
 
         assertEquals(0.0001, Apostilb.convert(1, Lambert))
         assertEquals(1000.0, Apostilb.convert(1, Skot))
         assertEquals(10000000.0, Apostilb.convert(1, Bril))
 
         assertEquals(10000.0, Skot.convert(1, Bril))
+    }
+
+    @Test
+    fun luminanceFromIlluminanceAndSolidAngleTest() {
+        assertEquals(1(Nit), 2(Lux) / 2(Steradian))
+        // assertEquals(1(FootLambert), 2(FootCandle) / 2(Steradian)) FIXME could not find expected value
+    }
+
+    @Test
+    fun luminanceFromLuminousIntensityAndAreaTest() {
+        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter))
+        assertEquals(3.14(FootLambert).decimalValue, (2(Candela) / 2(SquareFoot)).decimalValue.round(2))
     }
 }

@@ -17,6 +17,16 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.area.div
+import com.splendo.kaluga.scientific.converter.areaDensity.div
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.force.div
+import com.splendo.kaluga.scientific.converter.linearMassDensity.div
+import com.splendo.kaluga.scientific.converter.specificVolume.times
+import com.splendo.kaluga.scientific.converter.speed.times
+import com.splendo.kaluga.scientific.converter.weight.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -68,5 +78,56 @@ class LengthUnitTest {
         assertEquals(0.000000000305, Foot.convert(1.0, Gigameter, 12))
     }
 
+    @Test
+    fun widthFromAreaAndLengthTest() {
+        assertEquals(1(Meter), 2(SquareMeter) / 2(Meter))
+        assertEquals(1(Foot), 2(SquareFoot) / 2(Foot))
+    }
 
+    @Test
+    fun lengthFromAreaDensityAndDensityTest() {
+        assertEquals(1(Meter), 2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter))
+        assertEquals(1(Foot), 2(Pound per SquareFoot) / 2(Pound per CubicFoot))
+    }
+
+    @Test
+    fun lengthFromAreaDensityAndSpecificVolumeTest() {
+        assertEquals(4(Meter), 2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter))
+        assertEquals(4(Foot), 2(CubicFoot per Pound) * 2(Pound per SquareFoot))
+    }
+
+    @Test
+    fun lengthFromEnergyAndForceTest() {
+        assertEquals(1(Meter), 2(Joule) / 2(Newton))
+        assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce))
+    }
+
+    @Test
+    fun lengthFromForceAndSurfaceTensionTest() {
+        assertEqualScientificValue(1(Meter), 2(Newton) / 2(Newton per Meter))
+        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce per Foot))
+    }
+
+    @Test
+    fun lengthFromLinearMassDensityAndDensityTest() {
+        assertEquals(1(Meter), 2(Kilogram per Meter) / 2(Kilogram per SquareMeter))
+        assertEquals(1(Foot), 2(Pound per Foot) / 2(Pound per SquareFoot))
+    }
+
+    @Test
+    fun distanceFromSpeedAndTimeTest() {
+        assertEqualScientificValue(4(Meter), 2(Meter per Second) * 2(Second))
+        assertEqualScientificValue(4(Foot), 2(Foot per Second) * 2(Second))
+    }
+
+    @Test
+    fun heightFromVolumeLengthAndWidthTest() {
+        // FIXME errors in convert method (recursive)
+    }
+
+    @Test
+    fun lengthFromWeightAndLinearMassDensityTest() {
+        assertEqualScientificValue(1(Meter), 2(Kilogram) / 2(Kilogram per Meter))
+        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound per Foot))
+    }
 }
