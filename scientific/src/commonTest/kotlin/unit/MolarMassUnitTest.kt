@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MetricMolarMassUnitTest {
+class MolarMassUnitTest {
 
     @Test
     fun metricMomentumConversionTest() {
