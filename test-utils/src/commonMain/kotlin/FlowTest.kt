@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlin.native.concurrent.SharedImmutable
 import kotlin.native.concurrent.ThreadLocal
+import kotlin.test.AfterTest
 
 typealias TestBlock<TC, T> = suspend TC.(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
@@ -67,7 +68,7 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
     abstract val flow: suspend () -> F
 
     fun testWithFlow(block: FlowTestBlock<T, F>) =
-        super.testWithFlowAndTestContext(createFlowInMainScope = false) {
+        super.testWithFlowAndTestContext(createFlowInMainScope = false, retainContextAfterTest = false) {
             block(this@FlowTest, it)
         }
 }
@@ -111,6 +112,18 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
 
     private lateinit var testChannel: Channel<Pair<TestBlock<TC, T>, EmptyCompletableDeferred>>
 
+    @AfterTest
+    override fun afterTest() {
+        runBlocking {
+            val cookie = cookie
+            withContext(Dispatchers.Main.immediate) {
+                val testContext = contextMap.remove(cookie)
+                testContext?.dispose()
+            }
+        }
+        super.afterTest()
+    }
+
     suspend fun resetFlow() {
         awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
         debug("job: $job")
@@ -149,7 +162,11 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
 
     private var lateflow: F? = null
 
-    fun testWithFlowAndTestContext(createFlowInMainScope: Boolean = true, blockWithContext: FlowTestBlockWithContext<TC, T, F>) {
+    fun testWithFlowAndTestContext(
+        createFlowInMainScope: Boolean = true,
+        retainContextAfterTest: Boolean = false,
+        blockWithContext: FlowTestBlockWithContext<TC, T, F>
+    ) {
 
         runBlocking {
             try {
@@ -184,10 +201,12 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
                 blockWithContext(f)
                 resetFlow()
             } finally {
-                val cookie = cookie
-                withContext(Dispatchers.Main.immediate) {
-                    val testContext = contextMap.remove(cookie)
-                    testContext?.dispose()
+                if (!retainContextAfterTest) {
+                    val cookie = cookie
+                    withContext(Dispatchers.Main.immediate) {
+                        val testContext = contextMap.remove(cookie)
+                        testContext?.dispose()
+                    }
                 }
             }
         }
