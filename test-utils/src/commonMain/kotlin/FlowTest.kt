@@ -115,11 +115,7 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
     @AfterTest
     override fun afterTest() {
         runBlocking {
-            val cookie = cookie
-            withContext(Dispatchers.Main.immediate) {
-                val testContext = contextMap.remove(cookie)
-                testContext?.dispose()
-            }
+            disposeContext(cookie)
         }
         super.afterTest()
     }
@@ -202,11 +198,7 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
                 resetFlow()
             } finally {
                 if (!retainContextAfterTest) {
-                    val cookie = cookie
-                    withContext(Dispatchers.Main.immediate) {
-                        val testContext = contextMap.remove(cookie)
-                        testContext?.dispose()
-                    }
+                    disposeContext(cookie)
                 }
             }
         }
@@ -297,5 +289,12 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
         tests.add(completable)
         debug("${tests.size} in collection (including this one), offering")
         testChannel.offer(Pair(test, completable))
+    }
+
+    private suspend fun disposeContext(cookie: Long) {
+        withContext(Dispatchers.Main.immediate) {
+            val testContext = contextMap.remove(cookie)
+            testContext?.dispose()
+        }
     }
 }
