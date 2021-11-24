@@ -14,7 +14,6 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
@@ -31,7 +30,7 @@ class RecurringTimerTest {
 
     @Test
     fun stateTransitions(): Unit = runBlocking {
-        val timer = TimerProvider.recurring(
+        val timer = RecurringTimer(
             duration = Duration.milliseconds(100),
             interval = Duration.milliseconds(10),
             coroutineScope = this
@@ -55,8 +54,9 @@ class RecurringTimerTest {
 
     @Test
     fun awaitFinish(): Unit = runBlocking {
-        val timer = TimerProvider.recurring(
+        val timer = RecurringTimer(
             duration = Duration.milliseconds(100),
+            interval = Duration.milliseconds(10),
             coroutineScope = this
         )
 
@@ -72,7 +72,7 @@ class RecurringTimerTest {
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
         val duration = Duration.milliseconds(1000)
-        val timer = TimerProvider.recurring(
+        val timer = RecurringTimer(
             duration = duration,
             interval = Duration.milliseconds(50),
             coroutineScope = this

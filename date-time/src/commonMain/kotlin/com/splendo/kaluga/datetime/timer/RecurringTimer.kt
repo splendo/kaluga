@@ -21,6 +21,7 @@ import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,22 +33,38 @@ import kotlin.time.Duration
 import kotlin.time.TimeSource
 import com.splendo.kaluga.state.State as KalugaState
 
-/** Timer based on the system clock. */
-internal class RecurringTimer(
-    duration: Duration,
+/**
+ * Timer based on the system clock.
+ * @param duration timer duration
+ * @param interval timer tick interval
+ * @param coroutineScope a parent coroutine scope for the timer
+ */
+class RecurringTimer(
+    override val duration: Duration,
+    interval: Duration,
+    coroutineScope: CoroutineScope = MainScope()
+) : Timer {
+
+    private val stateRepo = TimerStateRepo(duration, interval, coroutineScope)
+    override val state: StateFlow<Timer.State> = stateRepo.stateFlow
+
+    override suspend fun start() = stateRepo.start()
+
+    override suspend fun pause() = stateRepo.pause()
+}
+
+/** Timer state machine. */
+private class TimerStateRepo(
+    totalDuration: Duration,
     private val interval: Duration,
     private val coroutineScope: CoroutineScope
-) : Timer, HotStateFlowRepo<RecurringTimer.State>(
+) : HotStateFlowRepo<TimerStateRepo.State>(
     coroutineScope.coroutineContext,
     {
-        State.NotRunning.Paused(elapsedSoFar = Duration.ZERO, totalDuration = duration)
+        State.NotRunning.Paused(elapsedSoFar = Duration.ZERO, totalDuration = totalDuration)
     }
 ) {
-
-    override val state: StateFlow<Timer.State> = stateFlow
-    override val duration: Duration get() = stateFlow.value.totalDuration
-
-    override suspend fun start() {
+    suspend fun start() {
         withContext(coroutineScope.coroutineContext) {
             takeAndChangeState { state ->
                 when (state) {
@@ -60,7 +77,7 @@ internal class RecurringTimer(
         }
     }
 
-    override suspend fun pause() {
+    suspend fun pause() {
         withContext(coroutineScope.coroutineContext) {
             takeAndChangeState { state ->
                 when (state) {

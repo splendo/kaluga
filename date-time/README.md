@@ -18,15 +18,14 @@ dependencies {
 ```
 
 ## Usage
-`TimerProvider` provides `monotonic` timer which once started provides ticks at regular intervals 
-and `instant` which is useful in simulations and test 
+`RecurringTimer` is a timer which once started provides ticks at regular intervals.
 
 ### Example
 Instantiate and operate a timer
 
 ```kotlin
 // creates a timer which lasts for 1 minute with a tick every second
-val timer = TimerProvider.monotonic(
+val timer = RecurringTimer(
     duration = Duration.minutes(1),
     inteval = Duration.seconds(1)
 )
@@ -47,4 +46,6 @@ look in the following way:
 2005 ms // overshoot by 5 ms
 2999 ms // undershoot by 1 ms
 4003 ms // overshoot by 3 ms
+...
+60000 ms
 ```
