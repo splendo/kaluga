@@ -23,17 +23,9 @@ import kotlin.test.assertEquals
 class SpecificHeatCapacityUnitTest {
 
     @Test
-    fun metricSpecificHeatCapacityConversionTest() {
-        assertEquals(1.0, (Joule per Celsius per Kilogram).convert(1.0, Joule per Kelvin per Kilogram))
-    }
-
-    @Test
-    fun ukImperialSpecificHeatCapacityConversionTest() {
-        assertEquals(1.0, (HorsepowerHour per Celsius per ImperialTon).convert(1.0, HorsepowerHour per Kelvin per ImperialTon, 2))
-    }
-
-    @Test
-    fun usCustomarySpecificHeatCapacityConversionTest() {
-        assertEquals(1.0, (HorsepowerHour per Fahrenheit per UsTon).convert(1.0, HorsepowerHour per Rankine per UsTon, 2))
+    fun specificHeatCapacityConversionTest() {
+        assertEquals(0.00028, (Joule per Celsius per Kilogram).convert(1.0, WattHour per Kelvin per Kilogram, 5))
+        assertEquals(0.0013, (WattHour per Celsius per ImperialTon).convert(1.0, HorsepowerHour per Kelvin per ImperialTon, 4))
+        assertEquals(3.8016e+8, (HorsepowerHour per Fahrenheit per UsTon).convert(1.0, InchOunceForce per Rankine per UsTon))
     }
 }

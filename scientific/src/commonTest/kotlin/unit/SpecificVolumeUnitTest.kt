@@ -23,22 +23,8 @@ import kotlin.test.assertEquals
 class SpecificVolumeUnitTest {
 
     @Test
-    fun metricSpecificVolumeConversionTest() {
-        assertEquals(1_000.0, (CubicMeter per Kilogram).convert(1.0, Liter per Kilogram, 2))
-    }
-
-    @Test
-    fun imperialSpecificVolumeConversionTest() {
-        assertEquals(1728.0, (CubicFoot per Pound).convert(1.0, CubicInch per Pound, 2))
-    }
-
-    @Test
-    fun ukImperialSpecificVolumeConversionTest() {
-        assertEquals(12.0, (ImperialTonForce per Inch).convert(1.0, ImperialTonForce per Foot, 2))
-    }
-
-    @Test
-    fun usCustomarySpecificVolumeConversionTest() {
-        assertEquals(12.0, (AcreFoot per Pound).convert(1.0, AcreInch per Pound, 2))
+    fun specificVolumeConversionTest() {
+        assertEquals(16.02, (CubicMeter per Kilogram).convert(1.0, CubicFoot per Pound, 2))
+        assertEquals(1.12, (ImperialTonForce per Foot).convert(1.0, UsTonForce per Foot, 2))
     }
 }
