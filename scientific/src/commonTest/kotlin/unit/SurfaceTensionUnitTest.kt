@@ -23,31 +23,8 @@ import kotlin.test.assertEquals
 class SurfaceTensionUnitTest {
 
     @Test
-    fun metricSurfaceTensionConversionTest() {
-        assertEquals(1_000.0, (Newton per Meter).convert(1.0, Newton per Kilometer))
-        assertEquals(1_000.0, (Dyne per Meter).convert(1.0, Dyne per Kilometer))
-    }
-
-    @Test
-    fun imperialSurfaceTensionConversionTest() {
-        assertEquals(0.03, (Poundal per Inch).convert(1.0, PoundForce per Inch, 2))
-        assertEquals(12.0, (Poundal per Inch).convert(1.0, Poundal per Foot))
-
-        assertEquals(32.17, (PoundForce per Inch).convert(1.0, Poundal per Inch, 2))
-        assertEquals(12.0, (PoundForce per Inch).convert(1.0, PoundForce per Foot))
-    }
-
-    @Test
-    fun ukImperialSurfaceTensionConversionTest() {
-        assertEquals(12.0, (ImperialTonForce per Inch).convert(1.0, ImperialTonForce per Foot, 2))
-    }
-
-    @Test
-    fun usCustomarySurfaceTensionConversionTest() {
-        assertEquals(0.5, (Kip per Inch).convert(1.0, UsTonForce per Inch, 2))
-        assertEquals(12.0, (Kip per Inch).convert(1.0, Kip per Foot))
-
-        assertEquals(2.0, (UsTonForce per Inch).convert(1.0, Kip per Inch, 2))
-        assertEquals(12.0, (UsTonForce per Inch).convert(1.0, UsTonForce per Foot))
+    fun surfaceTensionConversionTest() {
+        assertEquals(6.85, (Newton per Centimeter).convert(1.0, PoundForce per Foot, 2))
+        assertEquals(1.12, (ImperialTonForce per Foot).convert(1.0, UsTonForce per Foot, 2))
     }
 }
