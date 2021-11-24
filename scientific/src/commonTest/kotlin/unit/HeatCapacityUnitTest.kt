@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.specificHeatCapacity.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -24,6 +27,21 @@ class HeatCapacityUnitTest {
 
     @Test
     fun heatCapacityConversionTest() {
-        // TODO
+        assertEquals(0.737562, (Joule per Kelvin).convert(1, FootPoundForce per Celsius, 6))
+        assertEquals(0.409757, (Joule per Kelvin).convert(1, FootPoundForce per Fahrenheit, 6))
+    }
+
+    @Test
+    fun heatCapacityFromEnergyAndTemperature() {
+        assertEquals(1(Joule per Celsius), 2(Joule) / 2(Celsius))
+        assertEquals(1(HorsepowerHour per Fahrenheit), 2(HorsepowerHour) / 2(Fahrenheit))
+        assertEquals(1(Calorie per Kelvin), 2(Calorie) / 2(Kelvin))
+    }
+
+    @Test
+    fun heatCapacityFromWeightAndSpecificHeatCapacityTest() {
+        assertEquals(4(Joule per Celsius), 2((Joule per Kilogram) per Celsius) * 2(Kilogram))
+        assertEquals(1(HorsepowerHour per Fahrenheit), 2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound))
+        // TODO find a way for Calorie ?
     }
 }

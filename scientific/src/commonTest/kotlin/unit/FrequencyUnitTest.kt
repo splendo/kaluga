@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.electricConductance.div
+import com.splendo.kaluga.scientific.converter.electricResistance.div
+import com.splendo.kaluga.scientific.converter.time.frequency
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,5 +40,21 @@ class FrequencyUnitTest {
         assertEquals(1e-6, Hertz.convert(1, Megahertz))
         assertEquals(1e-9, Hertz.convert(1, Gigahertz))
         assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+    }
+
+    @Test
+    fun frequencyFromConductanceAndCapacityTest() {
+        assertEquals(1(Hertz), 2(Siemens) / 2(Farad))
+    }
+
+    @Test
+    fun frequencyFromResistanceAndInductanceTest() {
+        assertEquals(1(Hertz), 2(Ohm) / 2(Henry))
+    }
+
+    @Test
+    fun frequencyFromInvertedTimeTest() {
+        assertEquals(1(BeatsPerMinute), 1(Minute).frequency())
+        assertEquals(1(Hertz), 1(Second).frequency())
     }
 }

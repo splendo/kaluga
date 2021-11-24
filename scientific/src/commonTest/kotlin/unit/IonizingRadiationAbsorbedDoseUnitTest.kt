@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.specificEnergy.asAbsorbedDose
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class IonizingRadiationAbsorbedDoseUnitTest {
-    
+
     @Test
     fun ionizingRadiationAbsorbedDoseConversionTest() {
         assertEquals(1e+9, Gray.convert(1, Nanogray))
@@ -47,5 +49,15 @@ class IonizingRadiationAbsorbedDoseUnitTest {
         assertEquals(0.001, Rad.convert(1, Kilorad))
         assertEquals(1e-6, Rad.convert(1, Megarad))
         assertEquals(1e-9, Rad.convert(1, Gigarad))
+    }
+
+    @Test
+    fun absorbedDoseFromEnergyAndWeightTest() {
+        // assertEqualScientificValue(1(Rad),2(Joule) / 2(Kilogram)) FIXME
+    }
+
+    @Test
+    fun specificEnergyFromAbsorbedDoseTest() {
+        assertEquals(2(Gray),2(Joule per Kilogram).asAbsorbedDose())
     }
 }

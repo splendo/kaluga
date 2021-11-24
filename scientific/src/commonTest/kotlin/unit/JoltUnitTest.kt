@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.acceleration.div
+import com.splendo.kaluga.scientific.converter.yank.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,12 +32,14 @@ class JoltUnitTest {
     }
 
     @Test
-    fun joltFromMetricAccelerationDivTimeTest() {
+    fun joltFromAccelerationDivTimeTest() {
         assertEquals(1.0(Meter per Second per Second per Second), (2(Meter per Second per Second) / 2(Second)))
+        assertEquals(1.0(Foot per Second per Second per Second), (2(Foot per Second per Second) / 2(Second)))
     }
 
     @Test
-    fun joltFromImperialAccelerationDivTimeTest() {
-        assertEquals(1.0(Foot per Second per Second per Second), (2(Foot per Second per Second) / 2(Second)))
+    fun joltFromYankAndMassTest() {
+        assertEquals(1.0(Meter per Second per Second per Second),2(Newton per Second) / 2(Kilogram))
+        // assertEquals(1.0(Foot per Second per Second per Second), 2(PoundForce per Second) / 2(Pound)) FIXME yields 32.17404855643045 find put if accurate
     }
 }

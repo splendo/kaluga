@@ -17,11 +17,14 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.specificEnergy.asEquivalentDose
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class IonizingRadiationEquivalentDoseUnitTest {
-    
+
     @Test
     fun ionizingRadiationEquivalentDoseConversionTest() {
         assertEquals(1e+9, Sievert.convert(1, Nanosievert))
@@ -34,7 +37,7 @@ class IonizingRadiationEquivalentDoseUnitTest {
         assertEquals(0.001, Sievert.convert(1, Kilosievert))
         assertEquals(1e-6, Sievert.convert(1, Megasievert))
         assertEquals(1e-9, Sievert.convert(1, Gigasievert))
-        
+
         assertEquals(100.0, Sievert.convert(1, RoentgenEquivalentMan))
 
         assertEquals(1e+9, RoentgenEquivalentMan.convert(1, NanoroentgenEquivalentMan))
@@ -47,5 +50,15 @@ class IonizingRadiationEquivalentDoseUnitTest {
         assertEquals(0.001, RoentgenEquivalentMan.convert(1, KiloroentgenEquivalentMan))
         assertEquals(1e-6, RoentgenEquivalentMan.convert(1, MegaroentgenEquivalentMan))
         assertEquals(1e-9, RoentgenEquivalentMan.convert(1, GigaroentgenEquivalentMan))
+    }
+
+    @Test
+    fun equivalentDoseFromEnergyAndWeightTest() {
+        // assertEqualScientificValue(1(Sievert), 2(Joule) / 2(Kilogram)) FIXME
+    }
+
+    @Test
+    fun specificEnergyFromEquivalentDoseTest() {
+        assertEqualScientificValue(2(Sievert), 2(Joule per Kilogram).asEquivalentDose())
     }
 }

@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.luminance.times
+import com.splendo.kaluga.scientific.converter.luminousExposure.div
+import com.splendo.kaluga.scientific.converter.luminousFlux.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,7 +41,7 @@ class IlluminanceUnitTest {
         assertEquals(1e-9, Lux.convert(1, Gigalux))
 
         assertEquals(0.0001, Lux.convert(1, Phot))
-        assertEquals(0.092903, Lux.convert(1, FootCandle,6))
+        assertEquals(0.092903, Lux.convert(1, FootCandle, 6))
 
         assertEquals(1e+9, Phot.convert(1, Nanophot))
         assertEquals(1e+6, Phot.convert(1, Microphot))
@@ -49,7 +54,24 @@ class IlluminanceUnitTest {
         assertEquals(1e-6, Phot.convert(1, Megaphot))
         assertEquals(1e-9, Phot.convert(1, Gigaphot))
 
-        assertEquals(929.0304, Phot.convert(1, FootCandle,4))
+        assertEquals(929.0304, Phot.convert(1, FootCandle, 4))
+    }
 
+    @Test
+    fun illuminanceFromLuminanceAndSolidAngleTest() {
+        assertEquals(4(Lux), 2(Nit) * 2(Steradian))
+        // assertEquals(4(FootCandle),2(FootLambert) * 2(Steradian)) FIXME Yields 1.2732395447351628 find if that is the case
+    }
+
+    @Test
+    fun illuminanceFromLuminousExposureAndTimeTest() {
+        assertEqualScientificValue(1(Lux), 2(Lux x Second) / 2(Second))
+        assertEqualScientificValue(1(FootCandle), 2(FootCandle x Second) / 2(Second))
+    }
+
+    @Test
+    fun illuminanceFromLuminousFluxAndAreaTest() {
+        assertEquals(1(Lux), 2(Lumen) / 2(SquareMeter))
+        assertEquals(1(FootCandle),2(Lumen) / 2(SquareFoot))
     }
 }

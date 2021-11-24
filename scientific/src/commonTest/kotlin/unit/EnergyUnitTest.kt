@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.action.div
+import com.splendo.kaluga.scientific.converter.amountOfSubstance.times
 import com.splendo.kaluga.scientific.converter.electricCharge.times
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.converter.heatCapacity.times
@@ -166,7 +167,7 @@ class EnergyUnitTest {
 
     @Test
     fun energyFromAmountOfSubstanceTimesEnergyTest() {
-        // assertEquals(4(Joule), 2(Mole) * 2(Joule per Mole)) FIXME type inference error
+        assertEqualScientificValue(4(Joule), 2(Mole) * 2(Joule per Mole))
     }
 
     @Test

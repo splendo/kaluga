@@ -18,7 +18,12 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.momentum.div
+import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.weight.times
+import com.splendo.kaluga.scientific.converter.yank.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -80,32 +85,45 @@ class ForceUnitTest {
     }
 
     @Test
-    fun forceFromAccelerationTimesPoundTest() {
-        assertEquals(0.124323801(PoundForce).decimalValue, (2(Pound) * 2(Foot per Second per Second)).decimalValue.round(9))
-    }
-
-    @Test
-    fun forceFromAccelerationTimesGramTest() {
+    fun forceFromMassAndAccelerationTest() {
+        // TODO check if expected are accurate
         assertEquals(4.0(Newton), (2(Kilogram) * 2(Meter per Second per Second)))
-    }
-
-    @Test
-    fun forceFromAccelerationTimesOunceTest() {
-        assertEquals(0.124323801(OunceForce).decimalValue, (2(Ounce) * 2(Foot per Second per Second)).decimalValue.round(9))
-    }
-
-    @Test
-    fun forceFromAccelerationTimesGrainTest() {
-        assertEquals(0.124323801(GrainForce).decimalValue, (2(Grain) * 2(Foot per Second per Second)).decimalValue.round(9))
-    }
-
-    @Test
-    fun forceFromAccelerationTimesUSTonTest() {
+        assertEquals(0.124323801(PoundForce).decimalValue, (2(Pound) * 2(Foot per Second per Second)).decimalValue.round(9))
         assertEquals(0.124323801(UsTonForce).decimalValue, (2(UsTon) * 2(Foot per Second per Second)).decimalValue.round(9))
+        assertEquals(0.124323801(ImperialTonForce).decimalValue, (2(ImperialTon) * 2(Foot per Second per Second)).decimalValue.round(9))
     }
 
     @Test
-    fun forceFromAccelerationTimesImperialTonTest() {
-        assertEquals(0.124323801(ImperialTonForce).decimalValue, (2(ImperialTon) * 2(Foot per Second per Second)).decimalValue.round(9))
+    fun forceFromEnergyAndLengthTest() {
+        assertEquals(1.0(Newton), 2(Joule) / 2(Meter))
+        assertEquals(1.0(PoundForce), 2(FootPoundForce) / 2(Foot))
+    }
+
+    @Test
+    fun forceFromMomentumAndTimeTest() {
+        assertEquals(1.0(Newton), 2(Kilogram x (Meter per Second)) / 2(Second))
+        assertEquals(1.0(PoundForce), 2(Pound x (Foot per Second)) / 2(Second))
+    }
+
+    @Test
+    fun forceFromPowerAndSpeedTest() {
+        assertEquals(1.0(Newton), 2(Watt) / 2(Meter per Second))
+        assertEquals(1.0(PoundForce), 2(FootPoundForcePerSecond) / 2(Foot per Second))
+    }
+
+    @Test
+    fun forceFromPressureAndAreaTest() {
+        // 2(Pascal) * 2(SquareMeter) FIXME
+    }
+
+    @Test
+    fun forceFromSurfaceTensionAndLengthTest() {
+        // 2(Newton per Meter) * 2(Meter) FIXME
+    }
+
+    @Test
+    fun forceFromYankAndTimeTest() {
+        assertEqualScientificValue(4.0(Newton), 2(Newton per Second) * 2(Second))
+        assertEqualScientificValue(4.0(PoundForce), 2(PoundForce per Second) * 2(Second))
     }
 }
