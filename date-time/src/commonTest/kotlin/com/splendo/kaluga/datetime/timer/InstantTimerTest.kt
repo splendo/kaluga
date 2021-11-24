@@ -18,6 +18,7 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.captureFor
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals

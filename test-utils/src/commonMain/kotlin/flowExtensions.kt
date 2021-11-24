@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.datetime.timer
+package com.splendo.kaluga.test
 
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +23,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
 
+/**
+ * Returns a list of flow items captured for [duration]
+ * @param duration of capturing
+ * @return a list of flow items captured for [duration]
+ */
 suspend fun <T> Flow<T>.captureFor(duration: Duration): List<T> {
     val output = mutableListOf<T>()
 
