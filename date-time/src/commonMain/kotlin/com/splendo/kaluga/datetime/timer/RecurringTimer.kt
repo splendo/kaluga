@@ -178,8 +178,8 @@ private fun tickProvider(
             // obtain and deliver a new elapsed time value
             val elapsed = newElapsed()
             emit(elapsed.coerceAtMost(max))
-            // quit if reached the max
-            if (max <= elapsed) break
+            // quit if the timer would reached the max on the next iteration
+            if (max - interval <= elapsed) break
             // adaptive correction reduces the interval by time spent delivering emitted value
             val correction = expectedElapsed - newElapsed()
             // wait for the next iteration

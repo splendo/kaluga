@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.transformWhile
 import kotlin.time.Duration
 
 /** A timer ticking a certain [duration]. */
@@ -50,12 +51,18 @@ interface Timer {
 }
 
 /** Time elapsed from the timer start. */
-fun Timer.elapsed(): Flow<Duration> = state.flatMapLatest { state ->
-    when (state) {
-        is Timer.State.NotRunning -> flowOf(state.elapsed)
-        is Timer.State.Running -> state.elapsed
+fun Timer.elapsed(): Flow<Duration> = state
+    .transformWhile { stateValue ->
+        // [Finished] is the final state, ensure the consumer's [collect] would be able to exit
+        emit(stateValue)
+        stateValue !is Timer.State.NotRunning.Finished
     }
-}
+    .flatMapLatest { state ->
+        when (state) {
+            is Timer.State.NotRunning -> flowOf(state.elapsed)
+            is Timer.State.Running -> state.elapsed
+        }
+    }
 
 /** Awaits for the timer to finish. */
 suspend fun Timer.awaitFinish() {
