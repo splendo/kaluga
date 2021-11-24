@@ -17,6 +17,20 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.action.div
+import com.splendo.kaluga.scientific.converter.electricCharge.times
+import com.splendo.kaluga.scientific.converter.force.times
+import com.splendo.kaluga.scientific.converter.heatCapacity.times
+import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.times
+import com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose.times
+import com.splendo.kaluga.scientific.converter.magneticFlux.times
+import com.splendo.kaluga.scientific.converter.molarEnergy.times
+import com.splendo.kaluga.scientific.converter.power.times
+import com.splendo.kaluga.scientific.converter.pressure.times
+import com.splendo.kaluga.scientific.converter.specificEnergy.times
+import com.splendo.kaluga.scientific.converter.surfaceTension.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -153,5 +167,88 @@ class EnergyUnitTest {
     @Test
     fun energyFromAmountOfSubstanceTimesEnergyTest() {
         // assertEquals(4(Joule), 2(Mole) * 2(Joule per Mole)) FIXME type inference error
+    }
+
+    @Test
+    fun energyFromActionAndTimeTest() {
+        assertEqualScientificValue(1(Joule), 2(Joule x Second) / 2(Second))
+        assertEqualScientificValue(1(WattHour), 2(WattHour x Second) / 2(Second))
+        assertEqualScientificValue(1(FootPoundForce), 2(FootPoundForce x Second) / 2(Second))
+    }
+
+    @Test
+    fun energyFromChargeAndVoltageTest() {
+        assertEquals(4(Joule), 2(Coulomb) * 2(Volt))
+    }
+
+    @Test
+    fun energyFromForceAndDistanceTest() {
+        assertEquals(4(Joule), 2(Newton) * 2(Meter))
+        assertEquals(4(FootPoundForce), 2(PoundForce) * 2(Foot))
+    }
+
+    @Test
+    fun energyFromHeatCapacityAndTemperatureTest() {
+        // TODO check if 2,3 are valid
+        assertEqualScientificValue(4(Joule), 2(Joule per Celsius) * 2(Celsius))
+        assertEqualScientificValue(4(Calorie), 2(Calorie per Celsius) * 2(Celsius))
+        assertEqualScientificValue(4(Calorie), 2(Calorie per Kelvin) * 2(Celsius))
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Kelvin) * 2(Kelvin))
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Fahrenheit) * 2(Fahrenheit))
+    }
+
+    @Test
+    fun energyFromAbsorbedDoseAndWeightTest() {
+        // FIXME could not find actual valid values, values returned seem wrong
+        // assertEqualScientificValue(4(Joule), 2(Rad) * 2(Kilogram))
+        // assertEqualScientificValue(4(WattHour), 2(Rad) * 2(Pound))
+        // assertEqualScientificValue(4(FootPoundForce), 2(Rad) * 2(Kilogram))
+    }
+
+    @Test
+    fun energyFromEquivalentDoseAndWeightTest() {
+        assertEquals(4(Joule), 2(Sievert) * 2(Kilogram))
+        // assertEqualScientificValue(4(WattHour), 2(Sievert) * 2(Pound)) FIXME could not find an expected value
+        // assertEqualScientificValue(4(FootPoundForce), 2(Sievert) * 2(Pound)) FIXME could not find an expected value
+    }
+
+    @Test
+    fun energyFromFluxAndCurrentTest() {
+        assertEquals(4(Joule), 2(Weber) * 2(Ampere))
+    }
+
+    @Test
+    fun energyFromMolarEnergyAndAmountOfSubstanceTest() {
+        assertEqualScientificValue(4(Joule), 2(Joule per Mole) * 2(Mole))
+        assertEqualScientificValue(4(WattHour), 2(WattHour per Mole) * 2(Mole))
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Mole) * 2(Mole))
+    }
+
+    @Test
+    fun energyFromPowerAndTimeTest() {
+        assertEquals(4(Joule), 2(Watt) * 2(Second))
+        assertEqualScientificValue(4(WattHour), 2(Watt) * 2(Hour))
+        // assertEqualScientificValue(1(WattHour), 2(Watt) * 2(Second)) FIXME yields Joule
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForcePerSecond) * 2(Second))
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForcePerMinute) * 2(Minute))
+    }
+
+    @Test
+    fun energyFromPressureAndVolumeTest() {
+        assertEquals(400000(Joule), 2(Bar) * 2(CubicMeter))
+        assertEquals(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot))
+    }
+
+    @Test
+    fun energyFromSpecificEnergyAndWeightTest() {
+        assertEqualScientificValue(4(Joule), 2(Joule per Kilogram) * 2(Kilogram))
+        // assertEqualScientificValue(4(WattHour), 2(WattHour per Kilogram) * 2(Kilogram)) FIXME Expected WattHour found MetricMetricAndImperialEnergyWrapper
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Pound) * 2(Pound))
+    }
+
+    @Test
+    fun energyFromSurfaceTensionAndAreaTest() {
+        assertEquals(4(Joule), 2(Newton per Meter) * 2(SquareMeter))
+        assertEquals(1(FootPoundForce), 2(PoundForce per Foot) * 2(SquareFoot))
     }
 }
