@@ -20,11 +20,11 @@ package com.splendo.kaluga.scientific.unit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SurfaceTensionUnitTest {
+class MassFlowRateUnitTest {
 
     @Test
-    fun surfaceTensionConversionTest() {
-        assertEquals(6.85, (Newton per Centimeter).convert(1.0, PoundForce per Foot, 2))
-        assertEquals(1.12, (ImperialTonForce per Foot).convert(1.0, UsTonForce per Foot, 2))
+    fun massFlowRateConversionTest() {
+        assertEquals(132.28, (Gram per Millisecond).convert(1.0, Pound per Minute, 2))
+        assertEquals(1.12, (ImperialTon per Second).convert(1.0, UsTon per Second))
     }
 }

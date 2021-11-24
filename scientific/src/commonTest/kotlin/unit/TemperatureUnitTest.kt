@@ -23,15 +23,17 @@ import kotlin.test.assertEquals
 class TemperatureUnitTest {
     
     @Test
-    fun metricToImperialsConversionTest() {
+    fun temperatureConversionTest() {
         assertEquals(274.15, Celsius.convert(1.0, Kelvin, 2))
-        assertEquals(33.8, Celsius.convert(1.0, Fahrenheit, 1))
+        assertEquals(33.8, Celsius.convert(1.0, Fahrenheit, 2))
         assertEquals(493.47, Celsius.convert(1.0, Rankine, 2))
-    }
-
-    @Test
-    fun imperialUkToImperialUSConversionTest() {
         assertEquals(-457.87, Kelvin.convert(1.0, Fahrenheit, 2))
-        assertEquals(1.8, Kelvin.convert(1.0, Rankine, 1))
+        assertEquals(1.8, Kelvin.convert(1.0, Rankine, 2))
+
+        assertEquals(-272.15, Kelvin.convert(1.0, Celsius, 2))
+        assertEquals(-17.22, Fahrenheit.convert(1.0, Celsius, 2))
+        assertEquals(-272.59, Rankine.convert(1.0, Celsius, 2))
+        assertEquals(255.93, Fahrenheit.convert(1.0, Kelvin, 2))
+        assertEquals(0.56, Rankine.convert(1.0, Kelvin, 2))
     }
 }

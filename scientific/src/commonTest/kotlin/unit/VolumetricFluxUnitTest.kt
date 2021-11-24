@@ -25,14 +25,13 @@ import kotlin.test.assertEquals
 class VolumetricFluxUnitTest {
 
     @Test
-    fun metricToImperialConversionTest() {
-        assertEquals(39.37, (CubicMeter per Second per SquareMeter).convert(1.0, CubicInch per Second per SquareInch, 2))
-        assertEquals(22.71, (CubicMeter per Second per SquareMeter).convert(1.0, ImperialFluidOunce per Second per SquareInch, 2))
-        assertEquals(0.0000063, (CubicMeter per Second per SquareMeter).convert(1.0, AcreInch per Second per SquareInch, 7))
+    fun volumetricFluxConversionTest() {
+        assertEquals(1362.39, (CubicMeter per Minute per SquareMeter).convert(1.0, ImperialFluidOunce per Hour per SquareInch, 2))
+        assertEquals(3.766e-4, (CubicMeter per Minute per SquareMeter).convert(1.0, AcreInch per Hour per SquareInch, 7))
     }
 
     @Test
-    fun volumetricFluxToXConversionTest() {
+    fun volumetricFluxToXConversionTest() { // FIXME: Swap to From
         // convertToVolumetricFlow
         assertEquals(4(CubicMeter per Second), 2(CubicMeter per Second per SquareMeter) * 2(SquareMeter))
         assertEquals(4(CubicInch per Second), 2(CubicInch per Second per SquareInch) * 2(SquareInch))

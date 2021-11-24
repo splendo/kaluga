@@ -23,32 +23,9 @@ import kotlin.test.assertEquals
 class ThermalResistanceUnitTest {
 
     @Test
-    fun metricAndUKImperialThermalResistanceConversionTest() {
-        assertEquals(1.0, (Celsius per Watt).convert(1.0, Kelvin per Watt))
-        assertEquals(1_000.0, (Celsius per Watt).convert(1.0, Celsius per Kilowatt))
+    fun thermalResistanceConversionTest() {
+        assertEquals(0.00074, (Celsius per Megawatt).convert(1.0, Kelvin per MetricHorsepower, 5))
+        assertEquals(0.000055, (Kelvin per MetricHorsepower).convert(1.0, Fahrenheit per FootPoundForcePerMinute, 6))
+        assertEquals(31.65, (Celsius per Watt).convert(1.0, Rankine per BritishThermalUnitPerMinute, 2))
     }
-
-    @Test
-    fun metricThermalResistanceConversionTest() {
-        assertEquals(735.5, (Celsius per Watt).convert(1.0, Celsius per MetricHorsepower, 1))
-        assertEquals(735.5, (Kelvin per Watt).convert(1.0, Kelvin per MetricHorsepower, 1))
-    }
-
-    @Test
-    fun ukImperialThermalResistanceConversionTest() {
-        assertEquals(1460373.06, (Celsius per Watt).convert(1.0, Celsius per Horsepower, 2))
-        assertEquals(1.36, (Celsius per Watt).convert(1.0, Celsius per FootPoundForcePerSecond, 2))
-        assertEquals(1055.06, (Celsius per Watt).convert(1.0, Celsius per BritishThermalUnitPerSecond, 2))
-    }
-
-    @Test
-    fun usCustomaryThermalResistanceUnitsConversionTest() {
-        assertEquals(1077115.89, (Rankine per FootPoundForcePerSecond).convert(1.0, Rankine per Horsepower, 2))
-        assertEquals(778.17, (Rankine per FootPoundForcePerSecond).convert(1.0, Rankine per BritishThermalUnitPerSecond, 2))
-        assertEquals(1.0, (Rankine per FootPoundForcePerSecond).convert(1.0, Fahrenheit per FootPoundForcePerSecond, 2))
-
-        assertEquals(1077115.89, (Fahrenheit per FootPoundForcePerSecond).convert(1.0, Fahrenheit per Horsepower, 2))
-        assertEquals(778.17, (Fahrenheit per FootPoundForcePerSecond).convert(1.0, Fahrenheit per BritishThermalUnitPerSecond, 2))
-        assertEquals(1.0, (Fahrenheit per FootPoundForcePerSecond).convert(1.0, Rankine per FootPoundForcePerSecond, 2))
-    }
-}
+ }

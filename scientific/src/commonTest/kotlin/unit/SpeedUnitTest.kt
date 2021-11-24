@@ -17,40 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.acceleration.times
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SpeedUnitTest {
 
     @Test
-    fun metricSpeedConversionTest() {
-        assertEquals(3.6, (Meter per Second).convert(1.0, Kilometer per Hour))
-    }
-
-    @Test
-    fun imperialSpeedConversionTest() {
-        assertEquals(0.68, (Foot per Second).convert(1.0, Mile per Hour, 2))
-    }
-
-    @Test
     fun metricToImperialSpeedConversionTest() {
-        assertEquals(3.28, (Meter per Second).convert(1.0, Foot per Second, 2))
-    }
-
-    @Test
-    fun imperialToMetricSpeedConversionTest() {
-        assertEquals(1.61, (Mile per Hour).convert(1.0, Kilometer per Hour, 2))
-    }
-
-    @Test
-    fun speedFromMetricAccelerationTimesTimeTest() {
-        assertEquals(4.0(Meter per Second ), (2(Meter per Second per Second) * 2(Second)))
-    }
-
-    @Test
-    fun speedFromImperialAccelerationTimesTimeTest() {
-        assertEquals(4.0(Foot per Second ), (2(Foot per Second per Second) * 2(Second)))
+        assertEquals(196.85, (Meter per Minute).convert(1.0, Foot per Hour, 2))
     }
 }
