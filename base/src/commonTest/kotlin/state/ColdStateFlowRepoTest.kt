@@ -37,7 +37,10 @@ class ColdStateFlowRepoTest : BaseTest() {
     }
 
     class Repo : ColdStateFlowRepo<State>(
-        init = { active },
+        init = {
+            delay(100) // give some time for the `first` state to be collected
+            active
+        },
         deinit = { deinit },
         firstState = { first }
     )
@@ -62,10 +65,8 @@ class ColdStateFlowRepoTest : BaseTest() {
             }
         }
 
-        // if (firstCollect.await() != active) { // active is also technically correct, if the collection even ran before
         assertEquals(first, firstCollect.await())
         assertEquals(active, secondCollect.await())
-        // }
 
         repo.useState { state ->
             assertEquals(state, active)
