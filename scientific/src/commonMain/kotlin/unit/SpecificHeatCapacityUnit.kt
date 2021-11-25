@@ -39,39 +39,38 @@ val SpecificHeatCapacityUnits: Set<SpecificHeatCapacity> get() = MetricSpecificH
 
 @Serializable
 sealed class SpecificHeatCapacity : AbstractScientificUnit<PhysicalQuantity.SpecificHeatCapacity>() {
-    abstract val energy: Energy
-    abstract val perTemperature: Temperature
+    abstract val heatCapacity: HeatCapacity
     abstract val perWeight: Weight
     override val quantity = PhysicalQuantity.SpecificHeatCapacity
-    override val symbol: String by lazy { "${energy.symbol}/(${perTemperature.symbol}⋅${perWeight.symbol})" }
-    override fun fromSIUnit(value: Decimal): Decimal = perWeight.fromSIUnit(perTemperature.deltaToSIUnitDelta(energy.fromSIUnit(value)))
-    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(perTemperature.deltaFromSIUnitDelta(perWeight.toSIUnit(value)))
+    override val symbol: String by lazy { "${heatCapacity.energy.symbol}/(${heatCapacity.per.symbol}⋅${perWeight.symbol})" }
+    override fun fromSIUnit(value: Decimal): Decimal = perWeight.toSIUnit(heatCapacity.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = heatCapacity.toSIUnit(perWeight.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricSpecificHeatCapacity(override val energy: MetricEnergy, override val perTemperature: MetricAndUKImperialTemperature, override val perWeight: MetricWeight) : SpecificHeatCapacity(), MetricScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
+data class MetricSpecificHeatCapacity(override val heatCapacity: MetricHeatCapacity, override val perWeight: MetricWeight) : SpecificHeatCapacity(), MetricScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class UKImperialSpecificHeatCapacity(override val energy: ImperialEnergy, override val perTemperature: MetricAndUKImperialTemperature, override val perWeight: UKImperialWeight) : SpecificHeatCapacity(), UKImperialScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
+data class UKImperialSpecificHeatCapacity(override val heatCapacity: UKImperialHeatCapacity, override val perWeight: UKImperialWeight) : SpecificHeatCapacity(), UKImperialScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
     override val system = MeasurementSystem.UKImperial
 }
 @Serializable
-data class USCustomarySpecificHeatCapacity(override val energy: ImperialEnergy, override val perTemperature: USCustomaryTemperature, override val perWeight: USCustomaryWeight) : SpecificHeatCapacity(), USCustomaryScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
+data class USCustomarySpecificHeatCapacity(override val heatCapacity: USCustomaryHeatCapacity, override val perWeight: USCustomaryWeight) : SpecificHeatCapacity(), USCustomaryScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
     override val system = MeasurementSystem.USCustomary
 }
 
-infix fun MetricAndUKImperialHeatCapacity.per(weight: MetricWeight) = MetricSpecificHeatCapacity(energy.metric, per, weight)
-infix fun MetricAndUKImperialHeatCapacity.per(weight: ImperialWeight) = UKImperialSpecificHeatCapacity(energy.imperial, per, weight.ukImperial)
-infix fun MetricAndUKImperialHeatCapacity.per(weight: UKImperialWeight) = UKImperialSpecificHeatCapacity(energy.imperial, per, weight)
-infix fun MetricHeatCapacity.per(weight: MetricWeight) = MetricSpecificHeatCapacity(energy, per, weight)
-infix fun UKImperialHeatCapacity.per(weight: ImperialWeight) = UKImperialSpecificHeatCapacity(energy, per, weight.ukImperial)
-infix fun UKImperialHeatCapacity.per(weight: UKImperialWeight) = UKImperialSpecificHeatCapacity(energy, per, weight)
-infix fun USCustomaryHeatCapacity.per(weight: ImperialWeight) = USCustomarySpecificHeatCapacity(energy, per, weight.usCustomary)
-infix fun USCustomaryHeatCapacity.per(weight: USCustomaryWeight) = USCustomarySpecificHeatCapacity(energy, per, weight)
+infix fun MetricAndUKImperialHeatCapacity.per(weight: MetricWeight) = MetricSpecificHeatCapacity(metric, weight)
+infix fun MetricAndUKImperialHeatCapacity.per(weight: ImperialWeight) = UKImperialSpecificHeatCapacity(ukImperial, weight.ukImperial)
+infix fun MetricAndUKImperialHeatCapacity.per(weight: UKImperialWeight) = UKImperialSpecificHeatCapacity(ukImperial, weight)
+infix fun MetricHeatCapacity.per(weight: MetricWeight) = MetricSpecificHeatCapacity(this, weight)
+infix fun UKImperialHeatCapacity.per(weight: ImperialWeight) = UKImperialSpecificHeatCapacity(this, weight.ukImperial)
+infix fun UKImperialHeatCapacity.per(weight: UKImperialWeight) = UKImperialSpecificHeatCapacity(this, weight)
+infix fun USCustomaryHeatCapacity.per(weight: ImperialWeight) = USCustomarySpecificHeatCapacity(this, weight.usCustomary)
+infix fun USCustomaryHeatCapacity.per(weight: USCustomaryWeight) = USCustomarySpecificHeatCapacity(this, weight)
 
-infix fun MetricSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = MetricSpecificHeatCapacity(energy, temperature, per)
-infix fun ImperialSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = UKImperialSpecificHeatCapacity(energy, temperature, per.ukImperial)
-infix fun ImperialSpecificEnergy.per(temperature: USCustomaryTemperature) = USCustomarySpecificHeatCapacity(energy, temperature, per.usCustomary)
-infix fun UKImperialSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = UKImperialSpecificHeatCapacity(energy, temperature, per)
-infix fun USCustomarySpecificEnergy.per(temperature: USCustomaryTemperature) = USCustomarySpecificHeatCapacity(energy, temperature, per)
+infix fun MetricSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = MetricSpecificHeatCapacity(energy per temperature, per)
+infix fun ImperialSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = UKImperialSpecificHeatCapacity(energy per temperature, per.ukImperial)
+infix fun ImperialSpecificEnergy.per(temperature: USCustomaryTemperature) = USCustomarySpecificHeatCapacity(energy per temperature, per.usCustomary)
+infix fun UKImperialSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = UKImperialSpecificHeatCapacity(energy per temperature, per)
+infix fun USCustomarySpecificEnergy.per(temperature: USCustomaryTemperature) = USCustomarySpecificHeatCapacity(energy per temperature, per)

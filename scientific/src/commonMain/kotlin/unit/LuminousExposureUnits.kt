@@ -42,12 +42,12 @@ abstract class LuminousExposure : ScientificUnit<PhysicalQuantity.LuminousExposu
 }
 
 @Serializable
-class MetricLuminousExposure(override val illuminance: MetricIlluminance, override val time: Time) : LuminousExposure(), MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
+data class MetricLuminousExposure(override val illuminance: MetricIlluminance, override val time: Time) : LuminousExposure(), MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Metric
 }
 
 @Serializable
-class ImperialLuminousExposure(override val illuminance: ImperialIlluminance, override val time: Time) : LuminousExposure(), ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
+data class ImperialLuminousExposure(override val illuminance: ImperialIlluminance, override val time: Time) : LuminousExposure(), ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Imperial
 }
 

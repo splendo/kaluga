@@ -37,27 +37,27 @@ import kotlin.jvm.JvmName
 @JvmName("metricSpecificHeatCapacityTimesMetricWeight")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>.times(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = (unit.energy per unit.perTemperature).heatCapacity(this, weight)
+) = unit.heatCapacity.heatCapacity(this, weight)
 
 @JvmName("ukImperialSpecificHeatCapacityTimesImperialWeight")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>.times(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = (unit.energy per unit.perTemperature).heatCapacity(this, weight)
+) = unit.heatCapacity.heatCapacity(this, weight)
 
 @JvmName("ukImperialSpecificHeatCapacityTimesUKImperialWeight")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>.times(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = (unit.energy per unit.perTemperature).heatCapacity(this, weight)
+) = unit.heatCapacity.heatCapacity(this, weight)
 
 @JvmName("usCustomarySpecificHeatCapacityTimesImperialWeight")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>.times(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = (unit.energy per unit.perTemperature).heatCapacity(this, weight)
+) = unit.heatCapacity.heatCapacity(this, weight)
 
 @JvmName("usCustomarySpecificHeatCapacityTimesUSCustomaryWeight")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>.times(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = (unit.energy per unit.perTemperature).heatCapacity(this, weight)
+) = unit.heatCapacity.heatCapacity(this, weight)
 
 @JvmName("specificHeatCapacityTimesWeight")
 infix operator fun <SpecificHeatCapacityUnit : SpecificHeatCapacity, WeightUnit : Weight> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>.times(

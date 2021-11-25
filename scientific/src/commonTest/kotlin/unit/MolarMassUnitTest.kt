@@ -52,10 +52,10 @@ class MolarMassUnitTest {
 
     @Test
     fun molarMassFromInvertedMolalityTest() {
-        assertEquals(2(Kilogram per Mole), 2(Mole per Kilogram).molarMass())
-        assertEquals(2(Pound per Mole), 2(Mole per Pound).molarMass())
-        assertEquals(2(ImperialTon per Mole), 2(Mole per ImperialTon).molarMass())
-        assertEquals(2(UsTon per Mole), 2(Mole per UsTon).molarMass())
+        assertEquals(0.5(Kilogram per Mole), 2(Mole per Kilogram).molarMass())
+        assertEquals(0.5(Pound per Mole), 2(Mole per Pound).molarMass())
+        assertEquals(0.5(ImperialTon per Mole), 2(Mole per ImperialTon).molarMass())
+        assertEquals(0.5(UsTon per Mole), 2(Mole per UsTon).molarMass())
     }
 
     @Test

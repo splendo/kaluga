@@ -40,9 +40,8 @@ class SolidAngleUnitTest {
 
     @Test
     fun solidAngleFromIlluminanceAndLuminanceTest() {
-        assertEqualScientificValue(3.14159(Steradian), 2(Lux) / 2(Nit), 5)
-        // FIXME check expected value
-        assertEquals(3.14159(Steradian), 2(FootCandle) / 2(FootLambert))
+        assertEqualScientificValue(1(Steradian), 2(Lux) / 2(Nit))
+        assertEqualScientificValue(3.14159(Steradian), 2(FootCandle) / 2(FootLambert), 5)
     }
 
     @Test

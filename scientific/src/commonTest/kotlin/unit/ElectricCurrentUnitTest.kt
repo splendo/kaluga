@@ -69,6 +69,6 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun currentFromVoltageAndResistanceTest() {
-        assertEquals(4(Ampere), 2(Volt) / 2(Ohm))
+        assertEquals(1(Ampere), 2(Volt) / 2(Ohm))
     }
 }

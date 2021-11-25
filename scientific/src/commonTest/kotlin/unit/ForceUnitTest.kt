@@ -92,7 +92,7 @@ class ForceUnitTest {
     @Test
     fun forceFromMomentumAndTimeTest() {
         assertEquals(1.0(Newton), 2(Kilogram x (Meter per Second)) / 2(Second))
-        assertEquals(1.0(PoundForce), 2(Pound x (Foot per Second)) / 2(Second))
+        assertEqualScientificValue(1(PoundForce), (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(Second), 10)
     }
 
     @Test

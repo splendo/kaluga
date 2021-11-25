@@ -35,27 +35,27 @@ import kotlin.jvm.JvmName
 @JvmName("metricSpecificEnergyDivMetricSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>.div(
     specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>
-) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+) = specificHeatCapacity.unit.heatCapacity.per.temperature(this, specificHeatCapacity)
 
 @JvmName("imperialSpecificEnergyDivUKImperialSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.div(
     specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
-) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+) = specificHeatCapacity.unit.heatCapacity.per.temperature(this, specificHeatCapacity)
 
 @JvmName("imperialSpecificEnergyDivUSCustomarySpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.div(
     specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
-) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+) = specificHeatCapacity.unit.heatCapacity.per.temperature(this, specificHeatCapacity)
 
 @JvmName("ukImperialSpecificEnergyDivUKImperialSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>.div(
     specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
-) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+) = specificHeatCapacity.unit.heatCapacity.per.temperature(this, specificHeatCapacity)
 
 @JvmName("usCustomarySpecificEnergyDivUSCustomarySpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>.div(
     specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
-) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+) = specificHeatCapacity.unit.heatCapacity.per.temperature(this, specificHeatCapacity)
 
 @JvmName("specificEnergyDivTemperature")
 infix operator fun <SpecificEnergyUnit : SpecificEnergy, SpecificHeatCapacityUnit : SpecificHeatCapacity> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.div(

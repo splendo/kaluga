@@ -27,9 +27,7 @@ class SpecificHeatCapacityUnitTest {
 
     @Test
     fun specificHeatCapacityConversionTest() {
-        assertScientificConversion(1.0, (Joule per Celsius per Kilogram), 0.00028, WattHour per Kelvin per Kilogram, 5)
-        assertScientificConversion(1.0, (WattHour per Celsius per ImperialTon), 0.0013, HorsepowerHour per Kelvin per ImperialTon, 4)
-        assertScientificConversion(1.0, (HorsepowerHour per Fahrenheit per UsTon), 3.8016e+8, InchOunceForce per Rankine per UsTon)
+        assertScientificConversion(1.0, (Joule per Kelvin per Kilogram), 0.00023885, BritishThermalUnit per Fahrenheit per Pound, 8)
     }
 
     @Test
