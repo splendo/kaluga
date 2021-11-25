@@ -20,6 +20,7 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SurfaceTensionUnitTest {
 

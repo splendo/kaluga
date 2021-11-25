@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.volumetricFlow.div
-import com.splendo.kaluga.scientific.converter.volumetricFlux.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,8 +26,7 @@ class VolumetricFluxUnitTest {
 
     @Test
     fun volumetricFluxConversionTest() {
-        assertScientificConversion(1.0, (CubicMeter per Minute per SquareMeter), 1362.39, ImperialFluidOunce per Hour per SquareInch, 2)
-        assertScientificConversion(1.0, (CubicMeter per Minute per SquareMeter), 3.766e-4, AcreInch per Hour per SquareInch, 7)
+        assertScientificConversion(1.0, (CubicMeter per Second per SquareMeter), 196.85, CubicFoot per Minute per SquareFoot, 2)
     }
 
     @Test

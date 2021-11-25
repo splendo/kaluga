@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.converter.momentum.div
 import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SpeedUnitTest {
 

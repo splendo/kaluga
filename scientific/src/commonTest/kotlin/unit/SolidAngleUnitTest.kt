@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.converter.illuminance.div
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SolidAngleUnitTest {
 

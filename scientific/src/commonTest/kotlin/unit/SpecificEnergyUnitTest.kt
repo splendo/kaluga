@@ -25,6 +25,7 @@ import com.splendo.kaluga.scientific.converter.molarEnergy.times
 import com.splendo.kaluga.scientific.converter.specificHeatCapacity.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SpecificEnergyUnitTest {
 

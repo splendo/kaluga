@@ -29,8 +29,7 @@ import kotlin.test.assertEquals
 class MolarVolumeUnitTest {
 
     @Test
-        assertEquals(1_000.0, (CubicMeter per Mole).convert(1.0, Liter per Mole))
-    fun metricMomentumConversionTest() {
+    fun momentumConversionTest() {
         assertScientificConversion(1.0, (CubicMeter per Mole), 1_000.0, Liter per Mole)
     }
 

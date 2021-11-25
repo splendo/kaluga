@@ -20,10 +20,10 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.force.times
-import com.splendo.kaluga.scientific.converter.temperature.div
 import com.splendo.kaluga.scientific.converter.voltage.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class PowerUnitTest {
 
@@ -49,6 +49,9 @@ class PowerUnitTest {
         assertScientificConversion(1, Watt, 0.00095, BritishThermalUnitPerSecond, 5)
         assertScientificConversion(1, Watt, 0.06, BritishThermalUnitPerMinute, 2)
         assertScientificConversion(1, Watt, 3.41, BritishThermalUnitPerHour, 2)
+
+        assertScientificConversion(1.0, Watt, 10.0, Deciwatt.metric)
+        assertScientificConversion(1.0, Watt, 10.0, Deciwatt.imperial)
     }
 
     @Test

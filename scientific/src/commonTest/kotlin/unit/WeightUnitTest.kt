@@ -21,11 +21,8 @@ import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
-class MassUnitTest {
-
-    // ##### Same mass unit table conversions #####
+class WeightUnitTest {
 
     @Test
     fun kilogramConversionTest() {
@@ -69,8 +66,10 @@ class MassUnitTest {
 
         // uk ton
         assertScientificConversion(1.0, Pound, 0.00044643, ImperialTon, 8)
+        assertScientificConversion(1.0, Pound, 1.0, Pound.ukImperial)
         // us ton
         assertScientificConversion(1.0, Pound, 0.0005, UsTon)
+        assertScientificConversion(1.0, Pound, 1.0, Pound.usCustomary)
     }
 
     @Test

@@ -37,31 +37,6 @@ import kotlin.test.assertEquals
 class EnergyUnitTest {
 
     @Test
-    fun wattHourConversionTest() {
-        assertScientificConversion(1.0, WattHour, 1e+9, NanowattHour)
-        assertScientificConversion(1.0, WattHour, 1e+6, MicrowattHour)
-        assertScientificConversion(1.0, WattHour, 1_000.0, MilliwattHour)
-        assertScientificConversion(1.0, WattHour, 100.0, CentiwattHour)
-        assertScientificConversion(1.0, WattHour, 10.0, DeciwattHour)
-        assertScientificConversion(1.0, WattHour, 0.1, DecawattHour)
-        assertScientificConversion(1.0, WattHour, 0.01, HectowattHour)
-        assertScientificConversion(1.0, WattHour, 0.001, KilowattHour)
-        assertScientificConversion(1.0, WattHour, 1e-6, MegawattHour)
-        assertScientificConversion(1.0, WattHour, 1e-9, GigawattHour)
-    }
-
-    @Test
-    fun calorieConversionTest() {
-        assertScientificConversion(1.0, Calorie, 1_000.0, Millicalorie)
-        assertScientificConversion(1.0, Calorie, 0.001, Kilocalorie)
-        assertScientificConversion(1.0, Calorie, 1e-6, Megacalorie)
-
-        assertScientificConversion(1.0, Calorie.IT, 1_000.0, Millicalorie.IT)
-        assertScientificConversion(1.0, Calorie.IT, 0.001, Kilocalorie.IT)
-        assertScientificConversion(1.0, Calorie.IT, 1e-6, Megacalorie.IT)
-    }
-
-    @Test
     fun jouleConversionTest() {
         assertScientificConversion(1.0, Joule, 1e+9, Nanojoule)
         assertScientificConversion(1.0, Joule, 1e+6, Microjoule)
@@ -113,6 +88,33 @@ class EnergyUnitTest {
         assertScientificConversion(1.0, Electronvolt, 0.001, Kiloelectronvolt, 4)
         assertScientificConversion(1.0, Electronvolt, 1e-6, Megaelectronvolt, 7)
         assertScientificConversion(1.0, Electronvolt, 1e-9, Gigaelectronvolt, 10)
+    }
+
+    @Test
+    fun wattHourConversionTest() {
+        assertScientificConversion(1.0, WattHour, 1e+9, NanowattHour)
+        assertScientificConversion(1.0, WattHour, 1e+6, MicrowattHour)
+        assertScientificConversion(1.0, WattHour, 1_000.0, MilliwattHour)
+        assertScientificConversion(1.0, WattHour, 100.0, CentiwattHour)
+        assertScientificConversion(1.0, WattHour, 10.0, DeciwattHour)
+        assertScientificConversion(1.0, WattHour, 0.1, DecawattHour)
+        assertScientificConversion(1.0, WattHour, 0.01, HectowattHour)
+        assertScientificConversion(1.0, WattHour, 0.001, KilowattHour)
+        assertScientificConversion(1.0, WattHour, 1e-6, MegawattHour)
+        assertScientificConversion(1.0, WattHour, 1e-9, GigawattHour)
+        assertScientificConversion(1.0, WattHour, 1.0, WattHour.metric)
+        assertScientificConversion(1.0, WattHour, 1.0, WattHour.imperial)
+    }
+
+    @Test
+    fun calorieConversionTest() {
+        assertScientificConversion(1.0, Calorie, 1_000.0, Millicalorie)
+        assertScientificConversion(1.0, Calorie, 0.001, Kilocalorie)
+        assertScientificConversion(1.0, Calorie, 1e-6, Megacalorie)
+
+        assertScientificConversion(1.0, Calorie.IT, 1_000.0, Millicalorie.IT)
+        assertScientificConversion(1.0, Calorie.IT, 0.001, Kilocalorie.IT)
+        assertScientificConversion(1.0, Calorie.IT, 1e-6, Megacalorie.IT)
     }
 
     @Test

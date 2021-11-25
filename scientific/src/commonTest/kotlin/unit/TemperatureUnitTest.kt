@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -50,14 +48,6 @@ class TemperatureUnitTest {
     }
 
     @Test
-    fun deltaToKelvinTest() {
-        // FIXME find out expected values
-        // assertEquals(273.15(Kelvin), 1(Celsius).deltaValueInKelvin())
-        // assertEquals(273.15(Kelvin), 1(Fahrenheit).deltaValueInKelvin())
-        // assertEquals(0.555556(Kelvin), 1(Rankine).deltaValueInKelvin())
-    }
-
-    @Test
     fun temperatureFromEnergyAndHeatCapacityTest() {
         // TODO
     }
@@ -69,11 +59,6 @@ class TemperatureUnitTest {
 
     @Test
     fun temperatureFromThermalResistanceAndPowerTest() {
-        // TODO
-    }
-
-    @Test
-    fun kelvinToDelta() {
         // TODO
     }
 }

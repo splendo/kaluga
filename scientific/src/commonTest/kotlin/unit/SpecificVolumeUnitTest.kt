@@ -26,6 +26,7 @@ import com.splendo.kaluga.scientific.converter.molarVolume.times
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SpecificVolumeUnitTest {
 
