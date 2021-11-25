@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,5 +29,17 @@ class SurfaceTensionUnitTest {
     fun surfaceTensionConversionTest() {
         assertEquals(6.85, (Newton per Centimeter).convert(1.0, PoundForce per Foot, 2))
         assertEquals(1.12, (ImperialTonForce per Foot).convert(1.0, UsTonForce per Foot, 2))
+    }
+
+    @Test
+    fun surfaceTensionFromEnergyAndAreaTest() {
+        assertEquals(1(Newton per Meter), 2(Joule) / 2(SquareMeter))
+        assertEquals(1(PoundForce per Foot), 2(FootPoundForce) / 2(SquareFoot))
+    }
+
+    @Test
+    fun surfaceTensionFromForceAndLengthTest() {
+        assertEquals(1(Newton per Meter), 2(Joule) / 2(SquareMeter))
+        assertEquals(1(PoundForce per Foot), 2(FootPoundForce) / 2(SquareFoot))
     }
 }
