@@ -17,23 +17,31 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.volumetricFlow.div
+import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.converter.volumetricFlux.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class VolumetricFluxUnitTest {
+class VolumetricFlowUnitTest {
 
     @Test
-    fun volumetricFluxConversionTest() {
-        assertEquals(1362.39, (CubicMeter per Minute per SquareMeter).convert(1.0, ImperialFluidOunce per Hour per SquareInch, 2))
-        assertEquals(3.766e-4, (CubicMeter per Minute per SquareMeter).convert(1.0, AcreInch per Hour per SquareInch, 7))
+    fun volumetricFlowConversionTest() {
+        // TODO
+        CubicMeter per Second
     }
 
     @Test
-    fun volumetricFluxFromVolumetricFlowAndAreaTest() {
-        assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter))
-        assertEquals(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot))
+    fun volumetricFlowFromVolumeAndTimeTest() {
+        assertEquals(1(CubicMeter per Second), 2(CubicMeter) / 2(Second))
+        assertEquals(1(CubicFoot per Second), 2(CubicFoot) / 2(Second))
+        assertEquals(1(ImperialGallon per Second), 2(ImperialGallon) / 2(Second))
+        assertEquals(1(UsLiquidGallon per Second), 2(UsLiquidGallon) / 2(Second))
+    }
+
+    @Test
+    fun volumetricFlowFromVolumetricFluxAndAreaTest() {
+        assertEquals(4(CubicMeter per Second), 2((CubicMeter per Second) per SquareMeter) * 2(SquareMeter))
+        assertEquals(4(CubicFoot per Second), 2((CubicFoot per Second) per SquareFoot) * 2(SquareFoot))
     }
 }

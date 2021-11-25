@@ -35,7 +35,7 @@ import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class AreaUnitTest {
+class  AreaUnitTest {
 
     @Test
     fun areaConversionTest() {
