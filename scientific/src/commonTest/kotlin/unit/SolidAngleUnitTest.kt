@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.illuminance.div
+import com.splendo.kaluga.scientific.converter.luminousFlux.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -33,6 +37,18 @@ class SolidAngleUnitTest {
         assertEquals(0.0796, Steradian.convert(1, Spat, 4))
         assertEquals(3282.8063500117, Steradian.convert(1, SquareDegree, 10))
 
-        assertEquals(41253.0, Spat.convert(1, SquareDegree,0))
+        assertEquals(41253.0, Spat.convert(1, SquareDegree, 0))
+    }
+
+    @Test
+    fun solidAngleFromIlluminanceAndLuminanceTest() {
+        assertEqualScientificValue(3.14159(Steradian), 2(Lux) / 2(Nit), 5)
+        // FIXME check expected value
+        assertEquals(3.14159(Steradian), 2(FootCandle) / 2(FootLambert))
+    }
+
+    @Test
+    fun solidAngleFromLuminousFluxAndIntensityTest() {
+        assertEquals(1(Steradian), 2(Lumen) / 2(Candela))
     }
 }

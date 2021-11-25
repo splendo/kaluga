@@ -72,7 +72,7 @@ class RadioActivityUnitTest {
     }
 
     @Test
-    fun radioActivityFromAmountOfSubstanceDivTimeTest() {
-        // assertEquals(1(Becquerel), 2(Mole) / 2(Minute)) FIXME type inference (assertEqualScientificValue does not work also)
+    fun radioactivityFromSubstanceAndHalfLifeTest() {
+        // assertEquals(1(Becquerel), ???) FIXME
     }
 }
