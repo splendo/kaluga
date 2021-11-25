@@ -39,7 +39,13 @@ fun <Quantity : PhysicalQuantity> assertScientificConversion(
     expectedRight: Number,
     rightUnit: ScientificUnit<Quantity>,
     round: Int,
+    bidirectional: Boolean = true
 ) {
     assertEquals(expectedRight.toDouble(), leftUnit.convert(left, rightUnit, round))
-    assertEquals(left.toDouble(), rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round))
+    if (bidirectional) {
+        assertEquals(
+            left.toDouble(),
+            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round)
+        )
+    }
 }

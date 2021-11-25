@@ -86,8 +86,10 @@ class EnergyUnitTest {
         assertScientificConversion(1.0, Electronvolt, 0.1, Decaelectronvolt)
         assertScientificConversion(1.0, Electronvolt, 0.01, Hectoelectronvolt, 3)
         assertScientificConversion(1.0, Electronvolt, 0.001, Kiloelectronvolt, 4)
-        assertScientificConversion(1.0, Electronvolt, 1e-6, Megaelectronvolt, 7)
-        assertScientificConversion(1.0, Electronvolt, 1e-9, Gigaelectronvolt, 10)
+        assertScientificConversion(1.0, Electronvolt, 1e-6, Megaelectronvolt, 7, bidirectional = false)
+        assertScientificConversion(1.0, Megaelectronvolt, 1e6, Electronvolt, 7, bidirectional = false)
+        assertScientificConversion(1.0, Electronvolt, 1e-9, Gigaelectronvolt, 10, bidirectional = false)
+        assertScientificConversion(1.0, Gigaelectronvolt, 1e9, Electronvolt, 10, bidirectional = false)
     }
 
     @Test
