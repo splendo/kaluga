@@ -30,12 +30,8 @@ class MolarityUnitTest {
     }
 
     @Test
-    fun molarityFromAmountOfSubstanceDivMetricVolume(){
+    fun molarityFromAmountOfSubstanceDivVolumeTest(){
         assertEquals(1(Mole per CubicMeter),2(Mole) / 2(CubicMeter))
-    }
-
-    @Test
-    fun molarityFromAmountOfSubstanceDivImperialVolume(){
         assertEquals(1(Mole per CubicInch),2(Mole) / 2(CubicInch))
     }
 }

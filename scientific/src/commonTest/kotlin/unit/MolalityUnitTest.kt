@@ -18,6 +18,11 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
+import com.splendo.kaluga.scientific.converter.molarMass.molality
+import com.splendo.kaluga.scientific.converter.molarity.div
+import com.splendo.kaluga.scientific.converter.molarity.times
+import com.splendo.kaluga.scientific.converter.specificEnergy.div
+import com.splendo.kaluga.scientific.converter.specificVolume.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,12 +35,37 @@ class MolalityUnitTest {
     }
 
     @Test
-    fun molalityFromAmountOfSubstanceDivMetricWeight(){
-        assertEquals(1(Mole per Kilogram),2(Mole) / 2(Kilogram))
+    fun molalityFromAmountOfSubstanceAndWeightTest() {
+        assertEquals(1(Mole per Kilogram), 2(Mole) / 2(Kilogram))
+        assertEquals(1(Mole per Pound), 2(Mole) / 2(Pound))
     }
 
     @Test
-    fun molalityFromAmountOfSubstanceDivImperialWeight(){
-        assertEquals(1(Mole per Pound),2(Mole) / 2(Pound))
+    fun molalityFromMolarityAndDensityTest() {
+        assertEquals(1(Mole per Kilogram), 2(Mole per CubicMeter) / 2(Kilogram per CubicMeter))
+        assertEquals(1(Mole per Pound), 2(Mole per CubicFoot) / 2(Pound per CubicFoot))
+    }
+
+    @Test
+    fun molalityFromMolarityAndSpecificVolumeTest() {
+        assertEquals(4(Mole per Kilogram), 2(Mole per CubicMeter) * 2(CubicMeter per Kilogram))
+        assertEquals(4(Mole per Pound), 2(Mole per CubicFoot) * 2(CubicFoot per Pound))
+    }
+
+    @Test
+    fun molalityFromInvertedMolarMassTest() {
+        assertEquals(0.5(Mole per Kilogram), 2(Kilogram per Mole).molality())
+    }
+
+    @Test
+    fun molalityFromSpecificEnergyAndMolarEnergyTest() {
+        assertEquals(1(Mole per Kilogram), 2(Joule per Kilogram) / 2(Joule per Mole))
+        assertEquals(1(Mole per Pound), 2(FootPoundForce per Pound) / 2(FootPoundForce per Mole))
+    }
+
+    @Test
+    fun molalityFromSpecificVolumeAndMolarVolumeTest() {
+        assertEquals(1(Mole per Kilogram), 2(CubicMeter per Kilogram) / 2(CubicMeter per Mole))
+        assertEquals(1(Mole per Pound), 2(CubicFoot per Pound) / 2(CubicFoot per Mole))
     }
 }
