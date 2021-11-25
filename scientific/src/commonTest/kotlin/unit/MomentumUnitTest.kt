@@ -18,28 +18,26 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MomentumUnitTest {
 
     @Test
     fun metricMomentumConversionTest() {
-        assertEquals(3.6, (Kilogram x (Meter per Second)).convert(1.0, Kilogram x (Kilometer per Hour)))
-        assertEquals(3.6, (Dalton x (Meter per Second)).convert(1.0, Dalton x (Kilometer per Hour)))
+        assertScientificConversion(1.0, (Kilogram x (Meter per Second)), 3600, Gram x (Kilometer per Hour))
     }
 
     @Test
     fun imperialMomentumConversionTest() {
-        assertEquals(0.68, (Pound x (Foot per Second)).convert(1.0, Pound x (Mile per Hour), 2))
+        assertScientificConversion(1.0, (Pound x (Foot per Second)), 0.68, Pound x (Mile per Hour), 2)
     }
 
     @Test
     fun ukImperialMomentumConversionTest() {
-        assertEquals(0.68, (ImperialTon x (Foot per Second)).convert(1.0, ImperialTon x (Mile per Hour), 2))
+        assertScientificConversion(1.0, (ImperialTon x (Foot per Second)), 0.68, ImperialTon x (Mile per Hour), 2)
     }
 
     @Test
     fun usCustomaryMomentumConversionTest() {
-        assertEquals(0.68, (UsTon x (Foot per Second)).convert(1.0, UsTon x (Mile per Hour), 2))
+        assertScientificConversion(1.0, (UsTon x (Foot per Second)), 0.68, UsTon x (Mile per Hour), 2)
     }
 }

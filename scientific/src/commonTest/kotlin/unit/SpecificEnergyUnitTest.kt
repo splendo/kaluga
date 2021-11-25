@@ -18,14 +18,15 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SpecificEnergyUnitTest {
 
     @Test
     fun specificEnergyConversionTest() {
-        assertEquals(0.28, (Joule per Milligram).convert(1.0, WattHour per Gram, 2))
-        assertEquals(860.42, (WattHour per Pound).convert(1.0, Calorie per Pound, 2))
-        assertEquals(2851.67, (HorsepowerHour per UsTon).convert(1.0, BritishThermalUnit.Thermal per ImperialTon, 2))
+        assertScientificConversion(1.0, (Joule per Gram), 0.27778, WattHour per Kilogram, 5)
+        assertScientificConversion(1.0, (WattHour per Pound), 2240, WattHour per ImperialTon)
+        assertScientificConversion(1.0, (WattHour per Pound), 2000, WattHour per UsTon)
+        assertScientificConversion(1.0, (BritishThermalUnit per Pound), 2240, BritishThermalUnit per ImperialTon)
+        assertScientificConversion(1.0, (BritishThermalUnit per Pound), 2000, BritishThermalUnit per UsTon)
     }
 }

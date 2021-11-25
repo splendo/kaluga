@@ -22,7 +22,8 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
-import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
+import com.splendo.kaluga.scientific.converter.temperature.deltaValue
+import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.Power
 import com.splendo.kaluga.scientific.unit.Temperature
 import com.splendo.kaluga.scientific.unit.ThermalResistance
@@ -48,4 +49,4 @@ fun <
     temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
     thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>,
     factory: (Decimal, PowerUnit) -> Value
-) = byDividing(temperature.deltaValueInKelvin(), thermalResistance, factory)
+) = byDividing(Kelvin.deltaValue(temperature), thermalResistance, factory)

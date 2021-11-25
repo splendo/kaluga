@@ -39,27 +39,21 @@ class AreaUnitTest {
 
     @Test
     fun areaConversionTest() {
-        assertEquals(1e+18, SquareMeter.convert(1, SquareNanometer))
-        assertEquals(1e+12, SquareMeter.convert(1, SquareMicrometer))
-        assertEquals(1000000.0, SquareMeter.convert(1, SquareMillimeter))
-        assertEquals(10000.0, SquareMeter.convert(1, SquareCentimeter))
-        assertEquals(100.0, SquareMeter.convert(1, SquareDecimeter))
-        assertEquals(0.01, SquareMeter.convert(1, SquareDecameter))
-        assertEquals(0.0001, SquareMeter.convert(1, SquareHectometer))
-        assertEquals(1e-6, SquareMeter.convert(1, SquareKilometer))
-        assertEquals(0.0001, SquareMeter.convert(1, Hectare))
+        assertScientificConversion(1, SquareMeter, 1e+18, SquareNanometer)
+        assertScientificConversion(1, SquareMeter, 1e+12, SquareMicrometer)
+        assertScientificConversion(1, SquareMeter, 1000000.0, SquareMillimeter)
+        assertScientificConversion(1, SquareMeter, 10000.0, SquareCentimeter)
+        assertScientificConversion(1, SquareMeter, 100.0, SquareDecimeter)
+        assertScientificConversion(1, SquareMeter, 0.01, SquareDecameter)
+        assertScientificConversion(1, SquareMeter, 0.0001, SquareHectometer)
+        assertScientificConversion(1, SquareMeter, 1e-6, SquareKilometer)
+        assertScientificConversion(1, SquareMeter, 0.0001, Hectare)
 
-        assertEquals(1550.0, SquareMeter.convert(1, SquareInch, 0))
-        assertEquals(10.7639, SquareMeter.convert(1, SquareFoot, 4))
-        assertEquals(1.19599, SquareMeter.convert(1, SquareYard, 5))
-        assertEquals(3.86102e-7, SquareMeter.convert(1, SquareMile, 12))
-        assertEquals(0.000247105, SquareMeter.convert(1, Acre, 9))
-    }
-
-    @Test
-    fun areaDensityConversionTest() {
-        assertEquals(0.204816, (Kilogram per SquareMeter).convert(1, Pound per SquareFoot, 6))
-        assertEquals(6.022e+26, (Kilogram per SquareMeter).convert(1, Dalton per SquareMeter))
+        assertScientificConversion(1, SquareMeter, 1550.0, SquareInch, 0)
+        assertScientificConversion(1, SquareMeter, 10.7639, SquareFoot, 4)
+        assertScientificConversion(1, SquareMeter, 1.19599, SquareYard, 5)
+        assertScientificConversion(1, SquareMeter, 3.86102e-7, SquareMile, 12)
+        assertScientificConversion(1, SquareMeter, 0.000247105, Acre, 9)
     }
 
     @Test

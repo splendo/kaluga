@@ -18,11 +18,14 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.RoundingMode
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.base.utils.round
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
@@ -81,3 +84,20 @@ object Rankine : USCustomaryTemperature("°R") {
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = toSIUnit(delta)
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = fromSIUnit(delta)
 }
+
+fun Temperature.convertDelta(
+    value: Number,
+    to: Temperature
+) = convertDelta(value.toDecimal(), to).toDouble()
+
+fun Temperature.convertDelta(
+    value: Number,
+    to: Temperature,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+) = convertDelta(value.toDecimal(), to).round(round, roundingMode).toDouble()
+
+fun Temperature.convertDelta(
+    value: Decimal,
+    to: Temperature
+) = if (this == to) value else to.deltaFromSIUnitDelta(deltaToSIUnitDelta(value))

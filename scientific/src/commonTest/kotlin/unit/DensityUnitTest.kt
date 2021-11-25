@@ -30,7 +30,7 @@ class DensityUnitTest {
 
     @Test
     fun densityConversionTest() {
-        assertEquals(0.062428, (Kilogram per CubicMeter).convert(1, Pound per CubicFoot, 6))
+        assertScientificConversion(1, (Kilogram per CubicMeter), 0.062428, Pound per CubicFoot, 6)
     }
 
     @Test

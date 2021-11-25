@@ -24,21 +24,21 @@ class MolarVolumeUnitTest {
 
     @Test
     fun metricMomentumConversionTest() {
-        assertEquals(1_000.0, (CubicMeter per Mole).convert(1.0, Liter per Mole))
+        assertScientificConversion(1.0, (CubicMeter per Mole), 1_000.0, Liter per Mole)
     }
 
     @Test
     fun imperialMomentumConversionTest() {
-        assertEquals(1_728.0, (CubicFoot per Mole).convert(1.0, CubicInch per Mole))
+        assertScientificConversion(1.0, (CubicFoot per Mole), 1_728.0, CubicInch per Mole)
     }
 
     @Test
     fun ukImperialMomentumConversionTest() {
-        assertEquals(0.5, (ImperialPint per Mole).convert(1.0, ImperialQuart per Mole))
+        assertScientificConversion(1.0, (ImperialPint per Mole), 0.5, ImperialQuart per Mole)
     }
 
     @Test
     fun usCustomaryMomentumConversionTest() {
-        assertEquals(12.0, (AcreFoot per Mole).convert(1.0, AcreInch per Mole))
+        assertScientificConversion(1.0, (AcreFoot per Mole), 12.0, AcreInch per Mole)
     }
 }

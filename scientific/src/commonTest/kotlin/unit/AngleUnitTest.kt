@@ -21,27 +21,26 @@ import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.angularVelocity.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class AngleUnitTest {
 
     @Test
     fun angleConversionTest() {
-        assertEquals(1000000000.0, Radian.convert(1, Nanoradian))
-        assertEquals(1000000.0, Radian.convert(1, Microradian))
-        assertEquals(1000.0, Radian.convert(1, Milliradian))
-        assertEquals(100.0, Radian.convert(1, Centiradian))
-        assertEquals(10.0, Radian.convert(1, Deciradian))
+        assertScientificConversion(1, Radian, 1000000000.0, Nanoradian)
+        assertScientificConversion(1, Radian, 1000000.0, Microradian)
+        assertScientificConversion(1, Radian, 1000.0, Milliradian)
+        assertScientificConversion(1, Radian, 100.0, Centiradian)
+        assertScientificConversion(1, Radian, 10.0, Deciradian)
 
-        assertEquals(0.159155, Radian.convert(1, Turn, 6))
-        assertEquals(159154.9431, Radian.convert(1, Microturn, 4))
-        assertEquals(159.1549, Radian.convert(1, Milliturn, 4))
-        assertEquals(15.9155, Radian.convert(1, Centiturn, 4))
-        assertEquals(1.5915, Radian.convert(1, Deciturn, 4))
-        assertEquals(57.2958, Radian.convert(1, Degree, 4))
-        assertEquals(63.662, Radian.convert(1, Gradian, 3))
-        assertEquals(3437.75, Radian.convert(1, ArcMinute, 2))
-        assertEquals(206265.0, Radian.convert(1, ArcSecond, 0))
+        assertScientificConversion(1, Radian, 0.159155, Turn, 6)
+        assertScientificConversion(1, Radian, 159154.9431, Microturn, 4)
+        assertScientificConversion(1, Radian, 159.1549, Milliturn, 4)
+        assertScientificConversion(1, Radian, 15.9155, Centiturn, 4)
+        assertScientificConversion(1, Radian, 1.5915, Deciturn, 4)
+        assertScientificConversion(1, Radian, 57.2958, Degree, 4)
+        assertScientificConversion(1, Radian, 63.662, Gradian, 3)
+        assertScientificConversion(1, Radian, 3437.75, ArcMinute, 2)
+        assertScientificConversion(1, Radian, 206265.0, ArcSecond, 0)
     }
 
     @Test

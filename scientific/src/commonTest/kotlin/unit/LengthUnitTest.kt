@@ -32,50 +32,26 @@ import kotlin.test.assertEquals
 
 class LengthUnitTest {
 
-    // ##### Same length unit table conversions #####
-
     @Test
     fun meterConversionTest() {
-        assertEquals(1e+9, Meter.convert(1.0, Nanometer))
-        assertEquals(1e+6, Meter.convert(1.0, Micrometer))
-        assertEquals(1_000.0, Meter.convert(1.0, Millimeter))
-        assertEquals(100.0, Meter.convert(1.0, Centimeter))
-        assertEquals(10.0, Meter.convert(1.0, Decimeter))
-        assertEquals(0.1, Meter.convert(1.0, Decameter))
-        assertEquals(0.01, Meter.convert(1.0, Hectometer))
-        assertEquals(0.001, Meter.convert(1.0, Kilometer))
-        assertEquals(1e-6, Meter.convert(1.0, Megameter))
-        assertEquals(1e-9, Meter.convert(1.0, Gigameter))
+        assertScientificConversion(1.0, Meter, 1e+9, Nanometer)
+        assertScientificConversion(1.0, Meter, 1e+6, Micrometer)
+        assertScientificConversion(1.0, Meter, 1_000.0, Millimeter)
+        assertScientificConversion(1.0, Meter, 100.0, Centimeter)
+        assertScientificConversion(1.0, Meter, 10.0, Decimeter)
+        assertScientificConversion(1.0, Meter, 0.1, Decameter)
+        assertScientificConversion(1.0, Meter, 0.01, Hectometer)
+        assertScientificConversion(1.0, Meter, 0.001, Kilometer)
+        assertScientificConversion(1.0, Meter, 1e-6, Megameter)
+        assertScientificConversion(1.0, Meter, 1e-9, Gigameter)
     }
 
     @Test
     fun feetConversionTest() {
-        assertEquals(12.0, Foot.convert(1.0, Inch))
-        assertEquals(0.33333333, Foot.convert(1.0, Yard, 8))
-        assertEquals(0.00018939, Foot.convert(1.0, Mile, 8))
-    }
-
-    // ##### Mixed mass unit table conversions #####
-
-    @Test
-    fun meterToFeetConversionTest() {
-        assertEquals(39.37007874, Meter.convert(1.0, Inch, 8))
-        assertEquals(1.0936133, Meter.convert(1.0, Yard, 8))
-        assertEquals(0.00062137, Meter.convert(1.0, Mile, 8))
-    }
-
-    @Test
-    fun feetToMeterConversionTest() {
-        assertEquals(304800000.0, Foot.convert(1.0, Nanometer))
-        assertEquals(304800.0, Foot.convert(1.0, Micrometer))
-        assertEquals(304.8, Foot.convert(1.0, Millimeter))
-        assertEquals(30.48, Foot.convert(1.0, Centimeter))
-        assertEquals(3.048, Foot.convert(1.0, Decimeter))
-        assertEquals(0.03048, Foot.convert(1.0, Decameter))
-        assertEquals(0.003048, Foot.convert(1.0, Hectometer))
-        assertEquals(0.0003048, Foot.convert(1.0, Kilometer))
-        assertEquals(0.0000003, Foot.convert(1.0, Megameter, 8))
-        assertEquals(0.000000000305, Foot.convert(1.0, Gigameter, 12))
+        assertScientificConversion(1.0, Foot, 0.3048, Meter)
+        assertScientificConversion(1.0, Foot, 12.0, Inch)
+        assertScientificConversion(1.0, Foot, 0.33333333, Yard, 8)
+        assertScientificConversion(1.0, Foot, 0.00018939, Mile, 8)
     }
 
     @Test

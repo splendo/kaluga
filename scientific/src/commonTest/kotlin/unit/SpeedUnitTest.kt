@@ -18,12 +18,11 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SpeedUnitTest {
 
     @Test
     fun metricToImperialSpeedConversionTest() {
-        assertEquals(196.85, (Meter per Minute).convert(1.0, Foot per Hour, 2))
+        assertScientificConversion(1.0, (Meter per Minute), 196.85, Foot per Hour, 2)
     }
 }

@@ -15,64 +15,43 @@
 
  */
 
-package unit
+package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.unit.Becquerel
-import com.splendo.kaluga.scientific.unit.Centibecquerel
-import com.splendo.kaluga.scientific.unit.Centicurie
-import com.splendo.kaluga.scientific.unit.Curie
-import com.splendo.kaluga.scientific.unit.Decabecquerel
-import com.splendo.kaluga.scientific.unit.Decacurie
-import com.splendo.kaluga.scientific.unit.Decibecquerel
-import com.splendo.kaluga.scientific.unit.Decicurie
-import com.splendo.kaluga.scientific.unit.Gigabecquerel
-import com.splendo.kaluga.scientific.unit.Gigacurie
-import com.splendo.kaluga.scientific.unit.Hectobecquerel
-import com.splendo.kaluga.scientific.unit.Hectocurie
-import com.splendo.kaluga.scientific.unit.Kilobecquerel
-import com.splendo.kaluga.scientific.unit.Kilocurie
-import com.splendo.kaluga.scientific.unit.Megabecquerel
-import com.splendo.kaluga.scientific.unit.Megacurie
-import com.splendo.kaluga.scientific.unit.Microbecquerel
-import com.splendo.kaluga.scientific.unit.Microcurie
-import com.splendo.kaluga.scientific.unit.Millibecquerel
-import com.splendo.kaluga.scientific.unit.Millicurie
-import com.splendo.kaluga.scientific.unit.Nanobecquerel
-import com.splendo.kaluga.scientific.unit.Nanocurie
-import com.splendo.kaluga.scientific.unit.convert
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.decimal.decaysPer
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class RadioActivityUnitTest {
 
     @Test
     fun radioActivityConversionTest() {
-        assertEquals(1e+9, Becquerel.convert(1, Nanobecquerel))
-        assertEquals(1e+6, Becquerel.convert(1, Microbecquerel))
-        assertEquals(1000.0, Becquerel.convert(1, Millibecquerel))
-        assertEquals(100.0, Becquerel.convert(1, Centibecquerel))
-        assertEquals(10.0, Becquerel.convert(1, Decibecquerel))
-        assertEquals(0.1, Becquerel.convert(1, Decabecquerel))
-        assertEquals(0.01, Becquerel.convert(1, Hectobecquerel))
-        assertEquals(0.001, Becquerel.convert(1, Kilobecquerel))
-        assertEquals(1e-6, Becquerel.convert(1, Megabecquerel))
-        assertEquals(1e-9, Becquerel.convert(1, Gigabecquerel))
-        assertEquals(2.7027027027027E-11, Becquerel.convert(1, Curie, 24))
+        assertScientificConversion(1, Becquerel, 1e+9, Nanobecquerel)
+        assertScientificConversion(1, Becquerel, 1e+6, Microbecquerel)
+        assertScientificConversion(1, Becquerel, 1000.0, Millibecquerel)
+        assertScientificConversion(1, Becquerel, 100.0, Centibecquerel)
+        assertScientificConversion(1, Becquerel, 10.0, Decibecquerel)
+        assertScientificConversion(1, Becquerel, 0.1, Decabecquerel)
+        assertScientificConversion(1, Becquerel, 0.01, Hectobecquerel)
+        assertScientificConversion(1, Becquerel, 0.001, Kilobecquerel)
+        assertScientificConversion(1, Becquerel, 1e-6, Megabecquerel)
+        assertScientificConversion(1, Becquerel, 1e-9, Gigabecquerel)
+        assertScientificConversion(1, Becquerel, 2.7027027027027E-11, Curie, 24)
 
-        assertEquals(1e+9, Curie.convert(1, Nanocurie))
-        assertEquals(1e+6, Curie.convert(1, Microcurie))
-        assertEquals(1000.0, Curie.convert(1, Millicurie))
-        assertEquals(100.0, Curie.convert(1, Centicurie))
-        assertEquals(10.0, Curie.convert(1, Decicurie))
-        assertEquals(0.1, Curie.convert(1, Decacurie))
-        assertEquals(0.01, Curie.convert(1, Hectocurie))
-        assertEquals(0.001, Curie.convert(1, Kilocurie))
-        assertEquals(1e-6, Curie.convert(1, Megacurie))
-        assertEquals(1e-9, Curie.convert(1, Gigacurie))
+        assertScientificConversion(1, Curie, 1e+9, Nanocurie)
+        assertScientificConversion(1, Curie, 1e+6, Microcurie)
+        assertScientificConversion(1, Curie, 1000.0, Millicurie)
+        assertScientificConversion(1, Curie, 100.0, Centicurie)
+        assertScientificConversion(1, Curie, 10.0, Decicurie)
+        assertScientificConversion(1, Curie, 0.1, Decacurie)
+        assertScientificConversion(1, Curie, 0.01, Hectocurie)
+        assertScientificConversion(1, Curie, 0.001, Kilocurie)
+        assertScientificConversion(1, Curie, 1e-6, Megacurie)
+        assertScientificConversion(1, Curie, 1e-9, Gigacurie)
     }
 
     @Test
     fun radioActivityFromAmountOfSubstanceDivTimeTest() {
-        // assertEquals(1(Becquerel), 2(Mole) / 2(Minute)) FIXME type inference (assertEqualScientificValue does not work also)
+        assertEqualScientificValue(1(Becquerel), 2 decaysPer 2(Second))
     }
 }

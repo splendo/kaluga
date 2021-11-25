@@ -28,7 +28,7 @@ class LuminousExposureUnitTest {
 
     @Test
     fun luminousExposureConversionTest() {
-        // assertEquals(0.092903, (Lux x Minute).convert(2, FootCandle x Minute, 6)) FIXME find if expect is correct
+        assertScientificConversion(1, (Lux x Second), 0.001548, FootCandle x Minute, 6)
     }
 
     @Test

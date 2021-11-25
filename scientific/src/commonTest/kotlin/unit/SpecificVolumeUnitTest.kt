@@ -18,13 +18,12 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SpecificVolumeUnitTest {
 
     @Test
     fun specificVolumeConversionTest() {
-        assertEquals(16.02, (CubicMeter per Kilogram).convert(1.0, CubicFoot per Pound, 2))
-        assertEquals(1.12, (ImperialTonForce per Foot).convert(1.0, UsTonForce per Foot, 2))
+        assertScientificConversion(1.0, (CubicMeter per Kilogram), 16.02, CubicFoot per Pound, 2)
+        assertScientificConversion(1.0, (ImperialTonForce per Foot), 1.12, UsTonForce per Foot, 2)
     }
 }

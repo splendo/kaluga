@@ -22,9 +22,10 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
-import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
+import com.splendo.kaluga.scientific.converter.temperature.deltaValue
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.HeatCapacity
+import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.Temperature
 import kotlin.jvm.JvmName
 
@@ -48,4 +49,4 @@ fun <
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
     factory: (Decimal, HeatCapacityUnit) -> Value
-) = byDividing(energy, temperature.deltaValueInKelvin(), factory)
+) = byDividing(energy, Kelvin.deltaValue(temperature), factory)

@@ -30,13 +30,13 @@ class TimeUnitTest {
 
     @Test
     fun secondConversionTest() {
-        assertEquals(1e+9, Second.convert(1.0, Nanosecond))
-        assertEquals(1e+6, Second.convert(1.0, Microsecond))
-        assertEquals(1_000.0, Second.convert(1.0, Millisecond))
-        assertEquals(100.0, Second.convert(1.0, Centisecond))
-        assertEquals(10.0, Second.convert(1.0, Decisecond))
-        assertEquals(0.017, Second.convert(1.0, Minute, 3))
-        assertEquals(0.00028, Second.convert(1.0, Hour, 5))
+        assertScientificConversion(1.0, Second, 1e+9, Nanosecond)
+        assertScientificConversion(1.0, Second, 1e+6, Microsecond)
+        assertScientificConversion(1.0, Second, 1_000.0, Millisecond)
+        assertScientificConversion(1.0, Second, 100.0, Centisecond)
+        assertScientificConversion(1.0, Second, 10.0, Decisecond)
+        assertScientificConversion(1.0, Second, 0.017, Minute, 3)
+        assertScientificConversion(1.0, Second, 0.00028, Hour, 5)
     }
 
     @Test

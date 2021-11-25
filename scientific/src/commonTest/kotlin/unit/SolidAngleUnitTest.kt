@@ -18,21 +18,18 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SolidAngleUnitTest {
 
     @Test
     fun solidAngleConversionTest() {
-        assertEquals(1e+9, Steradian.convert(1, Nanosteradian))
-        assertEquals(1e+6, Steradian.convert(1, Microsteradian))
-        assertEquals(1000.0, Steradian.convert(1, Millisteradian))
-        assertEquals(100.0, Steradian.convert(1, Centisteradian))
-        assertEquals(10.0, Steradian.convert(1, Decisteradian))
+        assertScientificConversion(1, Steradian, 1e+9, Nanosteradian)
+        assertScientificConversion(1, Steradian, 1e+6, Microsteradian)
+        assertScientificConversion(1, Steradian, 1000.0, Millisteradian)
+        assertScientificConversion(1, Steradian, 100.0, Centisteradian)
+        assertScientificConversion(1, Steradian, 10.0, Decisteradian)
 
-        assertEquals(0.0796, Steradian.convert(1, Spat, 4))
-        assertEquals(3282.8063500117, Steradian.convert(1, SquareDegree, 10))
-
-        assertEquals(41253.0, Spat.convert(1, SquareDegree,0))
+        assertScientificConversion(1, Steradian, 0.0796, Spat, 4)
+        assertScientificConversion(1, Steradian, 3282.8063500117, SquareDegree, 10)
     }
 }

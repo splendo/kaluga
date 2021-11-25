@@ -24,7 +24,7 @@ class YankUnitTest {
 
     @Test
     fun yankConversionTest() {
-        assertEquals(6.0e-7, (Dyne per Minute).convert(1.0, Kilonewton per Hour))
-        assertEquals(1.12, (ImperialTonForce per Second).convert(1.0, UsTonForce per Second))
+        assertScientificConversion(1.0, (Dyne per Minute), 6.0e-7, Kilonewton per Hour)
+        assertScientificConversion(1.0, (ImperialTonForce per Second), 1.12, UsTonForce per Second)
     }
 }

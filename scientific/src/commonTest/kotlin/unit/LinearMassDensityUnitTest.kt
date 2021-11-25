@@ -29,8 +29,7 @@ class LinearMassDensityUnitTest {
 
     @Test
     fun linearMassDensityConversionTest() {
-        // assertEquals(6.022e+23, (Gram per Meter).convert(1, Dalton per Meter, 0)) FIXME yields diff
-        // assertEquals(2.20462, (Kilogram per Meter).convert(1, Pound per Meter,5)) FIXME yields diff
+        assertScientificConversion(1, (Kilogram per Meter), 0.671969, (Pound per Foot),6)
     }
 
     @Test

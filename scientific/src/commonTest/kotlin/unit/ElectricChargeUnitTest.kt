@@ -29,17 +29,17 @@ class ElectricChargeUnitTest {
 
     @Test
     fun electricChargeConversionTest() {
-        assertEquals(1e+9, Coulomb.convert(1, Nanocoulomb))
-        assertEquals(1e+6, Coulomb.convert(1, Microcoulomb))
-        assertEquals(1000.0, Coulomb.convert(1, Millicoulomb))
-        assertEquals(100.0, Coulomb.convert(1, Centicoulomb))
-        assertEquals(10.0, Coulomb.convert(1, Decicoulomb))
-        assertEquals(0.1, Coulomb.convert(1, Decacoulomb))
-        assertEquals(0.01, Coulomb.convert(1, Hectocoulomb))
-        assertEquals(0.001, Coulomb.convert(1, Kilocoulomb))
-        assertEquals(1e-6, Coulomb.convert(1, Megacoulomb))
-        assertEquals(1e-9, Coulomb.convert(1, Gigacoulomb))
-        assertEquals(0.1, Coulomb.convert(1, Abcoulomb))
+        assertScientificConversion(1, Coulomb, 1e+9, Nanocoulomb)
+        assertScientificConversion(1, Coulomb, 1e+6, Microcoulomb)
+        assertScientificConversion(1, Coulomb, 1000.0, Millicoulomb)
+        assertScientificConversion(1, Coulomb, 100.0, Centicoulomb)
+        assertScientificConversion(1, Coulomb, 10.0, Decicoulomb)
+        assertScientificConversion(1, Coulomb, 0.1, Decacoulomb)
+        assertScientificConversion(1, Coulomb, 0.01, Hectocoulomb)
+        assertScientificConversion(1, Coulomb, 0.001, Kilocoulomb)
+        assertScientificConversion(1, Coulomb, 1e-6, Megacoulomb)
+        assertScientificConversion(1, Coulomb, 1e-9, Gigacoulomb)
+        assertScientificConversion(1, Coulomb, 0.1, Abcoulomb)
     }
 
     @Test

@@ -18,13 +18,11 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MassFlowRateUnitTest {
 
     @Test
     fun massFlowRateConversionTest() {
-        assertEquals(132.28, (Gram per Millisecond).convert(1.0, Pound per Minute, 2))
-        assertEquals(1.12, (ImperialTon per Second).convert(1.0, UsTon per Second))
+        assertScientificConversion(1.0, (Kilogram per Second), 132.28, Pound per Minute, 2)
     }
 }

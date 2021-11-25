@@ -26,7 +26,7 @@ class MolalityUnitTest {
 
     @Test
     fun molalityConversionTest() {
-        assertEquals(0.0283495, (Mole per Kilogram).convert(1, Mole per Ounce, 7))
+        assertScientificConversion(1, (Mole per Kilogram), 0.0283495, Mole per Ounce, 7)
     }
 
     @Test

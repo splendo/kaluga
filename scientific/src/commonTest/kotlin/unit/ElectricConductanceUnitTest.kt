@@ -26,17 +26,17 @@ class ElectricConductanceUnitTest {
 
     @Test
     fun electricConductanceConversionTest() {
-        assertEquals(1e+9, Siemens.convert(1, Nanosiemens))
-        assertEquals(1e+6, Siemens.convert(1, Microsiemens))
-        assertEquals(1000.0, Siemens.convert(1, Millisiemens))
-        assertEquals(100.0, Siemens.convert(1, Centisiemens))
-        assertEquals(10.0, Siemens.convert(1, Decisiemens))
-        assertEquals(0.1, Siemens.convert(1, Decasiemens))
-        assertEquals(0.01, Siemens.convert(1, Hectosiemens))
-        assertEquals(0.001, Siemens.convert(1, Kilosiemens))
-        assertEquals(1e-6, Siemens.convert(1, Megasiemens))
-        assertEquals(1e-9, Siemens.convert(1, Gigasiemens))
-        assertEquals(1e-9, Siemens.convert(1, Absiemens))
+        assertScientificConversion(1, Siemens, 1e+9, Nanosiemens)
+        assertScientificConversion(1, Siemens, 1e+6, Microsiemens)
+        assertScientificConversion(1, Siemens, 1000.0, Millisiemens)
+        assertScientificConversion(1, Siemens, 100.0, Centisiemens)
+        assertScientificConversion(1, Siemens, 10.0, Decisiemens)
+        assertScientificConversion(1, Siemens, 0.1, Decasiemens)
+        assertScientificConversion(1, Siemens, 0.01, Hectosiemens)
+        assertScientificConversion(1, Siemens, 0.001, Kilosiemens)
+        assertScientificConversion(1, Siemens, 1e-6, Megasiemens)
+        assertScientificConversion(1, Siemens, 1e-9, Gigasiemens)
+        assertScientificConversion(1, Siemens, 1e-9, Absiemens)
     }
 
     @Test

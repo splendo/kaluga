@@ -28,38 +28,28 @@ class LuminanceUnitTest {
 
     @Test
     fun luminanceConversionTest() {
-        assertEquals(1e+9, Nit.convert(1, Nanonit))
-        assertEquals(1e+6, Nit.convert(1, Micronit))
-        assertEquals(1000.0, Nit.convert(1, Millinit))
-        assertEquals(100.0, Nit.convert(1, Centinit))
-        assertEquals(10.0, Nit.convert(1, Decinit))
-        assertEquals(0.1, Nit.convert(1, Decanit))
-        assertEquals(0.01, Nit.convert(1, Hectonit))
-        assertEquals(0.001, Nit.convert(1, Kilonit))
-        assertEquals(1e-6, Nit.convert(1, Meganit))
-        assertEquals(1e-9, Nit.convert(1, Giganit))
+        assertScientificConversion(1, Nit, 1e+9, Nanonit)
+        assertScientificConversion(1, Nit, 1e+6, Micronit)
+        assertScientificConversion(1, Nit, 1000.0, Millinit)
+        assertScientificConversion(1, Nit, 100.0, Centinit)
+        assertScientificConversion(1, Nit, 10.0, Decinit)
+        assertScientificConversion(1, Nit, 0.1, Decanit)
+        assertScientificConversion(1, Nit, 0.01, Hectonit)
+        assertScientificConversion(1, Nit, 0.001, Kilonit)
+        assertScientificConversion(1, Nit, 1e-6, Meganit)
+        assertScientificConversion(1, Nit, 1e-9, Giganit)
 
-        assertEquals(3.14159265359, Nit.convert(1, Apostilb, 11))
-        assertEquals(0.0003141593, Nit.convert(1, Lambert, 10))
-        assertEquals(3141.5927, Nit.convert(1, Skot, 4))
-        assertEquals(31415926.536, Nit.convert(1, Bril, 3))
-
-        assertEquals(31415.9265, Stilb.convert(1, Apostilb, 4))
-        assertEquals(3.1415926535898, Stilb.convert(1, Lambert, 13))
-        assertEquals(31415926.536, Stilb.convert(1, Skot, 3))
-        assertEquals(314159265359.0, Stilb.convert(1, Bril, 0))
-
-        assertEquals(0.0001, Apostilb.convert(1, Lambert))
-        assertEquals(1000.0, Apostilb.convert(1, Skot))
-        assertEquals(10000000.0, Apostilb.convert(1, Bril))
-
-        assertEquals(10000.0, Skot.convert(1, Bril))
+        assertScientificConversion(1, Nit, 3.14159265359, Apostilb, 11)
+        assertScientificConversion(1, Nit, 0.0003141593, Lambert, 10)
+        assertScientificConversion(1, Nit, 3141.5927, Skot, 4)
+        assertScientificConversion(1, Nit, 31415926.536, Bril, 3)
+        assertScientificConversion(1, Nit, 0.2918635, FootLambert, 7)
     }
 
     @Test
     fun luminanceFromIlluminanceAndSolidAngleTest() {
         assertEquals(1(Nit), 2(Lux) / 2(Steradian))
-        // assertEquals(1(FootLambert), 2(FootCandle) / 2(Steradian)) FIXME could not find expected value
+        assertEquals(1(FootLambert), 2(FootCandle) / 2(Steradian))
     }
 
     @Test

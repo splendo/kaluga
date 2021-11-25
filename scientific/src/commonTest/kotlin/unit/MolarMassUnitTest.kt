@@ -24,21 +24,21 @@ class MolarMassUnitTest {
 
     @Test
     fun metricMolarMassConversionTest() {
-        assertEquals(0.001, (Kilogram per Mole).convert(1.0, Tonne per Mole))
+        assertScientificConversion(1.0, (Kilogram per Mole), 0.001, Tonne per Mole)
     }
 
     @Test
     fun imperialMolarMassConversionTest() {
-        assertEquals(16.0, (Pound per Mole).convert(1.0, Ounce per Mole))
+        assertScientificConversion(1.0, (Pound per Mole), 16.0, Ounce per Mole)
     }
 
     @Test
     fun ukImperialMolarMassConversionTest() {
-        assertEquals(2240.0, (ImperialTon per Mole).convert(1.0, Pound per Mole))
+        assertScientificConversion(1.0, (ImperialTon per Mole), 2240.0, Pound per Mole)
     }
 
     @Test
     fun usCustomaryMolarMassConversionTest() {
-        assertEquals(2000.0, (UsTon per Mole).convert(1.0, Pound per Mole))
+        assertScientificConversion(1.0, (UsTon per Mole), 2000.0, Pound per Mole)
     }
 }

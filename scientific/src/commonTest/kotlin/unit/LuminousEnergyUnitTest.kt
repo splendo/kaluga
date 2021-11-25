@@ -22,6 +22,11 @@ import kotlin.test.Test
 class LuminousEnergyUnitTest {
 
     @Test
+    fun luminousEnergyConversionTest() {
+        assertScientificConversion(1.0, Lumen x Second, 0.027778, Centilumen x Hour, 6)
+    }
+
+    @Test
     fun luminousEnergyFromLuminousExposureAndAreaTest() {
         // assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter)) FIXME I think equals error
         // assertEquals(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot)) FIXME

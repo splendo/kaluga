@@ -18,13 +18,12 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SurfaceTensionUnitTest {
 
     @Test
     fun surfaceTensionConversionTest() {
-        assertEquals(6.85, (Newton per Centimeter).convert(1.0, PoundForce per Foot, 2))
-        assertEquals(1.12, (ImperialTonForce per Foot).convert(1.0, UsTonForce per Foot, 2))
+        assertScientificConversion(1.0, (Newton per Centimeter), 6.85, PoundForce per Foot, 2)
+        assertScientificConversion(1.0, (ImperialTonForce per Foot), 1.12, UsTonForce per Foot, 2)
     }
 }

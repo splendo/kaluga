@@ -26,13 +26,7 @@ class AngularAccelerationUnitTest {
 
     @Test
     fun angularAccelerationTest() {
-        assertEquals(0.000001, (Radian per Second per Second).convert(1, Radian per Millisecond per Millisecond))
-        assertEquals(0.0002777777777778, (Radian per Minute per Minute).convert(1, Radian per Second per Second))
-        assertEquals(0.0002777777777778, (Radian per Hour).convert(1, Radian per Minute))
-        assertEquals(0.159155, (Radian per Second per Second).convert(1,Turn per Second per Second, 6))
-        assertEquals(57.2958, (Radian per Second per Second).convert(1, Degree per Second per Second, 4))
-        assertEquals(63.662, (Radian per Second per Second).convert(1, Gradian per Second per Second, 3))
-        assertEquals(3437.75, (Radian per Second per Second).convert(1, ArcMinute per Second per Second, 2))
+        assertScientificConversion(1, (Radian per Second per Second), 0.0001, Centiradian per Millisecond per Millisecond)
     }
 
     @Test

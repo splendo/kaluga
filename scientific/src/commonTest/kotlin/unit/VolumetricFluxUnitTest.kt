@@ -26,8 +26,8 @@ class VolumetricFluxUnitTest {
 
     @Test
     fun volumetricFluxConversionTest() {
-        assertEquals(1362.39, (CubicMeter per Minute per SquareMeter).convert(1.0, ImperialFluidOunce per Hour per SquareInch, 2))
-        assertEquals(3.766e-4, (CubicMeter per Minute per SquareMeter).convert(1.0, AcreInch per Hour per SquareInch, 7))
+        assertScientificConversion(1.0, (CubicMeter per Minute per SquareMeter), 1362.39, ImperialFluidOunce per Hour per SquareInch, 2)
+        assertScientificConversion(1.0, (CubicMeter per Minute per SquareMeter), 3.766e-4, AcreInch per Hour per SquareInch, 7)
     }
 
     @Test

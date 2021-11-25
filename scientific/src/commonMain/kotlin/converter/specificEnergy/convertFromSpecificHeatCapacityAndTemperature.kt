@@ -22,7 +22,8 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
+import com.splendo.kaluga.scientific.converter.temperature.deltaValue
+import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
 import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
 import com.splendo.kaluga.scientific.unit.Temperature
@@ -48,4 +49,4 @@ fun <
     specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>,
     temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value
-) = byMultiplying(specificHeatCapacity, temperature.deltaValueInKelvin(), factory)
+) = byMultiplying(specificHeatCapacity, Kelvin.deltaValue(temperature), factory)

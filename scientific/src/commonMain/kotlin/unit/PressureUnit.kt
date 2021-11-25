@@ -28,16 +28,16 @@ import kotlinx.serialization.Serializable
 
 val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     Pascal,
-    NanoPascal,
-    MicroPascal,
-    MilliPascal,
-    CentiPascal,
-    DeciPascal,
-    DecaPascal,
-    HectoPascal,
-    KiloPascal,
-    MegaPascal,
-    GigaPascal,
+    Nanopascal,
+    Micropascal,
+    Millipascal,
+    Centipascal,
+    Decipascal,
+    Decapascal,
+    Hectopascal,
+    Kilopascal,
+    Megapascal,
+    Gigapascal,
     Bar,
     Nanobar,
     Microbar,
@@ -73,7 +73,7 @@ val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     Megatorr,
     Gigatorr,
     MillimeterOfMercury,
-    MillimeterOfMercury, // FIXME duplicate?
+    MillimeterOfWater,
     CentimeterOfWater
 )
 
@@ -137,25 +137,25 @@ object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physi
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 @Serializable
-object NanoPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Nano(Pascal)
+object Nanopascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Nano(Pascal)
 @Serializable
-object MicroPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Micro(Pascal)
+object Micropascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Micro(Pascal)
 @Serializable
-object MilliPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Milli(Pascal)
+object Millipascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Milli(Pascal)
 @Serializable
-object CentiPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Centi(Pascal)
+object Centipascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Centi(Pascal)
 @Serializable
-object DeciPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deci(Pascal)
+object Decipascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deci(Pascal)
 @Serializable
-object DecaPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deca(Pascal)
+object Decapascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deca(Pascal)
 @Serializable
-object HectoPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Hecto(Pascal)
+object Hectopascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Hecto(Pascal)
 @Serializable
-object KiloPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Kilo(Pascal)
+object Kilopascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Kilo(Pascal)
 @Serializable
-object MegaPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Mega(Pascal)
+object Megapascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Mega(Pascal)
 @Serializable
-object GigaPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Giga(Pascal)
+object Gigapascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Giga(Pascal)
 @Serializable
 object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
     private const val BAR_PER_PASCAL = 0.00001
@@ -272,8 +272,8 @@ object CentimeterOfWater : MetricPressure() {
     override val symbol: String = "cmH2O"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Pressure
-    override fun fromSIUnit(value: Decimal): Decimal = MillimeterOfWater.fromSIUnit(value) * 10.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = MillimeterOfWater.toSIUnit(value / 10.0.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = MillimeterOfWater.fromSIUnit(value) / 10.0.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = MillimeterOfWater.toSIUnit(value * 10.0.toDecimal())
 }
 @Serializable
 object MillimeterOfWater : MetricPressure() {

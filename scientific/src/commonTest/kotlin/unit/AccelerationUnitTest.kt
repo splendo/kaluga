@@ -22,7 +22,6 @@ import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.jolt.times
 import com.splendo.kaluga.scientific.converter.speed.div
-import com.splendo.kaluga.scientific.converter.volumetricFlux.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,14 +30,7 @@ class AccelerationUnitTest {
 
     @Test
     fun accelerationConversionTest() {
-        assertEquals(
-            100.0,
-            (Meter per Second per Second).convert(1, Centimeter per Second per Second)
-        )
-        assertEquals(
-            3.2808399,
-            (Meter per Second per Second).convert(1, Foot per Second per Second, 7)
-        )
+        assertScientificConversion(1, (Meter per Second per Second), 11.811024, Foot per Millisecond per Hour, 6)
     }
 
     @Test

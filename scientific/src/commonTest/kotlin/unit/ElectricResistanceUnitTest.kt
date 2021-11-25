@@ -30,17 +30,17 @@ class ElectricResistanceUnitTest {
 
     @Test
     fun electricResistanceUnitTestConversionTest() {
-        assertEquals(1e+9, Ohm.convert(1, Nanoohm))
-        assertEquals(1e+6, Ohm.convert(1, Microohm))
-        assertEquals(1000.0, Ohm.convert(1, Milliohm))
-        assertEquals(100.0, Ohm.convert(1, Centiohm))
-        assertEquals(10.0, Ohm.convert(1, Deciohm))
-        assertEquals(0.1, Ohm.convert(1, Decaohm))
-        assertEquals(0.01, Ohm.convert(1, HectoOhm))
-        assertEquals(0.001, Ohm.convert(1, Kiloohm))
-        assertEquals(1e-6, Ohm.convert(1, Megaohm))
-        assertEquals(1e-9, Ohm.convert(1, Gigaohm))
-        assertEquals(1000000000.0, Ohm.convert(1, Abohm))
+        assertScientificConversion(1, Ohm, 1e+9, Nanoohm)
+        assertScientificConversion(1, Ohm, 1e+6, Microohm)
+        assertScientificConversion(1, Ohm, 1000.0, Milliohm)
+        assertScientificConversion(1, Ohm, 100.0, Centiohm)
+        assertScientificConversion(1, Ohm, 10.0, Deciohm)
+        assertScientificConversion(1, Ohm, 0.1, Decaohm)
+        assertScientificConversion(1, Ohm, 0.01, HectoOhm)
+        assertScientificConversion(1, Ohm, 0.001, Kiloohm)
+        assertScientificConversion(1, Ohm, 1e-6, Megaohm)
+        assertScientificConversion(1, Ohm, 1e-9, Gigaohm)
+        assertScientificConversion(1, Ohm, 1000000000.0, Abohm)
     }
 
     @Test

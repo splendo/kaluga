@@ -27,16 +27,16 @@ class LuminusIntensityUnitTest {
 
     @Test
     fun luminusIntensityConversionTest() {
-        assertEquals(1e+9, Candela.convert(1, Nanocandela))
-        assertEquals(1e+6, Candela.convert(1, Microcandela))
-        assertEquals(1000.0, Candela.convert(1, Millicandela))
-        assertEquals(100.0, Candela.convert(1, Centicandela))
-        assertEquals(10.0, Candela.convert(1, Decicandela))
-        assertEquals(0.1, Candela.convert(1, Decacandela))
-        assertEquals(0.01, Candela.convert(1, Hectocandela))
-        assertEquals(0.001, Candela.convert(1, Kilocandela))
-        assertEquals(1e-6, Candela.convert(1, Megacandela))
-        assertEquals(1e-9, Candela.convert(1, Gigacandela))
+        assertScientificConversion(1, Candela, 1e+9, Nanocandela)
+        assertScientificConversion(1, Candela, 1e+6, Microcandela)
+        assertScientificConversion(1, Candela, 1000.0, Millicandela)
+        assertScientificConversion(1, Candela, 100.0, Centicandela)
+        assertScientificConversion(1, Candela, 10.0, Decicandela)
+        assertScientificConversion(1, Candela, 0.1, Decacandela)
+        assertScientificConversion(1, Candela, 0.01, Hectocandela)
+        assertScientificConversion(1, Candela, 0.001, Kilocandela)
+        assertScientificConversion(1, Candela, 1e-6, Megacandela)
+        assertScientificConversion(1, Candela, 1e-9, Gigacandela)
     }
 
     @Test

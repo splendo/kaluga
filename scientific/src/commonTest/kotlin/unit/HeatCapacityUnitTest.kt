@@ -27,8 +27,7 @@ class HeatCapacityUnitTest {
 
     @Test
     fun heatCapacityConversionTest() {
-        assertEquals(0.737562, (Joule per Kelvin).convert(1, FootPoundForce per Celsius, 6))
-        assertEquals(0.409757, (Joule per Kelvin).convert(1, FootPoundForce per Fahrenheit, 6))
+        assertScientificConversion(1, (Joule per Kelvin), 0.737562, FootPoundForce per Celsius, 6)
     }
 
     @Test
@@ -41,7 +40,6 @@ class HeatCapacityUnitTest {
     @Test
     fun heatCapacityFromWeightAndSpecificHeatCapacityTest() {
         assertEquals(4(Joule per Celsius), 2((Joule per Kilogram) per Celsius) * 2(Kilogram))
-        assertEquals(1(HorsepowerHour per Fahrenheit), 2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound))
-        // TODO find a way for Calorie ?
+        assertEquals(4(HorsepowerHour per Fahrenheit), 2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound))
     }
 }

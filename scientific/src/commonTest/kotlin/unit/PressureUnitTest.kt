@@ -24,69 +24,93 @@ class PressureUnitTest {
 
     @Test
     fun pressureConversionTest() {
-        assertEquals(1e-5, Pascal.convert(1, Bar))
-        assertEquals(10.0, Pascal.convert(1, Barye))
-        assertEquals(0.00750062, Pascal.convert(1, Torr,8))
-        assertEquals(9.86923e-6, Pascal.convert(1, Atmosphere,11))
-        assertEquals(0.00750062, Pascal.convert(1, MillimeterOfMercury,8))
-        // assertEquals(0.020885434273039, Pascal.convert(1, PoundSquareFoot,15)) FIXME
-        // assertEquals(0.0101972, Pascal.convert(1, CentimeterOfWater)) FIXME
-        assertEquals(1.4504E-7, Pascal.convert(1, KiloPoundSquareInch,11))
-        assertEquals(0.0002953, Pascal.convert(1, InchOfMercury,7))
-        // assertEquals(0.00401865, Pascal.convert(1, InchOfWater,8)) FIXME
+        assertScientificConversion(1, Pascal, 1e+9, Nanopascal)
+        assertScientificConversion(1, Pascal, 1e+6, Micropascal)
+        assertScientificConversion(1, Pascal, 1000.0, Millipascal)
+        assertScientificConversion(1, Pascal, 100.0, Centipascal)
+        assertScientificConversion(1, Pascal, 10.0, Decipascal)
+        assertScientificConversion(1, Pascal, 0.1, Decapascal)
+        assertScientificConversion(1, Pascal, 0.01, Hectopascal)
+        assertScientificConversion(1, Pascal, 0.001, Kilopascal)
+        assertScientificConversion(1, Pascal, 1e-6, Megapascal)
+        assertScientificConversion(1, Pascal, 1e-9, Gigapascal)
 
-        assertEquals(1000000.0, Bar.convert(1, Barye))
-        assertEquals(750.062, Bar.convert(1, Torr,3))
-        assertEquals(0.986923, Bar.convert(1, Atmosphere,6))
-        assertEquals(750.062, Bar.convert(1, MillimeterOfMercury,3))
-        // assertEquals(1019.72, Bar.convert(1, CentimeterOfWater,2)) FIXME
-        assertEquals(2088.54, Bar.convert(1, PoundSquareFoot,2))
-        assertEquals(0.01450377, Bar.convert(1, KiloPoundSquareInch,8))
-        assertEquals(29.53, Bar.convert(1, InchOfMercury,2))
-        // assertEquals(401.865, Bar.convert(1, InchOfWater,3)) FIXME
+        assertScientificConversion(1, Pascal, 1e-5, Bar)
+        assertScientificConversion(1, Pascal, 10.0, Barye)
+        assertScientificConversion(1, Pascal, 0.00750062, Torr,8)
+        assertScientificConversion(1, Pascal, 9.86923e-6, Atmosphere,11)
+        assertScientificConversion(1, Pascal, 0.00750062, MillimeterOfMercury,8)
+        assertScientificConversion(1, Pascal, 0.10197162, MillimeterOfWater,8)
+        assertScientificConversion(1, MillimeterOfWater, 0.1, CentimeterOfWater)
 
-        assertEquals(0.000750062, Barye.convert(1, Torr,9))
-        assertEquals(9.86923e-7, Barye.convert(1, Atmosphere,12))
-        assertEquals(0.000750062, Barye.convert(1, MillimeterOfMercury,9))
-        // assertEquals(0.00101972, Barye.convert(1, CentimeterOfWater,8)) FIXME
-        // assertEquals(0.0020885434304802, Barye.convert(1, PoundSquareFoot,16)) FIXME
-        // assertEquals(0.000000014503774389728, Barye.convert(1, KiloPoundSquareInch,21)) FIXME
-        assertEquals(2.953e-5, Barye.convert(1, InchOfMercury,8))
-        // assertEquals(0.000401865, Barye.convert(1, InchOfWater,9)) FIXME
+        assertScientificConversion(1, Pascal, 0.0001450377, PoundSquareInch, 10)
+    }
 
-        assertEquals(0.00131579, Torr.convert(1, Atmosphere, 8))
-        // assertEquals(1.0, Torr.convert(1, MillimeterOfMercury)) FIXME
-        // assertEquals(1.35951, Torr.convert(1, CentimeterOfWater,5)) FIXME
-        assertEquals(2.7845, Torr.convert(1, PoundSquareFoot,4))
-        // assertEquals(0.000019336767111886182, Torr.convert(1, KiloPoundSquareInch,21)) FIXME
-        assertEquals(0.0393701, Torr.convert(1, InchOfMercury,7))
-        // assertEquals(0.535775, Torr.convert(1, InchOfWater,6)) FIXME
+    @Test
+    fun testBarConversion() {
+        assertScientificConversion(1, Bar, 1e+9, Nanobar)
+        assertScientificConversion(1, Bar, 1e+6, Microbar)
+        assertScientificConversion(1, Bar, 1000.0, Millibar)
+        assertScientificConversion(1, Bar, 100.0, Centibar)
+        assertScientificConversion(1, Bar, 10.0, Decibar)
+        assertScientificConversion(1, Bar, 0.1, Decabar)
+        assertScientificConversion(1, Bar, 0.01, Hectobar)
+        assertScientificConversion(1, Bar, 0.001, Kilobar)
+        assertScientificConversion(1, Bar, 1e-6, Megabar)
+        assertScientificConversion(1, Bar, 1e-9, Gigabar)
+    }
 
-        assertEquals(760.0, Atmosphere.convert(1, MillimeterOfMercury,0))
-        // assertEquals(1033.23, Atmosphere.convert(1, CentimeterOfWater,2)) FIXME
-        assertEquals(2116.22, Atmosphere.convert(1, PoundSquareFoot,2))
-        // assertEquals(0.000019336767111886182, Atmosphere.convert(1, KiloPoundSquareInch)) FIXME
-        assertEquals(29.9213, Atmosphere.convert(1, InchOfMercury,4))
-        // assertEquals(407.189, Atmosphere.convert(1, InchOfWater,3)) FIXME
+    @Test
+    fun testBaryeConversion() {
+        assertScientificConversion(1, Barye, 1e+9, Nanobarye)
+        assertScientificConversion(1, Barye, 1e+6, Microbarye)
+        assertScientificConversion(1, Barye, 1000.0, Millibarye)
+        assertScientificConversion(1, Barye, 100.0, Centibarye)
+        assertScientificConversion(1, Barye, 10.0, Decibarye)
+        assertScientificConversion(1, Barye, 0.1, Decabarye)
+        assertScientificConversion(1, Barye, 0.01, Hectobarye)
+        assertScientificConversion(1, Barye, 0.001, Kilobarye)
+        assertScientificConversion(1, Barye, 1e-6, Megabarye)
+        assertScientificConversion(1, Barye, 1e-9, Gigabarye)
+    }
 
-        // assertEquals(1.35951, MillimeterOfMercury.convert(1, CentimeterOfWater)) FIXME
-        assertEquals(2.78, MillimeterOfMercury.convert(1, PoundSquareFoot, 2))
-        // assertEquals(0.000019336777871316, MillimeterOfMercury.convert(1, KiloPoundSquareInch,18)) FIXME
-        assertEquals(0.0393701, MillimeterOfMercury.convert(1, InchOfMercury, 7))
-        // assertEquals(0.535776, MillimeterOfMercury.convert(1, InchOfWater,6)) FIXME
+    @Test
+    fun testTorrConversion() {
+        assertScientificConversion(1, Torr, 1e+9, Nanotorr)
+        assertScientificConversion(1, Torr, 1e+6, Microtorr)
+        assertScientificConversion(1, Torr, 1000.0, Millitorr)
+        assertScientificConversion(1, Torr, 100.0, Centitorr)
+        assertScientificConversion(1, Torr, 10.0, Decitorr)
+        assertScientificConversion(1, Torr, 0.1, Decatorr)
+        assertScientificConversion(1, Torr, 0.01, Hectotorr)
+        assertScientificConversion(1, Torr, 0.001, Kilotorr)
+        assertScientificConversion(1, Torr, 1e-6, Megatorr)
+        assertScientificConversion(1, Torr, 1e-9, Gigatorr)
+    }
 
-        // assertEquals(2.048105429691234, CentimeterOfWater.convert(1, PoundSquareFoot,15)) FIXME
-        // assertEquals(1.0, CentimeterOfWater.convert(1, KiloPoundSquareInch)) FIXME
-        // assertEquals(0.028959017998228, CentimeterOfWater.convert(1, InchOfMercury,15)) FIXME
-        // assertEquals(0.394095, CentimeterOfWater.convert(1, InchOfWater,6)) FIXME
+    @Test
+    fun testImperialPressure() {
+        assertScientificConversion(1, PoundSquareInch, 144, PoundSquareFoot)
+        assertScientificConversion(1, PoundSquareInch, 16, OunceSquareInch)
+        assertScientificConversion(1, PoundSquareInch, 0.001, KiloPoundSquareInch)
+        assertScientificConversion(1, MillimeterOfMercury, 0.03937, InchOfMercury, 5)
+        assertScientificConversion(1, MillimeterOfWater, 0.03937, InchOfWater, 5)
+        assertScientificConversion(1, MillimeterOfWater, 0.00328084, FootOfWater, 8)
+    }
 
-        // assertEquals(0.0000069444448876153, PoundSquareFoot.convert(1, KiloPoundSquareInch,19)) FIXME
-        assertEquals(0.0141, PoundSquareFoot.convert(1, InchOfMercury,4))
-        assertEquals(0.19, PoundSquareFoot.convert(1, InchOfWater,2))
+    @Test
+    fun testUSCustomaryPressure() {
+        assertScientificConversion(1, PoundSquareInch, 0.001, KipSquareInch)
+        assertScientificConversion(1, PoundSquareFoot, 0.001, KipSquareFoot)
+        assertScientificConversion(1, PoundSquareInch, 0.0005, USTonSquareInch)
+        assertScientificConversion(1, PoundSquareFoot, 0.0005, USTonSquareFoot)
+        assertScientificConversion(1, PoundSquareInch, 1.0, PoundSquareInch.usCustomary)
+    }
 
-        // assertEquals(2036.027185, KiloPoundSquareInch.convert(1, InchOfMercury,6)) FIXME
-        // assertEquals(1.0, KiloPoundSquareInch.convert(1, InchOfWater)) FIXME
-
-        // assertEquals(13.6087, (InchOfMercury).convert(1, InchOfWater,4)) FIXME
+    @Test
+    fun testUKImperialPressure() {
+        assertScientificConversion(1, PoundSquareInch, 0.00044643, ImperialTonSquareInch, 8)
+        assertScientificConversion(1, PoundSquareFoot, 0.00044643, ImperialTonSquareFoot, 8)
+        assertScientificConversion(1, PoundSquareInch, 1.0, PoundSquareInch.ukImperial)
     }
 }

@@ -27,19 +27,19 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun electricCurrentConversionTest() {
-        assertEquals(1e+9, Ampere.convert(1, Nanoampere))
-        assertEquals(1e+6, Ampere.convert(1, Microampere))
-        assertEquals(1000.0, Ampere.convert(1, Milliampere))
-        assertEquals(100.0, Ampere.convert(1, Centiampere))
-        assertEquals(10.0, Ampere.convert(1, Deciampere))
-        assertEquals(0.1, Ampere.convert(1, Decaampere))
-        assertEquals(0.01, Ampere.convert(1, Hectoampere))
-        assertEquals(0.001, Ampere.convert(1, Kiloampere))
-        assertEquals(1e-6, Ampere.convert(1, Megaampere))
-        assertEquals(1e-9, Ampere.convert(1, Gigaampere))
+        assertScientificConversion(1, Ampere, 1e+9, Nanoampere)
+        assertScientificConversion(1, Ampere, 1e+6, Microampere)
+        assertScientificConversion(1, Ampere, 1000.0, Milliampere)
+        assertScientificConversion(1, Ampere, 100.0, Centiampere)
+        assertScientificConversion(1, Ampere, 10.0, Deciampere)
+        assertScientificConversion(1, Ampere, 0.1, Decaampere)
+        assertScientificConversion(1, Ampere, 0.01, Hectoampere)
+        assertScientificConversion(1, Ampere, 0.001, Kiloampere)
+        assertScientificConversion(1, Ampere, 1e-6, Megaampere)
+        assertScientificConversion(1, Ampere, 1e-9, Gigaampere)
 
-        assertEquals(0.1, Ampere.convert(1, Biot))
-        assertEquals(0.1, Ampere.convert(1, Abampere))
+        assertScientificConversion(1, Ampere, 0.1, Biot)
+        assertScientificConversion(1, Ampere, 0.1, Abampere)
     }
 
     @Test

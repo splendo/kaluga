@@ -29,8 +29,7 @@ class AreaDensityUnitTest {
 
     @Test
     fun areaDensityConversionTest() {
-        assertEquals(0.204816, (Kilogram per SquareMeter).convert(1, Pound per SquareFoot, 6))
-        assertEquals(6.022e+26, (Kilogram per SquareMeter).convert(1, Dalton per SquareMeter))
+        assertScientificConversion(1, (Kilogram per SquareMeter), 0.204816, Pound per SquareFoot, 6)
     }
 
     @Test

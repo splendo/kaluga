@@ -29,17 +29,17 @@ class FrequencyUnitTest {
 
     @Test
     fun frequencyConversionTest() {
-        assertEquals(1e+9, Hertz.convert(1, Nanohertz))
-        assertEquals(1e+6, Hertz.convert(1, Microhertz))
-        assertEquals(1000.0, Hertz.convert(1, Millihertz))
-        assertEquals(100.0, Hertz.convert(1, Centihertz))
-        assertEquals(10.0, Hertz.convert(1, Decihertz))
-        assertEquals(0.1, Hertz.convert(1, Decahertz))
-        assertEquals(0.01, Hertz.convert(1, Hectohertz))
-        assertEquals(0.001, Hertz.convert(1, Kilohertz))
-        assertEquals(1e-6, Hertz.convert(1, Megahertz))
-        assertEquals(1e-9, Hertz.convert(1, Gigahertz))
-        assertEquals(60.0, Hertz.convert(1, BeatsPerMinute))
+        assertScientificConversion(1, Hertz, 1e+9, Nanohertz)
+        assertScientificConversion(1, Hertz, 1e+6, Microhertz)
+        assertScientificConversion(1, Hertz, 1000.0, Millihertz)
+        assertScientificConversion(1, Hertz, 100.0, Centihertz)
+        assertScientificConversion(1, Hertz, 10.0, Decihertz)
+        assertScientificConversion(1, Hertz, 0.1, Decahertz)
+        assertScientificConversion(1, Hertz, 0.01, Hectohertz)
+        assertScientificConversion(1, Hertz, 0.001, Kilohertz)
+        assertScientificConversion(1, Hertz, 1e-6, Megahertz)
+        assertScientificConversion(1, Hertz, 1e-9, Gigahertz)
+        assertScientificConversion(1, Hertz, 60.0, BeatsPerMinute)
     }
 
     @Test

@@ -27,13 +27,7 @@ class AngularVelocityUnitTest {
 
     @Test
     fun angularVelocityTest() {
-        assertEquals(0.001, (Radian per Second).convert(1, Radian per Millisecond))
-        assertEquals(0.0166667, (Radian per Minute).convert(1, Radian per Second,7))
-        assertEquals(0.0166667, (Radian per Hour).convert(1, Radian per Minute,7))
-        assertEquals(0.159155, (Radian per Second).convert(1, Turn per Second, 6))
-        assertEquals(57.2958, (Radian per Second).convert(1, Degree per Second, 4))
-        assertEquals(63.662, (Radian per Second).convert(1, Gradian per Second, 3))
-        assertEquals(3437.75, (Radian per Second).convert(1, ArcMinute per Second, 2))
+        assertScientificConversion(1, (Radian per Second), 0.1, Centiradian per Millisecond)
     }
 
     @Test

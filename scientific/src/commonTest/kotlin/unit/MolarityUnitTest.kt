@@ -26,7 +26,7 @@ class MolarityUnitTest {
 
     @Test
     fun molarityConversionTest() {
-        assertEquals(1.63871e-5, (Mole per CubicMeter).convert(1, Mole per CubicInch, 10))
+        assertScientificConversion(1, (Mole per CubicMeter), 1.63871e-5, Mole per CubicInch, 10)
     }
 
     @Test

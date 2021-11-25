@@ -29,16 +29,16 @@ class LuminusFluxUnitTest {
 
     @Test
     fun luminusFluxConversionTest() {
-        assertEquals(1e+9, Lumen.convert(1, Nanolumen))
-        assertEquals(1e+6, Lumen.convert(1, Microlumen))
-        assertEquals(1000.0, Lumen.convert(1, Millilumen))
-        assertEquals(100.0, Lumen.convert(1, Centilumen))
-        assertEquals(10.0, Lumen.convert(1, Decilumen))
-        assertEquals(0.1, Lumen.convert(1, Decalumen))
-        assertEquals(0.01, Lumen.convert(1, Hectolumen))
-        assertEquals(0.001, Lumen.convert(1, Kilolumen))
-        assertEquals(1e-6, Lumen.convert(1, Megalumen))
-        assertEquals(1e-9, Lumen.convert(1, Gigalumen))
+        assertScientificConversion(1, Lumen, 1e+9, Nanolumen)
+        assertScientificConversion(1, Lumen, 1e+6, Microlumen)
+        assertScientificConversion(1, Lumen, 1000.0, Millilumen)
+        assertScientificConversion(1, Lumen, 100.0, Centilumen)
+        assertScientificConversion(1, Lumen, 10.0, Decilumen)
+        assertScientificConversion(1, Lumen, 0.1, Decalumen)
+        assertScientificConversion(1, Lumen, 0.01, Hectolumen)
+        assertScientificConversion(1, Lumen, 0.001, Kilolumen)
+        assertScientificConversion(1, Lumen, 1e-6, Megalumen)
+        assertScientificConversion(1, Lumen, 1e-9, Gigalumen)
     }
 
     @Test

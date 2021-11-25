@@ -27,7 +27,7 @@ class DynamicViscosityTest {
 
     @Test
     fun dynamicViscosityConversionTest() {
-        // assertEquals(1.0, (Bar x Second).convert(2.9,PoundSquareFoot x Second,4)) FIXME
+        // assertScientificConversion(2.9, (Bar x Second), 1.0, PoundSquareFoot x Second,4) FIXME
     }
 
     @Test

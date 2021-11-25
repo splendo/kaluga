@@ -24,8 +24,8 @@ class ThermalResistanceUnitTest {
 
     @Test
     fun thermalResistanceConversionTest() {
-        assertEquals(0.00074, (Celsius per Megawatt).convert(1.0, Kelvin per MetricHorsepower, 5))
-        assertEquals(0.000055, (Kelvin per MetricHorsepower).convert(1.0, Fahrenheit per FootPoundForcePerMinute, 6))
-        assertEquals(31.65, (Celsius per Watt).convert(1.0, Rankine per BritishThermalUnitPerMinute, 2))
+        assertScientificConversion(1.0, (Celsius per Megawatt), 0.00074, Kelvin per MetricHorsepower, 5)
+        assertScientificConversion(1.0, (Kelvin per MetricHorsepower), 0.000055, Fahrenheit per FootPoundForcePerMinute, 6)
+        assertScientificConversion(1.0, (Celsius per Watt), 31.65, Rankine per BritishThermalUnitPerMinute, 2)
     }
  }

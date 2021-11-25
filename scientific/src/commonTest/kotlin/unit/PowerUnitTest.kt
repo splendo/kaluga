@@ -18,36 +18,30 @@
 package com.splendo.kaluga.scientific.unit
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class PowerUnitTest {
 
     @Test
     fun powerConversionTest() {
-        assertEquals(1e+9, Watt.convert(1, Nanowatt))
-        assertEquals(1e+6, Watt.convert(1, Microwatt))
-        assertEquals(1000.0, Watt.convert(1, Milliwatt))
-        assertEquals(100.0, Watt.convert(1, Centiwatt))
-        assertEquals(10.0, Watt.convert(1, Deciwatt))
-        assertEquals(0.1, Watt.convert(1, Decawatt))
-        assertEquals(0.01, Watt.convert(1, Hectowatt))
-        assertEquals(0.001, Watt.convert(1, Kilowatt))
-        assertEquals(1e-6, Watt.convert(1, Megawatt))
-        assertEquals(1e-9, Watt.convert(1, Gigawatt))
-        assertEquals(10000000.0, Watt.convert(1, ErgPerSecond))
+        assertScientificConversion(1, Watt, 1e+9, Nanowatt)
+        assertScientificConversion(1, Watt, 1e+6, Microwatt)
+        assertScientificConversion(1, Watt, 1000.0, Milliwatt)
+        assertScientificConversion(1, Watt, 100.0, Centiwatt)
+        assertScientificConversion(1, Watt, 10.0, Deciwatt)
+        assertScientificConversion(1, Watt, 0.1, Decawatt)
+        assertScientificConversion(1, Watt, 0.01, Hectowatt)
+        assertScientificConversion(1, Watt, 0.001, Kilowatt)
+        assertScientificConversion(1, Watt, 1e-6, Megawatt)
+        assertScientificConversion(1, Watt, 1e-9, Gigawatt)
+        assertScientificConversion(1, Watt, 10000000.0, ErgPerSecond)
 
-        assertEquals(0.74, Watt.convert(1, FootPoundForcePerSecond, 2))
-        assertEquals(44.25, Watt.convert(1, FootPoundForcePerMinute, 2))
-        assertEquals(0.0013, Watt.convert(1, Horsepower, 4))
-        assertEquals(0.00095, Watt.convert(1, BritishThermalUnitPerSecond, 5))
-        assertEquals(0.06, Watt.convert(1, BritishThermalUnitPerMinute, 2))
-        assertEquals(3.41, Watt.convert(1, BritishThermalUnitPerHour, 2))
+        assertScientificConversion(1, Watt, 0.00135962, MetricHorsepower, 8)
 
-        assertEquals(778.17, BritishThermalUnitPerSecond.convert(1, FootPoundForcePerSecond, 2))
-        assertEquals(12.97, BritishThermalUnitPerHour.convert(1, FootPoundForcePerMinute, 2))
-        assertEquals(0.00003, FootPoundForcePerMinute.convert(1, Horsepower, 5))
-        assertEquals(0.71, Horsepower.convert(1, BritishThermalUnitPerSecond, 2))
-        assertEquals(0.0013, FootPoundForcePerMinute.convert(1, BritishThermalUnitPerMinute, 4))
-        assertEquals(4.63, FootPoundForcePerSecond.convert(1, BritishThermalUnitPerHour, 2))
+        assertScientificConversion(1, Watt, 0.74, FootPoundForcePerSecond, 2)
+        assertScientificConversion(1, Watt, 44.25, FootPoundForcePerMinute, 2)
+        assertScientificConversion(1, Watt, 0.0013, Horsepower, 4)
+        assertScientificConversion(1, Watt, 0.00095, BritishThermalUnitPerSecond, 5)
+        assertScientificConversion(1, Watt, 0.06, BritishThermalUnitPerMinute, 2)
+        assertScientificConversion(1, Watt, 3.41, BritishThermalUnitPerHour, 2)
     }
 }

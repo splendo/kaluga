@@ -21,17 +21,20 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.unit.Kelvin
 import com.splendo.kaluga.scientific.unit.Temperature
-
-fun <
-    TemperatureUnit : Temperature
-    > ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.deltaValueInKelvin() =
-    deltaValueInKelvin(::DefaultScientificValue)
+import com.splendo.kaluga.scientific.unit.convertDelta
 
 fun <
     TemperatureUnit : Temperature,
-    Value : ScientificValue<PhysicalQuantity.Temperature, Kelvin>
-    > ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.deltaValueInKelvin(
-    factory: (Decimal, Kelvin) -> Value
-) = factory(unit.deltaToSIUnitDelta(decimalValue), Kelvin)
+    TargetTemperatureUnit : Temperature
+    > TargetTemperatureUnit.deltaValue(value: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>) =
+    deltaValue(value, ::DefaultScientificValue)
+
+fun <
+    TemperatureUnit : Temperature,
+    TargetTemperatureUnit : Temperature,
+    Value : ScientificValue<PhysicalQuantity.Temperature, TargetTemperatureUnit>
+    > TargetTemperatureUnit.deltaValue(
+    value: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
+    factory: (Decimal, TargetTemperatureUnit) -> Value
+) = factory(value.unit.convertDelta(value.decimalValue, this), this)

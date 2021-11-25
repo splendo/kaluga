@@ -27,17 +27,17 @@ class VoltageUnitTest {
 
     @Test
     fun voltConversionTest() {
-        assertEquals(1e+9, Volt.convert(1.0, Nanovolt))
-        assertEquals(1e+8, Volt.convert(1.0, Abvolt))
-        assertEquals(1e+6, Volt.convert(1.0, Microvolt))
-        assertEquals(1_000.0, Volt.convert(1.0, Millivolt))
-        assertEquals(100.0, Volt.convert(1.0, Centivolt))
-        assertEquals(10.0, Volt.convert(1.0, Decivolt))
-        assertEquals(0.1, Volt.convert(1.0, Decavolt))
-        assertEquals(0.01, Volt.convert(1.0, Hectovolt))
-        assertEquals(0.001, Volt.convert(1.0, Kilovolt))
-        assertEquals(1e-6, Volt.convert(1.0, Megavolt))
-        assertEquals(1e-9, Volt.convert(1.0, Gigavolt))
+        assertScientificConversion(1.0, Volt, 1e+9, Nanovolt)
+        assertScientificConversion(1.0, Volt, 1e+8, Abvolt)
+        assertScientificConversion(1.0, Volt, 1e+6, Microvolt)
+        assertScientificConversion(1.0, Volt, 1_000.0, Millivolt)
+        assertScientificConversion(1.0, Volt, 100.0, Centivolt)
+        assertScientificConversion(1.0, Volt, 10.0, Decivolt)
+        assertScientificConversion(1.0, Volt, 0.1, Decavolt)
+        assertScientificConversion(1.0, Volt, 0.01, Hectovolt)
+        assertScientificConversion(1.0, Volt, 0.001, Kilovolt)
+        assertScientificConversion(1.0, Volt, 1e-6, Megavolt)
+        assertScientificConversion(1.0, Volt, 1e-9, Gigavolt)
     }
 
     @Test
