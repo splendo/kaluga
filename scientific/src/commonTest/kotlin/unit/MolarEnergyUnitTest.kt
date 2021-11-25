@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.specificEnergy.div
+import com.splendo.kaluga.scientific.converter.specificEnergy.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,12 +33,27 @@ class MolarEnergyUnitTest {
     }
 
     @Test
-    fun metricAndImperialMolarEnergyConversionTest() {
-        assertScientificConversion(1.0, (WattHour per Mole), 860.42, Calorie per Mole, 2)
+    fun molarEnergyFromEnergyAndAmountOfSubstanceTest() {
+        assertEquals(1(Joule per Mole), 2(Joule) / 2(Mole))
+        assertEquals(1(Calorie per Mole), 2(Calorie) / 2(Mole))
+        assertEquals(1(HorsepowerHour per Mole), 2(HorsepowerHour) / 2(Mole))
     }
 
     @Test
-    fun imperialMolarEnergyConversionTest() {
-        assertScientificConversion(1.0, (InchPoundForce per Mole), 0.083, FootPoundForce per Mole, 3)
+    fun molarEnergyFromMolarMassAndSpecificEnergyTest() {
+        assertEquals(4(Joule per Mole), 2(Joule per Kilogram) * 2(Kilogram per Mole))
+        // FIXME this fails probably because there is no MetricAndImperial for some units like there is for Energy but only Metric or Imperial
+        // assertEqualScientificValue(4(Calorie per Mole), 2(Calorie per Pound) * 2(Pound per Mole))
+        // assertEqualScientificValue(4(Calorie per Mole), 2(Calorie per Kilogram) * 2(Kilogram per Mole))
+        assertEquals(4(HorsepowerHour per Mole), 2(HorsepowerHour per Pound) * 2(Pound per Mole))
+    }
+
+    @Test
+    fun molarEnergyFromSpecificEnergyAndMolalityTest() {
+        assertEquals(1(Joule per Mole), 2(Joule per Kilogram) / 2(Mole per Kilogram))
+        // FIXME same as above
+        // assertEqualScientificValue(1(Calorie per Mole), 2(Calorie per Kilogram) / 2(Mole per Kilogram))
+        // assertEqualScientificValue(1(Calorie per Mole), 2(Calorie per Pound) / 2(Mole per Pound))
+        assertEquals(1(HorsepowerHour per Mole), 2(HorsepowerHour per Pound) / 2(Mole per Pound))
     }
 }

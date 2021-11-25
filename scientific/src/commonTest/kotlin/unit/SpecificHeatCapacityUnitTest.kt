@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.heatCapacity.div
+import com.splendo.kaluga.scientific.converter.specificEnergy.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -27,5 +30,25 @@ class SpecificHeatCapacityUnitTest {
         assertScientificConversion(1.0, (Joule per Celsius per Kilogram), 0.00028, WattHour per Kelvin per Kilogram, 5)
         assertScientificConversion(1.0, (WattHour per Celsius per ImperialTon), 0.0013, HorsepowerHour per Kelvin per ImperialTon, 4)
         assertScientificConversion(1.0, (HorsepowerHour per Fahrenheit per UsTon), 3.8016e+8, InchOunceForce per Rankine per UsTon)
+    }
+
+    @Test
+    fun specificHeatCapacityFromHeatCapacityAndWeightTest() {
+        assertEquals(1(Joule per Celsius per Kilogram), 2(Joule per Celsius) / 2(Kilogram))
+        assertEquals(1(WattHour per Celsius per Kilogram), 2(WattHour per Celsius) / 2(Kilogram))
+        // assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound)) FIXME find out expect value
+        // assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound)) FIXME find out expect value
+        // assertEquals(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound)) FIXME find out expect value
+        // assertEquals(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound)) FIXME find out expect value
+    }
+
+    @Test
+    fun specificHeatCapacityFromSpecificEnergyAndTemperatureTest() {
+        assertEquals(1(Joule per Celsius per Kilogram), 2(Joule per Kilogram) / 2(Celsius))
+        assertEquals(1(WattHour per Celsius per Kilogram), 2(WattHour per Kilogram) / 2(Celsius))
+        // assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Pound) / 2(Celsius)) FIXME find out expect value
+        // assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Pound) / 2(Fahrenheit)) FIXME find out expect value
+        // assertEquals(1(WattHour per Celsius per ImperialTon),2(WattHour per ImperialTon) / 2(Celsius)) FIXME find out expect value
+        // assertEquals(1(WattHour per Fahrenheit per UsTon), 2(WattHour per UsTon) / 2(Fahrenheit)) FIXME find out expect value
     }
 }

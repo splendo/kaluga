@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.dynamicViscosity.div
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.force.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -112,5 +117,32 @@ class PressureUnitTest {
         assertScientificConversion(1, PoundSquareInch, 0.00044643, ImperialTonSquareInch, 8)
         assertScientificConversion(1, PoundSquareFoot, 0.00044643, ImperialTonSquareFoot, 8)
         assertScientificConversion(1, PoundSquareInch, 1.0, PoundSquareInch.ukImperial)
+    }
+
+    @Test
+    fun pressureFromDynamicViscosityAndTimeTest() {
+        assertEqualScientificValue(1(Bar), 2(Bar x Second) / 2(Second))
+        assertEqualScientificValue(1(PoundSquareFoot), 2(PoundSquareFoot x Second) / 2(Second))
+        assertEqualScientificValue(1(USTonSquareFoot), 2(USTonSquareFoot x Second) / 2(Second))
+        assertEqualScientificValue(
+            1(ImperialTonSquareFoot),
+            2(ImperialTonSquareFoot x Second) / 2(Second)
+        )
+    }
+
+    @Test
+    fun pressureFromEnergyAndVolumeTest() {
+        // assertEqualScientificValue(0.00001(Bar), 2(Joule) / 2(CubicMeter)) FIXME https://www.calculand.com/unit-converter/?gruppe=Pressure&einheit=Joule+per+cubic+metre+%5BJ%2Fm%C2%B3%5D
+        // assertEqualScientificValue(1(PoundSquareFoot), 2(WattHour) / 2(CubicFoot)) FIXME
+        // assertEqualScientificValue(1(USTonSquareFoot), 2(WattHour) / 2(CubicFoot)) FIXME
+        // assertEqualScientificValue(1(ImperialTonSquareFoot), 2(FootPoundForce) / 2(CubicFoot)) FIXME
+    }
+
+    @Test
+    fun pressureFromForceAndAreaTest() {
+        assertEqualScientificValue(1(Pascal), 2(Newton) / 2(SquareMeter))
+        assertEqualScientificValue(1(PoundSquareFoot), 2(PoundForce) / 2(SquareFoot))
+        assertEqualScientificValue(1(USTonSquareFoot), 2(UsTonForce) / 2(SquareFoot))
+        assertEqualScientificValue(1(ImperialTonSquareFoot), 2(ImperialTonForce) / 2(SquareFoot))
     }
 }

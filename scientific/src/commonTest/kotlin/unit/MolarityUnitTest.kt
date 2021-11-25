@@ -18,6 +18,10 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
+import com.splendo.kaluga.scientific.converter.density.div
+import com.splendo.kaluga.scientific.converter.molality.div
+import com.splendo.kaluga.scientific.converter.molality.times
+import com.splendo.kaluga.scientific.converter.molarVolume.molarity
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,12 +34,31 @@ class MolarityUnitTest {
     }
 
     @Test
-    fun molarityFromAmountOfSubstanceDivMetricVolume(){
-        assertEquals(1(Mole per CubicMeter),2(Mole) / 2(CubicMeter))
+    fun molarityFromAmountOfSubstanceAndVolumeTest() {
+        assertEquals(1(Mole per CubicMeter), 2(Mole) / 2(CubicMeter))
+        assertEquals(1(Mole per CubicFoot), 2(Mole) / 2(CubicFoot))
     }
 
     @Test
-    fun molarityFromAmountOfSubstanceDivImperialVolume(){
-        assertEquals(1(Mole per CubicInch),2(Mole) / 2(CubicInch))
+    fun molarityFromDensityAndMolalityTest() {
+        assertEquals(4(Mole per CubicMeter), 2(Mole per Kilogram) * 2(Kilogram per CubicMeter))
+        assertEquals(4(Mole per CubicFoot), 2(Mole per Pound) * 2(Pound per CubicFoot))
+    }
+
+    @Test
+    fun molarityFromDensityAndMolarMassTest() {
+        assertEquals(1(Mole per CubicMeter), 2(Kilogram per CubicMeter) / 2(Kilogram per Mole))
+        assertEquals(1(Mole per CubicFoot), 2(Pound per CubicFoot) / 2(Pound per Mole))
+    }
+
+    @Test
+    fun molarityFromMolalityAndSpecificVolumeTest() {
+        assertEquals(1(Mole per CubicMeter), 2(Mole per Kilogram) / 2(CubicMeter per Kilogram))
+        assertEquals(1(Mole per CubicFoot), 2(Mole per Pound) / 2(CubicFoot per Pound))
+    }
+
+    @Test
+    fun molarityFromInvertedMolarVolumeTest() {
+        assertEquals(0.5(Mole per CubicMeter), 2(CubicMeter per Mole).molarity())
     }
 }

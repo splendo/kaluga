@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.force.div
+import com.splendo.kaluga.scientific.converter.weight.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,5 +29,21 @@ class YankUnitTest {
     fun yankConversionTest() {
         assertScientificConversion(1.0, (Dyne per Minute), 6.0e-7, Kilonewton per Hour)
         assertScientificConversion(1.0, (ImperialTonForce per Second), 1.12, UsTonForce per Second)
+    }
+
+    @Test
+    fun yankFromForceAndTimeTest() {
+        assertEquals(1(Newton per Second), 2(Newton) / 2(Second))
+        assertEquals(1(PoundForce per Second), 2(PoundForce) / 2(Second))
+        assertEquals(1(ImperialTonForce per Second), 2(ImperialTonForce) / 2(Second))
+        assertEquals(1(UsTonForce per Second), 2(UsTonForce) / 2(Second))
+    }
+
+    @Test
+    fun yankFromMassAndJoltTest() {
+        assertEquals(4(Newton per Second), 2(Kilogram) * 2((Meter per Second per Second) per Second))
+        // assertEquals(4(PoundForce per Second), 2(Pound) * 2((Foot per Second per Second) per Second)) FIXME find out expect value
+        // assertEquals(4(ImperialTonForce per Second), 2(ImperialTon) * 2((Foot per Second per Second) per Second)) FIXME find out expect value
+        // assertEquals(4(UsTonForce per Second), 2(UsTon) * 2((Foot per Second per Second) per Second)) FIXME find out expect value
     }
 }

@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.force.times
+import com.splendo.kaluga.scientific.converter.temperature.div
+import com.splendo.kaluga.scientific.converter.voltage.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 
 class PowerUnitTest {
@@ -43,5 +49,38 @@ class PowerUnitTest {
         assertScientificConversion(1, Watt, 0.00095, BritishThermalUnitPerSecond, 5)
         assertScientificConversion(1, Watt, 0.06, BritishThermalUnitPerMinute, 2)
         assertScientificConversion(1, Watt, 3.41, BritishThermalUnitPerHour, 2)
+    }
+
+    @Test
+    fun powerFromEnergyAndTimeTest() {
+        assertEquals(3600(Watt), 2(WattHour) / 2(Second))
+        assertEqualScientificValue(
+            1(MetricMetricAndImperialPowerWrapper(Watt)),
+            2(WattHour) / 2(Hour)
+        )
+        assertEquals(1(FootPoundForcePerSecond), 2(FootPoundForce) / 2(Second))
+    }
+
+    @Test
+    fun powerFromForceAndSpeedTest() {
+        assertEqualScientificValue(
+            4(MetricMetricAndImperialPowerWrapper(Watt)),
+            2(Newton) * 2(Meter per Second)
+        )
+        assertEquals(4(FootPoundForcePerSecond), 2(PoundForce) * 2(Foot per Second))
+        // FIXME find expected values
+        // assertEquals(4(FootPoundForcePerSecond), 2(UsTonForce) * 2(Foot per Second))
+        // assertEquals(4(FootPoundForcePerSecond), 2(ImperialTonForce) * 2(Foot per Second))
+    }
+
+    @Test
+    fun powerFromTemperatureAndThermalResistanceDefaultTest() {
+        // 2(Celsius) / (Celsius per Watt) FIXME does not work
+        // 2(Fahrenheit) / (Fahrenheit per Horsepower) FIXME does not work
+    }
+
+    @Test
+    fun powerFromVoltageAndCurrentTest() {
+        assertEquals(4(Watt), 2(Volt) * 2(Ampere))
     }
 }

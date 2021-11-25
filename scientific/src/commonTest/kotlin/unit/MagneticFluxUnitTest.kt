@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.electricInductance.times
+import com.splendo.kaluga.scientific.converter.electricResistance.times
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.magneticInduction.times
+import com.splendo.kaluga.scientific.converter.voltage.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,5 +41,35 @@ class MagneticFluxUnitTest {
         assertScientificConversion(1, Weber, 1e-6, Megaweber)
         assertScientificConversion(1, Weber, 1e-9, Gigaweber)
         assertScientificConversion(1, Weber, 100000000.0, Maxwell)
+    }
+
+    @Test
+    fun fluxFromInductanceAndCurrentTest() {
+        assertEquals(4(Weber), 2(Henry) * 2(Ampere))
+    }
+
+    @Test
+    fun fluxFromResistanceAndChargeTest() {
+        assertEquals(4(Weber), 2(Ohm) * 2(Coulomb))
+    }
+
+    @Test
+    fun fluxFromEnergyAndCurrentTest() {
+        assertEquals(1(Weber), 2(Joule) / 2(Ampere))
+        // TODO figure out expects for WattHour and HorsepowerHour
+        //assertEquals(1(Weber), 2(WattHour) / 2(Ampere))
+        //assertEquals(1(Weber), 2(HorsepowerHour) / 2(Ampere))
+    }
+
+    @Test
+    fun fluxFromInductionAndAreaTest() {
+        assertEquals(4(Weber), 2(Tesla) * 2(SquareMeter))
+        // TODO check if correct, from google [1 Tesla in Weber/Square Foot is Equal to	0.09290304] so I did that * 4
+        assertEquals(0.37161216(Weber), 2(Tesla) * 2(SquareFoot))
+    }
+
+    @Test
+    fun fluxFromVoltageAndTimeTest() {
+        assertEquals(4(Weber), 2(Volt) * 2(Second))
     }
 }

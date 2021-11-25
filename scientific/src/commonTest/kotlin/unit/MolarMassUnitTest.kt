@@ -17,6 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.density.div
+import com.splendo.kaluga.scientific.converter.molality.molarMass
+import com.splendo.kaluga.scientific.converter.molarEnergy.div
+import com.splendo.kaluga.scientific.converter.molarVolume.div
+import com.splendo.kaluga.scientific.converter.molarVolume.times
+import com.splendo.kaluga.scientific.converter.weight.div
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,17 +35,56 @@ class MolarMassUnitTest {
     }
 
     @Test
-    fun imperialMolarMassConversionTest() {
-        assertScientificConversion(1.0, (Pound per Mole), 16.0, Ounce per Mole)
+    fun molarMassFromDensityAndMolarityTest() {
+        assertEquals(1(Kilogram per Mole), 2(Kilogram per CubicMeter) / 2(Mole per CubicMeter))
+        assertEquals(1(Pound per Mole), 2(Pound per CubicFoot) / 2(Mole per CubicFoot))
+        assertEquals(1(ImperialTon per Mole), 2(ImperialTon per CubicFoot) / 2(Mole per CubicFoot))
+        assertEquals(1(UsTon per Mole), 2(UsTon per CubicFoot) / 2(Mole per CubicFoot))
     }
 
     @Test
-    fun ukImperialMolarMassConversionTest() {
-        assertScientificConversion(1.0, (ImperialTon per Mole), 2240.0, Pound per Mole)
+    fun molarMassFromDensityAndMolarVolumeTest() {
+        assertEquals(4(Kilogram per Mole), 2(CubicMeter per Mole) * 2(Kilogram per CubicMeter))
+        assertEquals(4(Pound per Mole), 2(CubicFoot per Mole) * 2(Pound per CubicFoot))
+        assertEquals(4(ImperialTon per Mole), 2(CubicFoot per Mole) * 2(ImperialTon per CubicFoot))
+        assertEquals(4(UsTon per Mole), 2(CubicFoot per Mole) * 2(UsTon per CubicFoot))
     }
 
     @Test
-    fun usCustomaryMolarMassConversionTest() {
-        assertScientificConversion(1.0, (UsTon per Mole), 2000.0, Pound per Mole)
+    fun molarMassFromInvertedMolalityTest() {
+        assertEquals(2(Kilogram per Mole), 2(Mole per Kilogram).molarMass())
+        assertEquals(2(Pound per Mole), 2(Mole per Pound).molarMass())
+        assertEquals(2(ImperialTon per Mole), 2(Mole per ImperialTon).molarMass())
+        assertEquals(2(UsTon per Mole), 2(Mole per UsTon).molarMass())
+    }
+
+    @Test
+    fun molarMassFromMolarEnergyAndSpecificEnergyTest() {
+        assertEquals(1(Kilogram per Mole), 2(Joule per Mole) / 2(Joule per Kilogram))
+        assertEquals(1(Pound per Mole), 2(WattHour per Mole) / 2(WattHour per Pound))
+        assertEquals(1(Pound per Mole), 2(HorsepowerHour per Mole) / 2(HorsepowerHour per Pound))
+        assertEquals(1(ImperialTon per Mole), 2(WattHour per Mole) / 2(WattHour per ImperialTon))
+        assertEquals(
+            1(ImperialTon per Mole),
+            2(HorsepowerHour per Mole) / 2(HorsepowerHour per ImperialTon)
+        )
+        assertEquals(1(UsTon per Mole), 2(WattHour per Mole) / 2(WattHour per UsTon))
+        assertEquals(1(UsTon per Mole), 2(HorsepowerHour per Mole) / 2(HorsepowerHour per UsTon))
+    }
+
+    @Test
+    fun molarMassFromMolarVolumeAndSpecificVolumeTest() {
+        assertEquals(1(Kilogram per Mole), 2(CubicMeter per Mole) / 2(CubicMeter per Kilogram))
+        assertEquals(1(Pound per Mole), 2(CubicFoot per Mole) / 2(CubicFoot per Pound))
+        assertEquals(1(ImperialTon per Mole), 2(CubicFoot per Mole) / 2(CubicFoot per ImperialTon))
+        assertEquals(1(UsTon per Mole), 2(CubicFoot per Mole) / 2(CubicFoot per UsTon))
+    }
+
+    @Test
+    fun molarMassFromWeightAndAmountOfSubstanceTest() {
+        assertEquals(1(Kilogram per Mole), 2(Kilogram) / 2(Mole))
+        assertEquals(1(Pound per Mole), 2(Pound) / 2(Mole))
+        assertEquals(1(ImperialTon per Mole), 2(ImperialTon) / 2(Mole))
+        assertEquals(1(UsTon per Mole), 2(UsTon) / 2(Mole))
     }
 }

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.force.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 
 class MomentumUnitTest {
@@ -27,17 +29,25 @@ class MomentumUnitTest {
     }
 
     @Test
-    fun imperialMomentumConversionTest() {
-        assertScientificConversion(1.0, (Pound x (Foot per Second)), 0.68, Pound x (Mile per Hour), 2)
+    fun momentumFromDynamicViscosityAndAreaTest() {
+        // FIXME figure out expected values
+        // assertEquals(4(Kilogram x (Meter per Second)), 2(Bar x Second) * 2(SquareMeter))
+        // assertEquals(4(Pound x (Foot per Second)), 2(PoundSquareFoot x Second) * 2(SquareFoot))
+        // assertEquals(4(ImperialTon x (Foot per Second)), 2(ImperialTonSquareFoot x Second) * 2(SquareFoot))
+        // assertEquals(4(UsTon x (Foot per Second)), 2(USTonSquareFoot x Second) * 2(SquareFoot))
     }
 
     @Test
-    fun ukImperialMomentumConversionTest() {
-        assertScientificConversion(1.0, (ImperialTon x (Foot per Second)), 0.68, ImperialTon x (Mile per Hour), 2)
+    fun momentumFromForceAndTimeTest() {
+        assertEquals(4(Kilogram x (Meter per Second)), 2(Newton) * 2(Second))
+        // FIXME figure out expected values
+        // assertEquals(4(Pound x (Foot per Second)), 2(PoundForce) * 2(Second))
+        // assertEquals(4(ImperialTon x (Foot per Second)), 2(ImperialTonForce) * 2(Second))
+        // assertEquals(4(UsTon x (Foot per Second)), 2(UsTonForce) * 2(Second))
     }
 
     @Test
-    fun usCustomaryMomentumConversionTest() {
-        assertScientificConversion(1.0, (UsTon x (Foot per Second)), 0.68, UsTon x (Mile per Hour), 2)
+    fun momentumFromMassAndSpeedTest() {
+        // 2(Kilogram) * 2(Second) // FIXME import error
     }
 }

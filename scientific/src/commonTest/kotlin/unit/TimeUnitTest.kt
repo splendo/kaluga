@@ -40,6 +40,11 @@ class TimeUnitTest {
     }
 
     @Test
+    fun timeFromAccelerationAndJoltTest(){
+        // 2(Meter per Second per Second) / 2((Meter per Second per Second) per Second) FIXME
+    }
+
+    @Test
     fun timeFromSpeedDivAccelerationTest() {
         assertEqualScientificValue(1(Second), 2(Meter per Second) / 2(Meter per Second per Second))
     }
@@ -58,4 +63,7 @@ class TimeUnitTest {
     fun timeFromAngularVelocityDivAngularAccelerationTest() {
         assertEquals(1(Second), 2(Radian per Second) / 2(Radian per Second per Second))
     }
+
+    // TODO rest
+
 }
