@@ -34,19 +34,19 @@ class SpecificHeatCapacityUnitTest {
     fun specificHeatCapacityFromHeatCapacityAndWeightTest() {
         assertEquals(1(Joule per Celsius per Kilogram), 2(Joule per Celsius) / 2(Kilogram))
         assertEquals(1(WattHour per Celsius per Kilogram), 2(WattHour per Celsius) / 2(Kilogram))
-        // assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound)) FIXME find out expect value
-        // assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound)) FIXME find out expect value
-        // assertEquals(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound)) FIXME find out expect value
-        // assertEquals(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound)) FIXME find out expect value
+        assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound))
+        assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound))
+        assertEquals(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound))
+        assertEquals(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound))
     }
 
     @Test
     fun specificHeatCapacityFromSpecificEnergyAndTemperatureTest() {
         assertEquals(1(Joule per Celsius per Kilogram), 2(Joule per Kilogram) / 2(Celsius))
         assertEquals(1(WattHour per Celsius per Kilogram), 2(WattHour per Kilogram) / 2(Celsius))
-        // assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Pound) / 2(Celsius)) FIXME find out expect value
-        // assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Pound) / 2(Fahrenheit)) FIXME find out expect value
-        // assertEquals(1(WattHour per Celsius per ImperialTon),2(WattHour per ImperialTon) / 2(Celsius)) FIXME find out expect value
-        // assertEquals(1(WattHour per Fahrenheit per UsTon), 2(WattHour per UsTon) / 2(Fahrenheit)) FIXME find out expect value
+        assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Pound) / 2(Celsius))
+        assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Pound) / 2(Fahrenheit))
+        assertEquals(1(WattHour per Celsius per ImperialTon),2(WattHour per ImperialTon) / 2(Celsius))
+        assertEquals(1(WattHour per Fahrenheit per UsTon), 2(WattHour per UsTon) / 2(Fahrenheit))
     }
 }

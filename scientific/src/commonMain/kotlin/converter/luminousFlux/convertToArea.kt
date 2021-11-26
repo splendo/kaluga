@@ -43,11 +43,6 @@ infix operator fun <FluxUnit : LuminousFlux, PhotUnit> ScientificValue<PhysicalQ
 ) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
     SquareCentimeter.area(this, phot)
 
-@JvmName("fluxDivMetricIlluminance")
-infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : MetricIlluminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
-) = SquareMeter.area(this, illuminance)
-
 @JvmName("fluxDivImperialIlluminance")
 infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>

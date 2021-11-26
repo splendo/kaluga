@@ -121,12 +121,12 @@ infix operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<
 @JvmName("ukImperialForceTimesTime")
 infix operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
-) = (Pound x (Foot per Second)).momentum(this, time)
+) = (Pound x (Foot per Second)).ukImperial.momentum(this, time)
 
 @JvmName("usCustomaryForceTimesTime")
 infix operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
-) = (Pound x (Foot per Second)).momentum(this, time)
+) = (Pound x (Foot per Second)).usCustomary.momentum(this, time)
 
 @JvmName("forceTimesTime")
 infix operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(

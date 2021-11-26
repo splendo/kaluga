@@ -21,6 +21,8 @@ import com.splendo.kaluga.scientific.converter.areaDensity.div
 import com.splendo.kaluga.scientific.converter.linearMassDensity.div
 import com.splendo.kaluga.scientific.converter.molarMass.div
 import com.splendo.kaluga.scientific.converter.molarMass.times
+import com.splendo.kaluga.scientific.converter.molarity.div
+import com.splendo.kaluga.scientific.converter.specificVolume.density
 import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -47,7 +49,7 @@ class DensityUnitTest {
 
     @Test
     fun densityFromMolarityAndMolalityTest() {
-        // FIXME 2(Mole per CubicMeter) / 2(Mole per CubicMeter)
+        assertEquals(1(Kilogram per CubicMeter), 2(Mole per CubicMeter) / 2(Mole per Kilogram))
     }
 
     @Test
@@ -64,7 +66,7 @@ class DensityUnitTest {
 
     @Test
     fun densityFromInverseSpecificVolumeTest() {
-        // TODO
+        assertEquals(2(Kilogram per CubicMeter), 0.5(CubicMeter per Kilogram).density())
     }
 
     @Test

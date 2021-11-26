@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.invoke
@@ -41,8 +42,8 @@ class YankUnitTest {
     @Test
     fun yankFromMassAndJoltTest() {
         assertEquals(4(Newton per Second), 2(Kilogram) * 2((Meter per Second per Second) per Second))
-        // assertEquals(4(PoundForce per Second), 2(Pound) * 2((Foot per Second per Second) per Second)) FIXME find out expect value
-        // assertEquals(4(ImperialTonForce per Second), 2(ImperialTon) * 2((Foot per Second per Second) per Second)) FIXME find out expect value
-        // assertEquals(4(UsTonForce per Second), 2(UsTon) * 2((Foot per Second per Second) per Second)) FIXME find out expect value
+        assertEqualScientificValue(4(PoundForce per Second), (2 * ImperialStandardGravityAcceleration.value)(Pound) * 2((Foot per Second per Second) per Second), 5)
+        assertEqualScientificValue(8960(PoundForce.ukImperial per Second), (2 * ImperialStandardGravityAcceleration.value)(ImperialTon) * 2((Foot per Second per Second) per Second), 5)
+        assertEqualScientificValue(8000(PoundForce.usCustomary per Second), (2 * ImperialStandardGravityAcceleration.value)(UsTon) * 2((Foot per Second per Second) per Second), 5)
     }
 }

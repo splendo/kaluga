@@ -43,6 +43,16 @@ infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantit
     areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
 ) = areaDensity.unit.per.area(this, areaDensity)
 
+@JvmName("imperialWeightDivUKImperialAreaDensity")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
+@JvmName("imperialWeightDivUSCustomaryAreaDensity")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("ukImperialWeightDivImperialAreaDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
     areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>

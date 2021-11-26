@@ -205,7 +205,7 @@ class EnergyUnitTest {
     @Test
     fun energyFromSpecificEnergyAndWeightTest() {
         assertEqualScientificValue(4(Joule), 2(Joule per Kilogram) * 2(Kilogram))
-        // assertEqualScientificValue(4(WattHour), 2(WattHour per Kilogram) * 2(Kilogram)) FIXME Expected WattHour found MetricMetricAndImperialEnergyWrapper
+        assertEqualScientificValue(4(WattHour.metric), 2(WattHour per Kilogram) * 2(Kilogram))
         assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Pound) * 2(Pound))
     }
 

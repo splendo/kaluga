@@ -39,7 +39,7 @@ class LuminousExposureUnitTest {
 
     @Test
     fun luminousExposureFromLuminousEnergyAndAreaTest() {
-        // assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter)) FIXME
-        // assertEquals(1(FootCandle x Second), 2(Lumen x Second) / 2(SquareFoot)) FIXME
+        assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter))
+        assertEquals(1(FootCandle x Second), 2(Lumen x Second) / 2(SquareFoot))
     }
 }

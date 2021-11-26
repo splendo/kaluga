@@ -72,7 +72,7 @@ infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperia
 
 @JvmName("usCustomaryLinearMassDensityDivImperialDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
 ) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("usCustomaryLinearMassDensityDivUSCustomaryDensity")

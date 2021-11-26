@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.acceleration.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.converter.angle.div
 import com.splendo.kaluga.scientific.converter.angularVelocity.div
@@ -41,7 +42,7 @@ class TimeUnitTest {
 
     @Test
     fun timeFromAccelerationAndJoltTest(){
-        // 2(Meter per Second per Second) / 2((Meter per Second per Second) per Second) FIXME
+        assertEqualScientificValue(1(Second), 2(Meter per Second per Second) / 2((Meter per Second per Second) per Second))
     }
 
     @Test

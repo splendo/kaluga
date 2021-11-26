@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.Acre
 import com.splendo.kaluga.scientific.unit.AcreFoot
+import com.splendo.kaluga.scientific.unit.AcreInch
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.CubicCentimeter
 import com.splendo.kaluga.scientific.unit.CubicDecameter
@@ -141,6 +142,10 @@ infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicYard>.div(heigh
 @JvmName("cubicMileDivMile")
 infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicMile>.div(height: ScientificValue<PhysicalQuantity.Length, Mile>) =
     SquareMile.area(this, height)
+
+@JvmName("acreInchDivInch")
+infix operator fun ScientificValue<PhysicalQuantity.Volume, AcreInch>.div(height: ScientificValue<PhysicalQuantity.Length, Inch>) =
+    Acre.area(this, height)
 
 @JvmName("acreFootDivFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Volume, AcreFoot>.div(height: ScientificValue<PhysicalQuantity.Length, Foot>) =
