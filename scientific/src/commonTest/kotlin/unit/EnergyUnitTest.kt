@@ -21,15 +21,21 @@ import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.action.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.times
 import com.splendo.kaluga.scientific.converter.electricCharge.times
+import com.splendo.kaluga.scientific.converter.electricCurrent.times
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.converter.heatCapacity.times
+import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.times
 import com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose.times
+import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.magneticFlux.times
 import com.splendo.kaluga.scientific.converter.molarEnergy.times
 import com.splendo.kaluga.scientific.converter.power.times
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
 import com.splendo.kaluga.scientific.converter.surfaceTension.times
+import com.splendo.kaluga.scientific.converter.temperature.times
+import com.splendo.kaluga.scientific.converter.voltage.times
+import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -86,10 +92,38 @@ class EnergyUnitTest {
         assertScientificConversion(1.0, Electronvolt, 0.1, Decaelectronvolt)
         assertScientificConversion(1.0, Electronvolt, 0.01, Hectoelectronvolt, 3)
         assertScientificConversion(1.0, Electronvolt, 0.001, Kiloelectronvolt, 4)
-        assertScientificConversion(1.0, Electronvolt, 1e-6, Megaelectronvolt, 7, bidirectional = false)
-        assertScientificConversion(1.0, Megaelectronvolt, 1e6, Electronvolt, 7, bidirectional = false)
-        assertScientificConversion(1.0, Electronvolt, 1e-9, Gigaelectronvolt, 10, bidirectional = false)
-        assertScientificConversion(1.0, Gigaelectronvolt, 1e9, Electronvolt, 10, bidirectional = false)
+        assertScientificConversion(
+            1.0,
+            Electronvolt,
+            1e-6,
+            Megaelectronvolt,
+            7,
+            bidirectional = false
+        )
+        assertScientificConversion(
+            1.0,
+            Megaelectronvolt,
+            1e6,
+            Electronvolt,
+            7,
+            bidirectional = false
+        )
+        assertScientificConversion(
+            1.0,
+            Electronvolt,
+            1e-9,
+            Gigaelectronvolt,
+            10,
+            bidirectional = false
+        )
+        assertScientificConversion(
+            1.0,
+            Gigaelectronvolt,
+            1e9,
+            Electronvolt,
+            10,
+            bidirectional = false
+        )
     }
 
     @Test
@@ -142,48 +176,91 @@ class EnergyUnitTest {
     @Test
     fun energyFromChargeAndVoltageTest() {
         assertEquals(4(Joule), 2(Coulomb) * 2(Volt))
+        assertEquals(4(Joule), 2(Volt) * 2(Coulomb))
     }
 
     @Test
     fun energyFromForceAndDistanceTest() {
         assertEquals(4(Joule), 2(Newton) * 2(Meter))
+        assertEquals(4(Joule), 2(Meter) * 2(Newton))
         assertEquals(4(FootPoundForce), 2(PoundForce) * 2(Foot))
+        assertEquals(4(FootPoundForce), 2(Foot) * 2(PoundForce))
+        assertEquals(4(FootPoundForce), 2(PoundForce.ukImperial) * 2(Foot))
+        assertEquals(4(FootPoundForce), 2(Foot) * 2(PoundForce.ukImperial))
+        assertEquals(4(FootPoundForce), 2(PoundForce.usCustomary) * 2(Foot))
+        assertEquals(4(FootPoundForce), 2(Foot) * 2(PoundForce.usCustomary))
     }
 
     @Test
     fun energyFromHeatCapacityAndTemperatureTest() {
-        // TODO check if 2,3 are valid
         assertEqualScientificValue(4(Joule), 2(Joule per Celsius) * 2(Celsius))
+        assertEqualScientificValue(4(Joule), 2(Celsius) * 2(Joule per Celsius))
         assertEqualScientificValue(4(Calorie), 2(Calorie per Celsius) * 2(Celsius))
-        assertEqualScientificValue(4(Calorie), 2(Calorie per Kelvin) * 2(Celsius))
-        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Kelvin) * 2(Kelvin))
-        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Fahrenheit) * 2(Fahrenheit))
+        assertEqualScientificValue(4(Calorie), 2(Celsius) * 2(Calorie per Celsius))
+        assertEqualScientificValue(
+            4(ImperialMetricAndImperialEnergyWrapper(Calorie)),
+            2(Calorie per Fahrenheit) * 2(Fahrenheit)
+        )
+        assertEqualScientificValue(
+            4(ImperialMetricAndImperialEnergyWrapper(Calorie)),
+            2(Fahrenheit) * 2(Calorie per Fahrenheit)
+        )
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Celsius) * 2(Celsius))
+        assertEqualScientificValue(4(FootPoundForce), 2(Celsius) * 2(FootPoundForce per Celsius))
+        assertEqualScientificValue(
+            4(FootPoundForce),
+            2(FootPoundForce per Fahrenheit) * 2(Fahrenheit)
+        )
+        assertEqualScientificValue(
+            4(FootPoundForce),
+            2(Fahrenheit) * 2(FootPoundForce per Fahrenheit)
+        )
     }
 
     @Test
     fun energyFromAbsorbedDoseAndWeightTest() {
-        // FIXME could not find actual valid values, values returned seem wrong
-        // assertEqualScientificValue(4(Joule), 2(Rad) * 2(Kilogram))
-        // assertEqualScientificValue(4(WattHour), 2(Rad) * 2(Pound))
-        // assertEqualScientificValue(4(FootPoundForce), 2(Rad) * 2(Kilogram))
+        // FIXME could not find an expected value
+        assertEqualScientificValue(4(Joule), 2(Rad) * 2(Kilogram))
+        assertEqualScientificValue(4(Joule), 2(Kilogram) * 2(Rad))
+        assertEqualScientificValue(4(Calorie), 2(Rad) * 2(Kilogram))
+        assertEqualScientificValue(4(Calorie), 2(Kilogram) * 2(Rad))
+        assertEqualScientificValue(4(Calorie), 2(Rad) * 2(Pound))
+        assertEqualScientificValue(4(Calorie), 2(Pound) * 2(Rad))
+        assertEqualScientificValue(4(FootPoundForce), 2(Rad) * 2(Pound))
+        assertEqualScientificValue(4(FootPoundForce), 2(Pound) * 2(Rad))
     }
 
     @Test
     fun energyFromEquivalentDoseAndWeightTest() {
+        // FIXME could not find an expected value
         assertEquals(4(Joule), 2(Sievert) * 2(Kilogram))
-        // assertEqualScientificValue(4(WattHour), 2(Sievert) * 2(Pound)) FIXME could not find an expected value
-        // assertEqualScientificValue(4(FootPoundForce), 2(Sievert) * 2(Pound)) FIXME could not find an expected value
+        assertEquals(4(Joule), 2(Kilogram) * 2(Sievert))
+        assertEqualScientificValue(4(Calorie), 2(Sievert) * 2(Kilogram))
+        assertEqualScientificValue(4(Calorie), 2(Kilogram) * 2(Sievert))
+        assertEqualScientificValue(4(Calorie), 2(Sievert) * 2(Pound))
+        assertEqualScientificValue(4(Calorie), 2(Pound) * 2(Sievert))
+        assertEqualScientificValue(4(Calorie), 2(Sievert) * 2(Pound.ukImperial))
+        assertEqualScientificValue(4(Calorie), 2(Pound.ukImperial) * 2(Sievert))
+        assertEqualScientificValue(4(Calorie), 2(Sievert) * 2(Pound.usCustomary))
+        assertEqualScientificValue(4(Calorie), 2(Pound.usCustomary) * 2(Sievert))
+        assertEqualScientificValue(4(FootPoundForce), 2(Sievert) * 2(Pound))
+        assertEqualScientificValue(4(FootPoundForce), 2(Pound) * 2(Sievert))
+        assertEqualScientificValue(4(FootPoundForce), 2(Sievert) * 2(Pound.ukImperial))
+        assertEqualScientificValue(4(FootPoundForce), 2(Pound.ukImperial) * 2(Sievert))
+        assertEqualScientificValue(4(FootPoundForce), 2(Sievert) * 2(Pound.usCustomary))
+        assertEqualScientificValue(4(FootPoundForce), 2(Pound.usCustomary) * 2(Sievert))
     }
 
     @Test
     fun energyFromFluxAndCurrentTest() {
         assertEquals(4(Joule), 2(Weber) * 2(Ampere))
+        assertEquals(4(Joule), 2(Ampere) * 2(Weber))
     }
 
     @Test
     fun energyFromMolarEnergyAndAmountOfSubstanceTest() {
         assertEqualScientificValue(4(Joule), 2(Joule per Mole) * 2(Mole))
-        assertEqualScientificValue(4(WattHour), 2(WattHour per Mole) * 2(Mole))
+        assertEqualScientificValue(4(Calorie), 2(Calorie per Mole) * 2(Mole))
         assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Mole) * 2(Mole))
     }
 
@@ -191,9 +268,7 @@ class EnergyUnitTest {
     fun energyFromPowerAndTimeTest() {
         assertEquals(4(Joule), 2(Watt) * 2(Second))
         assertEqualScientificValue(4(WattHour), 2(Watt) * 2(Hour))
-        // assertEqualScientificValue(1(WattHour), 2(Watt) * 2(Second)) FIXME yields Joule
         assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForcePerSecond) * 2(Second))
-        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForcePerMinute) * 2(Minute))
     }
 
     @Test

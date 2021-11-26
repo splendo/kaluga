@@ -20,6 +20,7 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.scientific.converter.electricResistance.div
 import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
+import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,17 +43,18 @@ class ElectricInductanceUnitTest {
     }
 
     @Test
-    fun inductanceFromResistanceAndFrequencyTest(){
+    fun inductanceFromResistanceAndFrequencyTest() {
         assertEquals(1(Henry), 2(Ohm) / 2(Hertz))
     }
 
     @Test
-    fun inductanceFromResistanceAndTimeTest(){
+    fun inductanceFromResistanceAndTimeTest() {
         assertEquals(4(Henry), 2(Ohm) * 2(Second))
+        assertEquals(4(Henry), 2(Second) * 2(Ohm))
     }
 
     @Test
-    fun inductanceFromFluxAndCurrentTest(){
+    fun inductanceFromFluxAndCurrentTest() {
         assertEquals(1(Henry), 2(Weber) / 2(Ampere))
     }
 }

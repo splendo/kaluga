@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.momentum.div
 import com.splendo.kaluga.scientific.converter.pressure.times
+import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,21 +28,31 @@ class DynamicViscosityTest {
 
     @Test
     fun dynamicViscosityConversionTest() {
-        // assertScientificConversion(2.9, (Bar x Second), 1.0, PoundSquareFoot x Second,4) FIXME
+        // FIXME
+        // assertScientificConversion(2.9, (Pascal x Second), 1.0, PoundSquareFoot x Second,1)
+        // assertScientificConversion(2.9, (Pascal x Second), 1.0, PoundSquareFoot.ukImperial x Second,1)
+        // assertScientificConversion(2.9, (Pascal x Second), 1.0, PoundSquareFoot.usCustomary x Second,1)
     }
 
     @Test
-    fun dynamicViscosityFromMomentumAndAreaTest(){
+    fun dynamicViscosityFromMomentumAndAreaTest() {
         assertEquals(1(Pascal x Second), 2(Kilogram x (Meter per Second)) / 2(SquareMeter))
-        // FIXME does that yield PoundSquareInch? PoundSquareFoot does not work, result is also not 1
-        // assertEquals(1(PoundSquareInch x Second), 2(Pound x (Foot per Second)) / 2(SquareFoot))
+        // FIXME
+        // assertEquals(1(PoundSquareFoot x Second), 2(Pound x (Foot per Second)) / 2(SquareFoot))
+        // assertEquals(1(ImperialTonSquareFoot x Second), 2(Pound.ukImperial x (Foot per Second)) / 2(SquareFoot))
+        // assertEquals(1(USTonSquareFoot x Second), 2(Pound.usCustomary x (Foot per Second)) / 2(SquareFoot))
     }
 
     @Test
-    fun dynamicViscosityFromPressureAndTimeTest(){
+    fun dynamicViscosityFromPressureAndTimeTest() {
         assertEquals(4(Pascal x Second), 2(Pascal) * 2(Second))
+        assertEquals(4(Pascal x Second), 2(Second) * 2(Pascal))
         assertEquals(4(PoundSquareFoot x Second), 2(PoundSquareFoot) * 2(Second))
-        assertEquals(4(KipSquareFoot x Second), 2(KipSquareFoot) * 2(Second))
+        assertEquals(4(PoundSquareFoot x Second), 2(Second) * 2(PoundSquareFoot))
         assertEquals(4(ImperialTonSquareFoot x Second), 2(ImperialTonSquareFoot) * 2(Second))
+        assertEquals(4(ImperialTonSquareFoot x Second), 2(Second) * 2(ImperialTonSquareFoot))
+        assertEquals(4(USTonSquareFoot x Second), 2(USTonSquareFoot) * 2(Second))
+        // FIXME
+        // assertEquals(4(USTonSquareFoot x Second), 2(Second) * 2(USTonSquareFoot))
     }
 }

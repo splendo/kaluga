@@ -17,7 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.electricCharge.div
 import com.splendo.kaluga.scientific.converter.electricConductance.times
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.magneticFlux.div
+import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.voltage.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -44,22 +48,22 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun currentFromChargeAndTimeTest() {
-        // 1(Coulomb) / 1(Second) FIXME
+        assertEquals(1(Ampere), 1(Coulomb) / 1(Second))
     }
 
     @Test
     fun currentFromEnergyAndFluxTest() {
-        // 1(Joule) / 1(Weber) FIXME
+        assertEquals(1(Ampere), 1(Joule) / 1(Weber))
     }
 
     @Test
     fun currentFromFluxAndInductanceTest() {
-        // 2(Weber) / 2(Henry) FIXME
+        assertEquals(1(Ampere), 2(Weber) / 2(Henry))
     }
 
     @Test
     fun currentFromPowerAndVoltageTest() {
-        // 2(Watt) / 2(Volt) FIXME
+        assertEquals(1(Ampere), 2(Watt) / 2(Volt))
     }
 
     @Test

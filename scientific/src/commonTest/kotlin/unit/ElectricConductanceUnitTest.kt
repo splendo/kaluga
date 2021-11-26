@@ -18,6 +18,9 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
+import com.splendo.kaluga.scientific.converter.electricCurrent.div
+import com.splendo.kaluga.scientific.converter.electricResistance.conductance
+import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -40,17 +43,18 @@ class ElectricConductanceUnitTest {
     }
 
     @Test
-    fun conductanceFromCapacitanceAndFrequencyTest(){
+    fun conductanceFromCapacitanceAndFrequencyTest() {
         assertEquals(4(Siemens), 2(Farad) * 2(Hertz))
+        assertEquals(4(Siemens), 2(Hertz) * 2(Farad))
     }
 
     @Test
-    fun conductanceFromCurrentAndVoltageTest(){
-        // 2(Ampere) / 2(Volt) FIXME
+    fun conductanceFromCurrentAndVoltageTest() {
+        assertEquals(1(Siemens), 2(Ampere) / 2(Volt))
     }
 
     @Test
-    fun electricConductanceFromInvertedResistanceTest(){
-        // TODO
+    fun electricConductanceFromInvertedResistanceTest() {
+        assertEquals(1(Siemens), 1(Ohm).conductance())
     }
 }
