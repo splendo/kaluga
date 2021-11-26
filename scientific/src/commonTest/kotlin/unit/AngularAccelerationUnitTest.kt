@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 class AngularAccelerationUnitTest {
 
     @Test
-    fun angularAccelerationTest() {
+    fun angularAccelerationConvertionTest() {
         assertScientificConversion(1, (Radian per Second per Second), 0.0001, Centiradian per Millisecond per Millisecond)
     }
 

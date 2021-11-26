@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.jolt.times
@@ -30,32 +30,55 @@ class AccelerationUnitTest {
 
     @Test
     fun accelerationConversionTest() {
-        assertScientificConversion(1, (Meter per Second per Second), 11.811024, Foot per Millisecond per Hour, 6)
+        assertScientificConversion(
+            1,
+            (Meter per Second per Second),
+            11.811024,
+            Foot per Millisecond per Hour,
+            6
+        )
     }
 
     @Test
     fun accelerationFromForceAndMassTest() {
         assertEquals(1(Meter per Second per Second), 2(Newton) / 2(Kilogram))
-        assertEquals(
-            32.17(Foot per Second per Second).decimalValue,
-            (2(PoundForce) / 2(Pound)).decimalValue.round(2)
+        assertEqualScientificValue(32.17(Foot per Second per Second), (2(PoundForce) / 2(Pound)), 2)
+        assertEqualScientificValue(
+            32.17(Foot per Second per Second),
+            (2(PoundForce.ukImperial) / 2(Pound)),
+            2
         )
-        assertEquals(
-            9.80665(Meter per Second per Second).decimalValue,
-            (2(PoundForce) / 2(Pound)).convert(Meter per Second per Second).decimalValue.round(5)
+        assertEqualScientificValue(
+            32.17(Foot per Second per Second),
+            (2(PoundForce.usCustomary) / 2(Pound)),
+            2
+        )
+        assertEqualScientificValue(
+            9.80665(Meter per Second per Second),
+            (2(PoundForce) / 2(Pound)).convert(Meter per Second per Second),
+            5
         )
     }
 
     @Test
     fun accelerationFromJoltAndTimeTest() {
+        // FIXME
         assertEquals(
             4(Meter per Second per Second),
             2(Meter per Second per Second per Second) * 2(Second)
         )
+        /*assertEquals(
+            4(Meter per Second per Second),
+            2(Second) * 2(Meter per Second per Second per Second)
+        )*/
         assertEquals(
             4(Foot per Second per Second),
             2(Foot per Second per Second per Second) * 2(Second)
         )
+        /*assertEquals(
+            4(Foot per Second per Second),
+            2(Second) * 2(Foot per Second per Second per Second)
+        )*/
     }
 
     @Test

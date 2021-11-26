@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.density.times
 import com.splendo.kaluga.scientific.converter.length.div
+import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.linearMassDensity.div
 import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
@@ -30,29 +31,55 @@ class AreaDensityUnitTest {
     @Test
     fun areaDensityConversionTest() {
         assertScientificConversion(1, (Kilogram per SquareMeter), 0.204816, Pound per SquareFoot, 6)
+        assertScientificConversion(
+            1,
+            (Kilogram per SquareMeter),
+            0.204816,
+            Pound.usCustomary per SquareFoot,
+            6
+        )
+        assertScientificConversion(
+            1,
+            (Kilogram per SquareMeter),
+            0.204816,
+            Pound.ukImperial per SquareFoot,
+            6
+        )
     }
 
     @Test
     fun areaDensityFromDensityAndLengthTest() {
         assertEquals(4(Kilogram per SquareMeter), 2(Kilogram per CubicMeter) * 2(Meter))
+        assertEquals(4(Kilogram per SquareMeter), 2(Meter) * 2(Kilogram per CubicMeter))
         assertEquals(4(Pound per SquareFoot), 2(Pound per CubicFoot) * 2(Foot))
+        assertEquals(4(Pound per SquareFoot), 2(Foot) * 2(Pound per CubicFoot))
+        assertEquals(4(Pound.ukImperial per SquareFoot), 2(Pound.ukImperial per CubicFoot) * 2(Foot))
+        assertEquals(4(Pound.ukImperial per SquareFoot), 2(Foot) * 2(Pound.ukImperial per CubicFoot))
+        assertEquals(4(Pound.usCustomary per SquareFoot), 2(Pound.usCustomary per CubicFoot) * 2(Foot))
+        assertEquals(4(Pound.usCustomary per SquareFoot), 2(Foot) * 2(Pound.usCustomary per CubicFoot))
     }
 
     @Test
     fun areaDensityFromLengthAndSpecificVolumeTest() {
         assertEquals(1(Kilogram per SquareMeter), 2(Meter) / 2(CubicMeter per Kilogram))
         assertEquals(1(Pound per SquareFoot), 2(Foot) / 2(CubicFoot per Pound))
+        assertEquals(1(Pound.ukImperial per SquareFoot), 2(Foot) / 2(CubicFoot per Pound.ukImperial))
+        assertEquals(1(Pound.usCustomary per SquareFoot), 2(Foot) / 2(CubicFoot per Pound.usCustomary))
     }
 
     @Test
     fun areaDensityFromLinearMassDensityAndLengthTest() {
         assertEquals(1(Kilogram per SquareMeter), 2(Kilogram per Meter) / 2(Meter))
         assertEquals(1(Pound per SquareFoot), 2(Pound per Foot) / 2(Foot))
+        assertEquals(1(Pound.ukImperial per SquareFoot), 2(Pound.ukImperial per Foot) / 2(Foot))
+        assertEquals(1(Pound.usCustomary per SquareFoot), 2(Pound.usCustomary per Foot) / 2(Foot))
     }
 
     @Test
     fun areaDensityFromWeightAndAreaTest() {
         assertEquals(1(Kilogram per SquareMeter), 2(Kilogram) / 2(SquareMeter))
         assertEquals(1(Pound per SquareFoot), 2(Pound) / 2(SquareFoot))
+        assertEquals(1(Pound.ukImperial per SquareFoot), 2(Pound.ukImperial) / 2(SquareFoot))
+        assertEquals(1(Pound.usCustomary per SquareFoot), 2(Pound.usCustomary) / 2(SquareFoot))
     }
 }
