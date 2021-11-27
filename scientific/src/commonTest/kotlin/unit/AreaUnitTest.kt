@@ -185,7 +185,7 @@ class  AreaUnitTest {
     }
 
     @Test
-    fun areaFromFluxAndInductionTest() {
+    fun areaFromMagneticFluxAndInductionTest() {
         assertEquals(1(SquareCentimeter), 2(Maxwell) / 2(Gauss))
         assertEquals(1(SquareMeter), 2(Weber) / 2(Tesla))
     }

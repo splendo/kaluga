@@ -17,20 +17,26 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.angularVelocity.div
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.converter.energy.times
+import com.splendo.kaluga.scientific.converter.time.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class AngularAccelerationUnitTest {
+class ActionUnitTest {
 
     @Test
-    fun angularAccelerationTest() {
-        assertScientificConversion(1, (Radian per Second per Second), 0.0001, Centiradian per Millisecond per Millisecond)
+    fun actionConversionTest() {
+        assertScientificConversion(1.0, Joule x Second, 7.716E-8,WattHour x Hour, 11)
     }
 
     @Test
-    fun angularAccelerationFromAngularVelocityAndTime(){
-        assertEquals(1((Centiradian per Millisecond per Millisecond)), 2(Centiradian per Millisecond) / 2(Millisecond) )
+    fun convertFromEnergyAndTimeTest() {
+        assertEquals(4(Joule x Second), 2(Joule) * 2(Second))
+        assertEquals(4(Joule x Second), 2(Second) * 2(Joule))
+        assertEquals(4(WattHour x Second), 2(WattHour) * 2(Second))
+        assertEquals(4(WattHour x Second), 2(Second) * 2(WattHour))
+        assertEquals(4(BritishThermalUnit x Second), 2(BritishThermalUnit) * 2(Second))
+        assertEquals(4(BritishThermalUnit x Second), 2(Second) * 2(BritishThermalUnit))
     }
 }

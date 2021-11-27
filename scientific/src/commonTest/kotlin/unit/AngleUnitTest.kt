@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.angularVelocity.times
+import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 
@@ -45,7 +46,8 @@ class AngleUnitTest {
 
     @Test
     fun angleFromAngularVelocityAndTimeTest() {
-        assertEqualScientificValue(4(Radian), 2(Radian per Second) * 2(Second))
+        assertEqualScientificValue(4(Deciradian), 2(Deciradian per Minute) * 2(Minute))
+        assertEqualScientificValue(4(Deciradian), 2(Minute) * 2(Deciradian per Minute))
     }
 
 }

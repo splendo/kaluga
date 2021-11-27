@@ -34,36 +34,6 @@ import com.splendo.kaluga.scientific.unit.USCustomaryVolume
 import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
-@JvmName("metricVolumeTimesMetricMolarity")
-infix operator fun <VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>
-) = molarity * this
-
-@JvmName("imperialVolumeTimesImperialMolarity")
-infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, ImperialMolarity>
-) = molarity * this
-
-@JvmName("imperialVolumeTimesUKImperialMolarity")
-infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, UKImperialMolarity>
-) = molarity * this
-
-@JvmName("imperialVolumeTimesUSCustomaryMolarity")
-infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, USCustomaryMolarity>
-) = molarity * this
-
-@JvmName("ukImperialVolumeTimesUKImperialMolarity")
-infix operator fun <VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, UKImperialMolarity>
-) = molarity * this
-
-@JvmName("usCustomaryVolumeTimesUSCustomaryMolarity")
-infix operator fun <VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, USCustomaryMolarity>
-) = molarity * this
-
 @JvmName("volumeTimesMolarity")
 infix operator fun <MolarityUnit : Molarity, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
     molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
