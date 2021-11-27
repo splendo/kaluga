@@ -30,7 +30,13 @@ class AccelerationUnitTest {
 
     @Test
     fun accelerationConversionTest() {
-        assertScientificConversion(1, (Meter per Second per Second), 11.811024, Foot per Millisecond per Hour, 6)
+        assertScientificConversion(
+            1,
+            (Meter per Second per Second),
+            11.811024,
+            Foot per Millisecond per Hour,
+            6
+        )
     }
 
     @Test

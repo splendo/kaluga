@@ -49,5 +49,4 @@ class AngleUnitTest {
         assertEqualScientificValue(4(Deciradian), 2(Deciradian per Minute) * 2(Minute))
         assertEqualScientificValue(4(Deciradian), 2(Minute) * 2(Deciradian per Minute))
     }
-
 }

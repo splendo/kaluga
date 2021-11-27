@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.electricConductance.resistance
 import com.splendo.kaluga.scientific.converter.electricInductance.div
 import com.splendo.kaluga.scientific.converter.electricInductance.times
+import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
 import com.splendo.kaluga.scientific.converter.time.div
 import com.splendo.kaluga.scientific.converter.voltage.div
@@ -45,12 +47,13 @@ class ElectricResistanceUnitTest {
 
     @Test
     fun electricResistanceFromInvertedConductanceTest() {
-        // TODO
+        assertEquals(2(Ohm), 2(Siemens).resistance())
     }
 
     @Test
     fun resistanceFromInductanceAndFrequencyTest() {
         assertEquals(4(Ohm), 2(Henry) * 2(Hertz))
+        assertEquals(4(Ohm), 2(Hertz) * 2(Henry))
     }
 
     @Test
