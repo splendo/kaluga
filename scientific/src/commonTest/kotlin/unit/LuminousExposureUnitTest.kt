@@ -19,7 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.converter.illuminance.times
 import com.splendo.kaluga.scientific.converter.luminousEnergy.div
-import com.splendo.kaluga.scientific.converter.luminousFlux.times
+import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,7 +34,9 @@ class LuminousExposureUnitTest {
     @Test
     fun luminousExposureFromIlluminanceAndTimeTest() {
         assertEquals(4(Lux x Second), 2(Lux) * 2(Second))
+        assertEquals(4(Lux x Second), 2(Second) * 2(Lux))
         assertEquals(4(FootCandle x Second), 2(FootCandle) * 2(Second))
+        assertEquals(4(FootCandle x Second), 2(Second) * 2(FootCandle))
     }
 
     @Test

@@ -63,6 +63,7 @@ class ElectricResistanceUnitTest {
     fun resistanceFromInductanceAndTimeTest() {
         assertEquals(1(Abohm), 2(Abhenry) / 2(Second))
         assertEquals(1(Ohm), 2(Henry) / 2(Second))
+        assertEquals(1(Abohm), 2(Abhenry) / 2(Second))
     }
 
     @Test

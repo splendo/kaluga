@@ -219,7 +219,7 @@ class EnergyUnitTest {
 
     @Test
     fun energyFromAbsorbedDoseAndWeightTest() {
-        // FIXME could not find an expected value
+        // FIXME could not find expected values
         assertEqualScientificValue(4(Joule), 2(Rad) * 2(Kilogram))
         assertEqualScientificValue(4(Joule), 2(Kilogram) * 2(Rad))
         assertEqualScientificValue(4(Calorie), 2(Rad) * 2(Kilogram))
@@ -232,7 +232,7 @@ class EnergyUnitTest {
 
     @Test
     fun energyFromEquivalentDoseAndWeightTest() {
-        // FIXME could not find an expected value
+        // FIXME could not find expected values
         assertEquals(4(Joule), 2(Sievert) * 2(Kilogram))
         assertEquals(4(Joule), 2(Kilogram) * 2(Sievert))
         assertEqualScientificValue(4(Calorie), 2(Sievert) * 2(Kilogram))

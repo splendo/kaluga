@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
 import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.voltage.div
+import com.splendo.kaluga.scientific.converter.voltage.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -73,8 +74,10 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun currentFromVoltageAndConductanceTest() {
-        assertEquals(4(Abampere), 2(Absiemens) * 2(Abvolt))
         assertEquals(4(Ampere), 2(Siemens) * 2(Volt))
+        assertEquals(4(Ampere), 2(Volt) * 2(Siemens))
+        assertEquals(4(Abampere), 2(Absiemens) * 2(Abvolt))
+        assertEquals(4(Abampere), 2(Abvolt) * 2(Absiemens))
     }
 
     @Test

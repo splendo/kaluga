@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.electricConductance.div
 import com.splendo.kaluga.scientific.converter.electricResistance.div
 import com.splendo.kaluga.scientific.converter.time.frequency
@@ -54,7 +53,7 @@ class FrequencyUnitTest {
 
     @Test
     fun frequencyFromInvertedTimeTest() {
-        assertEquals(1(BeatsPerMinute), 1(Minute).frequency())
         assertEquals(1(Hertz), 1(Second).frequency())
+        assertEquals(1(BeatsPerMinute), 1(Minute).frequency())
     }
 }

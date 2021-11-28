@@ -21,6 +21,8 @@ import com.splendo.kaluga.scientific.converter.electricCapacitance.times
 import com.splendo.kaluga.scientific.converter.electricCurrent.times
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
+import com.splendo.kaluga.scientific.converter.time.times
+import com.splendo.kaluga.scientific.converter.voltage.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,6 +48,9 @@ class ElectricChargeUnitTest {
     fun chargeFromCapacitanceAndVoltageTest() {
         assertEquals(4(Abcoulomb), 2(Abfarad) * 2(Abvolt))
         assertEquals(4(Coulomb), 2(Farad) * 2(Volt))
+        assertEquals(4(Coulomb), 2(Volt) * 2(Farad))
+        assertEquals(4(Abcoulomb), 2(Abfarad) * 2(Abvolt))
+        assertEquals(4(Abcoulomb), 2(Abvolt) * 2(Abfarad))
     }
 
     @Test
@@ -53,6 +58,9 @@ class ElectricChargeUnitTest {
         assertEquals(4(Abcoulomb), 2(Abampere) * 2(Second))
         assertEquals(4(Abcoulomb), 2(Biot) * 2(Second))
         assertEquals(4(Coulomb), 2(Ampere) * 2(Second))
+        assertEquals(4(Coulomb), 2(Second) * 2(Ampere))
+        assertEquals(4(Abcoulomb), 2(Abampere) * 2(Second))
+        assertEquals(4(Abcoulomb), 2(Second) * 2(Abampere))
     }
 
     @Test
