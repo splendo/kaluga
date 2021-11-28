@@ -42,7 +42,11 @@ class LuminusIntensityUnitTest {
     @Test
     fun luminousIntensityFromLuminanceAndArea() {
         assertEquals(4(Candela),2(Nit) * 2(SquareMeter))
-        // assertEquals(4(Candela),2(FootLambert) * 2(SquareFoot)) FIXME find expected value
+        // FIXME "Area * Luminance"
+        // assertEquals(4(Candela),2(SquareMeter) * 2(Nit))
+        //  FIXME find expected value
+        // assertEquals(4(Candela),2(FootLambert) * 2(SquareFoot))
+        // assertEquals(4(Candela),2(SquareFoot) * 2(FootLambert))
     }
 
     @Test

@@ -51,10 +51,13 @@ class ElectricInductanceUnitTest {
     fun inductanceFromResistanceAndTimeTest() {
         assertEquals(4(Henry), 2(Ohm) * 2(Second))
         assertEquals(4(Henry), 2(Second) * 2(Ohm))
+        assertEquals(4(Abhenry), 2(Abohm) * 2(Second))
+        assertEquals(4(Abhenry), 2(Second) * 2(Abohm))
     }
 
     @Test
     fun inductanceFromFluxAndCurrentTest() {
+        assertEquals(1(Henry), 2(Weber) / 2(Ampere))
         assertEquals(1(Henry), 2(Weber) / 2(Ampere))
     }
 }

@@ -62,7 +62,6 @@ class AccelerationUnitTest {
 
     @Test
     fun accelerationFromJoltAndTimeTest() {
-        // FIXME
         assertEquals(
             4(Meter per Second per Second),
             2(Meter per Second per Second per Second) * 2(Second)

@@ -43,15 +43,18 @@ class ElectricCapacitanceUnitTest {
     @Test
     fun capacitanceFromChargeAndVoltageTest() {
         assertEquals(1(Farad), 2(Coulomb) / 2(Volt))
+        assertEquals(1(Abfarad), 2(Abcoulomb) / 2(Abvolt))
     }
 
     @Test
     fun capacitanceFromConductanceAndFrequencyTest() {
         assertEquals(1(Farad), 2(Siemens) / 2(Hertz))
+        assertEquals(1(Abfarad), 2(Absiemens) / 2(Hertz))
     }
 
     @Test
     fun capacitanceFromTimeAndResistanceTest() {
         assertEquals(1(Farad), 2(Second) / 2(Ohm))
+        assertEquals(1(Abfarad), 2(Second) / 2(Abohm))
     }
 }

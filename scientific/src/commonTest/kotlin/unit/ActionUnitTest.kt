@@ -40,7 +40,7 @@ class ActionUnitTest {
             FootPoundForce x Second,
             5
         )
-        // FIXME not sure if expected is correct, yields something strange
+        // FIXME not sure if expected is correct, also issue when doing reverse conversion with common rounding for back and forth
         /*assertScientificConversion(
             0.000376616,
             WattHour x Second,

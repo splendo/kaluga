@@ -17,13 +17,16 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.base.utils.round
 import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.converter.acceleration.times
+import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.momentum.div
 import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.converter.surfaceTension.times
+import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.converter.yank.times
 import com.splendo.kaluga.scientific.invoke
@@ -77,10 +80,38 @@ class ForceUnitTest {
     @Test
     fun forceFromMassAndAccelerationTest() {
         // TODO check if expected are accurate
-        assertEquals(4.0(Newton), (2(Kilogram) * 2(Meter per Second per Second)))
-        assertEquals(0.124323801(PoundForce).decimalValue, (2(Pound) * 2(Foot per Second per Second)).decimalValue.round(9))
-        assertEquals(0.124323801(UsTonForce).decimalValue, (2(UsTon) * 2(Foot per Second per Second)).decimalValue.round(9))
-        assertEquals(0.124323801(ImperialTonForce).decimalValue, (2(ImperialTon) * 2(Foot per Second per Second)).decimalValue.round(9))
+        assertEquals(4.0(Newton), 2(Kilogram) * 2(Meter per Second per Second))
+        assertEquals(4.0(Newton), 2(Meter per Second per Second) * 2(Kilogram))
+        assertEqualScientificValue(
+            0.124323801(PoundForce),
+            2(Pound) * 2(Foot per Second per Second),
+            9
+        )
+        assertEqualScientificValue(
+            0.124323801(PoundForce),
+            2(Foot per Second per Second) * 2(Pound),
+            9
+        )
+        assertEqualScientificValue(
+            0.124323801(UsTonForce),
+            2(UsTon) * 2(Foot per Second per Second),
+            9
+        )
+        assertEqualScientificValue(
+            0.124323801(UsTonForce),
+            2(Foot per Second per Second) * 2(UsTon),
+            9
+        )
+        assertEqualScientificValue(
+            0.124323801(ImperialTonForce),
+            2(ImperialTon) * 2(Foot per Second per Second),
+            9
+        )
+        assertEqualScientificValue(
+            0.124323801(ImperialTonForce),
+            2(Foot per Second per Second) * 2(ImperialTon),
+            9
+        )
     }
 
     @Test
@@ -92,7 +123,22 @@ class ForceUnitTest {
     @Test
     fun forceFromMomentumAndTimeTest() {
         assertEquals(1.0(Newton), 2(Kilogram x (Meter per Second)) / 2(Second))
-        assertEqualScientificValue(1(PoundForce), (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(Second), 10)
+        assertEqualScientificValue(
+            1(PoundForce),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(Second),
+            10
+        )
+        // FIXME find expected values
+        /*assertEqualScientificValue(
+            1(ImperialTonForce),
+            (2 * ImperialStandardGravityAcceleration.value)(ImperialTon x (Foot per Second)) / 2(Second),
+            10
+        )
+        assertEqualScientificValue(
+            1(UsTonForce),
+            (2 * ImperialStandardGravityAcceleration.value)(UsTon x (Foot per Second)) / 2(Second),
+            10
+        )*/
     }
 
     @Test
@@ -104,16 +150,38 @@ class ForceUnitTest {
     @Test
     fun forceFromPressureAndAreaTest() {
         assertEquals(4(Newton), 2(Pascal) * 2(SquareMeter))
+        assertEquals(4(Newton), 2(SquareMeter) * 2(Pascal))
+        assertEquals(4(PoundForce), 2(PoundSquareFoot) * 2(SquareFoot))
+        assertEquals(4(PoundForce), 2(SquareFoot) * 2(PoundSquareFoot))
     }
 
     @Test
     fun forceFromSurfaceTensionAndLengthTest() {
         assertEqualScientificValue(4(Newton), 2(Newton per Meter) * 2(Meter))
+        assertEqualScientificValue(4(Newton), 2(Meter) * 2(Newton per Meter))
+        assertEqualScientificValue(4(PoundForce), 2(PoundForce per Foot) * 2(Foot))
+        assertEqualScientificValue(4(PoundForce), 2(Foot) * 2(PoundForce per Foot))
+        assertEqualScientificValue(4(ImperialTonForce), 2(ImperialTonForce per Foot) * 2(Foot))
+        assertEqualScientificValue(4(ImperialTonForce), 2(Foot) * 2(ImperialTonForce per Foot))
+        assertEqualScientificValue(4(UsTonForce), 2(UsTonForce per Foot) * 2(Foot))
+        assertEqualScientificValue(4(UsTonForce), 2(Foot) * 2(UsTonForce per Foot))
     }
 
     @Test
     fun forceFromYankAndTimeTest() {
         assertEqualScientificValue(4.0(Newton), 2(Newton per Second) * 2(Second))
+        assertEqualScientificValue(4.0(Newton), 2(Second) * 2(Newton per Second))
         assertEqualScientificValue(4.0(PoundForce), 2(PoundForce per Second) * 2(Second))
+        assertEqualScientificValue(4.0(PoundForce), 2(Second) * 2(PoundForce per Second))
+        assertEqualScientificValue(
+            4.0(ImperialTonForce),
+            2(ImperialTonForce per Second) * 2(Second)
+        )
+        assertEqualScientificValue(
+            4.0(ImperialTonForce),
+            2(Second) * 2(ImperialTonForce per Second)
+        )
+        assertEqualScientificValue(4.0(UsTonForce), 2(UsTonForce per Second) * 2(Second))
+        assertEqualScientificValue(4.0(UsTonForce), 2(Second) * 2(UsTonForce per Second))
     }
 }

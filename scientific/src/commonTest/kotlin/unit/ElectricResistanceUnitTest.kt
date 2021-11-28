@@ -48,6 +48,7 @@ class ElectricResistanceUnitTest {
     @Test
     fun electricResistanceFromInvertedConductanceTest() {
         assertEquals(2(Ohm), 2(Siemens).resistance())
+        assertEquals(2(Abohm), 2(Absiemens).resistance())
     }
 
     @Test
@@ -59,6 +60,7 @@ class ElectricResistanceUnitTest {
     @Test
     fun resistanceFromInductanceAndTimeTest() {
         assertEquals(1(Ohm), 2(Henry) / 2(Second))
+        assertEquals(1(Abohm), 2(Abhenry) / 2(Second))
     }
 
     @Test

@@ -17,7 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.area.times
+import com.splendo.kaluga.scientific.converter.luminousExposure.times
+import com.splendo.kaluga.scientific.converter.luminousFlux.times
+import com.splendo.kaluga.scientific.converter.time.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class LuminousEnergyUnitTest {
 
@@ -28,12 +34,15 @@ class LuminousEnergyUnitTest {
 
     @Test
     fun luminousEnergyFromLuminousExposureAndAreaTest() {
-        // assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter)) FIXME I think equals error
-        // assertEquals(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot)) FIXME
+        assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter))
+        assertEquals(4(Lumen x Second), 2(SquareMeter) * 2(Lux x Second))
+        assertEquals(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot))
+        assertEquals(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second))
     }
 
     @Test
     fun luminousEnergyFromLuminousFluxAndTimeTest() {
-        // assertEquals(4(Lumen x Second), 2(Lumen) * 2(Second)) FIXME
+        assertEquals(4(Lumen x Second), 2(Lumen) * 2(Second))
+        assertEquals(4(Lumen x Second), 2(Second) * 2(Lumen))
     }
 }
