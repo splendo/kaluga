@@ -43,6 +43,16 @@ infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.
     surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>
 ) = surfaceTension.unit.per.length(this, surfaceTension)
 
+@JvmName("imperialForceDivUKImperialSurfaceTension")
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>
+) = surfaceTension.unit.per.length(this, surfaceTension)
+
+@JvmName("imperialForceDivUSCustomarySurfaceTension")
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>
+) = surfaceTension.unit.per.length(this, surfaceTension)
+
 @JvmName("ukImperialForceDivImperialSurfaceTension")
 infix operator fun <ForceUnit : UKImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
     surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.jolt.times
@@ -61,11 +62,14 @@ class AccelerationUnitTest {
         assertEquals(4(Meter per Second per Second), 2(Second) * 2(Meter per Second per Second per Second))
         assertEquals(4(Foot per Second per Second), 2(Foot per Second per Second per Second) * 2(Second))
         assertEquals(4(Foot per Second per Second), 2(Second) * 2(Foot per Second per Second per Second))
+        assertEqualScientificValue(4(Meter per Second per Second), 2((Meter per Second per Second per Second) as Jolt) * 2(Second))
+        assertEqualScientificValue(4(Meter per Second per Second), 2(Second) * 2((Meter per Second per Second per Second) as Jolt))
     }
 
     @Test
     fun accelerationFromSpeedAndTime() {
         assertEquals(1(Meter per Second per Second), 2(Meter per Second) / 2(Second))
         assertEquals(1(Foot per Second per Second), 2(Foot per Second) / 2(Second))
+        assertEquals(1(Meter per Second per Second), 2((Meter per Second) as Speed) / 2(Second))
     }
 }

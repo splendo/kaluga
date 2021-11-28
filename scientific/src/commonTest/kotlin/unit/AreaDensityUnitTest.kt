@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.density.times
 import com.splendo.kaluga.scientific.converter.length.div
@@ -32,20 +33,6 @@ class AreaDensityUnitTest {
     @Test
     fun areaDensityConversionTest() {
         assertScientificConversion(1, (Kilogram per SquareMeter), 0.204816, Pound per SquareFoot, 6)
-        assertScientificConversion(
-            1,
-            (Kilogram per SquareMeter),
-            0.204816,
-            Pound.usCustomary per SquareFoot,
-            6
-        )
-        assertScientificConversion(
-            1,
-            (Kilogram per SquareMeter),
-            0.204816,
-            Pound.ukImperial per SquareFoot,
-            6
-        )
     }
 
     @Test
@@ -86,6 +73,6 @@ class AreaDensityUnitTest {
         assertEquals(1(Pound per SquareFoot), 2(Pound) / 2(SquareFoot))
         assertEquals(1(Pound.ukImperial per SquareFoot), 2(Pound.ukImperial) / 2(SquareFoot))
         assertEquals(1(Pound.usCustomary per SquareFoot), 2(Pound.usCustomary) / 2(SquareFoot))
-        assertEquals(1(Kilogram per SquareMeter), 2(Kilogram).convert(Pound) / 2(SquareMeter))
+        assertEqualScientificValue(1(Kilogram per SquareMeter), 2(Kilogram).convert(Pound) / 2(SquareMeter), 5)
     }
 }

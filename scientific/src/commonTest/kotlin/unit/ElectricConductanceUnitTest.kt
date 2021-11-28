@@ -44,17 +44,22 @@ class ElectricConductanceUnitTest {
 
     @Test
     fun conductanceFromCapacitanceAndFrequencyTest() {
+        assertEquals(4(Absiemens), 2(Abfarad) * 2(Hertz))
+        assertEquals(4(Absiemens), 2(Hertz) * 2(Abfarad))
         assertEquals(4(Siemens), 2(Farad) * 2(Hertz))
         assertEquals(4(Siemens), 2(Hertz) * 2(Farad))
     }
 
     @Test
     fun conductanceFromCurrentAndVoltageTest() {
+        assertEquals(1(Absiemens), 2(Abampere) / 2(Abvolt))
+        assertEquals(1(Absiemens), 2(Biot) / 2(Abvolt))
         assertEquals(1(Siemens), 2(Ampere) / 2(Volt))
     }
 
     @Test
     fun electricConductanceFromInvertedResistanceTest() {
+        assertEquals(1(Absiemens), 1(Abohm).conductance())
         assertEquals(1(Siemens), 1(Ohm).conductance())
     }
 }
