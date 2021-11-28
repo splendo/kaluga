@@ -26,11 +26,19 @@ class AngularAccelerationUnitTest {
 
     @Test
     fun angularAccelerationConvertionTest() {
-        assertScientificConversion(1, (Radian per Second per Second), 0.0001, Centiradian per Millisecond per Millisecond)
+        assertScientificConversion(
+            1,
+            (Radian per Second per Second),
+            0.0001,
+            Centiradian per Millisecond per Millisecond
+        )
     }
 
     @Test
-    fun angularAccelerationFromAngularVelocityAndTime(){
-        assertEquals(1((Centiradian per Millisecond per Millisecond)), 2(Centiradian per Millisecond) / 2(Millisecond) )
+    fun angularAccelerationFromAngularVelocityAndTime() {
+        assertEquals(
+            1((Centiradian per Millisecond per Millisecond)),
+            2(Centiradian per Millisecond) / 2(Millisecond)
+        )
     }
 }

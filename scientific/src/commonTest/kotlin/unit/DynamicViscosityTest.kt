@@ -30,16 +30,43 @@ class DynamicViscosityTest {
 
     @Test
     fun dynamicViscosityConversionTest() {
-        assertScientificConversion(1.0, (Pascal x Second), 0.1450377, PoundSquareInch x Millisecond,7)
+        assertScientificConversion(
+            1.0,
+            (Pascal x Second),
+            0.1450377,
+            PoundSquareInch x Millisecond,
+            7
+        )
     }
 
     @Test
     fun dynamicViscosityFromMomentumAndAreaTest() {
         assertEquals(1(Pascal x Second), 2(Kilogram x (Meter per Second)) / 2(SquareMeter))
-        assertEqualScientificValue(1(PoundSquareInch x Second), (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(SquareInch), 5)
-        assertEqualScientificValue(1(PoundSquareInch.ukImperial x Second), (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(SquareInch), 5)
-        assertEqualScientificValue(1(PoundSquareInch.usCustomary x Second), (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(SquareInch), 5)
-        assertEquals(1(Pascal x Second), 2(Kilogram x (Meter per Second)) / 2(SquareMeter).convert(SquareFoot))
+        assertEqualScientificValue(
+            1(PoundSquareInch x Second),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(
+                SquareInch
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.ukImperial x Second),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
+                SquareInch
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.usCustomary x Second),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
+                SquareInch
+            ),
+            5
+        )
+        assertEquals(
+            1(Pascal x Second),
+            2(Kilogram x (Meter per Second)) / 2(SquareMeter).convert(SquareFoot)
+        )
     }
 
     @Test

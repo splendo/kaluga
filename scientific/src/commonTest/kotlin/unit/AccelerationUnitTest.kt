@@ -58,12 +58,30 @@ class AccelerationUnitTest {
 
     @Test
     fun accelerationFromJoltAndTimeTest() {
-        assertEquals(4(Meter per Second per Second), 2(Meter per Second per Second per Second) * 2(Second))
-        assertEquals(4(Meter per Second per Second), 2(Second) * 2(Meter per Second per Second per Second))
-        assertEquals(4(Foot per Second per Second), 2(Foot per Second per Second per Second) * 2(Second))
-        assertEquals(4(Foot per Second per Second), 2(Second) * 2(Foot per Second per Second per Second))
-        assertEqualScientificValue(4(Meter per Second per Second), 2((Meter per Second per Second per Second) as Jolt) * 2(Second))
-        assertEqualScientificValue(4(Meter per Second per Second), 2(Second) * 2((Meter per Second per Second per Second) as Jolt))
+        assertEquals(
+            4(Meter per Second per Second),
+            2(Meter per Second per Second per Second) * 2(Second)
+        )
+        assertEquals(
+            4(Meter per Second per Second),
+            2(Second) * 2(Meter per Second per Second per Second)
+        )
+        assertEquals(
+            4(Foot per Second per Second),
+            2(Foot per Second per Second per Second) * 2(Second)
+        )
+        assertEquals(
+            4(Foot per Second per Second),
+            2(Second) * 2(Foot per Second per Second per Second)
+        )
+        assertEqualScientificValue(
+            4(Meter per Second per Second),
+            2((Meter per Second per Second per Second) as Jolt) * 2(Second)
+        )
+        assertEqualScientificValue(
+            4(Meter per Second per Second),
+            2(Second) * 2((Meter per Second per Second per Second) as Jolt)
+        )
     }
 
     @Test

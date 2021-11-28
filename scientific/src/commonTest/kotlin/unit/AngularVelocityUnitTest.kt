@@ -32,13 +32,19 @@ class AngularVelocityUnitTest {
     }
 
     @Test
-    fun angularVelocityFromAngleDivTimeTest(){
+    fun angularVelocityFromAngleDivTimeTest() {
         assertEquals(1(Centiradian per Millisecond), 1(Centiradian) / 1(Millisecond))
     }
 
     @Test
-    fun angularVelocityFromAngularAccelerationTimesTimeTest(){
-        assertEquals(4(Centiradian per Millisecond), 2(Centiradian per Millisecond per Millisecond) * 2(Millisecond))
-        assertEquals(4(Centiradian per Millisecond), 2(Millisecond) * 2(Centiradian per Millisecond per Millisecond))
+    fun angularVelocityFromAngularAccelerationTimesTimeTest() {
+        assertEquals(
+            4(Centiradian per Millisecond),
+            2(Centiradian per Millisecond per Millisecond) * 2(Millisecond)
+        )
+        assertEquals(
+            4(Centiradian per Millisecond),
+            2(Millisecond) * 2(Centiradian per Millisecond per Millisecond)
+        )
     }
 }

@@ -37,7 +37,7 @@ import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class  AreaUnitTest {
+class AreaUnitTest {
 
     @Test
     fun areaConversionTest() {
@@ -70,9 +70,21 @@ class  AreaUnitTest {
         assertEquals(1(SquareInch), 2(InchOunceForce) / 2(OunceForce per Inch))
         assertEquals(1(SquareInch), 2(InchOunceForce) / 2(OunceForce.ukImperial per Inch))
         assertEquals(1(SquareInch), 2(InchOunceForce) / 2(OunceForce.usCustomary per Inch))
-        assertEqualScientificValue(1(SquareFoot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce per Foot), 5)
-        assertEqualScientificValue(1(SquareFoot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce.ukImperial per Foot), 5)
-        assertEqualScientificValue(1(SquareFoot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce.usCustomary per Foot), 5)
+        assertEqualScientificValue(
+            1(SquareFoot),
+            2(FootPoundForce).convert(WattHour) / 2(PoundForce per Foot),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            2(FootPoundForce).convert(WattHour) / 2(PoundForce.ukImperial per Foot),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            2(FootPoundForce).convert(WattHour) / 2(PoundForce.usCustomary per Foot),
+            5
+        )
         assertEquals(1(SquareFoot), 2(FootPoundForce) / 2(PoundForce per Foot))
         assertEquals(1(SquareFoot), 2(FootPoundForce) / 2(PoundForce.ukImperial per Foot))
         assertEquals(1(SquareFoot), 2(FootPoundForce) / 2(PoundForce.usCustomary per Foot))
@@ -97,12 +109,30 @@ class  AreaUnitTest {
         assertEquals(1(SquareInch), 2(ImperialTonForce) / 2(ImperialTonSquareInch))
         assertEquals(1(SquareFoot), 2(ImperialTonForce) / 2(ImperialTonSquareFoot))
         assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce) / 2(PoundSquareFoot))
-        assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce) / 2(PoundSquareFoot.ukImperial))
-        assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce) / 2(PoundSquareFoot.usCustomary))
-        assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.ukImperial) / 2(PoundSquareFoot))
-        assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.ukImperial) / 2(PoundSquareFoot.ukImperial))
-        assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.usCustomary) / 2(PoundSquareFoot))
-        assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.usCustomary) / 2(PoundSquareFoot.usCustomary))
+        assertEquals(
+            1(SquareFoot),
+            2(PoundForce).convert(GrainForce) / 2(PoundSquareFoot.ukImperial)
+        )
+        assertEquals(
+            1(SquareFoot),
+            2(PoundForce).convert(GrainForce) / 2(PoundSquareFoot.usCustomary)
+        )
+        assertEquals(
+            1(SquareFoot),
+            2(PoundForce).convert(GrainForce.ukImperial) / 2(PoundSquareFoot)
+        )
+        assertEquals(
+            1(SquareFoot),
+            2(PoundForce).convert(GrainForce.ukImperial) / 2(PoundSquareFoot.ukImperial)
+        )
+        assertEquals(
+            1(SquareFoot),
+            2(PoundForce).convert(GrainForce.usCustomary) / 2(PoundSquareFoot)
+        )
+        assertEquals(
+            1(SquareFoot),
+            2(PoundForce).convert(GrainForce.usCustomary) / 2(PoundSquareFoot.usCustomary)
+        )
         assertEquals(1(SquareMeter), 2(Newton).convert(PoundForce) / 2(Pascal))
     }
 
@@ -137,10 +167,16 @@ class  AreaUnitTest {
         assertEquals(1(SquareFoot), 2(Pound per Foot) / 2(Pound.ukImperial per CubicFoot))
         assertEquals(1(SquareFoot), 2(Pound per Foot) / 2(Pound.usCustomary per CubicFoot))
         assertEquals(1(SquareFoot), 2(Pound.ukImperial per Foot) / 2(Pound per CubicFoot))
-        assertEquals(1(SquareFoot), 2(Pound.ukImperial per Foot) / 2(Pound.ukImperial per CubicFoot))
+        assertEquals(
+            1(SquareFoot),
+            2(Pound.ukImperial per Foot) / 2(Pound.ukImperial per CubicFoot)
+        )
         assertEquals(1(SquareFoot), 2(Pound.usCustomary per Foot) / 2(Pound per CubicFoot))
         assertEquals(1(SquareFoot), 2(Pound.usCustomary per Foot) / 2(Pound per CubicFoot))
-        assertEquals(1(SquareMeter), 2(Kilogram per Meter) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot))
+        assertEquals(
+            1(SquareMeter),
+            2(Kilogram per Meter) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot)
+        )
     }
 
     @Test
@@ -155,21 +191,44 @@ class  AreaUnitTest {
         assertEquals(4(SquareFoot), 2(CubicFoot per Pound.usCustomary) * 2(Pound per Foot))
         assertEquals(4(SquareFoot), 2(Pound.ukImperial per Foot) * 2(CubicFoot per Pound))
         assertEquals(4(SquareFoot), 2(CubicFoot per Pound) * 2(Pound.ukImperial per Foot))
-        assertEquals(4(SquareFoot), 2(Pound.ukImperial per Foot) * 2(CubicFoot per Pound.ukImperial))
-        assertEquals(4(SquareFoot), 2(CubicFoot per Pound.ukImperial) * 2(Pound.ukImperial per Foot))
+        assertEquals(
+            4(SquareFoot),
+            2(Pound.ukImperial per Foot) * 2(CubicFoot per Pound.ukImperial)
+        )
+        assertEquals(
+            4(SquareFoot),
+            2(CubicFoot per Pound.ukImperial) * 2(Pound.ukImperial per Foot)
+        )
         assertEquals(4(SquareFoot), 2(Pound.usCustomary per Foot) * 2(CubicFoot per Pound))
         assertEquals(4(SquareFoot), 2(CubicFoot per Pound) * 2(Pound.usCustomary per Foot))
-        assertEquals(4(SquareFoot), 2(Pound.usCustomary per Foot) * 2(CubicFoot per Pound.usCustomary))
-        assertEquals(4(SquareFoot), 2(CubicFoot per Pound.usCustomary) * 2(Pound.usCustomary per Foot))
-        assertEqualScientificValue(4(SquareMeter), 2(Kilogram per Meter) * 2(CubicMeter per Kilogram).convert(CubicFoot per Pound), 5)
-        assertEqualScientificValue(4(SquareMeter), 2(CubicMeter per Kilogram).convert(CubicFoot per Pound) * 2(Kilogram per Meter), 5)
+        assertEquals(
+            4(SquareFoot),
+            2(Pound.usCustomary per Foot) * 2(CubicFoot per Pound.usCustomary)
+        )
+        assertEquals(
+            4(SquareFoot),
+            2(CubicFoot per Pound.usCustomary) * 2(Pound.usCustomary per Foot)
+        )
+        assertEqualScientificValue(
+            4(SquareMeter),
+            2(Kilogram per Meter) * 2(CubicMeter per Kilogram).convert(CubicFoot per Pound),
+            5
+        )
+        assertEqualScientificValue(
+            4(SquareMeter),
+            2(CubicMeter per Kilogram).convert(CubicFoot per Pound) * 2(Kilogram per Meter),
+            5
+        )
     }
 
     @Test
     fun areaFromLuminousEnergyAndExposureTest() {
         assertEquals(1(SquareMeter), 2(Lumen x Second) / 2(Lux x Second))
         assertEquals(1(SquareFoot), 2(Lumen x Second) / 2(FootCandle x Second))
-        assertEquals(1(SquareMeter), 2(Lumen x Second) / 2(Lux x Second).convert((FootCandle x Second) as LuminousExposure))
+        assertEquals(
+            1(SquareMeter),
+            2(Lumen x Second) / 2(Lux x Second).convert((FootCandle x Second) as LuminousExposure)
+        )
     }
 
     @Test
@@ -186,7 +245,11 @@ class  AreaUnitTest {
         assertEquals(1(SquareCentimeter), 2(Candela) / 2(Stilb))
         assertEqualScientificValue(3.14159(SquareCentimeter), 2(Candela) / 2(Lambert), 5)
         assertEqualScientificValue(3.14159(SquareFoot), 2(Candela) / 2(FootLambert), 5)
-        assertEqualScientificValue(1(SquareMeter), 2(Candela) / 2(Nit).convert(FootLambert as Luminance), 5)
+        assertEqualScientificValue(
+            1(SquareMeter),
+            2(Candela) / 2(Nit).convert(FootLambert as Luminance),
+            5
+        )
     }
 
     @Test
@@ -198,14 +261,59 @@ class  AreaUnitTest {
     @Test
     fun areaFromMomentumAndDynamicViscosityTest() {
         assertEquals(1(SquareMeter), 2(Kilogram x (Meter per Second)) / 2(Pascal x Second))
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound x (Foot per Second)) / 2(PoundSquareFoot x Second), 5)
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound x (Foot per Second)) / 2(PoundSquareFoot.ukImperial x Second), 5)
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound x (Foot per Second)) / 2(PoundSquareFoot.usCustomary x Second), 5)
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound.ukImperial x (Foot per Second)) / 2(PoundSquareFoot x Second), 5)
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound.ukImperial x (Foot per Second)) / 2(PoundSquareFoot.ukImperial x Second), 5)
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound.usCustomary x (Foot per Second)) / 2(PoundSquareFoot x Second), 5)
-        assertEqualScientificValue(1(SquareFoot), (2 * ImperialStandardGravityAcceleration.value) (Pound.usCustomary x (Foot per Second)) / 2(PoundSquareFoot.usCustomary x Second), 5)
-        assertEquals(1(SquareMeter), 2(Kilogram x (Meter per Second)) / 2(Pascal x Second).convert(PoundSquareFoot x Second))
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(
+                PoundSquareFoot x Second
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(
+                PoundSquareFoot.ukImperial x Second
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(
+                PoundSquareFoot.usCustomary x Second
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
+                PoundSquareFoot x Second
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
+                PoundSquareFoot.ukImperial x Second
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
+                PoundSquareFoot x Second
+            ),
+            5
+        )
+        assertEqualScientificValue(
+            1(SquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
+                PoundSquareFoot.usCustomary x Second
+            ),
+            5
+        )
+        assertEquals(
+            1(SquareMeter),
+            2(Kilogram x (Meter per Second)) / 2(Pascal x Second).convert(PoundSquareFoot x Second)
+        )
     }
 
     @Test
@@ -282,9 +390,19 @@ class  AreaUnitTest {
         assertEqualScientificValue(1(SquareFoot), 2(Pound) / 2(Pound.ukImperial per (SquareFoot)))
         assertEqualScientificValue(1(SquareFoot), 2(Pound) / 2(Pound.usCustomary per (SquareFoot)))
         assertEqualScientificValue(1(SquareFoot), 2(Pound.ukImperial) / 2(Pound per (SquareFoot)))
-        assertEqualScientificValue(1(SquareFoot), 2(Pound.ukImperial) / 2(Pound.ukImperial per (SquareFoot)))
+        assertEqualScientificValue(
+            1(SquareFoot),
+            2(Pound.ukImperial) / 2(Pound.ukImperial per (SquareFoot))
+        )
         assertEqualScientificValue(1(SquareFoot), 2(Pound.usCustomary) / 2(Pound per (SquareFoot)))
-        assertEqualScientificValue(1(SquareFoot), 2(Pound.usCustomary) / 2(Pound.usCustomary per (SquareFoot)))
-        assertEqualScientificValue(1(SquareMeter), 2(Kilogram).convert(Pound) / 2(Kilogram per (SquareMeter)), 5)
+        assertEqualScientificValue(
+            1(SquareFoot),
+            2(Pound.usCustomary) / 2(Pound.usCustomary per (SquareFoot))
+        )
+        assertEqualScientificValue(
+            1(SquareMeter),
+            2(Kilogram).convert(Pound) / 2(Kilogram per (SquareMeter)),
+            5
+        )
     }
 }

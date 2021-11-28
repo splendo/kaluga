@@ -27,7 +27,7 @@ class ActionUnitTest {
 
     @Test
     fun actionConversionTest() {
-        assertScientificConversion(1.0, Joule x Second, 7.716E-8,WattHour x Hour, 11)
+        assertScientificConversion(1.0, Joule x Second, 7.716E-8, WattHour x Hour, 11)
     }
 
     @Test
