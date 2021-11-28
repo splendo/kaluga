@@ -49,54 +49,34 @@ class AmountOfSubstanceUnitTest {
 
     @Test
     fun amountOfSubstanceFromCatalysisAndTimeTest() {
-        assertEquals(4(Mole), 2(Katal) * 2(Second))
-        assertEquals(4(Mole), 2(Second) * 2(Katal))
+        assertEquals(24(Mole), 2(Decikatal) * 2(Minute))
+        assertEquals(24(Mole), 2(Minute) * 2(Decikatal))
     }
 
     @Test
     fun amountOfSubstanceFromEnergyAndMolarEnergyTest() {
-        assertEqualScientificValue(1(Mole), (2(Joule) / 2(Joule per Mole)))
-        assertEqualScientificValue(1(Mole), (2(WattHour) / 2(WattHour per Mole)))
-        assertEqualScientificValue(1(Mole), (2(HorsepowerHour) / 2(HorsepowerHour per Mole)))
+        assertEqualScientificValue(1(Decimole), (2(WattHour) / 2(WattHour per Decimole)))
     }
 
     @Test
     fun amountOfSubstanceFromMolalityAndWeightTest() {
-        assertEqualScientificValue(4(Mole), 2(Mole per Kilogram) * 2(Kilogram))
-        assertEqualScientificValue(4(Mole), 2(Kilogram) * 2(Mole per Kilogram))
-        assertEqualScientificValue(4(Mole), 2(Mole per Pound) * 2(Pound))
-        assertEqualScientificValue(4(Mole), 2(Pound) * 2(Mole per Pound))
-        assertEqualScientificValue(4(Mole), 2(Mole per ImperialTon) * 2(ImperialTon))
-        assertEqualScientificValue(4(Mole), 2(ImperialTon) * 2(Mole per ImperialTon))
-        assertEqualScientificValue(4(Mole), 2(Mole per UsTon) * 2(UsTon))
-        assertEqualScientificValue(4(Mole), 2(UsTon) * 2(Mole per UsTon))
+        assertEqualScientificValue(4(Decimole), 2(Decimole per Gram) * 2(Gram))
+        assertEqualScientificValue(4(Decimole), 2(Gram) * 2(Decimole per Gram))
     }
 
     @Test
     fun amountOfSubstanceFromMolarityAndVolumeTest() {
-        assertEqualScientificValue(4(Mole), 2(Mole per CubicMeter) * 2(CubicMeter))
-        assertEqualScientificValue(4(Mole), 2(CubicMeter) * 2(Mole per CubicMeter))
-        assertEqualScientificValue(4(Mole), 2(Mole per CubicFoot) * 2(CubicFoot))
-        assertEqualScientificValue(4(Mole), 2(CubicFoot) * 2(Mole per CubicFoot))
-        assertEqualScientificValue(4(Mole), 2(Mole per ImperialGallon) * 2(ImperialGallon))
-        assertEqualScientificValue(4(Mole), 2(ImperialGallon) * 2(Mole per ImperialGallon))
-        assertEqualScientificValue(4(Mole), 2(Mole per UsLiquidGallon) * 2(UsLiquidGallon))
-        assertEqualScientificValue(4(Mole), 2(UsLiquidGallon) * 2(Mole per UsLiquidGallon))
+        assertEqualScientificValue(4(Decimole), 2(Decimole per CubicCentimeter) * 2(CubicCentimeter))
+        assertEqualScientificValue(4(Decimole), 2(CubicCentimeter) * 2(Decimole per CubicCentimeter))
     }
 
     @Test
     fun amountOfSubstanceFromVolumeAndMolarVolumeTest() {
-        assertEqualScientificValue(1(Mole), (2(CubicMeter) / 2(CubicMeter per Mole)))
-        assertEqualScientificValue(1(Mole), (2(CubicFoot) / 2(CubicFoot per Mole)))
-        assertEqualScientificValue(1(Mole), (2(ImperialGallon) / 2(ImperialGallon per Mole)))
-        assertEqualScientificValue(1(Mole), (2(UsLiquidGallon) / 2(UsLiquidGallon per Mole)))
+        assertEqualScientificValue(1(Decimole), (2(CubicCentimeter) / 2(CubicCentimeter per Decimole)))
     }
 
     @Test
     fun amountOfSubstanceFromWeightAndMolarMassTest() {
-        assertEqualScientificValue(1(Mole), 2(Kilogram) / 2(Kilogram per Mole))
-        assertEqualScientificValue(1(Mole), 2(Pound) / 2(Pound per Mole))
-        assertEqualScientificValue(1(Mole), 2(ImperialTon) / 2(ImperialTon per Mole))
-        assertEqualScientificValue(1(Mole), 2(UsTon) / 2(UsTon per Mole))
+        assertEqualScientificValue(1(Decimole), 2(Gram) / 2(Gram per Decimole))
     }
 }

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.momentum.div
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.converter.time.times
@@ -28,19 +30,16 @@ class DynamicViscosityTest {
 
     @Test
     fun dynamicViscosityConversionTest() {
-        // FIXME
-        // assertScientificConversion(2.9, (Pascal x Second), 1.0, PoundSquareFoot x Second,1)
-        // assertScientificConversion(2.9, (Pascal x Second), 1.0, PoundSquareFoot.ukImperial x Second,1)
-        // assertScientificConversion(2.9, (Pascal x Second), 1.0, PoundSquareFoot.usCustomary x Second,1)
+        assertScientificConversion(1.0, (Pascal x Second), 0.1450377, PoundSquareInch x Millisecond,7)
     }
 
     @Test
     fun dynamicViscosityFromMomentumAndAreaTest() {
         assertEquals(1(Pascal x Second), 2(Kilogram x (Meter per Second)) / 2(SquareMeter))
-        // FIXME
-        // assertEquals(1(PoundSquareFoot x Second), 2(Pound x (Foot per Second)) / 2(SquareFoot))
-        // assertEquals(1(ImperialTonSquareFoot x Second), 2(Pound.ukImperial x (Foot per Second)) / 2(SquareFoot))
-        // assertEquals(1(USTonSquareFoot x Second), 2(Pound.usCustomary x (Foot per Second)) / 2(SquareFoot))
+        assertEqualScientificValue(1(PoundSquareInch x Second), (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(SquareInch), 5)
+        assertEqualScientificValue(1(PoundSquareInch.ukImperial x Second), (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(SquareInch), 5)
+        assertEqualScientificValue(1(PoundSquareInch.usCustomary x Second), (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(SquareInch), 5)
+        assertEquals(1(Pascal x Second), 2(Kilogram x (Meter per Second)) / 2(SquareMeter).convert(SquareFoot))
     }
 
     @Test
@@ -52,7 +51,7 @@ class DynamicViscosityTest {
         assertEquals(4(ImperialTonSquareFoot x Second), 2(ImperialTonSquareFoot) * 2(Second))
         assertEquals(4(ImperialTonSquareFoot x Second), 2(Second) * 2(ImperialTonSquareFoot))
         assertEquals(4(USTonSquareFoot x Second), 2(USTonSquareFoot) * 2(Second))
-        // FIXME
-        // assertEquals(4(USTonSquareFoot x Second), 2(Second) * 2(USTonSquareFoot))
+        assertEquals(4(USTonSquareFoot x Second), 2(Second) * 2(USTonSquareFoot))
+        assertEquals(4(Pascal x Second), 2(Pascal as Pressure) * 2(Second))
     }
 }

@@ -21,34 +21,8 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.amountOfSubstance
 import com.splendo.kaluga.scientific.unit.Energy
-import com.splendo.kaluga.scientific.unit.ImperialEnergy
-import com.splendo.kaluga.scientific.unit.ImperialMolarEnergy
-import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
-import com.splendo.kaluga.scientific.unit.MetricEnergy
-import com.splendo.kaluga.scientific.unit.MetricMolarEnergy
 import com.splendo.kaluga.scientific.unit.MolarEnergy
 import kotlin.jvm.JvmName
-
-@JvmName("metricAndImperialEnergyDivMetricAndImperialMolarEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>) =
-    molarEnergy.unit.per.amountOfSubstance(this, molarEnergy)
-
-@JvmName("metricAndImperialEnergyDivMetricMolarEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricMolarEnergy>) =
-    molarEnergy.unit.per.amountOfSubstance(this, molarEnergy)
-
-@JvmName("metricAndImperialEnergyDivImperialMolarEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, ImperialMolarEnergy>) =
-    molarEnergy.unit.per.amountOfSubstance(this, molarEnergy)
-
-@JvmName("metricEnergyDivMetricMolarEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricEnergy>.div(molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricMolarEnergy>) =
-    molarEnergy.unit.per.amountOfSubstance(this, molarEnergy)
-
-@JvmName("imperialEnergyDivImperialMolarEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, ImperialEnergy>.div(molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, ImperialMolarEnergy>) =
-    molarEnergy.unit.per.amountOfSubstance(this, molarEnergy)
 
 @JvmName("energyDivMolarEnergy")
 infix operator fun <EnergyUnit : Energy, MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(

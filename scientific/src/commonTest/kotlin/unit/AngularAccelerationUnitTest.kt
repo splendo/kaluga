@@ -31,6 +31,6 @@ class AngularAccelerationUnitTest {
 
     @Test
     fun angularAccelerationFromAngularVelocityAndTime(){
-        assertEquals(1((Radian per Second per Second)), 2(Radian per Second) / 2(Second) )
+        assertEquals(1((Centiradian per Millisecond per Millisecond)), 2(Centiradian per Millisecond) / 2(Millisecond) )
     }
 }

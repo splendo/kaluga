@@ -30,13 +30,13 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("metricJoltTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, MetricJolt>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration> =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, MetricJolt>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (unit.acceleration).acceleration(this, time)
 
 @JvmName("imperialJoltTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration> =
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (unit.acceleration).acceleration(this, time)
 
-@JvmName("speedTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, Jolt>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Acceleration, Acceleration> =
+@JvmName("joltTimesTime")
+infix operator fun <JoltUnit : Jolt, TimeUnit : Time> ScientificValue<PhysicalQuantity.Jolt, JoltUnit>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
     (unit.acceleration).acceleration(this, time)

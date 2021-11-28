@@ -25,6 +25,7 @@ import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.Pressure
 import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricPressure")
@@ -39,6 +40,11 @@ infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> Scientific
 
 @JvmName("timeTimesUKImperialPressure")
 infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+) = pressure * this
+
+@JvmName("timeTimesUSCustomaryPressure")
+infix operator fun <PressureUnit : USCustomaryPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
     pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this
 

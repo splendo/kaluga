@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.converter.energy.times
 import com.splendo.kaluga.scientific.converter.time.times
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -50,12 +50,14 @@ class ActionUnitTest {
     }
 
     @Test
-    fun actionFromEnergyAndTimeTest() {
+    fun convertFromEnergyAndTimeTest() {
         assertEquals(4(Joule x Second), 2(Joule) * 2(Second))
         assertEquals(4(Joule x Second), 2(Second) * 2(Joule))
-        assertEquals(4(Calorie x Second), 2(Calorie) * 2(Second))
-        assertEquals(4(Calorie x Second), 2(Second) * 2(Calorie))
-        assertEquals(4(FootPoundForce x Second), 2(FootPoundForce) * 2(Second))
-        assertEquals(4(FootPoundForce x Second), 2(Second) * 2(FootPoundForce))
+        assertEquals(4(WattHour x Second), 2(WattHour) * 2(Second))
+        assertEquals(4(WattHour x Second), 2(Second) * 2(WattHour))
+        assertEquals(4(BritishThermalUnit x Second), 2(BritishThermalUnit) * 2(Second))
+        assertEquals(4(BritishThermalUnit x Second), 2(Second) * 2(BritishThermalUnit))
+        assertEquals(4(Joule x Second), 2(Joule as Energy) * 2(Second))
+        assertEquals(4(Joule x Second), 2(Second) * 2(Joule as Energy))
     }
 }

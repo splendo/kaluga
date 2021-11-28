@@ -49,22 +49,26 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun currentFromChargeAndTimeTest() {
-        assertEquals(1(Ampere), 1(Coulomb) / 1(Second))
-        assertEquals(1(Abampere), 1(Abcoulomb) / 1(Second))
+        assertEquals(1(Abampere), 2(Abcoulomb) / 2(Second))
+        assertEquals(1(Ampere), 2(Coulomb) / 2(Second))
     }
 
     @Test
     fun currentFromEnergyAndFluxTest() {
-        assertEquals(1(Ampere), 1(Joule) / 1(Weber))
+        assertEquals(1(Abampere), 2(Erg) / 2(Maxwell))
+        assertEquals(1(Abampere), 20(Decierg) / 2(Maxwell))
+        assertEquals(1(Ampere), 2(Joule) / 2(Weber))
     }
 
     @Test
     fun currentFromFluxAndInductanceTest() {
+        assertEquals(1(Abampere), 2(Maxwell) / 2(Abhenry))
         assertEquals(1(Ampere), 2(Weber) / 2(Henry))
     }
 
     @Test
     fun currentFromPowerAndVoltageTest() {
+        assertEquals(1(Abampere), 2(ErgPerSecond) / 2(Abvolt))
         assertEquals(1(Ampere), 2(Watt) / 2(Volt))
     }
 
@@ -78,6 +82,7 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun currentFromVoltageAndResistanceTest() {
+        assertEquals(1(Abampere), 2(Abvolt) / 2(Abohm))
         assertEquals(1(Ampere), 2(Volt) / 2(Ohm))
     }
 }

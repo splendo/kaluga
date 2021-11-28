@@ -44,11 +44,14 @@ class ElectricInductanceUnitTest {
 
     @Test
     fun inductanceFromResistanceAndFrequencyTest() {
+        assertEquals(1(Abhenry), 2(Abohm) / 2(Hertz))
         assertEquals(1(Henry), 2(Ohm) / 2(Hertz))
     }
 
     @Test
     fun inductanceFromResistanceAndTimeTest() {
+        assertEquals(4(Abhenry), 2(Abohm) * 2(Second))
+        assertEquals(4(Abhenry), 2(Second) * 2(Abohm))
         assertEquals(4(Henry), 2(Ohm) * 2(Second))
         assertEquals(4(Henry), 2(Second) * 2(Ohm))
         assertEquals(4(Abhenry), 2(Abohm) * 2(Second))
@@ -57,6 +60,8 @@ class ElectricInductanceUnitTest {
 
     @Test
     fun inductanceFromFluxAndCurrentTest() {
+        assertEquals(1(Abhenry), 2(Maxwell) / 2(Abampere))
+        assertEquals(1(Abhenry), 2(Maxwell) / 2(Biot))
         assertEquals(1(Henry), 2(Weber) / 2(Ampere))
         assertEquals(1(Henry), 2(Weber) / 2(Ampere))
     }

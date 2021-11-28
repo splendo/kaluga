@@ -47,34 +47,41 @@ class ElectricResistanceUnitTest {
 
     @Test
     fun electricResistanceFromInvertedConductanceTest() {
-        assertEquals(2(Ohm), 2(Siemens).resistance())
-        assertEquals(2(Abohm), 2(Absiemens).resistance())
+        assertEquals(2(Abohm), 0.5(Absiemens).resistance())
+        assertEquals(2(Ohm), 0.5(Siemens).resistance())
     }
 
     @Test
     fun resistanceFromInductanceAndFrequencyTest() {
+        assertEquals(4(Abohm), 2(Abhenry) * 2(Hertz))
+        assertEquals(4(Abohm), 2(Hertz) * 2(Abhenry))
         assertEquals(4(Ohm), 2(Henry) * 2(Hertz))
         assertEquals(4(Ohm), 2(Hertz) * 2(Henry))
     }
 
     @Test
     fun resistanceFromInductanceAndTimeTest() {
+        assertEquals(1(Abohm), 2(Abhenry) / 2(Second))
         assertEquals(1(Ohm), 2(Henry) / 2(Second))
         assertEquals(1(Abohm), 2(Abhenry) / 2(Second))
     }
 
     @Test
     fun resistanceFromFluxAndChargeTest() {
+        assertEquals(1(Abohm), 2(Maxwell) / 2(Abcoulomb))
         assertEquals(1(Ohm), 2(Weber) / 2(Coulomb))
     }
 
     @Test
     fun resistanceFromTimeAndCapacitanceTest() {
+        assertEquals(1(Abohm), 2(Second) / 2(Abfarad))
         assertEquals(1(Ohm), 2(Second) / 2(Farad))
     }
 
     @Test
     fun resistanceFromVoltageAndCurrentTest() {
+        assertEquals(1(Abohm), 2(Abvolt) / 2(Abampere))
+        assertEquals(1(Abohm), 2(Abvolt) / 2(Biot))
         assertEquals(1(Ohm), 2(Volt) / 2(Ampere))
     }
 }

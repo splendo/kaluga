@@ -46,6 +46,7 @@ class ElectricChargeUnitTest {
 
     @Test
     fun chargeFromCapacitanceAndVoltageTest() {
+        assertEquals(4(Abcoulomb), 2(Abfarad) * 2(Abvolt))
         assertEquals(4(Coulomb), 2(Farad) * 2(Volt))
         assertEquals(4(Coulomb), 2(Volt) * 2(Farad))
         assertEquals(4(Abcoulomb), 2(Abfarad) * 2(Abvolt))
@@ -54,6 +55,8 @@ class ElectricChargeUnitTest {
 
     @Test
     fun chargeFromCurrentAndTimeTest() {
+        assertEquals(4(Abcoulomb), 2(Abampere) * 2(Second))
+        assertEquals(4(Abcoulomb), 2(Biot) * 2(Second))
         assertEquals(4(Coulomb), 2(Ampere) * 2(Second))
         assertEquals(4(Coulomb), 2(Second) * 2(Ampere))
         assertEquals(4(Abcoulomb), 2(Abampere) * 2(Second))
@@ -62,11 +65,14 @@ class ElectricChargeUnitTest {
 
     @Test
     fun chargeFromEnergyAndVoltageTest() {
+        assertEquals(1(Abcoulomb), 2(Erg) / 2(Abvolt))
+        assertEquals(1(Abcoulomb), 20(Decierg) / 2(Abvolt))
         assertEquals(1(Coulomb), 2(Joule) / 2(Volt))
     }
 
     @Test
     fun chargeFromFluxAndResistanceTest() {
+        assertEquals(1(Abcoulomb), 2(Maxwell) / 2(Abohm))
         assertEquals(1(Coulomb), 2(Weber) / 2(Ohm))
     }
 }

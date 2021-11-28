@@ -76,6 +76,7 @@ class  AreaUnitTest {
         assertEquals(1(SquareFoot), 2(FootPoundForce) / 2(PoundForce per Foot))
         assertEquals(1(SquareFoot), 2(FootPoundForce) / 2(PoundForce.ukImperial per Foot))
         assertEquals(1(SquareFoot), 2(FootPoundForce) / 2(PoundForce.usCustomary per Foot))
+        assertEquals(1(SquareMeter), 2(Joule).convert(FootPoundForce) / 2(Newton per Meter))
     }
 
     @Test
@@ -102,6 +103,7 @@ class  AreaUnitTest {
         assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.ukImperial) / 2(PoundSquareFoot.ukImperial))
         assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.usCustomary) / 2(PoundSquareFoot))
         assertEquals(1(SquareFoot), 2(PoundForce).convert(GrainForce.usCustomary) / 2(PoundSquareFoot.usCustomary))
+        assertEquals(1(SquareMeter), 2(Newton).convert(PoundForce) / 2(Pascal))
     }
 
     @Test
@@ -125,6 +127,7 @@ class  AreaUnitTest {
         assertEquals(4(SquareMile), 2(Mile) * 2(Mile))
         assertEquals(4(SquareFoot), 2(Foot).convert(Inch) * 2(Foot))
         assertEquals(4(SquareMeter), 2(Meter).convert(Foot) * 2(Meter))
+        assertEquals(4(SquareMeter), 2(Meter as Length) * 2(Meter))
     }
 
     @Test
@@ -166,6 +169,7 @@ class  AreaUnitTest {
     fun areaFromLuminousEnergyAndExposureTest() {
         assertEquals(1(SquareMeter), 2(Lumen x Second) / 2(Lux x Second))
         assertEquals(1(SquareFoot), 2(Lumen x Second) / 2(FootCandle x Second))
+        assertEquals(1(SquareMeter), 2(Lumen x Second) / 2(Lux x Second).convert((FootCandle x Second) as LuminousExposure))
     }
 
     @Test
@@ -182,10 +186,11 @@ class  AreaUnitTest {
         assertEquals(1(SquareCentimeter), 2(Candela) / 2(Stilb))
         assertEqualScientificValue(3.14159(SquareCentimeter), 2(Candela) / 2(Lambert), 5)
         assertEqualScientificValue(3.14159(SquareFoot), 2(Candela) / 2(FootLambert), 5)
+        assertEqualScientificValue(1(SquareMeter), 2(Candela) / 2(Nit).convert(FootLambert as Luminance), 5)
     }
 
     @Test
-    fun areaFromFluxAndInductionTest() {
+    fun areaFromMagneticFluxAndInductionTest() {
         assertEquals(1(SquareCentimeter), 2(Maxwell) / 2(Gauss))
         assertEquals(1(SquareMeter), 2(Weber) / 2(Tesla))
     }
