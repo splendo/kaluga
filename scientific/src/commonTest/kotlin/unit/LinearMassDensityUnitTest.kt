@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.div
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.areaDensity.times
@@ -60,6 +61,7 @@ class LinearMassDensityUnitTest {
             1(Pound.usCustomary per Foot),
             2(SquareFoot) / 2(CubicFoot.usCustomary per Pound.usCustomary)
         )
+        assertEquals(1(Kilogram per Meter), 2(SquareMeter).convert(SquareFoot) / 2(CubicMeter per Kilogram))
     }
 
     @Test
@@ -72,6 +74,8 @@ class LinearMassDensityUnitTest {
         assertEquals(4(Pound.ukImperial per Foot), 2(Foot) * 2(Pound.ukImperial per SquareFoot))
         assertEquals(4(Pound.usCustomary per Foot), 2(Pound.usCustomary per SquareFoot) * 2(Foot))
         assertEquals(4(Pound.usCustomary per Foot), 2(Foot) * 2(Pound.usCustomary per SquareFoot))
+        assertEquals(4(Kilogram per Meter), 2(Kilogram per SquareMeter) * 2(Meter).convert(Foot))
+        assertEquals(4(Kilogram per Meter), 2(Meter).convert(Foot) * 2(Kilogram per SquareMeter))
     }
 
     @Test
@@ -96,6 +100,8 @@ class LinearMassDensityUnitTest {
             4(Pound.usCustomary per Foot),
             2(SquareFoot) * 2(Pound.usCustomary per CubicFoot)
         )
+        assertEquals(4(Kilogram per Meter), 2(Kilogram per CubicMeter) * 2(SquareMeter).convert(SquareFoot))
+        assertEquals(4(Kilogram per Meter), 2(SquareMeter).convert(SquareFoot) * 2(Kilogram per CubicMeter))
     }
 
     @Test
@@ -104,5 +110,6 @@ class LinearMassDensityUnitTest {
         assertEquals(1(Pound per Foot), 2(Pound) / 2(Foot))
         assertEquals(1(Pound.ukImperial per Foot), 2(Pound.ukImperial) / 2(Foot))
         assertEquals(1(Pound.usCustomary per Foot), 2(Pound.usCustomary) / 2(Foot))
+        assertEquals(1(Kilogram per Meter), 2(Kilogram) / 2(Meter).convert(Foot))
     }
 }

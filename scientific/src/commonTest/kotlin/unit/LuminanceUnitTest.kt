@@ -21,6 +21,7 @@ import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.illuminance.div
 import com.splendo.kaluga.scientific.converter.luminousIntensity.div
 import com.splendo.kaluga.scientific.invoke
+import kotlin.math.PI
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -48,13 +49,18 @@ class LuminanceUnitTest {
 
     @Test
     fun luminanceFromIlluminanceAndSolidAngleTest() {
+        assertEquals(1(Stilb), 2(Phot) / 2(Steradian))
+        assertEquals(1(Stilb), 20(Deciphot) / 2(Steradian))
         assertEquals(1(Nit), 2(Lux) / 2(Steradian))
-        assertEqualScientificValue(3.14(FootLambert), 2(FootCandle) / 2(Steradian), 2)
+        assertEqualScientificValue(PI(FootLambert), 2(FootCandle) / 2(Steradian), 8)
+        assertEquals(1(Nit), 2(Lux as Illuminance) / 2(Steradian))
     }
 
     @Test
     fun luminanceFromLuminousIntensityAndAreaTest() {
+        assertEquals(1(Stilb), 2(Candela) / 2(SquareCentimeter))
         assertEquals(1(Nit), 2(Candela) / 2(SquareMeter))
-        assertEqualScientificValue(3.14(FootLambert), (2(Candela) / 2(SquareFoot)), 2)
+        assertEqualScientificValue(PI(FootLambert), (2(Candela) / 2(SquareFoot)), 8)
+        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter as Area))
     }
 }

@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific.converter.power
 
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.BritishThermalUnit
 import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerHour
@@ -41,14 +40,12 @@ import com.splendo.kaluga.scientific.unit.HectowattHour
 import com.splendo.kaluga.scientific.unit.Horsepower
 import com.splendo.kaluga.scientific.unit.HorsepowerHour
 import com.splendo.kaluga.scientific.unit.Hour
-import com.splendo.kaluga.scientific.unit.ImperialMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.unit.ImperialPower
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilowatt
 import com.splendo.kaluga.scientific.unit.KilowattHour
 import com.splendo.kaluga.scientific.unit.Megawatt
 import com.splendo.kaluga.scientific.unit.MegawattHour
-import com.splendo.kaluga.scientific.unit.MetricMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.unit.MetricPower
 import com.splendo.kaluga.scientific.unit.Microwatt
 import com.splendo.kaluga.scientific.unit.MicrowattHour
@@ -60,8 +57,6 @@ import com.splendo.kaluga.scientific.unit.Power
 import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.Watt
 import com.splendo.kaluga.scientific.unit.WattHour
-import com.splendo.kaluga.scientific.unit.imperial
-import com.splendo.kaluga.scientific.unit.metric
 import kotlin.jvm.JvmName
 
 @JvmName("wattTimesHour")
@@ -107,40 +102,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Power, Megawatt>.times(time:
 @JvmName("gigawattTimesHour")
 infix operator fun ScientificValue<PhysicalQuantity.Power, Gigawatt>.times(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
     GigawattHour.energy(this, time)
-
-@JvmName("metricMetricAndImperialPowerWrapperTimesHour")
-infix operator fun ScientificValue<PhysicalQuantity.Power, MetricMetricAndImperialPowerWrapper>.times(time: ScientificValue<PhysicalQuantity.Time, Hour>) = when (val powerUnit = unit.metricAndImperialPower) {
-    is Watt -> convert(powerUnit) * time
-    is Nanowatt -> convert(powerUnit) * time
-    is Microwatt -> convert(powerUnit) * time
-    is Milliwatt -> convert(powerUnit) * time
-    is Centiwatt -> convert(powerUnit) * time
-    is Deciwatt -> convert(powerUnit) * time
-    is Decawatt -> convert(powerUnit) * time
-    is Hectowatt -> convert(powerUnit) * time
-    is Kilowatt -> convert(powerUnit) * time
-    is Megawatt -> convert(powerUnit) * time
-    is Gigawatt -> convert(powerUnit) * time
-}.let {
-    it.convert(it.unit.metric)
-}
-
-@JvmName("imperialMetricAndImperialPowerWrapperTimesHour")
-infix operator fun ScientificValue<PhysicalQuantity.Power, ImperialMetricAndImperialPowerWrapper>.times(time: ScientificValue<PhysicalQuantity.Time, Hour>) = when (val powerUnit = unit.metricAndImperialPower) {
-    is Watt -> convert(powerUnit) * time
-    is Nanowatt -> convert(powerUnit) * time
-    is Microwatt -> convert(powerUnit) * time
-    is Milliwatt -> convert(powerUnit) * time
-    is Centiwatt -> convert(powerUnit) * time
-    is Deciwatt -> convert(powerUnit) * time
-    is Decawatt -> convert(powerUnit) * time
-    is Hectowatt -> convert(powerUnit) * time
-    is Kilowatt -> convert(powerUnit) * time
-    is Megawatt -> convert(powerUnit) * time
-    is Gigawatt -> convert(powerUnit) * time
-}.let {
-    it.convert(it.unit.imperial)
-}
 
 @JvmName("ergPerSecondTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =

@@ -37,11 +37,14 @@ class LuminousExposureUnitTest {
         assertEquals(4(Lux x Second), 2(Second) * 2(Lux))
         assertEquals(4(FootCandle x Second), 2(FootCandle) * 2(Second))
         assertEquals(4(FootCandle x Second), 2(Second) * 2(FootCandle))
+        assertEquals(4(Lux x Second), 2(Lux as Illuminance) * 2(Second))
+        assertEquals(4(Lux x Second), 2(Second) * 2(Lux as Illuminance))
     }
 
     @Test
     fun luminousExposureFromLuminousEnergyAndAreaTest() {
         assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter))
         assertEquals(1(FootCandle x Second), 2(Lumen x Second) / 2(SquareFoot))
+        assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter as Area))
     }
 }

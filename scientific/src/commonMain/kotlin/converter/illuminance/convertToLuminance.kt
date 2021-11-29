@@ -43,11 +43,6 @@ infix operator fun <PhotUnit, SolidAngleUnit : SolidAngle> ScientificValue<Physi
 ) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
     Stilb.luminance(this, solidAngle)
 
-@JvmName("metricIlluminanceDivSolidAngle")
-infix operator fun <IlluminanceUnit : MetricIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
-) = Nit.luminance(this, solidAngle)
-
 @JvmName("imperialIlluminanceDivSolidAngle")
 infix operator fun <IlluminanceUnit : ImperialIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
     solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>

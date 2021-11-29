@@ -58,11 +58,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Pressure, Barye>.times(area:
 infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     Dyne.force(this, area)
 
-@JvmName("metricPressureTimesMetricArea")
-infix operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<PhysicalQuantity.Pressure, Pressure>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
-) = Newton.force(this, area)
-
 @JvmName("ounceSquareInchTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>.times(
     area: ScientificValue<PhysicalQuantity.Area, Area>

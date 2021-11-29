@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.acceleration.div
 import com.splendo.kaluga.scientific.converter.yank.div
 import com.splendo.kaluga.scientific.invoke
@@ -34,11 +36,19 @@ class JoltUnitTest {
     fun joltFromAccelerationDivTimeTest() {
         assertEquals(1.0(Meter per Second per Second per Second), (2(Meter per Second per Second) / 2(Second)))
         assertEquals(1.0(Foot per Second per Second per Second), (2(Foot per Second per Second) / 2(Second)))
+        assertEquals(1.0(Meter per Second per Second per Second), (2((Meter per Second per Second) as Acceleration) / 2(Second)))
     }
 
     @Test
     fun joltFromYankAndMassTest() {
         assertEquals(1.0(Meter per Second per Second per Second),2(Newton per Second) / 2(Kilogram))
         assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce per Second) / 2(Pound))
+        assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce per Second) / 2(Pound.ukImperial))
+        assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce per Second) / 2(Pound.usCustomary))
+        assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce.ukImperial per Second) / 2(Pound))
+        assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce.ukImperial per Second) / 2(Pound.ukImperial))
+        assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce.usCustomary per Second) / 2(Pound))
+        assertEquals(ImperialStandardGravityAcceleration / 1(Second), 2(PoundForce.usCustomary per Second) / 2(Pound.usCustomary))
+        assertEqualScientificValue(1.0(Meter per Second per Second per Second),2(Newton per Second) / 2(Kilogram).convert(Pound), 9)
     }
 }

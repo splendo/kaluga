@@ -31,11 +31,9 @@ import com.splendo.kaluga.scientific.unit.Gigawatt
 import com.splendo.kaluga.scientific.unit.Hectowatt
 import com.splendo.kaluga.scientific.unit.Horsepower
 import com.splendo.kaluga.scientific.unit.Hour
-import com.splendo.kaluga.scientific.unit.ImperialMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.unit.ImperialPower
 import com.splendo.kaluga.scientific.unit.Kilowatt
 import com.splendo.kaluga.scientific.unit.Megawatt
-import com.splendo.kaluga.scientific.unit.MetricMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.unit.MetricPower
 import com.splendo.kaluga.scientific.unit.Microwatt
 import com.splendo.kaluga.scientific.unit.Milliwatt
@@ -88,12 +86,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: Sci
 @JvmName("hourTimesGigawatt")
 infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Gigawatt>) =
     power * this
-
-@JvmName("hourTimesMetricMetricAndImperialPowerWrapper")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, MetricMetricAndImperialPowerWrapper>) = power * this
-
-@JvmName("hourTimesImperialMetricAndImperialPowerWrapperTimesHour")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, ImperialMetricAndImperialPowerWrapper>) = power * this
 
 @JvmName("timeTimesErgPerSecond")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, ErgPerSecond>) =

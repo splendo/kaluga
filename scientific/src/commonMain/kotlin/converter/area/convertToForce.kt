@@ -51,11 +51,6 @@ infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Area, SquareCent
 ) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     pressure * this
 
-@JvmName("metricAreaTimesMetricPressure")
-infix operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
-) = pressure * this
-
 @JvmName("imperialAreaTimesOunceSquareInch")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>) =
     pressure * this

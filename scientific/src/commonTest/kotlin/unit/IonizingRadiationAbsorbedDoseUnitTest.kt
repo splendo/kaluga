@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.energy.absorbedBy
 import com.splendo.kaluga.scientific.converter.specificEnergy.asAbsorbedDose
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -53,11 +54,13 @@ class IonizingRadiationAbsorbedDoseUnitTest {
 
     @Test
     fun absorbedDoseFromEnergyAndWeightTest() {
-        // assertEqualScientificValue(1(Rad),2(Joule) / 2(Kilogram)) FIXME
+        assertEquals(1(Rad),2(Erg) absorbedBy 2(Gram))
+        assertEquals(1(Rad),20(Decierg) absorbedBy 2(Gram))
+        assertEquals(1(Gray),2(Joule) absorbedBy 2(Kilogram))
     }
 
     @Test
     fun specificEnergyFromAbsorbedDoseTest() {
-        assertEquals(2(Gray),2(Joule per Kilogram).asAbsorbedDose())
+        assertEquals(2(Gray), 2(Joule per Kilogram).asAbsorbedDose())
     }
 }

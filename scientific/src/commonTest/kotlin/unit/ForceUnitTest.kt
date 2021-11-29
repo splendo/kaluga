@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.acceleration.times
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.energy.div
@@ -30,6 +31,7 @@ import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.converter.yank.times
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -79,45 +81,114 @@ class ForceUnitTest {
 
     @Test
     fun forceFromMassAndAccelerationTest() {
-        // TODO check if expected are accurate
         assertEquals(4.0(Newton), 2(Kilogram) * 2(Meter per Second per Second))
         assertEquals(4.0(Newton), 2(Meter per Second per Second) * 2(Kilogram))
         assertEqualScientificValue(
-            0.124323801(PoundForce),
-            2(Pound) * 2(Foot per Second per Second),
+            4(PoundForce),
+            2(Pound) * (2 * ImperialStandardGravityAcceleration),
             9
         )
         assertEqualScientificValue(
-            0.124323801(PoundForce),
-            2(Foot per Second per Second) * 2(Pound),
+            4(PoundForce),
+            (2 * ImperialStandardGravityAcceleration) * 2(Pound),
             9
         )
         assertEqualScientificValue(
-            0.124323801(UsTonForce),
-            2(UsTon) * 2(Foot per Second per Second),
+            4(OunceForce),
+            2(Ounce) * (2 * ImperialStandardGravityAcceleration),
             9
         )
         assertEqualScientificValue(
-            0.124323801(UsTonForce),
-            2(Foot per Second per Second) * 2(UsTon),
+            4(OunceForce),
+            (2 * ImperialStandardGravityAcceleration) * 2(Ounce),
             9
         )
         assertEqualScientificValue(
-            0.124323801(ImperialTonForce),
-            2(ImperialTon) * 2(Foot per Second per Second),
+            4(GrainForce),
+            2(Grain) * (2 * ImperialStandardGravityAcceleration),
             9
         )
         assertEqualScientificValue(
-            0.124323801(ImperialTonForce),
-            2(Foot per Second per Second) * 2(ImperialTon),
+            4(GrainForce),
+            (2 * ImperialStandardGravityAcceleration) * 2(Grain),
             9
+        )
+        assertEqualScientificValue(
+            4(UsTonForce),
+            2(UsTon) * (2 * ImperialStandardGravityAcceleration),
+            9
+        )
+        assertEqualScientificValue(
+            4(UsTonForce),
+            (2 * ImperialStandardGravityAcceleration) * 2(UsTon),
+            9
+        )
+        assertEqualScientificValue(
+            4(ImperialTonForce),
+            2(ImperialTon) * (2 * ImperialStandardGravityAcceleration),
+            9
+        )
+        assertEqualScientificValue(
+            4(ImperialTonForce),
+            (2 * ImperialStandardGravityAcceleration) * 2(ImperialTon),
+            9
+        )
+        assertEqualScientificValue(
+            4(PoundForce),
+            2(Pound as ImperialWeight) * (2 * ImperialStandardGravityAcceleration),
+            9
+        )
+        assertEqualScientificValue(
+            4(PoundForce),
+            (2 * ImperialStandardGravityAcceleration) * 2(Pound as ImperialWeight),
+            9
+        )
+        assertEqualScientificValue(
+            4(PoundForce.ukImperial),
+            2(Pound.ukImperial) * (2 * ImperialStandardGravityAcceleration),
+            9
+        )
+        assertEqualScientificValue(
+            4(PoundForce.ukImperial),
+            (2 * ImperialStandardGravityAcceleration) * 2(Pound.ukImperial),
+            9
+        )
+        assertEqualScientificValue(
+            4(PoundForce.usCustomary),
+            2(Pound.usCustomary) * (2 * ImperialStandardGravityAcceleration),
+            9
+        )
+        assertEqualScientificValue(
+            4(PoundForce.usCustomary),
+            (2 * ImperialStandardGravityAcceleration) * 2(Pound.usCustomary),
+            9
+        )
+        assertEquals(
+            4.0(Newton),
+            2(Kilogram) * 2(Meter per Second per Second).convert(Foot per Second per Second)
+        )
+        assertEquals(
+            4.0(Newton),
+            2(Meter per Second per Second).convert(Foot per Second per Second) * 2(Kilogram)
         )
     }
 
     @Test
     fun forceFromEnergyAndLengthTest() {
+        assertEquals(1.0(Dyne), 2(Erg) / 2(Centimeter))
+        assertEquals(1.0(Dyne), 20(Decierg) / 2(Centimeter))
         assertEquals(1.0(Newton), 2(Joule) / 2(Meter))
+        assertEquals(1.0(Newton), 2(Joule).convert(WattHour) / 2(Meter))
+
+        assertEquals(1.0(Poundal), 2(FootPoundal) / 2(Foot))
+        assertEquals(1.0(OunceForce), 2(InchOunceForce) / 2(Inch))
         assertEquals(1.0(PoundForce), 2(FootPoundForce) / 2(Foot))
+        assertEqualScientificValue(
+            1.0(Newton).convert(PoundForce),
+            2(Joule).convert(WattHour) / 2(Meter).convert(Foot),
+            8
+        )
+        assertEqualScientificValue(1.0(Newton), 2(Joule) / 2(Meter).convert(Foot), 8)
     }
 
     @Test
@@ -128,31 +199,64 @@ class ForceUnitTest {
             (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(Second),
             10
         )
-        // FIXME find expected values
-        /*assertEqualScientificValue(
-            1(ImperialTonForce),
-            (2 * ImperialStandardGravityAcceleration.value)(ImperialTon x (Foot per Second)) / 2(Second),
+        assertEqualScientificValue(
+            1(PoundForce),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
+                Second
+            ),
             10
         )
         assertEqualScientificValue(
-            1(UsTonForce),
-            (2 * ImperialStandardGravityAcceleration.value)(UsTon x (Foot per Second)) / 2(Second),
+            1(PoundForce),
+            (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
+                Second
+            ),
             10
-        )*/
+        )
+        assertEquals(1.0(Newton), 2((Kilogram x (Meter per Second)) as Momentum) / 2(Second))
     }
 
     @Test
     fun forceFromPowerAndSpeedTest() {
-        assertEquals(1.0(Newton), 2(Watt) / 2(Meter per Second))
+        assertEquals(1.0(Dyne), 2(ErgPerSecond) / 2(Centimeter per Second))
+        assertEquals(1.0(Newton), 2(Watt.metric) / 2(Meter per Second))
         assertEquals(1.0(PoundForce), 2(FootPoundForcePerSecond) / 2(Foot per Second))
+        assertEquals(1.0(PoundForce), 2(FootPoundForcePerSecond).convert(Watt) / 2(Foot per Second))
+        assertEquals(1.0(Newton), 2(Watt.metric) / 2(Meter per Second).convert(Foot per Second))
     }
 
     @Test
     fun forceFromPressureAndAreaTest() {
+        assertEquals(4(Dyne), 2(Barye) * 2(SquareCentimeter))
+        assertEquals(4(Dyne), 2(SquareCentimeter) * 2(Barye))
+        assertEquals(4(Dyne), 20(Decibarye) * 2(SquareCentimeter))
+        assertEquals(4(Dyne), 2(SquareCentimeter) * 20(Decibarye))
         assertEquals(4(Newton), 2(Pascal) * 2(SquareMeter))
         assertEquals(4(Newton), 2(SquareMeter) * 2(Pascal))
         assertEquals(4(PoundForce), 2(PoundSquareFoot) * 2(SquareFoot))
         assertEquals(4(PoundForce), 2(SquareFoot) * 2(PoundSquareFoot))
+        assertEquals(4(OunceForce), 2(OunceSquareInch) * 2(SquareInch))
+        assertEquals(4(OunceForce), 2(SquareInch) * 2(OunceSquareInch))
+        assertEquals(4(Kip), 2(KipSquareInch) * 2(SquareInch))
+        assertEquals(4(Kip), 2(SquareInch) * 2(KipSquareInch))
+        assertEquals(4(Kip), 2(KipSquareFoot) * 2(SquareFoot))
+        assertEquals(4(Kip), 2(SquareFoot) * 2(KipSquareFoot))
+        assertEquals(4(UsTonForce), 2(USTonSquareInch) * 2(SquareInch))
+        assertEquals(4(UsTonForce), 2(SquareInch) * 2(USTonSquareInch))
+        assertEquals(4(UsTonForce), 2(USTonSquareFoot) * 2(SquareFoot))
+        assertEquals(4(UsTonForce), 2(SquareFoot) * 2(USTonSquareFoot))
+        assertEquals(4(ImperialTonForce), 2(ImperialTonSquareInch) * 2(SquareInch))
+        assertEquals(4(ImperialTonForce), 2(SquareInch) * 2(ImperialTonSquareInch))
+        assertEquals(4(ImperialTonForce), 2(ImperialTonSquareFoot) * 2(SquareFoot))
+        assertEquals(4(ImperialTonForce), 2(SquareFoot) * 2(ImperialTonSquareFoot))
+        assertEquals(4(PoundForce), 2(PoundSquareFoot).convert(InchOfMercury) * 2(SquareFoot))
+        assertEquals(4(PoundForce), 2(SquareFoot) * 2(PoundSquareFoot).convert(InchOfMercury))
+        assertEquals(4(PoundForce.ukImperial), 2(PoundSquareFoot.ukImperial) * 2(SquareFoot))
+        assertEquals(4(PoundForce.ukImperial), 2(SquareFoot) * 2(PoundSquareFoot.ukImperial))
+        assertEquals(4(PoundForce.usCustomary), 2(PoundSquareFoot.usCustomary) * 2(SquareFoot))
+        assertEquals(4(PoundForce.usCustomary), 2(SquareFoot) * 2(PoundSquareFoot.usCustomary))
+        assertEquals(4(Newton), 2(Pascal) * 2(SquareMeter).convert(SquareFoot))
+        assertEquals(4(Newton), 2(SquareMeter).convert(SquareFoot) * 2(Pascal))
     }
 
     @Test
@@ -165,6 +269,8 @@ class ForceUnitTest {
         assertEqualScientificValue(4(ImperialTonForce), 2(Foot) * 2(ImperialTonForce per Foot))
         assertEqualScientificValue(4(UsTonForce), 2(UsTonForce per Foot) * 2(Foot))
         assertEqualScientificValue(4(UsTonForce), 2(Foot) * 2(UsTonForce per Foot))
+        assertEqualScientificValue(4(Newton), 2(Newton per Meter) * 2(Meter).convert(Foot))
+        assertEqualScientificValue(4(Newton), 2(Meter).convert(Foot) * 2(Newton per Meter))
     }
 
     @Test
@@ -183,5 +289,7 @@ class ForceUnitTest {
         )
         assertEqualScientificValue(4.0(UsTonForce), 2(UsTonForce per Second) * 2(Second))
         assertEqualScientificValue(4.0(UsTonForce), 2(Second) * 2(UsTonForce per Second))
+        assertEqualScientificValue(4.0(Newton), 2((Newton per Second) as Yank) * 2(Second))
+        assertEqualScientificValue(4.0(Newton), 2(Second) * 2((Newton per Second) as Yank))
     }
 }

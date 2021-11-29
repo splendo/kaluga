@@ -40,7 +40,7 @@ infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : Metric
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = Nit.luminance(this, area)
 
-@JvmName("luminousIntensityDivIMperialArea")
+@JvmName("luminousIntensityDivImperialArea")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = FootLambert.luminance(this, area)

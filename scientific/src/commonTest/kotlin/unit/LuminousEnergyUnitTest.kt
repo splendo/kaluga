@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.luminousExposure.times
 import com.splendo.kaluga.scientific.converter.luminousFlux.times
@@ -38,6 +39,8 @@ class LuminousEnergyUnitTest {
         assertEquals(4(Lumen x Second), 2(SquareMeter) * 2(Lux x Second))
         assertEquals(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot))
         assertEquals(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second))
+        assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter).convert(SquareFoot))
+        assertEquals(4(Lumen x Second), 2(SquareMeter).convert(SquareFoot) * 2(Lux x Second))
     }
 
     @Test
