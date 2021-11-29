@@ -22,58 +22,34 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.molarMass.times
 import com.splendo.kaluga.scientific.converter.molarVolume.molarVolume
 import com.splendo.kaluga.scientific.unit.CubicMeter
-import com.splendo.kaluga.scientific.unit.ImperialMolarMass
 import com.splendo.kaluga.scientific.unit.ImperialSpecificVolume
-import com.splendo.kaluga.scientific.unit.MetricMolarMass
 import com.splendo.kaluga.scientific.unit.MetricSpecificVolume
 import com.splendo.kaluga.scientific.unit.Molality
 import com.splendo.kaluga.scientific.unit.MolarMass
 import com.splendo.kaluga.scientific.unit.SpecificVolume
-import com.splendo.kaluga.scientific.unit.UKImperialMolarMass
 import com.splendo.kaluga.scientific.unit.UKImperialSpecificVolume
-import com.splendo.kaluga.scientific.unit.USCustomaryMolarMass
 import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("metricSpecificVolumeTimesMetricMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>
+@JvmName("metricSpecificVolumeTimesMolarMass")
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>.times(
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
 ) = molarMass * this
 
-@JvmName("imperialSpecificVolumeTimesImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>
+@JvmName("imperialSpecificVolumeTimesMolarMass")
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
 ) = molarMass * this
 
-@JvmName("imperialSpecificVolumeTimesUKImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, UKImperialMolarMass>
+@JvmName("ukImperialSpecificVolumeTimesMolarMass")
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>.times(
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
 ) = molarMass * this
 
-@JvmName("imperialSpecificVolumeTimesUSCustomaryMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>
-) = molarMass * this
-
-@JvmName("ukImperialSpecificVolumeTimesImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>
-) = molarMass * this
-
-@JvmName("ukImperialSpecificVolumeTimesUKImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, UKImperialMolarMass>
-) = molarMass * this
-
-@JvmName("usCustomarySpecificVolumeTimesImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>
-) = molarMass * this
-
-@JvmName("usCustomarySpecificVolumeTimesUSCustomaryMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>.times(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>
+@JvmName("usCustomarySpecificVolumeTimesMolarMass")
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>.times(
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
 ) = molarMass * this
 
 @JvmName("specificVolumeTimesMolarMass")

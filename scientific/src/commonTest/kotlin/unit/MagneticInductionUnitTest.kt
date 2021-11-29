@@ -42,7 +42,7 @@ class MagneticInductionUnitTest {
 
     @Test
     fun inductionFromFluxAndAreaTest() {
+        assertEquals(1(Gauss), 2(Maxwell) / 2(SquareCentimeter))
         assertEquals(1(Tesla), 2(Weber) / 2(SquareMeter))
-        assertEqualScientificValue(10.76(Tesla), 2(Weber) / 2(SquareFoot), 2)
     }
 }

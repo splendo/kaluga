@@ -72,7 +72,10 @@ class LengthUnitTest {
         assertEquals(1(Kilometer), 2(SquareKilometer) / 2(Kilometer))
         assertEquals(1(Megameter), 2(SquareMegameter) / 2(Megameter))
         assertEquals(1(Gigameter), 2(SquareGigameter) / 2(Gigameter))
-        assertEquals(1(Meter), 2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Hectometer))
+        assertEquals(
+            1(Meter),
+            2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Hectometer)
+        )
 
         assertEquals(1(Inch), 2(SquareInch) / 2(Inch))
         assertEquals(1(Foot), 2(SquareFoot) / 2(Foot))
@@ -89,10 +92,19 @@ class LengthUnitTest {
         assertEquals(1(Foot), 2(Pound.ukImperial per SquareFoot) / 2(Pound per CubicFoot))
         assertEquals(1(Foot), 2(Pound.usCustomary per SquareFoot) / 2(Pound per CubicFoot))
         assertEquals(1(Foot), 2(Pound per SquareFoot) / 2(Pound.ukImperial per CubicFoot))
-        assertEquals(1(Foot), 2(Pound.ukImperial per SquareFoot) / 2(Pound.ukImperial per CubicFoot))
+        assertEquals(
+            1(Foot),
+            2(Pound.ukImperial per SquareFoot) / 2(Pound.ukImperial per CubicFoot)
+        )
         assertEquals(1(Foot), 2(Pound per SquareFoot) / 2(Pound.usCustomary per CubicFoot))
-        assertEquals(1(Foot), 2(Pound.usCustomary per SquareFoot) / 2(Pound.usCustomary per CubicFoot))
-        assertEquals(1(Meter), 2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot))
+        assertEquals(
+            1(Foot),
+            2(Pound.usCustomary per SquareFoot) / 2(Pound.usCustomary per CubicFoot)
+        )
+        assertEquals(
+            1(Meter),
+            2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot)
+        )
     }
 
     @Test
@@ -102,20 +114,40 @@ class LengthUnitTest {
         assertEquals(4(Foot), 2(CubicFoot per Pound) * 2(Pound.ukImperial per SquareFoot))
         assertEquals(4(Foot), 2(CubicFoot per Pound) * 2(Pound.usCustomary per SquareFoot))
         assertEquals(4(Foot), 2(CubicFoot per Pound.ukImperial) * 2(Pound per SquareFoot))
-        assertEquals(4(Foot), 2(CubicFoot per Pound.ukImperial) * 2(Pound.ukImperial per SquareFoot))
+        assertEquals(
+            4(Foot),
+            2(CubicFoot per Pound.ukImperial) * 2(Pound.ukImperial per SquareFoot)
+        )
         assertEquals(4(Foot), 2(CubicFoot per Pound.usCustomary) * 2(Pound per SquareFoot))
-        assertEquals(4(Foot), 2(CubicFoot per Pound.usCustomary) * 2(Pound.usCustomary per SquareFoot))
-        assertEqualScientificValue(4(Meter), 2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter).convert(Pound per SquareFoot), 5)
+        assertEquals(
+            4(Foot),
+            2(CubicFoot per Pound.usCustomary) * 2(Pound.usCustomary per SquareFoot)
+        )
+        assertEqualScientificValue(
+            4(Meter),
+            2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter).convert(Pound per SquareFoot),
+            5
+        )
 
         assertEquals(4(Meter), 2(Kilogram per SquareMeter) * 2(CubicMeter per Kilogram))
         assertEquals(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound))
         assertEquals(4(Foot), 2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound))
         assertEquals(4(Foot), 2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound))
         assertEquals(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.ukImperial))
-        assertEquals(4(Foot), 2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound.ukImperial))
+        assertEquals(
+            4(Foot),
+            2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound.ukImperial)
+        )
         assertEquals(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.usCustomary))
-        assertEquals(4(Foot), 2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound.usCustomary))
-        assertEqualScientificValue(4(Meter), 2(Kilogram per SquareMeter).convert(Pound per SquareFoot) * 2(CubicMeter per Kilogram), 5)
+        assertEquals(
+            4(Foot),
+            2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound.usCustomary)
+        )
+        assertEqualScientificValue(
+            4(Meter),
+            2(Kilogram per SquareMeter).convert(Pound per SquareFoot) * 2(CubicMeter per Kilogram),
+            5
+        )
     }
 
     @Test
@@ -133,8 +165,16 @@ class LengthUnitTest {
         assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(ImperialTonForce))
         assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(UsTonForce))
         assertEqualScientificValue(1(Foot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce), 5)
-        assertEqualScientificValue(1(Foot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce).convert(ImperialTonForce), 5)
-        assertEqualScientificValue(1(Foot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce).convert(UsTonForce), 5)
+        assertEqualScientificValue(
+            1(Foot),
+            2(FootPoundForce).convert(WattHour) / 2(PoundForce).convert(ImperialTonForce),
+            5
+        )
+        assertEqualScientificValue(
+            1(Foot),
+            2(FootPoundForce).convert(WattHour) / 2(PoundForce).convert(UsTonForce),
+            5
+        )
     }
 
     @Test
@@ -144,10 +184,17 @@ class LengthUnitTest {
         assertEqualScientificValue(1(Foot), 2(PoundForce.ukImperial) / 2(PoundForce per Foot))
         assertEqualScientificValue(1(Foot), 2(PoundForce.usCustomary) / 2(PoundForce per Foot))
         assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce.ukImperial per Foot))
-        assertEqualScientificValue(1(Foot), 2(PoundForce.ukImperial) / 2(PoundForce.ukImperial per Foot))
+        assertEqualScientificValue(
+            1(Foot),
+            2(PoundForce.ukImperial) / 2(PoundForce.ukImperial per Foot)
+        )
         assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce.usCustomary per Foot))
         assertEqualScientificValue(1(Foot), 2(PoundForce.usCustomary) / 2(PoundForce per Foot))
-        assertEqualScientificValue(1(Meter), 2(Newton) / 2(Newton per Meter).convert(PoundForce per Foot), 5)
+        assertEqualScientificValue(
+            1(Meter),
+            2(Newton) / 2(Newton per Meter).convert(PoundForce per Foot),
+            5
+        )
     }
 
     @Test
@@ -160,7 +207,10 @@ class LengthUnitTest {
         assertEquals(1(Foot), 2(Pound.ukImperial per Foot) / 2(Pound.ukImperial per SquareFoot))
         assertEquals(1(Foot), 2(Pound.usCustomary per Foot) / 2(Pound per SquareFoot))
         assertEquals(1(Foot), 2(Pound.usCustomary per Foot) / 2(Pound.usCustomary per SquareFoot))
-        assertEquals(1(Meter), 2(Kilogram per Meter) / 2(Kilogram per SquareMeter).convert(Pound per SquareFoot))
+        assertEquals(
+            1(Meter),
+            2(Kilogram per Meter) / 2(Kilogram per SquareMeter).convert(Pound per SquareFoot)
+        )
     }
 
     @Test
@@ -184,7 +234,10 @@ class LengthUnitTest {
         assertEquals(2(Kilometer), 8(CubicKilometer) / 4(SquareKilometer))
         assertEquals(2(Megameter), 8(CubicMegameter) / 4(SquareMegameter))
         assertEquals(2(Gigameter), 8(CubicGigameter) / 4(SquareGigameter))
-        assertEquals(2(Meter), 8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareDecimeter))
+        assertEquals(
+            2(Meter),
+            8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareDecimeter)
+        )
         assertEquals(2(Meter), Meter.height(8(CubicMeter), 2(Meter), 2(Meter)))
 
         assertEquals(2(Inch), 8(CubicInch) / 4(SquareInch))
@@ -196,7 +249,10 @@ class LengthUnitTest {
         assertEquals(2(Foot), 8(CubicFoot).convert(CubicInch) / 4(SquareFoot).convert(SquareYard))
         assertEquals(2(Foot), 8(CubicFoot.ukImperial) / 4(SquareFoot))
         assertEquals(2(Foot), 8(CubicFoot.usCustomary) / 4(SquareFoot))
-        assertEquals(2(Meter), 8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareInch))
+        assertEquals(
+            2(Meter),
+            8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareInch)
+        )
     }
 
     @Test
@@ -209,6 +265,9 @@ class LengthUnitTest {
         assertEqualScientificValue(1(Foot), 2(Pound.ukImperial) / 2(Pound.ukImperial per Foot))
         assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound.usCustomary per Foot))
         assertEqualScientificValue(1(Foot), 2(Pound.usCustomary) / 2(Pound.usCustomary per Foot))
-        assertEqualScientificValue(1(Meter), 2(Kilogram) / 2(Kilogram per Meter).convert(Pound per Foot))
+        assertEqualScientificValue(
+            1(Meter),
+            2(Kilogram) / 2(Kilogram per Meter).convert(Pound per Foot)
+        )
     }
 }

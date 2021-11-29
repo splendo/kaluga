@@ -157,7 +157,6 @@ class AreaUnitTest {
         assertEquals(4(SquareMile), 2(Mile) * 2(Mile))
         assertEquals(4(SquareFoot), 2(Foot).convert(Inch) * 2(Foot))
         assertEquals(4(SquareMeter), 2(Meter).convert(Foot) * 2(Meter))
-        assertEquals(4(SquareMeter), 2(Meter as Length) * 2(Meter))
     }
 
     @Test

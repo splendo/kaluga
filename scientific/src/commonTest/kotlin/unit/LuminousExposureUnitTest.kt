@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.illuminance.times
 import com.splendo.kaluga.scientific.converter.luminousEnergy.div
 import com.splendo.kaluga.scientific.converter.time.times
@@ -45,6 +46,6 @@ class LuminousExposureUnitTest {
     fun luminousExposureFromLuminousEnergyAndAreaTest() {
         assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter))
         assertEquals(1(FootCandle x Second), 2(Lumen x Second) / 2(SquareFoot))
-        assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter as Area))
+        assertEquals(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter).convert(SquareFoot as Area))
     }
 }

@@ -213,7 +213,7 @@ class ForceUnitTest {
             ),
             10
         )
-        assertEquals(1.0(Newton), 2((Kilogram x (Meter per Second)) as Momentum) / 2(Second))
+        assertEquals(1.0(Newton), 2(Kilogram x (Meter per Second)).convert((Pound x (Foot per Second)) as Momentum) / 2(Second))
     }
 
     @Test

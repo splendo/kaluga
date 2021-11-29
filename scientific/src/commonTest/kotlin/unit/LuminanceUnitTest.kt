@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.illuminance.div
 import com.splendo.kaluga.scientific.converter.luminousIntensity.div
 import com.splendo.kaluga.scientific.invoke
@@ -53,7 +54,7 @@ class LuminanceUnitTest {
         assertEquals(1(Stilb), 20(Deciphot) / 2(Steradian))
         assertEquals(1(Nit), 2(Lux) / 2(Steradian))
         assertEqualScientificValue(PI(FootLambert), 2(FootCandle) / 2(Steradian), 8)
-        assertEquals(1(Nit), 2(Lux as Illuminance) / 2(Steradian))
+        assertEquals(1(Nit), 2(Lux).convert(FootLambert as Illuminance) / 2(Steradian))
     }
 
     @Test
@@ -61,6 +62,6 @@ class LuminanceUnitTest {
         assertEquals(1(Stilb), 2(Candela) / 2(SquareCentimeter))
         assertEquals(1(Nit), 2(Candela) / 2(SquareMeter))
         assertEqualScientificValue(PI(FootLambert), (2(Candela) / 2(SquareFoot)), 8)
-        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter as Area))
+        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter).convert(SquareFoot as Area))
     }
 }

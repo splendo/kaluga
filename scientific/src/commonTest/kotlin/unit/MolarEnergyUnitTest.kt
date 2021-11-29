@@ -17,8 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.molarMass.times
 import com.splendo.kaluga.scientific.converter.specificEnergy.div
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
 import com.splendo.kaluga.scientific.invoke
@@ -40,20 +41,52 @@ class MolarEnergyUnitTest {
     }
 
     @Test
-    fun molarEnergyFromMolarMassAndSpecificEnergyTest() {
-        assertEquals(4(Joule per Mole), 2(Joule per Kilogram) * 2(Kilogram per Mole))
-        // FIXME this fails probably because there is no MetricAndImperial for some units like there is for Energy but only Metric or Imperial
-        // assertEqualScientificValue(4(Calorie per Mole), 2(Calorie per Pound) * 2(Pound per Mole))
-        // assertEqualScientificValue(4(Calorie per Mole), 2(Calorie per Kilogram) * 2(Kilogram per Mole))
-        assertEquals(4(HorsepowerHour per Mole), 2(HorsepowerHour per Pound) * 2(Pound per Mole))
+    fun molarEnergyFromSpecificEnergyAndMolalityTest() {
+        assertEquals(1(Joule per Mole), 2(Joule per Kilogram) / 2(Mole per Kilogram))
+        assertEquals(1(WattHour.imperial per Mole), 2(WattHour per Pound) / 2(Mole per Pound))
+        assertEquals(
+            1(WattHour.imperial per Mole),
+            2(WattHour per Pound.ukImperial) / 2(Mole per Pound)
+        )
+        assertEquals(
+            1(WattHour.imperial per Mole),
+            2(WattHour per Pound.usCustomary) / 2(Mole per Pound)
+        )
+        assertEquals(
+            1(Joule per Mole),
+            2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) / 2(Mole per Kilogram)
+        )
     }
 
     @Test
-    fun molarEnergyFromSpecificEnergyAndMolalityTest() {
-        assertEquals(1(Joule per Mole), 2(Joule per Kilogram) / 2(Mole per Kilogram))
-        // FIXME same as above
-        // assertEqualScientificValue(1(Calorie per Mole), 2(Calorie per Kilogram) / 2(Mole per Kilogram))
-        // assertEqualScientificValue(1(Calorie per Mole), 2(Calorie per Pound) / 2(Mole per Pound))
-        assertEquals(1(HorsepowerHour per Mole), 2(HorsepowerHour per Pound) / 2(Mole per Pound))
+    fun molarEnergyFromSpecificEnergyAndMolarMassTest() {
+        assertEquals(4(Joule per Mole), 2(Joule per Kilogram) * 2(Kilogram per Mole))
+        assertEquals(4(Joule per Mole), 2(Kilogram per Mole) * 2(Joule per Kilogram))
+        assertEquals(4(WattHour.imperial per Mole), 2(WattHour per Pound) * 2(Pound per Mole))
+        assertEquals(4(WattHour.imperial per Mole), 2(Pound per Mole) * 2(WattHour per Pound))
+        assertEquals(
+            4(WattHour.imperial per Mole),
+            2(WattHour per Pound.ukImperial) * 2(Pound per Mole)
+        )
+        assertEquals(
+            4(WattHour.imperial per Mole),
+            2(Pound per Mole) * 2(WattHour per Pound.ukImperial)
+        )
+        assertEquals(
+            4(WattHour.imperial per Mole),
+            2(WattHour per Pound.usCustomary) * 2(Pound per Mole)
+        )
+        assertEquals(
+            4(WattHour.imperial per Mole),
+            2(Pound per Mole) * 2(WattHour per Pound.usCustomary)
+        )
+        assertEquals(
+            4(Joule per Mole),
+            2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) * 2(Kilogram per Mole)
+        )
+        assertEquals(
+            4(Joule per Mole),
+            2(Kilogram per Mole) * 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy)
+        )
     }
 }

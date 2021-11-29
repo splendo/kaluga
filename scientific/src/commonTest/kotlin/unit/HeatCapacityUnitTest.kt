@@ -30,7 +30,13 @@ class HeatCapacityUnitTest {
 
     @Test
     fun heatCapacityConversionTest() {
-        assertScientificConversion(1, (Joule per Kelvin), 0.409757, FootPoundForce per Fahrenheit, 6)
+        assertScientificConversion(
+            1,
+            (Joule per Kelvin),
+            0.409757,
+            FootPoundForce per Fahrenheit,
+            6
+        )
     }
 
     @Test
@@ -47,15 +53,47 @@ class HeatCapacityUnitTest {
     fun heatCapacityFromWeightAndSpecificHeatCapacityTest() {
         assertEquals(4(Joule per Celsius), 2((Joule per Kilogram) per Celsius) * 2(Kilogram))
         assertEquals(4(Joule per Celsius), 2(Kilogram) * 2((Joule per Kilogram) per Celsius))
-        assertEquals(4(HorsepowerHour per Celsius), 2((HorsepowerHour per Pound) per Celsius) * 2(Pound))
-        assertEquals(4(HorsepowerHour per Celsius), 2(Pound) * 2((HorsepowerHour per Pound) per Celsius))
-        assertEquals(4(HorsepowerHour per Celsius), 2((HorsepowerHour per Pound) per Celsius) * 2(Pound.ukImperial))
-        assertEquals(4(HorsepowerHour per Celsius), 2(Pound.ukImperial) * 2((HorsepowerHour per Pound) per Celsius))
-        assertEquals(4(HorsepowerHour per Fahrenheit), 2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound))
-        assertEquals(4(HorsepowerHour per Fahrenheit), 2(Pound) * 2((HorsepowerHour per Pound) per Fahrenheit))
-        assertEquals(4(HorsepowerHour per Fahrenheit), 2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound.usCustomary))
-        assertEquals(4(HorsepowerHour per Fahrenheit), 2(Pound.usCustomary) * 2((HorsepowerHour per Pound) per Fahrenheit))
-        assertEqualScientificValue(4(Joule per Kelvin), 2((Joule per Kilogram) per Celsius) * 2(Kilogram).convert(Pound), 8)
-        assertEqualScientificValue(4(Joule per Kelvin), 2(Kilogram).convert(Pound) * 2((Joule per Kilogram) per Celsius), 8)
+        assertEquals(
+            4(HorsepowerHour per Celsius),
+            2((HorsepowerHour per Pound) per Celsius) * 2(Pound)
+        )
+        assertEquals(
+            4(HorsepowerHour per Celsius),
+            2(Pound) * 2((HorsepowerHour per Pound) per Celsius)
+        )
+        assertEquals(
+            4(HorsepowerHour per Celsius),
+            2((HorsepowerHour per Pound) per Celsius) * 2(Pound.ukImperial)
+        )
+        assertEquals(
+            4(HorsepowerHour per Celsius),
+            2(Pound.ukImperial) * 2((HorsepowerHour per Pound) per Celsius)
+        )
+        assertEquals(
+            4(HorsepowerHour per Fahrenheit),
+            2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound)
+        )
+        assertEquals(
+            4(HorsepowerHour per Fahrenheit),
+            2(Pound) * 2((HorsepowerHour per Pound) per Fahrenheit)
+        )
+        assertEquals(
+            4(HorsepowerHour per Fahrenheit),
+            2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound.usCustomary)
+        )
+        assertEquals(
+            4(HorsepowerHour per Fahrenheit),
+            2(Pound.usCustomary) * 2((HorsepowerHour per Pound) per Fahrenheit)
+        )
+        assertEqualScientificValue(
+            4(Joule per Kelvin),
+            2((Joule per Kilogram) per Celsius) * 2(Kilogram).convert(Pound),
+            8
+        )
+        assertEqualScientificValue(
+            4(Joule per Kelvin),
+            2(Kilogram).convert(Pound) * 2((Joule per Kilogram) per Celsius),
+            8
+        )
     }
 }

@@ -17,10 +17,14 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.converter.area.times
+import com.splendo.kaluga.scientific.converter.electricCharge.times
+import com.splendo.kaluga.scientific.converter.electricCurrent.times
 import com.splendo.kaluga.scientific.converter.electricInductance.times
 import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.magneticInduction.times
+import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.converter.voltage.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -45,31 +49,44 @@ class MagneticFluxUnitTest {
 
     @Test
     fun fluxFromInductanceAndCurrentTest() {
+        assertEquals(4(Maxwell), 2(Abhenry) * 2(Abampere))
+        assertEquals(4(Maxwell), 2(Abampere) * 2(Abhenry))
+        assertEquals(4(Maxwell), 2(Abhenry) * 2(Biot))
+        assertEquals(4(Maxwell), 2(Biot) * 2(Abhenry))
         assertEquals(4(Weber), 2(Henry) * 2(Ampere))
+        assertEquals(4(Weber), 2(Ampere) * 2(Henry))
     }
 
     @Test
     fun fluxFromResistanceAndChargeTest() {
+        assertEquals(4(Maxwell), 2(Abohm) * 2(Abcoulomb))
+        assertEquals(4(Maxwell), 2(Abcoulomb) * 2(Abohm))
         assertEquals(4(Weber), 2(Ohm) * 2(Coulomb))
+        assertEquals(4(Weber), 2(Coulomb) * 2(Ohm))
     }
 
     @Test
     fun fluxFromEnergyAndCurrentTest() {
+        assertEquals(1(Maxwell), 2(Erg) / 2(Abampere))
+        assertEquals(1(Maxwell), 20(Decierg) / 2(Abampere))
+        assertEquals(1(Maxwell), 2(Erg) / 2(Biot))
+        assertEquals(1(Maxwell), 20(Decierg) / 2(Biot))
         assertEquals(1(Weber), 2(Joule) / 2(Ampere))
-        // TODO figure out expects for WattHour and HorsepowerHour
-        //assertEquals(1(Weber), 2(WattHour) / 2(Ampere))
-        //assertEquals(1(Weber), 2(HorsepowerHour) / 2(Ampere))
     }
 
     @Test
     fun fluxFromInductionAndAreaTest() {
+        assertEquals(4(Maxwell), 2(Gauss) * 2(SquareCentimeter))
+        assertEquals(4(Maxwell), 2(SquareCentimeter) * 2(Gauss))
         assertEquals(4(Weber), 2(Tesla) * 2(SquareMeter))
-        // TODO check if correct, from google [1 Tesla in Weber/Square Foot is Equal to	0.09290304] so I did that * 4
-        assertEquals(0.37161216(Weber), 2(Tesla) * 2(SquareFoot))
+        assertEquals(4(Weber), 2(SquareMeter) * 2(Tesla))
     }
 
     @Test
     fun fluxFromVoltageAndTimeTest() {
+        assertEquals(4(Maxwell), 2(Abvolt) * 2(Second))
+        assertEquals(4(Maxwell), 2(Second) * 2(Abvolt))
         assertEquals(4(Weber), 2(Volt) * 2(Second))
+        assertEquals(4(Weber), 2(Second) * 2(Volt))
     }
 }

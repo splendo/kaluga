@@ -61,7 +61,10 @@ class LinearMassDensityUnitTest {
             1(Pound.usCustomary per Foot),
             2(SquareFoot) / 2(CubicFoot.usCustomary per Pound.usCustomary)
         )
-        assertEquals(1(Kilogram per Meter), 2(SquareMeter).convert(SquareFoot) / 2(CubicMeter per Kilogram))
+        assertEquals(
+            1(Kilogram per Meter),
+            2(SquareMeter).convert(SquareFoot) / 2(CubicMeter per Kilogram)
+        )
     }
 
     @Test
@@ -100,8 +103,14 @@ class LinearMassDensityUnitTest {
             4(Pound.usCustomary per Foot),
             2(SquareFoot) * 2(Pound.usCustomary per CubicFoot)
         )
-        assertEquals(4(Kilogram per Meter), 2(Kilogram per CubicMeter) * 2(SquareMeter).convert(SquareFoot))
-        assertEquals(4(Kilogram per Meter), 2(SquareMeter).convert(SquareFoot) * 2(Kilogram per CubicMeter))
+        assertEquals(
+            4(Kilogram per Meter),
+            2(Kilogram per CubicMeter) * 2(SquareMeter).convert(SquareFoot)
+        )
+        assertEquals(
+            4(Kilogram per Meter),
+            2(SquareMeter).convert(SquareFoot) * 2(Kilogram per CubicMeter)
+        )
     }
 
     @Test

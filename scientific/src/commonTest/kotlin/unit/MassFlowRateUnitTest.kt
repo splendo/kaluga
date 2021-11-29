@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -33,5 +34,8 @@ class MassFlowRateUnitTest {
     fun massFlowRateFromWeightAndAreaTest() {
         assertEquals(1(Kilogram per Second), 2(Kilogram) / 2(Second))
         assertEquals(1(Pound per Second), 2(Pound) / 2(Second))
+        assertEquals(1(Pound.ukImperial per Second), 2(Pound.ukImperial) / 2(Second))
+        assertEquals(1(Pound.usCustomary per Second), 2(Pound.usCustomary) / 2(Second))
+        assertEquals(1(Kilogram per Second), 2(Kilogram).convert(Pound as Weight) / 2(Second))
     }
 }

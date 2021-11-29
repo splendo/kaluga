@@ -17,10 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.molarMass.div
 import com.splendo.kaluga.scientific.converter.molarMass.times
 import com.splendo.kaluga.scientific.converter.molarity.molarVolume
 import com.splendo.kaluga.scientific.converter.specificVolume.div
+import com.splendo.kaluga.scientific.converter.specificVolume.times
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -39,6 +42,10 @@ class MolarVolumeUnitTest {
         assertEquals(0.5(CubicFoot per Mole), 2(Mole per CubicFoot).molarVolume())
         assertEquals(0.5(ImperialPint per Mole), 2(Mole per ImperialPint).molarVolume())
         assertEquals(0.5(AcreFoot per Mole), 2(Mole per AcreFoot).molarVolume())
+        assertEquals(
+            0.5(CubicMeter per Mole),
+            2(Mole per CubicMeter).convert((Mole per CubicFoot) as Molarity).molarVolume()
+        )
     }
 
     @Test
@@ -47,6 +54,10 @@ class MolarVolumeUnitTest {
         assertEquals(1(CubicFoot per Mole), 2(Pound per Mole) / 2(Pound per CubicFoot))
         assertEquals(1(ImperialPint per Mole), 2(Pound per Mole) / 2(Pound per ImperialPint))
         assertEquals(1(AcreFoot per Mole), 2(Pound per Mole) / 2(Pound per AcreFoot))
+        assertEquals(
+            1(CubicMeter per Mole),
+            2(Kilogram per Mole) / 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density)
+        )
     }
 
     @Test
@@ -54,15 +65,34 @@ class MolarVolumeUnitTest {
         assertEquals(1(CubicMeter per Mole), 2(CubicMeter per Kilogram) / 2(Mole per Kilogram))
         assertEquals(1(CubicFoot per Mole), 2(CubicFoot per Pound) / 2(Mole per Pound))
         assertEquals(1(ImperialPint per Mole), 2(ImperialPint per Pound) / 2(Mole per Pound))
-        assertEquals(1(AcreFoot per Mole), 2(AcreFoot per Pound) / 2(Mole per Pound))
+        assertEqualScientificValue(1(AcreFoot per Mole), 2(AcreFoot per Pound) / 2(Mole per Pound), 8)
+        assertEqualScientificValue(
+            1(CubicMeter per Mole),
+            2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume) / 2(Mole per Kilogram),
+            8
+        )
     }
 
     @Test
     fun molarVolumeFromSpecificVolumeAndMolarMassTest() {
         assertEquals(4(CubicMeter per Mole), 2(Kilogram per Mole) * 2(CubicMeter per Kilogram))
+        assertEquals(4(CubicMeter per Mole), 2(CubicMeter per Kilogram) * 2(Kilogram per Mole))
         assertEquals(4(CubicFoot per Mole), 2(Pound per Mole) * 2(CubicFoot per Pound))
+        assertEquals(4(CubicFoot per Mole), 2(CubicFoot per Pound) * 2(Pound per Mole))
         assertEquals(4(ImperialPint per Mole), 2(Pound per Mole) * 2(ImperialPint per Pound))
+        assertEquals(4(ImperialPint per Mole), 2(ImperialPint per Pound) * 2(Pound per Mole))
         assertEquals(4(AcreFoot per Mole), 2(Pound per Mole) * 2(AcreFoot per Pound))
+        assertEquals(4(AcreFoot per Mole), 2(AcreFoot per Pound) * 2(Pound per Mole))
+        assertEqualScientificValue(
+            4(CubicMeter per Mole),
+            2(Kilogram per Mole) * 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
+            8
+        )
+        assertEqualScientificValue(
+            4(CubicMeter per Mole),
+            2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume) * 2(Kilogram per Mole),
+            8
+        )
     }
 
     @Test
@@ -71,5 +101,6 @@ class MolarVolumeUnitTest {
         assertEquals(1(CubicFoot per Mole), 2(CubicFoot) / 2(Mole))
         assertEquals(1(ImperialPint per Mole), 2(ImperialPint) / 2(Mole))
         assertEquals(1(AcreFoot per Mole), 2(AcreFoot) / 2(Mole))
+        assertEquals(1(CubicMeter per Mole), 2(CubicMeter).convert(CubicFoot as Volume) / 2(Mole))
     }
 }

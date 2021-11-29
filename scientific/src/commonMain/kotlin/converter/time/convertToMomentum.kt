@@ -72,11 +72,6 @@ infix operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<Ph
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(poundal: ScientificValue<PhysicalQuantity.Force, Poundal>) =
     poundal * this
 
-@JvmName("timeTimesPoundForce")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    poundForce: ScientificValue<PhysicalQuantity.Force, PoundForce>
-) = poundForce * this
-
 @JvmName("timeTimesOunceForce")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
     ounceForce: ScientificValue<PhysicalQuantity.Force, OunceForce>
@@ -86,10 +81,6 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
     grainForce: ScientificValue<PhysicalQuantity.Force, GrainForce>
 ) = grainForce * this
-
-@JvmName("timeTimesKip")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(kip: ScientificValue<PhysicalQuantity.Force, Kip>) =
-    kip * this
 
 @JvmName("timeTimesUsTonForce")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(

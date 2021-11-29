@@ -45,15 +45,15 @@ class LuminusFluxUnitTest {
 
     @Test
     fun luminousFluxFromIlluminanceAndAreaTest() {
-        assertEquals(4(Lumen),2(Lux) * 2(SquareMeter))
-        assertEquals(4(Lumen),2(SquareMeter) * 2(Lux))
-        assertEquals(4(Lumen),2(FootCandle) * 2(SquareFoot))
-        assertEquals(4(Lumen),2(SquareFoot) * 2(FootCandle))
+        assertEquals(4(Lumen), 2(Lux) * 2(SquareMeter))
+        assertEquals(4(Lumen), 2(SquareMeter) * 2(Lux))
+        assertEquals(4(Lumen), 2(FootCandle) * 2(SquareFoot))
+        assertEquals(4(Lumen), 2(SquareFoot) * 2(FootCandle))
     }
 
     @Test
     fun luminousFluxFromLuminousEnergyAndTimeTest() {
-        assertEqualScientificValue(1(Lumen),2(Lumen x Second) / 2(Second))
+        assertEqualScientificValue(1(Lumen), 2(Lumen x Second) / 2(Second))
     }
 
     @Test

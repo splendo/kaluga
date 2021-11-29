@@ -235,7 +235,7 @@ class DensityUnitTest {
         )
         assertEquals(
             2(Kilogram per CubicMeter),
-            0.5((CubicMeter per Kilogram) as SpecificVolume).density()
+            0.5(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume).density()
         )
     }
 

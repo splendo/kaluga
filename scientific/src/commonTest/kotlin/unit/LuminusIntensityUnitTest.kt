@@ -43,14 +43,14 @@ class LuminusIntensityUnitTest {
 
     @Test
     fun luminousIntensityFromLuminanceAndArea() {
-        assertEquals(4(Candela),2(Nit) * 2(SquareMeter))
-        assertEquals(4(Candela),2(SquareMeter) * 2(Nit))
-        assertEquals((4/PI)(Candela),2(FootLambert) * 2(SquareFoot))
-        assertEquals((4/PI)(Candela),2(SquareFoot) * 2(FootLambert))
+        assertEquals(4(Candela), 2(Nit) * 2(SquareMeter))
+        assertEquals(4(Candela), 2(SquareMeter) * 2(Nit))
+        assertEquals((4 / PI)(Candela), 2(FootLambert) * 2(SquareFoot))
+        assertEquals((4 / PI)(Candela), 2(SquareFoot) * 2(FootLambert))
     }
 
     @Test
     fun luminousIntensityFromLuminousFluxAndSolidAngleTest() {
-        assertEquals(1(Candela),2(Lumen) / 2(Steradian))
+        assertEquals(1(Candela), 2(Lumen) / 2(Steradian))
     }
 }
