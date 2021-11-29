@@ -62,7 +62,6 @@ import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Megajoule
 import com.splendo.kaluga.scientific.unit.Megawatt
 import com.splendo.kaluga.scientific.unit.MegawattHour
-import com.splendo.kaluga.scientific.unit.MetricEnergy
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Microjoule
 import com.splendo.kaluga.scientific.unit.Microwatt

@@ -24,7 +24,6 @@ import com.splendo.kaluga.scientific.unit.FootLambert
 import com.splendo.kaluga.scientific.unit.Illuminance
 import com.splendo.kaluga.scientific.unit.ImperialIlluminance
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricIlluminance
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Nit
 import com.splendo.kaluga.scientific.unit.Phot

@@ -18,9 +18,9 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.converter.energy.times
 import com.splendo.kaluga.scientific.converter.time.times
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

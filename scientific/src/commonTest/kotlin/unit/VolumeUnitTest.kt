@@ -95,7 +95,7 @@ class VolumeUnitTest {
     }
 
     @Test
-    fun volumeFromAmountOfSubstanceDivMetricMolarity(){
+    fun volumeFromAmountOfSubstanceDivMetricMolarity() {
         assertEqualScientificValue(1(CubicMeter), 2(Mole) / 2(Mole per CubicMeter))
     }
 }

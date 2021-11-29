@@ -24,7 +24,6 @@ import com.splendo.kaluga.scientific.unit.Illuminance
 import com.splendo.kaluga.scientific.unit.ImperialIlluminance
 import com.splendo.kaluga.scientific.unit.LuminousFlux
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricIlluminance
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Phot
 import com.splendo.kaluga.scientific.unit.SquareCentimeter

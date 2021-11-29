@@ -22,7 +22,6 @@ import com.splendo.kaluga.scientific.converter.energy.equivalentDoseBy
 import com.splendo.kaluga.scientific.converter.specificEnergy.asEquivalentDose
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class IonizingRadiationEquivalentDoseUnitTest {
 

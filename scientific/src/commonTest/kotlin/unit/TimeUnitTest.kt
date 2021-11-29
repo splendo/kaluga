@@ -57,17 +57,17 @@ class TimeUnitTest {
     }
 
     @Test
-    fun timeFromAccelerationAndJoltTest(){
+    fun timeFromAccelerationAndJoltTest() {
         assertEqualScientificValue(1(Hour), 2(Meter per Second per Second) / 2(Meter per Second per Second per Hour))
     }
 
     @Test
-    fun timeFromActionAndEnergyTest(){
+    fun timeFromActionAndEnergyTest() {
         assertEqualScientificValue(1(Hour), 2(Decijoule x Hour) / 2(Decijoule))
     }
 
     @Test
-    fun timeFromAmountOfSubstanceAndCatalysticActivityTest(){
+    fun timeFromAmountOfSubstanceAndCatalysticActivityTest() {
         assertEqualScientificValue(1(Second), 20(Decimole) / 0.2(Decakatal))
     }
 
@@ -100,7 +100,6 @@ class TimeUnitTest {
     @Test
     fun timeFromElectricInductanceAndResistance() {
         assertEqualScientificValue(1(Second), 20(Decihenry) / 0.2(Decaohm))
-
     }
 
     @Test

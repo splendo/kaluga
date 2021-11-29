@@ -18,9 +18,9 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.electricConductance.div
 import com.splendo.kaluga.scientific.converter.electricResistance.div
-import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test

@@ -69,7 +69,7 @@ class SpecificHeatCapacityUnitTest {
         assertEquals(1(WattHour per Celsius per Kilogram), 2(WattHour per Kilogram) / 2(Celsius))
         assertEquals(1(WattHour per Celsius per Pound), 2(WattHour per Pound) / 2(Celsius))
         assertEquals(1(WattHour per Fahrenheit per Pound), 2(WattHour per Pound) / 2(Fahrenheit))
-        assertEquals(1(WattHour per Celsius per ImperialTon),2(WattHour per ImperialTon) / 2(Celsius))
+        assertEquals(1(WattHour per Celsius per ImperialTon), 2(WattHour per ImperialTon) / 2(Celsius))
         assertEquals(1(WattHour per Fahrenheit per UsTon), 2(WattHour per UsTon) / 2(Fahrenheit))
         assertEquals(1(Joule per Kelvin per Kilogram), 2(Joule per Kilogram) / Fahrenheit.deltaValue(2(Kelvin)))
     }

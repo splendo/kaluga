@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test

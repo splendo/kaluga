@@ -22,7 +22,6 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
 import com.splendo.kaluga.scientific.unit.AngularVelocity
-import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityDivAngularAcceleration")
