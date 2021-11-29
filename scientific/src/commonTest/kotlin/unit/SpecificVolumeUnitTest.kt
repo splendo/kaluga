@@ -17,10 +17,12 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.div
 import com.splendo.kaluga.scientific.converter.density.specificVolume
 import com.splendo.kaluga.scientific.converter.length.div
 import com.splendo.kaluga.scientific.converter.molality.div
+import com.splendo.kaluga.scientific.converter.molality.times
 import com.splendo.kaluga.scientific.converter.molarVolume.div
 import com.splendo.kaluga.scientific.converter.molarVolume.times
 import com.splendo.kaluga.scientific.converter.volume.div
@@ -42,6 +44,10 @@ class SpecificVolumeUnitTest {
         assertEquals(1(CubicFoot per Pound), 2(SquareFoot) / 2(Pound per Foot))
         assertEquals(1(CubicFoot per ImperialTon), 2(SquareFoot) / 2(ImperialTon per Foot))
         assertEquals(1(CubicFoot per UsTon), 2(SquareFoot) / 2(UsTon per Foot))
+        assertEquals(
+            1(CubicMeter per Kilogram),
+            2(SquareMeter) / 2(Kilogram per Meter).convert(Pound per Foot)
+        )
     }
 
     @Test
@@ -57,6 +63,10 @@ class SpecificVolumeUnitTest {
         )
         assertEquals(0.5(UsLiquidGallon per Pound), 2(Pound per UsLiquidGallon).specificVolume())
         assertEquals(0.5(UsLiquidGallon per UsTon), 2(UsTon per UsLiquidGallon).specificVolume())
+        assertEquals(
+            0.5(CubicMeter per Kilogram),
+            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density).specificVolume()
+        )
     }
 
     @Test
@@ -65,6 +75,10 @@ class SpecificVolumeUnitTest {
         assertEquals(1(CubicFoot per Pound), 2(Foot) / 2(Pound per SquareFoot))
         assertEquals(1(CubicFoot per ImperialTon), 2(Foot) / 2(ImperialTon per SquareFoot))
         assertEquals(1(CubicFoot per UsTon), 2(Foot) / 2(UsTon per SquareFoot))
+        assertEquals(
+            1(CubicMeter per Kilogram),
+            2(Meter).convert(Foot) / 2(Kilogram per SquareMeter)
+        )
     }
 
     @Test
@@ -80,18 +94,44 @@ class SpecificVolumeUnitTest {
         )
         assertEquals(1(UsLiquidGallon per Pound), 2(Mole per Pound) / 2(Mole per UsLiquidGallon))
         assertEquals(1(UsLiquidGallon per UsTon), 2(Mole per UsTon) / 2(Mole per UsLiquidGallon))
+        assertEquals(
+            1(CubicMeter per Kilogram),
+            2(Mole per Kilogram) / 2(Mole per CubicMeter).convert(Mole per CubicFoot)
+        )
     }
 
     @Test
     fun specificVolumeFromMolalityAndMolarVolumeTest() {
         assertEquals(4(CubicMeter per Kilogram), 2(CubicMeter per Mole) * 2(Mole per Kilogram))
+        assertEquals(4(CubicMeter per Kilogram), 2(Mole per Kilogram) * 2(CubicMeter per Mole))
         assertEquals(4(CubicFoot per Pound), 2(CubicFoot per Mole) * 2(Mole per Pound))
+        assertEquals(4(CubicFoot per Pound), 2(Mole per Pound) * 2(CubicFoot per Mole))
         assertEquals(4(CubicFoot per ImperialTon), 2(CubicFoot per Mole) * 2(Mole per ImperialTon))
+        assertEquals(4(CubicFoot per ImperialTon), 2(Mole per ImperialTon) * 2(CubicFoot per Mole))
         assertEquals(4(CubicFoot per UsTon), 2(CubicFoot per Mole) * 2(Mole per UsTon))
+        assertEquals(4(CubicFoot per UsTon), 2(Mole per UsTon) * 2(CubicFoot per Mole))
         assertEquals(4(ImperialGallon per Pound), 2(ImperialGallon per Mole) * 2(Mole per Pound))
-        assertEquals(4(ImperialGallon per ImperialTon), 2(ImperialGallon per Mole) * 2(Mole per ImperialTon))
+        assertEquals(4(ImperialGallon per Pound), 2(Mole per Pound) * 2(ImperialGallon per Mole))
+        assertEquals(
+            4(ImperialGallon per ImperialTon),
+            2(ImperialGallon per Mole) * 2(Mole per ImperialTon)
+        )
+        assertEquals(
+            4(ImperialGallon per ImperialTon),
+            2(Mole per ImperialTon) * 2(ImperialGallon per Mole)
+        )
         assertEquals(4(UsLiquidGallon per Pound), 2(UsLiquidGallon per Mole) * 2(Mole per Pound))
+        assertEquals(4(UsLiquidGallon per Pound), 2(Mole per Pound) * 2(UsLiquidGallon per Mole))
         assertEquals(4(UsLiquidGallon per UsTon), 2(UsLiquidGallon per Mole) * 2(Mole per UsTon))
+        assertEquals(4(UsLiquidGallon per UsTon), 2(Mole per UsTon) * 2(UsLiquidGallon per Mole))
+        assertEquals(
+            4(CubicMeter per Kilogram),
+            2(CubicMeter per Mole) * 2(Mole per Kilogram).convert(Mole per Pound)
+        )
+        assertEquals(
+            4(CubicMeter per Kilogram),
+            2(Mole per Kilogram).convert(Mole per Pound) * 2(CubicMeter per Mole)
+        )
     }
 
     @Test
@@ -101,9 +141,16 @@ class SpecificVolumeUnitTest {
         assertEquals(1(CubicFoot per ImperialTon), 2(CubicFoot per Mole) / 2(ImperialTon per Mole))
         assertEquals(1(CubicFoot per UsTon), 2(CubicFoot per Mole) / 2(UsTon per Mole))
         assertEquals(1(ImperialGallon per Pound), 2(ImperialGallon per Mole) / 2(Pound per Mole))
-        assertEquals(1(ImperialGallon per ImperialTon), 2(ImperialGallon per Mole) / 2(ImperialTon per Mole))
+        assertEquals(
+            1(ImperialGallon per ImperialTon),
+            2(ImperialGallon per Mole) / 2(ImperialTon per Mole)
+        )
         assertEquals(1(UsLiquidGallon per Pound), 2(UsLiquidGallon per Mole) / 2(Pound per Mole))
         assertEquals(1(UsLiquidGallon per UsTon), 2(UsLiquidGallon per Mole) / 2(UsTon per Mole))
+        assertEquals(
+            1(CubicMeter per Kilogram),
+            2(CubicMeter per Mole) / 2(Kilogram per Mole).convert(Pound per Mole)
+        )
     }
 
     @Test
@@ -116,5 +163,6 @@ class SpecificVolumeUnitTest {
         assertEquals(1(ImperialGallon per ImperialTon), 2(ImperialGallon) / 2(ImperialTon))
         assertEquals(1(UsLiquidGallon per Pound), 2(UsLiquidGallon) / 2(Pound))
         assertEquals(1(UsLiquidGallon per UsTon), 2(UsLiquidGallon) / 2(UsTon))
+        assertEquals(1(CubicMeter per Kilogram), 2(CubicMeter) / 2(Kilogram).convert(Pound))
     }
 }

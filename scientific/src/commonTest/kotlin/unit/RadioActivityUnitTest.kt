@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.converter.decimal.decaysPer
+import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 
@@ -52,6 +54,12 @@ class RadioActivityUnitTest {
 
     @Test
     fun radioActivityFromAmountOfSubstanceDivTimeTest() {
+        assertEqualScientificValue(2087.1149(Becquerel), Becquerel.radioactivity(2e-10(Mole), 4e10(Second)), 4)
+    }
+
+    @Test
+    fun radioActivityFromTimeTest() {
         assertEqualScientificValue(1(Becquerel), 2 decaysPer 2(Second))
+        assertEqualScientificValue(1(Becquerel), 2.toDecimal() decaysPer 2(Second))
     }
 }

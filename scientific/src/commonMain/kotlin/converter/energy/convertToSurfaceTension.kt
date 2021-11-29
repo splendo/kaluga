@@ -36,7 +36,6 @@ import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
 import com.splendo.kaluga.scientific.unit.MetricArea
-import com.splendo.kaluga.scientific.unit.MetricEnergy
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Newton
 import com.splendo.kaluga.scientific.unit.OunceForce
@@ -58,11 +57,6 @@ infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.d
 
 @JvmName("metricAndImperialEnergyDivMetricArea")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = (Newton per Meter).surfaceTension(this, area)
-
-@JvmName("metricEnergyDivMetricArea")
-infix operator fun <EnergyUnit : MetricEnergy, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
 ) = (Newton per Meter).surfaceTension(this, area)
 

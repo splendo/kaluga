@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.converter.electricConductance.div
 import com.splendo.kaluga.scientific.converter.electricResistance.div
+import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -53,7 +55,11 @@ class FrequencyUnitTest {
 
     @Test
     fun frequencyFromInvertedTimeTest() {
-        assertEquals(1(Hertz), 1(Second).frequency())
-        assertEquals(1(BeatsPerMinute), 1(Minute).frequency())
+        assertEquals(1(Hertz), 2 / 2(Second))
+        assertEquals(1(Hertz), 2.toDecimal() / 2(Second))
+        assertEquals(1(BeatsPerMinute), 2 / 2(Minute))
+        assertEquals(1(BeatsPerMinute), 2.toDecimal() / 2(Minute))
+        assertEquals(0.5(Hertz), 2(Second).frequency())
+        assertEquals(0.5(BeatsPerMinute), 2(Minute).frequency())
     }
 }

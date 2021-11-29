@@ -20,10 +20,25 @@ package com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.specificEnergy.specificEnergy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Gram
 import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
 import com.splendo.kaluga.scientific.unit.per
+import kotlin.jvm.JvmName
 
+@JvmName("specificEnergyFromRoentgewnEquivalentMan")
+fun ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.asSpecificEnergy() =
+    (Erg per Gram).specificEnergy(this)
+
+@JvmName("specificEnergyFromRoentgenEquivalentManMultiple")
+fun <RoentgenEquivalentManUnit> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentManUnit>.asSpecificEnergy() where RoentgenEquivalentManUnit : IonizingRadiationEquivalentDose, RoentgenEquivalentManUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
+    (Erg per Gram).specificEnergy(this)
+
+@JvmName("specificEnergyFromEquivalentDose")
 fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.asSpecificEnergy() =
     (Joule per Kilogram).specificEnergy(this)
