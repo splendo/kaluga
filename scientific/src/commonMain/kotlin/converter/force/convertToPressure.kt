@@ -34,8 +34,6 @@ import com.splendo.kaluga.scientific.unit.Kip
 import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricArea
-import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
@@ -44,6 +42,7 @@ import com.splendo.kaluga.scientific.unit.PoundForce
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
 import com.splendo.kaluga.scientific.unit.Poundal
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.UKImperialForce
 import com.splendo.kaluga.scientific.unit.USCustomaryForce
@@ -54,20 +53,15 @@ import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
-@JvmName("dyneDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Force, Dyne>.div(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+@JvmName("dyneDivSquareCentimeter")
+infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) =
     Barye.pressure(this, area)
 
-@JvmName("dyneMultipleDivMetricArea")
-infix operator fun <DyneUnit, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+@JvmName("dyneMultipleDivSquareCentime")
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+    area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
 ) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     Barye.pressure(this, area)
-
-@JvmName("metricForceDivMetricArea")
-infix operator fun <ForceUnit : MetricForce, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = Pascal.pressure(this, area)
 
 @JvmName("poundalDivSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Force, Poundal>.div(area: ScientificValue<PhysicalQuantity.Area, SquareFoot>) =

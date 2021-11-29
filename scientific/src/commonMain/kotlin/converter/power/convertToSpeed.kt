@@ -33,6 +33,9 @@ import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.Inch
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerMinute
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerSecond
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
@@ -69,6 +72,16 @@ infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.
 infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, FootPoundForcePerMinute>.div(
     force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
 ) = (Foot per Minute).speed(this, force)
+
+@JvmName("inchPoundForcePerSecondDivImperialForce")
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>.div(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+) = (Inch per Second).speed(this, force)
+
+@JvmName("inchPoundForcePerMinuteDivImperialForce")
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>.div(
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+) = (Inch per Minute).speed(this, force)
 
 @JvmName("britishThermalUnitPerSecondDivPoundForce")
 infix operator fun ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, PoundForce>) =

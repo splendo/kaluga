@@ -52,6 +52,8 @@ import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.ImperialEnergy
 import com.splendo.kaluga.scientific.unit.InchOunceForce
 import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerMinute
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerSecond
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilojoule
 import com.splendo.kaluga.scientific.unit.Kilowatt
@@ -82,7 +84,7 @@ import kotlin.jvm.JvmName
 
 @JvmName("wattHourDivHour")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, WattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Watt.metric.power(this, time)
+    Watt.power(this, time)
 
 @JvmName("nanowattHourDivHour")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, NanowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
@@ -176,11 +178,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(time: Scien
 infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     ErgPerSecond.power(this, time)
 
-@JvmName("metricEnergyDivTime")
-infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
-) = Watt.power(this, time)
-
 @JvmName("footPoundalDivSecond")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
     FootPoundForcePerSecond.power(this, time)
@@ -199,21 +196,21 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(
 
 @JvmName("inchPoundForceDivSecond")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    FootPoundForcePerSecond.power(this, time)
+    InchPoundForcePerSecond.power(this, time)
 
 @JvmName("inchPoundForceDivMinute")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) =
-    FootPoundForcePerMinute.power(this, time)
+    InchPoundForcePerMinute.power(this, time)
 
 @JvmName("inchOunceForceDivSecond")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    FootPoundForcePerSecond.power(this, time)
+    InchPoundForcePerSecond.power(this, time)
 
 @JvmName("inchOunceForceDivMinute")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) =
-    FootPoundForcePerMinute.power(this, time)
+    InchPoundForcePerMinute.power(this, time)
 
-@JvmName("horepowerHourDivHour")
+@JvmName("horsepowerHourDivHour")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, HorsepowerHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
     Horsepower.power(this, time)
 

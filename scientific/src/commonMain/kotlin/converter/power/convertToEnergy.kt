@@ -41,6 +41,9 @@ import com.splendo.kaluga.scientific.unit.Horsepower
 import com.splendo.kaluga.scientific.unit.HorsepowerHour
 import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerMinute
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerSecond
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilowatt
 import com.splendo.kaluga.scientific.unit.KilowattHour
@@ -111,6 +114,16 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, Erg
 infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
 ) = Joule.energy(this, time)
+
+@JvmName("inchPoundForcePerSecondTimesTime")
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+) = InchPoundForce.energy(this, time)
+
+@JvmName("inchPoundForcePerMinuteTimesTime")
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>.times(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+) = InchPoundForce.energy(this, time)
 
 @JvmName("horsepowerTimesHour")
 infix operator fun ScientificValue<PhysicalQuantity.Power, Horsepower>.times(time: ScientificValue<PhysicalQuantity.Time, Hour>) =

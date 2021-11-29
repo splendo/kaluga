@@ -47,6 +47,8 @@ val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.m
     setOf(
         FootPoundForcePerSecond,
         FootPoundForcePerMinute,
+        InchPoundForcePerSecond,
+        InchPoundForcePerMinute,
         Horsepower,
         BritishThermalUnitPerSecond,
         BritishThermalUnitPerMinute,
@@ -141,6 +143,24 @@ object FootPoundForcePerMinute : ImperialPower() {
     override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = Minute.toSIUnit(FootPoundForce.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = FootPoundForce.toSIUnit(Minute.fromSIUnit(value))
+}
+
+@Serializable
+object InchPoundForcePerSecond : ImperialPower() {
+    override val symbol: String = "${FootPoundForce.symbol} / ${Second.symbol}"
+    override val system = MeasurementSystem.Imperial
+    override val quantity = PhysicalQuantity.Power
+    override fun fromSIUnit(value: Decimal): Decimal = InchPoundForce.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = InchPoundForce.toSIUnit(value)
+}
+
+@Serializable
+object InchPoundForcePerMinute : ImperialPower() {
+    override val symbol: String = "${FootPoundForce.symbol} / ${Minute.symbol}"
+    override val system = MeasurementSystem.Imperial
+    override val quantity = PhysicalQuantity.Power
+    override fun fromSIUnit(value: Decimal): Decimal = Minute.toSIUnit(InchPoundForce.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = InchPoundForce.toSIUnit(Minute.fromSIUnit(value))
 }
 
 @Serializable

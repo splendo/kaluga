@@ -25,7 +25,6 @@ import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricSpeed
 import com.splendo.kaluga.scientific.unit.Speed
@@ -40,11 +39,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(fo
 @JvmName("metricSpeedTimesDyneMultiple")
 infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     force * this
-
-@JvmName("metricSpeedTimesMetricForce")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
-) = force * this
 
 @JvmName("imperialSpeedTimesImperialForce")
 infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(

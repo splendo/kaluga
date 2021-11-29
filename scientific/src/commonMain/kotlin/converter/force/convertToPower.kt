@@ -45,11 +45,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(speed: Sc
 infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     ErgPerSecond.power(this, speed)
 
-@JvmName("metricForceTimesMetricSpeed")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
-    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>
-) = Watt.metric.power(this, speed)
-
 @JvmName("imperialForceTimesImperialSpeed")
 infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
     speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>

@@ -337,6 +337,10 @@ class EnergyUnitTest {
         assertEqualScientificValue(4(HorsepowerHour), 2(Hour) * 2(Horsepower))
         assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForcePerSecond) * 2(Second))
         assertEqualScientificValue(4(FootPoundForce), 2(Second) * 2(FootPoundForcePerSecond))
+        assertEqualScientificValue(4(InchPoundForce), 2(InchPoundForcePerSecond) * 2(Second))
+        assertEqualScientificValue(4(InchPoundForce), 2(Second) * 2(InchPoundForcePerSecond))
+        assertEqualScientificValue(4(InchPoundForce), 2(InchPoundForcePerMinute) * 2(Minute))
+        assertEqualScientificValue(4(InchPoundForce), 2(Minute) * 2(InchPoundForcePerMinute))
         assertEqualScientificValue(
             4(BritishThermalUnit),
             2(BritishThermalUnitPerSecond) * 2(Second)

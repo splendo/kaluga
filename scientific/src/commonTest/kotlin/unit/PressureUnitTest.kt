@@ -18,7 +18,9 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.div
+import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -40,10 +42,10 @@ class PressureUnitTest {
 
         assertScientificConversion(1, Pascal, 1e-5, Bar)
         assertScientificConversion(1, Pascal, 10.0, Barye)
-        assertScientificConversion(1, Pascal, 0.00750062, Torr,8)
-        assertScientificConversion(1, Pascal, 9.86923e-6, Atmosphere,11)
-        assertScientificConversion(1, Pascal, 0.00750062, MillimeterOfMercury,8)
-        assertScientificConversion(1, Pascal, 0.10197162, MillimeterOfWater,8)
+        assertScientificConversion(1, Pascal, 0.00750062, Torr, 8)
+        assertScientificConversion(1, Pascal, 9.86923e-6, Atmosphere, 11)
+        assertScientificConversion(1, Pascal, 0.00750062, MillimeterOfMercury, 8)
+        assertScientificConversion(1, Pascal, 0.10197162, MillimeterOfWater, 8)
         assertScientificConversion(1, MillimeterOfWater, 0.1, CentimeterOfWater)
 
         assertScientificConversion(1, Pascal, 0.0001450377, PoundSquareInch, 10)
@@ -119,28 +121,95 @@ class PressureUnitTest {
 
     @Test
     fun pressureFromDynamicViscosityAndTimeTest() {
-        assertEqualScientificValue(1(Bar), 2(Bar x Second) / 2(Second))
+        assertEqualScientificValue(1(Pascal), 2(Pascal x Second) / 2(Second))
         assertEqualScientificValue(1(PoundSquareFoot), 2(PoundSquareFoot x Second) / 2(Second))
         assertEqualScientificValue(1(USTonSquareFoot), 2(USTonSquareFoot x Second) / 2(Second))
         assertEqualScientificValue(
             1(ImperialTonSquareFoot),
             2(ImperialTonSquareFoot x Second) / 2(Second)
         )
+        assertEqualScientificValue(
+            1(Pascal),
+            2(Pascal x Second).convert((PoundSquareFoot x Second) as DynamicViscosity) / 2(Second)
+        )
     }
 
     @Test
     fun pressureFromEnergyAndVolumeTest() {
-        // assertEqualScientificValue(0.00001(Bar), 2(Joule) / 2(CubicMeter)) FIXME https://www.calculand.com/unit-converter/?gruppe=Pressure&einheit=Joule+per+cubic+metre+%5BJ%2Fm%C2%B3%5D
-        // assertEqualScientificValue(1(PoundSquareFoot), 2(WattHour) / 2(CubicFoot)) FIXME
-        // assertEqualScientificValue(1(USTonSquareFoot), 2(WattHour) / 2(CubicFoot)) FIXME
-        // assertEqualScientificValue(1(ImperialTonSquareFoot), 2(FootPoundForce) / 2(CubicFoot)) FIXME
+        assertEqualScientificValue(1(Barye), 2(Erg) / 2(CubicCentimeter))
+        assertEqualScientificValue(1(Barye), 20(Decierg) / 2(CubicCentimeter))
+        assertEqualScientificValue(1(Pascal), 2(Joule) / 2(CubicMeter))
+        assertEqualScientificValue(
+            1(PoundSquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(CubicFoot)
+        )
+        assertEqualScientificValue(1(PoundSquareFoot), 2(FootPoundForce) / 2(CubicFoot))
+        assertEqualScientificValue(1(PoundSquareInch), 2(InchPoundForce) / 2(CubicInch))
+        assertEqualScientificValue(
+            1(PoundSquareInch),
+            2(InchPoundForce).convert(WattHour) / 2(CubicInch)
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.ukImperial),
+            2(InchPoundForce) / 2(CubicInch.ukImperial),
+            8
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.usCustomary),
+            2(InchPoundForce) / 2(CubicInch.usCustomary),
+            8
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.ukImperial),
+            2(InchPoundForce).convert(WattHour) / 2(CubicInch.ukImperial),
+            8
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.usCustomary),
+            2(InchPoundForce).convert(WattHour) / 2(CubicInch.usCustomary),
+            8
+        )
+        assertEqualScientificValue(1(Pascal), 2(Joule) / 2(CubicMeter).convert(CubicFoot), 8)
     }
 
     @Test
     fun pressureFromForceAndAreaTest() {
+        assertEqualScientificValue(1(Barye), 2(Dyne) / 2(SquareCentimeter))
+        assertEqualScientificValue(1(Barye), 20(Decidyne) / 2(SquareCentimeter))
         assertEqualScientificValue(1(Pascal), 2(Newton) / 2(SquareMeter))
+        assertEqualScientificValue(
+            1(PoundSquareFoot),
+            (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareFoot)
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch),
+            (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareInch)
+        )
         assertEqualScientificValue(1(PoundSquareFoot), 2(PoundForce) / 2(SquareFoot))
+        assertEqualScientificValue(1(PoundSquareInch), 2(PoundForce) / 2(SquareInch))
+        assertEqualScientificValue(1(OunceSquareInch), 2(OunceForce) / 2(SquareInch))
+        assertEqualScientificValue(
+            1(OunceSquareInch),
+            2(OunceForce).convert(GrainForce) / 2(SquareInch)
+        )
+        assertEqualScientificValue(1(KipSquareFoot), 2(Kip) / 2(SquareFoot))
+        assertEqualScientificValue(1(KipSquareInch), 2(Kip) / 2(SquareInch))
         assertEqualScientificValue(1(USTonSquareFoot), 2(UsTonForce) / 2(SquareFoot))
+        assertEqualScientificValue(1(USTonSquareInch), 2(UsTonForce) / 2(SquareInch))
         assertEqualScientificValue(1(ImperialTonSquareFoot), 2(ImperialTonForce) / 2(SquareFoot))
+        assertEqualScientificValue(1(ImperialTonSquareInch), 2(ImperialTonForce) / 2(SquareInch))
+        assertEqualScientificValue(
+            1(PoundSquareInch),
+            2(PoundForce) / 2(SquareInch).convert(SquareYard)
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.ukImperial),
+            2(PoundForce.ukImperial) / 2(SquareInch)
+        )
+        assertEqualScientificValue(
+            1(PoundSquareInch.usCustomary),
+            2(PoundForce.usCustomary) / 2(SquareInch)
+        )
+        assertEqualScientificValue(1(Pascal), 2(Newton) / 2(SquareMeter).convert(SquareFoot))
     }
 }
