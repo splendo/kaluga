@@ -17,8 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.voltage.div
-import com.splendo.kaluga.scientific.converter.voltage.times
+import com.splendo.kaluga.scientific.converter.electricCharge.div
+import com.splendo.kaluga.scientific.converter.electricCurrent.div
+import com.splendo.kaluga.scientific.converter.electricCurrent.times
+import com.splendo.kaluga.scientific.converter.electricResistance.times
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.magneticFlux.div
+import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,33 +46,45 @@ class VoltageUnitTest {
     }
 
     @Test
-    fun voltToXConversionTest() {
-        // convertToElectricCharge
-        assertEquals(4(Abcoulomb), 2(Abvolt) * 2(Abfarad))
-        assertEquals(4(Coulomb), 2(Volt) * 2(Farad))
+    fun voltageFromElectricChargeAndCapacitance() {
+        assertEquals(1(Abvolt), 2(Abcoulomb) / 2(Abfarad))
+        assertEquals(1(Volt), 2(Coulomb) / 2(Farad))
+    }
 
-        // convertToElectricCurrent
-        assertEquals(4(Abampere), 2(Abvolt) * 2(Absiemens))
-        assertEquals(4(Ampere), 2(Volt) * 2(Siemens))
-        assertEquals(1(Abampere), 2(Abvolt) / 2(Abohm))
-        assertEquals(1(Ampere), 2(Volt) / 2(Ohm))
+    @Test
+    fun voltageFromElectricCurrentAndConductance() {
+        assertEquals(1(Abvolt), 2(Abampere) / 2(Absiemens))
+        assertEquals(1(Abvolt), 2(Biot) / 2(Absiemens))
+        assertEquals(1(Volt), 2(Ampere) / 2(Siemens))
+    }
 
-        // convertToElectricResistance
-        assertEquals(1(Abohm), 2(Abvolt) / 2(Abampere))
-        assertEquals(1(Abohm), 2(Abvolt) / 2(Biot))
-        assertEquals(1(Ohm), 1(Volt) / 1(Ampere))
+    @Test
+    fun voltageFromElectricCurrentAndResistance() {
+        assertEquals(4(Abvolt), 2(Abampere) * 2(Abohm))
+        assertEquals(4(Abvolt), 2(Abohm) * 2(Abampere))
+        assertEquals(4(Abvolt), 2(Biot) * 2(Abohm))
+        assertEquals(4(Abvolt), 2(Abohm) * 2(Biot))
+        assertEquals(4(Volt), 2(Ampere) * 2(Abohm))
+        assertEquals(4(Volt), 2(Abohm) * 2(Ampere))
+    }
 
-        // convertToEnergy
-        assertEquals(4(Erg), 2(Abvolt) * 2(Abcoulomb))
-        assertEquals(4(Joule), 2(Volt) * 2(Coulomb))
+    @Test
+    fun voltageFromEnergyAndElectricCharge() {
+        assertEquals(1(Abvolt), 2(Erg) / 2(Abcoulomb))
+        assertEquals(1(Abvolt), 20(Decierg) / 2(Abcoulomb))
+        assertEquals(1(Volt), 2(Joule) / 2(Coulomb))
+    }
 
-        // convertToMagneticFlux
-        assertEquals(4(Maxwell), 2(Abvolt) * 2(Second))
-        assertEquals(4(Weber), 2(Volt) * 2(Second))
+    @Test
+    fun voltageFromMagneticFluxAndTime() {
+        assertEquals(1(Abvolt), 2(Maxwell) / 2(Second))
+        assertEquals(1(Volt), 2(Weber) / 2(Second))
+    }
 
-        // convertToPower
-        assertEquals(4(ErgPerSecond), 2(Abvolt) * 2(Abampere))
-        assertEquals(4(ErgPerSecond), 2(Abvolt) * 2(Biot))
-        assertEquals(4(Watt), 2(Volt) * 2(Ampere))
+    @Test
+    fun voltageFromPowerAndElectricCurrent() {
+        assertEquals(1(Abvolt), 2(ErgPerSecond) / 2(Abampere))
+        assertEquals(1(Abvolt), 2(ErgPerSecond) / 2(Biot))
+        assertEquals(1(Volt), 2(Watt) / 2(Ampere))
     }
 }

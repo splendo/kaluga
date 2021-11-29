@@ -32,27 +32,35 @@ import com.splendo.kaluga.scientific.unit.USCustomaryHeatCapacity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyDivMetricAndUKImperialHeatCapacity")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>) =
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>) =
     heatCapacity.unit.per.temperature(this, heatCapacity)
 
 @JvmName("metricAndImperialEnergyDivMetricHeatCapacity")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>) =
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>) =
     heatCapacity.unit.per.temperature(this, heatCapacity)
 
 @JvmName("metricAndImperialEnergyDivUKImperialHeatCapacity")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>) =
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>) =
+    heatCapacity.unit.per.temperature(this, heatCapacity)
+
+@JvmName("metricAndImperialEnergyDivUSCustomaryHeatCapacity")
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>) =
     heatCapacity.unit.per.temperature(this, heatCapacity)
 
 @JvmName("metricEnergyDivMetricHeatCapacity")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricEnergy>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>) =
+infix operator fun <EnergyUnit : MetricEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>) =
     heatCapacity.unit.per.temperature(this, heatCapacity)
 
-@JvmName("ukImperialEnergyDivUKImperialHeatCapacity")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, ImperialEnergy>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>) =
+@JvmName("imperialEnergyDivMetricAndImperialHeatCapacity")
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>) =
     heatCapacity.unit.per.temperature(this, heatCapacity)
 
-@JvmName("usCustomaryEnergyDivUSCustomaryHeatCapacity")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, ImperialEnergy>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>) =
+@JvmName("imperialEnergyDivUKImperialHeatCapacity")
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>) =
+    heatCapacity.unit.per.temperature(this, heatCapacity)
+
+@JvmName("imperialEnergyDivUSCustomaryHeatCapacity")
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>) =
     heatCapacity.unit.per.temperature(this, heatCapacity)
 
 @JvmName("energyDivHeatCapacity")

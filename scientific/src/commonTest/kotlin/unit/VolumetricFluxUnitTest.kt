@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.volumetricFlow.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
@@ -33,5 +34,8 @@ class VolumetricFluxUnitTest {
     fun volumetricFluxFromVolumetricFlowAndAreaTest() {
         assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter))
         assertEquals(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot))
+        assertEquals(1(ImperialGallon per Second per SquareFoot), 2(ImperialGallon per Second) / 2(SquareFoot))
+        assertEquals(1(UsLiquidGallon per Second per SquareFoot), 2(UsLiquidGallon per Second) / 2(SquareFoot))
+        assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter).convert(SquareFoot))
     }
 }

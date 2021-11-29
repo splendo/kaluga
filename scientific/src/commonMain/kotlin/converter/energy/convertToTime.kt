@@ -23,13 +23,14 @@ import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.BritishThermalUnit
 import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerHour
 import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerMinute
-import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerSecond
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.FootPoundForce
 import com.splendo.kaluga.scientific.unit.FootPoundForcePerMinute
 import com.splendo.kaluga.scientific.unit.Horsepower
 import com.splendo.kaluga.scientific.unit.HorsepowerHour
 import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerMinute
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Minute
@@ -44,25 +45,29 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, WattHour>.div(power:
     Hour.time(this, power)
 
 @JvmName("wattHourMultipleDivWatt")
-infix operator fun <WattHourUnit> ScientificValue<PhysicalQuantity.Energy, WattHourUnit>.div(power: ScientificValue<PhysicalQuantity.Power, Watt>) where WattHourUnit : Energy, WattHourUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, WattHour> =
+infix operator fun <WattHourUnit> ScientificValue<PhysicalQuantity.Energy, WattHourUnit>.div(power: ScientificValue<PhysicalQuantity.Power, Watt>) where WattHourUnit : Energy, WattHourUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> =
     Hour.time(this, power)
 
 @JvmName("wattHourDivWattMultiple")
-infix operator fun <WattUnit> ScientificValue<PhysicalQuantity.Energy, WattHour>.div(power: ScientificValue<PhysicalQuantity.Power, WattUnit>) where WattUnit : Power, WattUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Power, Watt> =
+infix operator fun <WattUnit> ScientificValue<PhysicalQuantity.Energy, WattHour>.div(power: ScientificValue<PhysicalQuantity.Power, WattUnit>) where WattUnit : Power, WattUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> =
     Hour.time(this, power)
 
 @JvmName("wattHourMultipleDivWattMultiple")
 infix operator fun <WattHourUnit, WattUnit> ScientificValue<PhysicalQuantity.Energy, WattHourUnit>.div(
     power: ScientificValue<PhysicalQuantity.Power, WattUnit>
-) where WattHourUnit : Energy, WattHourUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, WattHour>, WattUnit : Power, WattUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Power, Watt> =
+) where WattHourUnit : Energy, WattHourUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour>, WattUnit : Power, WattUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> =
     Hour.time(this, power)
 
-@JvmName("horepowerHourDivHorsepower")
+@JvmName("horsepowerHourDivHorsepower")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, HorsepowerHour>.div(power: ScientificValue<PhysicalQuantity.Power, Horsepower>) =
     Hour.time(this, power)
 
-@JvmName("footPountForceDivFootPoundForcePerMinute")
+@JvmName("footPoundForceDivFootPoundForcePerMinute")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(power: ScientificValue<PhysicalQuantity.Power, FootPoundForcePerMinute>) =
+    Minute.time(this, power)
+
+@JvmName("inchPoundForceDivInchPoundForcePerMinute")
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>) =
     Minute.time(this, power)
 
 @JvmName("britishThermalUnitDivBritishThermalUnitPerHour")
@@ -72,10 +77,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, BritishThermalUnit>.
 @JvmName("britishThermalUnitDivBritishThermalUnitPerMinute")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, BritishThermalUnit>.div(power: ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerMinute>) =
     Minute.time(this, power)
-
-@JvmName("britishThermalUnitDivBritishThermalUnitPerSecond")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, BritishThermalUnit>.div(power: ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerSecond>) =
-    Second.time(this, power)
 
 @JvmName("energyDivPower")
 infix operator fun <EnergyUnit : Energy, PowerUnit : Power> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(

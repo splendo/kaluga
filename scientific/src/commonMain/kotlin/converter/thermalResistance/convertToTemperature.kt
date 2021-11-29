@@ -38,33 +38,33 @@ infix operator fun <PowerUnit : Power> ScientificValue<PhysicalQuantity.ThermalR
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("metricThermalResistanceTimesMetricAndImperialPower")
-infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>.times(
-    power: ScientificValue<PhysicalQuantity.Power, MetricAndImperialPower>
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("metricThermalResistanceTimesMetricPower")
-infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>.times(
-    power: ScientificValue<PhysicalQuantity.Power, MetricPower>
+infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("ukImperialThermalResistanceTimesMetricAndImperialPower")
-infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>.times(
-    power: ScientificValue<PhysicalQuantity.Power, MetricAndImperialPower>
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("ukImperialThermalResistanceTimesImperialPower")
-infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>.times(
-    power: ScientificValue<PhysicalQuantity.Power, ImperialPower>
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("usCustomaryThermalResistanceTimesMetricAndImperialPower")
-infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>.times(
-    power: ScientificValue<PhysicalQuantity.Power, MetricAndImperialPower>
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("usCustomaryThermalResistanceTimesImperialPower")
-infix operator fun ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>.times(
-    power: ScientificValue<PhysicalQuantity.Power, ImperialPower>
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>.times(
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
 ) = unit.temperature.temperature(this, power)
 
 @JvmName("thermalResistanceTimesPower")
