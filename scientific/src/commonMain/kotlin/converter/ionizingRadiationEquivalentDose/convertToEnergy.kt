@@ -21,24 +21,44 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.Gram
+import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
-@JvmName("roentgenEquivalentManTimesWeight")
-infix operator fun <WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+@JvmName("roentgenEquivalentManTimesGram")
+infix operator fun ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, Gram>
 ) = Erg.energy(this, weight)
 
-@JvmName("roentgenEquivalentManMultipleTimesWeight")
-infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+@JvmName("roentgenEquivalentManMultipleTimesGram")
+infix operator fun <EquivalentDoseUnit> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, Gram>
 ) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
     Erg.energy(this, weight)
+
+@JvmName("equivalentDoseTimesImperialWeight")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+) = FootPoundForce.energy(this, weight)
+
+@JvmName("equivalentDoseTimesUKImperialWeight")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+) = FootPoundForce.energy(this, weight)
+
+@JvmName("equivalentDoseTimesUSCustomaryWeight")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+) = FootPoundForce.energy(this, weight)
 
 @JvmName("equivalentDoseTimesWeight")
 infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(

@@ -60,6 +60,13 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
 
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Decimal,
+    to: ScientificUnit<Quantity>,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+) = convert(value, to).round(round, roundingMode)
+
+fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
+    value: Decimal,
     to: ScientificUnit<Quantity>
 ) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 

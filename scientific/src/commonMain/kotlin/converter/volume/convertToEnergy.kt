@@ -55,11 +55,6 @@ infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Volume, CubicCen
 ) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     pressure * this
 
-@JvmName("metricVolumeTimesMetricPressure")
-infix operator fun <PressureUnit : MetricPressure, VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
-) = pressure * this
-
 @JvmName("cubicFootTimesPoundSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicFoot>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>) =
     pressure * this
@@ -113,18 +108,8 @@ infix operator fun <PressureUnit : UKImperialPressure, VolumeUnit : UKImperialVo
     pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this
 
-@JvmName("ukImperialVolumeTimesUSCustomaryPressure")
-infix operator fun <PressureUnit : USCustomaryPressure, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
-) = pressure * this
-
 @JvmName("usCustomaryVolumeTimesImperialPressure")
 infix operator fun <PressureUnit : ImperialPressure, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
-) = pressure * this
-
-@JvmName("usCustomaryVolumeTimesUKImperialPressure")
-infix operator fun <PressureUnit : UKImperialPressure, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
     pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
 ) = pressure * this
 

@@ -35,11 +35,14 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
     Hectowatt,
     Kilowatt,
     Megawatt,
-    Gigawatt,
-    ErgPerSecond,
+    Gigawatt
 )
 
-val MetricPowerUnits: Set<MetricPower> get() = MetricAndImperialPowerUnits.map { it.metric }.toSet() + setOf(MetricHorsepower)
+val MetricPowerUnits: Set<MetricPower> get() = MetricAndImperialPowerUnits.map { it.metric }.toSet() +
+    setOf(
+        ErgPerSecond,
+        MetricHorsepower
+    )
 val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.map { it.imperial }.toSet() +
     setOf(
         FootPoundForcePerSecond,
@@ -94,9 +97,9 @@ object Megawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem
 object Gigawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Giga(Watt)
 
 @Serializable
-object ErgPerSecond : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power> {
+object ErgPerSecond : MetricPower(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Power> {
     override val symbol: String = "erg/s"
-    override val system = MeasurementSystem.MetricAndImperial
+    override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Power
     override fun fromSIUnit(value: Decimal): Decimal = Erg.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Erg.toSIUnit(value)

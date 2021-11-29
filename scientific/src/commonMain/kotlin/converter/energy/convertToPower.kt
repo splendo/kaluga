@@ -170,7 +170,7 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, Gi
 
 @JvmName("ergDivSecond")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    ErgPerSecond.metric.power(this, time)
+    ErgPerSecond.power(this, time)
 
 @JvmName("ergMultipleDivSecond")
 infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =

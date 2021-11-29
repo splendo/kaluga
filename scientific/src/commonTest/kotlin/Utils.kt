@@ -27,8 +27,9 @@ fun <Quantity : PhysicalQuantity> assertEqualScientificValue(
     round: Int? = null
 ) {
     val actualValue = round?.let { actual.decimalValue.round(it) } ?: actual.decimalValue
+    val expectedValue = round?.let { expected.decimalValue.round(it) } ?: expected.decimalValue
     assertEquals(
-        expected.value.toDouble(),
+        expectedValue.toDouble(),
         actualValue.toDouble()
     )
     assertEquals(expected.unit, actual.unit)

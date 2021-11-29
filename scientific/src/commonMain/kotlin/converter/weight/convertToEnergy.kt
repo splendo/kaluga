@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.times
 import com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose.times
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
+import com.splendo.kaluga.scientific.unit.Gram
 import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
 import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.IonizingRadiationAbsorbedDose
@@ -40,32 +41,62 @@ import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
-@JvmName("weightTimesRad")
-infix operator fun <WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+@JvmName("gramTimesRad")
+infix operator fun ScientificValue<PhysicalQuantity.Weight, Gram>.times(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>
 ) = absorbedDose * this
 
-@JvmName("weightTimesRadMultiple")
-infix operator fun <AbsorbedDoseUnit, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+@JvmName("gramTimesRadMultiple")
+infix operator fun <AbsorbedDoseUnit> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
 ) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> =
     absorbedDose * this
+
+@JvmName("imperialWeightTimesAbsorbedDose")
+infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+) = absorbedDose * this
+
+@JvmName("ukImperialWeightTimesAbsorbedDose")
+infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+) = absorbedDose * this
+
+@JvmName("usCustomaryWeightTimesAbsorbedDose")
+infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+) = absorbedDose * this
 
 @JvmName("weightTimesAbsorbedDose")
 infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
 ) = absorbedDose * this
 
-@JvmName("weightTimesRoentgenEquivalentMan")
-infix operator fun <WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+@JvmName("gramTimesRoentgenEquivalentMan")
+infix operator fun ScientificValue<PhysicalQuantity.Weight, Gram>.times(
     equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>
 ) = equivalentDose * this
 
-@JvmName("weightTimesRoentgenEquivalentManMultiple")
-infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+@JvmName("gramTimesRoentgenEquivalentManMultiple")
+infix operator fun <EquivalentDoseUnit> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
     equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
 ) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
     equivalentDose * this
+
+@JvmName("imperialWeightTimesEquivalentDose")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+) = equivalentDose * this
+
+@JvmName("ukImperialWeightTimesEquivalentDose")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+) = equivalentDose * this
+
+@JvmName("usCustomaryWeightTimesEquivalentDose")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+) = equivalentDose * this
 
 @JvmName("weightTimesEquivalentDose")
 infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(

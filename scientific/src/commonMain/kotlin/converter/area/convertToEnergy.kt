@@ -68,7 +68,7 @@ infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Ar
     surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>
 ) = surfaceTension * this
 
-@JvmName("areTimesSurfaceTension")
+@JvmName("areaTimesSurfaceTension")
 infix operator fun <SurfaceTensionUnit : SurfaceTension, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
     surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
 ) = surfaceTension * this

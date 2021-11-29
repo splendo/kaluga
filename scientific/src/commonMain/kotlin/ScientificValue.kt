@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.RoundingMode
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
@@ -91,6 +92,40 @@ fun <
     TargetUnit : ScientificUnit<Quantity>
     > ScientificValue<Quantity, Unit>.convertValue(target: TargetUnit): Decimal {
     return unit.convert(decimalValue, target)
+}
+
+fun <
+    Quantity : PhysicalQuantity,
+    Unit : ScientificUnit<Quantity>,
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetValue : ScientificValue<Quantity, TargetUnit>
+    > ScientificValue<Quantity, Unit>.convert(
+    target: TargetUnit,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
+    factory: (Decimal, TargetUnit) -> TargetValue
+): TargetValue = factory(convertValue(target, round, roundingMode), target)
+
+fun <
+    Quantity : PhysicalQuantity,
+    Unit : ScientificUnit<Quantity>,
+    TargetUnit : ScientificUnit<Quantity>
+    > ScientificValue<Quantity, Unit>.convert(
+    target: TargetUnit,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+) = convert(target, round, roundingMode, ::DefaultScientificValue)
+
+fun <
+    Quantity : PhysicalQuantity,
+    Unit : ScientificUnit<Quantity>,
+    TargetUnit : ScientificUnit<Quantity>
+    > ScientificValue<Quantity, Unit>.convertValue(
+    target: TargetUnit,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+): Decimal {
+    return unit.convert(decimalValue, target, round, roundingMode)
 }
 
 // Calculation

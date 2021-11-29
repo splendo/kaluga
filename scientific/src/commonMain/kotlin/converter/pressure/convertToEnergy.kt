@@ -36,8 +36,6 @@ import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
-import com.splendo.kaluga.scientific.unit.MetricPressure
-import com.splendo.kaluga.scientific.unit.MetricVolume
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
@@ -57,11 +55,6 @@ infix operator fun ScientificValue<PhysicalQuantity.Pressure, Barye>.times(volum
 @JvmName("baryeMultipleTimesCubicCentimeter")
 infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     Erg.energy(this, volume)
-
-@JvmName("metricPressureTimesMetricVolume")
-infix operator fun <PressureUnit : MetricPressure, VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
-) = Joule.energy(this, volume)
 
 @JvmName("poundSquareFootTimesCubicFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicFoot>) =
@@ -116,18 +109,8 @@ infix operator fun <PressureUnit : UKImperialPressure, VolumeUnit : UKImperialVo
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = FootPoundForce.energy(this, volume)
 
-@JvmName("ukImperialPressureTimesUSCustomaryVolume")
-infix operator fun <PressureUnit : UKImperialPressure, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
-) = FootPoundForce.energy(this, volume)
-
 @JvmName("usCustomaryPressureTimesImperialVolume")
 infix operator fun <PressureUnit : USCustomaryPressure, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
-) = FootPoundForce.energy(this, volume)
-
-@JvmName("usCustomaryPressureTimesUKImperialVolume")
-infix operator fun <PressureUnit : USCustomaryPressure, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = FootPoundForce.energy(this, volume)
 

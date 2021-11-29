@@ -39,11 +39,11 @@ import kotlin.jvm.JvmName
 
 @JvmName("dyneTimesMetricSpeed")
 infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) =
-    ErgPerSecond.metric.power(this, speed)
+    ErgPerSecond.power(this, speed)
 
 @JvmName("dyneMultipleTimesMetricSpeed")
 infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    ErgPerSecond.metric.power(this, speed)
+    ErgPerSecond.power(this, speed)
 
 @JvmName("metricForceTimesMetricSpeed")
 infix operator fun <ForceUnit : MetricForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
