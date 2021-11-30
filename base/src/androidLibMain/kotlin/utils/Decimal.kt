@@ -84,6 +84,12 @@ actual fun Decimal.times(
     )
 ).setScale(scale, NativeRoundingMode.valueOf(roundingMode.android))
 
+actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
+    this.setScale(
+        scale,
+        NativeRoundingMode.valueOf(roundingMode.android)
+    )
+
 actual infix fun Decimal.pow(n: Int): Decimal = this.pow(n, MathContext.DECIMAL128)
 actual fun Decimal.pow(n: Int, scale: Int): Decimal = this.pow(n, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 actual fun Decimal.pow(
@@ -97,14 +103,6 @@ actual fun Decimal.pow(
         NativeRoundingMode.valueOf(roundingMode.android)
     )
 ).setScale(scale, NativeRoundingMode.valueOf(roundingMode.android))
-
-actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
-    this.round(
-        MathContext(
-            scale + this.toInt().length(),
-            NativeRoundingMode.valueOf(roundingMode.android)
-        )
-    )
 
 actual fun Number.toDecimal() = BigDecimal(this.toString())
 actual fun String.toDecimal() = BigDecimal(this)
