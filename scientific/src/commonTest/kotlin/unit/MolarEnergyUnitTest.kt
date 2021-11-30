@@ -30,63 +30,63 @@ class MolarEnergyUnitTest {
 
     @Test
     fun metricMolarEnergyConversionTest() {
-        assertScientificConversion(1.0, (Joule per Mole), 1.0e+7, Erg per Mole)
+        assertScientificConversion(1.0, (Joule per Mole), 1.0e+6, Erg per Decimole)
     }
 
     @Test
     fun molarEnergyFromEnergyAndAmountOfSubstanceTest() {
-        assertEquals(1(Joule per Mole), 2(Joule) / 2(Mole))
-        assertEquals(1(Calorie per Mole), 2(Calorie) / 2(Mole))
-        assertEquals(1(HorsepowerHour per Mole), 2(HorsepowerHour) / 2(Mole))
+        assertEquals(1(Joule per Decimole), 2(Joule) / 2(Decimole))
+        assertEquals(1(Calorie per Decimole), 2(Calorie) / 2(Decimole))
+        assertEquals(1(HorsepowerHour per Decimole), 2(HorsepowerHour) / 2(Decimole))
     }
 
     @Test
     fun molarEnergyFromSpecificEnergyAndMolalityTest() {
-        assertEquals(1(Joule per Mole), 2(Joule per Kilogram) / 2(Mole per Kilogram))
-        assertEquals(1(WattHour.imperial per Mole), 2(WattHour per Pound) / 2(Mole per Pound))
+        assertEquals(1(Joule per Decimole), 2(Joule per Kilogram) / 2(Decimole per Kilogram))
+        assertEquals(1(WattHour.imperial per Decimole), 2(WattHour per Pound) / 2(Decimole per Pound))
         assertEquals(
-            1(WattHour.imperial per Mole),
-            2(WattHour per Pound.ukImperial) / 2(Mole per Pound)
+            1(WattHour.imperial per Decimole),
+            2(WattHour per Pound.ukImperial) / 2(Decimole per Pound)
         )
         assertEquals(
-            1(WattHour.imperial per Mole),
-            2(WattHour per Pound.usCustomary) / 2(Mole per Pound)
+            1(WattHour.imperial per Decimole),
+            2(WattHour per Pound.usCustomary) / 2(Decimole per Pound)
         )
         assertEquals(
-            1(Joule per Mole),
-            2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) / 2(Mole per Kilogram)
+            1(Joule per Decimole),
+            2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) / 2(Decimole per Kilogram)
         )
     }
 
     @Test
     fun molarEnergyFromSpecificEnergyAndMolarMassTest() {
-        assertEquals(4(Joule per Mole), 2(Joule per Kilogram) * 2(Kilogram per Mole))
-        assertEquals(4(Joule per Mole), 2(Kilogram per Mole) * 2(Joule per Kilogram))
-        assertEquals(4(WattHour.imperial per Mole), 2(WattHour per Pound) * 2(Pound per Mole))
-        assertEquals(4(WattHour.imperial per Mole), 2(Pound per Mole) * 2(WattHour per Pound))
+        assertEquals(4(Joule per Decimole), 2(Joule per Kilogram) * 2(Kilogram per Decimole))
+        assertEquals(4(Joule per Decimole), 2(Kilogram per Decimole) * 2(Joule per Kilogram))
+        assertEquals(4(WattHour.imperial per Decimole), 2(WattHour per Pound) * 2(Pound per Decimole))
+        assertEquals(4(WattHour.imperial per Decimole), 2(Pound per Decimole) * 2(WattHour per Pound))
         assertEquals(
-            4(WattHour.imperial per Mole),
-            2(WattHour per Pound.ukImperial) * 2(Pound per Mole)
+            4(WattHour.imperial per Decimole),
+            2(WattHour per Pound.ukImperial) * 2(Pound per Decimole)
         )
         assertEquals(
-            4(WattHour.imperial per Mole),
-            2(Pound per Mole) * 2(WattHour per Pound.ukImperial)
+            4(WattHour.imperial per Decimole),
+            2(Pound per Decimole) * 2(WattHour per Pound.ukImperial)
         )
         assertEquals(
-            4(WattHour.imperial per Mole),
-            2(WattHour per Pound.usCustomary) * 2(Pound per Mole)
+            4(WattHour.imperial per Decimole),
+            2(WattHour per Pound.usCustomary) * 2(Pound per Decimole)
         )
         assertEquals(
-            4(WattHour.imperial per Mole),
-            2(Pound per Mole) * 2(WattHour per Pound.usCustomary)
+            4(WattHour.imperial per Decimole),
+            2(Pound per Decimole) * 2(WattHour per Pound.usCustomary)
         )
         assertEquals(
-            4(Joule per Mole),
-            2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) * 2(Kilogram per Mole)
+            4(Joule per Decimole),
+            2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) * 2(Kilogram per Decimole)
         )
         assertEquals(
-            4(Joule per Mole),
-            2(Kilogram per Mole) * 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy)
+            4(Joule per Decimole),
+            2(Kilogram per Decimole) * 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy)
         )
     }
 }

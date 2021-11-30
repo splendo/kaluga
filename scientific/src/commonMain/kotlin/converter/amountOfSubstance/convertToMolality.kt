@@ -24,7 +24,6 @@ import com.splendo.kaluga.scientific.unit.AmountOfSubstance
 import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.MetricWeight
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.UKImperialWeight
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
@@ -54,4 +53,4 @@ infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : USCu
 @JvmName("amountOfSubstanceDivWeight")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : Weight> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = (Mole per Kilogram).molality(this, weight)
+) = (unit per Kilogram).molality(this, weight)

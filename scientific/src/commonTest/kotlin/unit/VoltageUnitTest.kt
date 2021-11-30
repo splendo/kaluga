@@ -46,43 +46,43 @@ class VoltageUnitTest {
     }
 
     @Test
-    fun voltageFromElectricChargeAndCapacitance() {
+    fun voltageFromElectricChargeAndCapacitanceTest() {
         assertEquals(1(Abvolt), 2(Abcoulomb) / 2(Abfarad))
         assertEquals(1(Volt), 2(Coulomb) / 2(Farad))
     }
 
     @Test
-    fun voltageFromElectricCurrentAndConductance() {
+    fun voltageFromElectricCurrentAndConductanceTest() {
         assertEquals(1(Abvolt), 2(Abampere) / 2(Absiemens))
         assertEquals(1(Abvolt), 2(Biot) / 2(Absiemens))
         assertEquals(1(Volt), 2(Ampere) / 2(Siemens))
     }
 
     @Test
-    fun voltageFromElectricCurrentAndResistance() {
+    fun voltageFromElectricCurrentAndResistanceTest() {
         assertEquals(4(Abvolt), 2(Abampere) * 2(Abohm))
         assertEquals(4(Abvolt), 2(Abohm) * 2(Abampere))
         assertEquals(4(Abvolt), 2(Biot) * 2(Abohm))
         assertEquals(4(Abvolt), 2(Abohm) * 2(Biot))
-        assertEquals(4(Volt), 2(Ampere) * 2(Abohm))
-        assertEquals(4(Volt), 2(Abohm) * 2(Ampere))
+        assertEquals(4(Volt), 2(Ampere) * 2(Ohm))
+        assertEquals(4(Volt), 2(Ohm) * 2(Ampere))
     }
 
     @Test
-    fun voltageFromEnergyAndElectricCharge() {
+    fun voltageFromEnergyAndElectricChargeTest() {
         assertEquals(1(Abvolt), 2(Erg) / 2(Abcoulomb))
         assertEquals(1(Abvolt), 20(Decierg) / 2(Abcoulomb))
         assertEquals(1(Volt), 2(Joule) / 2(Coulomb))
     }
 
     @Test
-    fun voltageFromMagneticFluxAndTime() {
+    fun voltageFromMagneticFluxAndTimeTest() {
         assertEquals(1(Abvolt), 2(Maxwell) / 2(Second))
         assertEquals(1(Volt), 2(Weber) / 2(Second))
     }
 
     @Test
-    fun voltageFromPowerAndElectricCurrent() {
+    fun voltageFromPowerAndElectricCurrentTest() {
         assertEquals(1(Abvolt), 2(ErgPerSecond) / 2(Abampere))
         assertEquals(1(Abvolt), 2(ErgPerSecond) / 2(Biot))
         assertEquals(1(Volt), 2(Watt) / 2(Ampere))

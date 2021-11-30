@@ -43,6 +43,16 @@ infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantit
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
 ) = unit.weight.mass(this, volume)
 
+@JvmName("imperialDensityTimesUKImperialVolume")
+infix operator fun <VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+) = unit.weight.mass(this, volume)
+
+@JvmName("imperialDensityTimesUSCustomaryVolume")
+infix operator fun <VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+) = unit.weight.mass(this, volume)
+
 @JvmName("ukImperialDensityTimesImperialVolume")
 infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>

@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volume.volume
 import com.splendo.kaluga.scientific.unit.Acre
 import com.splendo.kaluga.scientific.unit.AcreFoot
+import com.splendo.kaluga.scientific.unit.AcreInch
 import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.CubicCentimeter
@@ -34,6 +35,7 @@ import com.splendo.kaluga.scientific.unit.CubicInch
 import com.splendo.kaluga.scientific.unit.CubicKilometer
 import com.splendo.kaluga.scientific.unit.CubicMegameter
 import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.CubicMicrometer
 import com.splendo.kaluga.scientific.unit.CubicMile
 import com.splendo.kaluga.scientific.unit.CubicMillimeter
 import com.splendo.kaluga.scientific.unit.CubicNanometer
@@ -84,7 +86,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareNanometer>.times
 
 @JvmName("squareMicrometerTimesMicrometer")
 infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMicrometer>.times(height: ScientificValue<PhysicalQuantity.Length, Micrometer>) =
-    CubicMillimeter.volume(this, height)
+    CubicMicrometer.volume(this, height)
 
 @JvmName("squareMillimeterTimesMillimeter")
 infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMillimeter>.times(height: ScientificValue<PhysicalQuantity.Length, Millimeter>) =
@@ -138,6 +140,10 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareYard>.times(heig
 @JvmName("squareMileTimesMile")
 infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMile>.times(height: ScientificValue<PhysicalQuantity.Length, Mile>) =
     CubicMile.volume(this, height)
+
+@JvmName("acreTimesInch")
+infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Inch>) =
+    AcreInch.volume(this, height)
 
 @JvmName("acreTimesFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) =

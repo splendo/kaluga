@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.asSpecificEnergy
@@ -62,7 +63,7 @@ class SpecificEnergyUnitTest {
         assertEquals(1(HorsepowerHour per Pound), 2(HorsepowerHour) / 2(Pound))
         assertEquals(1(HorsepowerHour per ImperialTon), 2(HorsepowerHour) / 2(ImperialTon))
         assertEquals(1(HorsepowerHour per UsTon), 2(HorsepowerHour) / 2(UsTon))
-        assertEquals(1(Joule per Kilogram), 2(Joule) / 2(Kilogram).convert(Pound))
+        assertEqualScientificValue(1(Joule per Kilogram), 2(Joule) / 2(Kilogram).convert(Pound), 8)
     }
 
     @Test
@@ -81,54 +82,55 @@ class SpecificEnergyUnitTest {
 
     @Test
     fun specificEnergyFromMolarEnergyAndMolalityTest() {
-        assertEquals(4(Joule per Kilogram), 2(Joule per Mole) * 2(Mole per Kilogram))
-        assertEquals(4(Joule per Kilogram), 2(Mole per Kilogram) * 2(Joule per Mole))
-        assertEquals(4(WattHour per Kilogram), 2(WattHour per Mole) * 2(Mole per Kilogram))
-        assertEquals(4(WattHour per Kilogram), 2(Mole per Kilogram) * 2(WattHour per Mole))
-        assertEquals(4(WattHour per Pound), 2(WattHour per Mole) * 2(Mole per Pound))
-        assertEquals(4(WattHour per Pound), 2(Mole per Pound) * 2(WattHour per Mole))
-        assertEquals(4(WattHour per ImperialTon), 2(WattHour per Mole) * 2(Mole per ImperialTon))
-        assertEquals(4(WattHour per ImperialTon), 2(Mole per ImperialTon) * 2(WattHour per Mole))
-        assertEquals(4(WattHour per UsTon), 2(WattHour per Mole) * 2(Mole per UsTon))
-        assertEquals(4(WattHour per UsTon), 2(Mole per UsTon) * 2(WattHour per Mole))
-        assertEquals(4(HorsepowerHour per Pound), 2(HorsepowerHour per Mole) * 2(Mole per Pound))
-        assertEquals(4(HorsepowerHour per Pound), 2(Mole per Pound) * 2(HorsepowerHour per Mole))
+        assertEquals(4(Joule per Kilogram), 2(Joule per Decimole) * 2(Decimole per Kilogram))
+        assertEquals(4(Joule per Kilogram), 2(Decimole per Kilogram) * 2(Joule per Decimole))
+        assertEquals(4(WattHour per Kilogram), 2(WattHour per Decimole) * 2(Decimole per Kilogram))
+        assertEquals(4(WattHour per Kilogram), 2(Decimole per Kilogram) * 2(WattHour per Decimole))
+        assertEquals(4(WattHour per Pound), 2(WattHour per Decimole) * 2(Decimole per Pound))
+        assertEquals(4(WattHour per Pound), 2(Decimole per Pound) * 2(WattHour per Decimole))
+        assertEquals(4(WattHour per ImperialTon), 2(WattHour per Decimole) * 2(Decimole per ImperialTon))
+        assertEquals(4(WattHour per ImperialTon), 2(Decimole per ImperialTon) * 2(WattHour per Decimole))
+        assertEquals(4(WattHour per UsTon), 2(WattHour per Decimole) * 2(Decimole per UsTon))
+        assertEquals(4(WattHour per UsTon), 2(Decimole per UsTon) * 2(WattHour per Decimole))
+        assertEquals(4(HorsepowerHour per Pound), 2(HorsepowerHour per Decimole) * 2(Decimole per Pound))
+        assertEquals(4(HorsepowerHour per Pound), 2(Decimole per Pound) * 2(HorsepowerHour per Decimole))
         assertEquals(
             4(HorsepowerHour per ImperialTon),
-            2(HorsepowerHour per Mole) * 2(Mole per ImperialTon)
+            2(HorsepowerHour per Decimole) * 2(Decimole per ImperialTon)
         )
         assertEquals(
             4(HorsepowerHour per ImperialTon),
-            2(Mole per ImperialTon) * 2(HorsepowerHour per Mole)
+            2(Decimole per ImperialTon) * 2(HorsepowerHour per Decimole)
         )
-        assertEquals(4(HorsepowerHour per UsTon), 2(HorsepowerHour per Mole) * 2(Mole per UsTon))
-        assertEquals(4(HorsepowerHour per UsTon), 2(Mole per UsTon) * 2(HorsepowerHour per Mole))
+        assertEquals(4(HorsepowerHour per UsTon), 2(HorsepowerHour per Decimole) * 2(Decimole per UsTon))
+        assertEquals(4(HorsepowerHour per UsTon), 2(Decimole per UsTon) * 2(HorsepowerHour per Decimole))
         assertEquals(
             4(Joule per Kilogram),
-            2(Joule per Mole) * 2(Mole per Kilogram).convert(Mole per Pound)
+            2(Joule per Decimole) * 2(Decimole per Kilogram).convert(Decimole per Pound)
         )
         assertEquals(
             4(Joule per Kilogram),
-            2(Mole per Kilogram).convert(Mole per Pound) * 2(Joule per Mole)
+            2(Decimole per Kilogram).convert(Decimole per Pound) * 2(Joule per Decimole)
         )
     }
 
     @Test
     fun specificEnergyFromMolarEnergyAndMolarMassTest() {
-        assertEquals(1(Joule per Kilogram), 2(Joule per Mole) / 2(Kilogram per Mole))
-        assertEquals(1(WattHour per Kilogram), 2(WattHour per Mole) / 2(Kilogram per Mole))
-        assertEquals(1(WattHour per Pound), 2(WattHour per Mole) / 2(Pound per Mole))
-        assertEquals(1(WattHour per ImperialTon), 2(WattHour per Mole) / 2(ImperialTon per Mole))
-        assertEquals(1(WattHour per UsTon), 2(WattHour per Mole) / 2(UsTon per Mole))
-        assertEquals(1(HorsepowerHour per Pound), 2(HorsepowerHour per Mole) / 2(Pound per Mole))
+        assertEquals(1(Joule per Kilogram), 2(Joule per Decimole) / 2(Kilogram per Decimole))
+        assertEquals(1(WattHour per Kilogram), 2(WattHour per Decimole) / 2(Kilogram per Decimole))
+        assertEquals(1(WattHour per Pound), 2(WattHour per Decimole) / 2(Pound per Decimole))
+        assertEquals(1(WattHour per ImperialTon), 2(WattHour per Decimole) / 2(ImperialTon per Decimole))
+        assertEquals(1(WattHour per UsTon), 2(WattHour per Decimole) / 2(UsTon per Decimole))
+        assertEquals(1(HorsepowerHour per Pound), 2(HorsepowerHour per Decimole) / 2(Pound per Decimole))
         assertEquals(
             1(HorsepowerHour per ImperialTon),
-            2(HorsepowerHour per Mole) / 2(ImperialTon per Mole)
+            2(HorsepowerHour per Decimole) / 2(ImperialTon per Decimole)
         )
-        assertEquals(1(HorsepowerHour per UsTon), 2(HorsepowerHour per Mole) / 2(UsTon per Mole))
-        assertEquals(
+        assertEquals(1(HorsepowerHour per UsTon), 2(HorsepowerHour per Decimole) / 2(UsTon per Decimole))
+        assertEqualScientificValue(
             1(Joule per Kilogram),
-            2(Joule per Mole) / 2(Kilogram per Mole).convert(Pound per Mole)
+            2(Joule per Decimole) / 2(Kilogram per Decimole).convert(Pound per Decimole),
+            8
         )
     }
 

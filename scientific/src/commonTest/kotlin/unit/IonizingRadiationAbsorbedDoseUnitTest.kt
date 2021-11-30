@@ -54,8 +54,8 @@ class IonizingRadiationAbsorbedDoseUnitTest {
 
     @Test
     fun absorbedDoseFromEnergyAndWeightTest() {
-        assertEquals(1(Rad), 2(Erg) absorbedBy 2(Gram))
-        assertEquals(1(Rad), 20(Decierg) absorbedBy 2(Gram))
+        assertEquals(1(Rad), 200(Erg) absorbedBy 2(Gram))
+        assertEquals(1(Rad), 2000(Decierg) absorbedBy 2(Gram))
         assertEquals(1(Gray), 2(Joule) absorbedBy 2(Kilogram))
     }
 

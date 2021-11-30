@@ -79,6 +79,6 @@ class DynamicViscosityTest {
         assertEquals(4(ImperialTonSquareFoot x Second), 2(Second) * 2(ImperialTonSquareFoot))
         assertEquals(4(USTonSquareFoot x Second), 2(USTonSquareFoot) * 2(Second))
         assertEquals(4(USTonSquareFoot x Second), 2(Second) * 2(USTonSquareFoot))
-        assertEquals(4(Pascal x Second), 2(Pascal).convert(PoundSquareInch as Pressure) * 2(Second))
+        assertEqualScientificValue(4(Pascal x Second), 2(Pascal).convert(PoundSquareInch as Pressure) * 2(Second), 8)
     }
 }

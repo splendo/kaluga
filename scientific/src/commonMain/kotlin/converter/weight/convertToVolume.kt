@@ -49,6 +49,16 @@ infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantit
     density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
 ) = density.unit.per.volume(this, density)
 
+@JvmName("imperialWeightDivUKImperialDensity")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+) = density.unit.per.volume(this, density)
+
+@JvmName("imperialWeightDivUSCustomaryDensity")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
+    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
+) = density.unit.per.volume(this, density)
+
 @JvmName("ukImperialWeightDivImperialDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
     density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
@@ -94,9 +104,19 @@ infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantit
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
 ) = specificVolume * this
 
+@JvmName("ukImperialWeightTimesImperialSpecificVolume")
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+) = specificVolume * this
+
 @JvmName("ukImperialWeightTimesUKImperialSpecificVolume")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+) = specificVolume * this
+
+@JvmName("usCustomaryWeightTimesImperialSpecificVolume")
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
 ) = specificVolume * this
 
 @JvmName("usCustomaryWeightTimesUSCustomarySpecificVolume")

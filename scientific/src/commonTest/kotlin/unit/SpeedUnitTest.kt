@@ -76,14 +76,15 @@ class SpeedUnitTest {
             1(Foot per Second),
             2(Pound.usCustomary x (Foot per Second)) / 2(Pound.usCustomary)
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Meter per Second),
-            2(Kilogram x (Meter per Second)) / 2(Kilogram).convert(Pound)
+            2(Kilogram x (Meter per Second)) / 2(Kilogram).convert(Pound),
+            8
         )
     }
 
     @Test
-    fun speedFromPowerAndForce() {
+    fun speedFromPowerAndForceTest() {
         assertEquals(1(Centimeter per Second), 2(ErgPerSecond) / 2(Dyne))
         assertEquals(1(Centimeter per Second), 2(ErgPerSecond) / 20(Decidyne))
         assertEquals(1(Meter per Second), 2(Watt) / 2(Newton))

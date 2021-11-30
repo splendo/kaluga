@@ -124,6 +124,10 @@ infix operator fun ScientificValue<PhysicalQuantity.Length, Yard>.times(area: Sc
 infix operator fun ScientificValue<PhysicalQuantity.Length, Mile>.times(area: ScientificValue<PhysicalQuantity.Area, SquareMile>) =
     area * this
 
+@JvmName("inchTimesAcre")
+infix operator fun ScientificValue<PhysicalQuantity.Length, Inch>.times(area: ScientificValue<PhysicalQuantity.Area, Acre>) =
+    area * this
+
 @JvmName("footTimesAcre")
 infix operator fun ScientificValue<PhysicalQuantity.Length, Foot>.times(area: ScientificValue<PhysicalQuantity.Area, Acre>) =
     area * this

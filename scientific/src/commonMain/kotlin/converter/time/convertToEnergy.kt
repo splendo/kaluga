@@ -32,6 +32,8 @@ import com.splendo.kaluga.scientific.unit.Hectowatt
 import com.splendo.kaluga.scientific.unit.Horsepower
 import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerMinute
+import com.splendo.kaluga.scientific.unit.InchPoundForcePerSecond
 import com.splendo.kaluga.scientific.unit.Kilowatt
 import com.splendo.kaluga.scientific.unit.Megawatt
 import com.splendo.kaluga.scientific.unit.MetricPower
@@ -94,6 +96,16 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 @JvmName("timeTimesMetricPower")
 infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
     power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
+) = power * this
+
+@JvmName("timeTimesInchPoundForcePerSecond")
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>
+) = power * this
+
+@JvmName("timeTimesInchPoundForcePerMinute")
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>
 ) = power * this
 
 @JvmName("hourTimesHorsepower")

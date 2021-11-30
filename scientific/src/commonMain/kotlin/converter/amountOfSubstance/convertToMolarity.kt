@@ -24,7 +24,6 @@ import com.splendo.kaluga.scientific.unit.AmountOfSubstance
 import com.splendo.kaluga.scientific.unit.CubicMeter
 import com.splendo.kaluga.scientific.unit.ImperialVolume
 import com.splendo.kaluga.scientific.unit.MetricVolume
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.UKImperialVolume
 import com.splendo.kaluga.scientific.unit.USCustomaryVolume
 import com.splendo.kaluga.scientific.unit.Volume
@@ -54,4 +53,4 @@ infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : USCu
 @JvmName("amountOfSubstanceDivVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
-) = (Mole per CubicMeter).molarity(this, volume)
+) = (unit per CubicMeter).molarity(this, volume)

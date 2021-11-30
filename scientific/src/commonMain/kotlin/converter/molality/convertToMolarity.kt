@@ -27,7 +27,6 @@ import com.splendo.kaluga.scientific.unit.ImperialSpecificVolume
 import com.splendo.kaluga.scientific.unit.MetricDensity
 import com.splendo.kaluga.scientific.unit.MetricSpecificVolume
 import com.splendo.kaluga.scientific.unit.Molality
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.SpecificVolume
 import com.splendo.kaluga.scientific.unit.UKImperialDensity
 import com.splendo.kaluga.scientific.unit.UKImperialSpecificVolume
@@ -84,4 +83,4 @@ infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Mo
 @JvmName("molalityDivSpecificVolume")
 infix operator fun <MolalityUnit : Molality, SpecificVolumeUnit : SpecificVolume> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.div(
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
-) = (Mole per CubicMeter).molarity(this, specificVolume)
+) = (unit.amountOfSubstance per CubicMeter).molarity(this, specificVolume)

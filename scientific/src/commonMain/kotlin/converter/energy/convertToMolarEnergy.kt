@@ -48,4 +48,4 @@ infix operator fun <EnergyUnit : ImperialEnergy, AmountOfSubstanceUnit : AmountO
 @JvmName("energyDivAmountOfSubstance")
 infix operator fun <EnergyUnit : Energy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
     amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
-) = (Joule per Mole).molarEnergy(this, amountOfSubstance)
+) = (Joule per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)

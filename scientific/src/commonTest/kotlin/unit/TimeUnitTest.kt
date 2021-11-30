@@ -72,38 +72,38 @@ class TimeUnitTest {
     }
 
     @Test
-    fun timeFromAngleAndAngularVelocity() {
+    fun timeFromAngleAndAngularVelocityTest() {
         assertEqualScientificValue(1(Hour), 2(Deciradian) / 2(Deciradian per Hour))
     }
 
     @Test
-    fun timeFromAngularAccelerationAndAngularVelocity() {
+    fun timeFromAngularAccelerationAndAngularVelocityTest() {
         assertEqualScientificValue(1(Hour), 2(Deciradian per Second) / 2(Deciradian per Second per Hour))
     }
 
     @Test
-    fun timeFromChargeAndCurrent() {
+    fun timeFromChargeAndCurrentTest() {
         assertEqualScientificValue(1(Second), 20(Decicoulomb) / 0.2(Decaampere))
     }
 
     @Test
-    fun timeFromDynamicViscosityAndPressure() {
+    fun timeFromDynamicViscosityAndPressureTest() {
         assertEqualScientificValue(1(Hour), 2(Barye x Hour) / 2(Barye))
     }
 
     @Test
-    fun timeFromElectricCapacitanceAndResistance() {
+    fun timeFromElectricCapacitanceAndResistanceTest() {
         assertEqualScientificValue(4(Second), 20(Decifarad) * 0.2(Decaohm))
         assertEqualScientificValue(4(Second), 0.2(Decaohm) * 20(Decifarad))
     }
 
     @Test
-    fun timeFromElectricInductanceAndResistance() {
+    fun timeFromElectricInductanceAndResistanceTest() {
         assertEqualScientificValue(1(Second), 20(Decihenry) / 0.2(Decaohm))
     }
 
     @Test
-    fun timeFromEnergyAndPower() {
+    fun timeFromEnergyAndPowerTest() {
         assertEqualScientificValue(1(Second), 2(Joule) / 2(Watt))
         assertEqualScientificValue(1(Hour), 2(WattHour) / 2(Watt))
         assertEqualScientificValue(1(Hour), 20(DeciwattHour) / 2(Watt))
@@ -118,49 +118,49 @@ class TimeUnitTest {
     }
 
     @Test
-    fun timeFromForceAndYank() {
+    fun timeFromForceAndYankTest() {
         assertEqualScientificValue(1(Hour), 20(Decinewton) / 0.2(Decanewton per Hour))
     }
 
     @Test
-    fun timeFromFrequency() {
+    fun timeFromFrequencyTest() {
         assertEqualScientificValue(0.5(Minute), 2(BeatsPerMinute).time())
         assertEqualScientificValue(2(Second), 5(Decihertz).time())
     }
 
     @Test
-    fun timeFromLengthAndSpeed() {
+    fun timeFromLengthAndSpeedTest() {
         assertEqualScientificValue(1(Hour), 2(Kilometer) / 2(Kilometer per Hour))
     }
 
     @Test
-    fun timeFromLuminousEnergyAndFlux() {
+    fun timeFromLuminousEnergyAndFluxTest() {
         assertEqualScientificValue(1(Hour), 20(Decilumen x Hour) / 0.2(Decalumen))
     }
 
     @Test
-    fun timeFromLuminousExposureAndIlluminance() {
+    fun timeFromLuminousExposureAndIlluminanceTest() {
         assertEqualScientificValue(1(Hour), 20(Deciphot x Hour) / 0.2(Decaphot))
     }
 
     @Test
-    fun timeFromMagneticFluxAndVoltage() {
+    fun timeFromMagneticFluxAndVoltageTest() {
         assertEqualScientificValue(1(Second), 20(Deciweber) / 0.2(Decavolt))
     }
 
     @Test
-    fun timeFromInvertedRadioactivity() {
+    fun timeFromInvertedRadioactivityTest() {
         assertEqualScientificValue(2(Second), 1 / 5(Decibecquerel))
         assertEqualScientificValue(2(Second), 1.toDecimal() / 5(Decibecquerel))
     }
 
     @Test
-    fun timeFromSpeedAndAcceleration() {
+    fun timeFromSpeedAndAccelerationTest() {
         assertEqualScientificValue(1(Hour), 2(Kilometer per Second) / 2(Kilometer per Second per Hour))
     }
 
     @Test
-    fun timeFromWeightAndMassFlowRate() {
+    fun timeFromWeightAndMassFlowRateTest() {
         assertEqualScientificValue(1(Hour), 2(Gram) / 2(Gram per Hour))
     }
 }

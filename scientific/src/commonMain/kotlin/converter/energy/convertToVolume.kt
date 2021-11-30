@@ -34,9 +34,7 @@ import com.splendo.kaluga.scientific.unit.InchOunceForce
 import com.splendo.kaluga.scientific.unit.InchPoundForce
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.unit.MetricEnergy
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
-import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
 import com.splendo.kaluga.scientific.unit.Pressure
@@ -63,11 +61,6 @@ infix operator fun <ErgUnit, BaryeUnit> ScientificValue<PhysicalQuantity.Energy,
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
 ) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>, BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     CubicCentimeter.volume(this, pressure)
-
-@JvmName("metricEnergyDivMetricPressure")
-infix operator fun <EnergyUnit : MetricEnergy, PressureUnit : MetricPressure> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
-) = CubicMeter.volume(this, pressure)
 
 @JvmName("footPoundalDivPoundSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>) =

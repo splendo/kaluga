@@ -24,7 +24,6 @@ import com.splendo.kaluga.scientific.unit.ImperialMolality
 import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.MetricMolality
 import com.splendo.kaluga.scientific.unit.Molality
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.UKImperialMolality
 import com.splendo.kaluga.scientific.unit.USCustomaryMolality
 import com.splendo.kaluga.scientific.unit.per
@@ -48,4 +47,4 @@ fun ScientificValue<PhysicalQuantity.Molality, USCustomaryMolality>.molarMass() 
 
 @JvmName("molalityMolarMass")
 fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.molarMass() =
-    (Kilogram per Mole).molarMass(this)
+    (Kilogram per unit.amountOfSubstance).molarMass(this)

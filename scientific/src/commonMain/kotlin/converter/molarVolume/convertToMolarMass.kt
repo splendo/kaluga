@@ -27,7 +27,6 @@ import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.MetricDensity
 import com.splendo.kaluga.scientific.unit.MetricSpecificVolume
 import com.splendo.kaluga.scientific.unit.MolarVolume
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.SpecificVolume
 import com.splendo.kaluga.scientific.unit.UKImperialDensity
 import com.splendo.kaluga.scientific.unit.UKImperialSpecificVolume
@@ -55,7 +54,7 @@ infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<PhysicalQuant
 @JvmName("molarVolumeTimesDensity")
 infix operator fun <MolarVolumeUnit : MolarVolume, DensityUnit : Density> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.times(
     density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
-) = (Kilogram per Mole).molarMass(this, density)
+) = (Kilogram per unit.per).molarMass(this, density)
 
 @JvmName("molarVolumeDivMetricSpecificVolume")
 infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.div(

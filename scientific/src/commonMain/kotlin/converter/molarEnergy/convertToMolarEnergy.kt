@@ -25,7 +25,6 @@ import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
 import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
 import com.splendo.kaluga.scientific.unit.MolarEnergy
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
 import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
 import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
@@ -75,4 +74,4 @@ infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuant
 @JvmName("molarEnergyDivSpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy, SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
-) = (Kilogram per Mole).molarMass(this, specificEnergy)
+) = (Kilogram per unit.per).molarMass(this, specificEnergy)

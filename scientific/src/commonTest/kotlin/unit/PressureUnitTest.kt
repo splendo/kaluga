@@ -130,7 +130,7 @@ class PressureUnitTest {
         )
         assertEqualScientificValue(
             1(Pascal),
-            2(Pascal x Second).convert((PoundSquareFoot x Second) as DynamicViscosity) / 2(Second)
+            2((Pascal x Second) as DynamicViscosity) / 2(Second)
         )
     }
 
@@ -141,7 +141,8 @@ class PressureUnitTest {
         assertEqualScientificValue(1(Pascal), 2(Joule) / 2(CubicMeter))
         assertEqualScientificValue(
             1(PoundSquareFoot),
-            (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(CubicFoot)
+            (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(CubicFoot),
+            8
         )
         assertEqualScientificValue(1(PoundSquareFoot), 2(FootPoundForce) / 2(CubicFoot))
         assertEqualScientificValue(1(PoundSquareInch), 2(InchPoundForce) / 2(CubicInch))
@@ -179,11 +180,13 @@ class PressureUnitTest {
         assertEqualScientificValue(1(Pascal), 2(Newton) / 2(SquareMeter))
         assertEqualScientificValue(
             1(PoundSquareFoot),
-            (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareFoot)
+            (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareFoot),
+            8
         )
         assertEqualScientificValue(
             1(PoundSquareInch),
-            (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareInch)
+            (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareInch),
+            8
         )
         assertEqualScientificValue(1(PoundSquareFoot), 2(PoundForce) / 2(SquareFoot))
         assertEqualScientificValue(1(PoundSquareInch), 2(PoundForce) / 2(SquareInch))

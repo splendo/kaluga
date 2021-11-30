@@ -75,133 +75,133 @@ class DensityUnitTest {
 
     @Test
     fun densityFromMolarityAndMolalityTest() {
-        assertEquals(1(Kilogram per CubicMeter), 2(Mole per CubicMeter) / 2(Mole per Kilogram))
-        assertEquals(1(Pound per CubicFoot), 2(Mole per CubicFoot) / 2(Mole per Pound))
+        assertEquals(1(Kilogram per CubicMeter), 2(Decimole per CubicMeter) / 2(Decimole per Kilogram))
+        assertEquals(1(Pound per CubicFoot), 2(Decimole per CubicFoot) / 2(Decimole per Pound))
         assertEquals(
             1(Pound.ukImperial per CubicFoot),
-            2(Mole per CubicFoot) / 2(Mole per Pound.ukImperial)
+            2(Decimole per CubicFoot) / 2(Decimole per Pound.ukImperial)
         )
         assertEquals(
             1(Pound.usCustomary per CubicFoot),
-            2(Mole per CubicFoot) / 2(Mole per Pound.usCustomary)
+            2(Decimole per CubicFoot) / 2(Decimole per Pound.usCustomary)
         )
         assertEquals(
             1(Pound per CubicFoot.ukImperial),
-            2(Mole per CubicFoot.ukImperial) / 2(Mole per Pound)
+            2(Decimole per CubicFoot.ukImperial) / 2(Decimole per Pound)
         )
         assertEquals(
             1(Pound.ukImperial per CubicFoot.ukImperial),
-            2(Mole per CubicFoot.ukImperial) / 2(Mole per Pound.ukImperial)
+            2(Decimole per CubicFoot.ukImperial) / 2(Decimole per Pound.ukImperial)
         )
         assertEquals(
             1(Pound per CubicFoot.usCustomary),
-            2(Mole per CubicFoot.usCustomary) / 2(Mole per Pound)
+            2(Decimole per CubicFoot.usCustomary) / 2(Decimole per Pound)
         )
         assertEquals(
             1(Pound.usCustomary per CubicFoot.usCustomary),
-            2(Mole per CubicFoot.usCustomary) / 2(Mole per Pound.usCustomary)
+            2(Decimole per CubicFoot.usCustomary) / 2(Decimole per Pound.usCustomary)
         )
         assertEquals(
             1(Kilogram per CubicMeter),
-            2(Mole per CubicMeter) / 2(Mole per Kilogram).convert(Mole per Pound)
+            2(Decimole per CubicMeter) / 2(Decimole per Kilogram).convert(Decimole per Pound)
         )
     }
 
     @Test
     fun densityFromMolarityAndMolarMassTest() {
-        assertEquals(4(Kilogram per CubicMeter), 2(Kilogram per Mole) * 2(Mole per CubicMeter))
-        assertEquals(4(Kilogram per CubicMeter), 2(Mole per CubicMeter) * 2(Kilogram per Mole))
-        assertEquals(4(Pound per CubicFoot), 2(Pound per Mole) * 2(Mole per CubicFoot))
-        assertEquals(4(Pound per CubicFoot), 2(Mole per CubicFoot) * 2(Pound per Mole))
+        assertEquals(4(Kilogram per CubicMeter), 2(Kilogram per Decimole) * 2(Decimole per CubicMeter))
+        assertEquals(4(Kilogram per CubicMeter), 2(Decimole per CubicMeter) * 2(Kilogram per Decimole))
+        assertEquals(4(Pound per CubicFoot), 2(Pound per Decimole) * 2(Decimole per CubicFoot))
+        assertEquals(4(Pound per CubicFoot), 2(Decimole per CubicFoot) * 2(Pound per Decimole))
         assertEquals(
             4(Pound.ukImperial per CubicFoot),
-            2(Pound.ukImperial per Mole) * 2(Mole per CubicFoot)
+            2(Pound.ukImperial per Decimole) * 2(Decimole per CubicFoot)
         )
         assertEquals(
             4(Pound.ukImperial per CubicFoot),
-            2(Mole per CubicFoot) * 2(Pound.ukImperial per Mole)
+            2(Decimole per CubicFoot) * 2(Pound.ukImperial per Decimole)
         )
         assertEquals(
             4(Pound.usCustomary per CubicFoot),
-            2(Pound.usCustomary per Mole) * 2(Mole per CubicFoot)
+            2(Pound.usCustomary per Decimole) * 2(Decimole per CubicFoot)
         )
         assertEquals(
             4(Pound.usCustomary per CubicFoot),
-            2(Mole per CubicFoot) * 2(Pound.usCustomary per Mole)
+            2(Decimole per CubicFoot) * 2(Pound.usCustomary per Decimole)
         )
         assertEquals(
             4(Pound per CubicFoot.ukImperial),
-            2(Pound per Mole) * 2(Mole per CubicFoot.ukImperial)
+            2(Pound per Decimole) * 2(Decimole per CubicFoot.ukImperial)
         )
         assertEquals(
             4(Pound per CubicFoot.ukImperial),
-            2(Mole per CubicFoot.ukImperial) * 2(Pound per Mole)
+            2(Decimole per CubicFoot.ukImperial) * 2(Pound per Decimole)
         )
         assertEquals(
             4(Pound.ukImperial per CubicFoot.ukImperial),
-            2(Pound.ukImperial per Mole) * 2(Mole per CubicFoot.ukImperial)
+            2(Pound.ukImperial per Decimole) * 2(Decimole per CubicFoot.ukImperial)
         )
         assertEquals(
             4(Pound.ukImperial per CubicFoot.ukImperial),
-            2(Mole per CubicFoot.ukImperial) * 2(Pound.ukImperial per Mole)
+            2(Decimole per CubicFoot.ukImperial) * 2(Pound.ukImperial per Decimole)
         )
         assertEquals(
             4(Pound per CubicFoot.usCustomary),
-            2(Pound per Mole) * 2(Mole per CubicFoot.usCustomary)
+            2(Pound per Decimole) * 2(Decimole per CubicFoot.usCustomary)
         )
         assertEquals(
             4(Pound per CubicFoot.usCustomary),
-            2(Mole per CubicFoot.usCustomary) * 2(Pound per Mole)
+            2(Decimole per CubicFoot.usCustomary) * 2(Pound per Decimole)
         )
         assertEquals(
             4(Pound.usCustomary per CubicFoot.usCustomary),
-            2(Pound.usCustomary per Mole) * 2(Mole per CubicFoot.usCustomary)
+            2(Pound.usCustomary per Decimole) * 2(Decimole per CubicFoot.usCustomary)
         )
         assertEquals(
             4(Pound.usCustomary per CubicFoot.usCustomary),
-            2(Mole per CubicFoot.usCustomary) * 2(Pound.usCustomary per Mole)
+            2(Decimole per CubicFoot.usCustomary) * 2(Pound.usCustomary per Decimole)
         )
         assertEquals(
             4(Kilogram per CubicMeter),
-            2(Kilogram per Mole) * 2(Mole per CubicMeter).convert(Mole per CubicFoot)
+            2(Kilogram per Decimole) * 2(Decimole per CubicMeter).convert(Decimole per CubicFoot)
         )
         assertEquals(
             4(Kilogram per CubicMeter),
-            2(Mole per CubicMeter).convert(Mole per CubicFoot) * 2(Kilogram per Mole)
+            2(Decimole per CubicMeter).convert(Decimole per CubicFoot) * 2(Kilogram per Decimole)
         )
     }
 
     @Test
     fun densityFromMolarMassAndMolarVolumeTest() {
-        assertEquals(1(Kilogram per CubicMeter), 2(Kilogram per Mole) / 2(CubicMeter per Mole))
-        assertEquals(1(Pound per CubicFoot), 2(Pound per Mole) / 2(CubicFoot per Mole))
+        assertEquals(1(Kilogram per CubicMeter), 2(Kilogram per Decimole) / 2(CubicMeter per Decimole))
+        assertEquals(1(Pound per CubicFoot), 2(Pound per Decimole) / 2(CubicFoot per Decimole))
         assertEquals(
             1(Pound.ukImperial per CubicFoot),
-            2(Pound.ukImperial per Mole) / 2(CubicFoot per Mole)
+            2(Pound.ukImperial per Decimole) / 2(CubicFoot per Decimole)
         )
         assertEquals(
             1(Pound.usCustomary per CubicFoot),
-            2(Pound.usCustomary per Mole) / 2(CubicFoot per Mole)
+            2(Pound.usCustomary per Decimole) / 2(CubicFoot per Decimole)
         )
         assertEquals(
             1(Pound per CubicFoot.ukImperial),
-            2(Pound per Mole) / 2(CubicFoot.ukImperial per Mole)
+            2(Pound per Decimole) / 2(CubicFoot.ukImperial per Decimole)
         )
         assertEquals(
             1(Pound.ukImperial per CubicFoot.ukImperial),
-            2(Pound.ukImperial per Mole) / 2(CubicFoot.ukImperial per Mole)
+            2(Pound.ukImperial per Decimole) / 2(CubicFoot.ukImperial per Decimole)
         )
         assertEquals(
             1(Pound per CubicFoot.usCustomary),
-            2(Pound per Mole) / 2(CubicFoot.usCustomary per Mole)
+            2(Pound per Decimole) / 2(CubicFoot.usCustomary per Decimole)
         )
         assertEquals(
             1(Pound.usCustomary per CubicFoot.usCustomary),
-            2(Pound.usCustomary per Mole) / 2(CubicFoot.usCustomary per Mole)
+            2(Pound.usCustomary per Decimole) / 2(CubicFoot.usCustomary per Decimole)
         )
         assertEquals(
             1(Kilogram per CubicMeter),
-            2(Kilogram per Mole) / 2(CubicMeter per Mole).convert(CubicFoot per Mole)
+            2(Kilogram per Decimole) / 2(CubicMeter per Decimole).convert(CubicFoot per Decimole)
         )
     }
 

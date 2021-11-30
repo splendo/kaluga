@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.force.div
@@ -42,7 +43,7 @@ class SurfaceTensionUnitTest {
         assertEquals(1(PoundForce per Inch), 2(InchPoundForce) / 2(SquareInch))
         assertEquals(1(OunceForce per Inch), 2(InchOunceForce) / 2(SquareInch))
         assertEquals(1(PoundForce per Foot), 2(FootPoundForce) / 2(SquareFoot))
-        assertEquals(1(PoundForce per Foot), 2(FootPoundForce).convert(WattHour) / 2(SquareFoot))
+        assertEqualScientificValue(1(PoundForce per Foot), 2(FootPoundForce).convert(WattHour) / 2(SquareFoot), 8)
         assertEquals(1(Newton per Meter), 2(Joule) / 2(SquareMeter).convert(SquareFoot))
     }
 

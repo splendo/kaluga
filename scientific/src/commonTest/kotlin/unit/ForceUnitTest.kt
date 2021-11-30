@@ -200,14 +200,14 @@ class ForceUnitTest {
             10
         )
         assertEqualScientificValue(
-            1(PoundForce),
+            1(PoundForce.ukImperial),
             (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
                 Second
             ),
             10
         )
         assertEqualScientificValue(
-            1(PoundForce),
+            1(PoundForce.usCustomary),
             (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
                 Second
             ),

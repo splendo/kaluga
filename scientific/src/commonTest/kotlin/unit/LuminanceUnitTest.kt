@@ -54,7 +54,7 @@ class LuminanceUnitTest {
         assertEquals(1(Stilb), 20(Deciphot) / 2(Steradian))
         assertEquals(1(Nit), 2(Lux) / 2(Steradian))
         assertEqualScientificValue(PI(FootLambert), 2(FootCandle) / 2(Steradian), 8)
-        assertEquals(1(Nit), 2(Lux).convert(FootLambert as Illuminance) / 2(Steradian))
+        assertEquals(1(Nit), 2(Lux).convert(FootCandle as Illuminance) / 2(Steradian))
     }
 
     @Test

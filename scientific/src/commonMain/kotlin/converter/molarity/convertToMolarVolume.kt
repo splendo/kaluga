@@ -24,7 +24,6 @@ import com.splendo.kaluga.scientific.unit.CubicMeter
 import com.splendo.kaluga.scientific.unit.ImperialMolarity
 import com.splendo.kaluga.scientific.unit.MetricMolarity
 import com.splendo.kaluga.scientific.unit.Molarity
-import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.UKImperialMolarity
 import com.splendo.kaluga.scientific.unit.USCustomaryMolarity
 import com.splendo.kaluga.scientific.unit.per
@@ -48,4 +47,4 @@ fun ScientificValue<PhysicalQuantity.Molarity, USCustomaryMolarity>.molarVolume(
 
 @JvmName("molarityMolarVolume")
 fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.molarVolume() =
-    (CubicMeter per Mole).molarVolume(this)
+    (CubicMeter per unit.amountOfSubstance).molarVolume(this)

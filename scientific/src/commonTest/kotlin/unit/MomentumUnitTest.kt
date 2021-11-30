@@ -72,15 +72,17 @@ class MomentumUnitTest {
             2(SquareFoot) * 2(PoundSquareFoot.usCustomary x Second),
             8
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Kilogram x (Meter per Second)),
             2(Pascal x Second).convert((PoundSquareFoot x Second) as DynamicViscosity) * 2(
                 SquareMeter
-            )
+            ),
+            8
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Kilogram x (Meter per Second)),
-            2(SquareMeter) * 2(Pascal x Second).convert((PoundSquareFoot x Second) as DynamicViscosity)
+            2(SquareMeter) * 2(Pascal x Second).convert((PoundSquareFoot x Second) as DynamicViscosity),
+            8
         )
     }
 

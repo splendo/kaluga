@@ -98,39 +98,39 @@ infix operator fun <EnergyUnit : Energy, EquivalentDoseUnit : IonizingRadiationE
 ) = Kilogram.weight(this, equivalentDose)
 
 @JvmName("metricAndImperialEnergyDivMetricSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricAndImperialEnergyDivImperialSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricAndImperialEnergyDivUKImperialSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricAndImperialEnergyDivUSCustomarySpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricAndImperialEnergy>.div(
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricEnergyDivMetricSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MetricEnergy>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>) =
+infix operator fun <EnergyUnit : MetricEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>) =
     specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("imperialEnergyDivImperialSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, ImperialEnergy>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>) =
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>) =
     specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("imperialEnergyDivUKImperialSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, ImperialEnergy>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>) =
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>) =
     specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("imperialEnergyDivUSCustomarySpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, ImperialEnergy>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>) =
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>) =
     specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("energyDivSpecificEnergy")
