@@ -26,6 +26,9 @@ import kotlin.math.absoluteValue
 actual data class Decimal(val nsDecimal: NSDecimalNumber) : Comparable<Decimal> {
     override fun compareTo(other: Decimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
     override fun equals(other: Any?): Boolean = (other as? Decimal)?.let { nsDecimal.isEqualToNumber(it.nsDecimal) } ?: false
+    override fun hashCode(): Int {
+        return nsDecimal.hashCode()
+    }
 }
 
 actual operator fun Decimal.plus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByAdding(value.nsDecimal))
