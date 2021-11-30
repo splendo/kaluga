@@ -39,6 +39,10 @@ data class Rounding(
 
 actual data class Decimal(val bd: BigDecimal) : Comparable<Decimal> {
     override fun compareTo(other: Decimal): Int = BigDecimal.compare(bd, other.bd)
+    override fun equals(other: Any?): Boolean = (other as? Decimal)?.let { BigDecimal.equal(bd, it.bd) } ?: false
+    override fun hashCode(): Int {
+        return bd.hashCode()
+    }
 }
 
 val ZERO = BigDecimal.BigDecimal(0)
@@ -139,5 +143,3 @@ actual fun String.toDecimal(): Decimal = Decimal(BigDecimal.BigDecimal(this))
 actual fun Decimal.toDouble(): Double = bd.toString().toDouble()
 actual fun Decimal.toInt(): Int = bd.toFixed(0).toInt()
 actual fun Decimal.toString(): String = bd.toString()
-
-fun Decimal.equals(a: Decimal, b: Decimal): Boolean = BigDecimal.equal(a.bd, b.bd)
