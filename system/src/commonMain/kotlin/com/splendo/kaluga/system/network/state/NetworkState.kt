@@ -76,5 +76,13 @@ sealed class NetworkState(
         val availableWithCellular: suspend () -> Available = {
             Available(Network.Known.Cellular())
         }
+
+        val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
+            Unknown(Network.Unknown.WithLastNetwork(network, reason))
+        }
+
+        val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
+            Unknown(Network.Unknown.WithoutLastNetwork(it))
+        }
     }
 }
