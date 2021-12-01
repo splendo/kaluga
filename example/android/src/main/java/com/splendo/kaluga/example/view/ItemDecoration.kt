@@ -24,7 +24,6 @@ class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) : Recycl
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.bottom = verticalSpaceHeight
     }
-
 }
 
 class HorizontalSpaceItemDecoration(private val horizontalSpaceWidth: Int) : RecyclerView.ItemDecoration() {

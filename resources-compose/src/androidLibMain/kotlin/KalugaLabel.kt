@@ -33,7 +33,6 @@ import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.defaultBoldFont
-import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.bindLabel
@@ -68,7 +67,11 @@ fun KalugaLabel.composable(modifier: Modifier) {
 @Preview
 @Composable
 fun PreviewKalugaLabel() {
-    val textStyle = com.splendo.kaluga.resources.stylable.TextStyle(defaultBoldFont, DefaultColors.darkRed, 12.0f)
+    val textStyle = com.splendo.kaluga.resources.stylable.TextStyle(
+        defaultBoldFont,
+        DefaultColors.darkRed,
+        12.0f
+    )
     Column(modifier = Modifier.size(100.dp)) {
         KalugaLabel.Plain("Plain Text", textStyle).composable(
             modifier = Modifier.fillMaxWidth()
@@ -78,8 +81,12 @@ fun PreviewKalugaLabel() {
                 StyledStringBuilder.Provider(LocalContext.current),
                 textStyle,
                 {
-                Pair(StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue), IntRange(0, 5))
-            }),
+                    Pair(
+                        StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue),
+                        IntRange(0, 5)
+                    )
+                }
+            ),
         ).composable(
             modifier = Modifier.fillMaxWidth()
         )

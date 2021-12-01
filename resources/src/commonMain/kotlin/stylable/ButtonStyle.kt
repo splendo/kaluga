@@ -35,7 +35,8 @@ data class ButtonStyle(
         backgroundColor: Color = DefaultColors.clear,
         pressedBackgroundColor: Color = backgroundColor,
         disabledBackgroundColor: Color = backgroundColor,
-        shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
+        shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()
+    ) : this(
         textStyle.font,
         textStyle.size,
         textAlignment,

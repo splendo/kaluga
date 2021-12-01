@@ -6,7 +6,6 @@ import android.text.Layout
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.resources.stylable.TextAlignment
 
 fun TextAlignment.alignment(context: Context): Layout.Alignment {

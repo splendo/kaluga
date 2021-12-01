@@ -27,7 +27,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityResourcesColorBinding
-import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.databinding.ViewResourceListBackgroundBinding
 import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.resources.DefaultColors
@@ -137,5 +136,4 @@ object ResourcesBinding {
         val adapter = recyclerView.adapter as? BackgroundAdapter ?: return
         adapter.backgrounds = backgrounds ?: emptyList()
     }
-
 }

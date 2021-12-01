@@ -30,6 +30,7 @@ import kotlin.jvm.JvmName
 /**
  * Class describing a color
  */
+@Serializable(with = ColorSerializer::class)
 expect class Color
 
 /**

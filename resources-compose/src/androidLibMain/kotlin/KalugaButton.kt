@@ -114,7 +114,8 @@ fun PreviewKalugaButton() {
                 buttonStyle.getStateTextStyle(isEnabled = true, isPressed = false),
                 {
                     Pair(StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue), IntRange(0, 5))
-                }),
+                }
+            ),
             buttonStyle,
             true
         ) {}.Composable(

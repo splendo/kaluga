@@ -79,7 +79,6 @@ class UILinkTapGesture(private val label: UILabel) : NSObject() {
             lineFragmentPadding = 0.0 as CGFloat
             lineBreakMode = label.lineBreakMode.convert()
             maximumNumberOfLines = label.numberOfLines.convert()
-
         }
         val layoutManager = NSLayoutManager().apply {
             addTextContainer(textContainer)
@@ -103,8 +102,10 @@ class UILinkTapGesture(private val label: UILabel) : NSObject() {
             (((labelSize.useContents { width } - textBoundingBox.useContents { size.width }) * alignmentOffset) - textBoundingBox.useContents { origin.x }) as CGFloat,
             (((labelSize.useContents { height } - textBoundingBox.useContents { size.height }) * alignmentOffset) - textBoundingBox.useContents { origin.y }) as CGFloat
         ).useContents { this }
-        val locationOfTouchInTextContainer = CGPointMake(locationOfTouchInLabel.useContents { x } - textContainerOffset.x,
-            locationOfTouchInLabel.useContents { y } - textContainerOffset.y);
+        val locationOfTouchInTextContainer = CGPointMake(
+            locationOfTouchInLabel.useContents { x } - textContainerOffset.x,
+            locationOfTouchInLabel.useContents { y } - textContainerOffset.y
+        )
         val indexOfCharacter = layoutManager.characterIndexForPoint(locationOfTouchInTextContainer, textContainer, null)
 
         val lineTapped = ceil(locationOfTouchInLabel.useContents { y } / label.font.lineHeight) - 1
@@ -148,7 +149,6 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
     ): Boolean {
         return linkDelegate.textView(textView, shouldChangeTextInRange, replacementText) || wrapped.textView(textView, shouldChangeTextInRange, replacementText)
     }
-
 }
 
 fun UILabel.bindLabel(label: KalugaLabel) {

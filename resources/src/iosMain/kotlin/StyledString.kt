@@ -164,7 +164,6 @@ actual class StyledStringBuilder constructor(string: String, private val default
                     NSMakeRange((range.range.last + 1).convert(), 0)
                 }
             }
-
         }
     }
 

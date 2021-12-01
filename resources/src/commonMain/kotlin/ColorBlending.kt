@@ -47,36 +47,48 @@ sealed class BlendMode {
                 return UnboundColor(red + delta, green + delta, blue + delta)
             }
 
-            val clip: Color get() {
-                val lumination = this.lumination
-                val min = minOf(red, green, blue)
-                val max = maxOf(red, green, blue)
-                return when {
-                    min < 0.0 -> colorFrom(
+            val clip: Color
+                get() {
+                    val lumination = this.lumination
+                    val min = minOf(red, green, blue)
+                    val max = maxOf(red, green, blue)
+                    return when {
+                        min < 0.0 -> colorFrom(
                             lumination + (((red - lumination) * lumination) / (lumination - min)),
                             lumination + (((green - lumination) * lumination) / (lumination - min)),
                             lumination + (((blue - lumination) * lumination) / (lumination - min))
                         )
-                    max > 1.0 -> colorFrom(
-                        lumination + (((red - lumination) * (1.0 - lumination)) / (max - lumination)),
+                        max > 1.0 -> colorFrom(
+                            lumination + (((red - lumination) * (1.0 - lumination)) / (max - lumination)),
                             lumination + (((green - lumination) * (1.0 - lumination)) / (max - lumination)),
-                        lumination + (((blue - lumination) * (1.0 - lumination)) / (max - lumination))
-                    )
-                    else -> colorFrom(red, green, blue)
+                            lumination + (((blue - lumination) * (1.0 - lumination)) / (max - lumination))
+                        )
+                        else -> colorFrom(red, green, blue)
+                    }
                 }
-            }
         }
+
         private val Color.unbounded get() = UnboundColor(red, green, blue)
         protected val Color.lumination get() = unbounded.lumination
-        protected val Color.saturation: Double get() = maxOf(red, green, blue) - minOf(red, green, blue)
-        protected fun Color.setLumination(lumination: Double): Color = unbounded.setLumination(lumination).clip
+        protected val Color.saturation: Double
+            get() = maxOf(red, green, blue) - minOf(
+                red,
+                green,
+                blue
+            )
+
+        protected fun Color.setLumination(lumination: Double): Color =
+            unbounded.setLumination(lumination).clip
+
         protected fun Color.setSaturation(saturation: Double): Color {
             val keyRed = "red"
             val keyGreen = "green"
             val keyBlue = "blue"
-            val channels = mapOf(keyRed to red, keyGreen to green, keyBlue to blue).toList().sortedBy { it.second }.toMutableList()
+            val channels = mapOf(keyRed to red, keyGreen to green, keyBlue to blue).toList()
+                .sortedBy { it.second }.toMutableList()
             if (channels[2].second > channels[0].second) {
-                val newMiddle = (((channels[1].second - channels[0].second) * saturation) / (channels[2].second - channels[0].second))
+                val newMiddle =
+                    (((channels[1].second - channels[0].second) * saturation) / (channels[2].second - channels[0].second))
                 channels[1] = channels[1].copy(second = newMiddle)
                 channels[2] = channels[2].copy(second = saturation)
             } else {
@@ -98,19 +110,23 @@ sealed class BlendMode {
     }
 
     object Screen : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double = backdrop + source - backdrop * source
+        override fun blendColorChannel(backdrop: Double, source: Double): Double =
+            backdrop + source - backdrop * source
     }
 
     object Overlay : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double = HardLight.blendColorChannel(source, backdrop)
+        override fun blendColorChannel(backdrop: Double, source: Double): Double =
+            HardLight.blendColorChannel(source, backdrop)
     }
 
     object Darken : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double = min(backdrop, source)
+        override fun blendColorChannel(backdrop: Double, source: Double): Double =
+            min(backdrop, source)
     }
 
     object Lighten : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double = max(backdrop, source)
+        override fun blendColorChannel(backdrop: Double, source: Double): Double =
+            max(backdrop, source)
     }
 
     object HardLight : SeparableBlendMode() {
@@ -139,11 +155,11 @@ sealed class BlendMode {
 
     object ColorDodge : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = when {
-                backdrop == 0.0 -> 0.0
-                source == 1.0 -> 1.0
-                else -> min(1.0, backdrop / (1.0 - source))
-            }
+            backdrop == 0.0 -> 0.0
+            source == 1.0 -> 1.0
+            else -> min(1.0, backdrop / (1.0 - source))
         }
+    }
 
     object ColorBurn : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = when {
@@ -154,7 +170,8 @@ sealed class BlendMode {
     }
 
     object Difference : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double = abs(backdrop - source)
+        override fun blendColorChannel(backdrop: Double, source: Double): Double =
+            abs(backdrop - source)
     }
 
     object Exclusion : SeparableBlendMode() {
@@ -165,8 +182,8 @@ sealed class BlendMode {
 
     object Hue : NonSeparableBlendMode() {
         override fun blendColor(backdrop: Color, source: Color): Color = source
-                .setSaturation(backdrop.saturation)
-                .setLumination(backdrop.lumination)
+            .setSaturation(backdrop.saturation)
+            .setLumination(backdrop.lumination)
     }
 
     object Saturation : NonSeparableBlendMode() {
@@ -176,11 +193,13 @@ sealed class BlendMode {
     }
 
     object ColorBlend : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color = source.setLumination(backdrop.lumination)
+        override fun blendColor(backdrop: Color, source: Color): Color =
+            source.setLumination(backdrop.lumination)
     }
 
     object Luminosity : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color = backdrop.setLumination(source.lumination)
+        override fun blendColor(backdrop: Color, source: Color): Color =
+            backdrop.setLumination(source.lumination)
     }
 }
 
@@ -190,12 +209,13 @@ sealed class BlendMode {
  */
 private fun Color.blend(source: Color, mode: BlendMode): Color {
     val alphaCompose = {
-            backdropAlpha: Double,
-            sourceAlpha: Double,
-            compositeAlpha: Double,
-            backdropColor: Double,
-            sourceColor: Double,
-            compositeColor: Double -> Double
+        backdropAlpha: Double,
+        sourceAlpha: Double,
+        compositeAlpha: Double,
+        backdropColor: Double,
+        sourceColor: Double,
+        compositeColor: Double ->
+        Double
         (1.0 - sourceAlpha / compositeAlpha) * backdropColor +
             (sourceAlpha / compositeAlpha) * ((1 - backdropAlpha) * sourceColor + backdropAlpha * compositeColor)
     }

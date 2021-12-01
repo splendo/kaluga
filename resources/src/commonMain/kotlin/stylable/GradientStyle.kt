@@ -74,6 +74,6 @@ val List<Color>.colorPoints: List<GradientStyle.ColorPoint> get() {
     if (size < 2) {
         throw Error("Gradient must have at least two colours")
     }
-    val stepSize = 1.0f/(size.toFloat() - 1.0f)
+    val stepSize = 1.0f / (size.toFloat() - 1.0f)
     return mapIndexed { index, color -> GradientStyle.ColorPoint(color, index * stepSize) }
 }

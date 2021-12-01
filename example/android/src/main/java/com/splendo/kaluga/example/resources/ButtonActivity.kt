@@ -19,13 +19,11 @@ package com.splendo.kaluga.example.resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityResourcesBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
-import com.splendo.kaluga.example.view.HorizontalSpaceItemDecoration
 import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
 import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.resources.view.KalugaButton

@@ -22,9 +22,9 @@ import com.splendo.kaluga.resources.stylable.TextAlignment
 
 val TextAlignment.composable: TextAlign
     get() = when (this) {
-    TextAlignment.CENTER -> TextAlign.Center
-    TextAlignment.LEFT -> TextAlign.Left
-    TextAlignment.NORMAL -> TextAlign.Start
-    TextAlignment.OPPOSITE -> TextAlign.End
-    TextAlignment.RIGHT -> TextAlign.Right
-}
+        TextAlignment.CENTER -> TextAlign.Center
+        TextAlignment.LEFT -> TextAlign.Left
+        TextAlignment.NORMAL -> TextAlign.Start
+        TextAlignment.OPPOSITE -> TextAlign.End
+        TextAlignment.RIGHT -> TextAlign.Right
+    }

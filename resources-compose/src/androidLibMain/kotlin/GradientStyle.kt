@@ -32,25 +32,64 @@ import com.splendo.kaluga.resources.stylable.GradientStyle
 
 val GradientStyle.brush: Brush
     get() = when (this) {
-    is GradientStyle.Linear -> Brush.linearGradient(*colorPoints.colorStops.toTypedArray(), start = orientation.offset.first, end = orientation.offset.second)
-    is GradientStyle.Radial -> RelativeRadialGradient(centerPoint, radius = radius, colorStops = colorPoints.colorStops.toTypedArray())
-    is GradientStyle.Angular -> RelativeSweepGradient(centerPoint, *colorPoints.colorStops.toTypedArray())
-}
+        is GradientStyle.Linear -> Brush.linearGradient(
+            *colorPoints.colorStops.toTypedArray(),
+            start = orientation.offset.first,
+            end = orientation.offset.second
+        )
+        is GradientStyle.Radial -> RelativeRadialGradient(
+            centerPoint,
+            radius = radius,
+            colorStops = colorPoints.colorStops.toTypedArray()
+        )
+        is GradientStyle.Angular -> RelativeSweepGradient(
+            centerPoint,
+            *colorPoints.colorStops.toTypedArray()
+        )
+    }
 
-private val List<GradientStyle.ColorPoint>.colorStops: List<Pair<Float, Color>> get() = map { Pair(it.offset, it.color.composable) }
-private val GradientStyle.Linear.Orientation.offset: Pair<Offset, Offset> get() = when (this) {
-    GradientStyle.Linear.Orientation.BOTTOM_LEFT_TOP_RIGHT -> Pair(
-        Offset(0.0f, Float.POSITIVE_INFINITY), Offset(
-            Float.POSITIVE_INFINITY, 0.0f)
-    )
-    GradientStyle.Linear.Orientation.BOTTOM_TOP -> Pair(Offset(0.0f, Float.POSITIVE_INFINITY), Offset(0.0f, Float.POSITIVE_INFINITY))
-    GradientStyle.Linear.Orientation.BOTTOM_RIGHT_TOP_LEFT -> Pair(Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY), Offset(0.0f, 0.0f))
-    GradientStyle.Linear.Orientation.LEFT_RIGHT -> Pair(Offset(0.0f, 0.0f), Offset(Float.POSITIVE_INFINITY, 0.0f))
-    GradientStyle.Linear.Orientation.RIGHT_LEFT -> Pair(Offset(Float.POSITIVE_INFINITY, 0.0f), Offset(0.0f, 0.0f))
-    GradientStyle.Linear.Orientation.TOP_LEFT_BOTTOM_RIGHT -> Pair(Offset(0.0f, 0.0f), Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY))
-    GradientStyle.Linear.Orientation.TOP_BOTTOM -> Pair(Offset(0.0f, 0.0f), Offset(0.0f, Float.POSITIVE_INFINITY))
-    GradientStyle.Linear.Orientation.TOP_RIGHT_BOTTOM_LEFT -> Pair(Offset(Float.POSITIVE_INFINITY, 0.0f), Offset(0.0f, Float.POSITIVE_INFINITY))
-}
+private val List<GradientStyle.ColorPoint>.colorStops: List<Pair<Float, Color>>
+    get() = map {
+        Pair(
+            it.offset,
+            it.color.composable
+        )
+    }
+private val GradientStyle.Linear.Orientation.offset: Pair<Offset, Offset>
+    get() = when (this) {
+        GradientStyle.Linear.Orientation.BOTTOM_LEFT_TOP_RIGHT -> Pair(
+            Offset(0.0f, Float.POSITIVE_INFINITY),
+            Offset(Float.POSITIVE_INFINITY, 0.0f)
+        )
+        GradientStyle.Linear.Orientation.BOTTOM_TOP -> Pair(
+            Offset(0.0f, Float.POSITIVE_INFINITY),
+            Offset(0.0f, Float.POSITIVE_INFINITY)
+        )
+        GradientStyle.Linear.Orientation.BOTTOM_RIGHT_TOP_LEFT -> Pair(
+            Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
+            Offset(0.0f, 0.0f)
+        )
+        GradientStyle.Linear.Orientation.LEFT_RIGHT -> Pair(
+            Offset(0.0f, 0.0f),
+            Offset(Float.POSITIVE_INFINITY, 0.0f)
+        )
+        GradientStyle.Linear.Orientation.RIGHT_LEFT -> Pair(
+            Offset(Float.POSITIVE_INFINITY, 0.0f),
+            Offset(0.0f, 0.0f)
+        )
+        GradientStyle.Linear.Orientation.TOP_LEFT_BOTTOM_RIGHT -> Pair(
+            Offset(0.0f, 0.0f),
+            Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+        )
+        GradientStyle.Linear.Orientation.TOP_BOTTOM -> Pair(
+            Offset(0.0f, 0.0f),
+            Offset(0.0f, Float.POSITIVE_INFINITY)
+        )
+        GradientStyle.Linear.Orientation.TOP_RIGHT_BOTTOM_LEFT -> Pair(
+            Offset(Float.POSITIVE_INFINITY, 0.0f),
+            Offset(0.0f, Float.POSITIVE_INFINITY)
+        )
+    }
 
 @Immutable
 class RelativeRadialGradient internal constructor(
@@ -61,7 +100,12 @@ class RelativeRadialGradient internal constructor(
     private val tileMode: TileMode = TileMode.Clamp
 ) : ShaderBrush() {
 
-    constructor(center: GradientStyle.CenterPoint, radius: Float, tileMode: TileMode = TileMode.Clamp, vararg colorStops: Pair<Float, Color>) : this(
+    constructor(
+        center: GradientStyle.CenterPoint,
+        radius: Float,
+        tileMode: TileMode = TileMode.Clamp,
+        vararg colorStops: Pair<Float, Color>
+    ) : this(
         colors = List<Color>(colorStops.size) { i -> colorStops[i].second },
         stops = List<Float>(colorStops.size) { i -> colorStops[i].first },
         center = center,
@@ -133,9 +177,10 @@ class RelativeSweepGradient internal constructor(
 
     override fun createShader(size: Size): Shader =
         SweepGradientShader(
-            Offset(center.x * size.width,
+            Offset(
+                center.x * size.width,
                 center.y * size.height
-                ),
+            ),
             colors,
             stops
         )
