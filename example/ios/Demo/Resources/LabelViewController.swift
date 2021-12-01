@@ -22,7 +22,7 @@ class LabelViewController : UITableViewController {
     private lazy var viewModel: LabelViewModel = KNArchitectureFramework().createLabelViewModel()
     private var lifecycleManager: LifecycleManager!
 
-    private var labels = [KalugaLabel<AnyObject>]()
+    private var labels = [KalugaLabel]()
     
     deinit {
         lifecycleManager.unbind()
@@ -36,7 +36,7 @@ class LabelViewController : UITableViewController {
             guard let viewModel = self?.viewModel else { return [] }
             return [
                 viewModel.labels.observe { labels in
-                    self?.labels = labels?.compactMap { $0 as?  KalugaLabel<AnyObject> } ?? []
+                    self?.labels = labels?.compactMap { $0 as?  KalugaLabel } ?? []
                     self?.tableView.reloadData()
                 }
             ]
