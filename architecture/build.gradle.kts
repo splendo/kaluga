@@ -28,6 +28,9 @@ dependencies {
 }
 
 kotlin {
+    js {
+        nodejs()
+    }
 
     sourceSets {
         val ext = (gradle as ExtensionAware).extra

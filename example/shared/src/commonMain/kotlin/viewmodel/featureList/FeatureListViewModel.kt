@@ -51,7 +51,7 @@ sealed class Feature(val title: String) {
     object Links : Feature("feature_links".localized())
     object System : Feature("feature_system".localized())
     object Beacons : Feature("feature_beacons".localized())
-    object Resource : Resource("feature_resources".localized())
+    object Resource : Feature("feature_resources".localized())
     object PlatformSpecific : Feature("feature_platform_specific".localized())
 }
 
