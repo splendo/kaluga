@@ -30,8 +30,12 @@ import kotlin.jvm.JvmName
 /**
  * Class describing a color
  */
-@Serializable(with = ColorSerializer::class)
 expect class Color
+
+@Serializable(with = ColorSerializer::class)
+data class SerializableColor(val color: Color)
+
+val Color.serializable get() = SerializableColor(this)
 
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`
@@ -129,16 +133,16 @@ private fun Int.toHex(minSize: Int): String {
 }
 
 open class ColorSerializer :
-    KSerializer<Color> {
+    KSerializer<SerializableColor> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: Color) {
-        val string = value.hexString
+    override fun serialize(encoder: Encoder, value: SerializableColor) {
+        val string = value.color.hexString
         encoder.encodeString(string)
     }
 
-    override fun deserialize(decoder: Decoder): Color {
+    override fun deserialize(decoder: Decoder): SerializableColor {
         val string = decoder.decodeString()
-        return colorFrom(string)!!
+        return SerializableColor(colorFrom(string)!!)
     }
 }
