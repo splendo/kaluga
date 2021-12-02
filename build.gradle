@@ -5,24 +5,25 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath "com.google.gms:google-services:4.3.9"
+        // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
+        classpath "com.android.tools.build:gradle:${project.'kaluga.androidGradlePluginVersion'}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${project.'kaluga.kotlinVersion'}"
     }
 }
 
 plugins {
     id "convention.publication"
-    id 'org.jlleitschuh.gradle.ktlint' version '10.1.0'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '10.1.0'
+    id 'org.jlleitschuh.gradle.ktlint'
+    id 'org.jlleitschuh.gradle.ktlint-idea'
+    id 'org.jetbrains.kotlin.multiplatform' apply false
 }
 
 allprojects {
     repositories {
-        google()
         mavenCentral()
-        mavenLocal()
+        google()
+        // only enable temporarily if needed:
+        / * mavenLocal() */
     }
 
     tasks.withType(Test) {
@@ -34,6 +35,7 @@ allprojects {
 }
 
 apply from:"gradle/ext.gradle"
+apply from:"gradle/newModule.gradle.kts"
 
 group 'com.splendo.kaluga'
 version gradle.ext.library_version

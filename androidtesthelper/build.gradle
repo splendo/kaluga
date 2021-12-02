@@ -15,12 +15,14 @@
   
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'org.jlleitschuh.gradle.ktlint'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jlleitschuh.gradle.ktlint'
+}
 
 android {
-    compileSdkVersion gradle.android_target_sdk_version
+    compileSdkVersion gradle.android_compile_sdk_version
     buildToolsVersion gradle.android_build_tools_version
 
     kotlinOptions {

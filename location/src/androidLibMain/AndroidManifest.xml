@@ -14,14 +14,9 @@
                 android:name=".EnableLocationActivity"
                 android:theme="@style/Location"/>
 
-        <receiver android:name=".LocationUpdatesBroadcastReceiver"  android:exported="true">
+        <receiver android:name=".GoogleLocationUpdatesBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="com.splendo.kaluga.location.locationupdates.action"/>
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".LocationEnabledUpdatesBroadcastReceiver"  android:exported="true">
-            <intent-filter>
-                <action android:name="com.splendo.kaluga.location.locationenabledupdates.action"/>
             </intent-filter>
         </receiver>
 

@@ -24,7 +24,10 @@ private fun List<Byte>.toHexString() = toByteArray().toHexString()
 
 class Eddystone {
 
-    data class UID(val namespace: String, val instance: String)
+    data class UID(val namespace: String, val instance: String) {
+        fun asString() = namespace + instance
+    }
+
     data class Frame(val txPower: TxPower, val uid: UID)
 
     companion object {

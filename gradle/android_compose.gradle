@@ -15,16 +15,6 @@
 
  */
 
-repositories {
-    jcenter {
-        content {
-            // https://youtrack.jetbrains.com/issue/IDEA-261387
-            includeModule("org.jetbrains.trove4j", "trove4j")
-            includeModule("org.jetbrains.kotlinx", "kotlinx-collections-immutable-jvm")
-        }
-    }
-}
-
 // if the include is made from the example project shared module we need to go up one more directory
 String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
@@ -37,6 +27,14 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$gradle.androidx_lifecycle_viewmodel_compose_version")
     implementation("androidx.activity:activity-compose:$gradle.androidx_activity_compose_version")
 
+}
+
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            useExperimentalAnnotation 'androidx.compose.material.ExperimentalMaterialApi'
+        }
+    }
 }
 
 if (!gradle.ext.component_type.toLowerCase().contains("app")) {

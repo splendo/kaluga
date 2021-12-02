@@ -28,7 +28,6 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
 import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
@@ -109,10 +108,11 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
-                        FeatureListNavigationAction.System -> "showSystem"
-                        FeatureListNavigationAction.Links -> "showLinks"
-                        FeatureListNavigationAction.Bluetooth -> "showBluetooth"
-                        FeatureListNavigationAction.Beacons -> "showBeacons"
+                        is FeatureListNavigationAction.System -> "showSystem"
+                        is FeatureListNavigationAction.Links -> "showLinks"
+                        is FeatureListNavigationAction.Bluetooth -> "showBluetooth"
+                        is FeatureListNavigationAction.Beacons -> "showBeacons"
+                        is FeatureListNavigationAction.PlatformSpecific -> "showPlatformSpecific"
                     }
                 )
             }
@@ -155,9 +155,9 @@ class KNArchitectureFramework {
         )
     }
 
-    fun createBluetoothListViewModel(parent: UIViewController, bluetooth: Bluetooth, monitor: BluetoothMonitor, createDeviceDetailsViewController: (Identifier, Bluetooth) -> UIViewController): BluetoothListViewModel {
+    fun createBluetoothListViewModel(parent: UIViewController, bluetooth: Bluetooth, createDeviceDetailsViewController: (Identifier, Bluetooth) -> UIViewController): BluetoothListViewModel {
         return BluetoothListViewModel(
-            bluetooth, monitor,
+            bluetooth,
             ViewControllerNavigator(parent) { action ->
                 NavigationSpec.Push(
                     push = {

@@ -24,23 +24,26 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 
-actual class LocationMonitor(
-    private val applicationContext: Context,
-    private val locationManager: LocationManager?
-) : ServiceMonitor() {
+actual interface LocationMonitor : ServiceMonitor {
 
-    actual class Builder {
-        actual fun create() = LocationMonitor(
-            applicationContext = ApplicationHolder.applicationContext,
-            locationManager = (
-                ApplicationHolder.applicationContext
-                    .getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-                )
-                ?: throw NullPointerException("LocationManager should not be null, check your device capabilities.")
+    actual class Builder(
+        private val applicationContext: Context = ApplicationHolder.applicationContext,
+        private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+    ) {
+        actual fun create(): LocationMonitor = DefaultLocationMonitor(
+            applicationContext = applicationContext,
+            locationManager = locationManager
         )
     }
+}
+
+class DefaultLocationMonitor(
+    private val applicationContext: Context,
+    private val locationManager: LocationManager?
+) : DefaultServiceMonitor(), LocationMonitor {
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

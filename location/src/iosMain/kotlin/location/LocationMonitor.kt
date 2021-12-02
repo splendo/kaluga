@@ -17,18 +17,23 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
-actual class LocationMonitor(private val locationManager: CLLocationManager) : ServiceMonitor() {
-
-    actual class Builder {
-        actual fun create(): LocationMonitor = LocationMonitor(
-            locationManager = CLLocationManager()
+actual interface LocationMonitor : ServiceMonitor {
+    actual class Builder(
+        val locationManager: CLLocationManager = CLLocationManager()
+    ) {
+        actual fun create(): LocationMonitor = DefaultLocationMonitor(
+            locationManager = locationManager
         )
     }
+}
+
+class DefaultLocationMonitor(private val locationManager: CLLocationManager) : DefaultServiceMonitor(), LocationMonitor {
 
     internal class LocationManagerDelegate(
         private val updateState: () -> Unit

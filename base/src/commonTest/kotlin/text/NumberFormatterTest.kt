@@ -23,6 +23,7 @@ import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class NumberFormatterTest : BaseTest() {
 
@@ -179,6 +180,12 @@ class NumberFormatterTest : BaseTest() {
 
         assertEquals("Negative 1000.00#", formatters.usFormatter.format(-1000))
         assertEquals("Negative 1000,00#", formatters.nlFormatter.format(-1000))
+    }
+
+    @Test
+    fun testFailToParseInvalidString() {
+        val formatter = NumberFormatter(style = NumberFormatStyle.Integer())
+        assertNull(formatter.parse("invalid number"))
     }
 
     private fun createFormatters(style: NumberFormatStyle, apply: ((NumberFormatter) -> Unit)? = null): Formatters {

@@ -1,8 +1,4 @@
 buildscript {
-    val ext = (gradle as ExtensionAware).extra
-    val android_gradle_plugin_version: String by project
-    val kotlin_version: String by project
-
     repositories {
         mavenCentral()
         google()
@@ -10,19 +6,30 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:$android_gradle_plugin_version")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
-        classpath("com.google.gms:google-services:4.3.5")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:10.0.0")
-        classpath("com.adarshr:gradle-test-logger-plugin:2.1.0")
+        val kalugaAndroidGradlePluginVersion = project.extra["kaluga.androidGradlePluginVersion"]
+        // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
+        classpath("com.android.tools.build:gradle:${kalugaAndroidGradlePluginVersion}")
     }
 }
 
+plugins {
+    kotlin("multiplatform") apply false
+}
+
+val ext = (gradle as ExtensionAware).extra
+val repo = ext["example_maven_repo"]
+logger.lifecycle("Using repo: $repo for resolving dependencies")
+
 allprojects {
+
     repositories {
-        google()
+        when(repo) {
+            null, "", "local" -> mavenLocal()
+            "none" -> {/* noop */}
+            else ->
+                maven(repo)
+        }
         mavenCentral()
-        mavenLocal()
+        google()
     }
 }

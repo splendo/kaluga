@@ -22,6 +22,7 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
+import com.splendo.kaluga.alerts.buildAlertWithInput
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.delay
@@ -60,7 +61,26 @@ class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseViewModel() 
         }
     }
 
-    fun showList() {
+    fun showAlertWithInput() {
+        coroutineScope.launch {
+            val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
+            val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
+            val alert = builder.buildAlertWithInput(this) {
+                setTitle("Hello, Kaluga 🐟")
+                setMessage("Type something!")
+                addActions(okAction, cancelAction)
+                setTextInput(placeholder = "This is a sample hint..") {
+                    debug("Input value changed to: $it")
+                }
+            }
+            when (alert.show()) {
+                okAction -> debug("OK pressed")
+                cancelAction -> debug("Cancel pressed")
+            }
+        }
+    }
+
+    fun showAlertWithList() {
         coroutineScope.launch {
             builder.buildActionSheet(this) {
                 setTitle("Select an option")

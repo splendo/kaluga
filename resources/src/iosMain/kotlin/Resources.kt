@@ -27,10 +27,10 @@ import platform.UIKit.UITraitCollection
 import platform.UIKit.colorNamed
 import platform.UIKit.labelFontSize
 
-actual class StringLoader(private val bundle: NSBundle, private val table: String?) {
+actual class DefaultStringLoader(private val bundle: NSBundle, private val table: String?) : StringLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    actual fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
-    actual fun loadQuantityString(
+    override fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
+    override fun loadQuantityString(
         identifier: String,
         quantity: Int,
         defaultValue: String
@@ -40,16 +40,16 @@ actual class StringLoader(private val bundle: NSBundle, private val table: Strin
     }
 }
 
-actual class ColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {
+actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ColorLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    actual fun loadColor(identifier: String, defaultValue: Color?): Color? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { Color(it) } ?: defaultValue
+    override fun loadColor(identifier: String, defaultValue: Color?): Color? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { Color(it) } ?: defaultValue
 }
 
-actual class ImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {
+actual class DefaultImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ImageLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    actual fun loadImage(identifier: String, defaultValue: Image?): Image? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
+    override fun loadImage(identifier: String, defaultValue: Image?): Image? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
 }
 
-actual class FontLoader actual constructor() {
-    actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
+actual class DefaultFontLoader actual constructor() : FontLoader {
+    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
 }

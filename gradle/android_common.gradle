@@ -17,30 +17,12 @@
 
 repositories {
     mavenCentral()
-
-    jcenter {
-        content {
-            // https://youtrack.jetbrains.com/issue/IDEA-261387
-            includeModule("org.jetbrains.trove4j", "trove4j")
-            includeModule("org.jetbrains.kotlinx", "kotlinx-collections-immutable-jvm")
-        }
-    }
 }
 
 android {
-//     workaround for https://youtrack.jetbrains.com/issue/KT-43944
-    configurations {
-        androidTestApi {}
-        androidTestDebugApi {}
-        androidTestReleaseApi {}
-        testApi {}
-        testDebugApi {}
-        testReleaseApi {}
-    }
 
-    compileSdkVersion gradle.android_target_sdk_version
+    compileSdkVersion gradle.android_compile_sdk_version
     buildToolsVersion gradle.android_build_tools_version
-
 
     defaultConfig {
         minSdkVersion gradle.android_min_sdk_version
@@ -58,7 +40,7 @@ android {
     defaultPublishConfig = "debug"
 
     if (!gradle.ext.component_type.toLowerCase().contains("app")) {
-        logger.lifecycle("Android library sourcesets")
+        logger.lifecycle("Android sourcesets for this project module are configured as a library")
         sourceSets {
             main {
                 manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
@@ -80,7 +62,7 @@ android {
 
         }
     } else {
-        logger.lifecycle("Default Android application sourcesets")
+        logger.lifecycle("Android sourcesets for this project module are configured using defaults (for an app)")
     }
 
     compileOptions {
@@ -88,25 +70,18 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+    }
+
     if (gradle.component_type.contains("compose")) {
-        logger.lifecycle("IR/Compose module")
-        // can enable Compose if we do IR
+        logger.lifecycle("This project module is a Compose only module")
         buildFeatures {
             compose = true
         }
         composeOptions {
             kotlinCompilerExtensionVersion = "$gradle.androidx_compose_version"
-        }
-        kotlinOptions {
-            jvmTarget = "1.8"
-            useIR = true
-            freeCompilerArgs += ['-XXLanguage:+InlineClasses']
-        }
-    } else {
-        logger.lifecycle("Not an IR/Compose module")
-        kotlinOptions {
-            jvmTarget = "1.8"
-            freeCompilerArgs += ['-XXLanguage:+InlineClasses']
         }
     }
 
