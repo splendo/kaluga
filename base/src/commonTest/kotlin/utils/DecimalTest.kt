@@ -19,10 +19,12 @@ package com.splendo.kaluga.base.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class DecimalTest {
     @Test
-    fun test() {
+    fun testCalculation() {
         assertEquals(0.1.toDecimal().plus(0.2.toDecimal()).toDouble(), 0.3)
         assertEquals(1.99.toDecimal().round(1).toDouble(), 2.0)
         assertEquals(1.91.toDecimal().round(1).toDouble(), 1.9)
@@ -41,5 +43,14 @@ class DecimalTest {
         assertEquals(1.toDecimal().div(3.toDecimal(), 3).toDouble(), 0.333)
         assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundDown).toDouble(), 0.333)
         assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundUp).toDouble(), 0.334)
+    }
+
+    @Test
+    fun testComparison() {
+        assertTrue(0.123456.toDecimal() < 1.23456.toDecimal())
+        assertFalse(0.123456.toDecimal() >= 1.23456.toDecimal())
+        assertTrue(1.23456.toDecimal() > 0.123456.toDecimal())
+        assertFalse(1.23456.toDecimal() <= 0.123456.toDecimal())
+        assertEquals(1.23456.toDecimal(), 1.23456.toDecimal())
     }
 }

@@ -70,7 +70,7 @@ gradle.ext {
     bytebuddy_version = "1.11.3"
 
     // Javascript
-    js_bigdecimal_version="1.0.25"
+    js_bigdecimal_version="1.0.26"
 
     // used/modified at runtime.
     component_type_default = "default"

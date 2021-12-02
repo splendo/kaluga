@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.utils
 import com.splendo.kaluga.base.utils.RoundingMode.RoundDown
 import com.splendo.kaluga.base.utils.RoundingMode.RoundHalfEven
 import com.splendo.kaluga.base.utils.RoundingMode.RoundUp
+import kotlin.math.pow
 
 // 34 digits of the IEEE 754R Decimal128 format
 val DECIMAL_128_SIGNIFICANT_DIGITS = 34
@@ -36,7 +37,13 @@ data class Rounding(
     val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS
 )
 
-actual typealias Decimal = BigDecimal
+actual data class Decimal(val bd: BigDecimal) : Comparable<Decimal> {
+    override fun compareTo(other: Decimal): Int = BigDecimal.compare(bd, other.bd)
+    override fun equals(other: Any?): Boolean = (other as? Decimal)?.let { BigDecimal.equal(bd, it.bd) } ?: false
+    override fun hashCode(): Int {
+        return bd.hashCode()
+    }
+}
 
 val ZERO = BigDecimal.BigDecimal(0)
 
@@ -44,7 +51,7 @@ fun round(
     a: BigDecimal,
     roundingMode: RoundingMode,
     maximumFractionDigits: Int? = null
-): BigDecimal {
+): Decimal {
     val mode = if (BigDecimal.lessThan(a, ZERO)) {
         when (roundingMode) {
             RoundDown -> CEIL
@@ -58,76 +65,81 @@ fun round(
             RoundUp -> CEIL
         }
     }
-    return BigDecimal.round(a, Rounding(maximumFractionDigits, mode))
+    return Decimal(BigDecimal.round(a, Rounding(maximumFractionDigits, mode)))
 }
 
-actual operator fun Decimal.plus(value: Decimal): Decimal = BigDecimal.add(this, value)
+actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(BigDecimal.add(bd, value.bd))
 
 actual fun Decimal.plus(
     value: Decimal,
     scale: Int
-): Decimal = BigDecimal.add(this, value, Rounding(scale))
+): Decimal = Decimal(BigDecimal.add(bd, value.bd, Rounding(scale)))
 
 actual fun Decimal.plus(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.add(this, value), roundingMode, scale)
+): Decimal = round(BigDecimal.add(bd, value.bd), roundingMode, scale)
 
-actual operator fun Decimal.minus(value: Decimal): Decimal = BigDecimal.subtract(this, value)
+actual operator fun Decimal.minus(value: Decimal): Decimal = Decimal(BigDecimal.subtract(bd, value.bd))
 
 actual fun Decimal.minus(
     value: Decimal,
     scale: Int
-): Decimal = BigDecimal.subtract(this, value, Rounding(scale))
+): Decimal = Decimal(BigDecimal.subtract(bd, value.bd, Rounding(scale)))
 
 actual fun Decimal.minus(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.subtract(this, value), roundingMode, scale)
+): Decimal = round(BigDecimal.subtract(bd, value.bd), roundingMode, scale)
 
 actual operator fun Decimal.div(
     value: Decimal
-): Decimal = BigDecimal.divide(this, value, Rounding())
+): Decimal = Decimal(BigDecimal.divide(bd, value.bd, Rounding()))
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int
-): Decimal = BigDecimal.divide(this, value, Rounding(scale))
+): Decimal = Decimal(BigDecimal.divide(bd, value.bd, Rounding(scale)))
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.divide(this, value, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
+): Decimal = round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
 
 actual operator fun Decimal.times(
     value: Decimal
-): Decimal = BigDecimal.multiply(this, value, Rounding())
+): Decimal = Decimal(BigDecimal.multiply(bd, value.bd, Rounding()))
 
 actual fun Decimal.times(
     value: Decimal,
     scale: Int
-): Decimal = BigDecimal.multiply(this, value, Rounding(scale))
+): Decimal = Decimal(BigDecimal.multiply(bd, value.bd, Rounding(scale)))
 
 actual fun Decimal.times(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.multiply(this, value), roundingMode, scale)
+): Decimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
+
+actual infix fun Decimal.pow(n: Int): Decimal = Decimal(BigDecimal.BigDecimal(toDouble().pow(n)))
+actual fun Decimal.pow(n: Int, scale: Int): Decimal = Decimal(BigDecimal.round((this pow n).bd, Rounding(scale)))
+actual fun Decimal.pow(
+    n: Int,
+    scale: Int,
+    roundingMode: RoundingMode
+): Decimal = this pow n
 
 actual fun Decimal.round(
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(this, roundingMode, scale)
+): Decimal = round(bd, roundingMode, scale)
 
-actual fun String.toDecimal(): Decimal = BigDecimal.BigDecimal(this)
-actual fun Int.toDecimal(): Decimal = BigDecimal.BigDecimal(this)
-actual fun Double.toDecimal(): Decimal = this.toString().toDecimal()
+actual fun Number.toDecimal(): Decimal = this.toString().toDecimal()
+actual fun String.toDecimal(): Decimal = Decimal(BigDecimal.BigDecimal(this))
 
-actual fun Decimal.toDouble(): Double = this.toString().toDouble()
-actual fun Decimal.toInt(): Int = this.toFixed(0).toInt()
-actual fun Decimal.toString(): String = this.toString()
-
-fun Decimal.equals(a: Decimal, b: Decimal): Boolean = BigDecimal.equal(a, b)
+actual fun Decimal.toDouble(): Double = bd.toString().toDouble()
+actual fun Decimal.toInt(): Int = bd.toFixed(0).toInt()
+actual fun Decimal.toString(): String = bd.toString()

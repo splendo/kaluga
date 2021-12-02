@@ -32,7 +32,7 @@ external class BigDecimal(a: Any, b: Any) {
         fun toNumber(a: BigDecimal): Double
         fun greaterThan(a: BigDecimal, b: BigDecimal): Boolean
         fun lessThan(a: BigDecimal, b: BigDecimal): Boolean
-        fun compare(a: BigDecimal, b: BigDecimal): Boolean
+        fun compare(a: BigDecimal, b: BigDecimal): Int
         fun equal(a: BigDecimal, b: BigDecimal): Boolean
     }
 
