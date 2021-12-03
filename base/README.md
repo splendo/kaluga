@@ -176,7 +176,7 @@ class SomeViewModel(
         when (state) {
             is ServiceMonitorState.Initialized.Disabled -> "Service is disabled"
             is ServiceMonitorState.Initialized.Enabled -> "Service is enabled"
-            is ServiceMonitorState.Initialized.Disabled -> "Service permissions are not granted"
+            is ServiceMonitorState.Initialized.Unauthorized -> "Service permissions are not granted"
             is ServiceMonitorState.NotInitialized -> "Service status was not initialized yet"
             is ServiceMonitorState.NotSupported -> "Service is not supported (simulator)"
         }
