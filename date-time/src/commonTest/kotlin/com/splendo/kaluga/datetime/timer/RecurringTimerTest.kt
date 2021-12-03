@@ -32,8 +32,7 @@ class RecurringTimerTest {
     fun stateTransitions(): Unit = runBlocking {
         val timer = RecurringTimer(
             duration = Duration.milliseconds(100),
-            interval = Duration.milliseconds(10),
-            coroutineScope = this
+            interval = Duration.milliseconds(10)
         )
         assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after creation")
         timer.start()
@@ -56,11 +55,10 @@ class RecurringTimerTest {
     fun awaitFinish(): Unit = runBlocking {
         val timer = RecurringTimer(
             duration = Duration.milliseconds(100),
-            interval = Duration.milliseconds(10),
-            coroutineScope = this
+            interval = Duration.milliseconds(10)
         )
 
-        withTimeout(Duration.milliseconds(200)) {
+        withTimeout(Duration.milliseconds(500)) {
             timer.start()
             timer.awaitFinish()
         }
@@ -74,8 +72,7 @@ class RecurringTimerTest {
         val duration = Duration.milliseconds(1000)
         val timer = RecurringTimer(
             duration = duration,
-            interval = Duration.milliseconds(50),
-            coroutineScope = this
+            interval = Duration.milliseconds(50)
         )
 
         // capture and validate an initial state

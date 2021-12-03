@@ -22,6 +22,8 @@ import com.splendo.kaluga.state.HotStateFlowRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -92,9 +94,8 @@ private class TimerStateRepo(
         withContext(coroutineScope.coroutineContext) {
             takeAndChangeState { state ->
                 when (state) {
-                    is State.NotRunning.Finished -> state.remain()
                     is State.Running -> state::finish
-                    is State.NotRunning.Paused -> state::finish
+                    is State.NotRunning -> state.remain()
                 }
             }
         }
@@ -143,7 +144,8 @@ private class TimerStateRepo(
                 max = totalDuration,
                 interval = interval
             )
-            private lateinit var finishJob: Job
+
+            private val supervisor = SupervisorJob()
 
             internal suspend fun pause(): NotRunning.Paused {
                 return NotRunning.Paused(elapsed.first(), totalDuration)
@@ -151,13 +153,13 @@ private class TimerStateRepo(
             internal fun finish(): NotRunning.Finished = NotRunning.Finished(totalDuration)
 
             override suspend fun beforeOldStateIsRemoved(oldState: State) {
-                finishJob = coroutineScope.launch {
+                CoroutineScope(supervisor + coroutineScope.coroutineContext).launch {
                     delay(totalDuration - elapsed.first())
                     finishCallback()
                 }
             }
             override suspend fun afterNewStateIsSet(newState: State) {
-                finishJob.cancel()
+                supervisor.cancelChildren()
             }
         }
     }
