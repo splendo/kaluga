@@ -15,6 +15,7 @@ plugins {
     id "convention.publication"
     id 'org.jlleitschuh.gradle.ktlint'
     id 'org.jlleitschuh.gradle.ktlint-idea'
+    id 'org.jetbrains.kotlin.multiplatform' apply false
 }
 
 allprojects {
@@ -30,6 +31,10 @@ allprojects {
             events "standardOut", "started", "passed", "skipped", "failed"
         }
         testLogging.exceptionFormat = 'full'
+    }
+
+    tasks.withType(org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask).configureEach {
+        it.workerMaxHeapSize.set("512m")
     }
 }
 
