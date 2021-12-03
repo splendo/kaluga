@@ -38,7 +38,7 @@ import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.bindLabel
 
 @Composable
-fun KalugaLabel.composable(modifier: Modifier) {
+fun KalugaLabel.Composable(modifier: Modifier) {
     when (this) {
         is KalugaLabel.Plain -> {
             Text(
@@ -56,7 +56,7 @@ fun KalugaLabel.composable(modifier: Modifier) {
                 modifier = modifier,
                 factory = { context ->
                     TextView(context).apply {
-                        this.bindLabel(this@composable)
+                        this.bindLabel(this@Composable)
                     }
                 }
             )
@@ -73,7 +73,7 @@ fun PreviewKalugaLabel() {
         12.0f
     )
     Column(modifier = Modifier.size(100.dp)) {
-        KalugaLabel.Plain("Plain Text", textStyle).composable(
+        KalugaLabel.Plain("Plain Text", textStyle).Composable(
             modifier = Modifier.fillMaxWidth()
         )
         KalugaLabel.Styled(
@@ -87,7 +87,7 @@ fun PreviewKalugaLabel() {
                     )
                 }
             ),
-        ).composable(
+        ).Composable(
             modifier = Modifier.fillMaxWidth()
         )
     }

@@ -77,7 +77,7 @@ fun KalugaButton.Composable(
                 is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
                 is KalugaButton.Styled -> KalugaLabel.Styled(text)
                 else -> error("unknown button type")
-            }.composable(modifier = modifier)
+            }.Composable(modifier = modifier)
         }
     }
 }
