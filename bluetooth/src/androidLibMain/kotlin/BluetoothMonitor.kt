@@ -68,6 +68,11 @@ class DefaultBluetoothMonitor internal constructor(
     coroutineContext: CoroutineContext
 ) : DefaultServiceMonitor(coroutineContext), BluetoothMonitor {
 
+    /**
+     * This property is checking whether [Manifest.permission.ACCESS_COARSE_LOCATION] is granted or not because it is
+     * used by android system in order to discover nearby devices.
+     * Also [Manifest.permission.BLUETOOTH] is a normal protection level permission, that means that [ContextCompat.checkSelfPermission]` method will always return granted.
+     */
     private val isUnauthorized: Boolean
         get() = ContextCompat.checkSelfPermission(
             applicationContext,
