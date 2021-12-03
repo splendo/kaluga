@@ -43,7 +43,11 @@ actual interface LocationMonitor : ServiceMonitor {
      */
     actual class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
-        private val locationManager: LocationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        private val locationManager: LocationManager = applicationContext
+            .getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+            ?: throw IllegalArgumentException(
+                "LocationService should not be null, please check your device capabilities."
+            )
     ) {
         actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor = DefaultLocationMonitor(
             applicationContext = applicationContext,
