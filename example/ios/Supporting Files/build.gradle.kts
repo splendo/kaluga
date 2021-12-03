@@ -4,6 +4,16 @@ buildscript {
         google()
         gradlePluginPortal()
     }
+
+    dependencies {
+        val kalugaAndroidGradlePluginVersion = project.extra["kaluga.androidGradlePluginVersion"]
+        // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
+        classpath("com.android.tools.build:gradle:${kalugaAndroidGradlePluginVersion}")
+    }
+}
+
+plugins {
+    kotlin("multiplatform") apply false
 }
 
 val ext = (gradle as ExtensionAware).extra
