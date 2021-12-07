@@ -40,13 +40,20 @@ import com.splendo.kaluga.state.State as KalugaState
  * @param interval timer tick interval
  * @param coroutineScope a parent coroutine scope for the timer
  */
-class RecurringTimer(
+class RecurringTimer internal constructor(
     override val duration: Duration,
     interval: Duration,
-    coroutineScope: CoroutineScope = MainScope()
+    coroutineScope: CoroutineScope = MainScope(),
+    timeProvider: TimeProvider = TimeProvider()
 ) : Timer {
 
-    private val stateRepo = TimerStateRepo(duration, interval, coroutineScope)
+    constructor(
+        duration: Duration,
+        interval: Duration,
+        coroutineScope: CoroutineScope = MainScope()
+    ) : this (duration, interval, coroutineScope, TimeProvider())
+
+    private val stateRepo = TimerStateRepo(duration, interval, timeProvider, coroutineScope)
     override val state: StateFlow<Timer.State> = stateRepo.stateFlow
 
     override suspend fun start() = stateRepo.start()
@@ -54,10 +61,16 @@ class RecurringTimer(
     override suspend fun pause() = stateRepo.pause()
 }
 
+data class TimeProvider(
+    val timeSource: TimeSource = TimeSource.Monotonic,
+    val waitFor: suspend (Duration) -> Unit = { duration -> delay(duration) }
+)
+
 /** Timer state machine. */
 private class TimerStateRepo(
     totalDuration: Duration,
     private val interval: Duration,
+    private val timeProvider: TimeProvider,
     private val coroutineScope: CoroutineScope
 ) : HotStateFlowRepo<TimerStateRepo.State>(
     coroutineScope.coroutineContext,
@@ -70,7 +83,7 @@ private class TimerStateRepo(
             takeAndChangeState { state ->
                 when (state) {
                     is State.NotRunning.Paused -> suspend {
-                        state.start(interval, coroutineScope, ::finish)
+                        state.start(interval, timeProvider, coroutineScope, ::finish)
                     }
                     is State.NotRunning.Finished, is State.Running -> state.remain()
                 }
@@ -112,16 +125,17 @@ private class TimerStateRepo(
             ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
                 fun start(
                     interval: Duration,
+                    timeProvider: TimeProvider,
                     coroutineScope: CoroutineScope,
                     finishCallback: suspend () -> Unit
                 ): Running = Running(
                     elapsedSoFar = elapsed,
                     totalDuration = totalDuration,
                     interval = interval,
+                    timeProvider = timeProvider,
                     coroutineScope = coroutineScope,
                     finishCallback = finishCallback
                 )
-                internal fun finish(): Finished = Finished(totalDuration)
             }
 
             /** Timer is finished. */
@@ -135,13 +149,15 @@ private class TimerStateRepo(
             elapsedSoFar: Duration,
             override val totalDuration: Duration,
             interval: Duration,
+            private val timeProvider: TimeProvider,
             private val coroutineScope: CoroutineScope,
             private val finishCallback: suspend () -> Unit
         ) : State(), Timer.State.Running, HandleAfterNewStateIsSet<State>, HandleBeforeOldStateIsRemoved<State> {
             override val elapsed: Flow<Duration> = tickProvider(
                 offset = elapsedSoFar,
                 max = totalDuration,
-                interval = interval
+                interval = interval,
+                timeProvider = timeProvider
             )
 
             private val supervisor = SupervisorJob()
@@ -153,7 +169,7 @@ private class TimerStateRepo(
 
             override suspend fun beforeOldStateIsRemoved(oldState: State) {
                 CoroutineScope(supervisor + coroutineScope.coroutineContext).launch {
-                    delay(totalDuration - elapsed.first())
+                    timeProvider.waitFor(totalDuration - elapsed.first())
                     finishCallback()
                 }
             }
@@ -167,9 +183,10 @@ private class TimerStateRepo(
 private fun tickProvider(
     offset: Duration,
     max: Duration,
-    interval: Duration
+    interval: Duration,
+    timeProvider: TimeProvider
 ): Flow<Duration> {
-    val mark = TimeSource.Monotonic.markNow()
+    val mark = timeProvider.timeSource.markNow()
 
     fun newElapsed() = offset + mark.elapsedNow()
 
@@ -181,10 +198,17 @@ private fun tickProvider(
             emit(elapsed.coerceAtMost(max))
             // quit if the timer would reached the max on the next iteration
             if (max - interval <= elapsed) break
+
             // adaptive correction reduces the interval by time spent delivering emitted value
-            val correction = expectedElapsed - newElapsed()
+            var delay = interval + expectedElapsed - newElapsed()
+            // in case consumer processed the value too long, skip to the next interval
+            while (delay.isNegative()) {
+                delay += interval
+                expectedElapsed += interval
+            }
+
             // wait for the next iteration
-            delay(interval + correction)
+            timeProvider.waitFor(delay)
             expectedElapsed += interval
         }
     }
