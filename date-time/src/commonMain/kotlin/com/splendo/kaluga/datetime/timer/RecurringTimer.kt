@@ -180,6 +180,9 @@ private class TimerStateRepo(
     }
 }
 
+/**
+ * @return flow of ticks as close to [interval] intervals as possible. starting from [offset] to the [max]
+ */
 private fun tickProvider(
     offset: Duration,
     max: Duration,
@@ -194,13 +197,16 @@ private fun tickProvider(
         var expectedElapsed = offset
         while (true) {
             // obtain and deliver a new elapsed time value
+            emit(newElapsed().coerceAtMost(max))
+
+            // obtain a new elapsed marker, as consuming
             val elapsed = newElapsed()
-            emit(elapsed.coerceAtMost(max))
-            // quit if the timer would reached the max on the next iteration
-            if (max - interval <= elapsed) break
+
+            // quit if the timer reached the max
+            if (max <= elapsed) break
 
             // adaptive correction reduces the interval by time spent delivering emitted value
-            var delay = interval + expectedElapsed - newElapsed()
+            var delay = interval + expectedElapsed - elapsed
             // in case consumer processed the value too long, skip to the next interval
             while (delay.isNegative()) {
                 delay += interval

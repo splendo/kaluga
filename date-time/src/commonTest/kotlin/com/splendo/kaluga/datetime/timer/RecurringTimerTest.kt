@@ -160,8 +160,10 @@ class RecurringTimerTest {
             Timings(100, 100, 100),
             // -1ms delivery lag, skipped a frame + 40ms in processing, correction for 40ms
             Timings(199, 350, 50),
-            // spot on, no correction
-            Timings(400, 400, 100),
+            // -7ms delivery lag, -4ms af undershoot spot on, correction for 4ms
+            Timings(393, 396, 104),
+            // last interval: no delivery lag, 5 ms processing lag, no correction
+            Timings(500, 505, 0),
         )
 
         val timeSource = PredefinedTimeSource(
