@@ -126,7 +126,7 @@ class RecurringTimerTest {
         private val timerFinish = CompletableDeferred<Unit>()
         private var index = -1 // -1 to capture overall timer finish delay
 
-        suspend fun waitFor(delay: Duration) {
+        suspend fun delay(delay: Duration) {
             if (index < 0) {
                 // capture timer finish delay
                 index ++
@@ -179,7 +179,7 @@ class RecurringTimerTest {
             duration = totalDuration,
             interval = Duration.milliseconds(100),
             coroutineScope = this,
-            timeProvider = TimeProvider(timeSource, delayHandler::waitFor)
+            timeProvider = TimeProvider(timeSource, delayHandler::delay)
         )
 
         // capture and validate an initial state

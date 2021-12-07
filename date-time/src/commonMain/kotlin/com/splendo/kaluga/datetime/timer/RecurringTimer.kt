@@ -40,7 +40,7 @@ import com.splendo.kaluga.state.State as KalugaState
  * @param interval timer tick interval
  * @param coroutineScope a parent coroutine scope for the timer
  */
-class RecurringTimer internal constructor(
+class RecurringTimer(
     override val duration: Duration,
     interval: Duration,
     coroutineScope: CoroutineScope = MainScope(),
@@ -61,9 +61,10 @@ class RecurringTimer internal constructor(
     override suspend fun pause() = stateRepo.pause()
 }
 
+/** Provides a time source and delay implementation. */
 data class TimeProvider(
     val timeSource: TimeSource = TimeSource.Monotonic,
-    val waitFor: suspend (Duration) -> Unit = { duration -> delay(duration) }
+    val delayFunction: suspend (Duration) -> Unit = { duration -> delay(duration) }
 )
 
 /** Timer state machine. */
@@ -169,7 +170,7 @@ private class TimerStateRepo(
 
             override suspend fun beforeOldStateIsRemoved(oldState: State) {
                 CoroutineScope(supervisor + coroutineScope.coroutineContext).launch {
-                    timeProvider.waitFor(totalDuration - elapsed.first())
+                    timeProvider.delayFunction(totalDuration - elapsed.first())
                     finishCallback()
                 }
             }
@@ -214,7 +215,7 @@ private fun tickProvider(
             }
 
             // wait for the next iteration
-            timeProvider.waitFor(delay)
+            timeProvider.delayFunction(delay)
             expectedElapsed += interval
         }
     }
