@@ -31,11 +31,6 @@ interface Timer {
     /** Current state of the timer. */
     val state: StateFlow<State>
 
-    /** Starts the timer. */
-    suspend fun start()
-    /** Stops the timer. */
-    suspend fun pause()
-
     sealed interface State {
         sealed interface Running : State {
             val elapsed: Flow<Duration>
@@ -48,6 +43,14 @@ interface Timer {
             interface Finished : NotRunning
         }
     }
+}
+
+/** A timer ticking a certain [duration] with ability to [start] and [pause]. */
+interface ControllableTimer : Timer {
+    /** Starts the timer. */
+    suspend fun start()
+    /** Stops the timer. */
+    suspend fun pause()
 }
 
 /** Time elapsed from the timer start. */

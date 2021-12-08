@@ -45,7 +45,7 @@ class RecurringTimer(
     interval: Duration,
     coroutineScope: CoroutineScope = MainScope(),
     timeProvider: TimeProvider = TimeProvider()
-) : Timer {
+) : ControllableTimer {
 
     constructor(
         duration: Duration,
