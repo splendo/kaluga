@@ -178,8 +178,9 @@ class RecurringTimerTest {
         val timer = RecurringTimer(
             duration = totalDuration,
             interval = Duration.milliseconds(100),
-            coroutineScope = this,
-            timeProvider = TimeProvider(timeSource, delayHandler::delay)
+            timeSource = timeSource,
+            delayFunction = delayHandler::delay,
+            coroutineScope = this
         )
 
         // capture and validate an initial state
