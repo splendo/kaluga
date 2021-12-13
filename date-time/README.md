@@ -18,10 +18,11 @@ dependencies {
 ```
 
 ## Usage
+
+### RecurringTimer
 `RecurringTimer` is a timer which once started provides ticks at regular intervals.
 
-### Example
-Instantiate and operate a timer
+Sample code to instantiate and operate a timer:
 
 ```kotlin
 // creates a timer which lasts for 1 minute with a tick every second
@@ -38,14 +39,15 @@ timer.elapsed().collect { elapsed: Duration ->
     delay(100)
 }
 ```
-The timer implementation makes the best effort to compensate the inaccuracies in intervals so might 
-look in the following way:
+The timer implementation makes the best effort to compensate the inaccuracies in intervals. 
+In addition, one or several frames will be skipped in case the consumer processing takes longer than
+[interval]. So the output might look the following way:
 ```kotlin
 12 ms  // an initial "warm up delay" 
 1001 ms // overshoot by 1 ms
-2005 ms // overshoot by 5 ms
-2999 ms // undershoot by 1 ms
-4003 ms // overshoot by 3 ms
+3005 ms // skipped a frame due to slow processing and overshoot by 5 ms
+3999 ms // undershoot by 1 ms
+5003 ms // overshoot by 3 ms
 ...
 60000 ms
 ```
