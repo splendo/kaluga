@@ -34,7 +34,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlin.native.concurrent.SharedImmutable
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.AfterTest
@@ -288,7 +287,7 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
         debug("${tests.size} in collection (including this one), offering")
-        testChannel.offer(Pair(test, completable))
+        testChannel.trySend(Pair(test, completable)).isSuccess
     }
 
     private suspend fun disposeContext(cookie: Long) {
