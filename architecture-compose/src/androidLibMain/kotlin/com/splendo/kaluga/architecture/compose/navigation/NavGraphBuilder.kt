@@ -86,7 +86,7 @@ fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBu
 
 private fun Bundle.composableValue(value: String?, specType : NavigationBundleSpecType<*>): NavigationBundleValue<*> {
     val nonNullableValue = value ?: ""
-    when (specType) {
+    return when (specType) {
         is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
         is NavigationBundleSpecType.BooleanArrayType -> specType.convertValue(Json.decodeFromString(BooleanArraySerializer(), nonNullableValue))
         is NavigationBundleSpecType.BooleanType -> specType.convertValue(Json.decodeFromString(Boolean.serializer(), nonNullableValue))
@@ -111,7 +111,7 @@ private fun Bundle.composableValue(value: String?, specType : NavigationBundleSp
         is NavigationBundleSpecType.IntegerType -> specType.convertValue(Json.decodeFromString(Int.serializer(), nonNullableValue))
         is NavigationBundleSpecType.LongArrayType -> specType.convertValue(Json.decodeFromString(LongArraySerializer(), nonNullableValue))
         is NavigationBundleSpecType.LongType -> specType.convertValue(Json.decodeFromString(Long.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.OptionalType<*> -> value?.let { composableValue(it, specType.type) }
+        is NavigationBundleSpecType.OptionalType<*> -> value?.let { composableValue(it, specType.type) } ?: specType.convertValue(null)
         is NavigationBundleSpecType.SerializedType<*> -> specType.generateValue(nonNullableValue) ?: throw BundleConversionError()
         is NavigationBundleSpecType.ShortArrayType -> specType.convertValue(Json.decodeFromString(ShortArraySerializer(), nonNullableValue))
         is NavigationBundleSpecType.ShortType -> specType.convertValue(Json.decodeFromString(Short.serializer(), nonNullableValue))

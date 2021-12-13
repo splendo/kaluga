@@ -18,6 +18,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("plugin.serialization")
     id("jacoco")
     id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")

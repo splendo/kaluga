@@ -20,7 +20,11 @@ open class RouteNavigator<A : NavigationAction<*>>(
 ) : Navigator<A> {
 
     override fun navigate(action: A) {
-        when (val newRoute = navigationMapper(action)) {
+        navigate(navigationMapper(action))
+    }
+
+    protected fun navigate(newRoute: Route) {
+        when (newRoute) {
             is Route.NextRoute<*, *> -> {
                 val currentDestination = navController.currentBackStackEntry?.destination
                 if (currentDestination?.route?.stripArguments() != newRoute.route.stripArguments()) {

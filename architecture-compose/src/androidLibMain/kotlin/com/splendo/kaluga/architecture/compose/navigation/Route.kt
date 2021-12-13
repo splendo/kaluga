@@ -82,7 +82,7 @@ fun route(
     val routeWithRequiredArguments = requiredArguments.takeIf(List<*>::isNotEmpty)
         ?.joinToString("/", prefix = "${baseRoute}/") { it.second } ?: baseRoute
     return optionalArguments.takeIf(List<*>::isNotEmpty)
-        ?.joinToString("&", prefix = routeWithRequiredArguments) { "${it.first}={${it.second}}" }
+        ?.joinToString("&", prefix = "$routeWithRequiredArguments?") { "${it.first}={${it.second}}" }
         ?: routeWithRequiredArguments
 }
 

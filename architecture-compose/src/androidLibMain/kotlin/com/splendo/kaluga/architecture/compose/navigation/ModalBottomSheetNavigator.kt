@@ -40,20 +40,12 @@ fun NavGraphBuilder.BottomSheetComposable(
 object CloseBottomSheetNavigationAction : NavigationAction<Nothing>(null)
 
 /** Navigator for [ModalBottomSheetLayout]. */
-class ModalBottomSheetNavigator(
+class ModalBottomSheetNavigator<A : NavigationAction<*>>(
     private val coroutineScope: CoroutineScope,
     private val modalBottomSheetState: ModalBottomSheetState,
     navController: NavHostController,
-    navigationMapper: (NavigationAction<*>) -> String
-) : RouteNavigator<NavigationAction<*>>(navController, navigationMapper) {
-
-    override fun navigate(action: NavigationAction<*>) {
-        if (action is CloseBottomSheetNavigationAction) {
-            action.route().takeIf(::isNewRoute)?.let(::navigate)
-        } else {
-            super.navigate(action)
-        }
-    }
+    navigationMapper: (A) -> Route
+) : RouteNavigator<A>(navController, navigationMapper) {
 
     fun hide() {
         coroutineScope.launch {
@@ -81,6 +73,6 @@ class ModalBottomSheetNavigator(
     }
 
     private fun syncHiddenState() {
-        navigate(CloseBottomSheetNavigationAction)
+        navigate(CloseBottomSheetNavigationAction.replace)
     }
 }
