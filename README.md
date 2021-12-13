@@ -123,6 +123,7 @@ Module | Usage | Artifact Name
 [storage-permissions](storage-permissions/) | Managing storage permissions | com.splendo.kaluga:storage-permissions
 [resources](resources/) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources
 [review](review/) | Used for requesting the user to review the app | com.splendo.kaluga.review
+[scientific](scientific/) | Scientific units and conversions | com.splendo.kaluga.scientific 
 [system](system/) | System APIs such as network, audio, battery  | com.splendo.kaluga.system
 [test-utils](test-utils/) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils
 
