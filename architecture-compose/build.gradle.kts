@@ -38,6 +38,7 @@ version = ext["library_version"]!!
 ext["component_type"] = ext["component_type_default"]
 
 dependencies {
+    api(project(":base"))
     api(project(":architecture"))
     val ext = (gradle as ExtensionAware).extra
     implementation("androidx.compose.material:material:" + ext["androidx_compose_version"])

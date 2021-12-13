@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
  * A row within a [NavigationBundleSpec] that is associated with a given [NavigationBundleSpecType]
  * @param associatedType The [NavigationBundleSpecType] associated with this row
  */
-open class NavigationBundleSpecRow<T>(internal val associatedType: NavigationBundleSpecType<T>) {
+open class NavigationBundleSpecRow<T>(val associatedType: NavigationBundleSpecType<T>) {
     /**
      * Key for this row. Used for converting rows to data types.
      * Defaults to the name of the row, but can be overwritten if required
@@ -220,7 +220,7 @@ sealed class NavigationBundleSpecType<T> {
 /**
  * A set of [NavigationBundleSpecRow]s that can be used to form a [NavigationBundle] using [NavigationBundleSpec.toBundle]
  */
-open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(internal val rows: Set<R>)
+open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(val rows: Set<R>)
 
 /**
  * A [NavigationBundleSpec] that only provides a single [NavigationBundleSpecRow]
