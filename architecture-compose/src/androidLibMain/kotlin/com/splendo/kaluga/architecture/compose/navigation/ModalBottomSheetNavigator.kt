@@ -1,9 +1,16 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
@@ -18,8 +25,8 @@ val Route.bottomSheetSheetContent get() = BottomSheetRoute.SheetContent(this)
 val Route.bottomSheetContent get() = BottomSheetRoute.Content(this)
 
 class BottomSheetRouteController(
-    private val navHostController: NavHostController,
-    private val sheetState: ModalBottomSheetState,
+    internal val navHostController: NavHostController,
+    internal val sheetState: ModalBottomSheetState,
     private val coroutineScope: CoroutineScope
 ) : RouteController {
 
@@ -48,15 +55,52 @@ class BottomSheetRouteController(
 
 /** Navigator for [ModalBottomSheetLayout]. */
 class ModalBottomSheetNavigator<A : NavigationAction<*>>(
-    private val contentRouteController: RouteController,
-    private val sheetContentRouteController: BottomSheetRouteController,
+    internal val contentRouteController: RouteController,
+    internal val sheetContentRouteController: BottomSheetRouteController,
     private val navigationMapper: (A) -> BottomSheetRoute
 ) : Navigator<A> {
+
+    constructor(
+        contentNavHostController: NavHostController,
+        sheetContentNavHostController: NavHostController,
+        sheetState: ModalBottomSheetState,
+        coroutineScope: CoroutineScope,
+        navigationMapper: (A) -> BottomSheetRoute
+    ) : this(
+        NavHostRouteController(contentNavHostController),
+        BottomSheetRouteController(sheetContentNavHostController, sheetState, coroutineScope),
+        navigationMapper
+    )
 
     override fun navigate(action: A) {
         when (val bottomSheetRoute = navigationMapper(action)) {
             is BottomSheetRoute.SheetContent -> sheetContentRouteController.navigate(bottomSheetRoute.route)
             is BottomSheetRoute.Content -> contentRouteController.navigate(bottomSheetRoute.route)
         }
+    }
+}
+
+@Composable
+fun <A : NavigationAction<*>> NavigatingModalBottomSheetLayout(
+    navigator: ModalBottomSheetNavigator<A>,
+    sheetContent: NavGraphBuilder.(BottomSheetRouteController, RouteController) -> Unit,
+    contentRoot: @Composable (ModalBottomSheetNavigator<A>) -> Unit,
+    content: NavGraphBuilder.(RouteController) -> Unit,
+) = ModalBottomSheetLayout(sheetContent = {
+        HardwareBackButtonNavigation(onBackButtonClickHandler = navigator.sheetContentRouteController::close)
+        Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
+            navigator.sheetContentRouteController.SetupNavHost {
+                sheetContent(navigator.sheetContentRouteController, navigator.contentRouteController)
+            }
+        }
+    },
+    sheetState = navigator.sheetContentRouteController.sheetState,
+) {
+    navigator.contentRouteController.SetupNavHost(
+        rootView = {
+            contentRoot(navigator)
+        }
+    ) {
+        content(navigator.contentRouteController)
     }
 }

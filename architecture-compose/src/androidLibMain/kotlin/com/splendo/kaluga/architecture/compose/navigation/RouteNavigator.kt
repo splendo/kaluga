@@ -11,14 +11,19 @@ import androidx.navigation.compose.composable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 
-interface RouteController {
+sealed interface RouteController {
     fun navigate(newRoute: Route)
     fun back(): Boolean
     fun close()
 }
 
+internal val RouteController.navHostController get() = when (this) {
+    is NavHostRouteController -> navHostController
+    is BottomSheetRouteController -> navHostController
+}
+
 class NavHostRouteController(
-    private val navHostController: NavHostController,
+    internal val navHostController: NavHostController,
     private val parentRouteController: RouteController? = null
 ) : RouteController {
     override fun navigate(newRoute: Route) {
@@ -60,40 +65,45 @@ open class RouteNavigator<A : NavigationAction<*>>(
     private val navigationMapper: (A) -> Route
 ) : Navigator<A> {
 
+    constructor(
+        navHostController: NavHostController,
+        navigationMapper: (A) -> Route
+    ) : this(NavHostRouteController(navHostController), navigationMapper)
+
     override fun navigate(action: A) {
         routeController.navigate(navigationMapper(action))
     }
 }
 
 @Composable
-fun NavHostController.SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
+fun RouteController.SetupNavHost(builder: NavGraphBuilder.(RouteController) -> Unit) {
     SetupNavHost(startDestination = ROOT_VIEW) {
         composable(ROOT_VIEW) {
             Spacer(modifier = Modifier.fillMaxWidth())
         }
-        builder()
+        builder(this@SetupNavHost)
     }
 }
 
 @Composable
-fun NavHostController.SetupNavHost(
-    rootView: @Composable NavGraphBuilder.() -> Unit,
-    builder: NavGraphBuilder.() -> Unit
+fun RouteController.SetupNavHost(
+    rootView: @Composable NavGraphBuilder.(RouteController) -> Unit,
+    builder: NavGraphBuilder.(RouteController) -> Unit
 ) {
     SetupNavHost(startDestination = ROOT_VIEW) {
-        composable(ROOT_VIEW, content = { rootView() })
-        builder()
+        composable(ROOT_VIEW, content = { rootView(this@SetupNavHost) })
+        builder(this@SetupNavHost)
     }
 }
 
 @Composable
-fun NavHostController.SetupNavHost(
+fun RouteController.SetupNavHost(
     startDestination: String,
-    builder: NavGraphBuilder.() -> Unit
+    builder: NavGraphBuilder.(RouteController) -> Unit
 ) {
     NavHost(
-        navController = this,
+        navController = navHostController,
         startDestination = startDestination,
-        builder = builder
+        builder = { builder(this@SetupNavHost) }
     )
 }

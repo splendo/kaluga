@@ -20,26 +20,17 @@ package com.splendo.kaluga.example.platformspecific.compose.bottomSheet.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRouteController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.RouteController
-import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
-import com.splendo.kaluga.architecture.compose.navigation.SetupNavHost
-import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetNavigationRouteMapper
-import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetNavigation
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetViewModel
 
 @Composable

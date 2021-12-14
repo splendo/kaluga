@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteController
+import com.splendo.kaluga.architecture.compose.navigation.RouteController
 import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
@@ -49,9 +50,9 @@ import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewM
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListViewModel
 
 @Composable
-fun ContactsListLayout(navHostController: NavHostController) {
+fun ContactsListLayout(routeController: RouteController) {
     val navigator = RouteNavigator(
-        NavHostRouteController(navHostController),
+        routeController,
         ::contactListNavigationRouteMapper
     )
 
