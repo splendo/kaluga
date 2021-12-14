@@ -53,24 +53,24 @@ class ModalBottomSheetNavigator<A : NavigationAction<*>>(
         }
     }
 
-    @Composable
-    override fun SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
-        val hiddenRoute = CloseBottomSheetNavigationAction.route()
-        SetupNavHost(
-            startDestination = hiddenRoute
-        ) {
-            composable(hiddenRoute) {
-                LaunchedEffect(Unit) {
-                    modalBottomSheetState.hide()
-                }
-            }
-            builder()
-        }
-
-        if (!modalBottomSheetState.isVisible) {
-            syncHiddenState()
-        }
-    }
+//    @Composable
+//    override fun SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
+//        val hiddenRoute = CloseBottomSheetNavigationAction.route()
+//        SetupNavHost(
+//            startDestination = hiddenRoute
+//        ) {
+//            composable(hiddenRoute) {
+//                LaunchedEffect(Unit) {
+//                    modalBottomSheetState.hide()
+//                }
+//            }
+//            builder()
+//        }
+//
+//        if (!modalBottomSheetState.isVisible) {
+//            syncHiddenState()
+//        }
+//    }
 
     private fun syncHiddenState() {
         navigate(CloseBottomSheetNavigationAction.replace)

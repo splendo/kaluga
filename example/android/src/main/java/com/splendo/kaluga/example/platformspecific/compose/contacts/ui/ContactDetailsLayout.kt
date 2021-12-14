@@ -31,17 +31,35 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.splendo.kaluga.architecture.compose.navigation.CombinedNavigator
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
+import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
+import com.splendo.kaluga.architecture.compose.navigation.rememberCombinedNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactDetailsNavigationActivityMapper
+import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactDetailsNavigationRouteMapper
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
+import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsNavigation
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsViewModel
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsNavigation
 
 @Composable
-fun ContactDetailsLayout(contactDetails: ContactDetails, navigator: Navigator<ContactsNavigation<*>>) {
+fun ContactDetailsLayout(contactDetails: ContactDetails, navHostController: NavHostController) {
+    val routeNavigator = RouteNavigator(
+        navHostController,
+        ::contactDetailsNavigationRouteMapper
+    )
+
+    val navigator = rememberCombinedNavigator { action: ContactDetailsNavigation<*> ->
+        when (action) {
+            is ContactDetailsNavigation.Close -> routeNavigator
+            is ContactDetailsNavigation.SendEmail -> ::contactDetailsNavigationActivityMapper.toActivityNavigator()
+        }
+    }
+
     val viewModel = store {
         remember {
             ContactDetailsViewModel(contactDetails, navigator)

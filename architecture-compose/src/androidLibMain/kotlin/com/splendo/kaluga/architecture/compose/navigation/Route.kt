@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
-import android.app.Notification
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow

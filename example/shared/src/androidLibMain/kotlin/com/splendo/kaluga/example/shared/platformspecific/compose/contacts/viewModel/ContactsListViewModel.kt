@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel
 
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.FlowInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
@@ -25,9 +27,16 @@ import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
+sealed class ContactsListNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
+    data class ShowContactDetails(val contactDetails: ContactDetails) : ContactsListNavigation<ContactDetails>(
+        contactDetails,
+        NavigationBundleSpecType.SerializedType(ContactDetails.serializer())
+    )
+}
+
 class ContactsListViewModel(
-    navigator: Navigator<ContactsNavigation<*>>
-) : NavigatingViewModel<ContactsNavigation<*>>(navigator) {
+    navigator: Navigator<ContactsListNavigation<*>>
+) : NavigatingViewModel<ContactsListNavigation<*>>(navigator) {
     val contacts: FlowInitializedObservable<List<ContactDetails>> =
         MutableStateFlow(emptyList<ContactDetails>())
             .also {
@@ -45,7 +54,7 @@ class ContactsListViewModel(
 
     fun onContactClick(contactDetails: ContactDetails) {
         navigator.navigate(
-            ContactsNavigation.ContactsListNavigation.ShowContactDetails(contactDetails)
+            ContactsListNavigation.ShowContactDetails(contactDetails)
         )
     }
 }

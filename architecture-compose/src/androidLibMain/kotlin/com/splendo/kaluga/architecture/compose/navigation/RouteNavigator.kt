@@ -51,37 +51,6 @@ open class RouteNavigator<A : NavigationAction<*>>(
 
     fun back(): Boolean = navController.popBackStack() || parentNavigator?.back() ?: false
 
-    @Composable
-    open fun SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
-        SetupNavHost(startDestination = ROOT_VIEW) {
-            composable(ROOT_VIEW) {}
-            builder()
-        }
-    }
-
-    @Composable
-    open fun SetupNavHost(
-        rootView: @Composable (NavBackStackEntry) -> Unit,
-        builder: NavGraphBuilder.() -> Unit
-    ) {
-        SetupNavHost(startDestination = ROOT_VIEW) {
-            composable(ROOT_VIEW, content = rootView)
-            builder()
-        }
-    }
-
-    @Composable
-    fun SetupNavHost(
-        startDestination: String,
-        builder: NavGraphBuilder.() -> Unit
-    ) {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
-            builder = builder
-        )
-    }
-
     private fun String.stripArguments(): String {
         val components = split("/")
 
@@ -94,4 +63,35 @@ open class RouteNavigator<A : NavigationAction<*>>(
         } ?: components
         return strippedComponents.joinToString("/")
     }
+}
+
+@Composable
+fun NavHostController.SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
+    SetupNavHost(startDestination = ROOT_VIEW) {
+        composable(ROOT_VIEW) {}
+        builder()
+    }
+}
+
+@Composable
+fun NavHostController.SetupNavHost(
+    rootView: @Composable (NavBackStackEntry) -> Unit,
+    builder: NavGraphBuilder.() -> Unit
+) {
+    SetupNavHost(startDestination = ROOT_VIEW) {
+        composable(ROOT_VIEW, content = rootView)
+        builder()
+    }
+}
+
+@Composable
+fun NavHostController.SetupNavHost(
+    startDestination: String,
+    builder: NavGraphBuilder.() -> Unit
+) {
+    NavHost(
+        navController = this,
+        startDestination = startDestination,
+        builder = builder
+    )
 }
