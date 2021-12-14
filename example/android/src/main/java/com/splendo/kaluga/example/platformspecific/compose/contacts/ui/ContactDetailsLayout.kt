@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.CombinedNavigator
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
+import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteController
 import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.navigation.rememberCombinedNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
@@ -49,7 +50,7 @@ import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewM
 @Composable
 fun ContactDetailsLayout(contactDetails: ContactDetails, navHostController: NavHostController) {
     val routeNavigator = RouteNavigator(
-        navHostController,
+        NavHostRouteController(navHostController),
         ::contactDetailsNavigationRouteMapper
     )
 

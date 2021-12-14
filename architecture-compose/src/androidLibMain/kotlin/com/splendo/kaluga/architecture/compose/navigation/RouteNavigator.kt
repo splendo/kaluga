@@ -1,85 +1,87 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
-import kotlin.reflect.KClass
+
+interface RouteController {
+    fun navigate(newRoute: Route)
+    fun back(): Boolean
+    fun close()
+}
+
+class NavHostRouteController(
+    private val navHostController: NavHostController,
+    private val parentRouteController: RouteController? = null
+) : RouteController {
+    override fun navigate(newRoute: Route) {
+        when (newRoute) {
+            is Route.NextRoute<*, *> -> navHostController.navigate(newRoute.route) {
+                launchSingleTop = true
+            }
+            is Route.FromRoute<*, *> -> navHostController.navigate(newRoute.route) {
+                popUpTo(newRoute.from)
+            }
+            is Route.Replace<*, *> -> {
+                navHostController.popBackStack()
+                navHostController.navigate(newRoute.route)
+            }
+            is Route.PopTo<*, *> -> {
+                navHostController.popBackStack(newRoute.route, false)
+            }
+            is Route.PopToIncluding<*, *> -> {
+                navHostController.popBackStack(newRoute.route, true)
+            }
+            is Route.Back -> back()
+            is Route.PopToRoot -> navHostController.popBackStack(ROOT_VIEW, false)
+            is Route.Close -> close()
+        }
+    }
+
+    override fun back(): Boolean = navHostController.popBackStack() || parentRouteController?.back() ?: false
+    override fun close() {
+        navHostController.popBackStack(ROOT_VIEW, true)
+        parentRouteController?.close()
+    }
+}
 
 /**
  * Routes [Navigator] calls to [NavHostController].
  */
 open class RouteNavigator<A : NavigationAction<*>>(
-    protected val navController: NavHostController,
-    private val navigationMapper: (A) -> Route,
-    private val parentNavigator: RouteNavigator<*>? = null
+    private val routeController: RouteController,
+    private val navigationMapper: (A) -> Route
 ) : Navigator<A> {
 
     override fun navigate(action: A) {
-        navigate(navigationMapper(action))
-    }
-
-    protected fun navigate(newRoute: Route) {
-        when (newRoute) {
-            is Route.NextRoute<*, *> -> {
-                val currentDestination = navController.currentBackStackEntry?.destination
-                if (currentDestination?.route?.stripArguments() != newRoute.route.stripArguments()) {
-                    navController.navigate(newRoute.route)
-                }
-            }
-            is Route.FromRoute<*, *> -> navController.navigate(newRoute.route) {
-                popUpTo(newRoute.from)
-            }
-            is Route.Replace<*, *> -> {
-                navController.popBackStack()
-                navController.navigate(newRoute.route)
-            }
-            is Route.PopTo<*, *> -> {
-                navController.popBackStack(newRoute.route, false)
-            }
-            is Route.PopToIncluding<*, *> -> {
-                navController.popBackStack(newRoute.route, true)
-            }
-            is Route.Back -> back()
-            is Route.PopToRoot -> navController.popBackStack(ROOT_VIEW, false)
-        }
-    }
-
-    fun back(): Boolean = navController.popBackStack() || parentNavigator?.back() ?: false
-
-    private fun String.stripArguments(): String {
-        val components = split("/")
-
-        val strippedComponents = components.lastOrNull()?.let {
-            if (it.startsWith("{") && it.endsWith("}")) {
-                components.dropLast(1)
-            } else {
-                components
-            }
-        } ?: components
-        return strippedComponents.joinToString("/")
+        routeController.navigate(navigationMapper(action))
     }
 }
 
 @Composable
 fun NavHostController.SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
     SetupNavHost(startDestination = ROOT_VIEW) {
-        composable(ROOT_VIEW) {}
+        composable(ROOT_VIEW) {
+            Spacer(modifier = Modifier.fillMaxWidth())
+        }
         builder()
     }
 }
 
 @Composable
 fun NavHostController.SetupNavHost(
-    rootView: @Composable (NavBackStackEntry) -> Unit,
+    rootView: @Composable NavGraphBuilder.() -> Unit,
     builder: NavGraphBuilder.() -> Unit
 ) {
     SetupNavHost(startDestination = ROOT_VIEW) {
-        composable(ROOT_VIEW, content = rootView)
+        composable(ROOT_VIEW, content = { rootView() })
         builder()
     }
 }

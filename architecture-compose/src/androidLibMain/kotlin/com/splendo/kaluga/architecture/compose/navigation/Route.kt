@@ -43,7 +43,11 @@ internal const val ROOT_VIEW = "com.splendo.kaluga.architecture.compose.navigati
 val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simpleName
 
 /** @return a route represented by the [NavigationAction]. */
-inline fun <SpecRow : NavigationBundleSpecRow<*>, reified T : NavigationAction<SpecRow>> route(spec: NavigationBundleSpec<SpecRow>): String {
+inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(spec: NavigationBundleSpec<SpecRow>): String = route(Action::class, spec)
+
+fun <SpecRow : NavigationBundleSpecRow<*>, T : NavigationAction<SpecRow>> route(
+    actionClass: KClass<T>,
+    spec: NavigationBundleSpec<SpecRow>): String {
     val arguments = spec.rows.mapNotNull { row ->
         val key = row.argumentKey
         when (row.associatedType) {
@@ -52,7 +56,7 @@ inline fun <SpecRow : NavigationBundleSpecRow<*>, reified T : NavigationAction<S
             else -> Triple(key, "{$key}", true)
         }
     }
-    return route(T::class, *arguments.toTypedArray())
+    return route(actionClass, *arguments.toTypedArray())
 }
 
 fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): String {
@@ -164,6 +168,7 @@ sealed class Route {
 
     object Back : Route()
     object PopToRoot : Route()
+    object Close : Route()
 }
 
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.next get() = Route.NextRoute(this)

@@ -3,76 +3,60 @@ package com.splendo.kaluga.architecture.compose.navigation
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.composable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
+import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/** A [composable] that also expands bottom sheet upon re-composition. */
-fun NavGraphBuilder.BottomSheetComposable(
-    route: String,
-    arguments: List<NamedNavArgument> = emptyList(),
-    modalBottomSheetState: ModalBottomSheetState,
-    content: @Composable (NavBackStackEntry) -> Unit
-) {
-    composable(
-        route = route,
-        arguments = arguments,
-        deepLinks = emptyList()
-    ) {
-        HardwareBackButtonNavigation(modalBottomSheetState::hide)
+sealed class BottomSheetRoute {
+    data class SheetContent(val route: Route): BottomSheetRoute()
+    data class Content(val route: Route): BottomSheetRoute()
+}
 
-        content(it)
+val Route.bottomSheetSheetContent get() = BottomSheetRoute.SheetContent(this)
+val Route.bottomSheetContent get() = BottomSheetRoute.Content(this)
 
-        LaunchedEffect(Unit) {
-            modalBottomSheetState.animateTo(ModalBottomSheetValue.Expanded)
+class BottomSheetRouteController(
+    private val navHostController: NavHostController,
+    private val sheetState: ModalBottomSheetState,
+    private val coroutineScope: CoroutineScope
+) : RouteController {
+
+    private val sheetContentRouteController = NavHostRouteController(navHostController, this)
+
+    override fun navigate(newRoute: Route) {
+        if (!sheetState.isVisible) {
+            coroutineScope.launch {
+                sheetState.animateTo(ModalBottomSheetValue.Expanded)
+            }
+        }
+        sheetContentRouteController.navigate(newRoute)
+    }
+
+    override fun back(): Boolean = navHostController.popBackStack() || kotlin.run {
+        close()
+        true
+    }
+
+    override fun close() {
+        coroutineScope.launch {
+            sheetState.animateTo(ModalBottomSheetValue.Hidden)
         }
     }
 }
 
-/** Closes the [ModalBottomSheetLayout]. */
-object CloseBottomSheetNavigationAction : NavigationAction<Nothing>(null)
-
 /** Navigator for [ModalBottomSheetLayout]. */
 class ModalBottomSheetNavigator<A : NavigationAction<*>>(
-    private val coroutineScope: CoroutineScope,
-    private val modalBottomSheetState: ModalBottomSheetState,
-    navController: NavHostController,
-    navigationMapper: (A) -> Route
-) : RouteNavigator<A>(navController, navigationMapper) {
+    private val contentRouteController: RouteController,
+    private val sheetContentRouteController: BottomSheetRouteController,
+    private val navigationMapper: (A) -> BottomSheetRoute
+) : Navigator<A> {
 
-    fun hide() {
-        coroutineScope.launch {
-            modalBottomSheetState.hide()
+    override fun navigate(action: A) {
+        when (val bottomSheetRoute = navigationMapper(action)) {
+            is BottomSheetRoute.SheetContent -> sheetContentRouteController.navigate(bottomSheetRoute.route)
+            is BottomSheetRoute.Content -> contentRouteController.navigate(bottomSheetRoute.route)
         }
-    }
-
-//    @Composable
-//    override fun SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
-//        val hiddenRoute = CloseBottomSheetNavigationAction.route()
-//        SetupNavHost(
-//            startDestination = hiddenRoute
-//        ) {
-//            composable(hiddenRoute) {
-//                LaunchedEffect(Unit) {
-//                    modalBottomSheetState.hide()
-//                }
-//            }
-//            builder()
-//        }
-//
-//        if (!modalBottomSheetState.isVisible) {
-//            syncHiddenState()
-//        }
-//    }
-
-    private fun syncHiddenState() {
-        navigate(CloseBottomSheetNavigationAction.replace)
     }
 }

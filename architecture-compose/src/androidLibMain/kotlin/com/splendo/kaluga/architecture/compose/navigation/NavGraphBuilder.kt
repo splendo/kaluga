@@ -48,14 +48,21 @@ import kotlinx.serialization.builtins.LongArraySerializer
 import kotlinx.serialization.builtins.ShortArraySerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
+import kotlin.reflect.KClass
 
-inline fun <reified SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
+inline fun <SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     spec: NavigationBundleSpec<SpecType>,
-    crossinline content: @Composable (NavigationBundle<SpecType>) -> Unit
+    noinline content: @Composable (NavigationBundle<SpecType>) -> Unit
+) = composable(Action::class, spec, content)
+
+fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
+    actionClass: KClass<Action>,
+    spec: NavigationBundleSpec<SpecType>,
+    content: @Composable (NavigationBundle<SpecType>) -> Unit
 ) {
-    composable(route<SpecType, Action>(spec), arguments = spec.rows.mapNotNull {
+    composable(route(actionClass, spec), arguments = spec.rows.mapNotNull {
         if (it.associatedType is NavigationBundleSpecType.OptionalType<*>) {
-             navArgument(it.argumentKey) { nullable = true }
+            navArgument(it.argumentKey) { nullable = true }
         } else {
             null
         }
@@ -64,14 +71,21 @@ inline fun <reified SpecType : NavigationBundleSpecRow<*>, reified Action : Navi
     }
 }
 
-inline fun <reified Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
+inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     type: NavigationBundleSpecType<Value>,
-    crossinline content: @Composable (Value) -> Unit
-) = composable<SingleValueNavigationSpec.Row<Value>, Action>(
+    noinline content: @Composable (Value) -> Unit
+) = composable(Action::class, type, content)
+
+fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
+    actionClass: KClass<Action>,
+    type: NavigationBundleSpecType<Value>,
+    content: @Composable (Value) -> Unit
+) = composable(
+    actionClass,
     SingleValueNavigationSpec(
         type
     )) { bundle ->
-        content(bundle.get(type))
+    content(bundle.get(type))
 }
 
 fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBundleSpec<SpecType>): NavigationBundle<SpecType>? {
