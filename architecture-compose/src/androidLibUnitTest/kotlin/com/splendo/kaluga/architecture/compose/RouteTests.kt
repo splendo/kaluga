@@ -24,6 +24,8 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.toBundle
+import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.utc
@@ -71,6 +73,7 @@ class RouteTests {
 
     @Test
     fun testRoute() {
+        val time = Date.epoch(timeZone = TimeZone.utc)
         val bundle = MockSpec.toBundle { row ->
             when (row) {
                 is MockSpecRow.StringSpecRow -> row.convertValue("string")
@@ -80,10 +83,10 @@ class RouteTests {
                 is MockSpecRow.OptionalString -> row.convertValue("optional")
                 is MockSpecRow.OptionalFloat -> row.convertValue(null)
                 is MockSpecRow.OptionalMockSerializable -> row.convertValue(MockSerializable("OptionalMock"))
-                is MockSpecRow.DateSpecRow -> row.convertValue(Date.epoch(timeZone = TimeZone.utc))
+                is MockSpecRow.DateSpecRow -> row.convertValue(time)
             }
         }
         val action = TestNavigationAction(bundle)
-        assertEquals("TestNavigationAction/string/true/0.5/{\"value\":\"Mock\"}/1970-01-01T01:00:00.000+0100?OptionalString={optional}&OptionalMockSerializable={{\"value\":\"OptionalMock\"}}", action.route())
+        assertEquals("TestNavigationAction/string/true/0.5/{\"value\":\"Mock\"}/${DateFormatter.iso8601Pattern().format(time)}?OptionalString={optional}&OptionalMockSerializable={{\"value\":\"OptionalMock\"}}", action.route())
     }
 }
