@@ -19,6 +19,7 @@ package com.splendo.kaluga.example.platformspecific.compose.bottomSheet.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import com.splendo.kaluga.architecture.compose.navigation.RouteController
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetNavigationRouteMapper
+import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetViewModel
 
 @Composable
@@ -49,9 +51,16 @@ fun BottomSheetLayout(contentRouteController: RouteController, sheetContentRoute
 
     ViewModelComposable(viewModel) {
         HardwareBackButtonNavigation(onBackButtonClickHandler = { onClosePressed() } )
-        Column(Modifier.fillMaxWidth()) {
+        Column(
+            Modifier.fillMaxWidth()
+                .padding(Padding.default)
+        ) {
             Text(text)
-            Button(onClick = { onSubPagePressed() }) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Padding.default),
+                onClick = { onSubPagePressed() }) {
                 Text(buttonText)
             }
         }

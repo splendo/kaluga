@@ -87,7 +87,9 @@ fun <A : NavigationAction<*>> NavigatingModalBottomSheetLayout(
     contentRoot: @Composable (ModalBottomSheetNavigator<A>) -> Unit,
     content: NavGraphBuilder.(RouteController) -> Unit,
 ) = ModalBottomSheetLayout(sheetContent = {
-        HardwareBackButtonNavigation(onBackButtonClickHandler = navigator.sheetContentRouteController::close)
+        if (navigator.sheetContentRouteController.sheetState.isVisible) {
+            HardwareBackButtonNavigation(onBackButtonClickHandler = navigator.sheetContentRouteController::close)
+        }
         Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
             navigator.sheetContentRouteController.SetupNavHost {
                 sheetContent(navigator.sheetContentRouteController, navigator.contentRouteController)
