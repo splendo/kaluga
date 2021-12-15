@@ -11,17 +11,37 @@ import androidx.navigation.compose.composable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 
+/**
+ * Controller for navigating to a [Route]
+ */
 sealed interface RouteController {
+    /**
+     * Navigates to a [Route]
+     * @param newRoute The [Route] to navigate to
+     */
     fun navigate(newRoute: Route)
+
+    /**
+     * Navigates back
+     */
     fun back(): Boolean
+
+    /**
+     * Closes this RouteController
+     */
     fun close()
 }
 
 internal val RouteController.navHostController get() = when (this) {
     is NavHostRouteController -> navHostController
-    is BottomSheetRouteController -> navHostController
+    is BottomSheetSheetContentRouteController -> navHostController
 }
 
+/**
+ * A [RouteController] managed by a [NavHostController]
+ * @param navHostController The [NavHostController] managing the route stack
+ * @param parentRouteController The [NavHostController] that is a parent to the [navHostController] if it exists
+ */
 class NavHostRouteController(
     internal val navHostController: NavHostController,
     private val parentRouteController: RouteController? = null
@@ -57,10 +77,13 @@ class NavHostRouteController(
     }
 }
 
+typealias RouteRootContentBuilder = (NavHostController) -> Unit
 typealias RouteContentBuilder = NavGraphBuilder.(NavHostController) -> Unit
 
 /**
- * Routes [Navigator] calls to [NavHostController].
+ * A Navigator managed by a [RouteController]
+ * @param routeController The [RouteController] managing this navigation
+ * @param navigationMapper A mapper that converts an [NavigationAction] handled by this navigator into a [Route]
  */
 open class RouteNavigator<A : NavigationAction<*>>(
     internal val routeController: RouteController,
@@ -77,9 +100,17 @@ open class RouteNavigator<A : NavigationAction<*>>(
     }
 }
 
+/**
+ * Creates a a [NavHost] for a given [RouteNavigator]
+ * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
+ */
 @Composable
 fun <A : NavigationAction<*>> RouteNavigator<A>.SetupNavHost(builder: RouteContentBuilder) = routeController.SetupNavHost(builder)
 
+/**
+ * Creates a a [NavHost] for a given [RouteController]
+ * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
+ */
 @Composable
 fun RouteController.SetupNavHost(builder: RouteContentBuilder) {
     SetupNavHost(startDestination = ROOT_VIEW) {
@@ -90,15 +121,25 @@ fun RouteController.SetupNavHost(builder: RouteContentBuilder) {
     }
 }
 
+/**
+ * Creates a a [NavHost] for a given [RouteNavigator]
+ * @param rootView The [RouteRootContentBuilder] for the initial view of the [NavHost]
+ * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
+ */
 @Composable
 fun <A : NavigationAction<*>> RouteNavigator<A>.SetupNavHost(
-    rootView: @Composable RouteContentBuilder,
+    rootView: @Composable RouteRootContentBuilder,
     builder: RouteContentBuilder
 ) = routeController.SetupNavHost(rootView, builder)
 
+/**
+ * Creates a a [NavHost] for a given [RouteController]
+ * @param rootView The [RouteRootContentBuilder] for the initial view of the [NavHost]
+ * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
+ */
 @Composable
 fun RouteController.SetupNavHost(
-    rootView: @Composable RouteContentBuilder,
+    rootView: @Composable RouteRootContentBuilder,
     builder: RouteContentBuilder
 ) {
     SetupNavHost(startDestination = ROOT_VIEW) {
@@ -107,12 +148,22 @@ fun RouteController.SetupNavHost(
     }
 }
 
+/**
+ * Creates a a [NavHost] for a given [RouteNavigator]
+ * @param startDestination The start destination of the [NavHost]
+ * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
+ */
 @Composable
 fun <A : NavigationAction<*>> RouteNavigator<A>.SetupNavHost(
     startDestination: String,
     builder: NavGraphBuilder.(RouteController) -> Unit
 ) = routeController.SetupNavHost(startDestination, builder)
 
+/**
+ * Creates a a [NavHost] for a given [RouteController]
+ * @param startDestination The start destination of the [NavHost]
+ * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
+ */
 @Composable
 fun RouteController.SetupNavHost(
     startDestination: String,

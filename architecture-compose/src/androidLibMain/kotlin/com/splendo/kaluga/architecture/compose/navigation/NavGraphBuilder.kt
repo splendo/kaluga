@@ -37,6 +37,8 @@ import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.base.text.DateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
+import com.splendo.kaluga.base.utils.Date
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.BooleanArraySerializer
 import kotlinx.serialization.builtins.ByteArraySerializer
 import kotlinx.serialization.builtins.CharArraySerializer
@@ -50,11 +52,22 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlin.reflect.KClass
 
+/**
+ * Adds a [Composable] for an [Action] to the [NavGraphBuilder]
+ * @param spec The [NavigationBundleSpec] to use for mapping route arguments to a [NavigationBundle]
+ * @param content Creates the content by providing the [NavigationBundle] generated from the route arguments
+ */
 inline fun <SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     spec: NavigationBundleSpec<SpecType>,
     noinline content: @Composable (NavigationBundle<SpecType>) -> Unit
 ) = composable(Action::class, spec, content)
 
+/**
+ * Adds a [Composable] for an [Action] to the [NavGraphBuilder]
+ * @param actionClass The [KClass] of the [Action] for which the [Composable] should be created
+ * @param spec The [NavigationBundleSpec] to use for mapping route arguments to a [NavigationBundle]
+ * @param content Creates the content by providing the [NavigationBundle] generated from the route arguments
+ */
 fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     actionClass: KClass<Action>,
     spec: NavigationBundleSpec<SpecType>,
@@ -75,11 +88,137 @@ fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>>
     }
 }
 
+/**
+ * Adds a [Composable] for an [Action] to the [NavGraphBuilder]
+ * @param type The [NavigationBundleSpecType] to use for extracting the [Value] from the route arguments
+ * @param content Creates the content by providing the [Value] generated from the route arguments
+ */
 inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     type: NavigationBundleSpecType<Value>,
     noinline content: @Composable (Value) -> Unit
 ) = composable(Action::class, type, content)
 
+@JvmName("singleValueUnitComposable")
+inline fun <reified Action : SingleValueNavigationAction<Unit>> NavGraphBuilder.composable(
+    noinline content: @Composable () -> Unit
+) = composable(Action::class, NavigationBundleSpecType.UnitType) { content() }
+
+@JvmName("singleValueBooleanComposable")
+inline fun <reified Action : SingleValueNavigationAction<Boolean>> NavGraphBuilder.composable(
+    noinline content: @Composable (Boolean) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.BooleanType, content)
+
+@JvmName("singleValueBooleanArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<BooleanArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (BooleanArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.BooleanArrayType, content)
+
+@JvmName("singleValueByteComposable")
+inline fun <reified Action : SingleValueNavigationAction<Byte>> NavGraphBuilder.composable(
+    noinline content: @Composable (Byte) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.ByteType, content)
+
+@JvmName("singleValueByteArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<ByteArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (ByteArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.ByteArrayType, content)
+
+@JvmName("singleValueCharComposable")
+inline fun <reified Action : SingleValueNavigationAction<Char>> NavGraphBuilder.composable(
+    noinline content: @Composable (Char) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.CharType, content)
+
+@JvmName("singleValueCharArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<CharArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (CharArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.CharArrayType, content)
+
+@JvmName("singleValueCharSequenceComposable")
+inline fun <reified Action : SingleValueNavigationAction<CharSequence>> NavGraphBuilder.composable(
+    noinline content: @Composable (CharSequence) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.CharSequenceType, content)
+
+@JvmName("singleValueDoubleComposable")
+inline fun <reified Action : SingleValueNavigationAction<Double>> NavGraphBuilder.composable(
+    noinline content: @Composable (Double) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.DoubleType, content)
+
+@JvmName("singleValueDoubleArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<DoubleArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (DoubleArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.DoubleArrayType, content)
+
+@JvmName("singleValueFloatComposable")
+inline fun <reified Action : SingleValueNavigationAction<Float>> NavGraphBuilder.composable(
+    noinline content: @Composable (Float) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.FloatType, content)
+
+@JvmName("singleValueFloatArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<FloatArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (FloatArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.FloatArrayType, content)
+
+@JvmName("singleValueIntComposable")
+inline fun <reified Action : SingleValueNavigationAction<Int>> NavGraphBuilder.composable(
+    noinline content: @Composable (Int) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.IntegerType, content)
+
+@JvmName("singleValueIntArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<IntArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (IntArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.IntegerArrayType, content)
+
+@JvmName("singleValueLongComposable")
+inline fun <reified Action : SingleValueNavigationAction<Long>> NavGraphBuilder.composable(
+    noinline content: @Composable (Long) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.LongType, content)
+
+@JvmName("singleValueLongArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<LongArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (LongArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.LongArrayType, content)
+
+@JvmName("singleValueShortComposable")
+inline fun <reified Action : SingleValueNavigationAction<Short>> NavGraphBuilder.composable(
+    noinline content: @Composable (Short) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.ShortType, content)
+
+@JvmName("singleValueShortArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<ShortArray>> NavGraphBuilder.composable(
+    noinline content: @Composable (ShortArray) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.ShortArrayType, content)
+
+@JvmName("singleValueStringComposable")
+inline fun <reified Action : SingleValueNavigationAction<String>> NavGraphBuilder.composable(
+    noinline content: @Composable (String) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.StringType, content)
+
+@JvmName("singleValueStringArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<List<String>>> NavGraphBuilder.composable(
+    noinline content: @Composable (List<String>) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.StringArrayType, content)
+
+@JvmName("singleValueDataComposable")
+inline fun <reified Action : SingleValueNavigationAction<Date>> NavGraphBuilder.composable(
+    noinline content: @Composable (Date) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.DateType, content)
+
+@JvmName("singleValueDateArrayComposable")
+inline fun <reified Action : SingleValueNavigationAction<List<Date>>> NavGraphBuilder.composable(
+    noinline content: @Composable (List<Date>) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.DateArrayType, content)
+
+inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
+    serializer: KSerializer<Value>,
+    noinline content: @Composable (Value) -> Unit
+) = composable(Action::class, NavigationBundleSpecType.SerializedType(serializer), content)
+
+/**
+ * Adds a [Composable] for an [Action] to the [NavGraphBuilder]
+ * @param actionClass The [KClass] of the [Action] for which the [Composable] should be created
+ * @param type The [NavigationBundleSpecType] to use for extracting the [Value] from the route arguments
+ * @param content Creates the content by providing the [Value] generated from the route arguments
+ */
 fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     actionClass: KClass<Action>,
     type: NavigationBundleSpecType<Value>,
@@ -93,7 +232,7 @@ fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composa
     content(bundle.get(type))
 }
 
-fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBundleSpec<SpecType>): NavigationBundle<SpecType>? {
+private fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBundleSpec<SpecType>): NavigationBundle<SpecType>? {
     return try {
         spec.toBundle { type ->
             composableValue(getString(type.argumentKey), type.associatedType)

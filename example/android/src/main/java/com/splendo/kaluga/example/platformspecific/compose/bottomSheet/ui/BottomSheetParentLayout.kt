@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
@@ -28,10 +29,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRouteController
+import com.splendo.kaluga.architecture.compose.navigation.BottomSheetSheetContentRouteController
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteController
 import com.splendo.kaluga.architecture.compose.navigation.NavigatingModalBottomSheetLayout
@@ -48,18 +51,16 @@ import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.Bo
 @Composable
 fun BottomSheetParentLayout() {
     MdcTheme {
-        val navigator = ModalBottomSheetNavigator(
+        val bottomSheetRouteController = BottomSheetRouteController(
             NavHostRouteController(rememberNavController()),
-            BottomSheetRouteController(
+            BottomSheetSheetContentRouteController(
                 rememberNavController(),
                 rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
                 rememberCoroutineScope()
-            ),
-            ::bottomSheetParentNavigationRouteMapper
+            )
         )
 
-        NavigatingModalBottomSheetLayout(
-            navigator = navigator,
+        bottomSheetRouteController.NavigatingModalBottomSheetLayout(
             sheetContent = { contentNavHostController, sheetContentNavHostController, sheetState ->
                 composable(BottomSheetParentNavigation.ShowSheet.route()) {
                     BottomSheetLayout(contentNavHostController, sheetContentNavHostController, sheetState)
@@ -70,8 +71,8 @@ fun BottomSheetParentLayout() {
                     )
                 }
             },
-            contentRoot = { _, _, _ ->
-                BottomSheetParentLayoutContent(navigator = navigator)
+            contentRoot = { contentNavHostController, sheetContentNavHostController, sheetState ->
+                BottomSheetParentLayoutContent(contentNavHostController, sheetContentNavHostController, sheetState)
             },
             content = { contentNavHostController, _, _ ->
                 composable(BottomSheetParentNavigation.SubPage.route()) {
@@ -83,7 +84,17 @@ fun BottomSheetParentLayout() {
 }
 
 @Composable
-fun BottomSheetParentLayoutContent(navigator: Navigator<BottomSheetParentNavigation>) {
+fun BottomSheetParentLayoutContent(contentNavHostController: NavHostController, sheetNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
+
+    val navigator = ModalBottomSheetNavigator(
+        NavHostRouteController(contentNavHostController),
+        BottomSheetSheetContentRouteController(
+            sheetNavHostController,
+            sheetState,
+            rememberCoroutineScope()
+        ),
+        ::bottomSheetParentNavigationRouteMapper
+    )
 
     val viewModel = store {
         remember {
