@@ -40,13 +40,26 @@ import kotlin.reflect.KClass
 /** Reserved route name for the back button navigation. */
 internal const val ROOT_VIEW = "com.splendo.kaluga.architecture.compose.navigation.root_view"
 
+/**
+ * Key to be used to indicate an argument in a route that is associated with a NavigationBundleSpecRow
+ */
 val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simpleName
 
-/** @return a route represented by the [NavigationAction]. */
+/**
+ * Creates a route string associated with a [NavigationAction] class given its [NavigationBundleSpec].
+ * The route created by this method will create placeholders for all properties of the [spec]
+ * @param spec The [NavigationBundleSpec] describing the associated [NavigationAction]
+ */
 inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(
     spec: NavigationBundleSpec<SpecRow>
 ): String = route(Action::class, spec)
 
+/**
+ * Creates a route string associated with a [NavigationAction] class given its [NavigationBundleSpec].
+ * The route created by this method will create placeholders for all properties of the [spec]
+ * @param actionClass The [KClass] of the [NavigationAction] to create the route for
+ * @param spec The [NavigationBundleSpec] describing the associated [NavigationAction]
+ */
 fun <SpecRow : NavigationBundleSpecRow<*>, T : NavigationAction<SpecRow>> route(
     actionClass: KClass<T>,
     spec: NavigationBundleSpec<SpecRow>
@@ -55,17 +68,21 @@ fun <SpecRow : NavigationBundleSpecRow<*>, T : NavigationAction<SpecRow>> route(
         val key = row.argumentKey
         when (row.associatedType) {
             is NavigationBundleSpecType.UnitType -> null
-            is NavigationBundleSpecType.OptionalType<*> -> Triple(key, "{$key}", false)
-            else -> Triple(key, "{$key}", true)
+            is NavigationBundleSpecType.OptionalType<*> -> RouteArgument(key, "{$key}", false)
+            else -> RouteArgument(key, "{$key}", true)
         }
     }
     return route(actionClass, *arguments.toTypedArray())
 }
 
+/**
+ * Creates a route string for a [NavigationAction].
+ * The route created by this method will will in all arguments of the action into the route
+ */
 fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): String {
     val arguments = bundle?.values?.mapNotNull { (row, value) ->
         value.routeArgument?.let {
-            Triple(
+            RouteArgument(
                 row.argumentKey,
                 it,
                 value !is NavigationBundleValue.OptionalValue
@@ -75,13 +92,14 @@ fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): St
     return route(this::class, *arguments.toTypedArray())
 }
 
-/** @return a route represented by [navigationActionClass] and [arguments]. */
-fun route(
+private data class RouteArgument(val key: String, val value: String, val isOptional: Boolean)
+
+private fun route(
     navigationActionClass: KClass<out NavigationAction<*>>,
-    vararg arguments: Triple<String, String, Boolean>
+    vararg arguments: RouteArgument
 ): String {
     val allArguments = arguments.toList()
-        .groupBy(keySelector = { it.third }, valueTransform = { it.first to it.second })
+        .groupBy(keySelector = { it.isOptional }, valueTransform = { it.key to it.value })
     val requiredArguments = allArguments[true] ?: emptyList()
     val optionalArguments = allArguments[false] ?: emptyList()
     val baseRoute = navigationActionClass.simpleName!!
@@ -145,60 +163,125 @@ private val NavigationBundleValue<*>.routeArgument: String?
         is NavigationBundleValue.StringValue -> value
     }
 
+/**
+ * Route for navigating within a [RouteController].
+ */
 sealed class Route {
+
+    /**
+     * Route that navigates to a new screen using a [NavigationAction]
+     */
     sealed class Navigate<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> :
         Route() {
         protected abstract val routeAction: Action
+
+        /**
+         * The string value of the route to navigate to
+         */
         val route: String get() = routeAction.route()
     }
 
+    /**
+     * Route that navigates from the current screen to the screen associated with a [NavigationAction]
+     * @param routeAction The [Action] associated with the screen to navigate to
+     */
     data class NextRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
         override val routeAction: Action
     ) : Navigate<SpecRow, Action>()
 
+    /**
+     * Route that navigates from a given route to the screen associated with a [NavigationAction]
+     * @param routeAction The [Action] associated with the screen to navigate to
+     * @param from The route to navigate from
+     */
     data class FromRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
         override val routeAction: Action,
         val from: String
     ) : Navigate<SpecRow, Action>()
 
+    /**
+     * Route that navigates back to the screen associated with a [NavigationAction]
+     * @param routeAction The [Action] associated with the screen to navigate back to
+     */
     data class PopTo<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
         override val routeAction: Action
     ) : Navigate<SpecRow, Action>()
 
+    /**
+     * Route that navigates back from the screen associated with a [NavigationAction]
+     * @param routeAction The [Action] associated with the screen to navigate back from
+     */
     data class PopToIncluding<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
         override val routeAction: Action
     ) : Navigate<SpecRow, Action>()
 
+    /**
+     * Route that replaces the current screen to the screen associated with a [NavigationAction]
+     * @param routeAction The [Action] associated with the screen to replace the current screen with
+     */
     data class Replace<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
         override val routeAction: Action
     ) : Navigate<SpecRow, Action>()
 
+    /**
+     * Navigates back one step in the hierarchy
+     */
     object Back : Route()
+
+    /**
+     * Navigates to the Root of a navigation stack
+     */
     object PopToRoot : Route()
+
+    /**
+     * Closes all screens in the navigation stack
+     */
     object Close : Route()
 }
 
+/**
+ * Creates a [Route.NextRoute] from [Action]
+ */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.next
     get() = Route.NextRoute(
         this
     )
 
+/**
+ * Creates a [Route.FromRoute] from [Action]
+ * @param from The string route to navigate from
+ */
 fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) =
     Route.FromRoute(this, route)
 
+/**
+ * Creates a [Route.FromRoute] that navigates to the Root view from [Action]
+ */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.fromRoot
     get() = Route.FromRoute(
         this,
         ROOT_VIEW
     )
+
+/**
+ * Creates a [Route.PopTo] from [Action]
+ */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
     get() = Route.PopTo(
         this
     )
+
+/**
+ * Creates a [Route.PopToIncluding] from [Action]
+ */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popToIncluding
     get() = Route.PopToIncluding(
         this
     )
+
+/**
+ * Creates a [Route.Replace] from [Action]
+ */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
     get() = Route.Replace(
         this

@@ -210,18 +210,16 @@ internal fun bottomSheetSubPageNavigationRouteMapper(action: BottomSheetSubPageN
 
 @Composable
 fun BottomSheetParentLayout() {
-  val navigator = ModalBottomSheetNavigator(
+  val bottomSheetRouteController = BottomSheetRouteController(
     NavHostRouteController(rememberNavController()),
-    BottomSheetRouteController(
+    BottomSheetSheetContentRouteController(
       rememberNavController(),
       rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
       rememberCoroutineScope()
-    ),
-    ::bottomSheetParentNavigationRouteMapper
+    )
   )
 
-  NavigatingModalBottomSheetLayout(
-    navigator = navigator,
+  bottomSheetRouteController.NavigatingModalBottomSheetLayout(
     sheetContent = { contentNavHostController, sheetContentNavHostController, sheetState ->
                     composable(BottomSheetParentNavigation.ShowSheet.route()) {
                       BottomSheetLayout(contentNavHostController, sheetContentNavHostController, sheetState)
@@ -232,8 +230,8 @@ fun BottomSheetParentLayout() {
                       )
                     }
                    },
-    contentRoot = { _, _, _ ->
-                   BottomSheetParentLayoutContent(navigator = navigator)
+    contentRoot = { contentNavHostController, sheetContentNavHostController, sheetState ->
+                   BottomSheetParentLayoutContent(contentNavHostController, sheetContentNavHostController, sheetState)
                   },
     content = { contentNavHostController, _, _ ->
                composable(BottomSheetParentNavigation.SubPage.route()) {
@@ -244,7 +242,17 @@ fun BottomSheetParentLayout() {
 }
 
 @Composable
-fun BottomSheetParentLayoutContent(navigator: Navigator<BottomSheetParentNavigation>) {
+fun BottomSheetParentLayoutContent(contentNavHostController: NavHostController, sheetNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
+
+  val navigator = ModalBottomSheetNavigator(
+    NavHostRouteController(contentNavHostController),
+    BottomSheetSheetContentRouteController(
+      sheetNavHostController,
+      sheetState,
+      rememberCoroutineScope()
+    ),
+    ::bottomSheetParentNavigationRouteMapper
+  )
   // Show Content View
 }
 

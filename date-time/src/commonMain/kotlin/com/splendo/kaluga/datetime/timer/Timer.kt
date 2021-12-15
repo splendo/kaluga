@@ -32,7 +32,7 @@ interface Timer {
     val state: StateFlow<State>
 
     sealed interface State {
-        sealed interface Running : State {
+        interface Running : State {
             val elapsed: Flow<Duration>
         }
 
@@ -64,6 +64,7 @@ fun Timer.elapsed(): Flow<Duration> = state
         when (state) {
             is Timer.State.NotRunning -> flowOf(state.elapsed)
             is Timer.State.Running -> state.elapsed
+            else -> error("Should never reach this")
         }
     }
 
