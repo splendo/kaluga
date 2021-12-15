@@ -43,11 +43,14 @@ internal const val ROOT_VIEW = "com.splendo.kaluga.architecture.compose.navigati
 val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simpleName
 
 /** @return a route represented by the [NavigationAction]. */
-inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(spec: NavigationBundleSpec<SpecRow>): String = route(Action::class, spec)
+inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(
+    spec: NavigationBundleSpec<SpecRow>
+): String = route(Action::class, spec)
 
 fun <SpecRow : NavigationBundleSpecRow<*>, T : NavigationAction<SpecRow>> route(
     actionClass: KClass<T>,
-    spec: NavigationBundleSpec<SpecRow>): String {
+    spec: NavigationBundleSpec<SpecRow>
+): String {
     val arguments = spec.rows.mapNotNull { row ->
         val key = row.argumentKey
         when (row.associatedType) {
@@ -83,9 +86,12 @@ fun route(
     val optionalArguments = allArguments[false] ?: emptyList()
     val baseRoute = navigationActionClass.simpleName!!
     val routeWithRequiredArguments = requiredArguments.takeIf(List<*>::isNotEmpty)
-        ?.joinToString("/", prefix = "${baseRoute}/") { it.second } ?: baseRoute
+        ?.joinToString("/", prefix = "$baseRoute/") { it.second } ?: baseRoute
     return optionalArguments.takeIf(List<*>::isNotEmpty)
-        ?.joinToString("&", prefix = "$routeWithRequiredArguments?") { "${it.first}={${it.second}}" }
+        ?.joinToString(
+            "&",
+            prefix = "$routeWithRequiredArguments?"
+        ) { "${it.first}={${it.second}}" }
         ?: routeWithRequiredArguments
 }
 
@@ -105,7 +111,8 @@ private val NavigationBundleValue<*>.routeArgument: String?
         is NavigationBundleValue.CharValue -> Json.encodeToString(Char.serializer(), value)
         is NavigationBundleValue.DateArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
-            value.map { DateFormatter.Companion.iso8601Pattern().format(it) })
+            value.map { DateFormatter.Companion.iso8601Pattern().format(it) }
+        )
         is NavigationBundleValue.DateValue -> DateFormatter.Companion.iso8601Pattern().format(value)
         is NavigationBundleValue.DoubleArrayValue -> Json.encodeToString(
             DoubleArraySerializer(),
@@ -171,9 +178,28 @@ sealed class Route {
     object Close : Route()
 }
 
-val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.next get() = Route.NextRoute(this)
-fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) = Route.FromRoute(this, route)
-val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.fromRoot get() = Route.FromRoute(this, ROOT_VIEW)
-val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo get() = Route.PopTo(this)
-val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popToIncluding get() = Route.PopToIncluding(this)
-val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace get() = Route.Replace(this)
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.next
+    get() = Route.NextRoute(
+        this
+    )
+
+fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) =
+    Route.FromRoute(this, route)
+
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.fromRoot
+    get() = Route.FromRoute(
+        this,
+        ROOT_VIEW
+    )
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
+    get() = Route.PopTo(
+        this
+    )
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popToIncluding
+    get() = Route.PopToIncluding(
+        this
+    )
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
+    get() = Route.Replace(
+        this
+    )

@@ -60,23 +60,22 @@ fun BottomSheetParentLayout() {
 
         NavigatingModalBottomSheetLayout(
             navigator = navigator,
-            sheetContent = { sheetContentRouteController, contentRouteController ->
+            sheetContent = { contentNavHostController, sheetContentNavHostController, sheetState ->
                 composable(BottomSheetParentNavigation.ShowSheet.route()) {
-                    BottomSheetLayout(contentRouteController, sheetContentRouteController)
+                    BottomSheetLayout(contentNavHostController, sheetContentNavHostController, sheetState)
                 }
                 composable(BottomSheetNavigation.SubPage.route()) {
                     BottomSheetSubPageLayout(
-                        contentRouteController,
-                        sheetContentRouteController
+                        contentNavHostController, sheetContentNavHostController, sheetState
                     )
                 }
             },
-            contentRoot = {
-                BottomSheetParentLayoutContent(navigator = it)
+            contentRoot = { _, _, _ ->
+                BottomSheetParentLayoutContent(navigator = navigator)
             },
-            content = { contentRouteController ->
+            content = { contentNavHostController, _, _ ->
                 composable(BottomSheetParentNavigation.SubPage.route()) {
-                    BottomSheetParentSubPageLayout(contentRouteController)
+                    BottomSheetParentSubPageLayout(contentNavHostController)
                 }
             }
         )
@@ -98,14 +97,16 @@ fun BottomSheetParentLayoutContent(navigator: Navigator<BottomSheetParentNavigat
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Padding.default),
-                onClick = { onShowSheetPressed() }) {
+                onClick = { onShowSheetPressed() }
+            ) {
                 Text(sheetText)
             }
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Padding.default),
-                onClick = { onSubPagePressed() }) {
+                onClick = { onSubPagePressed() }
+            ) {
                 Text(subPageText)
             }
         }

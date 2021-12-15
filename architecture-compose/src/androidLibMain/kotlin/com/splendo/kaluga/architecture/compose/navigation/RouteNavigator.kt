@@ -57,11 +57,13 @@ class NavHostRouteController(
     }
 }
 
+typealias RouteContentBuilder = NavGraphBuilder.(NavHostController) -> Unit
+
 /**
  * Routes [Navigator] calls to [NavHostController].
  */
 open class RouteNavigator<A : NavigationAction<*>>(
-    private val routeController: RouteController,
+    internal val routeController: RouteController,
     private val navigationMapper: (A) -> Route
 ) : Navigator<A> {
 
@@ -76,25 +78,40 @@ open class RouteNavigator<A : NavigationAction<*>>(
 }
 
 @Composable
-fun RouteController.SetupNavHost(builder: NavGraphBuilder.(RouteController) -> Unit) {
+fun <A : NavigationAction<*>> RouteNavigator<A>.SetupNavHost(builder: RouteContentBuilder) = routeController.SetupNavHost(builder)
+
+@Composable
+fun RouteController.SetupNavHost(builder: RouteContentBuilder) {
     SetupNavHost(startDestination = ROOT_VIEW) {
         composable(ROOT_VIEW) {
             Spacer(modifier = Modifier.fillMaxWidth())
         }
-        builder(this@SetupNavHost)
+        builder(navHostController)
     }
 }
 
 @Composable
+fun <A : NavigationAction<*>> RouteNavigator<A>.SetupNavHost(
+    rootView: @Composable RouteContentBuilder,
+    builder: RouteContentBuilder
+) = routeController.SetupNavHost(rootView, builder)
+
+@Composable
 fun RouteController.SetupNavHost(
-    rootView: @Composable NavGraphBuilder.(RouteController) -> Unit,
-    builder: NavGraphBuilder.(RouteController) -> Unit
+    rootView: @Composable RouteContentBuilder,
+    builder: RouteContentBuilder
 ) {
     SetupNavHost(startDestination = ROOT_VIEW) {
-        composable(ROOT_VIEW, content = { rootView(this@SetupNavHost) })
-        builder(this@SetupNavHost)
+        composable(ROOT_VIEW, content = { rootView(navHostController) })
+        builder(navHostController)
     }
 }
+
+@Composable
+fun <A : NavigationAction<*>> RouteNavigator<A>.SetupNavHost(
+    startDestination: String,
+    builder: NavGraphBuilder.(RouteController) -> Unit
+) = routeController.SetupNavHost(startDestination, builder)
 
 @Composable
 fun RouteController.SetupNavHost(

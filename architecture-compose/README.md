@@ -17,7 +17,7 @@ dependencies {
 ```
 
 ## Usage
-###Examples
+### Examples
 
 #### Display content using a local data model 
 
@@ -71,48 +71,66 @@ fun ContactDetailsLayout(
 
 ```kotlin
 // Define an action mapper for a route navigator
-fun routeMapper(action: ContactsNavigation<*>): String = 
+fun listRouteMapper(action: ContactsListNavigation<*>): String = 
     when (action) {
-        is Close -> BACK_ROUTE 
-        is ShowContactsList -> action.route() // route with no parameters
-        is ShowContactDetails -> { // route with encoded contact details as a parameter 
-            val json = Json.encodeToString(action.bundle!!.get(action.type))
-            action.route(json)
-        }
+        is ContactsListNavigation.ShowContactDetails -> action.next
         //...
     }
+
+fun detailRouteMapper(action: ContactDetailsNavigation<*>): Route {
+    return when (action) {
+        is ContactDetailsNavigation.Close -> Route.Back
+    }
+}
 
 // Root view of the Activity. Contains a navigation graph with destinations
 @Composable
 fun ContactsLayout() { 
+    val routeController = NavHostRouteController(rememberNavHostController())
+    // set up nav host with routes
+    routeController.SetupNavHost(
+            rootView = { navHostController ->
+                // Display a contact list
+                ContactsListLayout(navHostController)
+            }
+        ) { navHostController ->
+            composable<ContactDetails, ContactsListNavigation.ShowContactDetails>(
+                type = NavigationBundleSpecType.SerializedType(
+                    ContactDetails.serializer()
+                )
+            ) { details ->
+                ContactDetailsLayout(details, navHostController)
+            }
+        }
+}
+
+@Composable
+fun ContactsListLayout(navHostController: NavHostController) {
     // Construct a route navigator
     val routeNavigator = RouteNavigator(
-        rememberNavController(),
-        ::routeMapper
+            rememberNavController(),
+        ::listRouteMapper
     )
+  
+    // Setup Contact List view
+}
 
-    // set up nav host with routes
-    routeNavigator.SetupNavHost(
-        startDestination = route<ShowContactsList>(),
-        builder = {
-            composable(route<ShowContactsList>()) {
-                // Display a contacts list
-                ContactsListLayout()
-            }
-            composable(route<ShowContactDetails>("{json}")) {
-                // Extract contact details from route arguments
-                val details: ContactDetails =
-                    Json.decodeFromString(it.arguments!!.getString("json")!!)
-                // Display contact details 
-                ContactDetailsLayout(details, routeNavigator)
-            }
-            // other routes
-        }
+@Composable
+fun ContactDetailsLayout(contactDetails: ContactDetails, navHostController: NavHostController) {
+    val routeNavigator = RouteNavigator(
+        navHostController,
+        ::detailRouteMapper
     )
+    
+    // Setup Details View
+    // No need to set up NavHost since it is managed by the parent
 }
 ```
 
+You can also call `SetupNavHost` directly from a `RouteNavigator`, bearing in mind that the navHostController linked to the Navigator can only be setup once.
+
 #### Mix NavHost and Kaluga navigation
+
 Sometimes it's necessary to mix a route navigation within the same activity and navigate to 
 other activities
 
@@ -157,3 +175,113 @@ class ContactDetailsViewModel(
     fun onBackPressed() = navigator.navigate(Close)
 }  
 ```
+
+#### Modal Bottom Sheet
+
+A special case is provided for using `ModalBottomSheet` navigation
+
+````kotlin
+internal fun bottomSheetParentNavigationRouteMapper(action: BottomSheetParentNavigation): BottomSheetRoute {
+    return when (action) {
+        is BottomSheetParentNavigation.SubPage -> action.next.bottomSheetContent
+        is BottomSheetParentNavigation.ShowSheet -> action.next.bottomSheetSheetContent
+    }
+}
+
+internal fun bottomSheetParentSubPageNavigationRouteMapper(action: BottomSheetParentSubPageNavigation): Route {
+    return when (action) {
+        is BottomSheetParentSubPageNavigation.Back -> Route.Back
+    }
+}
+
+internal fun bottomSheetNavigationRouteMapper(action: BottomSheetNavigation): BottomSheetRoute {
+    return when (action) {
+        is BottomSheetNavigation.Close -> Route.Close.bottomSheetSheetContent
+        is BottomSheetNavigation.SubPage -> action.next.bottomSheetSheetContent
+    }
+}
+
+internal fun bottomSheetSubPageNavigationRouteMapper(action: BottomSheetSubPageNavigation): BottomSheetRoute {
+    return when (action) {
+        is BottomSheetSubPageNavigation.Close -> Route.Close.bottomSheetSheetContent
+        is BottomSheetSubPageNavigation.Back -> Route.Back.bottomSheetSheetContent
+    }
+}
+
+@Composable
+fun BottomSheetParentLayout() {
+  val navigator = ModalBottomSheetNavigator(
+    NavHostRouteController(rememberNavController()),
+    BottomSheetRouteController(
+      rememberNavController(),
+      rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+      rememberCoroutineScope()
+    ),
+    ::bottomSheetParentNavigationRouteMapper
+  )
+
+  NavigatingModalBottomSheetLayout(
+    navigator = navigator,
+    sheetContent = { contentNavHostController, sheetContentNavHostController, sheetState ->
+                    composable(BottomSheetParentNavigation.ShowSheet.route()) {
+                      BottomSheetLayout(contentNavHostController, sheetContentNavHostController, sheetState)
+                    }
+                    composable(BottomSheetNavigation.SubPage.route()) {
+                      BottomSheetSubPageLayout(
+                        contentNavHostController, sheetContentNavHostController, sheetState
+                      )
+                    }
+                   },
+    contentRoot = { _, _, _ ->
+                   BottomSheetParentLayoutContent(navigator = navigator)
+                  },
+    content = { contentNavHostController, _, _ ->
+               composable(BottomSheetParentNavigation.SubPage.route()) {
+                 BottomSheetParentSubPageLayout(contentNavHostController)
+               }
+              }
+  )
+}
+
+@Composable
+fun BottomSheetParentLayoutContent(navigator: Navigator<BottomSheetParentNavigation>) {
+  // Show Content View
+}
+
+@Composable
+fun BottomSheetParentSubPageLayout(navHostController: NavHostController) {
+    val navigator = RouteNavigator(
+        navHostController,
+        ::bottomSheetParentSubPageNavigationRouteMapper
+    )
+  
+  // Show Content Sub View
+}
+
+@Composable
+fun BottomSheetLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
+    val navigator = ModalBottomSheetNavigator(
+        contentNavHostController,
+        sheetContentNavHostController,
+        sheetState,
+        rememberCoroutineScope(),
+        ::bottomSheetNavigationRouteMapper,
+    )
+  
+  // Show Bottom Sheet Content
+}
+
+@Composable
+fun BottomSheetSubPageLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
+    val navigator = ModalBottomSheetNavigator(
+        contentNavHostController,
+        sheetContentNavHostController,
+        sheetState,
+        rememberCoroutineScope(),
+        ::bottomSheetSubPageNavigationRouteMapper
+    )
+  
+  // Show Bottom Sheet Sub Content
+}
+````
+

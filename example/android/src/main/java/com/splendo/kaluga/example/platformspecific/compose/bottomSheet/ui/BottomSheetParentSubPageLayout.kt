@@ -33,9 +33,9 @@ import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetParentSubPageViewModel
 
 @Composable
-fun BottomSheetParentSubPageLayout(routeController: RouteController) {
+fun BottomSheetParentSubPageLayout(navHostController: NavHostController) {
     val navigator = RouteNavigator(
-        routeController,
+        navHostController,
         ::bottomSheetParentSubPageNavigationRouteMapper
     )
 

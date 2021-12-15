@@ -23,10 +23,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRouteController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
@@ -38,10 +41,12 @@ import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetSubPageViewModel
 
 @Composable
-fun BottomSheetSubPageLayout(contentRouteController: RouteController, sheetContentRouteController: BottomSheetRouteController) {
+fun BottomSheetSubPageLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
     val navigator = ModalBottomSheetNavigator(
-        contentRouteController,
-        sheetContentRouteController,
+        contentNavHostController,
+        sheetContentNavHostController,
+        sheetState,
+        rememberCoroutineScope(),
         ::bottomSheetSubPageNavigationRouteMapper
     )
 
@@ -53,8 +58,10 @@ fun BottomSheetSubPageLayout(contentRouteController: RouteController, sheetConte
 
     ViewModelComposable(viewModel) {
         HardwareBackButtonNavigation(onBackButtonClickHandler = { viewModel.onBackPressed() })
-        Column(Modifier.fillMaxWidth()
-            .padding(Padding.default)) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(Padding.default)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Button(
                     modifier = Modifier.padding(Padding.default),

@@ -39,5 +39,4 @@ class BottomSheetParentViewModel(navigator: Navigator<BottomSheetParentNavigatio
     fun onSubPagePressed() {
         navigator.navigate(BottomSheetParentNavigation.SubPage)
     }
-
 }

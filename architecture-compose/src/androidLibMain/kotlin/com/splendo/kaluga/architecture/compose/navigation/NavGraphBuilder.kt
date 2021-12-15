@@ -60,14 +60,18 @@ fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>>
     spec: NavigationBundleSpec<SpecType>,
     content: @Composable (NavigationBundle<SpecType>) -> Unit
 ) {
-    composable(route(actionClass, spec), arguments = spec.rows.mapNotNull {
-        if (it.associatedType is NavigationBundleSpecType.OptionalType<*>) {
-            navArgument(it.argumentKey) { nullable = true }
-        } else {
-            null
+    composable(
+        route(actionClass, spec),
+        arguments = spec.rows.mapNotNull {
+            if (it.associatedType is NavigationBundleSpecType.OptionalType<*>) {
+                navArgument(it.argumentKey) { nullable = true }
+            } else {
+                null
+            }
         }
-    }) { backStackEntry ->
-        backStackEntry.arguments?.composable(spec)?.let { content(it) } ?: Spacer(modifier = Modifier.fillMaxSize())
+    ) { backStackEntry ->
+        backStackEntry.arguments?.composable(spec)?.let { content(it) }
+            ?: Spacer(modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -84,7 +88,8 @@ fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composa
     actionClass,
     SingleValueNavigationSpec(
         type
-    )) { bundle ->
+    )
+) { bundle ->
     content(bundle.get(type))
 }
 
@@ -93,43 +98,142 @@ fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBu
         spec.toBundle { type ->
             composableValue(getString(type.argumentKey), type.associatedType)
         }
-    } catch (e : BundleConversionError) {
+    } catch (e: BundleConversionError) {
         null
     }
 }
 
-private fun Bundle.composableValue(value: String?, specType : NavigationBundleSpecType<*>): NavigationBundleValue<*> {
+private fun Bundle.composableValue(
+    value: String?,
+    specType: NavigationBundleSpecType<*>
+): NavigationBundleValue<*> {
     val nonNullableValue = value ?: ""
     return when (specType) {
         is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
-        is NavigationBundleSpecType.BooleanArrayType -> specType.convertValue(Json.decodeFromString(BooleanArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.BooleanType -> specType.convertValue(Json.decodeFromString(Boolean.serializer(), nonNullableValue))
+        is NavigationBundleSpecType.BooleanArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                BooleanArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.BooleanType -> specType.convertValue(
+            Json.decodeFromString(
+                Boolean.serializer(),
+                nonNullableValue
+            )
+        )
         is NavigationBundleSpecType.BundleType<*> -> throw BundleConversionError() // Unsupported for now
-        is NavigationBundleSpecType.ByteArrayType -> specType.convertValue(Json.decodeFromString(ByteArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.ByteType -> specType.convertValue(Json.decodeFromString(Byte.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.CharArrayType -> specType.convertValue(Json.decodeFromString(CharArraySerializer(), nonNullableValue))
+        is NavigationBundleSpecType.ByteArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                ByteArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.ByteType -> specType.convertValue(
+            Json.decodeFromString(
+                Byte.serializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.CharArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                CharArraySerializer(),
+                nonNullableValue
+            )
+        )
         is NavigationBundleSpecType.CharSequenceType -> specType.convertValue(nonNullableValue)
-        is NavigationBundleSpecType.CharType -> specType.convertValue(Json.decodeFromString(Char.serializer(), nonNullableValue))
+        is NavigationBundleSpecType.CharType -> specType.convertValue(
+            Json.decodeFromString(
+                Char.serializer(),
+                nonNullableValue
+            )
+        )
         is NavigationBundleSpecType.DateArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ListSerializer(String.serializer()),
                 nonNullableValue
-            ).map { DateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError() }
+            ).map {
+                DateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError()
+            }
         )
-        is NavigationBundleSpecType.DateType -> specType.convertValue(DateFormatter.Companion.iso8601Pattern().parse(nonNullableValue) ?: throw BundleConversionError())
-        is NavigationBundleSpecType.DoubleArrayType -> specType.convertValue(Json.decodeFromString(DoubleArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.DoubleType -> specType.convertValue(Json.decodeFromString(Double.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.FloatArrayType -> specType.convertValue(Json.decodeFromString(FloatArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.FloatType -> specType.convertValue(Json.decodeFromString(Float.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.IntegerArrayType -> specType.convertValue(Json.decodeFromString(IntArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.IntegerType -> specType.convertValue(Json.decodeFromString(Int.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.LongArrayType -> specType.convertValue(Json.decodeFromString(LongArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.LongType -> specType.convertValue(Json.decodeFromString(Long.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.OptionalType<*> -> value?.let { composableValue(it, specType.type) } ?: specType.convertValue(null)
-        is NavigationBundleSpecType.SerializedType<*> -> specType.generateValue(nonNullableValue) ?: throw BundleConversionError()
-        is NavigationBundleSpecType.ShortArrayType -> specType.convertValue(Json.decodeFromString(ShortArraySerializer(), nonNullableValue))
-        is NavigationBundleSpecType.ShortType -> specType.convertValue(Json.decodeFromString(Short.serializer(), nonNullableValue))
-        is NavigationBundleSpecType.StringArrayType -> specType.convertValue(Json.decodeFromString(ListSerializer(String.serializer()), nonNullableValue))
+        is NavigationBundleSpecType.DateType -> specType.convertValue(
+            DateFormatter.Companion.iso8601Pattern().parse(nonNullableValue)
+                ?: throw BundleConversionError()
+        )
+        is NavigationBundleSpecType.DoubleArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                DoubleArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.DoubleType -> specType.convertValue(
+            Json.decodeFromString(
+                Double.serializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.FloatArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                FloatArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.FloatType -> specType.convertValue(
+            Json.decodeFromString(
+                Float.serializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.IntegerArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                IntArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.IntegerType -> specType.convertValue(
+            Json.decodeFromString(
+                Int.serializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.LongArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                LongArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.LongType -> specType.convertValue(
+            Json.decodeFromString(
+                Long.serializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.OptionalType<*> -> value?.let {
+            composableValue(
+                it,
+                specType.type
+            )
+        } ?: specType.convertValue(null)
+        is NavigationBundleSpecType.SerializedType<*> -> specType.generateValue(nonNullableValue)
+            ?: throw BundleConversionError()
+        is NavigationBundleSpecType.ShortArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                ShortArraySerializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.ShortType -> specType.convertValue(
+            Json.decodeFromString(
+                Short.serializer(),
+                nonNullableValue
+            )
+        )
+        is NavigationBundleSpecType.StringArrayType -> specType.convertValue(
+            Json.decodeFromString(
+                ListSerializer(String.serializer()),
+                nonNullableValue
+            )
+        )
         is NavigationBundleSpecType.StringType -> specType.convertValue(nonNullableValue)
     }
 }

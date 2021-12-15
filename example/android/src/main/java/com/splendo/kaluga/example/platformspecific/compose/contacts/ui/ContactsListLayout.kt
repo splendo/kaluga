@@ -35,27 +35,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteController
-import com.splendo.kaluga.architecture.compose.navigation.RouteController
-import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
+import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactListNavigationRouteMapper
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsNavigation
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListNavigation
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListViewModel
 
 @Composable
-fun ContactsListLayout(routeController: RouteController) {
-    val navigator = RouteNavigator(
-        routeController,
-        ::contactListNavigationRouteMapper
-    )
-
+fun ContactsListLayout(navigator: Navigator<ContactsListNavigation<*>>) {
     val viewModel = store {
         remember {
             ContactsListViewModel(navigator)

@@ -21,14 +21,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRouteController
+import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
-import com.splendo.kaluga.architecture.compose.navigation.RouteController
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetNavigationRouteMapper
@@ -36,10 +37,12 @@ import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetViewModel
 
 @Composable
-fun BottomSheetLayout(contentRouteController: RouteController, sheetContentRouteController: BottomSheetRouteController) {
+fun BottomSheetLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
     val navigator = ModalBottomSheetNavigator(
-        contentRouteController,
-        sheetContentRouteController,
+        contentNavHostController,
+        sheetContentNavHostController,
+        sheetState,
+        rememberCoroutineScope(),
         ::bottomSheetNavigationRouteMapper,
     )
 
@@ -50,9 +53,10 @@ fun BottomSheetLayout(contentRouteController: RouteController, sheetContentRoute
     }
 
     ViewModelComposable(viewModel) {
-        HardwareBackButtonNavigation(onBackButtonClickHandler = { onClosePressed() } )
+        HardwareBackButtonNavigation(onBackButtonClickHandler = { onClosePressed() })
         Column(
-            Modifier.fillMaxWidth()
+            Modifier
+                .fillMaxWidth()
                 .padding(Padding.default)
         ) {
             Text(text)
@@ -60,7 +64,8 @@ fun BottomSheetLayout(contentRouteController: RouteController, sheetContentRoute
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Padding.default),
-                onClick = { onSubPagePressed() }) {
+                onClick = { onSubPagePressed() }
+            ) {
                 Text(buttonText)
             }
         }
