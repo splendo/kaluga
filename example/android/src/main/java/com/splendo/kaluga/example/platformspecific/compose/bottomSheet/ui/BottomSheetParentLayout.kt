@@ -41,7 +41,6 @@ import com.splendo.kaluga.architecture.compose.navigation.NavigatingModalBottomS
 import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetParentNavigationRouteMapper
 import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetNavigation

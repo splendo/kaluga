@@ -39,7 +39,11 @@ import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetSubPageViewModel
 
 @Composable
-fun BottomSheetSubPageLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
+fun BottomSheetSubPageLayout(
+    contentNavHostController: NavHostController,
+    sheetContentNavHostController: NavHostController,
+    sheetState: ModalBottomSheetState
+) {
     val navigator = ModalBottomSheetNavigator(
         contentNavHostController,
         sheetContentNavHostController,
@@ -59,11 +63,13 @@ fun BottomSheetSubPageLayout(contentNavHostController: NavHostController, sheetC
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(Padding.default)) {
+                .padding(Padding.default)
+        ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Button(
                     modifier = Modifier.padding(Padding.default),
-                    onClick = { onClosePressed() }) {
+                    onClick = { onClosePressed() }
+                ) {
                     Text("X")
                 }
             }
