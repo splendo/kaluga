@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
@@ -109,7 +110,8 @@ private class TimerStateRepo(
     sealed class State : KalugaState(), Timer.State {
         abstract val totalDuration: Duration
         /** Timer is not running. */
-        sealed class NotRunning(override val elapsed: Duration) : State(), Timer.State.NotRunning {
+        sealed class NotRunning(protected val elapsedSoFar: Duration) : State(), Timer.State.NotRunning {
+            override val elapsed = flowOf(elapsedSoFar)
             /** Timer is paused. */
             class Paused(
                 elapsedSoFar: Duration,
@@ -122,7 +124,7 @@ private class TimerStateRepo(
                     coroutineScope: CoroutineScope,
                     finishCallback: suspend () -> Unit
                 ): Running = Running(
-                    elapsedSoFar = elapsed,
+                    elapsedSoFar = elapsedSoFar,
                     totalDuration = totalDuration,
                     interval = interval,
                     timeSource = timeSource,

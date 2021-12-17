@@ -28,7 +28,7 @@ Sample code to instantiate and operate a timer:
 // creates a timer which lasts for 1 minute with a tick every second
 val timer = RecurringTimer(
     duration = Duration.minutes(1),
-    inteval = Duration.seconds(1)
+    interval = Duration.seconds(1)
 )
 // the timer is created in a paused state. starting the timer..
 timer.start()
@@ -38,10 +38,16 @@ timer.elapsed().collect { elapsed: Duration ->
     // simulate some work
     delay(100)
 }
+println("Done!")
 ```
+
 The timer implementation makes the best effort to compensate the inaccuracies in intervals. 
 In addition, one or several frames will be skipped in case the consumer processing takes longer than
-[interval]. So the output might look the following way:
+[interval]. 
+A running timer automatically changes to a [Finished] state once [duration] elapses.
+[Finished] is a terminal state and following [start] calls would have no effect.
+
+So the output might look the following way:
 ```kotlin
 12 ms  // an initial "warm up delay" 
 1001 ms // overshoot by 1 ms
@@ -49,5 +55,6 @@ In addition, one or several frames will be skipped in case the consumer processi
 3999 ms // undershoot by 1 ms
 5003 ms // overshoot by 3 ms
 ...
-60000 ms
+60000 ms 
+Done!
 ```

@@ -20,7 +20,6 @@ import com.splendo.kaluga.base.utils.firstInstance
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.transformWhile
 import kotlin.time.Duration
 
@@ -31,14 +30,11 @@ interface Timer {
     /** Current state of the timer. */
     val state: StateFlow<State>
 
-    sealed interface State {
-        sealed interface Running : State {
-            val elapsed: Flow<Duration>
-        }
+    interface State {
+        val elapsed: Flow<Duration>
+        interface Running : State
 
-        sealed interface NotRunning : State {
-            val elapsed: Duration
-
+        interface NotRunning : State {
             interface Paused : NotRunning
             interface Finished : NotRunning
         }
@@ -60,12 +56,7 @@ fun Timer.elapsed(): Flow<Duration> = state
         emit(stateValue)
         stateValue !is Timer.State.NotRunning.Finished
     }
-    .flatMapLatest { state ->
-        when (state) {
-            is Timer.State.NotRunning -> flowOf(state.elapsed)
-            is Timer.State.Running -> state.elapsed
-        }
-    }
+    .flatMapLatest { state -> state.elapsed }
 
 /** Awaits for the timer to finish. */
 suspend fun Timer.awaitFinish() {
