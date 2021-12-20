@@ -30,11 +30,11 @@ interface Timer {
     /** Current state of the timer. */
     val state: StateFlow<State>
 
-    interface State {
+    sealed interface State {
         val elapsed: Flow<Duration>
         interface Running : State
 
-        interface NotRunning : State {
+        sealed interface NotRunning : State {
             interface Paused : NotRunning
             interface Finished : NotRunning
         }

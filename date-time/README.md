@@ -45,7 +45,8 @@ The timer implementation makes the best effort to compensate the inaccuracies in
 In addition, one or several frames will be skipped in case the consumer processing takes longer than
 [interval]. 
 A running timer automatically changes to a [Finished] state once [duration] elapses.
-[Finished] is a terminal state and following [start] calls would have no effect.
+[Finished] is a terminal state and following [start] calls would have no effect. 
+The elapsed time is always within [0, duration] range and equal to [duration] in [Finished] state. 
 
 So the output might look the following way:
 ```kotlin
