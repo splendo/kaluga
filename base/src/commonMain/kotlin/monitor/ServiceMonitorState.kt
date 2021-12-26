@@ -23,35 +23,43 @@ import com.splendo.kaluga.state.State
 /**
  * State for [DefaultServiceMonitor].
  */
-sealed class ServiceMonitorState : State() {
+sealed interface ServiceMonitorState {
 
     /**
      * Whether the status is on/off.
      * At this point all system callbacks are registered and repo is listening for changes.
      */
-    sealed class Initialized : ServiceMonitorState() {
+    sealed interface Initialized : ServiceMonitorState {
 
-        fun deinitialize(): suspend () -> NotInitialized {
-            return { NotInitialized }
-        }
-
-        object Enabled : Initialized()
-        object Disabled : Initialized()
+        interface Enabled : Initialized
+        interface Disabled : Initialized
 
         /**
          * Describe when system's service is on, but permission for that haven't been granted yet.
          */
-        object Unauthorized : Initialized()
+        interface Unauthorized : Initialized
     }
 
     /**
      * First and last state when system callbacks are unregistered and repo scope is cancelled.
      */
-    object NotInitialized : ServiceMonitorState(), SpecialFlowValue.NotImportant
+    interface NotInitialized : ServiceMonitorState, SpecialFlowValue.NotImportant
 
     /**
      * When the platform where the module is used is uncapable of providing this info,
      * an example is when [BluetoothMonitor] runs on simulators.
      */
-    object NotSupported : ServiceMonitorState()
+    interface NotSupported : ServiceMonitorState
+}
+
+sealed class ServiceMonitorStateImpl : State(), ServiceMonitorState {
+    sealed class Initialized : ServiceMonitorStateImpl(), ServiceMonitorState.Initialized {
+        object Enabled : Initialized(), ServiceMonitorState.Initialized.Enabled
+        object Disabled : Initialized(), ServiceMonitorState.Initialized.Disabled
+        object Unauthorized : Initialized(), ServiceMonitorState.Initialized.Unauthorized
+    }
+
+    object NotInitialized : ServiceMonitorStateImpl(), ServiceMonitorState.NotInitialized
+
+    object NotSupported : ServiceMonitorStateImpl(), ServiceMonitorState.NotSupported
 }
