@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusDenied
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
@@ -71,9 +72,9 @@ class DefaultLocationMonitor(
         launchTakeAndChangeState {
             {
                 if (locationManager.locationServicesEnabled) {
-                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Enabled)
                 } else {
-                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Disabled)
                 }
             }
         }
@@ -86,8 +87,8 @@ class DefaultLocationMonitor(
 
     private fun isUnauthorizedOrDefault(default: ServiceMonitorState) =
         if (isUnauthorized) {
-            ServiceMonitorState.Initialized.Unauthorized
+            ServiceMonitorStateImpl.Initialized.Unauthorized
         } else {
-            default
+            default as ServiceMonitorStateImpl
         }
 }

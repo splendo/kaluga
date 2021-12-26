@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOff
@@ -84,13 +84,13 @@ class DefaultBluetoothMonitor internal constructor(
         launchTakeAndChangeState {
             {
                 when (status) {
-                    CBCentralManagerStatePoweredOn -> ServiceMonitorState.Initialized.Enabled
+                    CBCentralManagerStatePoweredOn -> ServiceMonitorStateImpl.Initialized.Enabled
                     CBCentralManagerStatePoweredOff,
-                    CBCentralManagerStateResetting -> ServiceMonitorState.Initialized.Disabled
-                    CBCentralManagerStateUnsupported -> ServiceMonitorState.NotSupported
-                    CBCentralManagerStateUnauthorized -> ServiceMonitorState.Initialized.Unauthorized
-                    CBCentralManagerStateUnknown -> ServiceMonitorState.NotInitialized
-                    else -> ServiceMonitorState.NotInitialized
+                    CBCentralManagerStateResetting -> ServiceMonitorStateImpl.Initialized.Disabled
+                    CBCentralManagerStateUnsupported -> ServiceMonitorStateImpl.NotSupported
+                    CBCentralManagerStateUnauthorized -> ServiceMonitorStateImpl.Initialized.Unauthorized
+                    CBCentralManagerStateUnknown -> ServiceMonitorStateImpl.NotInitialized
+                    else -> ServiceMonitorStateImpl.NotInitialized
                 }
             }
         }
