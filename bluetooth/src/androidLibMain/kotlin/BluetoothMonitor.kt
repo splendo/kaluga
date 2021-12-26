@@ -30,6 +30,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.CoroutineContext
 
@@ -96,7 +97,7 @@ class DefaultBluetoothMonitor internal constructor(
         super.startMonitoring()
         if (bluetoothAdapter == null) {
             debug(TAG) { "BluetoothAdapter not supported." }
-            launchTakeAndChangeState { { ServiceMonitorState.NotSupported } }
+            launchTakeAndChangeState { { ServiceMonitorStateImpl.NotSupported } }
             return
         }
         debug(TAG) { "Register broadcast receiver with applicationContext = $applicationContext and bluetoothAdapter = $bluetoothAdapter" }
@@ -108,9 +109,9 @@ class DefaultBluetoothMonitor internal constructor(
         launchTakeAndChangeState { // Force first emission
             {
                 if (bluetoothAdapter.isEnabled) {
-                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Enabled)
                 } else {
-                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Disabled)
                 }
             }
         }
@@ -130,14 +131,14 @@ class DefaultBluetoothMonitor internal constructor(
             {
                 when (state) {
                     BluetoothAdapter.STATE_ON ->
-                        isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
+                        isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Enabled)
                     BluetoothAdapter.STATE_OFF ->
-                        isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
+                        isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Disabled)
                     BluetoothAdapter.STATE_TURNING_ON,
                     BluetoothAdapter.STATE_TURNING_OFF ->
-                        ServiceMonitorState.Initialized.Disabled
+                        ServiceMonitorStateImpl.Initialized.Disabled
                     else ->
-                        ServiceMonitorState.NotInitialized
+                        ServiceMonitorStateImpl.NotInitialized
                 }
             }
         }
@@ -145,8 +146,8 @@ class DefaultBluetoothMonitor internal constructor(
 
     private fun isUnauthorizedOrDefault(default: ServiceMonitorState) =
         if (isUnauthorized) {
-            ServiceMonitorState.Initialized.Unauthorized
+            ServiceMonitorStateImpl.Initialized.Unauthorized
         } else {
-            default
+            default as ServiceMonitorStateImpl
         }
 }

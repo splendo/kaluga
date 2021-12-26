@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base
 
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import kotlin.coroutines.CoroutineContext
@@ -29,7 +30,7 @@ interface ServiceMonitor {
 
 abstract class DefaultServiceMonitor(
     coroutineContext: CoroutineContext
-) : ColdStateFlowRepo<ServiceMonitorState>(
+) : ColdStateFlowRepo<ServiceMonitorStateImpl>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
         debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
@@ -49,12 +50,15 @@ abstract class DefaultServiceMonitor(
             stopMonitoring()
         }
         when (state) {
-            is ServiceMonitorState.Initialized -> state.deinitialize()
+            is ServiceMonitorState.Initialized -> {
+                { ServiceMonitorStateImpl.NotInitialized }
+            }
             is ServiceMonitorState.NotInitialized,
             is ServiceMonitorState.NotSupported -> state.remain()
+            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null")
         }
     },
-    firstState = { ServiceMonitorState.NotInitialized }
+    firstState = { ServiceMonitorStateImpl.NotInitialized }
 ),
     ServiceMonitor {
 

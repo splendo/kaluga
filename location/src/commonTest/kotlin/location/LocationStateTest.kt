@@ -18,7 +18,7 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.PermissionState
@@ -617,9 +617,9 @@ class MockLocationManager(
                     launchTakeAndChangeState {
                         {
                             if (_isEnabled) {
-                                ServiceMonitorState.Initialized.Enabled
+                                ServiceMonitorStateImpl.Initialized.Enabled
                             } else {
-                                ServiceMonitorState.Initialized.Disabled
+                                ServiceMonitorStateImpl.Initialized.Disabled
                             }
                         }
                     }

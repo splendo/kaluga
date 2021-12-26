@@ -31,6 +31,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.CoroutineContext
 
@@ -81,9 +82,9 @@ class DefaultLocationMonitor(
                 launchTakeAndChangeState {
                     {
                         if (isLocationEnabled) {
-                            isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
+                            isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Enabled)
                         } else {
-                            isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
+                            isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Disabled)
                         }
                     }
                 }
@@ -107,9 +108,9 @@ class DefaultLocationMonitor(
                 }
                 debug(TAG) { "(startMonitoring) Location isEnabled $isLocationEnabled" }
                 if (isLocationEnabled) {
-                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Enabled)
                 } else {
-                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Disabled)
                 }
             }
         }
@@ -124,8 +125,8 @@ class DefaultLocationMonitor(
 
     private fun isUnauthorizedOrDefault(default: ServiceMonitorState) =
         if (isUnauthorized) {
-            ServiceMonitorState.Initialized.Unauthorized
+            ServiceMonitorStateImpl.Initialized.Unauthorized
         } else {
-            default
+            default as ServiceMonitorStateImpl
         }
 }

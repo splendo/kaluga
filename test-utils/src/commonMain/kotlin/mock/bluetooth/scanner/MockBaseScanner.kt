@@ -19,7 +19,7 @@ package com.splendo.kaluga.test.mock.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.UUID
@@ -69,9 +69,9 @@ class MockBaseScanner(
                     launchTakeAndChangeState {
                         {
                             if (_isEnabled) {
-                                ServiceMonitorState.Initialized.Enabled
+                                ServiceMonitorStateImpl.Initialized.Enabled
                             } else {
-                                ServiceMonitorState.Initialized.Disabled
+                                ServiceMonitorStateImpl.Initialized.Disabled
                             }
                         }
                     }
