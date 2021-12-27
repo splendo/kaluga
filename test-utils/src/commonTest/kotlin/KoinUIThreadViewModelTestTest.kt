@@ -65,7 +65,7 @@ class KoinUIThreadViewModelTestTest :
         assertEquals("S", viewModel.s)
         assertTrue(builder is MockAlertPresenter.Builder)
         assertEquals(
-            Level.ERROR,
+            Level.DEBUG,
             viewModel.getKoin().logger.level,
             "KoinApplicationDeclaration should have changed the Logger"
         )
