@@ -23,7 +23,7 @@ String kotlinVersion = getProperty("kaluga.kotlinVersion")
 // set some global variables
 gradle.ext {
     kotlin_version = kotlinVersion
-    kotlinx_coroutines_version = '1.5.2-native-mt'
+    kotlinx_coroutines_version = '1.6.0-native-mt'
     stately_version = '1.2.0'
     stately_isolate_version = '1.2.0'
     koin_version = '3.1.2'
