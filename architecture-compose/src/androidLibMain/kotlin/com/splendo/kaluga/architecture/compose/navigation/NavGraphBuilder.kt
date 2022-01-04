@@ -198,7 +198,7 @@ inline fun <reified Action : SingleValueNavigationAction<List<String>>> NavGraph
     noinline content: @Composable (List<String>) -> Unit
 ) = composable(Action::class, NavigationBundleSpecType.StringArrayType, content)
 
-@JvmName("singleValueDataComposable")
+@JvmName("singleValueDateComposable")
 inline fun <reified Action : SingleValueNavigationAction<Date>> NavGraphBuilder.composable(
     noinline content: @Composable (Date) -> Unit
 ) = composable(Action::class, NavigationBundleSpecType.DateType, content)
