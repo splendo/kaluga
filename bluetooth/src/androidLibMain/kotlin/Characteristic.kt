@@ -52,10 +52,12 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
         get() { return gattCharacteristic.uuid }
     override val value: ByteArray?
         get() {
+            println("🦊 gattCharacteristic.value = ${gattCharacteristic.value}")
             return gattCharacteristic.value
         }
 
     override fun updateValue(value: ByteArray?) {
+        println("🦊 updateValue.value = $value")
         gattCharacteristic.value = value
     }
 

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlin.test.Test
@@ -31,16 +32,28 @@ class BluetoothMultipleCharacteristicValuesTest : BluetoothFlowTest<ByteArray?>(
     override val flow = suspend {
         setup(Setup.CHARACTERISTIC)
         merge(
-            bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[firstCharacteristic.uuid].value().map {
+            bluetooth.devices()[device.identifier].services()[service.uuid].map {
+                println("SR1 🍁️ ${it?.uuid}")
+                it
+            }.characteristics()[firstCharacteristic.uuid].map {
+                println("CH1 🍁️ ${it?.uuid}")
+                it
+            }.value().map {
                 println("V1 🍁️ ${it?.decodeToString()}")
                                                                                                                                     it
             },
-            bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[secondCharacteristic.uuid].value().map {
-                println("V2🍁 ️ ${it?.decodeToString()}")
+            bluetooth.devices()[device.identifier].services()[service.uuid].map {
+                println("SR2 🌿️ ${it?.uuid}")
+                it
+            }.characteristics()[secondCharacteristic.uuid].map {
+                println("CH2 🌿 ${it?.uuid}")
+                it
+            }.value().map {
+                println("V2 🌿 ️ ${it?.decodeToString()}")
                 it
             }
         ).map {
-        println("🍁️ ${it?.decodeToString()}")
+        println("🪲 ${it?.decodeToString()}")
             it
         }
     }
@@ -114,6 +127,7 @@ class BluetoothMultipleCharacteristicValuesTest : BluetoothFlowTest<ByteArray?>(
             secondCharacteristic.writeValue(newValue2)
         }
         test {
+            delay(500)
             println("🤡 ${it?.decodeToString()}")
             assertTrue(newValue2 contentEquals it)
         }

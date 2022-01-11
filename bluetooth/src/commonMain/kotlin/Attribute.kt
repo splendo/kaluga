@@ -52,6 +52,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     open suspend fun updateValue() {
         val nextValue = getUpdatedValue()
+        println("🟢 updateValue ${nextValue?.decodeToString()}")
         sharedFlow.emit(nextValue)
     }
 
