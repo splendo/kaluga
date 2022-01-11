@@ -17,19 +17,26 @@
 
 package com.splendo.kaluga.bluetooth
 
+import kotlinx.coroutines.flow.merge
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class BluetoothMultipleCharacteristicValuesTest : BluetoothFlowTest<ByteArray?>() {
 
+    private val firstCharacteristic get() = service.characteristics[0]
+    private val secondCharacteristic get() = service.characteristics[1]
+
     override val flow = suspend {
         setup(Setup.CHARACTERISTIC)
-        bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].value()
+        merge(
+            bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[firstCharacteristic.uuid].value(),
+            bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[secondCharacteristic.uuid].value()
+        )
     }
 
     @Test
-    fun testGetMultipleCharacteristicValues() = testWithFlow {
+    fun testGetFirstValueFromMultipleCharacteristicsInputFlow() = testWithFlow {
 
         val newValue = "Test".encodeToByteArray()
 
@@ -43,7 +50,29 @@ class BluetoothMultipleCharacteristicValuesTest : BluetoothFlowTest<ByteArray?>(
             connectDevice(device)
             connectionManager.discoverServicesCompleted.get().await()
             discoverService(service, device)
-            characteristic.writeValue(newValue)
+            firstCharacteristic.writeValue(newValue)
+        }
+        test {
+            assertTrue(newValue contentEquals it)
+        }
+    }
+
+    @Test
+    fun testGetSecondValueFromMultipleCharacteristicsInputFlow() = testWithFlow {
+
+        val newValue = "Test".encodeToByteArray()
+
+        scanDevice()
+        bluetooth.startScanning()
+
+        test {
+            assertEquals(null, it)
+        }
+        action {
+            connectDevice(device)
+            connectionManager.discoverServicesCompleted.get().await()
+            discoverService(service, device)
+            secondCharacteristic.writeValue(newValue)
         }
         test {
             assertTrue(newValue contentEquals it)
@@ -54,6 +83,6 @@ class BluetoothMultipleCharacteristicValuesTest : BluetoothFlowTest<ByteArray?>(
         com.splendo.kaluga.test.mock.bluetooth.createServiceWrapper(
             connectionManager.stateRepo,
             uuid = randomUUID(),
-            characteristics = listOf(randomUUID() to listOf(randomUUID()))
+            characteristics = listOf(randomUUID() to listOf(randomUUID(), randomUUID()))
         )
 }
