@@ -159,6 +159,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         CHARACTERISTIC,
         DESCRIPTOR
     }
+
     protected fun setup(
         setup: Setup,
     ) {
@@ -171,7 +172,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         connectionManager = device.peekState().connectionManager as MockDeviceConnectionManager
         if (setup == DEVICE) return
 
-        serviceWrapper = createServiceWrapper(connectionManager.stateRepo)
+        serviceWrapper = createServiceWrapper()
         service = Service(serviceWrapper, connectionManager.stateRepo)
 
         if (setup == SERVICE) return
@@ -259,4 +260,11 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
             coroutineContext
         )
     }
+
+    protected open fun createServiceWrapper(): ServiceWrapper =
+        createServiceWrapper(
+            connectionManager.stateRepo,
+            uuid = randomUUID(),
+            characteristics = listOf(randomUUID() to listOf(randomUUID()))
+        )
 }
