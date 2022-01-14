@@ -18,6 +18,9 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
@@ -32,3 +35,12 @@ object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImpe
     override fun fromSIUnit(value: Decimal): Decimal = value * 100.0.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 100.0.toDecimal()
 }
+
+object Permill : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+    override val symbol: String = "‰"
+    override val system = MeasurementSystem.MetricAndImperial
+    override val quantity = PhysicalQuantity.Dimensionless
+    override fun fromSIUnit(value: Decimal): Decimal = value * 1000.0.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / 1000.0.toDecimal()
+}
+
