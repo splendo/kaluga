@@ -29,6 +29,6 @@ object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImpe
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value
-    override fun toSIUnit(value: Decimal): Decimal = value
+    override fun fromSIUnit(value: Decimal): Decimal = value * 100.0.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / 100.0.toDecimal()
 }
