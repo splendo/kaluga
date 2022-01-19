@@ -143,6 +143,13 @@ actual class AlertPresenter(
                     this@AlertPresenter.presentation.value = DialogPresentation.Hidden
                 }
                 setOnCancelListener { presentation.afterHandler(null) }
+                setOnShowListener {
+                    alert.actions.forEach { action ->
+                        action.color?.let { color ->
+                            getButton(transform(action.style)).setTextColor(color)
+                        }
+                    }
+                }
                 show()
             }
         presentation.completion()

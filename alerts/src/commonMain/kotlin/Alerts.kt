@@ -21,6 +21,7 @@ package com.splendo.kaluga.alerts
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.resources.Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -61,6 +62,7 @@ data class Alert(
     data class Action(
         val title: String,
         val style: Style = Style.DEFAULT,
+        val color: Color? = null,
         val handler: AlertActionHandler = {}
     ) {
         enum class Style(val value: Int) {
@@ -161,7 +163,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param handler The block to execute after user taps a button
          */
         fun setPositiveButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, handler))
+            addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, null, handler))
         }
 
         /**
@@ -172,7 +174,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param handler The block to execute after user taps a button
          */
         fun setNegativeButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, handler))
+            addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, null, handler))
         }
 
         /**
@@ -183,7 +185,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param handler The block to execute after user taps a button
          */
         fun setNeutralButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, handler))
+            addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, null, handler))
         }
 
         /**

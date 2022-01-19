@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import com.splendo.kaluga.base.utils.applyIf
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
@@ -34,6 +35,7 @@ import platform.UIKit.UIAlertControllerStyleAlert
 import platform.UIKit.UIControlEventEditingChanged
 import platform.UIKit.UITextField
 import platform.UIKit.UIViewController
+import platform.UIKit.tintColor
 import platform.objc.sel_registerName
 
 actual class AlertPresenter(
@@ -93,15 +95,17 @@ actual class AlertPresenter(
             transform(alert.style)
         ).apply {
             alert.actions.forEach { action ->
-                addAction(
-                    UIAlertAction.actionWithTitle(
-                        action.title,
-                        transform(action.style)
-                    ) {
-                        action.handler()
-                        afterHandler(action)
-                    }
-                )
+                val uiAlertAction = UIAlertAction.actionWithTitle(
+                    action.title,
+                    transform(action.style)
+                ) {
+                    action.handler()
+                    afterHandler(action)
+                }.applyIf(action.color != null) {
+                    // FIXME: This set the color for all buttons, not the single one.
+                    view.tintColor = action.color!!.uiColor
+                }
+                addAction(uiAlertAction)
             }
             val cancelButtonIndex = alert.actions.indexOfFirst {
                 (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
