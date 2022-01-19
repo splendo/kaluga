@@ -32,6 +32,7 @@ kotlin {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":resources", ""))
             }
         }
         getByName("commonTest") {
