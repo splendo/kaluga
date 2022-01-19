@@ -3,12 +3,16 @@ package com.splendo.kaluga.test
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.colorFrom
+import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-val whiteColor: Color = colorFrom(255, 255, 255)
+@ThreadLocal
+object AlertsTestUtils {
+    val whiteColor: Color = colorFrom(255, 255, 255)
+}
 
 class AlertsTest {
 
@@ -37,7 +41,7 @@ class AlertsTest {
 
         var handlerWasCalled = false
         val handler = { handlerWasCalled = true }
-        val action = Alert.Action("action", Alert.Action.Style.DEFAULT, whiteColor, handler)
+        val action = Alert.Action("action", Alert.Action.Style.DEFAULT, AlertsTestUtils.whiteColor, handler)
         val alert = Alert("title", "message", listOf(action))
 
         assertEquals(alert.title, "title")
@@ -45,7 +49,7 @@ class AlertsTest {
         assertEquals(alert.actions.count(), 1)
         assertEquals(alert.actions.first().title, "action")
         assertEquals(alert.actions.first().style, Alert.Action.Style.DEFAULT)
-        assertEquals(alert.actions.first().color, whiteColor)
+        assertEquals(alert.actions.first().color, AlertsTestUtils.whiteColor)
         assertEquals(alert.actions.first().handler, handler)
 
         assertFalse(handlerWasCalled)
