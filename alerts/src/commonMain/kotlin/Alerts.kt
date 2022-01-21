@@ -66,6 +66,12 @@ data class Alert(
         val textColor: Color? = null,
         val handler: AlertActionHandler = {}
     ) {
+        constructor(
+            title: String,
+            style: Style,
+            handler: AlertActionHandler
+        ) : this(title, style, null, handler)
+
         enum class Style(val value: Int) {
             DEFAULT(0),
             POSITIVE(DEFAULT.value),
@@ -164,7 +170,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param handler The block to execute after user taps a button
          */
         fun setPositiveButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, null, handler))
+            addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, handler))
         }
 
         /**
@@ -175,7 +181,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param handler The block to execute after user taps a button
          */
         fun setNegativeButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, null, handler))
+            addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, handler))
         }
 
         /**
@@ -186,7 +192,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param handler The block to execute after user taps a button
          */
         fun setNeutralButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, null, handler))
+            addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, handler))
         }
 
         /**
