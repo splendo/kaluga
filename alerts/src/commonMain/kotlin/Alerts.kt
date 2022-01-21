@@ -57,12 +57,13 @@ data class Alert(
      *
      * @property title The title of the action's button
      * @property style The style that is applied to the action's button
+     * @property textColor The color of the single action. If null default color is used.
      * @property handler The block to execute when the user taps a button
      */
     data class Action(
         val title: String,
         val style: Style = Style.DEFAULT,
-        val color: Color? = null,
+        val textColor: Color? = null,
         val handler: AlertActionHandler = {}
     ) {
         enum class Style(val value: Int) {

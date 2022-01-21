@@ -49,7 +49,7 @@ class AlertsTest {
         assertEquals(alert.actions.count(), 1)
         assertEquals(alert.actions.first().title, "action")
         assertEquals(alert.actions.first().style, Alert.Action.Style.DEFAULT)
-        assertEquals(alert.actions.first().color, AlertsTestUtils.whiteColor)
+        assertEquals(alert.actions.first().textColor, AlertsTestUtils.whiteColor)
         assertEquals(alert.actions.first().handler, handler)
 
         assertFalse(handlerWasCalled)

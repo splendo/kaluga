@@ -145,7 +145,7 @@ actual class AlertPresenter(
                 setOnCancelListener { presentation.afterHandler(null) }
                 setOnShowListener {
                     alert.actions.forEach { action ->
-                        action.color?.let { color ->
+                        action.textColor?.let { color ->
                             getButton(transform(action.style)).setTextColor(color)
                         }
                     }

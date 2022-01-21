@@ -101,9 +101,9 @@ actual class AlertPresenter(
                 ) {
                     action.handler()
                     afterHandler(action)
-                }.applyIf(action.color != null) {
+                }.applyIf(action.textColor != null) {
                     // FIXME: This set the color for all buttons, not the single one.
-                    view.tintColor = action.color!!.uiColor
+                    view.tintColor = action.textColor!!.uiColor
                 }
                 addAction(uiAlertAction)
             }
