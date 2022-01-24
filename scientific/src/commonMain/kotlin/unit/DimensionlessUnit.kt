@@ -68,8 +68,15 @@ import kotlinx.serialization.Serializable
  * Source:  "SI Brochure: The International System of Units, 9th Edition".
  */
 @Serializable
+
 sealed class Dimensionless : ScientificUnit<PhysicalQuantity.Dimensionless>,
     MetricAndImperialScientificUnit<PhysicalQuantity.Dimensionless>
+
+val DimensionlessUnits: Set<Dimensionless> get() = setOf(
+    One,
+    Percent,
+    Permill
+)
 
 object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
     override val symbol: String = ""
