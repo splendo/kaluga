@@ -71,6 +71,15 @@ import kotlinx.serialization.Serializable
 sealed class Dimensionless : ScientificUnit<PhysicalQuantity.Dimensionless>,
     MetricAndImperialScientificUnit<PhysicalQuantity.Dimensionless>
 
+object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+    override val symbol: String = ""
+    override val system = MeasurementSystem.MetricAndImperial
+    override val quantity = PhysicalQuantity.Dimensionless
+    override fun fromSIUnit(value: Decimal): Decimal = value
+    override fun toSIUnit(value: Decimal): Decimal = value
+}
+
+val One.constant: ScientificValue<PhysicalQuantity.Dimensionless, One> get() = 1.invoke(One)
 object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
