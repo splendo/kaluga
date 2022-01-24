@@ -20,6 +20,8 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.decimal.times
+import com.splendo.kaluga.scientific.converter.dimensionless.div
+import com.splendo.kaluga.scientific.converter.dimensionless.times
 import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
