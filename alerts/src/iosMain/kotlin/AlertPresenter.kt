@@ -100,11 +100,10 @@ actual class AlertPresenter(
                 ) {
                     action.handler()
                     afterHandler(action)
-                }.also {
+                }.apply {
                     // FIXME: This set the color for all buttons, not the single one.
-                    val textColor = action.textColor?.uiColor
-                    if (textColor != null) {
-                        view.tintColor = textColor
+                    action.textColor?.let {
+                        view.tintColor = it.uiColor
                     }
                 }
                 addAction(uiAlertAction)
