@@ -87,19 +87,21 @@ object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial
 }
 
 val One.constant: ScientificValue<PhysicalQuantity.Dimensionless, One> get() = 1.invoke(One)
+
 object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+    const val PARTS_PER_HUNDRED = 100.0
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value * 100.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / 100.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_HUNDRED.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_HUNDRED.toDecimal()
 }
 
 object Permill : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+    const val PARTS_PER_THOUSAND = 1000.0
     override val symbol: String = "‰"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value * 1000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / 1000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_THOUSAND.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_THOUSAND.toDecimal()
 }
-
