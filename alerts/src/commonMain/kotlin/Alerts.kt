@@ -72,6 +72,12 @@ data class Alert(
             handler: AlertActionHandler
         ) : this(title, style, null, handler)
 
+        constructor(
+            title: String,
+            textColor: Color,
+            handler: AlertActionHandler
+        ) : this(title, Style.DEFAULT, textColor, handler)
+
         enum class Style(val value: Int) {
             DEFAULT(0),
             POSITIVE(DEFAULT.value),
@@ -161,6 +167,17 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @param message The message of the alert
          */
         fun setMessage(message: String?) = apply { this.message = message }
+
+        /**
+         * Adds a new [Alert.Action] to the alert.
+         *
+         * @param title button text.
+         * @param textColor button text color.
+         * @param handler button action.
+         */
+        fun addButton(title: String, textColor: Color, handler: AlertActionHandler = {}) = apply {
+            addAction(Alert.Action(title, textColor, handler))
+        }
 
         /**
          * Sets button with the id `BUTTON_POSITIVE` on Android
