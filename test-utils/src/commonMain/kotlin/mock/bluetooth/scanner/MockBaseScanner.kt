@@ -23,9 +23,13 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
@@ -54,7 +58,9 @@ class MockBaseScanner(
     val requestEnableCompleted = AtomicReference(EmptyCompletableDeferred())
     val startMonitoringSensorsCompleted = AtomicReference(EmptyCompletableDeferred())
     val stopMonitoringSensorsCompleted = AtomicReference(EmptyCompletableDeferred())
+    val pairedDevicesCompleted = AtomicReference(CompletableDeferred<Set<UUID>?>())
 
+    val pairedDevices = MutableStateFlow<List<Identifier>>(emptyList())
     val isEnabled = MutableStateFlow(false)
 
     init {
@@ -79,6 +85,7 @@ class MockBaseScanner(
         startMonitoringPermissionsCompleted.set(EmptyCompletableDeferred())
         stopMonitoringPermissionsCompleted.set(EmptyCompletableDeferred())
         requestEnableCompleted.set(EmptyCompletableDeferred())
+        pairedDevicesCompleted.set(CompletableDeferred())
     }
 
     override fun startMonitoringPermissions() {
@@ -120,5 +127,12 @@ class MockBaseScanner(
                 }
             )
         }
+    }
+
+    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> {
+        pairedDevicesCompleted.get().complete(withServices)
+        return if (isEnabled.value) pairedDevices.value.filter {
+            withServices.map(UUID::uuidString).contains(it.stringValue)
+        } else emptyList()
     }
 }

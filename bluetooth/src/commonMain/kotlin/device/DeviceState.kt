@@ -294,6 +294,8 @@ sealed class DeviceState(
         return updateDeviceInfo(deviceInfo.copy(rssi = rssi, advertisementData = advertisementData))
     }
 
+    internal fun unpair() = connectionManager.unpair()
+
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
         return {
             when (this) {

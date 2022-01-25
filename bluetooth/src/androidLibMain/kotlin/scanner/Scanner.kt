@@ -226,4 +226,10 @@ actual class Scanner internal constructor(
             } else null
         )
     }
+
+    // TODO: Filter devices by given [withServices]
+    override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
+        ?.bondedDevices
+        ?.map { it.address }
+        ?: emptyList()
 }

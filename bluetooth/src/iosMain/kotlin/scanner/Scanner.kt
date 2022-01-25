@@ -32,6 +32,7 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
@@ -47,7 +48,7 @@ import platform.darwin.dispatch_get_main_queue
 
 actual class Scanner internal constructor(
     permissions: Permissions,
-    private val connectionSettings: ConnectionSettings,
+    protected val connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
     autoEnableSensors: Boolean,
     stateRepo: ScanningStateFlowRepo,
@@ -173,6 +174,10 @@ actual class Scanner internal constructor(
             } else null
         )
     }
+
+    override fun pairedDevices(withServices: Set<UUID>) = mainCentralManager
+        .retrieveConnectedPeripheralsWithServices(withServices.toList())
+        .mapNotNull { (it as? CBPeripheral)?.identifier }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         initMainManagersIfNeeded()

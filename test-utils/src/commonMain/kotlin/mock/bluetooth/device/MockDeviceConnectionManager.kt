@@ -55,6 +55,7 @@ class MockDeviceConnectionManager(
     private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val handledAction = _handledAction.asSharedFlow()
     var willActionSucceed = AtomicBoolean(true)
+    val unpairCompleted = AtomicReference(EmptyCompletableDeferred())
 
     fun reset() {
         connectCompleted.set(EmptyCompletableDeferred())
@@ -64,6 +65,7 @@ class MockDeviceConnectionManager(
         performActionCompleted.set(CompletableDeferred())
         performActionStarted.set(CompletableDeferred())
         _handledAction.resetReplayCache()
+        unpairCompleted.set(EmptyCompletableDeferred())
     }
 
     override suspend fun connect() {
@@ -131,4 +133,6 @@ class MockDeviceConnectionManager(
         }
         return super.handleCurrentActionCompleted(succeeded)
     }
+
+    override fun unpair() = unpairCompleted.get().complete()
 }

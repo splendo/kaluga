@@ -86,6 +86,8 @@ sealed class ScanningState : State() {
                 NoBluetooth.Disabled(scanner)
             }
 
+            fun pairedDevices(filter: Set<UUID>) = scanner.pairedDevices(filter)
+
             class Idle internal constructor(
                 previouslyDiscovered: Discovered,
                 scanner: BaseScanner
