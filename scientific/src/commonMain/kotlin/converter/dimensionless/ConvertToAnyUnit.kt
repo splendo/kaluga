@@ -17,13 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.dimensionless
 
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.div
-import com.splendo.kaluga.scientific.times
-import com.splendo.kaluga.scientific.unit.One
+import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.ScientificUnit
-import com.splendo.kaluga.scientific.unit.constant
 
 infix operator fun <
     Quantity : PhysicalQuantity,
@@ -31,10 +30,7 @@ infix operator fun <
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
     > ScientificValue<Quantity, Unit>.times(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>
-): ScientificValue<Quantity, Unit> {
-    val factor = modifier.unit.toSIUnit(One.constant.decimalValue)
-    return this.times(factor)
-}
+): ScientificValue<Quantity, Unit> = unit.byMultiplying(this, modifier, ::DefaultScientificValue)
 
 infix operator fun <
     Quantity : PhysicalQuantity,
@@ -42,7 +38,4 @@ infix operator fun <
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
     > ScientificValue<Quantity, Unit>.div(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>
-): ScientificValue<Quantity, Unit> {
-    val factor = modifier.unit.toSIUnit(One.constant.decimalValue)
-    return this.div(factor)
-}
+): ScientificValue<Quantity, Unit> = unit.byDividing(this, modifier, ::DefaultScientificValue)
