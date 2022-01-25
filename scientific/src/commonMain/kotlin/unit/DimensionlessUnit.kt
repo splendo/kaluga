@@ -79,6 +79,7 @@ val DimensionlessUnits: Set<Dimensionless> get() = setOf(
     Permill
 )
 
+@Serializable
 object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
     override val symbol: String = ""
     override val system = MeasurementSystem.MetricAndImperial
@@ -89,6 +90,7 @@ object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial
 
 val One.constant: ScientificValue<PhysicalQuantity.Dimensionless, One> get() = 1.invoke(One)
 
+@Serializable
 object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
     const val PARTS_PER_HUNDRED = 100.0
     override val symbol: String = "%"
@@ -98,6 +100,7 @@ object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImpe
     override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_HUNDRED.toDecimal()
 }
 
+@Serializable
 object Permill : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
     const val PARTS_PER_THOUSAND = 1000.0
     override val symbol: String = "‰"
