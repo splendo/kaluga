@@ -71,8 +71,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 
-sealed class Dimensionless : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    MetricAndImperialScientificUnit<PhysicalQuantity.Dimensionless>
+sealed class Dimensionless : ScientificUnit<PhysicalQuantity.Dimensionless>, MetricAndImperialScientificUnit<PhysicalQuantity.Dimensionless>
 
 val DimensionlessUnits: Set<Dimensionless> get() = setOf(
     One,

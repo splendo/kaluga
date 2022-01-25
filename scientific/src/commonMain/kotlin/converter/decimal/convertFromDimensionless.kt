@@ -25,8 +25,6 @@ import com.splendo.kaluga.scientific.div
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.times
 import com.splendo.kaluga.scientific.unit.One
-import com.splendo.kaluga.scientific.unit.ScientificUnit
-import com.splendo.kaluga.scientific.unit.constant
 
 infix operator fun Decimal.div(modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>): Decimal {
     val scalar = this.invoke(One)
