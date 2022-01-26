@@ -15,6 +15,10 @@
     <string name="feature_platform_specific">Platform specific features</string>
     <string name="feature_platform_specific_compose_navigation">Compose Navigation</string>
     <string name="feature_platform_specific_compose_bottom_sheet">Compose Bottom Sheet</string>
+    <string name="feature_resources">Resources</string>
+    <string name="feature_resources_color">Color</string>
+    <string name="feature_resources_button">Button</string>
+    <string name="feature_resources_label">Label</string>
 
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>

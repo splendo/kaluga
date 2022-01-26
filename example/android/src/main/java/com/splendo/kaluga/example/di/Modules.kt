@@ -43,6 +43,10 @@ import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.platformspecific.PlatformSpecificActivity
+import com.splendo.kaluga.example.resources.ButtonActivity
+import com.splendo.kaluga.example.resources.ColorActivity
+import com.splendo.kaluga.example.resources.LabelActivity
+import com.splendo.kaluga.example.resources.ResourcesActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
@@ -69,6 +73,11 @@ import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
@@ -91,6 +100,7 @@ import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
+import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -151,6 +161,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
+                    FeatureListNavigationAction.Resources -> NavigationSpec.Activity(ResourcesActivity::class.java)
                     FeatureListNavigationAction.PlatformSpecific -> NavigationSpec.Activity(PlatformSpecificActivity::class.java)
                 }
             }
@@ -278,5 +289,29 @@ val viewModelModule = module {
 
     viewModel {
         BeaconsListViewModel(get())
+    }
+
+    viewModel {
+        ResourcesListViewModel(
+            ActivityNavigator {
+                when (it) {
+                    is ResourcesListNavigationAction.Label -> NavigationSpec.Activity(LabelActivity::class.java)
+                    is ResourcesListNavigationAction.Color -> NavigationSpec.Activity(ColorActivity::class.java)
+                    is ResourcesListNavigationAction.Button -> NavigationSpec.Activity(ButtonActivity::class.java)
+                }
+            }
+        )
+    }
+
+    viewModel {
+        ColorViewModel(AlertPresenter.Builder())
+    }
+
+    viewModel {
+        LabelViewModel(StyledStringBuilder.Provider())
+    }
+
+    viewModel {
+        ButtonViewModel(StyledStringBuilder.Provider(), AlertPresenter.Builder())
     }
 }
