@@ -23,6 +23,7 @@ import android.os.ParcelUuid
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -227,9 +228,9 @@ actual class Scanner internal constructor(
         )
     }
 
-    // TODO: Filter devices by given [withServices]
     override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
         ?.bondedDevices
+        ?.filter { it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) == true }
         ?.map { it.address }
         ?: emptyList()
 }
