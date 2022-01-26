@@ -26,11 +26,13 @@ import com.splendo.kaluga.resources.localized
 actual val showPlatformSpecificFeatures: Boolean = true
 
 sealed class PlatformFeatureListNavigationAction : NavigationAction<Nothing>(null) {
-    object Compose : PlatformFeatureListNavigationAction()
+    object ComposeNavigation : PlatformFeatureListNavigationAction()
+    object ComposeBottomSheet : PlatformFeatureListNavigationAction()
 }
 
 sealed class PlatformFeature(val title: String) {
-    object Compose : PlatformFeature("feature_platform_specific_compose".localized())
+    object ComposeNavigation : PlatformFeature("feature_platform_specific_compose_navigation".localized())
+    object ComposeBottomSheet : PlatformFeature("feature_platform_specific_compose_bottom_sheet".localized())
 }
 
 class PlatformSpecificFeaturesViewModel(
@@ -39,14 +41,16 @@ class PlatformSpecificFeaturesViewModel(
 
     val feature = observableOf(
         listOf(
-            PlatformFeature.Compose
+            PlatformFeature.ComposeNavigation,
+            PlatformFeature.ComposeBottomSheet
         )
     )
 
     fun onFeaturePressed(feature: PlatformFeature) {
         navigator.navigate(
             when (feature) {
-                is PlatformFeature.Compose -> PlatformFeatureListNavigationAction.Compose
+                is PlatformFeature.ComposeNavigation -> PlatformFeatureListNavigationAction.ComposeNavigation
+                is PlatformFeature.ComposeBottomSheet -> PlatformFeatureListNavigationAction.ComposeBottomSheet
             }
         )
     }

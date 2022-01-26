@@ -106,6 +106,7 @@ Module | Usage | Artifact Name
 [architecture](architecture/) | MVVM architecture | com.splendo.kaluga:architecture
 [architecture-compose](architecture-compose/) | Compose extensions for architecture | com.splendo.kaluga:architecture-compose
 [base](base/) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base
+[date-time](date-time/) | Contains multiplatform classes to work with date and time | com.splendo.kaluga.date-time
 [date-timepicker](date-time-picker/) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker
 [hud](hud/) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud
 [keyboard](keyboard/) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard
