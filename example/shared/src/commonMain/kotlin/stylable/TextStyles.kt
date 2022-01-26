@@ -32,6 +32,6 @@ object TextStyles {
         TextStyle(defaultFont, DefaultColors.red, 12.0f)
     }
     val oppositeText by lazy {
-        TextStyle(defaultFont, DefaultColors.dimGray, 12.0f, TextAlignment.OPPOSITE)
+        TextStyle(defaultFont, DefaultColors.dimGray, 12.0f, TextAlignment.END)
     }
 }

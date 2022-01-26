@@ -24,7 +24,7 @@ val TextAlignment.composable: TextAlign
     get() = when (this) {
         TextAlignment.CENTER -> TextAlign.Center
         TextAlignment.LEFT -> TextAlign.Left
-        TextAlignment.NORMAL -> TextAlign.Start
-        TextAlignment.OPPOSITE -> TextAlign.End
+        TextAlignment.START -> TextAlign.Start
+        TextAlignment.END -> TextAlign.End
         TextAlignment.RIGHT -> TextAlign.Right
     }

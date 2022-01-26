@@ -20,7 +20,7 @@ package com.splendo.kaluga.resources.stylable
 enum class TextAlignment {
     LEFT,
     RIGHT,
-    OPPOSITE,
-    NORMAL,
+    END,
+    START,
     CENTER
 }

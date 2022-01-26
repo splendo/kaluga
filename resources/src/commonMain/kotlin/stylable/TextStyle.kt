@@ -24,5 +24,5 @@ data class TextStyle(
     val font: Font,
     val color: Color,
     val size: Float,
-    val alignment: TextAlignment = TextAlignment.NORMAL
+    val alignment: TextAlignment = TextAlignment.START
 )

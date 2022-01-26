@@ -26,8 +26,8 @@ fun TextAlignment.alignment(context: Context): Layout.Alignment {
             Layout.Alignment.ALIGN_NORMAL
         }
         TextAlignment.CENTER -> Layout.Alignment.ALIGN_CENTER
-        TextAlignment.OPPOSITE -> Layout.Alignment.ALIGN_OPPOSITE
-        TextAlignment.NORMAL -> Layout.Alignment.ALIGN_NORMAL
+        TextAlignment.END -> Layout.Alignment.ALIGN_OPPOSITE
+        TextAlignment.START -> Layout.Alignment.ALIGN_NORMAL
     }
 }
 

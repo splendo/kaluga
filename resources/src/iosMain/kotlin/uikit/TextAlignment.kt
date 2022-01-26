@@ -36,18 +36,18 @@ val TextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
     TextAlignment.LEFT -> NSTextAlignmentLeft
     TextAlignment.RIGHT -> NSTextAlignmentRight
     TextAlignment.CENTER -> NSTextAlignmentCenter
-    TextAlignment.OPPOSITE -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
+    TextAlignment.END -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
         NSTextAlignmentRight
     } else {
         NSTextAlignmentLeft
     }
-    TextAlignment.NORMAL -> NSTextAlignmentNatural
+    TextAlignment.START -> NSTextAlignmentNatural
 }
 
 val TextAlignment.contentHorizontalAlignment: UIControlContentHorizontalAlignment get() = when (this) {
     TextAlignment.LEFT -> UIControlContentHorizontalAlignmentLeft
     TextAlignment.RIGHT -> UIControlContentHorizontalAlignmentRight
     TextAlignment.CENTER -> UIControlContentHorizontalAlignmentCenter
-    TextAlignment.OPPOSITE -> UIControlContentHorizontalAlignmentTrailing
-    TextAlignment.NORMAL -> UIControlContentHorizontalAlignmentLeading
+    TextAlignment.END -> UIControlContentHorizontalAlignmentTrailing
+    TextAlignment.START -> UIControlContentHorizontalAlignmentLeading
 }
