@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.base.utils.nsRange
-import com.splendo.kaluga.base.utils.range
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
@@ -203,4 +201,9 @@ val NSAttributedString.urlRanges: List<Pair<NSRange, NSURL>> get() {
         }
     }
     return result
+
 }
+
+private val IntRange.nsRange: CValue<NSRange> get() = NSMakeRange(start.convert(), (endInclusive + 1 - start).convert())
+private val CValue<NSRange>.range: IntRange get() = useContents { IntRange(location.toInt(), (location + length).toInt() - 1) }
+

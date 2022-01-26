@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.base.utils.range
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.urlRanges
 import com.splendo.kaluga.resources.view.KalugaLabel
@@ -30,6 +29,7 @@ import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSLocationInRange
+import platform.Foundation.NSMakeRange
 import platform.Foundation.NSMapTable
 import platform.Foundation.NSPointerFunctionsStrongMemory
 import platform.Foundation.NSPointerFunctionsWeakMemory
@@ -205,3 +205,6 @@ fun UITextField.applyTextStyle(textStyle: TextStyle) {
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
+
+private val IntRange.nsRange: CValue<NSRange> get() = NSMakeRange(start.convert(), (endInclusive + 1 - start).convert())
+private val CValue<NSRange>.range: IntRange get() = useContents { IntRange(location.toInt(), (location + length).toInt() - 1) }
