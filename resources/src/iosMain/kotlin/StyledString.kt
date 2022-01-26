@@ -201,9 +201,7 @@ val NSAttributedString.urlRanges: List<Pair<NSRange, NSURL>> get() {
         }
     }
     return result
-
 }
 
 private val IntRange.nsRange: CValue<NSRange> get() = NSMakeRange(start.convert(), (endInclusive + 1 - start).convert())
 private val CValue<NSRange>.range: IntRange get() = useContents { IntRange(location.toInt(), (location + length).toInt() - 1) }
-
