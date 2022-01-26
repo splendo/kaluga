@@ -88,7 +88,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
             return permissionsBuilder.bluetoothPMManager!!
         }
 
-    val deferredBaseScanner = CompletableDeferred<MockBaseScanner>()
+    private val deferredBaseScanner = CompletableDeferred<MockBaseScanner>()
     protected suspend fun mockBaseScanner() = deferredBaseScanner.await()
 
     protected lateinit var bluetooth: Bluetooth
@@ -122,6 +122,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
                     scanningStateRepo
                 )
                 scanner.isEnabled.value = isEnabled
+                println("completed deferred!")
                 deferredBaseScanner.complete(scanner)
                 return scanner
             }

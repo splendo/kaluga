@@ -22,6 +22,8 @@ import kotlin.math.pow
 
 expect class Identifier
 
+expect fun randomIdentifier(): Identifier
+
 expect val Identifier.stringValue: String
 
 expect interface DeviceWrapper {

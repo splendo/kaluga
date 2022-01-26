@@ -24,11 +24,9 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
@@ -130,8 +128,6 @@ class MockBaseScanner(
 
     override fun pairedDevices(withServices: Set<UUID>): List<Identifier> {
         pairedDevicesCompleted.get().complete(withServices)
-        return if (isEnabled.value) pairedDevices.value.filter {
-            withServices.map(UUID::uuidString).contains(it.stringValue)
-        } else emptyList()
+        return if (isEnabled.value) pairedDevices.value else emptyList()
     }
 }

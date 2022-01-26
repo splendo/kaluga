@@ -101,7 +101,13 @@ class Bluetooth internal constructor(
         .mapLatest { state ->
             when (state) {
                 is ScanningState.Initialized.Enabled -> state.pairedDevices(filter)
-                else -> emptyList()
+                is ScanningState.Initialized.NoBluetooth -> emptyList()
+                is ScanningState.NotInitialized -> {
+                    scanningStateRepo.takeAndChangeState(
+                        remainIfStateNot = ScanningState.NotInitialized::class
+                    ) { it.initialize(scanningStateRepo) }
+                    emptyList()
+                }
             }
         }
 
