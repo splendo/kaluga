@@ -21,6 +21,6 @@ import com.splendo.kaluga.scientific.ScientificValue
 
 class DefaultFormatter : Formatter {
     override fun format(value: ScientificValue<*, *>): String {
-        return "${value.value}"
+        return "${value.value} ${value.unit.symbol}"
     }
 }

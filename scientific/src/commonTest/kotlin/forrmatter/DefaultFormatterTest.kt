@@ -30,6 +30,7 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class DefaultFormatterTest {
@@ -45,6 +46,11 @@ class DefaultFormatterTest {
         val value = randomScientificValue()
 
         assertIs<String>(formatter.format(value), "It should convert scientific value to string")
+    }
+
+    @Test
+    fun testFormatting() {
+        assertEquals("1.0 m", formatter.format(1(Meter)))
     }
 }
 
