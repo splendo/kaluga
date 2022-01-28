@@ -13,7 +13,12 @@
     <string name="feature_system">System</string>
     <string name="feature_beacons">Beacons</string>
     <string name="feature_platform_specific">Platform specific features</string>
-    <string name="feature_platform_specific_compose">Compose</string>
+    <string name="feature_platform_specific_compose_navigation">Compose Navigation</string>
+    <string name="feature_platform_specific_compose_bottom_sheet">Compose Bottom Sheet</string>
+    <string name="feature_resources">Resources</string>
+    <string name="feature_resources_color">Color</string>
+    <string name="feature_resources_button">Button</string>
+    <string name="feature_resources_label">Label</string>
 
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
@@ -97,5 +102,11 @@
     <string name="bluetooth_permissions_write">Write</string>
     <string name="bluetooth_permissions_read_encrypted">Read Encrypted</string>
     <string name="bluetooth_permissions_write_encrypted">Write Encrypted</string>
+
+    <string name="bottom_sheet_show_sheet">Open Bottom Sheet</string>
+    <string name="bottom_sheet_show_sub_page">Open Sub Page</string>
+    <string name="bottom_sheet_sub_page_title">Sub Page</string>
+    <string name="bottom_sheet_sheet_content">This is a bottom sheet</string>
+    <string name="bottom_sheet_sheet_sub_page_title">Sheet Sub Page</string>
 
 </resources>

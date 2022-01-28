@@ -58,7 +58,7 @@ class SystemFeatureAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SystemFeatureViewHolder {
-        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_feature_button, parent, false) as AppCompatButton
+        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_list_button, parent, false) as AppCompatButton
         return SystemFeatureViewHolder(button)
     }
 

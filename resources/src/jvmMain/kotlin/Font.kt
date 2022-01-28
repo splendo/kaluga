@@ -14,7 +14,12 @@
     limitations under the License.
   
  */
-
+@file:JvmName("JvmFont")
 package com.splendo.kaluga.resources
 
 actual class Font
+
+actual val defaultFont: Font get() = Font()
+actual val defaultBoldFont: Font get() = Font()
+actual val defaultItalicFont: Font get() = Font()
+actual val defaultMonospaceFont: Font get() = Font()
