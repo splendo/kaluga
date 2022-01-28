@@ -17,10 +17,17 @@
 
 package com.splendo.kaluga.scientific.forrmatter
 
+import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.formatter.DefaultFormatter
 import com.splendo.kaluga.scientific.formatter.Formatter
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.Liter
 import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Mile
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.per
+import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -35,8 +42,16 @@ class DefaultFormatterTest {
 
     @Test
     fun format__it_converts_scientific_value_to_string() {
-        val value = 1(Meter)
+        val value = randomScientificValue()
 
         assertIs<String>(formatter.format(value), "It should convert scientific value to string")
     }
 }
+
+private fun randomScientificValue(): ScientificValue<*, *> = someScientificValues.random()
+private val someScientificValues = listOf<ScientificValue<*, *>>(
+    (0..10000).random()(Meter),
+    Random.nextDouble(0.0,10000.0)(Liter),
+    (0..10000).random()(Newton),
+    Random.nextDouble(0.0, 1000.0)(Mile per Hour)
+)
