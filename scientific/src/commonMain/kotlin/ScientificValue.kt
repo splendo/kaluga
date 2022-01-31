@@ -288,17 +288,7 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>
-    > Number.div(unit: ScientificValue<Quantity, Unit>) = toDecimal() / unit
-
-infix operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
     > ScientificValue<Quantity, Unit>.div(factor: Decimal) = div(factor, ::DefaultScientificValue)
-
-infix operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
-    > Decimal.div(unit: ScientificValue<Quantity, Unit>) = div(unit, ::DefaultScientificValue)
 
 fun <
     Quantity : PhysicalQuantity,
