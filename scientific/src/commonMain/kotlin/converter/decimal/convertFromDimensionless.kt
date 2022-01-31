@@ -22,11 +22,12 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.div
-import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.times
+import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
 import com.splendo.kaluga.scientific.unit.One
+import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
 
-infix operator fun Decimal.div(modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>): Decimal {
+infix operator fun Decimal.div(modifier: DimensionlessScientificValue<*>): Decimal {
     val scalar = this.invoke(One)
     val result = scalar / modifier
     return result.value.toDecimal()
