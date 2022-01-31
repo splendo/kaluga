@@ -21,15 +21,25 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.formatter.CommonFormatter
 import com.splendo.kaluga.scientific.formatter.Formatter
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Candela
 import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.Decameter
+import com.splendo.kaluga.scientific.unit.Decimeter
+import com.splendo.kaluga.scientific.unit.Gigameter
+import com.splendo.kaluga.scientific.unit.Hectometer
 import com.splendo.kaluga.scientific.unit.Hectopascal
 import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.Kilometer
 import com.splendo.kaluga.scientific.unit.Kilonewton
 import com.splendo.kaluga.scientific.unit.Liter
+import com.splendo.kaluga.scientific.unit.Megameter
 import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Microfarad
+import com.splendo.kaluga.scientific.unit.Micrometer
 import com.splendo.kaluga.scientific.unit.Mile
 import com.splendo.kaluga.scientific.unit.Milliliter
 import com.splendo.kaluga.scientific.unit.Millimeter
+import com.splendo.kaluga.scientific.unit.Nanometer
 import com.splendo.kaluga.scientific.unit.Newton
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.random.Random
@@ -54,13 +64,24 @@ class CommonFormatterTest {
         formatter = CommonFormatter.default
 
         assertEquals("1 m", formatter.format(1(Meter)))
+        assertEquals("2 nm", formatter.format(2(Nanometer)))
+        assertEquals("3 μm", formatter.format(3(Micrometer)))
+        assertEquals("4 mm", formatter.format(4(Millimeter)))
+        assertEquals("5 cm", formatter.format(5(Centimeter)))
+        assertEquals("6 dm", formatter.format(6(Decimeter)))
+        assertEquals("7 dam", formatter.format(7(Decameter)))
+        assertEquals("8 hm", formatter.format(8(Hectometer)))
+        assertEquals("9 km", formatter.format(9(Kilometer)))
+        assertEquals("10 Mm", formatter.format(10(Megameter)))
+        assertEquals("11 Gm", formatter.format(11(Gigameter)))
+
         assertEquals("1.5 m", formatter.format(1.5(Meter)))
         assertEquals("10 l", formatter.format(10(Liter)))
-        // assertEquals("10 ml", formatter.format(10(Milliliter))) // FIXME: Bug in kaluga, it prints cl (centiliter). The same for all Milli<Unit>
-        // assertEquals("150 mm", formatter.format(150(Millimeter)))
-        assertEquals("150 cm", formatter.format(150(Centimeter)))
+        assertEquals("10 ml", formatter.format(10(Milliliter)))
         assertEquals("1500 kN", formatter.format(1500(Kilonewton)))
         assertEquals("65 hP", formatter.format(65(Hectopascal)))
+        assertEquals("0.5 μF", formatter.format(0.5(Microfarad)))
+        assertEquals("16 mi", formatter.format(16(Mile)))
     }
 
     @Test
