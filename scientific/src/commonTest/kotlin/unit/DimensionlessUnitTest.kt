@@ -26,28 +26,56 @@ import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 
 class DimensionlessUnitTest {
     @Test
     fun oneUnitConstantTest() {
-        val one = One.constant
-        val result = one.decimalValue
+        val constant = One.constant
+        val result = constant.value.toDecimal()
+        val expected = 1.0.toDecimal()
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun oneUnitConstantDecimalRepresentationTest() {
+        val constant = One.constant
+        val result = constant.decimalValue
         val expected = 1.0.toDecimal()
         assertEquals(expected, result)
     }
 
     @Test
     fun oneUnitFromDecimalTest() {
-        val base = 123.0(One)
-        val result = base.value.toDecimal()
+        val dimensionlessValue = 123.0(One)
+        val result = dimensionlessValue.value.toDecimal()
         val expected = 123.0.toDecimal()
         assertEquals(expected, result)
     }
 
+    @Test
     fun oneUnitDecimalRepresentationTest() {
-        val base = 123.0(One)
-        val result = base.decimalValue
+        val dimensionlessValue = 123.0(One)
+        val result = dimensionlessValue.decimalValue
         val expected = 123.0.toDecimal()
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun oneUnitMultiplicationTest() {
+        val dimensionlessValue1 = 123.0(One)
+        val dimensionlessValue2 = 2.0(One)
+        val result = dimensionlessValue1 * dimensionlessValue2
+        val expected = 246.0(One)
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun oneUnitDivisionTest() {
+        val dimensionlessValue1 = 246.0(One)
+        val dimensionlessValue2 = 2.0(One)
+        val result = dimensionlessValue1 / dimensionlessValue2
+        val expected = 123.0(One)
         assertEquals(expected, result)
     }
 
@@ -67,67 +95,96 @@ class DimensionlessUnitTest {
         assertEquals(expected, result)
     }
 
+    // 120 * 1% = 1.2
+    // https://www.wolframalpha.com/input/?i=120+*+1%25
     @Test
     fun percentTimesDecimalTest() {
-        val base = 120.0.toDecimal()
+        val decimalValue = 120.0.toDecimal()
         val percent = 1(Percent)
-        val result = base * percent
+        val result = decimalValue * percent
         val expected = 1.2.toDecimal()
         assertEquals(expected, result)
     }
 
+    // 1% * 120 = 1.2
+    // https://www.wolframalpha.com/input/?i=1%25+*+120
     @Test
     fun percentTimesDecimalInverseTest() {
-        val base = 120.0.toDecimal()
+        val decimalValue = 120.0.toDecimal()
         val percent = 1(Percent)
-        val result =  percent * base
-        val expected = 1.2.toDecimal()
+        val result =  percent * decimalValue
+        val expected = 1.2(One)
         assertEquals(expected, result)
     }
 
+    // 120 / (12%) = 1000
+    // https://www.wolframalpha.com/input/?i=120+%2F+%2812%25%29
     @Test
     fun percentDivisorForDecimalTest() {
-        val base = 120.0.toDecimal()
-        val percent = 1(Percent)
-        val result = base / percent
-        val expected = 12000.0.toDecimal()
+        val decimalValue = 120.0.toDecimal()
+        val percent = 12(Percent)
+        val result = decimalValue / percent
+        val expected = 1000.0.toDecimal()
         assertEquals(expected, result)
     }
 
+    // (12%) / 120 = 0.001
+    // https://www.wolframalpha.com/input/?i=%2812%25%29+%2F+120
+    @Test
+    fun percentDivisorForDecimalInverseTest() {
+        val decimalValue = 120.0.toDecimal()
+        val percent = 12(Percent)
+        val result = percent / decimalValue
+        val expected = 0.001(One)
+        assertEquals(expected, result)
+    }
+
+    // 120kg * (1%) = 1.2kg
+    // https://www.wolframalpha.com/input/?i=120kg+*+%281%25%29
     @Test
     fun percentTimesUnitTest() {
-        val base = 120(Kilogram)
+        val scientificValue = 120(Kilogram)
         val percent = 1(Percent)
-        val result = base * percent
+        val result = scientificValue * percent
         val expected = 1.2(Kilogram)
         assertEquals(expected, result)
     }
 
+    // (1%) * 120kg = 1.2kg
+    // https://www.wolframalpha.com/input/?i=%281%25%29+*+120kg
+    @Test
+    fun percentTimesUnitInverseTest() {
+        val scientificValue = 120(Kilogram)
+        val percent = 1(Percent)
+        val result = percent * scientificValue
+        val expected = 1.2(Kilogram)
+        assertEquals(expected, result)
+    }
+
+    // 120kg / (1%) = 12000kg
+    // https://www.wolframalpha.com/input/?i=%281%25%29+*+120kg
     @Test
     fun percentDivisorForUnitTest() {
-        val base = 120(Kilogram)
+        val scientificValue = 120(Kilogram)
         val percent = 1(Percent)
-        val result = base / percent
+        val result = scientificValue / percent
         val expected = 12000.0(Kilogram)
         assertEquals(expected, result)
     }
 
     @Test
-    fun percentTimesUnitInverseTest() {
-        val base = 120(Kilogram)
-        val percent = 1(Percent)
-        val result = percent * base
-        val expected = 1.2(Kilogram)
-        assertEquals(expected, result)
-    }
-
-    @Test
     fun percentDivisorForUnitInverseTest() {
-        val base = 120(Kilogram)
-        val percent = 12(Percent)
-        val result = percent / base
-        val expected = 0.01(Kilogram)
-        assertEquals(expected, result)
+        /**
+         * Dividing a Dimensionless value by a Scientific Unit is not a permitted operation.
+         * This is because dividing a dimensionless value by an Unit (of any Quantity)
+         * Should produce an Inverse of that unit and currently those are not supported.
+         *
+         * For example:
+         * 9 / (3kg) = 3(kg^-1) [read as: three reciprocal kilograms]
+         *
+         * see: https://www.wolframalpha.com/input/?i=9+%2F+%283kg%29
+         */
+        assertFails { throw Exception("Invalid Operation") }
     }
 
     @Test
@@ -148,36 +205,36 @@ class DimensionlessUnitTest {
 
     @Test
     fun permillTimesDecimalTest() {
-        val base = 120.0.toDecimal()
+        val decimalValue = 120.0.toDecimal()
         val permill = 1(Permill)
-        val result = base * permill
+        val result = decimalValue * permill
         val expected = 0.12.toDecimal()
         assertEquals(expected, result)
     }
 
     @Test
     fun permillDivisorForDecimalTest() {
-        val base = 120.0.toDecimal()
+        val decimalValue = 120.0.toDecimal()
         val permill = 1(Permill)
-        val result = base / permill
+        val result = decimalValue / permill
         val expected = 120000.0.toDecimal()
         assertEquals(expected, result)
     }
 
     @Test
     fun permillTimesUnitTest() {
-        val base = 120(Kilogram)
+        val scientificValue = 120(Kilogram)
         val permill = 1(Permill)
-        val result = base * permill
+        val result = scientificValue * permill
         val expected = 0.12(Kilogram)
         assertEquals(expected, result)
     }
 
     @Test
     fun permillDivisorForUnitTest() {
-        val base = 120(Kilogram)
+        val scientificValue = 120(Kilogram)
         val permill = 1(Permill)
-        val result = base / permill
+        val result = scientificValue / permill
         val expected = 120000.0(Kilogram)
         assertEquals(expected, result)
     }
