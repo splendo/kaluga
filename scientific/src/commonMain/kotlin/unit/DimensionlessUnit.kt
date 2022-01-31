@@ -21,6 +21,8 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke
@@ -70,8 +72,17 @@ import kotlinx.serialization.Serializable
  * Source:  "SI Brochure: The International System of Units, 9th Edition".
  */
 @Serializable
+sealed class Dimensionless : AbstractScientificUnit<PhysicalQuantity.Dimensionless>(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+    companion object {
+        operator fun <
+            Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
+            > Number.invoke(unit: Unit) = this.toDecimal()(unit, ::DimensionlessScientificValue)
 
-sealed class Dimensionless : ScientificUnit<PhysicalQuantity.Dimensionless>, MetricAndImperialScientificUnit<PhysicalQuantity.Dimensionless>
+        operator fun <
+            Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
+            > Decimal.invoke(unit: Unit) = this(unit, ::DimensionlessScientificValue)
+    }
+}
 
 val DimensionlessUnits: Set<Dimensionless> get() = setOf(
     One,
@@ -80,7 +91,8 @@ val DimensionlessUnits: Set<Dimensionless> get() = setOf(
 )
 
 @Serializable
-object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+object One : Dimensionless() {
+    const val UNIT_VALUE = 1.0
     override val symbol: String = ""
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
@@ -88,10 +100,10 @@ object One : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
-val One.constant: ScientificValue<PhysicalQuantity.Dimensionless, One> get() = 1.invoke(One)
+val One.constant get() = One.UNIT_VALUE.invoke(One, ::DimensionlessScientificValue)
 
 @Serializable
-object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+object Percent : Dimensionless() {
     const val PARTS_PER_HUNDRED = 100.0
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
@@ -101,7 +113,7 @@ object Percent : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImpe
 }
 
 @Serializable
-object Permill : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
+object Permill : Dimensionless() {
     const val PARTS_PER_THOUSAND = 1000.0
     override val symbol: String = "‰"
     override val system = MeasurementSystem.MetricAndImperial
