@@ -109,3 +109,24 @@ object Permill : Dimensionless(), MetricBaseUnit<MeasurementSystem.MetricAndImpe
     override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_THOUSAND.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_THOUSAND.toDecimal()
 }
+
+/**
+ * Dimensionless scientific value is different from [DefaultScientificValue] when it comes to
+ * decimal representation.
+ * i.e
+ * ```
+   val percent = 12(Percent)
+   print(percent.value) // 12
+   print(percent.decimalValue) // 0.12
+ * ```
+ */
+@Serializable
+data class DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>>(
+    override val value: Double,
+    override val unit: Unit
+) : ScientificValue<PhysicalQuantity.Dimensionless, Unit> {
+    constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
+
+    override val decimalValue: Decimal
+        get() = unit.toSIUnit(value.toDecimal())
+}
