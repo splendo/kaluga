@@ -390,9 +390,7 @@ internal fun <
     left: ScientificValue<LeftQuantity, LeftUnit>,
     right: ScientificValue<RightQuantity, RightUnit>,
     factory: (Decimal, TargetUnit) -> Value
-): Value {
-        return fromSIUnit(left.unit.toSIUnit(left.value.toDecimal()) * right.unit.toSIUnit(right.value.toDecimal()))(this, factory)
-    }
+) = fromSIUnit(left.unit.toSIUnit(left.value.toDecimal()) * right.unit.toSIUnit(right.value.toDecimal()))(this, factory)
 
 internal fun <
     InverseQuantity : PhysicalQuantity,
