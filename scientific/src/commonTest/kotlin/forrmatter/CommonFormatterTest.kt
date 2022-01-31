@@ -25,6 +25,7 @@ import com.splendo.kaluga.scientific.unit.Candela
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.Decameter
 import com.splendo.kaluga.scientific.unit.Decimeter
+import com.splendo.kaluga.scientific.unit.FootCandle
 import com.splendo.kaluga.scientific.unit.Gigameter
 import com.splendo.kaluga.scientific.unit.Hectometer
 import com.splendo.kaluga.scientific.unit.Hectopascal
@@ -32,6 +33,8 @@ import com.splendo.kaluga.scientific.unit.Hour
 import com.splendo.kaluga.scientific.unit.Kilometer
 import com.splendo.kaluga.scientific.unit.Kilonewton
 import com.splendo.kaluga.scientific.unit.Liter
+import com.splendo.kaluga.scientific.unit.Lumen
+import com.splendo.kaluga.scientific.unit.Lux
 import com.splendo.kaluga.scientific.unit.Megameter
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Microfarad
@@ -41,6 +44,7 @@ import com.splendo.kaluga.scientific.unit.Milliliter
 import com.splendo.kaluga.scientific.unit.Millimeter
 import com.splendo.kaluga.scientific.unit.Nanometer
 import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.random.Random
 import kotlin.test.BeforeTest
@@ -82,6 +86,11 @@ class CommonFormatterTest {
         assertEquals("65 hP", formatter.format(65(Hectopascal)))
         assertEquals("0.5 μF", formatter.format(0.5(Microfarad)))
         assertEquals("16 mi", formatter.format(16(Mile)))
+        assertEquals("1 cd", formatter.format(1(Candela)))
+        assertEquals("11 lm", formatter.format(11(Lumen)))
+        assertEquals("15 lx", formatter.format(15(Lux)))
+        assertEquals("0.342 fc", formatter.format(0.342(FootCandle)))
+        assertEquals("30 km/h", formatter.format(30(Kilometer per Hour)))
     }
 
     @Test

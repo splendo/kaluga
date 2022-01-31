@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific.formatter
 
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.minus
 import kotlin.math.roundToLong
 
 class CommonFormatter private constructor(builder: Builder) : Formatter {
@@ -46,6 +45,8 @@ class CommonFormatter private constructor(builder: Builder) : Formatter {
     override fun format(value: ScientificValue<*, *>): String = value.value.toDouble().let {
         if (it.compareTo(it.roundToLong()) == 0) it.toLong() else value.value
     }.let {
-        "$it ${value.unit.symbol}"
+        "$it ${value.unit.symbol.withoutSpaces()}"
     }
 }
+
+fun String.withoutSpaces() = filterNot { it.isWhitespace() }
