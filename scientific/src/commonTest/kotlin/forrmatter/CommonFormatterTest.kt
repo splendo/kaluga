@@ -18,13 +18,18 @@
 package com.splendo.kaluga.scientific.forrmatter
 
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.formatter.DefaultFormatter
+import com.splendo.kaluga.scientific.formatter.CommonFormatter
 import com.splendo.kaluga.scientific.formatter.Formatter
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.Hectopascal
 import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.Kilonewton
 import com.splendo.kaluga.scientific.unit.Liter
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Mile
+import com.splendo.kaluga.scientific.unit.Milliliter
+import com.splendo.kaluga.scientific.unit.Millimeter
 import com.splendo.kaluga.scientific.unit.Newton
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.random.Random
@@ -33,24 +38,36 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class DefaultFormatterTest {
+class CommonFormatterTest {
     lateinit var formatter: Formatter
-
-    @BeforeTest
-    fun setUp() {
-        formatter = DefaultFormatter()
-    }
 
     @Test
     fun format__it_converts_scientific_value_to_string() {
+        formatter = CommonFormatter.default
         val value = randomScientificValue()
 
         assertIs<String>(formatter.format(value), "It should convert scientific value to string")
     }
 
     @Test
+    fun format__defaultFormatter__it_uses_value_and_symbol() {
+        formatter = CommonFormatter.default
+
+        assertEquals("1 m", formatter.format(1(Meter)))
+        assertEquals("1.5 m", formatter.format(1.5(Meter)))
+        assertEquals("10 l", formatter.format(10(Liter)))
+        // assertEquals("10 ml", formatter.format(10(Milliliter))) // FIXME: Bug in kaluga, it prints cl (centiliter). The same for all Milli<Unit>
+        // assertEquals("150 mm", formatter.format(150(Millimeter)))
+        assertEquals("150 cm", formatter.format(150(Centimeter)))
+        assertEquals("1500 kN", formatter.format(1500(Kilonewton)))
+        assertEquals("65 hP", formatter.format(65(Hectopascal)))
+    }
+
+    @Test
     fun testFormatting() {
-        assertEquals("1.0 m", formatter.format(1(Meter)))
+        formatter = CommonFormatter.default
+
+        // assertEquals("1.0 m", formatter.format(1(Meter)))
     }
 }
 
