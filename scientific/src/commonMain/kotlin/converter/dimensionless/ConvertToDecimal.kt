@@ -18,14 +18,22 @@
 package com.splendo.kaluga.scientific.converter.dimensionless
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.converter.decimal.div
-import com.splendo.kaluga.scientific.converter.decimal.times
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
+import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
+import com.splendo.kaluga.scientific.unit.One
+import com.splendo.kaluga.scientific.unit.ScientificUnit
 
-infix operator fun DimensionlessScientificValue<*>.times(
+infix operator fun <
+    Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
+    > DimensionlessScientificValue<Unit>.times(
     decimal: Decimal
-) = decimal.times(this)
+) = decimal.invoke(One).let { it.unit.byMultiplying(this, it, ::DimensionlessScientificValue) }
 
-infix operator fun DimensionlessScientificValue<*>.div(
+infix operator fun <
+    Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
+    > DimensionlessScientificValue<Unit>.div(
     decimal: Decimal
-) = decimal.div(this)
+) = decimal.invoke(One).let { it.unit.byDividing(this, it, ::DimensionlessScientificValue) }

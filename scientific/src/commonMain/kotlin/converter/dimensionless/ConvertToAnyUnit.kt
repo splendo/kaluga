@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 
 infix operator fun <
@@ -29,13 +30,13 @@ infix operator fun <
     Unit : ScientificUnit<Quantity>,
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
     > ScientificValue<Quantity, Unit>.times(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>
-): ScientificValue<Quantity, Unit> = unit.byMultiplying(this, modifier, ::DefaultScientificValue)
+    modifier: DimensionlessScientificValue<Modifier>
+) = unit.byMultiplying(this, modifier, ::DefaultScientificValue)
 
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
     > ScientificValue<Quantity, Unit>.div(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>
-): ScientificValue<Quantity, Unit> = unit.byDividing(this, modifier, ::DefaultScientificValue)
+    modifier: DimensionlessScientificValue<Modifier>
+) = unit.byDividing(this, modifier, ::DefaultScientificValue)
