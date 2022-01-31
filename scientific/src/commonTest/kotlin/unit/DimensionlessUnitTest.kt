@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.converter.decimal.times
 import com.splendo.kaluga.scientific.converter.dimensionless.div
 import com.splendo.kaluga.scientific.converter.dimensionless.times
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,7 +36,15 @@ class DimensionlessUnitTest {
         assertEquals(expected, result)
     }
 
+    @Test
     fun oneUnitFromDecimalTest() {
+        val base = 123.0(One)
+        val result = base.value.toDecimal()
+        val expected = 123.0.toDecimal()
+        assertEquals(expected, result)
+    }
+
+    fun oneUnitDecimalRepresentationTest() {
         val base = 123.0(One)
         val result = base.decimalValue
         val expected = 123.0.toDecimal()
@@ -45,8 +54,16 @@ class DimensionlessUnitTest {
     @Test
     fun percentFromDecimalTest() {
         val percent = 1(Percent)
-        val result = percent.decimalValue
+        val result = percent.value.toDecimal()
         val expected = 1.0.toDecimal()
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun percentDecimalRepresentationTest() {
+        val percent = 1(Percent)
+        val result = percent.decimalValue
+        val expected = 0.01.toDecimal()
         assertEquals(expected, result)
     }
 
@@ -55,6 +72,15 @@ class DimensionlessUnitTest {
         val base = 120.0.toDecimal()
         val percent = 1(Percent)
         val result = base * percent
+        val expected = 1.2.toDecimal()
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun percentTimesDecimalInverseTest() {
+        val base = 120.0.toDecimal()
+        val percent = 1(Percent)
+        val result =  percent * base
         val expected = 1.2.toDecimal()
         assertEquals(expected, result)
     }
@@ -85,11 +111,38 @@ class DimensionlessUnitTest {
         val expected = 12000.0(Kilogram)
         assertEquals(expected, result)
     }
+
+    @Test
+    fun percentTimesUnitInverseTest() {
+        val base = 120(Kilogram)
+        val percent = 1(Percent)
+        val result = percent * base
+        val expected = 1.2(Kilogram)
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun percentDivisorForUnitInverseTest() {
+        val base = 120(Kilogram)
+        val percent = 12(Percent)
+        val result = percent / base
+        val expected = 0.01(Kilogram)
+        assertEquals(expected, result)
+    }
+
     @Test
     fun permillFromDecimalTest() {
         val permill = 1(Permill)
-        val result = permill.decimalValue
+        val result = permill.value.toDecimal()
         val expected = 1.0.toDecimal()
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun permillFromDecimalRepresentationTest() {
+        val percent = 1(Percent)
+        val result = percent.decimalValue
+        val expected = 0.01.toDecimal()
         assertEquals(expected, result)
     }
 
