@@ -18,8 +18,10 @@
 package com.splendo.kaluga.scientific.formatter
 
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.math.roundToLong
 
+private typealias CustomFormatHandler = (Number) -> String
 class CommonFormatter private constructor(builder: Builder) : Formatter {
     class Builder private constructor() {
         companion object {
@@ -30,23 +32,29 @@ class CommonFormatter private constructor(builder: Builder) : Formatter {
             }
         }
 
-        val addedFormatters : Array<Formatter> = arrayOf()
-        fun append() {}
+        internal val customFormatters = mutableMapOf< ScientificUnit<*>, CustomFormatHandler>()
+        fun ifUnitIs(unit: ScientificUnit<*>, format: CustomFormatHandler) {
+            customFormatters[unit] = format
+        }
     }
 
     companion object {
         val default = Builder.build()
     }
 
-    init {
+    private val customFormatters = builder.customFormatters
 
+    override fun format(value: ScientificValue<*, *>) : String {
+       val customFormatter = customFormatters[value.unit]
+        return customFormatter?.let { it(value.value.pretty()) } ?: defaultFormat(value)
     }
 
-    override fun format(value: ScientificValue<*, *>): String = value.value.toDouble().let {
-        if (it.compareTo(it.roundToLong()) == 0) it.toLong() else value.value
-    }.let {
-        "$it ${value.unit.symbol.withoutSpaces()}"
-    }
+    private fun defaultFormat(value: ScientificValue<*, *>) : String =
+        "${value.value.pretty()} ${value.unit.symbol.withoutSpaces()}"
 }
 
-fun String.withoutSpaces() = filterNot { it.isWhitespace() }
+private fun Number.pretty() = toDouble().let {
+    if (it.compareTo(it.roundToLong()) == 0) it.toLong() else this
+}
+
+private fun String.withoutSpaces() = filterNot { it.isWhitespace() }

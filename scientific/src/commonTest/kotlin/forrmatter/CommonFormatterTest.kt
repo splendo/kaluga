@@ -44,10 +44,8 @@ import com.splendo.kaluga.scientific.unit.Milliliter
 import com.splendo.kaluga.scientific.unit.Millimeter
 import com.splendo.kaluga.scientific.unit.Nanometer
 import com.splendo.kaluga.scientific.unit.Newton
-import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.random.Random
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -93,11 +91,18 @@ class CommonFormatterTest {
         assertEquals("30 km/h", formatter.format(30(Kilometer per Hour)))
     }
 
+    // @Ignore
     @Test
-    fun testFormatting() {
-        formatter = CommonFormatter.default
+    fun format__custom_format_added__it_uses_custom_formatter() {
+        formatter = CommonFormatter.Builder.build {
+            ifUnitIs(Kilometer per Hour) { "$it км/ч" }
+            ifUnitIs(Newton) { "🍏_$it" }
+        }
 
-        // assertEquals("1.0 m", formatter.format(1(Meter)))
+        assertEquals("1 m", formatter.format(1(Meter)))
+        assertEquals("1.5 l", formatter.format(1.5(Liter)))
+        assertEquals("5 км/ч", formatter.format(5(Kilometer per Hour)))
+        assertEquals("🍏_9.8", formatter.format(9.8(Newton)))
     }
 }
 
