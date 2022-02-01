@@ -57,4 +57,4 @@ private fun Number.pretty() = toDouble().let {
     if (it.compareTo(it.roundToLong()) == 0) it.toLong() else this
 }
 
-private fun String.withoutSpaces() = filterNot { it.isWhitespace() }
+private fun String.withoutSpaces() = filterNot(Char::isWhitespace)

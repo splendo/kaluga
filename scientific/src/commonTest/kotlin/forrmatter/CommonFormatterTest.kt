@@ -15,11 +15,9 @@
 
  */
 
-package com.splendo.kaluga.scientific.forrmatter
+package com.splendo.kaluga.scientific.formatter
 
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.formatter.CommonFormatter
-import com.splendo.kaluga.scientific.formatter.Formatter
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Candela
 import com.splendo.kaluga.scientific.unit.Centimeter
@@ -91,7 +89,6 @@ class CommonFormatterTest {
         assertEquals("30 km/h", formatter.format(30(Kilometer per Hour)))
     }
 
-    // @Ignore
     @Test
     fun format__custom_format_added__it_uses_custom_formatter() {
         formatter = CommonFormatter.Builder.build {
