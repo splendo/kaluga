@@ -127,9 +127,9 @@ object Permill : Dimensionless() {
  * decimal representation.
  * i.e
  * ```
-   val percent = 12(Percent)
-   print(percent.value) // 12
-   print(percent.decimalValue) // 0.12
+ val percent = 12(Percent)
+ print(percent.value) // 12
+ print(percent.decimalValue) // 0.12
  * ```
  */
 @Serializable
