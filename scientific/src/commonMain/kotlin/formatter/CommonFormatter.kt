@@ -22,13 +22,13 @@ import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.math.roundToLong
 
 private typealias CustomFormatHandler = (Number) -> String
-class CommonFormatter private constructor(builder: Builder) : Formatter {
-    class Builder private constructor() {
+sealed class CommonFormatter(builder: Builder) : Formatter {
+    class Builder {
         companion object {
             fun build(build: Builder.() -> Unit = {}) : Formatter {
                 val builder = Builder()
                 build(builder)
-                return CommonFormatter(builder)
+                return Buildable(builder)
             }
         }
 
@@ -36,10 +36,6 @@ class CommonFormatter private constructor(builder: Builder) : Formatter {
         fun ifUnitIs(unit: ScientificUnit<*>, format: CustomFormatHandler) {
             customFormatters[unit] = format
         }
-    }
-
-    companion object {
-        val default = Builder.build()
     }
 
     private val customFormatters = builder.customFormatters
@@ -51,6 +47,17 @@ class CommonFormatter private constructor(builder: Builder) : Formatter {
 
     private fun defaultFormat(value: ScientificValue<*, *>) : String =
         "${value.value.pretty()} ${value.unit.symbol.withoutSpaces()}"
+
+    /**
+     *   The custom formatter with customisation applied using builder
+     *   Is private as formatter of this type can be only created using builder
+     */
+    private class Buildable(builder: Builder) : CommonFormatter(builder)
+
+    /**
+     *   Default formatter with no customisation applied
+     */
+    object Default : CommonFormatter(Builder())
 }
 
 private fun Number.pretty() = toDouble().let {

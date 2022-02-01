@@ -53,7 +53,7 @@ class CommonFormatterTest {
 
     @Test
     fun format__it_converts_scientific_value_to_string() {
-        formatter = CommonFormatter.default
+        formatter = CommonFormatter.Default
         val value = randomScientificValue()
 
         assertIs<String>(formatter.format(value), "It should convert scientific value to string")
@@ -61,7 +61,7 @@ class CommonFormatterTest {
 
     @Test
     fun format__defaultFormatter__it_uses_value_and_symbol() {
-        formatter = CommonFormatter.default
+        formatter = CommonFormatter.Default
 
         assertEquals("1 m", formatter.format(1(Meter)))
         assertEquals("2 nm", formatter.format(2(Nanometer)))
