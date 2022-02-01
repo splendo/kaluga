@@ -112,7 +112,7 @@ class DimensionlessUnitTest {
     fun percentTimesDecimalInverseTest() {
         val decimalValue = 120.0.toDecimal()
         val percent = 1(Percent)
-        val result =  percent * decimalValue
+        val result = percent * decimalValue
         val expected = 1.2(One)
         assertEquals(expected, result)
     }

@@ -21,9 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.converter.dimensionless.div
 import com.splendo.kaluga.scientific.converter.dimensionless.times
+import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
 import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
 import com.splendo.kaluga.scientific.unit.One
-import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
 
 infix operator fun Decimal.div(
     modifier: DimensionlessScientificValue<*>
