@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter.dimensionless
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.DefaultDimensionlessScientificValue
 import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 
@@ -30,19 +32,29 @@ infix operator fun <
     RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > DimensionlessScientificValue<LeftUnit>.times(
     modifier: DimensionlessScientificValue<RightUnit>
-) = unit.byMultiplying(this, modifier, ::DimensionlessScientificValue)
+) = modify(modifier, ::DefaultDimensionlessScientificValue)
 
 infix operator fun <
     LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > DimensionlessScientificValue<LeftUnit>.div(
     modifier: DimensionlessScientificValue<RightUnit>
-) = unit.byDividing(this, modifier, ::DimensionlessScientificValue)
+) = unit.byDividing(this, modifier, ::DefaultDimensionlessScientificValue)
 
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
     > DimensionlessScientificValue<Modifier>.times(
-    unit: ScientificValue<Quantity, Unit>
-) = unit.unit.byMultiplying(unit, this, ::DefaultScientificValue)
+    value: ScientificValue<Quantity, Unit>
+) = value.modify(this, ::DefaultScientificValue)
+
+fun <
+    Quantity : PhysicalQuantity,
+    Unit : ScientificUnit<Quantity>,
+    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>,
+    Value : ScientificValue<Quantity, Unit>
+    > ScientificValue<Quantity, Unit>.modify(
+    modifier: DimensionlessScientificValue<Modifier>,
+    factory: (Decimal, Unit) -> Value
+) = unit.byMultiplying(this, modifier, factory)

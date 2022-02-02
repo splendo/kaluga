@@ -76,11 +76,11 @@ sealed class Dimensionless : AbstractScientificUnit<PhysicalQuantity.Dimensionle
     companion object {
         operator fun <
             Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
-            > Number.invoke(unit: Unit) = this.toDecimal()(unit, ::DimensionlessScientificValue)
+            > Number.invoke(unit: Unit) = this.toDecimal()(unit, ::DefaultDimensionlessScientificValue)
 
         operator fun <
             Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
-            > Decimal.invoke(unit: Unit) = this(unit, ::DimensionlessScientificValue)
+            > Decimal.invoke(unit: Unit) = this(unit, ::DefaultDimensionlessScientificValue)
     }
 }
 
@@ -100,7 +100,7 @@ object One : Dimensionless() {
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
-val One.constant get() = One.UNIT_VALUE.invoke(One, ::DimensionlessScientificValue)
+val One.constant get() = One.UNIT_VALUE.invoke(One, ::DefaultDimensionlessScientificValue)
 
 @Serializable
 object Percent : Dimensionless() {
@@ -132,11 +132,13 @@ object Permill : Dimensionless() {
  print(percent.decimalValue) // 0.12
  * ```
  */
+interface DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> : ScientificValue<PhysicalQuantity.Dimensionless, Unit>
+
 @Serializable
-data class DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>>(
+data class DefaultDimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>>(
     override val value: Double,
     override val unit: Unit
-) : ScientificValue<PhysicalQuantity.Dimensionless, Unit> {
+) : DimensionlessScientificValue<Unit> {
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 
     override val decimalValue: Decimal
