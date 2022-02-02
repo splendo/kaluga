@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.math.roundToLong
 
 private typealias CustomFormatHandler = (Number) -> String
+
 sealed class CommonFormatter(builder: Builder) : Formatter {
     class Builder {
         companion object {
@@ -32,7 +33,7 @@ sealed class CommonFormatter(builder: Builder) : Formatter {
             }
         }
 
-        internal val customFormatters = mutableMapOf< ScientificUnit<*>, CustomFormatHandler>()
+        internal val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
         fun ifUnitIs(unit: ScientificUnit<*>, format: CustomFormatHandler) {
             customFormatters[unit] = format
         }
@@ -41,7 +42,7 @@ sealed class CommonFormatter(builder: Builder) : Formatter {
     private val customFormatters = builder.customFormatters
 
     override fun format(value: ScientificValue<*, *>): String {
-       val customFormatter = customFormatters[value.unit]
+        val customFormatter = customFormatters[value.unit]
         return customFormatter?.let { it(value.value.pretty()) } ?: defaultFormat(value)
     }
 
