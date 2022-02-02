@@ -26,7 +26,7 @@ private typealias CustomFormatHandler = (Number) -> String
 sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueFormatter {
     class Builder {
         interface FormatApplier {
-            fun useFormat(format: CustomFormatHandler)
+            infix fun use(format: CustomFormatHandler)
         }
 
         companion object {
@@ -40,7 +40,7 @@ sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueF
         internal val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
 
         fun forUnit(unit: ScientificUnit<*>) = object : FormatApplier {
-            override fun useFormat(format: CustomFormatHandler) {
+            override infix  fun use(format: CustomFormatHandler) {
                 customFormatters[unit] = format
             }
         }
