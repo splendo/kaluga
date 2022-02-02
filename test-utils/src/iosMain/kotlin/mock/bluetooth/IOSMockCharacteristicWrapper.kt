@@ -29,7 +29,8 @@ import platform.Foundation.NSData
 
 class IOSMockCharacteristicWrapper(
     override val uuid: CBUUID = CBUUID(),
-    descriptorUuids: List<CBUUID> = emptyList()
+    descriptorUuids: List<CBUUID> = emptyList(),
+    override val properties: Int = 0
 ) : MockCharacteristicWrapper {
 
     val isReadCompleted = EmptyCompletableDeferred()
