@@ -48,12 +48,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class CommonFormatterTest {
-    lateinit var formatter: Formatter
+class CommonScientificValueFormatterTest {
+    lateinit var formatter: ScientificValueFormatter
 
     @Test
     fun format__it_converts_scientific_value_to_string() {
-        formatter = CommonFormatter
+        formatter = CommonScientificValueFormatter
         val value = randomScientificValue()
 
         assertIs<String>(formatter.format(value), "It should convert scientific value to string")
@@ -61,7 +61,7 @@ class CommonFormatterTest {
 
     @Test
     fun format__defaultFormatter__it_uses_value_and_symbol() {
-        formatter = CommonFormatter
+        formatter = CommonScientificValueFormatter
 
         assertEquals("1 m", formatter.format(1(Meter)))
         assertEquals("2 nm", formatter.format(2(Nanometer)))
@@ -91,7 +91,7 @@ class CommonFormatterTest {
 
     @Test
     fun format__custom_format_added__it_uses_custom_formatter() {
-        formatter = CommonFormatter.Builder.build {
+        formatter = CommonScientificValueFormatter.Builder.build {
             ifUnitIs(Kilometer per Hour) { "$it км/ч" }
             ifUnitIs(Newton) { "🍏_$it" }
         }

@@ -23,10 +23,10 @@ import kotlin.math.roundToLong
 
 private typealias CustomFormatHandler = (Number) -> String
 
-sealed class CommonFormatter(builder: Builder) : Formatter {
+sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueFormatter {
     class Builder {
         companion object {
-            fun build(build: Builder.() -> Unit = {}): Formatter {
+            fun build(build: Builder.() -> Unit = {}): ScientificValueFormatter {
                 val builder = Builder()
                 build(builder)
                 return Buildable(builder)
@@ -53,12 +53,12 @@ sealed class CommonFormatter(builder: Builder) : Formatter {
      *   The custom formatter with customisation applied using builder
      *   Is private as formatter of this type can be only created using builder
      */
-    private class Buildable(builder: Builder) : CommonFormatter(builder)
+    private class Buildable(builder: Builder) : CommonScientificValueFormatter(builder)
 
     /**
      *   Default formatter with no customisation applied
      */
-    companion object Default : CommonFormatter(Builder())
+    companion object Default : CommonScientificValueFormatter(Builder())
 }
 
 private fun Number.pretty() = toDouble().let {

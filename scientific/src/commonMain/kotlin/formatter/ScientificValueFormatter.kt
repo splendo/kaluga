@@ -19,9 +19,9 @@ package com.splendo.kaluga.scientific.formatter
 
 import com.splendo.kaluga.scientific.ScientificValue
 
-interface Formatter {
+interface ScientificValueFormatter {
     fun format(value: ScientificValue<*, *>): String
 }
 
-fun ScientificValue<*, *>.toString(formatter: Formatter = CommonFormatter): String =
+fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonScientificValueFormatter): String =
     formatter.format(this)
