@@ -57,7 +57,7 @@ sealed class CommonFormatter(builder: Builder) : Formatter {
     /**
      *   Default formatter with no customisation applied
      */
-    object Default : CommonFormatter(Builder())
+    companion object Default : CommonFormatter(Builder())
 }
 
 private fun Number.pretty() = toDouble().let {

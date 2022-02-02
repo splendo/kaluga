@@ -23,4 +23,4 @@ interface Formatter {
     fun format(value: ScientificValue<*, *>) : String
 }
 
-fun ScientificValue<*, *>.toString(formatter: Formatter = CommonFormatter.Default) : String = formatter.format(this)
+fun ScientificValue<*, *>.toString(formatter: Formatter = CommonFormatter) : String = formatter.format(this)
