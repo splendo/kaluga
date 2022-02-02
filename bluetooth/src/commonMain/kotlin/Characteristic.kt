@@ -127,7 +127,7 @@ fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isN
     properties and property.reduce { acc, i -> acc.or(i) } != 0
 } else { false }
 
- sealed class CharacteristicProperties(val value: Int) {
+sealed class CharacteristicProperties(val value: Int) {
     object Broadcast : CharacteristicProperties(0x01)
     object Read : CharacteristicProperties(0x02)
     object WriteWithoutResponse : CharacteristicProperties(0x04)
