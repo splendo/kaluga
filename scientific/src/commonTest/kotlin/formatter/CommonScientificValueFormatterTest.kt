@@ -92,8 +92,8 @@ class CommonScientificValueFormatterTest {
     @Test
     fun format__custom_format_added__it_uses_custom_formatter() {
         formatter = CommonScientificValueFormatter.Builder.build {
-            ifUnitIs(Kilometer per Hour) { "$it км/ч" }
-            ifUnitIs(Newton) { "🍏_$it" }
+            forUnit(Kilometer per Hour).useFormat { "$it км/ч" }
+            forUnit(Newton).useFormat { "🍏_$it" }
         }
 
         assertEquals("1 m", formatter.format(1(Meter)))
