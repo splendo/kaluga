@@ -167,7 +167,7 @@ actual class AlertPresenter(
         editText.layoutParams = layoutParams
         linearLayout.addView(editText)
         val padding =
-            context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPixel(context)
+            context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPixel(context).toInt()
         linearLayout.setPaddingRelative(padding, 0, padding, 0)
         editText.inputType = InputType.TYPE_CLASS_TEXT
         editText.addTextChangedListener(object : TextWatcher {
