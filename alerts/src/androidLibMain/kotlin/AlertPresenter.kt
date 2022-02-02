@@ -22,7 +22,6 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -32,6 +31,7 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.utils.applyIf
+import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -167,7 +167,7 @@ actual class AlertPresenter(
         editText.layoutParams = layoutParams
         linearLayout.addView(editText)
         val padding =
-            context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPx(context)
+            context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPixel(context)
         linearLayout.setPaddingRelative(padding, 0, padding, 0)
         editText.inputType = InputType.TYPE_CLASS_TEXT
         editText.addTextChangedListener(object : TextWatcher {
@@ -212,11 +212,3 @@ fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder =
     getOrPutAndRemoveOnDestroyFromCache {
         AlertPresenter.Builder(lifecycleManagerObserver())
     }
-
-fun Float.dpToPx(context: Context): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this,
-        context.resources.displayMetrics
-    ).toInt()
-}
