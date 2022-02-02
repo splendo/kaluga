@@ -106,7 +106,7 @@ class CommonFormatterTest {
 private fun randomScientificValue(): ScientificValue<*, *> = someScientificValues.random()
 private val someScientificValues = listOf<ScientificValue<*, *>>(
     (0..10000).random()(Meter),
-    Random.nextDouble(0.0,10000.0)(Liter),
+    Random.nextDouble(0.0, 10000.0)(Liter),
     (0..10000).random()(Newton),
     Random.nextDouble(0.0, 1000.0)(Mile per Hour)
 )
