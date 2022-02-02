@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific.formatter
 import com.splendo.kaluga.scientific.ScientificValue
 
 interface Formatter {
-    fun format(value: ScientificValue<*, *>) : String
+    fun format(value: ScientificValue<*, *>): String
 }
 
-fun ScientificValue<*, *>.toString(formatter: Formatter = CommonFormatter) : String = formatter.format(this)
+fun ScientificValue<*, *>.toString(formatter: Formatter = CommonFormatter): String = formatter.format(this)

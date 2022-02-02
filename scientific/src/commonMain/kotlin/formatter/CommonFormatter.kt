@@ -25,7 +25,7 @@ private typealias CustomFormatHandler = (Number) -> String
 sealed class CommonFormatter(builder: Builder) : Formatter {
     class Builder {
         companion object {
-            fun build(build: Builder.() -> Unit = {}) : Formatter {
+            fun build(build: Builder.() -> Unit = {}): Formatter {
                 val builder = Builder()
                 build(builder)
                 return Buildable(builder)
@@ -40,12 +40,12 @@ sealed class CommonFormatter(builder: Builder) : Formatter {
 
     private val customFormatters = builder.customFormatters
 
-    override fun format(value: ScientificValue<*, *>) : String {
+    override fun format(value: ScientificValue<*, *>): String {
        val customFormatter = customFormatters[value.unit]
         return customFormatter?.let { it(value.value.pretty()) } ?: defaultFormat(value)
     }
 
-    private fun defaultFormat(value: ScientificValue<*, *>) : String =
+    private fun defaultFormat(value: ScientificValue<*, *>): String =
         "${value.value.pretty()} ${value.unit.symbol.withoutSpaces()}"
 
     /**
