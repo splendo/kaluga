@@ -19,8 +19,6 @@ package com.splendo.kaluga.test.mock.bluetooth
 
 import android.bluetooth.BluetoothDevice
 import com.splendo.kaluga.bluetooth.ServiceWrapper
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 
 const val deviceName = "name"
@@ -31,12 +29,4 @@ actual fun createDeviceWrapper(
     deviceName: String?
 ): DeviceWrapper = MockDeviceWrapper(deviceName, address, bondState)
 
-actual fun createServiceWrapper(
-    stateRepo: DeviceStateFlowRepo,
-    uuid: UUID,
-    characteristics: List<Pair<java.util.UUID, List<java.util.UUID>>>
-): ServiceWrapper =
-    MockServiceWrapper(
-        uuid,
-        characteristics
-    )
+actual fun ServiceWrapperBuilder.build(): ServiceWrapper = MockServiceWrapper(builder = this)

@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
 class BluetoothCharacteristicTest : BluetoothFlowTest<Characteristic?>() {
@@ -45,33 +44,6 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<Characteristic?>() {
         val characteristic = characteristic
         test {
             assertEquals(characteristic, it)
-        }
-    }
-
-    @Test
-    fun testProperties() = testWithFlow {
-        scanDevice()
-        bluetooth.startScanning()
-
-        test {
-            assertNull(it)
-        }
-
-        action {
-            connectDevice(device)
-            discoverService(service, device)
-        }
-        val characteristic = characteristic
-        test {
-            assertEquals(characteristic, it)
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Broadcast))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Read))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Write))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Notify))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Indicate))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.SignedWrite))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.ExtendedProperties))
         }
     }
 }

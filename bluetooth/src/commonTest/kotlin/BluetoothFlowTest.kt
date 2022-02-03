@@ -41,8 +41,11 @@ import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.SimpleFlowTest
+import com.splendo.kaluga.test.mock.bluetooth.ServiceWrapperBuilder
+import com.splendo.kaluga.test.mock.bluetooth.characteristic
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.mock.bluetooth.createServiceWrapper
+import com.splendo.kaluga.test.mock.bluetooth.descriptor
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.test.mock.bluetooth.scanner.MockBaseScanner
@@ -60,6 +63,18 @@ import kotlinx.coroutines.launch
 abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
 
     companion object {
+        fun defaultService(): ServiceWrapperBuilder.() -> Unit = {
+            uuid = randomUUID()
+            characteristics {
+                characteristic {
+                    uuid = randomUUID()
+                    properties = 0
+                    descriptors {
+                        descriptor(uuid = randomUUID())
+                    }
+                }
+            }
+        }
     }
 
     var rssi = -100
@@ -161,6 +176,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
     }
     protected fun setup(
         setup: Setup,
+        serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
     ) {
         setupPermissions()
         setupBluetooth(autoRequestPermission, autoEnableBluetooth, isEnabled, permissionState)
@@ -171,7 +187,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         connectionManager = device.peekState().connectionManager as MockDeviceConnectionManager
         if (setup == DEVICE) return
 
-        serviceWrapper = createServiceWrapper(connectionManager.stateRepo)
+        serviceWrapper = createServiceWrapper(serviceWrapperBuilder)
         service = Service(serviceWrapper, connectionManager.stateRepo)
 
         if (setup == SERVICE) return

@@ -23,13 +23,16 @@ import com.splendo.kaluga.bluetooth.UUID
 
 class MockServiceWrapper(
     override val uuid: UUID = UUID(),
-    characteristicUuids: List<Pair<UUID, List<UUID>>> = emptyList()
+    override val characteristics: List<CharacteristicWrapper> = emptyList()
 ) : ServiceWrapper {
-
-    override val characteristics: List<CharacteristicWrapper> = characteristicUuids.map {
-        IOSMockCharacteristicWrapper(
-            it.first,
-            it.second
-        )
-    }
+    constructor(builder: ServiceWrapperBuilder) : this(
+        builder.uuid,
+        builder.characteristics.map {
+            IOSMockCharacteristicWrapper(
+                uuid = it.uuid,
+                descriptorUuids = it.descriptorUUIDs,
+                properties = it.properties
+            )
+        }
+    )
 }
