@@ -113,7 +113,7 @@ class Centi<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Q
 }
 
 class Milli<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) : MetricMultipleUnit<System, Quantity, Unit> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric {
-    override val symbol: String = "c${unit.symbol}"
+    override val symbol: String = "m${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 1000.0.toDecimal()
@@ -129,7 +129,7 @@ class Micro<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Q
 }
 
 class Nano<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) : MetricMultipleUnit<System, Quantity, Unit> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric {
-    override val symbol: String = "μ${unit.symbol}"
+    override val symbol: String = "n${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 1000000000.0.toDecimal()
