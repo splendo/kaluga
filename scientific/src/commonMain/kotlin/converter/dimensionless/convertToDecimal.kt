@@ -36,12 +36,10 @@ infix operator fun <
 fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     Value : DimensionlessScientificValue<One>
-    >
-    DimensionlessScientificValue<Unit>.convertToOneByMultiplying(
+    > DimensionlessScientificValue<Unit>.convertToOneByMultiplying(
     decimal: Decimal,
     factory: (Decimal, One) -> Value
 ) = decimal.invoke(One).let { it.unit.byMultiplying(this, it, factory) }
-
 
 infix operator fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
@@ -52,8 +50,7 @@ infix operator fun <
 fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     Value : DimensionlessScientificValue<One>
-    >
-    DimensionlessScientificValue<Unit>.convertToOneByDividing(
+    > DimensionlessScientificValue<Unit>.convertToOneByDividing(
     decimal: Decimal,
     factory: (Decimal, One) -> Value
 ) = decimal.invoke(One).let { it.unit.byDividing(this, it, factory) }
