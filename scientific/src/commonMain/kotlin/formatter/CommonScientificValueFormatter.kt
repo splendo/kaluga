@@ -34,7 +34,7 @@ sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueF
         }
 
         internal val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
-        fun ifUnitIs(unit: ScientificUnit<*>, format: CustomFormatHandler) {
+        fun useFormat(unit: ScientificUnit<*>, format: CustomFormatHandler) {
             customFormatters[unit] = format
         }
     }
