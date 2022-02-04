@@ -26,12 +26,8 @@ kotlin {
 
     sourceSets {
         getByName("KotlinNativeFrameworkMain") {
-
-            val ext = (gradle as ExtensionAware).extra
-            val primaryIosArch = ext["ios_primary_arch"]
-
             dependencies {
-                api(project(":shared", "${primaryIosArch}Default"))
+                api(project(":shared"))
             }
         }
     }
