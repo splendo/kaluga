@@ -20,6 +20,7 @@ package com.splendo.kaluga.architecture.observable
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.properties.ReadOnlyProperty
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,8 +32,8 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
     @Test
     fun testReadOnlyPropertyDefaultObservable() = runBlocking {
 
-        var nullableString: String? = null
-        val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString }
+        val nullableString = MutableStateFlow<String?>(null)
+        val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString.value }
 
         val observable = ro.toDefaultObservable("default", Dispatchers.Unconfined)
 
@@ -44,28 +45,29 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             initialExpected = "default",
             shortDelayAfterUpdate = false,
             {
-                nullableString = "new"
+                nullableString.value = "new"
                 assertEquals("default", observed.get(), "the property will only report the new value upon read")
                 "new"
             }, // when we actually read the property to test this, the new value will propagate
             {
-                nullableString = null
+                nullableString.value = null
                 "default"
             }
         )
+        Unit
     }
 
     @Test
     fun testReadOnlyPropertyObservable() = runBlocking {
-        var s = "initial"
-        val ro = ReadOnlyProperty<Any?, String> { _, _ -> s }
+        val s = MutableStateFlow("initial")
+        val ro = ReadOnlyProperty<Any?, String> { _, _ -> s.value }
 
         testInitializedStringObservable(
             observable = ro.toInitializedObservable(Dispatchers.Unconfined),
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
-            { s = "new"; "new" }, //
-            { s = "other"; "other" }
+            { s.value = "new"; "new" }, //
+            { s.value = "other"; "other" }
         )
     }
 
@@ -74,16 +76,16 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
     @Test
     fun testReadOnlyNullablePropertyObservableWithInitialNull() = testReadOnlyNullablePropertyObservable(null)
     private fun testReadOnlyNullablePropertyObservable(initial: String?) = runBlocking {
-        var s: String? = initial
-        val ro = ReadOnlyProperty<Any?, String?> { _, _ -> s }
+        val s = MutableStateFlow(initial)
+        val ro = ReadOnlyProperty<Any?, String?> { _, _ -> s.value }
 
         testInitializedNullableStringObservable(
             observable = ro.toInitializedObservable(Dispatchers.Unconfined),
             initialExpected = initial,
             shortDelayAfterUpdate = false,
-            { s = "new"; "new" },
-            { s = null; null },
-            { s = "other"; "other" }
+            { s.value = "new"; "new" },
+            { s.value = null; null },
+            { s.value = "other"; "other" }
         )
     }
 }

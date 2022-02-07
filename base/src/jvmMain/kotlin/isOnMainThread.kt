@@ -18,4 +18,4 @@ package com.splendo.kaluga.base
 
 import javax.swing.SwingUtilities
 
-actual val isOnMainThread: Boolean = SwingUtlities.isEventDispatchThread()
+actual val isOnMainThread: Boolean get() = SwingUtilities.isEventDispatchThread()

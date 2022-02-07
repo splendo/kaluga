@@ -18,4 +18,4 @@ package com.splendo.kaluga.base
 
 import android.os.Looper
 
-actual val isOnMainThread: Boolean = Thread.currentThread() == Looper.getMainLooper().thread
+actual val isOnMainThread: Boolean get() = Thread.currentThread() == Looper.getMainLooper().thread

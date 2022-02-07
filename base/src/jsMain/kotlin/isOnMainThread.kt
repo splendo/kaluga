@@ -16,4 +16,4 @@
 
 package com.splendo.kaluga.base
 
-actual val isOnMainThread: Boolean = true
+actual val isOnMainThread: Boolean get() = true

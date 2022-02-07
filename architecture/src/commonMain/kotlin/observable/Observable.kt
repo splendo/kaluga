@@ -19,6 +19,7 @@ package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.freeze
 import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
@@ -315,10 +316,8 @@ open class Observation<R : T, T, OO : ObservableOptional<R>> (
     private fun <T> handleOnMain(block: () -> T): T = if (isOnMainThread) {
         block()
     } else {
-        runBlocking {
-            withContext(context) {
-                block()
-            }
+        runBlocking(Dispatchers.Main) {
+            block()
         }
     }
 }
