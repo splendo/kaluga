@@ -30,8 +30,8 @@ class MockServiceWrapper(
         builder.characteristics.map {
             IOSMockCharacteristicWrapper(
                 uuid = it.uuid,
-                descriptorUuids = it.descriptorUUIDs,
-                properties = it.properties
+                properties = it.properties,
+                descriptorUUIDs = it.descriptorUUIDs
             )
         }
     )
