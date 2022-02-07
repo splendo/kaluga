@@ -19,4 +19,10 @@ package com.splendo.kaluga.base
 import android.os.Looper
 import kotlinx.coroutines.Dispatchers
 
-actual val isOnMainThread: Boolean get() = (Looper.getMainLooper()?.thread ?: runBlocking(Dispatchers.Main) { Thread.currentThread() }) == Thread.currentThread()
+actual val isOnMainThread: Boolean get() {
+    val mainThread = Looper.getMainLooper()?.thread ?: run {
+        // Fallback when no MainLooper is present. This should only occur in tests
+        runBlocking(Dispatchers.Main) { Thread.currentThread() }
+    }
+    return mainThread == Thread.currentThread()
+}
