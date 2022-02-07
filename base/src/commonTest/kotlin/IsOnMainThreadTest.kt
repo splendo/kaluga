@@ -1,5 +1,6 @@
 import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.Dispatchers
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -21,7 +22,7 @@ import kotlin.test.assertTrue
  *     limitations under the License.
  */
 
-class IsOnMainThreadTest {
+class IsOnMainThreadTest : BaseTest() {
 
     @Test
     fun testIsOnMainThread() = runBlocking(Dispatchers.Main) {

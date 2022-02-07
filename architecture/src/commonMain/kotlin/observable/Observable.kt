@@ -92,16 +92,14 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
 
 open class ObservationDefault<R : T?, T>(
     override val defaultValue: Value<R>,
-    override val initialValue: Value<T?>,
-    context: CoroutineContext
-) : Observation<R, T?, Value<R>>(initialValue, context),
+    override val initialValue: Value<T?>
+) : Observation<R, T?, Value<R>>(initialValue),
     ReadWriteProperty<Any?, R>,
     MutableDefaultInitialized<R, T?> {
     constructor(
         defaultValue: R,
-        initialValue: Value<T?>,
-        context: CoroutineContext
-    ) : this(Value(defaultValue), initialValue, context)
+        initialValue: Value<T?>
+    ) : this(Value(defaultValue), initialValue)
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): R = current
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) {
@@ -127,8 +125,8 @@ open class ObservationDefault<R : T?, T>(
     }
 }
 
-class ObservationUninitialized<T>(context: CoroutineContext) :
-    Observation<T, T, ObservableOptional<T>>(Nothing(), context), MutableUninitialized<T>,
+class ObservationUninitialized<T>() :
+    Observation<T, T, ObservableOptional<T>>(Nothing()), MutableUninitialized<T>,
     ReadWriteProperty<Any?, T?> {
 
     override val initialValue: Nothing<T> = Nothing()
@@ -150,13 +148,12 @@ class ObservationUninitialized<T>(context: CoroutineContext) :
 }
 
 open class ObservationInitialized<T>(
-    override val initialValue: Value<T>,
-    context: CoroutineContext
-) : Observation<T, T, Value<T>>(initialValue, context),
+    override val initialValue: Value<T>
+) : Observation<T, T, Value<T>>(initialValue),
     ReadWriteProperty<Any?, T>,
     MutableInitialized<T, T> {
 
-    constructor(initialValue: T, context: CoroutineContext) : this(Value(initialValue), context)
+    constructor(initialValue: T) : this(Value(initialValue))
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         observedValue = Value(value)
@@ -181,8 +178,7 @@ open class ObservationInitialized<T>(
 }
 
 open class Observation<R : T, T, OO : ObservableOptional<R>>(
-    override val initialValue: ObservableOptional<T>,
-    val context: CoroutineContext
+    override val initialValue: ObservableOptional<T>
 ) : Initial<R, T> {
 
     // this is not used by iOS
@@ -227,7 +223,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     @Suppress("UNUSED_VALUE", "UNCHECKED_CAST") // should always downcast as R extends T
         /**
          * Normally you set a value assigning [observedValue],
-         * however if you are sure you are in the [context] this method can be called directly
+         * however if you are sure you are in [Dispatchers.Main] this method can be called directly
          *
          * @param value the new value that will be observed
          */
@@ -342,8 +338,7 @@ abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
     Initial<R, T> by observation {
     constructor(
         initialValue: ObservableOptional<T>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ) : this(Observation(initialValue, coroutineContext))
+    ) : this(Observation(initialValue))
 }
 
 class SimpleInitializedObservable<T>(
@@ -361,9 +356,8 @@ abstract class BaseInitializedObservable<T>(
         observation.currentObserved
 
     constructor(
-        initialValue: Value<T>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ) : this(ObservationInitialized(initialValue, coroutineContext))
+        initialValue: Value<T>
+    ) : this(ObservationInitialized(initialValue))
 }
 
 interface BasicObservable<R : T, T, OO : ObservableOptional<R>> : ReadOnlyProperty<Any?, OO>,
@@ -454,10 +448,8 @@ abstract class BaseDefaultObservable<R : T?, T>(
     DefaultInitialized<R, T?> by observation {
     constructor(
         defaultValue: R,
-        initialValue: Value<T?>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-
-        ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue, coroutineContext))
+        initialValue: Value<T?>
+        ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
@@ -473,7 +465,7 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
     BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
     final override fun bind(coroutineScope: CoroutineScope) =
-        bind(coroutineScope, observation.context)
+        bind(coroutineScope, Dispatchers.Main.immediate)
 
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
@@ -499,8 +491,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
 
     constructor(
         initialValue: Value<T>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    ) : this(ObservationInitialized(initialValue, coroutineContext))
+    ) : this(ObservationInitialized(initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
         observation.currentObserved
@@ -509,8 +500,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
 expect abstract class BaseInitializedSubject<T>(observation: ObservationInitialized<T>) :
     AbstractBaseInitializedSubject<T> {
     constructor(
-        initialValue: Value<T>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+        initialValue: Value<T>
     )
 }
 
@@ -552,16 +542,14 @@ class SimpleInitializedSubject<T>(
 ) {
 
     constructor(
-        initialValue: T,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ) : this(Value(initialValue), coroutineContext)
+        initialValue: T
+    ) : this(Value(initialValue))
 
     constructor(
-        initialValue: Value<T>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ) : this(ObservationInitialized(initialValue, coroutineContext))
+        initialValue: Value<T>
+    ) : this(ObservationInitialized(initialValue))
 
-    override suspend fun set(newValue: T): Unit = withContext(observation.context) {
+    override suspend fun set(newValue: T): Unit = withContext(Dispatchers.Main.immediate) {
         observation.setValueUnconfined(Value(newValue))
     }
 
@@ -572,20 +560,18 @@ class SimpleInitializedSubject<T>(
 
 class SimpleDefaultSubject<R : T?, T>(
     defaultValue: R,
-    initialValue: T? = defaultValue,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    initialValue: T? = defaultValue
 ) :
     BaseDefaultSubject<R, T?>(
         Value(defaultValue),
-        Value(initialValue),
-        coroutineContext
+        Value(initialValue)
     ) {
 
     override fun post(newValue: T?) {
         observation.observedValue = Value(newValue)
     }
 
-    override suspend fun set(newValue: T?) = withContext<Unit>(observation.context) {
+    override suspend fun set(newValue: T?) = withContext<Unit>(Dispatchers.Main.immediate) {
         observation.setValueUnconfined(Value(newValue))
     }
 }
@@ -601,9 +587,8 @@ abstract class AbstractBaseDefaultSubject<R : T?, T>(
     MutableDefaultInitialized<R, T?> by observation {
     constructor(
         defaultValue: Value<R>,
-        initialValue: Value<T?>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue, coroutineContext))
+        initialValue: Value<T?>
+    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
@@ -615,7 +600,6 @@ expect abstract class BaseDefaultSubject<R : T?, T>(
 
     constructor(
         defaultValue: Value<R>,
-        initialValue: Value<T?>,
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+        initialValue: Value<T?>
     )
 }
