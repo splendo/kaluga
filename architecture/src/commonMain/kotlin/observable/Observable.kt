@@ -125,8 +125,9 @@ open class ObservationDefault<R : T?, T>(
     }
 }
 
-class ObservationUninitialized<T>() :
-    Observation<T, T, ObservableOptional<T>>(Nothing()), MutableUninitialized<T>,
+class ObservationUninitialized<T> :
+    Observation<T, T, ObservableOptional<T>>(Nothing()),
+    MutableUninitialized<T>,
     ReadWriteProperty<Any?, T?> {
 
     override val initialValue: Nothing<T> = Nothing()
@@ -221,12 +222,12 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     private val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
 
     @Suppress("UNUSED_VALUE", "UNCHECKED_CAST") // should always downcast as R extends T
-        /**
-         * Normally you set a value assigning [observedValue],
-         * however if you are sure you are in [Dispatchers.Main] this method can be called directly
-         *
-         * @param value the new value that will be observed
-         */
+    /**
+     * Normally you set a value assigning [observedValue],
+     * however if you are sure you are in [Dispatchers.Main] this method can be called directly
+     *
+     * @param value the new value that will be observed
+     */
     fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
         val v = value.asResult(defaultValue)
         val before = backingAtomicReference.get() ?: backingInternalValue
@@ -360,29 +361,40 @@ abstract class BaseInitializedObservable<T>(
     ) : this(ObservationInitialized(initialValue))
 }
 
-interface BasicObservable<R : T, T, OO : ObservableOptional<R>> : ReadOnlyProperty<Any?, OO>,
+interface BasicObservable<R : T, T, OO : ObservableOptional<R>> :
+    ReadOnlyProperty<Any?, OO>,
     Initial<R, T>
 
 interface InitializedObservable<T> : BasicObservable<T, T, Value<T>>, Initialized<T, T>
 
-interface UninitializedObservable<T> : BasicObservable<T, T, ObservableOptional<T>>,
+interface UninitializedObservable<T> :
+    BasicObservable<T, T, ObservableOptional<T>>,
     Uninitialized<T>
 
-interface BasicSubject<R : T, T, OO : ObservableOptional<R>> : BasicObservable<R, T, OO>,
+interface BasicSubject<R : T, T, OO : ObservableOptional<R>> :
+    BasicObservable<R, T, OO>,
     SuspendableSetter<T> {
     fun bind(coroutineScope: CoroutineScope)
     fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
 }
 
-interface UninitializedSubject<T> : BasicSubject<T, T, ObservableOptional<T>>,
-    UninitializedObservable<T>, MutableUninitialized<T>
+interface UninitializedSubject<T> :
+    BasicSubject<T, T, ObservableOptional<T>>,
+    UninitializedObservable<T>,
+    MutableUninitialized<T>
 
-interface InitializedSubject<T> : BasicSubject<T, T, Value<T>>, InitializedObservable<T>,
+interface InitializedSubject<T> :
+    BasicSubject<T, T, Value<T>>,
+    InitializedObservable<T>,
     MutableInitialized<T, T>
 
-interface DefaultObservable<R : T?, T> : BasicObservable<R, T?, Value<R>>, DefaultInitialized<R, T?>
+interface DefaultObservable<R : T?, T> :
+    BasicObservable<R, T?, Value<R>>,
+    DefaultInitialized<R, T?>
 
-interface DefaultSubject<R : T?, T> : BasicSubject<R, T?, Value<R>>, DefaultObservable<R, T>,
+interface DefaultSubject<R : T?, T> :
+    BasicSubject<R, T?, Value<R>>,
+    DefaultObservable<R, T>,
     MutableDefaultInitialized<R, T?>
 
 expect interface WithState<T> {
@@ -449,7 +461,7 @@ abstract class BaseDefaultObservable<R : T?, T>(
     constructor(
         defaultValue: R,
         initialValue: Value<T?>
-        ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
+    ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
