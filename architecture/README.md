@@ -124,7 +124,11 @@ See the `test-utils` module for base test classes that help setting up the ViewM
 
 ## Observables (and Subjects)
 
-Kaluga supports data binding using `Observable`s (one way binding) and `Subject`s (two way binding). An observable can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observeable), or a `SharedFlow` or `StateFlow` (allowing both the Flow and the owner of BaseFlowable to modify the observer. Subjects can be created using either a `ReadWritePropery` or `MutableSharedFlow` or `MutableStateFlow`. It's also possible to use the `observableOf` and `subjectOf` methods for any value.
+Kaluga supports data binding using `Observable`s (one way binding) and `Subject`s (two way binding).
+An observable can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observeable), or a `SharedFlow` or `StateFlow` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
+Subjects can be created using either a `ReadWritePropery` or `MutableSharedFlow` or `MutableStateFlow`.
+It's also possible to use the `observableOf` and `subjectOf` methods for any value.
+Observables/Subjects are intended to be used from the Main thread.
 
 ### Goals and design
 
