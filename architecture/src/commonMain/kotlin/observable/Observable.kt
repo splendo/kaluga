@@ -22,12 +22,12 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
+import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -255,11 +255,8 @@ open class Observation<R : T, T, OO : ObservableOptional<R>> (
             onFirstObservation?.invoke()
         }
 
-        return runBlocking {
-            withContext(context) {
-                // we favour the frozen reference, since it should only be filled if an update is done after freeze
-                backingAtomicReference.get() ?: backingInternalValue ?: error("unexpected null")
-            }
+        return handleOnMain {
+            backingAtomicReference.get() ?: backingInternalValue ?: error("unexpected null")
         } as OO
     }
 
@@ -270,26 +267,20 @@ open class Observation<R : T, T, OO : ObservableOptional<R>> (
      * @param onNext Function to be called each time the value of the Observable changes
      * @return [Disposable] that removes the observing function when disposed
      */
-    override fun observe(onNext: (R?) -> Unit): Disposable {
-        return runBlocking<Disposable> {
-            withContext(context) {
-                @Suppress("UNCHECKED_CAST") // OO<T> should be guaranteed
-                // send the value before adding
-                val lastResult = currentObserved
-                onNext((lastResult as? Value<*>)?.value as R)
-                addObserver(this@Observation, onNext)
-                // adding an observer often happens concurrently with initialization,
-                // if we detect a change in the current observed value we re-send it to the added observer
-                val newResult = currentObserved
-                if (newResult != lastResult)
-                    onNext((newResult as? Value<*>)?.value as R)
-                SimpleDisposable {
-                    runBlocking {
-                        withContext(context) {
-                            removeObserver(this@Observation, onNext)
-                        }
-                    }
-                }
+    override fun observe(onNext: (R?) -> Unit): Disposable = handleOnMain {
+        @Suppress("UNCHECKED_CAST") // OO<T> should be guaranteed
+        // send the value before adding
+        val lastResult = currentObserved
+        onNext((lastResult as? Value<*>)?.value as R)
+        addObserver(this@Observation, onNext)
+        // adding an observer often happens concurrently with initialization,
+        // if we detect a change in the current observed value we re-send it to the added observer
+        val newResult = currentObserved
+        if (newResult != lastResult)
+            onNext((newResult as? Value<*>)?.value as R)
+        SimpleDisposable {
+            handleOnMain {
+                removeObserver(this@Observation, onNext)
             }
         }
     }
@@ -305,24 +296,31 @@ open class Observation<R : T, T, OO : ObservableOptional<R>> (
                 val current = getValue()
                 val new = beforeObservedValueGet(current)
                 return if (new != current) // state not events
-                    runBlocking {
-                        withContext(context) {
-                            return@withContext setValueUnconfined(new)
-                        }
+                    handleOnMain {
+                        setValueUnconfined(new)
                     }
                 else new
             }
             return getValue() as ObservableOptional<T>
         }
-        set(v) =
-            runBlocking {
-                withContext<Unit>(context) {
-                    setValueUnconfined(v)
-                }
+        set(v) {
+            handleOnMain {
+                setValueUnconfined(v)
             }
+        }
 
     override val currentOrNull: R?
         get() = currentObserved.valueOrNull
+
+    private fun <T> handleOnMain(block: () -> T): T = if (isOnMainThread) {
+        block()
+    } else {
+        runBlocking {
+            withContext(coroutineContext) {
+                block()
+            }
+        }
+    }
 }
 
 /**
