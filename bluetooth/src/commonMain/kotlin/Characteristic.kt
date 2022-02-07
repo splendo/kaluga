@@ -113,7 +113,7 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
     fun hasProperty(property: CharacteristicProperties) = hasProperties(listOf(property))
 
     private fun hasProperties(properties: List<CharacteristicProperties>) = wrapper
-        .containsAnyOf(*properties.map(CharacteristicProperties::value).toIntArray())
+        .containsAnyOf(*properties.map(CharacteristicProperties::rawValue).toIntArray())
 }
 
 expect interface CharacteristicWrapper {
@@ -127,7 +127,7 @@ fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isN
     properties and property.reduce { acc, i -> acc.or(i) } != 0
 } else { false }
 
-sealed class CharacteristicProperties(val value: Int) {
+sealed class CharacteristicProperties(val rawValue: Int) {
     object Broadcast : CharacteristicProperties(0x01)
     object Read : CharacteristicProperties(0x02)
     object WriteWithoutResponse : CharacteristicProperties(0x04)
@@ -136,4 +136,6 @@ sealed class CharacteristicProperties(val value: Int) {
     object Indicate : CharacteristicProperties(0x20)
     object SignedWrite : CharacteristicProperties(0x40)
     object ExtendedProperties : CharacteristicProperties(0x80)
+
+    infix fun or(other: CharacteristicProperties) = rawValue or other.rawValue
 }

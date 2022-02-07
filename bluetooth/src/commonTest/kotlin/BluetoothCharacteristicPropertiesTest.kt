@@ -30,8 +30,9 @@ class BluetoothCharacteristicPropertiesTest : BluetoothFlowTest<Characteristic?>
         setup(Setup.CHARACTERISTIC) {
             characteristics {
                 characteristic {
-                    properties = CharacteristicProperties.Read.value or
-                        CharacteristicProperties.WriteWithoutResponse.value
+                    properties =
+                        CharacteristicProperties.Read or
+                        CharacteristicProperties.WriteWithoutResponse
                 }
             }
         }
