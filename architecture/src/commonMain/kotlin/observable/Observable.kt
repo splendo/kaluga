@@ -316,7 +316,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>> (
         block()
     } else {
         runBlocking {
-            withContext(coroutineContext) {
+            withContext(context) {
                 block()
             }
         }
