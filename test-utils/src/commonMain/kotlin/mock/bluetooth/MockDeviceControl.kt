@@ -20,16 +20,25 @@ package com.splendo.kaluga.test.mock.bluetooth
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 
+class MockDeviceControl private constructor(
+    private val deviceInfo: DeviceInfo,
+    private val coroutineScope: CoroutineScope
+    ) {
+    val mockDeviceFactory = MockDeviceFactory(coroutineScope.coroutineContext)
 
-class MockDeviceControl private constructor(builder: Builder) {
     private val _mock = MutableSharedFlow<Device>()
     val mock: Flow<Device> = _mock.asSharedFlow()
 
     class Builder {
+        var coroutineScope: CoroutineScope = MainScope()
         var deviceInfo: DeviceInfo? = null
         fun deviceInfo(build: MockDeviceInfo.Builder.() -> Unit) {
             val builder = MockDeviceInfo.Builder()
@@ -39,20 +48,21 @@ class MockDeviceControl private constructor(builder: Builder) {
     }
 
     companion object {
-        private fun Builder.useDefaultsDeviceInfoIfNull() {
-            deviceInfo ?: run { deviceInfo { } }
-        }
-
-        fun build(build: Builder.() -> Unit = {}): MockDeviceControl {
+        fun build(
+            build: Builder.() -> Unit = {}
+        ) : MockDeviceControl {
             val builder = Builder()
             build(builder)
-            builder.useDefaultsDeviceInfoIfNull()
-            return MockDeviceControl(builder)
+            return MockDeviceControl(
+                coroutineScope = builder.coroutineScope,
+                deviceInfo = builder.deviceInfo ?: MockDeviceInfo.build { }
+            )
         }
     }
 
-    fun discover() {
-        // _mock.tryEmit(null)
+    fun discover() = coroutineScope.launch {
+        val device = mockDeviceFactory.build(deviceInfo)
+        _mock.emit(device)
     }
 
     fun connect() {

@@ -15,15 +15,20 @@
 
  */
 
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.MockDeviceControl
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlin.test.Ignore
 
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class MockDeviceControlTest : SimpleFlowTest<Device>() {
     private val control = MockDeviceControl.build {
+        coroutineScope = scope
         // deviceInfo {
         //     name = "Name"
         // }
@@ -32,12 +37,25 @@ class MockDeviceControlTest : SimpleFlowTest<Device>() {
 
     @Test
     fun testDiscover() = testWithFlow {
-        action {
-            control.discover()
-        }
+        control.discover()
+
         test {
-            assertNotNull(it, "It should receive discovered device")
+            println("❄️ $it")
         }
+        // runBlocking {
+        //     control.mock.collect {
+        //         println("❄️ $it")
+        //     }
+        // }
+
+        // action {
+        //     control.discover()
+        // }
+        // test {
+        //     println("❄️ $it")
+        //     assertNotNull(it, "It should receive discovered device")
+        // }
+
     }
 
 }

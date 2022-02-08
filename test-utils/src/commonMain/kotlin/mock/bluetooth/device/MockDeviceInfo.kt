@@ -49,7 +49,7 @@ class MockDeviceInfo(
             name = name,
             rssi = rssi,
             updatedAt = updatedAt,
-            advertisementData = advertisementData ?: MockAdvertisementData.Builder().build()
+            advertisementData = advertisementData ?: MockAdvertisementData.build { }
         )
     }
 
