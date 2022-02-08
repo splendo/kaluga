@@ -30,7 +30,7 @@ class MockDeviceControl private constructor(builder: Builder) {
     val mock: Flow<Device> = _mock.asSharedFlow()
 
     class Builder {
-        lateinit var deviceInfo: DeviceInfo
+        var deviceInfo: DeviceInfo? = null
         fun deviceInfo(build: MockDeviceInfo.Builder.() -> Unit) {
             val builder = MockDeviceInfo.Builder()
             build(builder)
@@ -39,9 +39,14 @@ class MockDeviceControl private constructor(builder: Builder) {
     }
 
     companion object {
+        private fun Builder.useDefaultsDeviceInfoIfNull() {
+            deviceInfo ?: run { deviceInfo { } }
+        }
+
         fun build(build: Builder.() -> Unit = {}): MockDeviceControl {
             val builder = Builder()
             build(builder)
+            builder.useDefaultsDeviceInfoIfNull()
             return MockDeviceControl(builder)
         }
     }

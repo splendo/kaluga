@@ -24,12 +24,9 @@ import kotlin.test.assertNotNull
 
 class MockDeviceControlTest : SimpleFlowTest<Device>() {
     private val control = MockDeviceControl.build {
-        // deviceInfo {
-        //     advertisementData {
-        //
-        //     }
-        //     name = "Name"
-        // }
+        deviceInfo {
+            name = "Name"
+        }
     }
     override val flow = suspend { control.mock }
 
