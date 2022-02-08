@@ -44,12 +44,18 @@ class MockDeviceInfo(
     override fun distance(environmentalFactor: Double): Double = 0.0
 
     class Builder {
+        lateinit var advertisementData: BaseAdvertisementData
+        fun advertisementData(build: MockAdvertisementData.Builder.() -> Unit) {
+            val builder = MockAdvertisementData.Builder()
+            build(builder)
+            advertisementData = builder.build()
+        }
+
         var identifier: Identifier = randomIdentifier()
         var name: String? = null
         var rssi = -100
         var updatedAt = Date.now()
-        lateinit var advertisementData: BaseAdvertisementData
-        fun build()= MockDeviceInfo(
+        fun build() = MockDeviceInfo(
             identifier = identifier,
             name = name,
             rssi = rssi,

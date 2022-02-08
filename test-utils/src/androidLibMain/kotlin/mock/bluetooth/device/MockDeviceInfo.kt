@@ -18,9 +18,8 @@
 package com.splendo.kaluga.test.mock.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.device.Identifier
+import java.util.UUID.randomUUID
 
-actual fun randomIdentifier(): Identifier =
-    TODO("randomIdentifier is not implemented for Android target")
+actual fun randomIdentifier(): Identifier = randomUUID().toString()
 
-actual fun identifierFromString(string: String): Identifier? =
-    TODO("identifierFromString is not implemented for Android target")
+actual fun identifierFromString(string: String): Identifier? = string

@@ -18,8 +18,10 @@
 package com.splendo.kaluga.test.mock.bluetooth.device
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.Identifier
 
 data class MockAdvertisementData(
     override val name: String? = null,
@@ -27,8 +29,39 @@ data class MockAdvertisementData(
     override val manufacturerData: ByteArray? = null,
     override val serviceUUIDs: List<UUID> = emptyList(),
     override val serviceData: Map<UUID, ByteArray?> = emptyMap(),
-    override val txPowerLevel: Int = Int.MIN_VALUE,
+    override val txPowerLevel: Int = Int.MIN_VALUE
 ) : BaseAdvertisementData {
+
+    class Builder {
+        var name: String? = null
+        var manufacturerId: Int? = null
+        var manufacturerData: ByteArray? = null
+        var serviceUUIDs: List<UUID> = emptyList()
+        var serviceData: Map<UUID, ByteArray?> = emptyMap()
+        var txPowerLevel: Int = Int.MIN_VALUE
+        var isConnectible: Boolean = true
+        fun build() : MockAdvertisementData {
+            val advertisementData = MockAdvertisementData(
+                name = name,
+                manufacturerId = manufacturerId,
+                manufacturerData = manufacturerData,
+                serviceUUIDs = serviceUUIDs,
+                serviceData = serviceData,
+                txPowerLevel = txPowerLevel
+            )
+            advertisementData.isConnectible = isConnectible
+            return advertisementData
+        }
+    }
+
+    companion object {
+        fun build(build: Builder.() -> Unit) : MockAdvertisementData {
+            val builder = Builder()
+            build(builder)
+            return builder.build()
+        }
+    }
+
     private val _isConnectible = AtomicReference(true)
     override var isConnectible: Boolean
         get() = _isConnectible.get()
