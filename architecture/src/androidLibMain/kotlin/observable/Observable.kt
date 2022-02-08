@@ -18,15 +18,20 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
@@ -100,10 +105,12 @@ actual abstract class BaseUninitializedSubject<T> actual constructor(
         }
         return mediatorLiveData
     }
+
     override fun liveDataObserver() = Observer<T> { value -> value?.let { post(it) } }
 }
 
-actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
+actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) :
+    AbstractBaseInitializedSubject<T>(observation) {
 
     override fun createLiveData(): MutableLiveData<T> = this.mutableLiveData()
     override fun liveDataObserver() = liveDataObserver
@@ -124,4 +131,34 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
         defaultValue: ObservableOptional.Value<R>,
         initialValue: ObservableOptional.Value<T?>
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
+}
+
+fun <T> WithState<T>.observeOnLifecycle(
+    lifecycleOwner: LifecycleOwner,
+    filter: suspend (T) -> Boolean = { true },
+    onNext: (T) -> Unit
+) =
+    observeOnLifecycle(lifecycleOwner, filter = filter, transform = { it }, onNext = onNext)
+
+fun <T> WithState<T?>.observeNotNullOnLifecycle(
+    lifecycleOwner: LifecycleOwner,
+    filter: suspend (T) -> Boolean = { true },
+    onNext: (T) -> Unit
+) =
+    observeOnLifecycle(
+        lifecycleOwner,
+        filter = { value -> value?.let { filter(it) } ?: false },
+        transform = { it!! },
+        onNext = onNext
+    )
+
+fun <T, R> WithState<T>.observeOnLifecycle(
+    lifecycleOwner: LifecycleOwner,
+    filter: suspend (T) -> Boolean = { true },
+    transform: suspend (T) -> R,
+    onNext: (R) -> Unit
+) = lifecycleOwner.lifecycleScope.launch {
+    stateFlow.filter { filter(it) }.map { transform(it) }.collect {
+        onNext(it)
+    }
 }
