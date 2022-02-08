@@ -22,14 +22,49 @@ import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.bluetooth.device.Identifier
 
-class MockDeviceInfo(
-    override val identifier: Identifier = randomIdentifier(),
-    override val advertisementData: BaseAdvertisementData
+/**
+ *
+ class MockDeviceInfo(
+override val identifier: Identifier = randomIdentifier(),
+override val advertisementData: BaseAdvertisementData
 ) : DeviceInfo {
-    override val name = advertisementData.name
-    override val rssi = advertisementData.txPowerLevel
-    override val updatedAt = Date.now()
-    override fun distance(environmentalFactor: Double) = 0.0
+override val name = advertisementData.name
+override val rssi = advertisementData.txPowerLevel
+override val updatedAt = Date.now()
+override fun distance(environmentalFactor: Double) = 0.0
+ */
+
+class MockDeviceInfo(
+    override val identifier: Identifier,
+    override val name: String?,
+    override val rssi: Int,
+    override val advertisementData: BaseAdvertisementData,
+    override val updatedAt: Date
+) : DeviceInfo {
+    override fun distance(environmentalFactor: Double): Double = 0.0
+
+    class Builder {
+        var identifier: Identifier = randomIdentifier()
+        var name: String? = null
+        var rssi = -100
+        var updatedAt = Date.now()
+        lateinit var advertisementData: BaseAdvertisementData
+        fun build()= MockDeviceInfo(
+            identifier = identifier,
+            name = name,
+            rssi = rssi,
+            updatedAt = updatedAt,
+            advertisementData = advertisementData
+        )
+    }
+
+    companion object {
+        fun build(build: Builder.() -> Unit) : MockDeviceInfo{
+            val builder = Builder()
+            build(builder)
+            return builder.build()
+        }
+    }
 }
 
 expect fun randomIdentifier(): Identifier
