@@ -18,9 +18,12 @@
 package com.splendo.kaluga.test.mock.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.device.Identifier
+import platform.Foundation.NSUUID
 
-actual fun randomIdentifier(): Identifier =
-    TODO("randomIdentifier is not implemented for iOS target")
+actual fun randomIdentifier(): Identifier = NSUUID.UUID()
 
-actual fun identifierFromString(string: String): Identifier? =
-    TODO("identifierFromString is not implemented for iOS target")
+actual fun identifierFromString(string: String): Identifier? = try {
+    NSUUID(string)
+} catch (e: Throwable) {
+    null
+}

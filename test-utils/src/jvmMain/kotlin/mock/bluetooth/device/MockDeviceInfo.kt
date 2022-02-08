@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.test.mock.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.randomUUID
 
-actual fun randomIdentifier(): Identifier =
-    TODO("randomIdentifier is not implemented for JVM target")
+actual fun randomIdentifier(): Identifier = randomUUID()
 
-actual fun identifierFromString(string: String): Identifier? =
-    TODO("identifierFromString is not implemented for JVM target")
+actual fun identifierFromString(string: String): Identifier? = UUID(uuidString = string)
