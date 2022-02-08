@@ -49,19 +49,15 @@ class MockDeviceInfo(
             name = name,
             rssi = rssi,
             updatedAt = updatedAt,
-            advertisementData = advertisementData!!
+            advertisementData = advertisementData ?: MockAdvertisementData.Builder().build()
         )
     }
 
     companion object {
-        private fun Builder.buildDefaultsAdvertisementDataIfNull() {
-            advertisementData ?: run { advertisementData { } }
-        }
 
         fun build(build: Builder.() -> Unit) : MockDeviceInfo{
             val builder = Builder()
             build(builder)
-            builder.buildDefaultsAdvertisementDataIfNull()
             return builder.build()
         }
     }
