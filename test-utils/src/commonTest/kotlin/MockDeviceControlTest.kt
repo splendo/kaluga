@@ -15,7 +15,8 @@
 
  */
 
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.MockDeviceControl
 import com.splendo.kaluga.test.mock.bluetooth.device.randomIdentifier
@@ -23,30 +24,42 @@ import com.splendo.kaluga.test.mock.bluetooth.device.randomIdentifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class MockDeviceControlTest : SimpleFlowTest<Device>() {
+class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
     companion object {
         val deviceId = randomIdentifier()
     }
+
     private val control = MockDeviceControl.build {
         coroutineScope = scope
         deviceInfo {
             identifier = deviceId
         }
     }
-    override val flow = suspend { control.mock }
+    override val flow = suspend { control.mock.state() }
 
     @Test
-    fun testDiscover() = testWithFlow {
-        control.discover()
-
+    fun testDiscoverDevice() = testWithFlow {
         action {
             control.discover()
         }
         test {
-            assertNotNull(it, "It should receive discovered device")
+            assertNotNull(it, "It should received discovered device")
+            assertTrue(it is DeviceState.Disconnected, "It should receive disconnected device")
             assertEquals(deviceId, it.identifier, "It should discover device with correct identifier")
         }
     }
+
+    // @Test
+    // fun testConnect() = testWithFlow {
+    //     action {
+    //         control.discover()
+    //         control.connect()
+    //     }
+    //     test {
+    //         it.stateFlow
+    //     }
+    // }
 
 }
