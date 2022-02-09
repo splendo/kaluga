@@ -21,11 +21,13 @@ import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 import platform.CoreBluetooth.CBUUID
 
 actual fun createDeviceWrapper(
-    deviceName: String?
-): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName)
+    deviceName: String?,
+    identifier: Identifier
+): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName, identifier = identifier)
 
 actual fun createServiceWrapper(
     stateRepo: DeviceStateFlowRepo,

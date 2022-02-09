@@ -56,7 +56,7 @@ class MockDeviceFactory(
         }
 
         fun DeviceInfo.toImpl() = DeviceInfoImpl(
-            deviceWrapper = createDeviceWrapper(deviceName = name),
+            deviceWrapper = createDeviceWrapper(deviceName = name, identifier = identifier),
             rssi = rssi,
             advertisementData = advertisementData
         )

@@ -21,10 +21,11 @@ import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.randomUUID
 
-actual fun createDeviceWrapper(deviceName: String?): DeviceWrapper =
-    MockDeviceWrapper(deviceName, randomUUID())
+actual fun createDeviceWrapper(deviceName: String?, identifier: Identifier): DeviceWrapper =
+    MockDeviceWrapper(deviceName, identifier)
 
 actual fun createServiceWrapper(
     stateRepo: DeviceStateFlowRepo,

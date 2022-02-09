@@ -22,14 +22,14 @@ import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 
-const val deviceName = "name"
-const val address = ""
 const val bondState = BluetoothDevice.BOND_NONE
 
 actual fun createDeviceWrapper(
-    deviceName: String?
-): DeviceWrapper = MockDeviceWrapper(deviceName, address, bondState)
+    deviceName: String?,
+    identifier: Identifier
+): DeviceWrapper = MockDeviceWrapper(deviceName, identifier, bondState)
 
 actual fun createServiceWrapper(
     stateRepo: DeviceStateFlowRepo,
