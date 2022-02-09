@@ -21,7 +21,6 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceInfo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,15 +28,17 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class MockDeviceControl private constructor(
+    mocksFlowReplay: Int,
     private val deviceInfo: DeviceInfo,
     private val coroutineScope: CoroutineScope
     ) {
-    val mockDeviceFactory = MockDeviceFactory(coroutineScope.coroutineContext)
+    private val mockDeviceFactory = MockDeviceFactory(coroutineScope.coroutineContext)
 
-    private val _mock = MutableSharedFlow<Device>()
+    private val _mock = MutableSharedFlow<Device>(replay = mocksFlowReplay)
     val mock: Flow<Device> = _mock.asSharedFlow()
 
     class Builder {
+        var mocksFlowReplay: Int = 10
         var coroutineScope: CoroutineScope = MainScope()
         var deviceInfo: DeviceInfo? = null
         fun deviceInfo(build: MockDeviceInfo.Builder.() -> Unit) {
@@ -54,8 +55,9 @@ class MockDeviceControl private constructor(
             val builder = Builder()
             build(builder)
             return MockDeviceControl(
-                coroutineScope = builder.coroutineScope,
-                deviceInfo = builder.deviceInfo ?: MockDeviceInfo.build { }
+                mocksFlowReplay = builder.mocksFlowReplay,
+                deviceInfo = builder.deviceInfo ?: MockDeviceInfo.build { },
+                coroutineScope = builder.coroutineScope
             )
         }
     }

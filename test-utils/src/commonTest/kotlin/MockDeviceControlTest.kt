@@ -15,23 +15,24 @@
 
  */
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.MockDeviceControl
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlin.test.Ignore
+import com.splendo.kaluga.test.mock.bluetooth.device.randomIdentifier
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class MockDeviceControlTest : SimpleFlowTest<Device>() {
+    companion object {
+        val deviceId = randomIdentifier()
+    }
     private val control = MockDeviceControl.build {
         coroutineScope = scope
-        // deviceInfo {
-        //     name = "Name"
-        // }
+        deviceInfo {
+            identifier = deviceId
+        }
     }
     override val flow = suspend { control.mock }
 
@@ -39,23 +40,13 @@ class MockDeviceControlTest : SimpleFlowTest<Device>() {
     fun testDiscover() = testWithFlow {
         control.discover()
 
-        test {
-            println("❄️ $it")
+        action {
+            control.discover()
         }
-        // runBlocking {
-        //     control.mock.collect {
-        //         println("❄️ $it")
-        //     }
-        // }
-
-        // action {
-        //     control.discover()
-        // }
-        // test {
-        //     println("❄️ $it")
-        //     assertNotNull(it, "It should receive discovered device")
-        // }
-
+        test {
+            assertNotNull(it, "It should receive discovered device")
+            assertEquals(deviceId, it.identifier, "It should discover device with correct identifier")
+        }
     }
 
 }

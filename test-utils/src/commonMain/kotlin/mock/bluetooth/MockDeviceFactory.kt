@@ -40,7 +40,7 @@ class MockDeviceFactory(
 
     private companion object {
         val settings = ConnectionSettings(
-            ConnectionSettings.ReconnectionSettings.Limited(2)
+            ConnectionSettings.ReconnectionSettings.Never
         )
 
         val connectionBuilder = object : BaseDeviceConnectionManager.Builder {
