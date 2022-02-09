@@ -22,7 +22,7 @@ import com.splendo.kaluga.system.network.Network
 
 sealed class NetworkState(
     open val networkType: Network,
-) : State() {
+) : State {
 
     data class Unknown(
         override val networkType: Network.Unknown

@@ -58,7 +58,7 @@ typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceSt
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
     open val connectionManager: BaseDeviceConnectionManager
-) : State(), DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
+) : State, DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
 
     sealed class Connected(
         deviceInfo: DeviceInfoImpl,

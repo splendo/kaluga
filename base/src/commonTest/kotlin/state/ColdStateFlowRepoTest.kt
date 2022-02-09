@@ -31,9 +31,9 @@ import kotlin.test.assertEquals
 class ColdStateFlowRepoTest : BaseTest() {
 
     companion object {
-        val first = object : State() {}
-        val active = object : State() {}
-        val deinit = object : State() {}
+        val first = object : State {}
+        val active = object : State {}
+        val deinit = object : State {}
     }
 
     class Repo : ColdStateFlowRepo<State>(

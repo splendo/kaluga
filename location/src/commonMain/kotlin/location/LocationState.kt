@@ -34,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
  * @param location The [Location] associated with the state.
  * @param locationManager The [BaseLocationManager] managing the location state
  */
-sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State() {
+sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State {
 
     override suspend fun initialState() {
         locationManager.startMonitoringPermissions()

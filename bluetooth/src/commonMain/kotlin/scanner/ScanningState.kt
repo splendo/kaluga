@@ -37,7 +37,7 @@ import kotlin.coroutines.CoroutineContext
 
 typealias Filter = Set<UUID>
 
-sealed class ScanningState : State() {
+sealed class ScanningState : State {
 
     data class Discovered(
         val devices: List<Device>,

@@ -52,7 +52,7 @@ private val remain: suspend() -> State = { error("This should never be called. I
 /**
  * State to be represented in a state machine
  */
-open class State {
+interface State {
 
     /**
      * Use this to indicate to the state machine the state should stay the same
@@ -65,13 +65,13 @@ open class State {
      * Called when this state is the first state of the state machine
      */
     @Deprecated("Use an initializer state rather than relying on this method, it might be called after the initial state is already changed")
-    open suspend fun initialState() {}
+    suspend fun initialState() {}
 
     /**
      * Called when this state is the final state of the state machine
      */
     @Deprecated("This method is not always actually called (e.g. for a HotRepo) since there is not always a final state")
-    open suspend fun finalState() {}
+    suspend fun finalState() {}
 }
 
 interface HandleBeforeCreating {

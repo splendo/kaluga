@@ -30,10 +30,10 @@ import kotlin.test.assertEquals
 class ReplayBufferStateRepoTest {
 
     companion object {
-        val state1 = object : State() {}
-        val state2 = object : State() {}
-        val state3 = object : State() {}
-        val state4 = object : State() {}
+        val state1 = object : State {}
+        val state2 = object : State {}
+        val state3 = object : State {}
+        val state4 = object : State {}
     }
 
     class Repo : BaseHotStateRepo<State, MutableSharedFlow<State>>() {

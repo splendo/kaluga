@@ -27,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * State of a [Permission]
  */
-sealed class PermissionState<P : Permission> : State() {
+sealed class PermissionState<P : Permission> : State {
 
     class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
 

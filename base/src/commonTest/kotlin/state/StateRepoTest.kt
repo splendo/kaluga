@@ -33,7 +33,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 sealed class TrafficLightState :
-    State(),
+    State,
     HandleBeforeCreating,
     HandleAfterCreating<TrafficLightState>,
     HandleBeforeOldStateIsRemoved<TrafficLightState>,

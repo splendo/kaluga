@@ -107,7 +107,7 @@ private class TimerStateRepo(
     }
 
     /** Timer state. */
-    sealed class State : KalugaState(), Timer.State {
+    sealed class State : KalugaState, Timer.State {
         abstract val totalDuration: Duration
         /** Timer is not running. */
         sealed class NotRunning(protected val elapsedSoFar: Duration) : State(), Timer.State.NotRunning {
