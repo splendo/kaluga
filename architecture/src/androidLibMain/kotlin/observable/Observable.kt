@@ -116,9 +116,8 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
     override fun liveDataObserver() = liveDataObserver
 
     actual constructor(
-        initialValue: ObservableOptional.Value<T>,
-        coroutineContext: CoroutineContext,
-    ) : this(ObservationInitialized(initialValue, coroutineContext))
+        initialValue: ObservableOptional.Value<T>
+    ) : this (ObservationInitialized(initialValue))
 }
 
 actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
@@ -130,9 +129,8 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
 
     actual constructor(
         defaultValue: ObservableOptional.Value<R>,
-        initialValue: ObservableOptional.Value<T?>,
-        coroutineContext: CoroutineContext
-    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue, coroutineContext))
+        initialValue: ObservableOptional.Value<T?>
+    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 }
 
 fun <T> WithState<T>.observeOnLifecycle(

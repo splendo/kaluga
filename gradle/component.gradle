@@ -135,15 +135,15 @@ kotlin {
 
         sourceSets.all {
             languageSettings {
-                useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
-                useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
-                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
-                useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
-                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
+                optIn 'kotlinx.serialization.ExperimentalSerializationApi'
+                optIn 'kotlinx.coroutines.ExperimentalCoroutinesApi'
+                optIn 'kotlinx.coroutines.ObsoleteCoroutinesApi'
+                optIn 'kotlinx.coroutines.InternalCoroutinesApi'
+                optIn 'kotlinx.coroutines.FlowPreview'
+                optIn 'kotlin.ExperimentalUnsignedTypes'
+                optIn 'kotlin.ExperimentalStdlibApi'
+                optIn 'kotlin.time.ExperimentalTime'
+                optIn 'kotlin.ExperimentalStdlibApi'
                 enableLanguageFeature("InlineClasses")
             }
         }
