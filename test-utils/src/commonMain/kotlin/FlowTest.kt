@@ -288,7 +288,7 @@ abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: Corouti
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
         debug("${tests.size} in collection (including this one), offering")
-        testChannel.offer(Pair(test, completable))
+        testChannel.trySend(Pair(test, completable)).isSuccess
     }
 
     private suspend fun disposeContext(cookie: Long) {

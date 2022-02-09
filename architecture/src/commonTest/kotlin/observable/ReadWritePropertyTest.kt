@@ -19,6 +19,7 @@ package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlin.test.Test
@@ -27,24 +28,24 @@ import kotlin.test.Test
 // This indirectly also tests using an alternate dispatcher
 class ReadWritePropertyTest : ObservableBaseTest() {
 
-    var nullableReadWritePropertyValue: String? = null
+    val nullableReadWritePropertyValue = MutableStateFlow<String?>(null)
 
     private val nullableReadWriteProperty = object : ReadWriteProperty<Any?, String?> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) {
-            nullableReadWritePropertyValue = value
+            nullableReadWritePropertyValue.value = value
         }
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): String? = nullableReadWritePropertyValue
+        override fun getValue(thisRef: Any?, property: KProperty<*>): String? = nullableReadWritePropertyValue.value
     }
 
-    var readWritePropertyValue: String = "initial"
+    val readWritePropertyValue = MutableStateFlow("initial")
 
     private val readWriteProperty = object : ReadWriteProperty<Any?, String> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
-            readWritePropertyValue = value
+            readWritePropertyValue.value = value
         }
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): String = readWritePropertyValue
+        override fun getValue(thisRef: Any?, property: KProperty<*>): String = readWritePropertyValue.value
     }
 
     @Test
@@ -54,7 +55,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
     private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean) = runBlocking {
 
-        nullableReadWritePropertyValue = initialValue
+        nullableReadWritePropertyValue.value = initialValue
 
         val subject = nullableReadWriteProperty.toDefaultSubject("default", Dispatchers.Unconfined)
 
@@ -87,7 +88,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     @Test
     fun testReadWriteNullablePropertyObservableWithInitialValue() = runBlocking {
 
-        nullableReadWritePropertyValue = "initial"
+        nullableReadWritePropertyValue.value = "initial"
 
         testStringSubject(
             subject = nullableReadWriteProperty.toInitializedSubject(Dispatchers.Unconfined),
