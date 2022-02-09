@@ -32,7 +32,6 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
     }
 
     private val control = MockDeviceControl.build {
-        coroutineScope = scope
         deviceInfo {
             identifier = deviceId
         }
@@ -51,15 +50,16 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
         }
     }
 
-    // @Test
-    // fun testConnect() = testWithFlow {
-    //     action {
-    //         control.discover()
-    //         control.connect()
-    //     }
-    //     test {
-    //         it.stateFlow
-    //     }
-    // }
+    @Test
+    fun testConnect() = testWithFlow {
+        action {
+            control.discover()
+            control.connect()
+        }
+
+        test(skip = 1) {
+            assertTrue(it is DeviceState.Connecting, "It should start connecting")
+        }
+    }
 
 }

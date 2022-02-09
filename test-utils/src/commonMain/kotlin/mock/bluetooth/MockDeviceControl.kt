@@ -17,29 +17,26 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
+import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceInfo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 
 class MockDeviceControl private constructor(
     mocksFlowReplay: Int,
-    private val deviceInfo: DeviceInfo,
-    private val coroutineScope: CoroutineScope
+    private val deviceInfo: DeviceInfo
     ) {
-    private val mockDeviceFactory = MockDeviceFactory(coroutineScope.coroutineContext)
+    private val mockDeviceFactory = MockDeviceFactory(Dispatchers.Main.immediate)
 
     private val _mock = MutableSharedFlow<Device>(replay = mocksFlowReplay)
     val mock: Flow<Device> = _mock.asSharedFlow()
 
     class Builder {
         var mocksFlowReplay: Int = 10
-        var coroutineScope: CoroutineScope = MainScope()
         var deviceInfo: DeviceInfo? = null
         fun deviceInfo(build: MockDeviceInfo.Builder.() -> Unit) {
             val builder = MockDeviceInfo.Builder()
@@ -56,30 +53,29 @@ class MockDeviceControl private constructor(
             build(builder)
             return MockDeviceControl(
                 mocksFlowReplay = builder.mocksFlowReplay,
-                deviceInfo = builder.deviceInfo ?: MockDeviceInfo.build { },
-                coroutineScope = builder.coroutineScope
+                deviceInfo = builder.deviceInfo ?: MockDeviceInfo.build { }
             )
         }
     }
 
-    fun discover() = coroutineScope.launch {
+    suspend fun discover() {
         val device = mockDeviceFactory.build(deviceInfo)
         _mock.emit(device)
     }
 
-    fun connect() {
+    suspend fun connect() {
+        _mock.connect()
+    }
+
+    suspend fun disconnect() {
 
     }
 
-    fun disconnect() {
+    suspend fun simulate() {
 
     }
 
-    fun simulate() {
-
-    }
-
-    fun expect() {
+    suspend fun expect() {
 
     }
 }
