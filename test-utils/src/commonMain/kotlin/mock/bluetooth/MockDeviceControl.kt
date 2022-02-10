@@ -64,7 +64,7 @@ class MockDeviceControl private constructor(
     }
 
     suspend fun connect() {
-        _mock.connect()
+        mock.connect()
     }
 
     suspend fun disconnect() {

@@ -52,14 +52,16 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
 
     @Test
     fun testConnect() = testWithFlow {
+        control.discover()
         action {
-            control.discover()
             control.connect()
         }
-
-        test(skip = 1) {
+        test { println("1: $it") }
+        test { println("2: $it") }
+        test { println("3: $it") }
+        test { println("4: $it") }
+        test {
             assertTrue(it is DeviceState.Connecting, "It should start connecting")
         }
     }
-
 }
