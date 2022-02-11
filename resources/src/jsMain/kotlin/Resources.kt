@@ -35,10 +35,10 @@ actual class DefaultStringLoader(
     ): String = formatter(identifier, quantity) ?: defaultValue
 }
 
-actual class DefaultColorLoader(private val transformer: (String) -> Color?) : ColorLoader {
+actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor?) : KalugaColorLoader {
     actual constructor() : this({ null })
 
-    override fun loadColor(identifier: String, defaultValue: Color?): Color? =
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? =
         transformer(identifier) ?: defaultValue
 }
 

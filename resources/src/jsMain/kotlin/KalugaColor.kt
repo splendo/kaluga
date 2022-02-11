@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.resources
 
-actual typealias Color = Int
+actual typealias KalugaColor = Int
 
-actual val Color.red: Double get() = redInt.toDouble() / 255.0
-actual val Color.redInt: Int get() = this shr 16 and 0xFF
-actual val Color.green: Double get() = greenInt.toDouble() / 255.0
-actual val Color.greenInt: Int get() = this shr 8 and 0xFF
-actual val Color.blue: Double get() = blueInt.toDouble() / 255.0
-actual val Color.blueInt: Int get() = this and 0xFF
-actual val Color.alpha: Double get() = alphaInt.toDouble() / 255.0
-actual val Color.alphaInt: Int get() = this ushr 24
+actual val KalugaColor.red: Double get() = redInt.toDouble() / 255.0
+actual val KalugaColor.redInt: Int get() = this shr 16 and 0xFF
+actual val KalugaColor.green: Double get() = greenInt.toDouble() / 255.0
+actual val KalugaColor.greenInt: Int get() = this shr 8 and 0xFF
+actual val KalugaColor.blue: Double get() = blueInt.toDouble() / 255.0
+actual val KalugaColor.blueInt: Int get() = this and 0xFF
+actual val KalugaColor.alpha: Double get() = alphaInt.toDouble() / 255.0
+actual val KalugaColor.alphaInt: Int get() = this ushr 24
 
-actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): Color {
+actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor {
     return colorFrom((red * 255.0).toInt(), (green * 255.0).toInt(), (blue * 255.0).toInt(), (alpha * 255.0).toInt())
 }
 
-actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): Color = alphaInt shl 24 or (redInt shl 16) or (greenInt shl 8) or blueInt
+actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor = alphaInt shl 24 or (redInt shl 16) or (greenInt shl 8) or blueInt

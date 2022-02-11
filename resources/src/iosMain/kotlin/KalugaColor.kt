@@ -23,18 +23,18 @@ import platform.CoreGraphics.CGColorGetComponents
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.UIColor
 
-actual data class Color(val uiColor: UIColor)
+actual data class KalugaColor(val uiColor: UIColor)
 
-actual val Color.red: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(0)?.toDouble() ?: 0.0
-actual val Color.redInt: Int get() = (red * 255.0).toInt()
-actual val Color.green: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(1)?.toDouble() ?: 0.0
-actual val Color.blueInt: Int get() = (blue * 255.0).toInt()
-actual val Color.blue: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(2)?.toDouble() ?: 0.0
-actual val Color.greenInt: Int get() = (green * 255.0).toInt()
-actual val Color.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor)?.toDouble()
-actual val Color.alphaInt: Int get() = (alpha * 255.0).toInt()
+actual val KalugaColor.red: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(0)?.toDouble() ?: 0.0
+actual val KalugaColor.redInt: Int get() = (red * 255.0).toInt()
+actual val KalugaColor.green: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(1)?.toDouble() ?: 0.0
+actual val KalugaColor.blueInt: Int get() = (blue * 255.0).toInt()
+actual val KalugaColor.blue: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(2)?.toDouble() ?: 0.0
+actual val KalugaColor.greenInt: Int get() = (green * 255.0).toInt()
+actual val KalugaColor.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor)?.toDouble()
+actual val KalugaColor.alphaInt: Int get() = (alpha * 255.0).toInt()
 
-actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): Color = Color(UIColor.colorWithRed(red as CGFloat, green as CGFloat, blue as CGFloat, alpha as CGFloat))
-actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): Color {
+actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor = KalugaColor(UIColor.colorWithRed(red as CGFloat, green as CGFloat, blue as CGFloat, alpha as CGFloat))
+actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor {
     return colorFrom(redInt.toDouble() / 255.0, greenInt.toDouble() / 255.0, blueInt.toDouble() / 255.0, alphaInt.toDouble() / 255.0)
 }

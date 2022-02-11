@@ -22,7 +22,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 
 actual data class Image(val drawable: Drawable)
 
-actual fun Image.tinted(color: Color): Image? {
+actual fun Image.tinted(color: KalugaColor): Image? {
     return drawable.constantState?.newDrawable()?.mutate()?.let {
         val wrapped = DrawableCompat.wrap(it)
         DrawableCompat.setTint(wrapped, color)

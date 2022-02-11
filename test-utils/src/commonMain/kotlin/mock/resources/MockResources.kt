@@ -18,8 +18,8 @@
 package com.splendo.kaluga.test.mock.resources
 
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.resources.Color
-import com.splendo.kaluga.resources.ColorLoader
+import com.splendo.kaluga.resources.KalugaColor
+import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.FontLoader
 import com.splendo.kaluga.resources.Image
@@ -49,13 +49,13 @@ class MockStringLoader private constructor (
 }
 
 class MockColorLoader private constructor (
-    private val color: Color?,
-    private val colorMap: Map<String, Color?>
-) : ColorLoader {
-    constructor(color: Color? = null) : this(color, emptyMap())
-    constructor(colorMap: Map<String, Color?>) : this(null, colorMap)
+    private val color: KalugaColor?,
+    private val colorMap: Map<String, KalugaColor?>
+) : KalugaColorLoader {
+    constructor(color: KalugaColor? = null) : this(color, emptyMap())
+    constructor(colorMap: Map<String, KalugaColor?>) : this(null, colorMap)
 
-    override fun loadColor(identifier: String, defaultValue: Color?): Color? =
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? =
         colorMap[identifier] ?: color ?: defaultValue
 }
 
@@ -81,6 +81,6 @@ class MockFontLoader private constructor (
         fontMap[identifier] ?: font ?: defaultValue
 }
 
-expect fun mockColor(): Color
+expect fun mockColor(): KalugaColor
 expect fun mockImage(): Image
 expect fun mockFont(): Font

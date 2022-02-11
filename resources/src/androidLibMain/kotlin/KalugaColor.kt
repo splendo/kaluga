@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.resources
 
-actual typealias Color = Int
+actual typealias KalugaColor = Int
 
-actual val Color.red: Double get() = redInt.toDouble() / 255.0
-actual val Color.redInt: Int get() = android.graphics.Color.red(this)
-actual val Color.green: Double get() = greenInt.toDouble() / 255.0
-actual val Color.greenInt: Int get() = android.graphics.Color.green(this)
-actual val Color.blue: Double get() = blueInt.toDouble() / 255.0
-actual val Color.blueInt: Int get() = android.graphics.Color.blue(this)
-actual val Color.alpha: Double get() = alphaInt.toDouble() / 255.0
-actual val Color.alphaInt: Int get() = android.graphics.Color.alpha(this)
+actual val KalugaColor.red: Double get() = redInt.toDouble() / 255.0
+actual val KalugaColor.redInt: Int get() = android.graphics.Color.red(this)
+actual val KalugaColor.green: Double get() = greenInt.toDouble() / 255.0
+actual val KalugaColor.greenInt: Int get() = android.graphics.Color.green(this)
+actual val KalugaColor.blue: Double get() = blueInt.toDouble() / 255.0
+actual val KalugaColor.blueInt: Int get() = android.graphics.Color.blue(this)
+actual val KalugaColor.alpha: Double get() = alphaInt.toDouble() / 255.0
+actual val KalugaColor.alphaInt: Int get() = android.graphics.Color.alpha(this)
 
-actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): Color {
+actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor {
     return android.graphics.Color.argb((alpha * 255.0).toInt(), (red * 255.0).toInt(), (green * 255.0).toInt(), (blue * 255.0).toInt())
 }
 
-actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): Color = android.graphics.Color.argb(alphaInt, redInt, greenInt, blueInt)
+actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor = android.graphics.Color.argb(alphaInt, redInt, greenInt, blueInt)
