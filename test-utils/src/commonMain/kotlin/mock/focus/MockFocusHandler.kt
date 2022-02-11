@@ -35,5 +35,5 @@ open class BaseMockFocusHandler {
 }
 
 expect class MockFocusHandler constructor() : BaseMockFocusHandler, FocusHandler {
-    fun requestFocus()
+    fun focus()
 }

@@ -20,7 +20,11 @@ package com.splendo.kaluga.test.mock.focus
 import com.splendo.kaluga.keyboard.FocusHandler
 
 actual class MockFocusHandler : BaseMockFocusHandler(), FocusHandler {
-    actual override fun requestFocus() {
+    override fun requestFocus() {
         super.giveFocus()
+    }
+
+    actual fun focus() {
+        requestFocus()
     }
 }
