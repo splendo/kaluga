@@ -139,6 +139,9 @@ expect class KalugaDate : Comparable<KalugaDate> {
     override fun hashCode(): Int
 }
 
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
+typealias Date = KalugaDate
+
 /**
  * Creates a [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
  * @param date The [KalugaDate] of which the millisecondSinceEpoch to subtract should be retrieved
