@@ -19,15 +19,15 @@ package com.splendo.kaluga.base.utils
 
 import java.util.Calendar
 
-actual class Date internal constructor(internal val calendar: Calendar) : Comparable<Date> {
+actual class KalugaDate internal constructor(internal val calendar: Calendar) : Comparable<KalugaDate> {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(
+        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = KalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 add(Calendar.MILLISECOND, offsetInMilliseconds.toInt())
             }
         )
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = KalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 timeInMillis = offsetInMilliseconds
             }
@@ -83,15 +83,15 @@ actual class Date internal constructor(internal val calendar: Calendar) : Compar
         get() = calendar.timeInMillis
         set(value) { calendar.timeInMillis = value }
 
-    actual fun copy(): Date = Date(calendar.clone() as Calendar)
+    actual fun copy(): KalugaDate = KalugaDate(calendar.clone() as Calendar)
 
     actual override fun equals(other: Any?): Boolean {
-        return (other as? Date)?.let {
+        return (other as? KalugaDate)?.let {
             timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
-    override fun compareTo(other: Date): Int {
+    override fun compareTo(other: KalugaDate): Int {
         return this.calendar.time.compareTo(other.calendar.time)
     }
 

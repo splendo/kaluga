@@ -18,11 +18,11 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper date solution for Java Script
-actual class Date internal constructor(internal val date: kotlin.js.Date) : Comparable<Date> {
+actual class KalugaDate internal constructor(internal val date: kotlin.js.Date) : Comparable<KalugaDate> {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(offsetInMilliseconds))
+        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = KalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = KalugaDate(kotlin.js.Date(offsetInMilliseconds))
     }
 
     actual var timeZone: TimeZone
@@ -74,15 +74,15 @@ actual class Date internal constructor(internal val date: kotlin.js.Date) : Comp
         get() = date.getTime().toLong()
         set(value) { }
 
-    actual fun copy(): Date = Date(kotlin.js.Date(date.getMilliseconds()))
+    actual fun copy(): KalugaDate = KalugaDate(kotlin.js.Date(date.getMilliseconds()))
 
     actual override fun equals(other: Any?): Boolean {
-        return (other as? Date)?.let {
+        return (other as? KalugaDate)?.let {
             timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
-    override fun compareTo(other: Date): Int {
+    override fun compareTo(other: KalugaDate): Int {
         return when {
             date.getMilliseconds() < other.millisecond -> -1
             date.getMilliseconds() == other.millisecond -> 0
