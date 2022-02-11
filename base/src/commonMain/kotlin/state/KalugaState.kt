@@ -74,6 +74,9 @@ interface KalugaState {
     suspend fun finalState() {}
 }
 
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
+interface State : KalugaState
+
 interface HandleBeforeCreating {
     /**
      * Called while transitioning to a new state before the new state is created
