@@ -23,7 +23,7 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
  * @param location The [Location] associated with the state.
  * @param locationManager The [BaseLocationManager] managing the location state
  */
-sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State {
+sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : KalugaState {
 
     override suspend fun initialState() {
         locationManager.startMonitoringPermissions()

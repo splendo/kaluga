@@ -47,19 +47,19 @@ import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 
 @SharedImmutable
-private val remain: suspend() -> State = { error("This should never be called. It's only used to indicate the state should remain the same") }
+private val remain: suspend() -> KalugaState = { error("This should never be called. It's only used to indicate the state should remain the same") }
 
 /**
  * State to be represented in a state machine
  */
-interface State {
+interface KalugaState {
 
     /**
      * Use this to indicate to the state machine the state should stay the same
      * @return a special continuation that will be recognized by the state machine. Running this continuation will cause an error.
      */
     @Suppress("UNCHECKED_CAST") // cast should normally work since the receiver uses one type of state
-    fun <S : State> remain(): suspend() -> S = remain as suspend () -> S
+    fun <S : KalugaState> remain(): suspend() -> S = remain as suspend () -> S
 
     /**
      * Called when this state is the first state of the state machine
@@ -81,7 +81,7 @@ interface HandleBeforeCreating {
     suspend fun beforeCreatingNewState()
 }
 
-interface HandleAfterCreating<S : State> {
+interface HandleAfterCreating<S : KalugaState> {
     /**
      * Called while transitioning to a new state after the new state is created
      *
@@ -90,27 +90,27 @@ interface HandleAfterCreating<S : State> {
     suspend fun afterCreatingNewState(newState: S)
 }
 
-interface HandleAfterNewStateIsSet<S : State> {
+interface HandleAfterNewStateIsSet<S : KalugaState> {
 
     /**
      * Called while transitioning to a new state after the new state is set.
      *
-     * @param newState the newly set [State]
+     * @param newState the newly set [KalugaState]
      */
     suspend fun afterNewStateIsSet(newState: S)
 }
 
-interface HandleBeforeOldStateIsRemoved<S : State> {
+interface HandleBeforeOldStateIsRemoved<S : KalugaState> {
 
     /**
      * Called while transitioning from an old state before it is removed.
      *
-     * @param oldState the [State] to be removed
+     * @param oldState the [KalugaState] to be removed
      */
     suspend fun beforeOldStateIsRemoved(oldState: S)
 }
 
-interface HandleAfterOldStateIsRemoved<S : State> {
+interface HandleAfterOldStateIsRemoved<S : KalugaState> {
 
     /**
      * Called while transitioning from an old state after it is removed
@@ -121,12 +121,12 @@ interface HandleAfterOldStateIsRemoved<S : State> {
 }
 
 /**
- * The state repo can change holds the current [State] (which can be accessed as a flow), and can be used to change the current state
+ * The state repo can change holds the current [KalugaState] (which can be accessed as a flow), and can be used to change the current state
  *
- * @param S the [State] represented by this repo.
+ * @param S the [KalugaState] represented by this repo.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
-abstract class StateRepo<S : State, F : MutableSharedFlow<S>>(coroutineContext: CoroutineContext = Dispatchers.Main.immediate) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")), Flow<S> {
+abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineContext: CoroutineContext = Dispatchers.Main.immediate) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")), Flow<S> {
 
     override suspend fun collect(collector: FlowCollector<S>) = mutableFlow.collect(collector)
 
@@ -142,7 +142,7 @@ abstract class StateRepo<S : State, F : MutableSharedFlow<S>>(coroutineContext: 
         get() = mutableFlow.subscriptionCount
 
     /**
-     * Provides a [Flow] of the [State] of this repo.
+     * Provides a [Flow] of the [KalugaState] of this repo.
      *
      * @return The [Flow]
      */
@@ -197,7 +197,7 @@ abstract class StateRepo<S : State, F : MutableSharedFlow<S>>(coroutineContext: 
      * If your code relies on the state not changing use [useState].
      * If you want to change the state based on the current state use [takeAndChangeState]
      *
-     * @return the current [State] of the [StateRepo]
+     * @return the current [KalugaState] of the [StateRepo]
      */
     fun peekState() = runBlocking {
         initialize()
@@ -205,12 +205,12 @@ abstract class StateRepo<S : State, F : MutableSharedFlow<S>>(coroutineContext: 
     }
 
     /**
-     * Makes the current [State] available in [action]. The state is guaranteed not to change during the execution of [action].
+     * Makes the current [KalugaState] available in [action]. The state is guaranteed not to change during the execution of [action].
      * This operation ensures atomic state observations, so the state will not change while the [action] is being executed.
      *
      * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself (however a different state might be current at that point).
      *
-     * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
+     * @param action the function for which will [KalugaState] receive the state, guaranteed to be unchanged for the duration of the function.
      */
     suspend fun useState(action: suspend (S) -> Unit) = coroutineScope {
         initialize()
@@ -239,16 +239,16 @@ abstract class StateRepo<S : State, F : MutableSharedFlow<S>>(coroutineContext: 
         doTakeAndChangeState(remainIfStateNot = null, action)
 
     /**
-     * Changes from the current [State] to a new [State]. This operation ensures atomic state changes.
-     * The new state is determined by an [action], which takes the current [State] upon starting the state transition and provides a deferred state creation.
-     * You are strongly encouraged to use the [State] provided by the [action] to determine the new state, to ensure no illegal state transitions occur, as the state may have changed between calling [doTakeAndChangeState] and the execution of [action].
-     * If the [action] returns [State.remain] no state transition will occur.
+     * Changes from the current [KalugaState] to a new [KalugaState]. This operation ensures atomic state changes.
+     * The new state is determined by an [action], which takes the current [KalugaState] upon starting the state transition and provides a deferred state creation.
+     * You are strongly encouraged to use the [KalugaState] provided by the [action] to determine the new state, to ensure no illegal state transitions occur, as the state may have changed between calling [doTakeAndChangeState] and the execution of [action].
+     * If the [action] returns [KalugaState.remain] no state transition will occur.
      * Since this operation is atomic, the [action] should not directly call [doTakeAndChangeState] itself. If required to do this, handle the additional transition in a separate coroutine.
      *
      * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself.
      *
      * @param remainIfStateNot If the current state at the time of Action is not an instance of this class, the state will automatically remain.
-     * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [State.remain]
+     * @param action Function to determine the [KalugaState] to be transitioned to from the current [KalugaState]. If no state transition should occur, return [KalugaState.remain]
      */
     suspend fun <K : S> takeAndChangeState(remainIfStateNot: KClass<K>, action: suspend(K) -> suspend () -> S) =
         doTakeAndChangeState(remainIfStateNot) {
@@ -313,19 +313,19 @@ abstract class StateRepo<S : State, F : MutableSharedFlow<S>>(coroutineContext: 
 // Somewhat similar to a ConflatedBroadcastChannel, which was used in the previous implementation
 inline fun <S> defaultLazySharedFlow(): Lazy<MutableSharedFlow<S>> = lazy { MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) }
 
-interface StateFlowRepo<S : State> {
+interface StateFlowRepo<S : KalugaState> {
     val stateFlow: StateFlow<S>
 }
 
 /**
- * A [StateRepo] that represents its [State] as a Hot flow.
+ * A [StateRepo] that represents its [KalugaState] as a Hot flow.
  */
-abstract class HotStateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main.immediate) :
+abstract class HotStateRepo<S : KalugaState>(coroutineContext: CoroutineContext = Dispatchers.Main.immediate) :
     BaseHotStateRepo<S, MutableSharedFlow<S>>(coroutineContext) {
     final override val lazyMutableSharedFlow: Lazy<MutableSharedFlow<S>> = defaultLazySharedFlow()
 }
 
-abstract class HotStateFlowRepo<S : State>(
+abstract class HotStateFlowRepo<S : KalugaState>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     val initialState: (HotStateFlowRepo<S>) -> S
 ) : StateFlowRepo<S>,
@@ -339,7 +339,7 @@ abstract class HotStateFlowRepo<S : State>(
     final override suspend fun initialValue(): S = mutableFlow.value
 }
 
-abstract class BaseHotStateRepo<S : State, F : MutableSharedFlow<S>>(
+abstract class BaseHotStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : StateRepo<S, F>(coroutineContext) {
 
@@ -370,7 +370,7 @@ abstract class BaseHotStateRepo<S : State, F : MutableSharedFlow<S>>(
  * Be aware an initialization can take place if state is read, for example by [useState] or [takeAndChangeState], without actual collection events occurring.
  * However a SharedFlow without a replay buffer might trigger a collection to get the initial state if no explicit state is provided
  */
-abstract class BaseColdStateRepo<S : State, F : MutableSharedFlow<S>>(
+abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
     context: CoroutineContext = Dispatchers.Main.immediate
 ) : StateRepo<S, F>(context) {
 
@@ -412,7 +412,7 @@ abstract class BaseColdStateRepo<S : State, F : MutableSharedFlow<S>>(
  *
  * It also has an optional initial state.
  */
-open class ColdStateFlowRepo<S : State>(
+open class ColdStateFlowRepo<S : KalugaState>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     val initChangeStateWithRepo: suspend (S?, ColdStateFlowRepo<S>) -> (suspend () -> S),
     val deinitChangeStateWithRepo: suspend (S, ColdStateFlowRepo<S>) -> (suspend () -> S)?,
@@ -476,14 +476,14 @@ open class ColdStateFlowRepo<S : State>(
 }
 
 /**
- * A [StateRepo] that represents its [State] as a Cold flow. Data will only be set when the state is observed.
+ * A [StateRepo] that represents its [KalugaState] as a Cold flow. Data will only be set when the state is observed.
  *
  * This class uses a very simple initialize and deinitialize pattern without changes of state by default
  *
  * This implementation uses a [MutableSharedFlow]. If you want to use a cold state repo based on StateFlow,
  * consider [ColdStateFlowRepo]
  */
-abstract class ColdStateRepo<S : State>(
+abstract class ColdStateRepo<S : KalugaState>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     override val lazyMutableFlow: Lazy<MutableSharedFlow<S>> = defaultLazySharedFlow()
 ) : BaseColdStateRepo<S, MutableSharedFlow<S>>(coroutineContext) {

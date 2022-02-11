@@ -29,7 +29,7 @@ import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +37,7 @@ import kotlin.coroutines.CoroutineContext
 
 typealias Filter = Set<UUID>
 
-sealed class ScanningState : State {
+sealed class ScanningState : KalugaState {
 
     data class Discovered(
         val devices: List<Device>,

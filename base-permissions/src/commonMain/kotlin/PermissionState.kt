@@ -20,14 +20,14 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
  * State of a [Permission]
  */
-sealed class PermissionState<P : Permission> : State {
+sealed class PermissionState<P : Permission> : KalugaState {
 
     class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
 

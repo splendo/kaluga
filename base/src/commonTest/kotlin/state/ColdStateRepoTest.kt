@@ -31,7 +31,7 @@ import kotlin.test.assertEquals
 
 class ColdStateRepoTest : BaseTest() {
 
-    sealed class CircuitState : State {
+    sealed class CircuitState : KalugaState {
         val initialStateCounter = MutableStateFlow(0)
 
         override suspend fun initialState() {
