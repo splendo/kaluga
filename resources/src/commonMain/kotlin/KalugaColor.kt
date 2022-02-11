@@ -17,10 +17,14 @@
 
 package com.splendo.kaluga.resources
 
+
 /**
  * Class describing a color
  */
 expect class KalugaColor
+
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
+typealias Color = KalugaColor
 
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`
