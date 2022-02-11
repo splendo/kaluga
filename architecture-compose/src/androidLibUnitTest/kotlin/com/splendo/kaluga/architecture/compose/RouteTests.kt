@@ -26,7 +26,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.base.text.DateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.utc
 import kotlinx.serialization.Serializable
@@ -57,7 +57,7 @@ sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : Navig
     object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
     object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
     object OptionalMockSerializable : MockSpecRow<MockSerializable?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.SerializedType(MockSerializable.serializer())))
-    object DateSpecRow : MockSpecRow<Date>(NavigationBundleSpecType.DateType)
+    object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
 }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))
@@ -73,7 +73,7 @@ class RouteTests {
 
     @Test
     fun testRoute() {
-        val time = Date.epoch(timeZone = TimeZone.utc)
+        val time = KalugaDate.epoch(timeZone = TimeZone.utc)
         val bundle = MockSpec.toBundle { row ->
             when (row) {
                 is MockSpecRow.StringSpecRow -> row.convertValue("string")

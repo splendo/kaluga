@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,8 +41,8 @@ sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : Navig
     object NestedBundleSpecRow : MockSpecRow<NavigationBundle<NestedSpecRow<*>>>(NavigationBundleSpecType.BundleType(NestedSpec()))
     object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
     object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
-    object DateSpecRow : MockSpecRow<Date>(NavigationBundleSpecType.DateType)
-    object DateArraySpecRow : MockSpecRow<List<Date>>(NavigationBundleSpecType.DateArrayType)
+    object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
+    object DateArraySpecRow : MockSpecRow<List<KalugaDate>>(NavigationBundleSpecType.DateArrayType)
 }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))

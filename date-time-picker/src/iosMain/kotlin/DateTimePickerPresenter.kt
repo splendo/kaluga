@@ -19,7 +19,7 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
@@ -56,7 +56,7 @@ actual class DateTimePickerPresenter(
     private val parent: UIViewController
 ) : BaseDateTimePickerPresenter(datePicker) {
 
-    private inner class DateTimePickerViewController(private val datePicker: DateTimePicker, private val completion: (Date?) -> Unit) : UIViewController(null, null) {
+    private inner class DateTimePickerViewController(private val datePicker: DateTimePicker, private val completion: (KalugaDate?) -> Unit) : UIViewController(null, null) {
 
         private lateinit var datePickerView: UIDatePicker
 
@@ -163,7 +163,7 @@ actual class DateTimePickerPresenter(
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
+    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         parent.presentViewController(DateTimePickerViewController(datePicker, completion), animated, null)
     }
 }

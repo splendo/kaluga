@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.base.AtomicReferenceDelegate
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -116,7 +116,7 @@ class Beacons(
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null
         val rssi = device.map { it.rssi }.firstOrNull() ?: 0
-        val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: Date.now()
+        val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: KalugaDate.now()
         return BeaconInfo(device.identifier, frame.uid, frame.txPower, rssi, lastSeen)
     }
 }

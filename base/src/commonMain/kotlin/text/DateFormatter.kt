@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 
 /**
- * Style used for formatting a [Date] to and from a [String]
+ * Style used for formatting a [KalugaDate] to and from a [String]
  */
 enum class DateFormatStyle {
     /**
@@ -49,14 +49,14 @@ enum class DateFormatStyle {
 }
 
 /**
- * Class for parsing and formatting a [Date] from/to a [String].
+ * Class for parsing and formatting a [KalugaDate] from/to a [String].
  */
 expect class DateFormatter {
 
     companion object {
         /**
-         * Creates a [DateFormatter] that only formats the date components of a [Date]
-         * @param style The [DateFormatStyle] used for formatting the date components of the [Date]. Defaults to [DateFormatStyle.Medium].
+         * Creates a [DateFormatter] that only formats the date components of a [KalugaDate]
+         * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
@@ -67,8 +67,8 @@ expect class DateFormatter {
         ): DateFormatter
 
         /**
-         * Creates a [DateFormatter] that only formats the time components of a [Date]
-         * @param style The [DateFormatStyle] used for formatting the time components of the [Date]. Defaults to [DateFormatStyle.Medium].
+         * Creates a [DateFormatter] that only formats the time components of a [KalugaDate]
+         * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
@@ -79,9 +79,9 @@ expect class DateFormatter {
         ): DateFormatter
 
         /**
-         * Creates a [DateFormatter] that formats both date and time components of a [Date]
-         * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [Date]. Defaults to [DateFormatStyle.Medium].
-         * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [Date]. Defaults to [DateFormatStyle.Medium].
+         * Creates a [DateFormatter] that formats both date and time components of a [KalugaDate]
+         * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
+         * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
@@ -150,18 +150,18 @@ expect class DateFormatter {
     var pmString: String
 
     /**
-     * Formats a given [Date] to a [String] using the format described by this [DateFormatter].
-     * @param date The [Date] to format.
-     * @return The formatted [Date] as a [String]
+     * Formats a given [KalugaDate] to a [String] using the format described by this [DateFormatter].
+     * @param date The [KalugaDate] to format.
+     * @return The formatted [KalugaDate] as a [String]
      */
-    fun format(date: Date): String
+    fun format(date: KalugaDate): String
 
     /**
-     * Attempts to parse a given [String] into a [Date] using the format described.
+     * Attempts to parse a given [String] into a [KalugaDate] using the format described.
      * @param string The [String] to parse.
-     * @return A [Date] matching the format described by [string] or `null` if no such match could be made.
+     * @return A [KalugaDate] matching the format described by [string] or `null` if no such match could be made.
      */
-    fun parse(string: String): Date?
+    fun parse(string: String): KalugaDate?
 }
 
 /**
@@ -179,8 +179,8 @@ fun DateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: TimeZo
 fun DateFormatter.Companion.iso8601Pattern(timeZone: TimeZone = TimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)
 
 /**
- * Creates a [DateFormatter] that only formats the date components of a [Date]
- * @param style The [DateFormatStyle] used for formatting the date components of the [Date]. Defaults to [DateFormatStyle.Medium].
+ * Creates a [DateFormatter] that only formats the date components of a [KalugaDate]
+ * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param excludeYear When [true] the year will not be part of the format.
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
@@ -200,10 +200,10 @@ fun DateFormatter.Companion.dateFormat(
 }
 
 /**
- * Creates a [DateFormatter] that formats both date and time components of a [Date]
- * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [Date]. Defaults to [DateFormatStyle.Medium].
+ * Creates a [DateFormatter] that formats both date and time components of a [KalugaDate]
+ * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param excludeYear When [true] the year will not be part of the format.
- * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [Date]. Defaults to [DateFormatStyle.Medium].
+ * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
  */

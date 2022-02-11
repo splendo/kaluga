@@ -41,8 +41,8 @@ actual class TimeZone internal constructor(internal val timeZone: java.util.Time
     }
     actual val offsetFromGMTInMilliseconds = timeZone.rawOffset.toLong()
     actual val daylightSavingsOffsetInMilliseconds: Long = timeZone.dstSavings.toLong()
-    actual fun offsetFromGMTAtDateInMilliseconds(date: Date): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
-    actual fun usesDaylightSavingsTime(date: Date): Boolean = timeZone.inDaylightTime(date.calendar.time)
+    actual fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
+    actual fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.calendar.time)
     actual fun copy(): TimeZone = TimeZone(timeZone.clone() as java.util.TimeZone)
     override fun equals(other: Any?): Boolean {
         return (other as? TimeZone)?.let { timeZone == other.timeZone } ?: false

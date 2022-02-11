@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
@@ -107,9 +107,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Long,
             is Int,
             is Short -> {
-                Date.epoch((arg as Number).toLong(), TimeZone.current(), locale)
+                KalugaDate.epoch((arg as Number).toLong(), TimeZone.current(), locale)
             }
-            is Date -> {
+            is KalugaDate -> {
                 arg.copy()
             }
             else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
@@ -346,7 +346,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(time: Date, currentChar: ParsingCharacter.DateTime, locale: Locale) {
+    private fun print(time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: Locale) {
         val sb = StringBuilder()
         print(sb, time, currentChar, locale)
 
@@ -358,7 +358,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(sb: StringBuilder, time: Date, currentChar: ParsingCharacter.DateTime, locale: Locale): StringBuilder {
+    private fun print(sb: StringBuilder, time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: Locale): StringBuilder {
         when (currentChar.dateTime) {
             DateTime.HOUR_OF_DAY_0, DateTime.HOUR_0, DateTime.HOUR_OF_DAY, DateTime.HOUR -> {
                 // 'l' (1 - 12) -- like I

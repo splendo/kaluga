@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.Date.Companion.now
+import com.splendo.kaluga.base.utils.KalugaDate.Companion.now
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlin.native.concurrent.ThreadLocal
 
@@ -78,18 +78,18 @@ expect class TimeZone {
     val daylightSavingsOffsetInMilliseconds: Long
 
     /**
-     * The number of milliseconds this [TimeZone] differs from GMT at a given [Date]
-     * @param date The [Date] for which to check the offset. Defaults to [Date.now]
+     * The number of milliseconds this [TimeZone] differs from GMT at a given [KalugaDate]
+     * @param date The [KalugaDate] for which to check the offset. Defaults to [KalugaDate.now]
      * @return The number of milliseconds this [TimeZone] differs from GMT at [date]
      */
-    fun offsetFromGMTAtDateInMilliseconds(date: Date = now()): Long
+    fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate = now()): Long
 
     /**
-     * Returns `true` if this [TimeZone] is observing daylight savings at a given [Date]
-     * @param date The [Date] for which to check whether daylight savings is observed. Defaults to [Date.now]
+     * Returns `true` if this [TimeZone] is observing daylight savings at a given [KalugaDate]
+     * @param date The [KalugaDate] for which to check whether daylight savings is observed. Defaults to [KalugaDate.now]
      * @return `true` if this [TimeZone] if observing daylight savings at [date]
      */
-    fun usesDaylightSavingsTime(date: Date = now()): Boolean
+    fun usesDaylightSavingsTime(date: KalugaDate = now()): Boolean
 
     /**
      * Creates a copy of this [TimeZone]

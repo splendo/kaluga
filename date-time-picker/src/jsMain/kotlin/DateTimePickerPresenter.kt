@@ -18,7 +18,7 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.datetimepicker
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.coroutines.CoroutineScope
 
 actual class DateTimePickerPresenter(
@@ -32,11 +32,11 @@ actual class DateTimePickerPresenter(
         }
     }
 
-    override fun showAsync(animated: Boolean, completion: (Date?) -> Unit) {
+    override fun showAsync(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun show(animated: Boolean): Date? {
+    override suspend fun show(animated: Boolean): KalugaDate? {
         TODO("not implemented")
     }
 
@@ -48,7 +48,7 @@ actual class DateTimePickerPresenter(
         TODO("not implemented")
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
+    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         TODO("not implemented")
     }
 }

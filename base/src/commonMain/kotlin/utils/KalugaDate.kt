@@ -23,25 +23,25 @@ import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
  * Class describing a point in time
  * Dates are localized according to a [Locale] and relative to a given [TimeZone]
  */
-expect class Date : Comparable<Date> {
+expect class KalugaDate : Comparable<KalugaDate> {
     companion object {
         /**
-         * Creates a [Date] relative to the current time
+         * Creates a [KalugaDate] relative to the current time
          * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
          * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
          * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
-         * @return A [Date] relative to the current time
+         * @return A [KalugaDate] relative to the current time
          */
-        fun now(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): Date
+        fun now(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate
 
         /**
-         * Creates a [Date] relative to January 1st 1970 00:00:00 GMT
+         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
          * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
          * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
          * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
-         * @return A [Date] relative to the current time
+         * @return A [KalugaDate] relative to the current time
          */
-        fun epoch(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): Date
+        fun epoch(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate
     }
 
     /**
@@ -125,10 +125,10 @@ expect class Date : Comparable<Date> {
     var millisecondSinceEpoch: Long
 
     /**
-     * Creates a copy of a [Date]
-     * @return A copy of this [Date]
+     * Creates a copy of a [KalugaDate]
+     * @return A copy of this [KalugaDate]
      */
-    fun copy(): Date
+    fun copy(): KalugaDate
 
     /**
      * Returns whether this Date is in the same [timeZone] and has the same time based on [millisecondSinceEpoch]
@@ -140,41 +140,41 @@ expect class Date : Comparable<Date> {
 }
 
 /**
- * Creates a [Date] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
- * @param date The [Date] of which the millisecondSinceEpoch to subtract should be retrieved
- * @return A new [Date] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
+ * Creates a [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
+ * @param date The [KalugaDate] of which the millisecondSinceEpoch to subtract should be retrieved
+ * @return A new [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
  */
-operator fun Date.minus(date: Date): Date {
+operator fun KalugaDate.minus(date: KalugaDate): KalugaDate {
     return copy().apply {
         millisecondSinceEpoch -= date.millisecondSinceEpoch
     }
 }
 
 /**
- * Creates a [Date] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
- * @param date The [Date] of which the millisecondSinceEpoch to add should be retrieved
- * @return A new [Date] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
+ * Creates a [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
+ * @param date The [KalugaDate] of which the millisecondSinceEpoch to add should be retrieved
+ * @return A new [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
  */
-operator fun Date.plus(date: Date): Date {
+operator fun KalugaDate.plus(date: KalugaDate): KalugaDate {
     return copy().apply {
         millisecondSinceEpoch += date.millisecondSinceEpoch
     }
 }
 
 /**
- * Creates a [Date] relative to the current time, in the UTC timezone
+ * Creates a [KalugaDate] relative to the current time, in the UTC timezone
  * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
  * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
- * @return A [Date] relative to the current time, in the UTC timezone
+ * @return A [KalugaDate] relative to the current time, in the UTC timezone
  */
-fun Date.Companion.nowUtc(offsetInMilliseconds: Long = 0L, locale: Locale = defaultLocale): Date =
+fun KalugaDate.Companion.nowUtc(offsetInMilliseconds: Long = 0L, locale: Locale = defaultLocale): KalugaDate =
     now(offsetInMilliseconds, TimeZone.utc, locale)
 
 /**
- * Gets a [Date] equal to midnight on the same day as this Date
- * @return A [Date] equal to midnight on the same day as this Date
+ * Gets a [KalugaDate] equal to midnight on the same day as this Date
+ * @return A [KalugaDate] equal to midnight on the same day as this Date
  */
-fun Date.toStartOfDay() = this.copy().apply {
+fun KalugaDate.toStartOfDay() = this.copy().apply {
     hour = 0
     minute = 0
     second = 0
@@ -182,27 +182,27 @@ fun Date.toStartOfDay() = this.copy().apply {
 }
 
 /**
- * Gets a [Date] that is set at midnight on the same day as the current time.
+ * Gets a [KalugaDate] that is set at midnight on the same day as the current time.
  * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
  * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
- * @return A [Date] that is set at midnight on the same day as the current time.
+ * @return A [KalugaDate] that is set at midnight on the same day as the current time.
  */
-fun Date.Companion.today(timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale) = now(timeZone = timeZone, locale = locale).toStartOfDay()
+fun KalugaDate.Companion.today(timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale) = now(timeZone = timeZone, locale = locale).toStartOfDay()
 
 /**
- * Gets a [Date] that is set at midnight on the day after the current time.
+ * Gets a [KalugaDate] that is set at midnight on the day after the current time.
  * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
  * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
- * @return A [Date] that is set at midnight on the day after the current time.
+ * @return A [KalugaDate] that is set at midnight on the day after the current time.
  */
-fun Date.Companion.tomorrow(timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale) = today(timeZone = timeZone, locale = locale).apply { day += 1 }
+fun KalugaDate.Companion.tomorrow(timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale) = today(timeZone = timeZone, locale = locale).apply { day += 1 }
 
 /**
- * Checks whether a [Date] is on the same day as a given Date.
- * @param date The [Date] to check
- * @return `true` if this [Date] is on the same day as [date]
+ * Checks whether a [KalugaDate] is on the same day as a given Date.
+ * @param date The [KalugaDate] to check
+ * @return `true` if this [KalugaDate] is on the same day as [date]
  */
-fun Date.isOnSameDay(date: Date): Boolean {
+fun KalugaDate.isOnSameDay(date: KalugaDate): Boolean {
     return this.era == date.era &&
         this.year == date.year &&
         this.month == date.month &&
@@ -210,76 +210,76 @@ fun Date.isOnSameDay(date: Date): Boolean {
 }
 
 /**
- * Checks whether a [Date] is on the same month as a given Date.
- * @param date The [Date] to check
- * @return `true` if this [Date] is on the same month as [date]
+ * Checks whether a [KalugaDate] is on the same month as a given Date.
+ * @param date The [KalugaDate] to check
+ * @return `true` if this [KalugaDate] is on the same month as [date]
  */
-fun Date.isOnSameMonth(date: Date): Boolean {
+fun KalugaDate.isOnSameMonth(date: KalugaDate): Boolean {
     return this.era == date.era &&
         this.year == date.year &&
         this.month == date.month
 }
 
 /**
- * Checks whether a [Date] is in the same year as a given Date.
- * @param date The [Date] to check
- * @return `true` if this [Date] is in the same year as [date]
+ * Checks whether a [KalugaDate] is in the same year as a given Date.
+ * @param date The [KalugaDate] to check
+ * @return `true` if this [KalugaDate] is in the same year as [date]
  */
-fun Date.isInSameYear(date: Date): Boolean {
+fun KalugaDate.isInSameYear(date: KalugaDate): Boolean {
     return this.era == date.era &&
         this.year == date.year
 }
 
 /**
- * True if this [Date] is today
+ * True if this [KalugaDate] is today
  */
-val Date.isToday: Boolean
-    get() = isOnSameDay(Date.now(timeZone = this.timeZone))
+val KalugaDate.isToday: Boolean
+    get() = isOnSameDay(KalugaDate.now(timeZone = this.timeZone))
 
 /**
- * True if this [Date] is yesterday
+ * True if this [KalugaDate] is yesterday
  */
-val Date.isYesterday: Boolean
-    get() = isOnSameDay(Date.now(timeZone = this.timeZone).apply { day -= 1 })
+val KalugaDate.isYesterday: Boolean
+    get() = isOnSameDay(KalugaDate.now(timeZone = this.timeZone).apply { day -= 1 })
 
 /**
- * True if this [Date] is tomorrow
+ * True if this [KalugaDate] is tomorrow
  */
-val Date.isTomorrow: Boolean
-    get() = isOnSameDay(Date.now(timeZone = this.timeZone).apply { day += 1 })
+val KalugaDate.isTomorrow: Boolean
+    get() = isOnSameDay(KalugaDate.now(timeZone = this.timeZone).apply { day += 1 })
 
 /**
- * True if this [Date] is this month
+ * True if this [KalugaDate] is this month
  */
-val Date.isThisMonth: Boolean
-    get() = isOnSameMonth(Date.now(timeZone = this.timeZone))
+val KalugaDate.isThisMonth: Boolean
+    get() = isOnSameMonth(KalugaDate.now(timeZone = this.timeZone))
 
 /**
- * True if this [Date] is last month
+ * True if this [KalugaDate] is last month
  */
-val Date.isLastMonth: Boolean
-    get() = isOnSameMonth(Date.now(timeZone = this.timeZone).apply { month -= 1 })
+val KalugaDate.isLastMonth: Boolean
+    get() = isOnSameMonth(KalugaDate.now(timeZone = this.timeZone).apply { month -= 1 })
 
 /**
- * True if this [Date] is next month
+ * True if this [KalugaDate] is next month
  */
-val Date.isNextMonth: Boolean
-    get() = isOnSameMonth(Date.now(timeZone = this.timeZone).apply { month += 1 })
+val KalugaDate.isNextMonth: Boolean
+    get() = isOnSameMonth(KalugaDate.now(timeZone = this.timeZone).apply { month += 1 })
 
 /**
- * True if this [Date] is this year
+ * True if this [KalugaDate] is this year
  */
-val Date.isThisYear: Boolean
-    get() = isInSameYear(Date.now(timeZone = this.timeZone))
+val KalugaDate.isThisYear: Boolean
+    get() = isInSameYear(KalugaDate.now(timeZone = this.timeZone))
 
 /**
- * True if this [Date] is last year
+ * True if this [KalugaDate] is last year
  */
-val Date.isLastYear: Boolean
-    get() = isInSameYear(Date.now(timeZone = this.timeZone).apply { year -= 1 })
+val KalugaDate.isLastYear: Boolean
+    get() = isInSameYear(KalugaDate.now(timeZone = this.timeZone).apply { year -= 1 })
 
 /**
- * True if this [Date] is next year
+ * True if this [KalugaDate] is next year
  */
-val Date.isNextYear: Boolean
-    get() = isInSameYear(Date.now(timeZone = this.timeZone).apply { year += 1 })
+val KalugaDate.isNextYear: Boolean
+    get() = isInSameYear(KalugaDate.now(timeZone = this.timeZone).apply { year += 1 })

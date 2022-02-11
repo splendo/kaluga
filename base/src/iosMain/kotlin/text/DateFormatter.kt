@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import platform.Foundation.NSCalendar
@@ -108,11 +108,11 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
         get() = format.PMSymbol
         set(value) { format.PMSymbol = value }
 
-    actual fun format(date: Date): String = format.stringFromDate(date.date)
-    actual fun parse(string: String): Date? {
+    actual fun format(date: KalugaDate): String = format.stringFromDate(date.date)
+    actual fun parse(string: String): KalugaDate? {
         return format.dateFromString(string)?.let { date ->
             val calendar = format.calendar.copy() as NSCalendar
-            Date(calendar, date)
+            KalugaDate(calendar, date)
         }
     }
 }

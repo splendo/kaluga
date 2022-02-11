@@ -37,7 +37,7 @@ import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.base.text.DateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.BooleanArraySerializer
 import kotlinx.serialization.builtins.ByteArraySerializer
@@ -199,13 +199,13 @@ inline fun <reified Action : SingleValueNavigationAction<List<String>>> NavGraph
 ) = composable(Action::class, NavigationBundleSpecType.StringArrayType, content)
 
 @JvmName("singleValueDateComposable")
-inline fun <reified Action : SingleValueNavigationAction<Date>> NavGraphBuilder.composable(
-    noinline content: @Composable (Date) -> Unit
+inline fun <reified Action : SingleValueNavigationAction<KalugaDate>> NavGraphBuilder.composable(
+    noinline content: @Composable (KalugaDate) -> Unit
 ) = composable(Action::class, NavigationBundleSpecType.DateType, content)
 
 @JvmName("singleValueDateArrayComposable")
-inline fun <reified Action : SingleValueNavigationAction<List<Date>>> NavGraphBuilder.composable(
-    noinline content: @Composable (List<Date>) -> Unit
+inline fun <reified Action : SingleValueNavigationAction<List<KalugaDate>>> NavGraphBuilder.composable(
+    noinline content: @Composable (List<KalugaDate>) -> Unit
 ) = composable(Action::class, NavigationBundleSpecType.DateArrayType, content)
 
 inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(

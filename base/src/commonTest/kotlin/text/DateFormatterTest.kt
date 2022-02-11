@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.DateFormatter
 import com.splendo.kaluga.base.text.dateFormat
 import com.splendo.kaluga.base.text.iso8601Pattern
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.nowUtc
@@ -38,14 +38,14 @@ class DateFormatterTest {
         private val FranceLocale = createLocale("fr", "FR")
         private val PSTTimeZone = TimeZone.get("America/Los_Angeles")!!
 
-        private val January81988 = Date.epoch(568627200000)
-        private val March181988 = Date.epoch(574695462750)
+        private val January81988 = KalugaDate.epoch(568627200000)
+        private val March181988 = KalugaDate.epoch(574695462750)
     }
 
     @Test
     fun testFormatDate() {
         val formatter = DateFormatter.dateFormat(DateFormatStyle.Short, PSTTimeZone, UnitedStatesLocale)
-        val date = Date.nowUtc().apply {
+        val date = KalugaDate.nowUtc().apply {
             year = 2020
             month = 1
             day = 8

@@ -44,26 +44,26 @@ import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
 import kotlin.math.round
 
-actual class Date internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : Comparable<Date> {
+actual class KalugaDate internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : Comparable<KalugaDate> {
     actual companion object {
 
         const val nanoSecondPerMilliSecond = 1000 * 1000
 
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date {
+        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate {
             val calendar = NSCalendar.currentCalendar.apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
             }
             val date = NSDate.dateWithTimeIntervalSinceNow(offsetInMilliseconds.toDouble() / 1000.0)
-            return Date(calendar, date)
+            return KalugaDate(calendar, date)
         }
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date {
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate {
             val calendar = NSCalendar.currentCalendar.apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
             }
             val date = NSDate.dateWithTimeIntervalSince1970(offsetInMilliseconds.toDouble() / 1000.0)
-            return Date(calendar, date)
+            return KalugaDate(calendar, date)
         }
     }
 
@@ -121,10 +121,10 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
         }
         set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble() / 1000.0) }
 
-    actual fun copy(): Date = Date(calendar.copy() as NSCalendar, date.copy() as NSDate)
+    actual fun copy(): KalugaDate = KalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
     actual override fun equals(other: Any?): Boolean {
-        return (other as? Date)?.let { other ->
+        return (other as? KalugaDate)?.let { other ->
             calendar.calendarIdentifier == other.calendar.calendarIdentifier && millisecondSinceEpoch == other.millisecondSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
         } ?: false
     }
@@ -135,7 +135,7 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
         return result
     }
 
-    override fun compareTo(other: Date): Int = this.date.compare(other.date).toInt()
+    override fun compareTo(other: KalugaDate): Int = this.date.compare(other.date).toInt()
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
         // Check whether this component update can use dateBySettingUnit.
