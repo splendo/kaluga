@@ -19,27 +19,28 @@ package com.splendo.kaluga.test.mock.keyboard
 
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
+import com.splendo.kaluga.test.mock.focus.MockFocusHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockKeyboardManager : BaseKeyboardManager {
-
     class Builder : BaseKeyboardManager.Builder {
-
-        val builtKeyboardManagers = mutableListOf<MockKeyboardManager>()
-
-        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager {
-            return MockKeyboardManager().also { builtKeyboardManagers.add(it) }
-        }
+        override fun create(coroutineScope: CoroutineScope): BaseKeyboardManager = MockKeyboardManager()
     }
 
-    var focusHandler: FocusHandler? = null
-        private set
+    private val _focusHandler: MutableStateFlow<MockFocusHandler?> = MutableStateFlow(null)
 
-    override fun show(focusHandler: FocusHandler) {
-        this.focusHandler = focusHandler
-    }
+    private val _isShown = MutableStateFlow(false)
+    val isShown get() = _isShown.value
 
     override fun hide() {
-        focusHandler = null
+        _isShown.value = false
+        _focusHandler.value?.removeFocus()
+    }
+
+    override fun show(focusHandler: FocusHandler) {
+        _isShown.value = true
+        _focusHandler.value = focusHandler as? MockFocusHandler
+        _focusHandler.value?.requestFocus()
     }
 }
