@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.resources
 
-
 /**
  * Class describing a color
  */

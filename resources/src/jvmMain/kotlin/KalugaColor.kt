@@ -15,6 +15,8 @@
   
  */
 
+@file:JvmName("JvmKalugaColor")
+
 package com.splendo.kaluga.resources
 
 actual typealias KalugaColor = Int
