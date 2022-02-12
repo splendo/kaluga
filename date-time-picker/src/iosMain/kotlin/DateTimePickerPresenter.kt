@@ -149,7 +149,7 @@ actual class DateTimePickerPresenter(
 
         @ObjCAction
         private fun onSelected() {
-            completion(Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
+            completion(KalugaDate.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
             dismissDateTimePicker(true)
         }
     }
