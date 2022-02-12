@@ -112,6 +112,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
     actual fun parse(string: String): Date? {
         return format.dateFromString(string)?.let { date ->
             val calendar = format.calendar.copy() as NSCalendar
+            calendar.timeZone = timeZone.timeZone
             Date(calendar, date)
         }
     }

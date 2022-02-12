@@ -124,13 +124,20 @@ actual class DateFormatter private constructor(private val format: SimpleDateFor
 
     actual fun format(date: Date): String = format.format(date.calendar.time)
     actual fun parse(string: String): Date? {
+        val currentTimeZone = timeZone
         return try {
             format.parse(string)?.let { date ->
                 val calendar = format.calendar.clone() as Calendar
-                Date(calendar.apply { time = date })
+                Date(calendar.apply {
+                    time = date
+                    timeZone = currentTimeZone.timeZone
+                })
             }
         } catch (e: ParseException) {
             null
+        } finally {
+            // Parse may change the timezone to the timezone parsed by the String. This restores the original timezone
+            timeZone = currentTimeZone
         }
     }
 
