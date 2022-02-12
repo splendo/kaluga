@@ -35,7 +35,6 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
 
     override val name: String?
         get() = advertisementData[CBAdvertisementDataLocalNameKey] as? String
-    @ExperimentalUnsignedTypes
     override val manufacturerId: Int?
         get() = manufacturerData?.let { manufacturerDataArray ->
             if (manufacturerDataArray.size >= 2)

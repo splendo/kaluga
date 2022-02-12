@@ -24,7 +24,6 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.resources.localized
 
 sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
-
     object Location : FeatureListNavigationAction()
     object Permissions : FeatureListNavigationAction()
     object Alerts : FeatureListNavigationAction()
@@ -36,6 +35,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Links : FeatureListNavigationAction()
     object System : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
+    object Resources : FeatureListNavigationAction()
     object PlatformSpecific : FeatureListNavigationAction()
 }
 
@@ -51,6 +51,7 @@ sealed class Feature(val title: String) {
     object Links : Feature("feature_links".localized())
     object System : Feature("feature_system".localized())
     object Beacons : Feature("feature_beacons".localized())
+    object Resource : Feature("feature_resources".localized())
     object PlatformSpecific : Feature("feature_platform_specific".localized())
 }
 
@@ -69,6 +70,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Permissions,
             Feature.System,
             Feature.Beacons,
+            Feature.Resource,
             Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures }
         )
     )
@@ -87,6 +89,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.Permissions -> FeatureListNavigationAction.Permissions
                 is Feature.System -> FeatureListNavigationAction.System
                 is Feature.Beacons -> FeatureListNavigationAction.Beacons
+                is Feature.Resource -> FeatureListNavigationAction.Resources
                 is Feature.PlatformSpecific -> FeatureListNavigationAction.PlatformSpecific
             }
         )

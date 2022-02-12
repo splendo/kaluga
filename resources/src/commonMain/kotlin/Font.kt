@@ -21,3 +21,8 @@ package com.splendo.kaluga.resources
  * Class describing a font
  */
 expect class Font
+
+expect val defaultFont: Font
+expect val defaultBoldFont: Font
+expect val defaultItalicFont: Font
+expect val defaultMonospaceFont: Font

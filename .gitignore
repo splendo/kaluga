@@ -17,6 +17,7 @@ hs_err_pid*
 build/
 DerivedData/
 .gradle/
+/kotlin-js-store/
 
 ## Various settings
 *.pbxuser
