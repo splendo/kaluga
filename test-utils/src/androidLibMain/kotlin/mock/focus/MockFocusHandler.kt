@@ -25,7 +25,11 @@ actual class MockFocusHandler : BaseMockFocusHandler(), FocusHandler {
         super.giveFocus()
     }
 
-    actual fun focus() {
+    actual fun simulateGiveFocus() {
         requestFocus(activity = null)
+    }
+
+    actual fun simulateRemoveFocus() {
+        super.removeFocus()
     }
 }

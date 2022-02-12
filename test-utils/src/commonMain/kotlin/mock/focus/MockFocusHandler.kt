@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.test.mock.focus
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.keyboard.FocusHandler
-import kotlinx.coroutines.flow.MutableStateFlow
 
 open class BaseMockFocusHandler {
-    private val _isFocused = MutableStateFlow(false)
+    private val _isFocused = AtomicBoolean(false)
     val isFocused: Boolean
         get() = _isFocused.value
 
@@ -29,11 +29,12 @@ open class BaseMockFocusHandler {
         _isFocused.value = true
     }
 
-    fun removeFocus() {
+    protected fun removeFocus() {
         _isFocused.value = false
     }
 }
 
 expect class MockFocusHandler constructor() : BaseMockFocusHandler, FocusHandler {
-    fun focus()
+    fun simulateGiveFocus()
+    fun simulateRemoveFocus()
 }
