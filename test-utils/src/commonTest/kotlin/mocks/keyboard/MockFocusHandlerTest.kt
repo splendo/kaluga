@@ -50,7 +50,7 @@ class MockFocusHandlerTest {
     @Test
     fun test_give_remove_multiple_times() = testFocusHandler {
         assertFalse { it.isFocused }
-        for(i in 0..10) {
+        for (i in 0..10) {
             it.simulateGiveFocus()
             assertTrue { it.isFocused }
 

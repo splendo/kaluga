@@ -56,7 +56,7 @@ class MockKeyboardManagerTest {
     @Test
     fun test_show_hide_keyboard_multiple_times() = testKeyboardManager {
         assertFalse { it.isShown }
-        for(i in 0..10) {
+        for (i in 0..10) {
             it.show(focusHandler)
             assertTrue { focusHandler.isFocused }
             assertTrue { it.isShown }
@@ -65,7 +65,6 @@ class MockKeyboardManagerTest {
             assertFalse { focusHandler.isFocused }
             assertFalse { it.isShown }
         }
-
     }
 
     private fun testKeyboardManager(block: (keyboardManager: MockKeyboardManager) -> Unit) = runBlocking {
