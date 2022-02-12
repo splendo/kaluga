@@ -18,12 +18,12 @@
 package com.splendo.kaluga.test.mock.resources
 
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.resources.KalugaColor
-import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.FontLoader
 import com.splendo.kaluga.resources.Image
 import com.splendo.kaluga.resources.ImageLoader
+import com.splendo.kaluga.resources.KalugaColor
+import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.StringLoader
 
 class MockStringLoader private constructor (

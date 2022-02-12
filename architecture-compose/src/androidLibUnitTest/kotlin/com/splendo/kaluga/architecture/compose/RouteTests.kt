@@ -24,7 +24,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.toBundle
-import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.TimeZone
@@ -87,6 +87,6 @@ class RouteTests {
             }
         }
         val action = TestNavigationAction(bundle)
-        assertEquals("TestNavigationAction/string/true/0.5/{\"value\":\"Mock\"}/${DateFormatter.iso8601Pattern().format(time)}?OptionalString={optional}&OptionalMockSerializable={{\"value\":\"OptionalMock\"}}", action.route())
+        assertEquals("TestNavigationAction/string/true/0.5/{\"value\":\"Mock\"}/${KalugaDateFormatter.iso8601Pattern().format(time)}?OptionalString={optional}&OptionalMockSerializable={{\"value\":\"OptionalMock\"}}", action.route())
     }
 }

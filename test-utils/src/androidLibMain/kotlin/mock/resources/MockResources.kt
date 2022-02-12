@@ -18,9 +18,9 @@
 package com.splendo.kaluga.test.mock.resources
 
 import android.graphics.drawable.ColorDrawable
-import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.Image
+import com.splendo.kaluga.resources.KalugaColor
 import org.mockito.Mockito
 
 actual fun mockColor(): KalugaColor = 0

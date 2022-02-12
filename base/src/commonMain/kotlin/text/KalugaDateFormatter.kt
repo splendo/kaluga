@@ -51,11 +51,11 @@ enum class DateFormatStyle {
 /**
  * Class for parsing and formatting a [KalugaDate] from/to a [String].
  */
-expect class DateFormatter {
+expect class KalugaDateFormatter {
 
     companion object {
         /**
-         * Creates a [DateFormatter] that only formats the date components of a [KalugaDate]
+         * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
@@ -64,10 +64,10 @@ expect class DateFormatter {
             style: DateFormatStyle = DateFormatStyle.Medium,
             timeZone: TimeZone = TimeZone.current(),
             locale: Locale = defaultLocale
-        ): DateFormatter
+        ): KalugaDateFormatter
 
         /**
-         * Creates a [DateFormatter] that only formats the time components of a [KalugaDate]
+         * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
@@ -76,10 +76,10 @@ expect class DateFormatter {
             style: DateFormatStyle = DateFormatStyle.Medium,
             timeZone: TimeZone = TimeZone.current(),
             locale: Locale = defaultLocale
-        ): DateFormatter
+        ): KalugaDateFormatter
 
         /**
-         * Creates a [DateFormatter] that formats both date and time components of a [KalugaDate]
+         * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
          * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
@@ -90,10 +90,10 @@ expect class DateFormatter {
             timeStyle: DateFormatStyle = DateFormatStyle.Medium,
             timeZone: TimeZone = TimeZone.current(),
             locale: Locale = defaultLocale
-        ): DateFormatter
+        ): KalugaDateFormatter
 
         /**
-         * Creates a [DateFormatter] using a custom Date format pattern.
+         * Creates a [KalugaDateFormatter] using a custom Date format pattern.
          * On iOS some user settings may take precedent over the format (i.e. using 12 hour clock).
          * To prevent this, ensure that the provided [locale] is of a `POSIX` type.
          * A convenience [fixedPatternFormat] method exists to default to this behaviour.
@@ -105,13 +105,13 @@ expect class DateFormatter {
             pattern: String,
             timeZone: TimeZone = TimeZone.current(),
             locale: Locale = defaultLocale
-        ): DateFormatter
+        ): KalugaDateFormatter
     }
 
     var pattern: String
 
     /**
-     * The [TimeZone] this [DateFormatter] formats its dates to.
+     * The [TimeZone] this [KalugaDateFormatter] formats its dates to.
      */
     var timeZone: TimeZone
 
@@ -150,7 +150,7 @@ expect class DateFormatter {
     var pmString: String
 
     /**
-     * Formats a given [KalugaDate] to a [String] using the format described by this [DateFormatter].
+     * Formats a given [KalugaDate] to a [String] using the format described by this [KalugaDateFormatter].
      * @param date The [KalugaDate] to format.
      * @return The formatted [KalugaDate] as a [String]
      */
@@ -164,33 +164,36 @@ expect class DateFormatter {
     fun parse(string: String): KalugaDate?
 }
 
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
+typealias DateFormatter = KalugaDateFormatter
+
 /**
- * Creates a fixed [DateFormatter] using a custom Date format pattern, localized by the [Locale.enUsPosix] [Locale].
+ * Creates a fixed [KalugaDateFormatter] using a custom Date format pattern, localized by the [Locale.enUsPosix] [Locale].
  * Use this to ensure that displaying time in 12 or 24 hour format is not overridden by the user.
  * @param pattern The pattern to apply.
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  */
-fun DateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: TimeZone = TimeZone.current()) = patternFormat(pattern, timeZone, Locale.enUsPosix)
+fun KalugaDateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: TimeZone = TimeZone.current()) = patternFormat(pattern, timeZone, Locale.enUsPosix)
 
 /**
- * Creates a [DateFormatter] that formats time according to the ISo 8601 format.
+ * Creates a [KalugaDateFormatter] that formats time according to the ISo 8601 format.
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  */
-fun DateFormatter.Companion.iso8601Pattern(timeZone: TimeZone = TimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)
+fun KalugaDateFormatter.Companion.iso8601Pattern(timeZone: TimeZone = TimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)
 
 /**
- * Creates a [DateFormatter] that only formats the date components of a [KalugaDate]
+ * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
  * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param excludeYear When [true] the year will not be part of the format.
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
  */
-fun DateFormatter.Companion.dateFormat(
+fun KalugaDateFormatter.Companion.dateFormat(
     style: DateFormatStyle = DateFormatStyle.Medium,
     excludeYear: Boolean,
     timeZone: TimeZone = TimeZone.current(),
     locale: Locale = defaultLocale
-): DateFormatter {
+): KalugaDateFormatter {
     val formatWithYear = dateFormat(style, timeZone, locale)
     return if (excludeYear) {
         patternFormat(patternWithoutYear(formatWithYear.pattern), timeZone, locale)
@@ -200,20 +203,20 @@ fun DateFormatter.Companion.dateFormat(
 }
 
 /**
- * Creates a [DateFormatter] that formats both date and time components of a [KalugaDate]
+ * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
  * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param excludeYear When [true] the year will not be part of the format.
  * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
  */
-fun DateFormatter.Companion.dateTimeFormat(
+fun KalugaDateFormatter.Companion.dateTimeFormat(
     dateStyle: DateFormatStyle = DateFormatStyle.Medium,
     excludeYear: Boolean,
     timeStyle: DateFormatStyle = DateFormatStyle.Medium,
     timeZone: TimeZone = TimeZone.current(),
     locale: Locale = defaultLocale
-): DateFormatter {
+): KalugaDateFormatter {
     val formatWithYear = dateTimeFormat(dateStyle, timeStyle, timeZone, locale)
     return if (excludeYear) {
         val datePatternWithYear = dateFormat(dateStyle, timeZone, locale).pattern
@@ -224,4 +227,4 @@ fun DateFormatter.Companion.dateTimeFormat(
     }
 }
 
-internal fun DateFormatter.Companion.patternWithoutYear(pattern: String): String = pattern.replace("\\W*[Yy]+\\W*".toRegex(), "")
+internal fun KalugaDateFormatter.Companion.patternWithoutYear(pattern: String): String = pattern.replace("\\W*[Yy]+\\W*".toRegex(), "")

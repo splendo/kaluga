@@ -31,7 +31,7 @@ fun showAlert(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
     }
 
     datePicker.show()?.let {
-       val formatter = DateFormatter.dateFormat(DateFormatStyle.Medium)
+       val formatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Medium)
        println(formatter.format(it))
     }
 }
@@ -48,7 +48,7 @@ fun showAlert(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
     }
 
     timePicker.show()?.let {
-       val formatter = DateFormatter.timeFormat(DateFormatStyle.Medium)
+       val formatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium)
        println(formatter.format(it))
     }
 }

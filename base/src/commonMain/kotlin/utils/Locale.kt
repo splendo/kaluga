@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.KalugaDateFormatter
 
 /**
  * A [Locale] object represents a specific geographical, political, or cultural region.
@@ -150,7 +150,7 @@ val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
  * Indicates whether this locale use a 24 hour clock cycle.
  */
 val Locale.uses24HourClock: Boolean get() {
-    val formatter = DateFormatter.timeFormat(DateFormatStyle.Medium, locale = this)
+    val formatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, locale = this)
     val formattedDate = formatter.format(KalugaDate.now())
     return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
 }

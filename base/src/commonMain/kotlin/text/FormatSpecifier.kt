@@ -396,7 +396,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.AM_PM -> {
                 // 'p' (am or pm)
                 val isAm = time.hour < 12
-                val dateFormat = DateFormatter.patternFormat("aa", TimeZone.current(), locale)
+                val dateFormat = KalugaDateFormatter.patternFormat("aa", TimeZone.current(), locale)
                 sb.append((if (isAm) dateFormat.amString else dateFormat.pmString).lowerCased(locale))
             }
             DateTime.SECONDS_SINCE_EPOCH -> {
@@ -430,14 +430,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.NAME_OF_DAY_ABBREV, DateTime.NAME_OF_DAY -> {
                 // 'A'
                 val i: Int = time.weekDay - 1
-                val dateFormat = DateFormatter.patternFormat("EEEE")
+                val dateFormat = KalugaDateFormatter.patternFormat("EEEE")
                 val weekdays = if (currentChar.dateTime == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
                 sb.append(weekdays[i])
             }
             DateTime.NAME_OF_MONTH_ABBREV, DateTime.NAME_OF_MONTH_ABBREV_X, DateTime.NAME_OF_MONTH -> {
                 // 'B'
                 val i: Int = time.month - 1
-                val dateFormat = DateFormatter.patternFormat("MMMM")
+                val dateFormat = KalugaDateFormatter.patternFormat("MMMM")
                 val months = if (currentChar.dateTime == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
                 sb.append(months[i])
             }

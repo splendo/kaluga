@@ -35,7 +35,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleValue
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toBundle
-import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.serialization.KSerializer
@@ -292,11 +292,11 @@ private fun Bundle.composableValue(
                 ListSerializer(String.serializer()),
                 nonNullableValue
             ).map {
-                DateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError()
+                KalugaDateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError()
             }
         )
         is NavigationBundleSpecType.DateType -> specType.convertValue(
-            DateFormatter.Companion.iso8601Pattern().parse(nonNullableValue)
+            KalugaDateFormatter.Companion.iso8601Pattern().parse(nonNullableValue)
                 ?: throw BundleConversionError()
         )
         is NavigationBundleSpecType.DoubleArrayType -> specType.convertValue(

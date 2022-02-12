@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.test.text
 
 import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.dateFormat
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.KalugaDate
@@ -44,7 +44,7 @@ class DateFormatterTest {
 
     @Test
     fun testFormatDate() {
-        val formatter = DateFormatter.dateFormat(DateFormatStyle.Short, PSTTimeZone, UnitedStatesLocale)
+        val formatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Short, PSTTimeZone, UnitedStatesLocale)
         val date = KalugaDate.nowUtc().apply {
             year = 2020
             month = 1
@@ -58,7 +58,7 @@ class DateFormatterTest {
 
     @Test
     fun testParseDate() {
-        val formatter = DateFormatter.dateFormat(DateFormatStyle.Short, PSTTimeZone, UnitedStatesLocale)
+        val formatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Short, PSTTimeZone, UnitedStatesLocale)
         val date = formatter.parse("1/8/20")
         assertNotNull(date)
         assertEquals(2020, date.year)
@@ -68,8 +68,8 @@ class DateFormatterTest {
 
     @Test
     fun testDateFormat() {
-        val usFormatter = DateFormatter.dateFormat(DateFormatStyle.Medium, TimeZone.utc, UnitedStatesLocale)
-        val frFormatter = DateFormatter.dateFormat(DateFormatStyle.Medium, TimeZone.utc, FranceLocale)
+        val usFormatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Medium, TimeZone.utc, UnitedStatesLocale)
+        val frFormatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Medium, TimeZone.utc, FranceLocale)
 
         assertEquals("Jan 8, 1988", usFormatter.format(January81988))
         assertEquals("8 janv. 1988", frFormatter.format(January81988))
@@ -77,8 +77,8 @@ class DateFormatterTest {
 
     @Test
     fun testDateFormatWithoutYear() {
-        val usFormatter = DateFormatter.dateFormat(DateFormatStyle.Medium, true, TimeZone.utc, UnitedStatesLocale)
-        val frFormatter = DateFormatter.dateFormat(DateFormatStyle.Medium, true, TimeZone.utc, FranceLocale)
+        val usFormatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Medium, true, TimeZone.utc, UnitedStatesLocale)
+        val frFormatter = KalugaDateFormatter.dateFormat(DateFormatStyle.Medium, true, TimeZone.utc, FranceLocale)
 
         assertEquals("Jan 8", usFormatter.format(January81988))
         assertEquals("8 janv.", frFormatter.format(January81988))
@@ -86,8 +86,8 @@ class DateFormatterTest {
 
     @Test
     fun testTimeFormat() {
-        val usFormatter = DateFormatter.timeFormat(DateFormatStyle.Medium, TimeZone.utc, UnitedStatesLocale)
-        val frFormatter = DateFormatter.timeFormat(DateFormatStyle.Medium, TimeZone.utc, FranceLocale)
+        val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, TimeZone.utc, UnitedStatesLocale)
+        val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, TimeZone.utc, FranceLocale)
 
         assertEquals("1:37:42 PM", usFormatter.format(March181988))
         assertEquals("13:37:42", frFormatter.format(March181988))
@@ -95,13 +95,13 @@ class DateFormatterTest {
 
     @Test
     fun testFormatFixedDate() {
-        val formatter = DateFormatter.iso8601Pattern(TimeZone.utc)
+        val formatter = KalugaDateFormatter.iso8601Pattern(TimeZone.utc)
         assertEquals("1988-03-18T13:37:42.750+0000", formatter.format(March181988))
     }
 
     @Test
     fun testFailToParseInvalidString() {
-        val formatter = DateFormatter.iso8601Pattern(TimeZone.utc)
+        val formatter = KalugaDateFormatter.iso8601Pattern(TimeZone.utc)
         assertNull(formatter.parse("invalid date"))
     }
 }
