@@ -66,6 +66,9 @@ class DateFormatterTest {
         assertEquals(2020, date.year)
         assertEquals(1, date.month)
         assertEquals(8, date.day)
+        assertEquals(0, date.hour)
+        assertEquals(0, date.minute)
+        assertEquals(0, date.second)
         assertEquals(PSTTimeZone.identifier, date.timeZone.identifier)
     }
 
