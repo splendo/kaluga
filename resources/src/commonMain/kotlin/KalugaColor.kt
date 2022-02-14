@@ -32,13 +32,13 @@ import kotlin.jvm.JvmName
  */
 expect class KalugaColor
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
 typealias Color = KalugaColor
 
 @Serializable(with = ColorSerializer::class)
-data class SerializableColor(val color: Color)
+data class SerializableColor(val color: KalugaColor)
 
-val Color.serializable get() = SerializableColor(this)
+val KalugaColor.serializable get() = SerializableColor(this)
 
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`
