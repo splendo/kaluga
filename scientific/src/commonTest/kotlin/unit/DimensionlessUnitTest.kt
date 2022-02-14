@@ -90,7 +90,7 @@ class DimensionlessUnitTest {
     @Test
     fun percentDecimalRepresentationTest() {
         val percent = 1(Percent)
-        val result = percent.decimalValue
+        val result = percent.decimalFraction
         val expected = 0.01.toDecimal()
         assertEquals(expected, result)
     }
@@ -198,7 +198,7 @@ class DimensionlessUnitTest {
     @Test
     fun permillFromDecimalRepresentationTest() {
         val percent = 1(Percent)
-        val result = percent.decimalValue
+        val result = percent.decimalFraction
         val expected = 0.01.toDecimal()
         assertEquals(expected, result)
     }
