@@ -141,6 +141,6 @@ data class DefaultDimensionlessScientificValue<Unit : ScientificUnit<PhysicalQua
 ) : DimensionlessScientificValue<Unit> {
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 
-    override val decimalValue: Decimal
+    val decimalFraction: Decimal
         get() = unit.toSIUnit(value.toDecimal())
 }
