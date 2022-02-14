@@ -129,7 +129,7 @@ object Permill : Dimensionless() {
  * ```
  val percent = 12(Percent)
  print(percent.value) // 12
- print(percent.decimalValue) // 0.12
+ print(percent.decimalFraction) // 0.12
  * ```
  */
 interface DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> : ScientificValue<PhysicalQuantity.Dimensionless, Unit>
