@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.utc
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSDateFormatterFullStyle
@@ -56,6 +57,16 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
+                this.defaultDate = Date.now(timeZone = timeZone).apply {
+                    val epoch = Date.epoch(timeZone = TimeZone.utc)
+                    this.era = epoch.era
+                    this.year = epoch.year
+                    this.month = epoch.month
+                    this.day = epoch.day
+                    this.hour = epoch.hour
+                    this.minute = epoch.minute
+                    this.second = epoch.second
+                }.date
                 dateFormat = pattern
             }
         )
@@ -69,6 +80,16 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
+                this.defaultDate = Date.now(timeZone = timeZone).apply {
+                    val epoch = Date.epoch(timeZone = TimeZone.utc)
+                    this.era = epoch.era
+                    this.year = epoch.year
+                    this.month = epoch.month
+                    this.day = epoch.day
+                    this.hour = epoch.hour
+                    this.minute = epoch.minute
+                    this.second = epoch.second
+                }.date
                 this.dateStyle = dateStyle.nsDateFormatterStyle()
                 this.timeStyle = timeStyle.nsDateFormatterStyle()
             }
@@ -112,6 +133,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
     actual fun parse(string: String): Date? {
         return format.dateFromString(string)?.let { date ->
             val calendar = format.calendar.copy() as NSCalendar
+            calendar.timeZone = timeZone.timeZone
             Date(calendar, date)
         }
     }
