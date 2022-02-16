@@ -57,16 +57,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
-                this.defaultDate = Date.now(timeZone = timeZone).apply {
-                    val epoch = Date.epoch(timeZone = TimeZone.utc)
-                    this.era = epoch.era
-                    this.year = epoch.year
-                    this.month = epoch.month
-                    this.day = epoch.day
-                    this.hour = epoch.hour
-                    this.minute = epoch.minute
-                    this.second = epoch.second
-                }.date
+                this.defaultDate = defaultDate(timeZone)
                 dateFormat = pattern
             }
         )
@@ -80,20 +71,23 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
-                this.defaultDate = Date.now(timeZone = timeZone).apply {
-                    val epoch = Date.epoch(timeZone = TimeZone.utc)
-                    this.era = epoch.era
-                    this.year = epoch.year
-                    this.month = epoch.month
-                    this.day = epoch.day
-                    this.hour = epoch.hour
-                    this.minute = epoch.minute
-                    this.second = epoch.second
-                }.date
+                this.defaultDate = defaultDate(timeZone)
                 this.dateStyle = dateStyle.nsDateFormatterStyle()
                 this.timeStyle = timeStyle.nsDateFormatterStyle()
             }
         )
+
+        private fun defaultDate(timeZone: TimeZone) = Date.now(timeZone = timeZone).apply {
+            // Cannot use .utc since it may not be available when this method is called
+            val epoch = Date.epoch(timeZone = TimeZone.get("UTC")!!)
+            this.era = epoch.era
+            this.year = epoch.year
+            this.month = epoch.month
+            this.day = epoch.day
+            this.hour = epoch.hour
+            this.minute = epoch.minute
+            this.second = epoch.second
+        }.date
     }
 
     actual var pattern: String
