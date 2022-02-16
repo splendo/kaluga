@@ -34,7 +34,7 @@ sealed interface MeasurementUsage {
 }
 
 @Serializable
-sealed class MeasurementSystem : MeasurementUsage {
+sealed class MeasurementSystem : MeasurementUsage, com.splendo.kaluga.base.utils.Serializable {
 
     @Serializable
     object Metric : MeasurementSystem(), MeasurementUsage.UsedInMetric
