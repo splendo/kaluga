@@ -122,17 +122,18 @@ object Permill : Dimensionless() {
     override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_THOUSAND.toDecimal()
 }
 
-/**
- * Dimensionless scientific value is different from [DefaultScientificValue] when it comes to
- * decimal representation.
- * i.e
- * ```
- val percent = 12(Percent)
- print(percent.value) // 12
- print(percent.decimalFraction) // 0.12
- * ```
- */
-interface DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> : ScientificValue<PhysicalQuantity.Dimensionless, Unit>
+interface DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> : ScientificValue<PhysicalQuantity.Dimensionless, Unit> {
+    /**
+     * Returns the value as a fraction. I.e.
+     * ```
+    val percent = 12(Percent)
+    print(percent.value) // 12
+    print(percent.decimalFraction) // 0.12
+     * ```
+     */
+    val decimalFraction: Decimal
+        get() = unit.toSIUnit(value.toDecimal())
+}
 
 @Serializable
 data class DefaultDimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>>(
@@ -140,7 +141,4 @@ data class DefaultDimensionlessScientificValue<Unit : ScientificUnit<PhysicalQua
     override val unit: Unit
 ) : DimensionlessScientificValue<Unit> {
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
-
-    val decimalFraction: Decimal
-        get() = unit.toSIUnit(value.toDecimal())
 }
