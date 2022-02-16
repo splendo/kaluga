@@ -45,7 +45,6 @@ class MockDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
     stateRepo: DeviceStateFlowRepo
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
-
     val connectCompleted = AtomicReference(EmptyCompletableDeferred())
     val discoverServicesCompleted = AtomicReference(EmptyCompletableDeferred())
     val disconnectCompleted = AtomicReference(EmptyCompletableDeferred())
@@ -68,6 +67,7 @@ class MockDeviceConnectionManager(
 
     override suspend fun connect() {
         connectCompleted.get().complete()
+        handleConnect()
     }
 
     override suspend fun discoverServices() {

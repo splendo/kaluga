@@ -56,10 +56,10 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
         action {
             control.connect()
         }
-        test { println("1: $it") }
-        test { println("2: $it") }
-        test { println("3: $it") }
-        test { println("4: $it") }
+        // test { println("1: $it") }
+        // test { println("2: $it") }
+        // test { println("3: $it") }
+        // test { println("4: $it") }
         test {
             assertTrue(it is DeviceState.Connecting, "It should start connecting")
         }
