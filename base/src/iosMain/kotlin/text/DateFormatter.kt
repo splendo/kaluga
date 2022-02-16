@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
-import com.splendo.kaluga.base.utils.utc
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSDateFormatterFullStyle
