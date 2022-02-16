@@ -52,6 +52,5 @@ class ScientificValueTest {
         assertEquals(0.5(Hertz), 1.0 / 2(Second))
         assertEquals(3(Kilogram), 9(Kilogram) / 30(Hectogram))
         assertEquals(3(Kilogram), 9(Kilogram) / 3)
-        assertEquals(3(Kilogram), 9 / 3(Kilogram))
     }
 }

@@ -22,6 +22,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class PhysicalQuantity {
     @Serializable
+    object Dimensionless : PhysicalQuantity()
+    @Serializable
     object Acceleration : PhysicalQuantity()
     @Serializable
     object Action : PhysicalQuantity()
