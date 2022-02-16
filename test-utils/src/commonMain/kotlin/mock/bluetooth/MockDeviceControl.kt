@@ -70,7 +70,7 @@ class MockDeviceControl private constructor(
     }
 
     suspend fun connect() {
-        val first = devicesFlow.first()?.stateFlow?.first()
+        devicesFlow.first()?.stateFlow?.first()
 
         connectionManager?.run {
             reset()
@@ -81,7 +81,7 @@ class MockDeviceControl private constructor(
             handleConnect()
             connectingJob.await()
 
-        } //?: throw Error("The Connection Manager was not created")
+        } ?: throw Error("The Connection Manager was not created")
     }
 
     suspend fun disconnect() {
