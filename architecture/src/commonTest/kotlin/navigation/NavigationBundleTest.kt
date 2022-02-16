@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,10 +38,10 @@ class NavigationBundleTest : BaseTest() {
         }
         val optionalString: String? = "Some String"
         val optionalFloat: Float? = null
-        val dateValue = KalugaDate.epoch(offsetInMilliseconds = 1606204800000)
+        val dateValue = DefaultKalugaDate.epoch(offsetInMilliseconds = 1606204800000)
         val dateArray = listOf(
-            KalugaDate.epoch(offsetInMilliseconds = 1606204800001),
-            KalugaDate.epoch(offsetInMilliseconds = 1606204800002)
+            DefaultKalugaDate.epoch(offsetInMilliseconds = 1606204800001),
+            DefaultKalugaDate.epoch(offsetInMilliseconds = 1606204800002)
         )
 
         val mockSpec = MockSpec()

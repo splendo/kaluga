@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.KalugaDate.Companion.now
+import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.now
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlin.native.concurrent.ThreadLocal
 

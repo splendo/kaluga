@@ -151,6 +151,6 @@ val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
  */
 val Locale.uses24HourClock: Boolean get() {
     val formatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, locale = this)
-    val formattedDate = formatter.format(KalugaDate.now())
+    val formattedDate = formatter.format(DefaultKalugaDate.now())
     return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
 }

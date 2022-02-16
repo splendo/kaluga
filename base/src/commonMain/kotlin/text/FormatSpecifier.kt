@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
@@ -107,7 +108,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Long,
             is Int,
             is Short -> {
-                KalugaDate.epoch((arg as Number).toLong(), TimeZone.current(), locale)
+                DefaultKalugaDate.epoch((arg as Number).toLong(), TimeZone.current(), locale)
             }
             is KalugaDate -> {
                 arg.copy()

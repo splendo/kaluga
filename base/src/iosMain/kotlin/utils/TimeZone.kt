@@ -75,8 +75,8 @@ actual class TimeZone internal constructor(val timeZone: NSTimeZone) {
         }
         return rawOffset * 1000L
     }
-    actual fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = (timeZone.secondsFromGMTForDate(date.date) * 1000L)
-    actual fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
+    actual fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = (timeZone.secondsFromGMTForDate((date as DefaultKalugaDate).date) * 1000L)
+    actual fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.isDaylightSavingTimeForDate((date as DefaultKalugaDate).date)
     actual fun copy(): TimeZone = TimeZone(timeZone.copy() as NSTimeZone)
     override fun equals(other: Any?): Boolean {
         return (other as? TimeZone)?.let { timeZone == other.timeZone } ?: false

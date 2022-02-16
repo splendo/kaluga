@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.bluetooth.device.Identifier
 
@@ -37,4 +38,4 @@ data class BeaconInfo(
     replaceWith = ReplaceWith(expression = "beaconID.asString()")
 )
 fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
-fun BeaconInfo.seenMs() = KalugaDate.now().millisecondSinceEpoch - lastSeen.millisecondSinceEpoch
+fun BeaconInfo.seenMs() = DefaultKalugaDate.now().millisecondSinceEpoch - lastSeen.millisecondSinceEpoch
