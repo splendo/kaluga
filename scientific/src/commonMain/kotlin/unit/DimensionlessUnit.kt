@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
-import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke
@@ -126,9 +125,9 @@ interface DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Di
     /**
      * Returns the value as a fraction. I.e.
      * ```
-    val percent = 12(Percent)
-    print(percent.value) // 12
-    print(percent.decimalFraction) // 0.12
+     val percent = 12(Percent)
+     print(percent.value) // 12
+     print(percent.decimalFraction) // 0.12
      * ```
      */
     val decimalFraction: Decimal
