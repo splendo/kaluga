@@ -20,19 +20,28 @@ package com.splendo.kaluga.test.mock.bluetooth
 import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
+import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.transformLatest
 
 class MockDeviceControl private constructor(
     private val deviceInfo: DeviceInfo
     ) {
     private val mockDeviceFactory = MockDeviceFactory(Dispatchers.Main)
+    private val connectionManager: MockDeviceConnectionManager? get() = mockDeviceFactory.connectionManager
 
-    private val _mock = MutableStateFlow<Device?>(value = null)
-    val mock: Flow<Device?> = _mock.asStateFlow()
+    private val devicesFlow = MutableStateFlow<Device?>(value = null)
+    val mock: Flow<Device?> = devicesFlow.asStateFlow()
 
     class Builder {
         var deviceInfo: DeviceInfo? = null
@@ -57,11 +66,22 @@ class MockDeviceControl private constructor(
 
     suspend fun discover() {
         val device = mockDeviceFactory.build(deviceInfo)
-        _mock.emit(device)
+        devicesFlow.emit(device)
     }
 
     suspend fun connect() {
-        mock.connect()
+        val first = devicesFlow.first()?.stateFlow?.first()
+
+        connectionManager?.run {
+            reset()
+            val connectingJob = async {
+                devicesFlow.connect()
+            }
+            connectCompleted.get().await()
+            handleConnect()
+            connectingJob.await()
+
+        } //?: throw Error("The Connection Manager was not created")
     }
 
     suspend fun disconnect() {

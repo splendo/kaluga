@@ -31,6 +31,9 @@ class MockDeviceFactory(
     private val coroutineContext: CoroutineContext
 ) {
 
+    private var _connectionManager: MockDeviceConnectionManager? = null
+    internal val connectionManager: MockDeviceConnectionManager? get() = _connectionManager
+
     fun build(deviceInfo: DeviceInfo) = Device(
         connectionSettings = settings,
         initialDeviceInfo = deviceInfo.toImpl(),
@@ -38,22 +41,25 @@ class MockDeviceFactory(
         coroutineContext
     )
 
-    private companion object {
-        val settings = ConnectionSettings(
-            ConnectionSettings.ReconnectionSettings.Never
-        )
+    private val settings = ConnectionSettings(
+        ConnectionSettings.ReconnectionSettings.Never
+    )
 
-        val connectionBuilder = object : BaseDeviceConnectionManager.Builder {
-            override fun create(
-                connectionSettings: ConnectionSettings,
-                deviceWrapper: DeviceWrapper,
-                stateRepo: DeviceStateFlowRepo
-            ) = MockDeviceConnectionManager(
-                connectionSettings,
-                deviceWrapper,
-                stateRepo
-            )
+    private val connectionBuilder = object : BaseDeviceConnectionManager.Builder {
+        override fun create(
+            connectionSettings: ConnectionSettings,
+            deviceWrapper: DeviceWrapper,
+            stateRepo: DeviceStateFlowRepo
+        ) = MockDeviceConnectionManager(
+            connectionSettings,
+            deviceWrapper,
+            stateRepo
+        ).also {
+            _connectionManager = it
         }
+    }
+
+    private companion object {
 
         fun DeviceInfo.toImpl() = DeviceInfoImpl(
             deviceWrapper = createDeviceWrapper(deviceName = name, identifier = identifier),

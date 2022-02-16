@@ -20,6 +20,7 @@ import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.MockDeviceControl
 import com.splendo.kaluga.test.mock.bluetooth.device.randomIdentifier
+import kotlinx.coroutines.delay
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,11 +57,8 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
         action {
             control.connect()
         }
-        // test { println("1: $it") }
-        // test { println("2: $it") }
-        // test { println("3: $it") }
-        // test { println("4: $it") }
         test {
+            println("1: $it")
             assertTrue(it is DeviceState.Connecting, "It should start connecting")
         }
     }
