@@ -31,6 +31,23 @@ You can treat any `String` as a key to a `Color` value.
 By default, this loads the Color in the `Color Assets` (iOS) or `color.xml` (Android) files declared in the main project scope.
 A `ColorLoader` class is provided to overwrite this behaviour.
 
+### ThemedColor
+`ThemedColorProvider` can be used to obtain a `Color` that has two different values depending on the theme the system is running.
+It is aware of Dark and Light themes, and it's bound to it automatically.
+To define such a color, the following syntax can be used:
+```
+val background by themeColor(light="#FFFFFF", dark="#000000")
+```
+Platforms will be able to use this Color in their code, knowing that it comes automatically in the correct contrast depending on the theme. 
+If it's still needed to refer to the single Light and Dark colors, it can be done in the following way:
+```
+val backgroundColorProvider = themeColor(light="#FFFFFF", dark="#000000")
+val background by backgroundColorProvider
+val darkBackground = backgroundColorProvider.darkColor
+val lightBackground = backgroundColorProvider.lightColor
+
+```
+
 ### Image
 The `Image` class is associated with `UIImage` (iOS) and `Drawable` (Android).
 You can treat any `String` as a key to a `Image` value.
