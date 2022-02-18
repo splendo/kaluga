@@ -18,6 +18,7 @@
 package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ReplayBufferStateRepoTest {
+class ReplayBufferStateRepoTest : BaseTest() {
 
     companion object {
         val state1 = object : State() {}

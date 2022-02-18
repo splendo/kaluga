@@ -57,7 +57,7 @@ class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<I
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoViewHolder {
-        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_feature_button, parent, false) as AppCompatButton
+        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_list_button, parent, false) as AppCompatButton
         return InfoViewHolder(button)
     }
 

@@ -18,49 +18,35 @@
 package com.splendo.kaluga.example.platformspecific.compose.contacts.ui
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
-import com.splendo.kaluga.architecture.compose.navigation.rememberCombinedNavigator
-import com.splendo.kaluga.architecture.compose.navigation.route
-import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactsNavigationActivityMapper
-import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactsNavigationRouteMapper
+import com.splendo.kaluga.architecture.compose.navigation.SetupNavHost
+import com.splendo.kaluga.architecture.compose.navigation.composable
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactListNavigationRouteMapper
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsNavigation
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListNavigation
 
 @Composable
 fun ContactsLayout() {
     MdcTheme {
-        val routeNavigator = RouteNavigator(
+        val navigator = RouteNavigator(
             rememberNavController(),
-            ::contactsNavigationRouteMapper
+            ::contactListNavigationRouteMapper
         )
 
-        val combinedNavigator = rememberCombinedNavigator { action: ContactsNavigation<*> ->
-            when (action) {
-                is ContactsNavigation.ContactsListNavigation.Close,
-                is ContactsNavigation.ContactsListNavigation.ShowContactDetails,
-                is ContactsNavigation.ShowContactsList,
-                is ContactsNavigation.ContactDetailsNavigation.Close -> routeNavigator
-                is ContactsNavigation.ContactDetailsNavigation.SendEmail ->
-                    ::contactsNavigationActivityMapper.toActivityNavigator()
+        navigator.SetupNavHost(
+            rootView = {
+                ContactsListLayout(navigator = navigator)
             }
-        }
-
-        routeNavigator.SetupNavHost(
-            startDestination = route<ContactsNavigation.ShowContactsList>()
-        ) {
-            composable(route<ContactsNavigation.ShowContactsList>()) {
-                ContactsListLayout(combinedNavigator)
-            }
-
-            composable(route<ContactsNavigation.ContactsListNavigation.ShowContactDetails>("{json}")) {
-                val contactDetails: ContactDetails =
-                    Json.decodeFromString(it.arguments!!.getString("json")!!)
-                ContactDetailsLayout(contactDetails, combinedNavigator)
+        ) { navHostController ->
+            composable<ContactDetails, ContactsListNavigation.ShowContactDetails>(
+                type = NavigationBundleSpecType.SerializedType(
+                    ContactDetails.serializer()
+                )
+            ) { details ->
+                ContactDetailsLayout(details, navHostController)
             }
         }
     }

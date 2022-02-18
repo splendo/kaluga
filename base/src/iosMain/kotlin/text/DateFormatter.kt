@@ -56,6 +56,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
+                this.defaultDate = defaultDate(timeZone)
                 dateFormat = pattern
             }
         )
@@ -69,10 +70,25 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
+                this.defaultDate = defaultDate(timeZone)
                 this.dateStyle = dateStyle.nsDateFormatterStyle()
                 this.timeStyle = timeStyle.nsDateFormatterStyle()
             }
         )
+
+        private fun defaultDate(timeZone: TimeZone) = Date.now(timeZone = timeZone).apply {
+            // Cannot use .utc since it may not be available when this method is called
+            // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
+            // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
+            val epoch = Date.epoch(timeZone = TimeZone.get("UTC")!!)
+            this.era = epoch.era
+            this.year = epoch.year
+            this.month = epoch.month
+            this.day = epoch.day
+            this.hour = epoch.hour
+            this.minute = epoch.minute
+            this.second = epoch.second
+        }.date
     }
 
     actual var pattern: String
@@ -112,6 +128,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
     actual fun parse(string: String): Date? {
         return format.dateFromString(string)?.let { date ->
             val calendar = format.calendar.copy() as NSCalendar
+            calendar.timeZone = timeZone.timeZone
             Date(calendar, date)
         }
     }

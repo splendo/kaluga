@@ -57,8 +57,8 @@ android {
 kotlin {
     sourceSets.all {
         languageSettings {
-            useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
-            useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
+            optIn 'kotlin.ExperimentalStdlibApi'
+            optIn 'kotlinx.serialization.ExperimentalSerializationApi'
         }
     }
 }
@@ -74,6 +74,7 @@ dependencies {
     if (gradle.ext.example_as_root) {
         // if the example is the root we use a maven dependency instead of the project
         implementation "com.splendo.kaluga:architecture-compose:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:resources-compose:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
@@ -92,6 +93,8 @@ dependencies {
         implementation project(":hud")
         implementation project(":architecture")
         implementation project(":architecture-compose")
+        implementation project(":resources")
+        implementation project(":resources-compose")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"

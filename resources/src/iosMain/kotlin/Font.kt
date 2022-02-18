@@ -18,5 +18,12 @@
 package com.splendo.kaluga.resources
 
 import platform.UIKit.UIFont
+import platform.UIKit.UIFontWeightRegular
+import platform.UIKit.labelFontSize
 
 actual typealias Font = UIFont
+
+actual val defaultFont: Font get() = UIFont.systemFontOfSize(UIFont.labelFontSize)
+actual val defaultBoldFont: Font get() = UIFont.boldSystemFontOfSize(UIFont.labelFontSize)
+actual val defaultItalicFont: Font get() = UIFont.italicSystemFontOfSize(UIFont.labelFontSize)
+actual val defaultMonospaceFont: Font get() = UIFont.monospacedSystemFontOfSize(UIFont.labelFontSize, UIFontWeightRegular)

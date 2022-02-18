@@ -51,6 +51,11 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.keyboard.FocusHandler
@@ -67,6 +72,7 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.notifications.*
 import com.splendo.kaluga.permissions.storage.StoragePermission
+import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUUID
@@ -113,6 +119,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Bluetooth -> "showBluetooth"
                         is FeatureListNavigationAction.Beacons -> "showBeacons"
                         is FeatureListNavigationAction.PlatformSpecific -> "showPlatformSpecific"
+                        is FeatureListNavigationAction.Resources -> "showResources"
                     }
                 )
             }
@@ -256,6 +263,29 @@ class KNArchitectureFramework {
         )
     }
 
+    fun createResourcesViewModel(parent: UIViewController): ResourcesListViewModel {
+        return ResourcesListViewModel(
+            ViewControllerNavigator(parent) { action ->
+                NavigationSpec.Segue(
+                    when (action) {
+                        is ResourcesListNavigationAction.Button -> "showButton"
+                        is ResourcesListNavigationAction.Color -> "showColor"
+                        is ResourcesListNavigationAction.Label -> "showLabel"
+                    }
+                )
+            }
+        )
+    }
+
+    fun createButtonViewModel(parent: UIViewController) = ButtonViewModel(
+        StyledStringBuilder.Provider(),
+        AlertPresenter.Builder(parent)
+    )
+
+    fun createLabelViewModel() = LabelViewModel(StyledStringBuilder.Provider())
+
+    fun createColorViewModel(parent: UIViewController) = ColorViewModel(AlertPresenter.Builder(parent))
+
     fun <VM : BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
@@ -327,5 +357,12 @@ fun InfoViewModel.observeButtons(onInfoButtonsChanged: (List<String>, (Int) -> U
 fun PermissionsListViewModel.observePermissions(onPermissionsChanged: (List<PermissionView>, (Int) -> Unit) -> Unit): Disposable {
     return permissions.observeInitialized { permissions ->
         onPermissionsChanged(permissions) { index -> this.onPermissionPressed(permissions[index]) }
+    }
+}
+
+fun ResourcesListViewModel.observeResources(onResourcesChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
+    return resources.observeInitialized { features ->
+        val titles = features.map { feature -> feature.title }
+        onResourcesChanged(titles) { index -> this.onResourceSelected(features[index]) }
     }
 }

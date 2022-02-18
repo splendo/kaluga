@@ -53,7 +53,7 @@ class PermissionsAdapter(private val viewModel: PermissionsListViewModel) : Recy
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PermissionsViewHolder {
-        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_feature_button, parent, false) as AppCompatButton
+        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_list_button, parent, false) as AppCompatButton
         return PermissionsViewHolder(button)
     }
 
