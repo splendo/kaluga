@@ -78,6 +78,8 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
 
         private fun defaultDate(timeZone: TimeZone) = Date.now(timeZone = timeZone).apply {
             // Cannot use .utc since it may not be available when this method is called
+            // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
+            // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
             val epoch = Date.epoch(timeZone = TimeZone.get("UTC")!!)
             this.era = epoch.era
             this.year = epoch.year
