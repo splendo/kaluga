@@ -113,6 +113,46 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
+    suspend fun handleBluetoothStateChange(isOn: Boolean) {
+        val clean = suspend {
+            currentAction = null
+            notifyingCharacteristics.clear()
+        }
+
+        stateRepo.takeAndChangeState { state ->
+            if (!isOn) state.noBluetooth
+            else when (state) {
+                is DeviceState.Disconnected.WaitingForBluetooth -> state.onBluetoothAvailable().also {
+                    if (it == state.didDisconnect) {
+                        clean()
+                    }
+                }
+                else -> state.remain()
+                // is DeviceState.Reconnecting -> {
+                //     state.retry().also {
+                //         if (it == state.didDisconnect) {
+                //             clean()
+                //         }
+                //     }
+                // }
+                // is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+                //     is ConnectionSettings.ReconnectionSettings.Always,
+                //     is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
+                //     is ConnectionSettings.ReconnectionSettings.Never -> {
+                //         clean()
+                //         state.didDisconnect
+                //     }
+                // }
+                // is DeviceState.Disconnected -> state.remain()
+                // is DeviceState.Connecting,
+                // is DeviceState.Disconnecting -> {
+                //     clean()
+                //     state.didDisconnect
+                // }
+            }
+        }
+    }
+
     suspend fun handleScanCompleted(services: List<Service>) {
         stateRepo.takeAndChangeState { state ->
             when (state) {
@@ -177,6 +217,9 @@ abstract class BaseDeviceConnectionManager(
             it.updateValue()
             handleCurrentActionCompleted(succeeded)
         }
+    }
+
+    private suspend fun handleNoBluetooth() {
     }
 }
 

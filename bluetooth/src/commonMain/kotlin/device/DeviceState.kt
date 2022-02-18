@@ -169,6 +169,7 @@ sealed class DeviceState(
             connectionManager.disconnect()
         }
     }
+
     data class Connecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
@@ -252,25 +253,47 @@ sealed class DeviceState(
         }
     }
 
-    data class Disconnected constructor(
+    sealed class Disconnected constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager) {
 
-        fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
-            coroutineContext,
-            remainIfStateNot = Disconnected::class
-        ) { deviceState ->
-            connect(deviceState)
+        data class WaitingForBluetooth constructor(
+            override val deviceInfo: DeviceInfoImpl,
+            override val connectionManager: BaseDeviceConnectionManager,
+            val services: List<Service>?
+        ) : Disconnected(deviceInfo, connectionManager) {
+
+            fun onBluetoothAvailable(): suspend () -> DeviceState = suspend {
+                val shouldReconnect = connectionManager.connectionSettings.reconnectionSettings != ConnectionSettings.ReconnectionSettings.Never
+                if (shouldReconnect && deviceInfo.advertisementData.isConnectible) {
+                    Reconnecting(0, services, deviceInfo, connectionManager)
+                } else {
+                    NotConnected(deviceInfo, connectionManager)
+                }
+            }
         }
 
-        fun connect(deviceState: DeviceState): suspend () -> DeviceState =
-            if (deviceInfo.advertisementData.isConnectible)
-                suspend {
-                    Connecting(deviceInfo, connectionManager)
-                }
-            else
-                deviceState.remain()
+        data class NotConnected constructor(
+            override val deviceInfo: DeviceInfoImpl,
+            override val connectionManager: BaseDeviceConnectionManager
+        ) : Disconnected(deviceInfo, connectionManager) {
+
+            fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
+                coroutineContext,
+                remainIfStateNot = NotConnected::class
+            ) { deviceState ->
+                connect(deviceState)
+            }
+
+            fun connect(deviceState: DeviceState): suspend () -> DeviceState =
+                if (deviceInfo.advertisementData.isConnectible)
+                    suspend {
+                        Connecting(deviceInfo, connectionManager)
+                    }
+                else
+                    deviceState.remain()
+        }
     }
 
     data class Disconnecting constructor(
@@ -304,13 +327,29 @@ sealed class DeviceState(
                 is Connecting -> copy(deviceInfo = newDeviceInfo)
                 is Reconnecting -> copy(deviceInfo = newDeviceInfo)
                 is Disconnecting -> copy(deviceInfo = newDeviceInfo)
-                is Disconnected -> copy(deviceInfo = newDeviceInfo)
+                is Disconnected.WaitingForBluetooth -> copy(deviceInfo = newDeviceInfo)
+                is Disconnected.NotConnected -> copy(deviceInfo = newDeviceInfo)
             }
         }
     }
 
+    fun bluetoothSwitchedOff(): suspend () -> DeviceState =
+        when (this) {
+            is Connecting,
+            is Reconnecting,
+            is Connected -> noBluetooth
+            is Disconnecting -> didDisconnect
+            is Disconnected.NotConnected,
+            is Disconnected.WaitingForBluetooth -> remain()
+        }
+
+    internal val noBluetooth = suspend {
+        // All services, characteristics and descriptors become invalidated after it disconnects
+        Disconnected.WaitingForBluetooth(deviceInfo, connectionManager, null)
+    }
+
     internal val didDisconnect = suspend {
-        Disconnected(deviceInfo, connectionManager)
+        Disconnected.NotConnected(deviceInfo, connectionManager)
     }
 
     internal val disconnecting = suspend {
@@ -327,7 +366,7 @@ class Device constructor(
     coroutineContext = coroutineContext,
     initialState = {
         val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceWrapper, it)
-        DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
+        DeviceState.Disconnected.NotConnected(initialDeviceInfo, deviceConnectionManager)
     }
 ) {
     val identifier: Identifier

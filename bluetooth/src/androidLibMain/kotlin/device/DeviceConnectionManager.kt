@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -111,15 +112,18 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+            warn(TAG) { "onConnectionStateChange($status): $lastKnownState -> $newState" }
             lastKnownState = newState
             launch(mainDispatcher) {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
+                        info(TAG) { "onConnectionStateChange($status): disconnect" }
                         handleDisconnect {
                             closeGatt()
                         }
                     }
                     BluetoothProfile.STATE_CONNECTED -> {
+                        info(TAG) { "onConnectionStateChange($status): Connect" }
                         handleConnect()
                     }
                 }

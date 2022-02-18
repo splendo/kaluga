@@ -101,7 +101,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is DeviceState.Disconnected -> {
+                    is DeviceState.Disconnected.NotConnected -> {
                         deviceState.connect(deviceState).also {
                             assertEquals(deviceState.remain(), it)
                         }
@@ -369,7 +369,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 println("state: $deviceState")
                 when (deviceState) {
-                    is DeviceState.Disconnected -> deviceState.connect(deviceState)
+                    is DeviceState.Disconnected.NotConnected -> deviceState.connect(deviceState)
                     else -> fail("$deviceState is not expected")
                 }
             }
