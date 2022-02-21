@@ -15,7 +15,7 @@
 
 */
 
-package com.splendo.kaluga.binary-utils
+package com.splendo.kaluga.binary
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
