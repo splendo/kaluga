@@ -15,8 +15,17 @@
 
  */
 
+import org.khronos.webgl.Uint16Array
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
+
+private val isBigEndian = Uint8Array(
+    Uint16Array(arrayOf(0x1234.toShort())).buffer
+)[0] == 0x12.toByte()
+
 internal actual val Endianness.Companion.native: Endianness
-    get() = when (java.nio.ByteOrder.nativeOrder()) {
-        java.nio.ByteOrder.BIG_ENDIAN -> Endianness.MOST_SIGNIFICANT_FIRST
-        else -> Endianness.LEAST_SIGNIFICANT_FIRST
+    get() = if (isBigEndian) {
+        Endianness.MOST_SIGNIFICANT_FIRST
+    } else {
+        Endianness.LEAST_SIGNIFICANT_FIRST
     }
