@@ -20,5 +20,10 @@ kotlin {
                 implementation(project(":base"))
             }
         }
+        commonTest {
+            dependencies {
+                implementation(project(":test-utils"))
+            }
+        }
     }
 }
