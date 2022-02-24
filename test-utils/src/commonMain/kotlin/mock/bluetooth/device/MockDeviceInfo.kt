@@ -55,7 +55,7 @@ class MockDeviceInfo(
 
     companion object {
 
-        fun build(build: Builder.() -> Unit) : MockDeviceInfo{
+        fun build(build: Builder.() -> Unit): MockDeviceInfo {
             val builder = Builder()
             build(builder)
             return builder.build()

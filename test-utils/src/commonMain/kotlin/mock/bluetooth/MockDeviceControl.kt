@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
+import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
-import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.disconnect
-import com.splendo.kaluga.bluetooth.get
-import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceInfo
 import kotlinx.coroutines.Dispatchers
@@ -31,13 +32,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.transformLatest
 
 class MockDeviceControl private constructor(
     private val deviceInfo: DeviceInfo
-    ) {
+) {
     private val mockDeviceFactory = MockDeviceFactory(Dispatchers.Main)
     private val connectionManager: MockDeviceConnectionManager? get() = mockDeviceFactory.connectionManager
 
@@ -56,13 +55,22 @@ class MockDeviceControl private constructor(
     companion object {
         fun build(
             build: Builder.() -> Unit = {}
-        ) : MockDeviceControl {
+        ): MockDeviceControl {
             val builder = Builder()
             build(builder)
             return MockDeviceControl(
                 deviceInfo = builder.deviceInfo ?: MockDeviceInfo.build { }
             )
         }
+    }
+
+    suspend fun reset() {
+        connectionManager?.reset()
+        servicesAdvertisingData.clear()
+        discover()
+        connect()
+        disconnect()
+        connectionManager?.reset()
     }
 
     suspend fun discover() {
@@ -81,7 +89,6 @@ class MockDeviceControl private constructor(
             connectCompleted.get().await()
             handleConnect()
             connectingJob.await()
-
         } ?: throw Error("The Connection Manager was not created")
     }
 
@@ -96,11 +103,35 @@ class MockDeviceControl private constructor(
             disconnectCompleted.get().await()
             handleDisconnect()
             disconnectingJob.await()
-
         } ?: throw Error("The Connection Manager was not created")
     }
 
-    suspend fun simulate() {
+    private val servicesAdvertisingData = mutableListOf<MockServiceAdvertisingData>()
+    suspend fun simulate(serviceAdvertisingData: MockServiceAdvertisingData) {
+        discover()
+        connect()
 
+        servicesAdvertisingData.add(serviceAdvertisingData)
+        updateDiscoveredService(servicesAdvertisingData)
+    }
+
+    private suspend fun updateDiscoveredService(advertisingData: List<MockServiceAdvertisingData>) {
+        devicesFlow.services().first()
+        connectionManager?.run {
+            val services = advertisingData.map { createServiceMock(it, stateRepo) }
+            handleScanCompleted(services)
+        }
+    }
+
+    private fun createServiceMock(advertisementData: MockServiceAdvertisingData, deviceStateFlowRepo: DeviceStateFlowRepo): Service {
+        val serviceWrapper = createServiceWrapper(
+            uuid = advertisementData.uuid,
+            stateRepo = deviceStateFlowRepo
+        )
+        return Service(serviceWrapper, deviceStateFlowRepo)
     }
 }
+
+data class MockServiceAdvertisingData(
+    val uuid: UUID
+)

@@ -16,12 +16,15 @@
  */
 
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.randomUUID
+import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.MockDeviceControl
+import com.splendo.kaluga.test.mock.bluetooth.MockServiceAdvertisingData
 import com.splendo.kaluga.test.mock.bluetooth.device.randomIdentifier
-import kotlinx.coroutines.delay
-
+import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -71,6 +74,41 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
         }
         test {
             assertTrue(it is DeviceState.Disconnected, "It should disconnect. Actual state: $it")
+        }
+    }
+
+    @Test
+    fun testDiscoverServices() = testWithFlow {
+        val firstUUID = randomUUID()
+        val secondUUID = randomUUID()
+        val firstService = MockServiceAdvertisingData(firstUUID)
+        val secondService = MockServiceAdvertisingData(secondUUID)
+
+        action {
+            control.simulate(serviceAdvertisingData = firstService)
+        }
+        test {
+            assertNotNull(control.mock.services()[firstUUID].first(), "It should discover service")
+        }
+
+        action {
+            control.simulate(serviceAdvertisingData = secondService)
+        }
+        test {
+            assertNotNull(control.mock.services()[firstUUID].first(), "It should discover the first added service")
+            assertNotNull(control.mock.services()[secondUUID].first(), "It should discover the second added service")
+        }
+    }
+
+    @Test
+    fun testReset() = testWithFlow {
+        control.simulate(serviceAdvertisingData = MockServiceAdvertisingData(randomUUID()))
+
+        action {
+            control.reset()
+        }
+        test {
+            assertTrue(control.mock.services().first().isEmpty(), "It should clean discovered service")
         }
     }
 }

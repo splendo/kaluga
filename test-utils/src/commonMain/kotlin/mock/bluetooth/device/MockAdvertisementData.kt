@@ -18,10 +18,8 @@
 package com.splendo.kaluga.test.mock.bluetooth.device
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.Identifier
 
 data class MockAdvertisementData(
     override val name: String? = null,
@@ -40,7 +38,7 @@ data class MockAdvertisementData(
         var serviceData: Map<UUID, ByteArray?> = emptyMap()
         var txPowerLevel: Int = Int.MIN_VALUE
         var isConnectible: Boolean = true
-        fun build() : MockAdvertisementData {
+        fun build(): MockAdvertisementData {
             val advertisementData = MockAdvertisementData(
                 name = name,
                 manufacturerId = manufacturerId,
@@ -55,7 +53,7 @@ data class MockAdvertisementData(
     }
 
     companion object {
-        fun build(build: Builder.() -> Unit) : MockAdvertisementData {
+        fun build(build: Builder.() -> Unit): MockAdvertisementData {
             val builder = Builder()
             build(builder)
             return builder.build()
