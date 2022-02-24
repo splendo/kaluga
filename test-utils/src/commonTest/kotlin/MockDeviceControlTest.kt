@@ -58,7 +58,19 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
             control.connect()
         }
         test {
-            assertTrue(it is DeviceState.Connected, "It should start connecting")
+            assertTrue(it is DeviceState.Connected, "It should connect. Actual state: $it")
+        }
+    }
+
+    @Test
+    fun testDisconnect() = testWithFlow {
+        control.discover()
+        control.connect()
+        action {
+            control.disconnect()
+        }
+        test {
+            assertTrue(it is DeviceState.Disconnected, "It should disconnect. Actual state: $it")
         }
     }
 }

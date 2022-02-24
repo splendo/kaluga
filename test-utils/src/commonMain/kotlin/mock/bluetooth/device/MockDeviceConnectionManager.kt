@@ -66,9 +66,7 @@ class MockDeviceConnectionManager(
     }
 
     override suspend fun connect() {
-        println("🦋 connect")
         connectCompleted.get().complete()
-        // handleConnect()
     }
 
     override suspend fun discoverServices() {

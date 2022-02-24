@@ -21,6 +21,7 @@ import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
@@ -85,14 +86,21 @@ class MockDeviceControl private constructor(
     }
 
     suspend fun disconnect() {
+        devicesFlow.first()?.stateFlow?.first()
 
+        connectionManager?.run {
+            reset()
+            val disconnectingJob = async {
+                devicesFlow.disconnect()
+            }
+            disconnectCompleted.get().await()
+            handleDisconnect()
+            disconnectingJob.await()
+
+        } ?: throw Error("The Connection Manager was not created")
     }
 
     suspend fun simulate() {
-
-    }
-
-    suspend fun expect() {
 
     }
 }
