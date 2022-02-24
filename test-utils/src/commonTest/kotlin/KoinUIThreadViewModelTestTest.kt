@@ -60,7 +60,6 @@ class KoinUIThreadViewModelTestTest :
         { MyKoinViewModelTestContext() }
 
     @Test
-    @Ignore // Ignored due to a bug in Koin library using Kotlin version >= 1.6.0 https://github.com/InsertKoinIO/koin/issues/1188
     fun testKoinViewModelTestContext() = testOnUIThread {
         assertEquals("S", viewModel.s)
         assertTrue(builder is MockAlertPresenter.Builder)
