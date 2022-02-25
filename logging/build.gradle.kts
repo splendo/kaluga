@@ -26,7 +26,7 @@ kotlin {
         val commonMain by getting {
             val ext = (gradle as ExtensionAware).extra
             dependencies {
-                implementation("ru.pocketbyte.kydra:kydra-log:${ext["kydra_log_version"]}")
+                implementation("io.github.aakira:napier:${ext["napier_version"]}")
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
