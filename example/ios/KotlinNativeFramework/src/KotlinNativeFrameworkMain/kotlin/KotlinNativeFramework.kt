@@ -16,12 +16,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import ru.pocketbyte.kydra.log.KydraLog
+import io.github.aakira.napier.Antilog as NapierLog
 
 class KotlinNativeFramework {
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
     // expose a dependency to Swift as an example
-    fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
+    fun logger(): NapierLog = DebugAntilog()
 }
