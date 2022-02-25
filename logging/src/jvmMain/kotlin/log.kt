@@ -17,7 +17,7 @@
 @file:JvmName("JvmLogKt")
 package com.splendo.kaluga.logging
 
-import ru.pocketbyte.kydra.log.PrintLogger
+import io.github.aakira.napier.DebugAntilog
 
-actual val defaultLogger: Logger = KydraLogger(PrintLogger())
+actual val defaultLogger: Logger = NapierLogger(DebugAntilog())
 actual var logger = defaultLogger
