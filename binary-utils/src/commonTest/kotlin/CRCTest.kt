@@ -28,13 +28,13 @@ class CRCTest {
     fun testCRC8() {
         // CRC-8
         assertEquals(
-                expected = 0xf4u,
-                actual = CRC8_CCITT.calculate(SAMPLE_DATA, initialValue = 0u)
+            expected = 0xf4u,
+            actual = CRC8_CCITT.calculate(SAMPLE_DATA, initialValue = 0u)
         )
         // CRC-8/CCITT-FALSE
         assertEquals(
-                expected = 0xfbu,
-                actual = CRC8_CCITT.calculate(SAMPLE_DATA, initialValue = 0xffu)
+            expected = 0xfbu,
+            actual = CRC8_CCITT.calculate(SAMPLE_DATA, initialValue = 0xffu)
         )
     }
 
@@ -42,13 +42,13 @@ class CRCTest {
     fun testCRC16() {
         // CRC-16/XMODEM
         assertEquals(
-                expected = 0x31c3u,
-                actual = CRC16_CCITT.calculate(SAMPLE_DATA, initialValue = 0u)
+            expected = 0x31c3u,
+            actual = CRC16_CCITT.calculate(SAMPLE_DATA, initialValue = 0u)
         )
         // CRC-16/CCITT-FALSE
         assertEquals(
-                expected = 0x29b1u,
-                actual = CRC16_CCITT.calculate(SAMPLE_DATA, initialValue = 0xffffu)
+            expected = 0x29b1u,
+            actual = CRC16_CCITT.calculate(SAMPLE_DATA, initialValue = 0xffffu)
         )
     }
 }
