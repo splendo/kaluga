@@ -103,24 +103,22 @@ if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
     }
 }
 
-// based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
-def sdkName = System.getenv("SDK_NAME") ?: "unknown"
-if (sdkName.startsWith("iphoneos")) {
-    gradle.ext.ios_primary_arch = "iosarm64"
-    gradle.ext.ios_secondary_arch = "iosx64"
-}
-else {
-    gradle.ext.ios_primary_arch = "iosx64"
-    gradle.ext.ios_secondary_arch = "iosarm64"
-}
+//// based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
+//def sdkName = System.getenv("SDK_NAME") ?: "unknown"
+//if (sdkName.startsWith("iphoneos")) {
+//    gradle.ext.ios_primary_arch = "iosarm64"
+//    gradle.ext.ios_secondary_arch = "iosx64"
+//}
+//else {
+//    gradle.ext.ios_primary_arch = "iosx64"
+//    gradle.ext.ios_secondary_arch = "iosarm64"
+//}
+//println("Detected primary arch from sdk $sdkName: $gradle.ext.ios_primary_arch")
 
-println("Detected primary arch from sdk $sdkName: $gradle.ext.ios_primary_arch")
-
-
-// set global variable to decide how many iOS source sets to use. More than one sourceset can create problems for project dependencies and gives false errors in the IDE
-// currently the xcodecompat plugin also supports only arm64/iosx64 so this is off by default
-// it is automatically enabled when publishing, in order to generate multiple artifacts
-def envFlag = System.env.IOS_ONE_SOURCESET
-boolean isPublishTask = gradle.startParameter.taskNames.any  { it.startsWith("publish") }
-gradle.ext.ios_one_sourceset = envFlag == null ? !isPublishTask : Boolean.parseBoolean(envFlag)
-println "Using a single iOS sourceset (env IOS_ONE_SOURCESET=$envFlag, isPublishTask=$isPublishTask): $gradle.ext.ios_one_sourceset"
+//// set global variable to decide how many iOS source sets to use. More than one sourceset can create problems for project dependencies and gives false errors in the IDE
+//// currently the xcodecompat plugin also supports only arm64/iosx64 so this is off by default
+//// it is automatically enabled when publishing, in order to generate multiple artifacts
+//def envFlag = System.env.IOS_ONE_SOURCESET
+//boolean isPublishTask = gradle.startParameter.taskNames.any  { it.startsWith("publish") }
+//gradle.ext.ios_one_sourceset = envFlag == null ? !isPublishTask : Boolean.parseBoolean(envFlag)
+//println "Using a single iOS sourceset (env IOS_ONE_SOURCESET=$envFlag, isPublishTask=$isPublishTask): $gradle.ext.ios_one_sourceset"

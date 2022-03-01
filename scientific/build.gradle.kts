@@ -22,22 +22,46 @@ dependencies {
 }
 
 kotlin {
-    sourceSets {
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
+    sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
 
-        commonMain {
+        val commonMain by getting {
             dependencies {
                 implementation(project(":base"))
                 api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
             }
         }
-        commonTest {
+
+        val commonTest by getting {
             dependencies {
                 implementation(project(":test-utils"))
             }
+        }
+
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by getting {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
+
+        val iosX64Test by getting
+        val iosArm64Test by getting
+        val iosSimulatorArm64Test by getting
+        val iosTest by getting {
+            dependsOn(commonTest)
+            iosX64Test.dependsOn(this)
+            iosArm64Test.dependsOn(this)
+            iosSimulatorArm64Test.dependsOn(this)
         }
     }
 }
