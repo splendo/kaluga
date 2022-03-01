@@ -204,17 +204,17 @@ task printConfigurations {
     }
 }
 
-//task copyResources(type: Copy) {
-//    from file('src/iosTest/res/.')
-//    into file("$buildDir/bin/iosx64/debugTest")
-//}
-//
-//afterEvaluate {
-//    if (tasks.getNames().contains("linkDebugTestIosx64"))
-//        tasks.named("linkDebugTestIosx64").configure {
-//            dependsOn copyResources
-//        }
-//}
+task copyResources(type: Copy) {
+    from file('src/iosTest/res/.')
+    into file("$buildDir/bin/iosx64/debugTest")
+}
+
+afterEvaluate {
+    if (tasks.getNames().contains("linkDebugTestIosx64"))
+        tasks.named("linkDebugTestIosx64").configure {
+            dependsOn copyResources
+        }
+}
 
 ktlint {
     disabledRules=["no-wildcard-imports","filename"]
