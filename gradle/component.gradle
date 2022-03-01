@@ -40,7 +40,13 @@ kotlin {
 //        targetFromPreset(gradle.ios_secondary_arch == "iosx64" ? presets.iosX64 : presets.iosArm64, gradle.ios_secondary_arch)
 //    }
 
-    iosX64()
+    iosX64() {
+        binaries {
+            // Use this entry point to turn the thread tests are run to a background thread instead of the main thread
+            // This better allows testing the main dispatcher, and testing cross thread access
+            binaries.getTest("DEBUG").freeCompilerArgs += ["-e", "com.splendo.kaluga.test.mainBackground"]
+        }
+    }
     iosArm64()
     iosSimulatorArm64()
 
