@@ -77,7 +77,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
         )
 
         // Due to a problem related to the commonizer we need to supply all the
-        // default argoumets expected from the method signature
+        // default arguments expected from the method signature
         private fun defaultDate(timeZone: TimeZone) = Date.now(
             offsetInMilliseconds = 0L,
             timeZone = timeZone,
