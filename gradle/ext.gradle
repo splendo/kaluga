@@ -103,22 +103,34 @@ if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
     }
 }
 
-//// based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
-//def sdkName = System.getenv("SDK_NAME") ?: "unknown"
-//if (sdkName.startsWith("iphoneos")) {
-//    gradle.ext.ios_primary_arch = "iosarm64"
-//    gradle.ext.ios_secondary_arch = "iosx64"
-//}
-//else {
-//    gradle.ext.ios_primary_arch = "iosx64"
-//    gradle.ext.ios_secondary_arch = "iosarm64"
-//}
-//println("Detected primary arch from sdk $sdkName: $gradle.ext.ios_primary_arch")
+// based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
+def sdkName = System.getenv("SDK_NAME") ?: "unknown"
+gradle.ext.is_real_ios_device = sdkName.startsWith("iphoneos")
+logger.lifecycle "Run on real ios device: $gradle.ext.is_real_ios_device from sdk: $sdkName"
 
-//// set global variable to decide how many iOS source sets to use. More than one sourceset can create problems for project dependencies and gives false errors in the IDE
-//// currently the xcodecompat plugin also supports only arm64/iosx64 so this is off by default
-//// it is automatically enabled when publishing, in order to generate multiple artifacts
-//def envFlag = System.env.IOS_ONE_SOURCESET
-//boolean isPublishTask = gradle.startParameter.taskNames.any  { it.startsWith("publish") }
-//gradle.ext.ios_one_sourceset = envFlag == null ? !isPublishTask : Boolean.parseBoolean(envFlag)
-//println "Using a single iOS sourceset (env IOS_ONE_SOURCESET=$envFlag, isPublishTask=$isPublishTask): $gradle.ext.ios_one_sourceset"
+// Run on IntelliJ
+def ideaActive = System.getProperty("idea.active") == "true"
+gradle.ext.idea_active = ideaActive
+logger.lifecycle "Run on IntelliJ: $gradle.ext.idea_active"
+
+// Run on apple silicon
+def isAppleSilicon = System.getProperty("os.arch") == "aarch64"
+gradle.ext.is_apple_silicon = isAppleSilicon
+logger.lifecycle "Run on apple silicon: $gradle.ext.is_apple_silicon"
+
+def iosX64 = "iosX64"
+def iosArm64 = "iosArm64"
+def iosSimulatorArm64 = "iosSimulatorArm64"
+def allIosTargets = [iosX64, iosArm64, iosSimulatorArm64]
+if (!gradle.ext.idea_active) {
+    gradle.ext.ios_targets = allIosTargets
+} else {
+    if (gradle.ext.is_real_ios_device) {
+        gradle.ext.ios_targets = [iosArm64]
+    } else if (gradle.ext.is_apple_silicon) {
+        gradle.ext.ios_targets = [iosSimulatorArm64]
+    } else {
+        gradle.ext.ios_targets = [iosX64]
+    }
+}
+logger.lifecycle "Run on ios targets: $gradle.ext.ios_targets"
