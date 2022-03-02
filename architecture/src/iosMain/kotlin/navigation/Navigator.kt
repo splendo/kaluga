@@ -353,6 +353,5 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     private fun assertParent() = parent.get().also { assert(it != null) }
 }
 
-// Seems to be a bug on commonizer using new targets sourcesets which is preventing
-// to infer the correct type as it was doing before
+// Seems to be a bug on commonizer using new targets sourcesets which is preventing to infer the correct type
 expect fun MFMessageComposeViewController.setMessageWorkAround(message: platform.Messages.MSMessage?)
