@@ -35,7 +35,7 @@ kotlin {
     sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
-        
+
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
