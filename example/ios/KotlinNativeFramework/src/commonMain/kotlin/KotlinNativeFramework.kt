@@ -16,8 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import io.github.aakira.napier.Antilog as NapierLog
 import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Antilog as NapierLog
 
 class KotlinNativeFramework {
 
