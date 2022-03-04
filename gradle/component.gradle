@@ -153,16 +153,16 @@ task printConfigurations {
     }
 }
 
-task copyResources(type: Copy) {
-    from file('src/iosTest/res/.')
-    into file("$buildDir/bin/iosx64/debugTest")
-}
-
 afterEvaluate {
-    if (tasks.getNames().contains("linkDebugTestIosx64"))
-        tasks.named("linkDebugTestIosx64").configure {
-            dependsOn copyResources
-        }
+    gradle.ext.ios_targets.each { target ->
+        if (tasks.getNames().contains("linkDebugTest${target.capitalize()}"))
+            tasks.named("linkDebugTest${target.capitalize()}").configure {
+                copy {
+                    from file('src/iosTest/res/.')
+                    into file("$buildDir/bin/$target/debugTest")
+                }
+            }
+    }
 }
 
 ktlint {
