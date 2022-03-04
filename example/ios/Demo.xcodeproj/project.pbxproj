@@ -33,9 +33,7 @@
 		641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */; };
 		649979D325CC638C00348419 /* SystemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649979D225CC638C00348419 /* SystemViewController.swift */; };
 		649979E725CCD37200348419 /* NetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649979E625CCD37200348419 /* NetworkViewController.swift */; };
-		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
 		7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */; };
-		7450B266B7AD1FE0B79C10EA /* KotlinNativeFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BBBF2C57521E71982179E0 /* AppDelegate.swift */; };
 		7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74FDC8922442294AF0776058 /* LaunchScreen.storyboard */; };
 		749B42F84CA72A5D4A0F3AD9 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */; };
@@ -47,13 +45,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		740E6C673EE16791117B2FD4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7477FD4305C126F92DB837CC /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 74269CF2B44D65F5DA990E74;
-			remoteInfo = KotlinNativeFramework;
-		};
 		74798B41F78378ECDB0E4BB7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7477FD4305C126F92DB837CC /* Project object */;
@@ -76,7 +67,6 @@
 			buildActionMask = 0;
 			dstSubfolderSpec = 10;
 			files = (
-				7450B266B7AD1FE0B79C10EA /* KotlinNativeFramework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,13 +107,11 @@
 		741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUITests.swift; sourceTree = "<group>"; };
 		741E82A1DDEE399E80A02B54 /* gradle-wrapper.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "gradle-wrapper.jar"; sourceTree = "<group>"; };
 		7428D8755D288FD7EA2E6537 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
-		742C6ACDA3C877A6128316ED /* KotlinNativeFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KotlinNativeFramework.framework; path = Library/Frameworks/KotlinNativeFramework.framework; sourceTree = DEVELOPER_DIR; };
 		742CCE9033CEC8C8004D624F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7433F67D6FEF093F4C827A5A /* build.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = build.gradle.kts; sourceTree = "<group>"; };
 		744CF99B70DA1947AA98CA3B /* DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTests.swift; sourceTree = "<group>"; };
 		744F12775216AF134CBAF4E9 /* build.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = build.gradle.kts; sourceTree = "<group>"; };
 		746834742E284396FD5452F4 /* DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		746885BADB9F6661211345DA /* KotlinNativeFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KotlinNativeFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		746E133CAEC5C7B1D516B11F /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74A0718952D0CC604E49709B /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B0C3AB70AAB7878B48F6B1 /* gradle-wrapper.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = "gradle-wrapper.properties"; sourceTree = "<group>"; };
@@ -157,7 +145,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,7 +310,6 @@
 			children = (
 				205AF6542488F017001BD99E /* Localizable.strings */,
 				747A549D9FF0D1B49E65E190 /* Products */,
-				747C47F96366E8C0FE896BF1 /* Frameworks */,
 				746CAD9D15ECB24F4ED84E11 /* Demo */,
 				7492DE0914511F3DC96A30A8 /* DemoTests */,
 				74D6698E6E24A4F93E6B289A /* DemoUITests */,
@@ -404,17 +390,8 @@
 				746E133CAEC5C7B1D516B11F /* Demo.app */,
 				746834742E284396FD5452F4 /* DemoTests.xctest */,
 				74A0718952D0CC604E49709B /* DemoUITests.xctest */,
-				746885BADB9F6661211345DA /* KotlinNativeFramework.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		747C47F96366E8C0FE896BF1 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				742C6ACDA3C877A6128316ED /* KotlinNativeFramework.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		747F646D72854D37D5686909 /* KotlinNativeFramework */ = {
@@ -483,25 +460,11 @@
 			productReference = 746834742E284396FD5452F4 /* DemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		74269CF2B44D65F5DA990E74 /* KotlinNativeFramework */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7455FEDF902D83B941B78621 /* Build configuration list for PBXNativeTarget "KotlinNativeFramework" */;
-			buildPhases = (
-				74EB9E9C533BEEA0282341AE /* Compile Kotlin/Native */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = KotlinNativeFramework;
-			productName = KotlinNativeFramework;
-			productReference = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		74555136E1B2BB715E50195E /* Demo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 74C754F7F747073B076C3A91 /* Build configuration list for PBXNativeTarget "Demo" */;
 			buildPhases = (
+				95D0860F27D2540B00838E57 /* Compile Kotlin/Native */,
 				744156D82DB12C1F9CC3C68F /* Sources */,
 				74B635A880CB81844D31A213 /* Frameworks */,
 				746C535FD7586B544C684D34 /* Resources */,
@@ -510,7 +473,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				7408BEE716C49FFB32C030AC /* PBXTargetDependency */,
 			);
 			name = Demo;
 			productName = Demo;
@@ -566,7 +528,6 @@
 				74555136E1B2BB715E50195E /* Demo */,
 				74074B293DEEEE5CB9495BC2 /* DemoTests */,
 				74F1ACA722488B68F78605D9 /* DemoUITests */,
-				74269CF2B44D65F5DA990E74 /* KotlinNativeFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -603,19 +564,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		74EB9E9C533BEEA0282341AE /* Compile Kotlin/Native */ = {
+		95D0860F27D2540B00838E57 /* Compile Kotlin/Native */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+			);
 			inputPaths = (
 			);
 			name = "Compile Kotlin/Native";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -z \"$KOTLIN_NATIVE_BUILD_CAPABLE\" ]; then\necho \"arch: $ARCHS\"\ncd \"$SRCROOT/Supporting Files\"\nsh -c \". gradlew buildForXcode\"\nfi\n            \n";
+			shellScript = "cd \"$SRCROOT/Supporting Files\"\n./gradlew :KotlinNativeFramework:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -673,11 +638,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		7408BEE716C49FFB32C030AC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 74269CF2B44D65F5DA990E74 /* KotlinNativeFramework */;
-			targetProxy = 740E6C673EE16791117B2FD4 /* PBXContainerItemProxy */;
-		};
 		744683563AC18D9D78E89D91 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 74555136E1B2BB715E50195E /* Demo */;
@@ -718,23 +678,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		74129CD46D0024B61630054C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = KotlinNativeFramework/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.KotlinNativeFramework;
-				PRODUCT_MODULE_NAME = "_$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = arm64;
-			};
-			name = Debug;
-		};
 		7450045FC3F0FAB4E9E0751D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -789,23 +732,6 @@
 			};
 			name = Release;
 		};
-		74556A21FFE52626ECDED0EB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = KotlinNativeFramework/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.KotlinNativeFramework;
-				PRODUCT_MODULE_NAME = "_$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = arm64;
-			};
-			name = Release;
-		};
 		74B72DFF132E49F15B2DF935 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -827,7 +753,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
-				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
+				FRAMEWORK_SEARCH_PATHS = (
+					$BUILT_PRODUCTS_DIR,
+					"$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+				);
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
@@ -947,7 +876,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
-				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
+				FRAMEWORK_SEARCH_PATHS = (
+					$BUILT_PRODUCTS_DIR,
+					"$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+				);
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
@@ -975,15 +907,6 @@
 			buildConfigurations = (
 				74DE35733E2CD78059A3003A /* Debug */,
 				7450045FC3F0FAB4E9E0751D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7455FEDF902D83B941B78621 /* Build configuration list for PBXNativeTarget "KotlinNativeFramework" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				74129CD46D0024B61630054C /* Debug */,
-				74556A21FFE52626ECDED0EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
