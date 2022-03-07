@@ -27,8 +27,13 @@ abstract class StringsTests : BaseTest() {
 
     @Test
     fun testPlurals() {
+        println("##### testPlurals starts")
+        println("##### 0 hours: ${"hours_value".quantity(0, stringLoader)}")
         assertEquals("0 hours", "hours_value".quantity(0, stringLoader))
+        println("##### 1 hours: ${"hours_value".quantity(1, stringLoader)}")
         assertEquals("1 hour", "hours_value".quantity(1, stringLoader))
+        println("##### 2 hours: ${"hours_value".quantity(2, stringLoader)}")
         assertEquals("2 hours", "hours_value".quantity(2, stringLoader))
+        println("##### testPlurals ends")
     }
 }
