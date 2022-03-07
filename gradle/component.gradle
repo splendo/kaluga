@@ -153,18 +153,18 @@ task printConfigurations {
     }
 }
 
-task copyiOSTestResources(type: Copy) {
-    gradle.ext.ios_targets.each { target ->
-        from file('src/iosTest/resources/.')
-        into file("$buildDir/bin/$target/debugTest")
-    }
-}
-
 afterEvaluate {
     gradle.ext.ios_targets.each { target ->
         if (tasks.getNames().contains("linkDebugTest${target.capitalize()}"))
+            // creating copy task for the target
+            tasks.create(name: "copy${target.capitalize()}TestResources", type: Copy) {
+                from file('src/iosTest/resources/.')
+                into file("$buildDir/bin/$target/debugTest")
+            }
+
+            // apply copy task to the target
             tasks.named("linkDebugTest${target.capitalize()}").configure {
-                dependsOn copyiOSTestResources
+                dependsOn("copy${target.capitalize()}TestResources")
             }
     }
 }
