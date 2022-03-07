@@ -153,45 +153,18 @@ task printConfigurations {
     }
 }
 
-//task copyResources(type: Copy) {
-//    from file('src/iosTest/res/.')
-//    into file("$buildDir/bin/iosx64/debugTest")
-//}
-//
-//afterEvaluate {
-//    if (tasks.getNames().contains("linkDebugTestIosx64"))
-//        tasks.named("linkDebugTestIosx64").configure {
-//            dependsOn copyResources
-//        }
-//}
-
-task copyIosX64TestResources(type: Copy) {
-//tasks.register<Copy>("copyIosX64TestResources") {
-    from("src/iosTest/resources/.")
-    into("$buildDir/bin/iosX64/debugTest")
-}
-
-task copyIosArm64TestResources(type: Copy) {
-//tasks.register<Copy>("copyIosArm64TestResources") {
-    from("src/iosTest/resources/.")
-    into("$buildDir/bin/iosArm64/debugTest")
-}
-
-task copyIosSimulatorArm64TestResources(type: Copy) {
-//tasks.register<Copy>("copyIosSimulatorArm64TestResources") {
-    from("src/iosTest/resources/.")
-    into("$buildDir/bin/iosSimulatorArm64/debugTest")
+task copyiOSTestResources(type: Copy) {
+    gradle.ext.ios_targets.each { target ->
+        from file('src/iosTest/resources/.')
+        into file("$buildDir/bin/$target/debugTest")
+    }
 }
 
 afterEvaluate {
     gradle.ext.ios_targets.each { target ->
         if (tasks.getNames().contains("linkDebugTest${target.capitalize()}"))
             tasks.named("linkDebugTest${target.capitalize()}").configure {
-//                copy {
-//                    from file('src/iosTest/resources/.')
-//                    into file("$buildDir/bin/$target/debugTest")
-//                }
-                dependsOn("copy${target.capitalize()}TestResources")
+                dependsOn copyiOSTestResources
             }
     }
 }
