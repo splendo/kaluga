@@ -113,11 +113,11 @@ class DateFormatterTest {
 
     @Test
     fun testParseDateWithDifferentTimezone() {
-        val utcFormatter = DateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", TimeZone.utc, Locale.enUsPosix)
-        val pstFormatter = DateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", PSTTimeZone, Locale.enUsPosix)
+        val utcFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", TimeZone.utc, Locale.enUsPosix)
+        val pstFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", PSTTimeZone, Locale.enUsPosix)
 
-        val epochInUtc = Date.epoch(timeZone = TimeZone.utc, locale = Locale.enUsPosix)
-        val epochInPst = Date.epoch(timeZone = PSTTimeZone, locale = Locale.enUsPosix)
+        val epochInUtc = DefaultKalugaDate.epoch(timeZone = TimeZone.utc, locale = Locale.enUsPosix)
+        val epochInPst = DefaultKalugaDate.epoch(timeZone = PSTTimeZone, locale = Locale.enUsPosix)
         assertEquals("1970.01.01 AD at 00:00:00 ${TimeZone.utc.identifier}", utcFormatter.format(epochInUtc))
         assertEquals("1970.01.01 AD at 00:00:00 ${TimeZone.utc.identifier}", utcFormatter.format(epochInPst))
         assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInUtc))

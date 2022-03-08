@@ -79,11 +79,13 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
 
         // Due to a problem related to the commonizer we need to supply all the
         // default arguments expected from the method signature
-        private fun defaultDate(timeZone: TimeZone) = (DefaultKalugaDate.now(
-            offsetInMilliseconds = 0L,
-            timeZone = timeZone,
-            locale = Locale.defaultLocale
-        ) as DefaultKalugaDate).apply {
+        private fun defaultDate(timeZone: TimeZone) = (
+            DefaultKalugaDate.now(
+                offsetInMilliseconds = 0L,
+                timeZone = timeZone,
+                locale = Locale.defaultLocale
+            ) as DefaultKalugaDate
+            ).apply {
             // Cannot use .utc since it may not be available when this method is called
             // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
             // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
