@@ -14,18 +14,29 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.logging
 
-import co.touchlab.stately.concurrency.value
-import io.github.aakira.napier.DebugAntilog
 import kotlin.native.concurrent.SharedImmutable
+import com.splendo.kaluga.logging.LogLevel as KalugaLogLevel
+import io.github.aakira.napier.Antilog as NapierLog
+import io.github.aakira.napier.LogLevel as NapierLogLevel
 
 @SharedImmutable
-actual val defaultLogger: Logger = NapierLogger(DebugAntilog())
+val logLevel = arrayOf(
+    NapierLogLevel.VERBOSE,
+    NapierLogLevel.DEBUG,
+    NapierLogLevel.INFO,
+    NapierLogLevel.WARNING,
+    NapierLogLevel.ERROR,
+    NapierLogLevel.ASSERT
+)
 
-@SharedImmutable
-private val _logger = co.touchlab.stately.concurrency.AtomicReference(defaultLogger)
-actual var logger
-    get() = _logger.value
-    set(value) { _logger.value = value }
+fun KalugaLogLevel.logLevel(): NapierLogLevel {
+    return logLevel[this.ordinal]
+}
+
+class NapierLogger(val logger: NapierLog) : Logger {
+    override fun log(level: KalugaLogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
+        logger.log(priority = level.logLevel(), tag = tag, throwable = throwable, message = message?.invoke())
+    }
+}
