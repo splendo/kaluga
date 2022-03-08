@@ -37,9 +37,6 @@ fun KalugaLogLevel.logLevel(): NapierLogLevel {
 
 class NapierLogger(val logger: NapierLog) : Logger {
     override fun log(level: KalugaLogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-        if (message != null)
-            logger.log(priority = level.logLevel(), tag = tag, throwable = null, message = message())
-        if (throwable != null)
-            logger.log(priority = level.logLevel(), tag = tag, throwable = throwable, message = null)
+        logger.log(priority = level.logLevel(), tag = tag, throwable = throwable, message = message?.invoke())
     }
 }
