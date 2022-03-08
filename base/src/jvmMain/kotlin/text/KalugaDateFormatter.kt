@@ -18,6 +18,7 @@
 @file:JvmName("JvmDateFormatter")
 package com.splendo.kaluga.base.text
 
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
@@ -125,12 +126,12 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         get() = symbols.amPmStrings.toList()[1]
         set(value) { updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() } }
 
-    actual fun format(date: KalugaDate): String = format.format(date.calendar.time)
+    actual fun format(date: KalugaDate): String = format.format((date as DefaultKalugaDate).calendar.time)
     actual fun parse(string: String): KalugaDate? {
         return try {
             format.parse(string)?.let { date ->
                 val calendar = format.calendar.clone() as Calendar
-                KalugaDate(calendar.apply { time = date })
+                DefaultKalugaDate(calendar.apply { time = date })
             }
         } catch (e: ParseException) {
             null
