@@ -128,13 +128,22 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
 
     actual fun format(date: KalugaDate): String = format.format((date as DefaultKalugaDate).calendar.time)
     actual fun parse(string: String): KalugaDate? {
+        val currentTimeZone = timeZone
         return try {
             format.parse(string)?.let { date ->
                 val calendar = format.calendar.clone() as Calendar
-                DefaultKalugaDate(calendar.apply { time = date })
+                DefaultKalugaDate(
+                    calendar.apply {
+                        time = date
+                        timeZone = currentTimeZone
+                    }
+                )
             }
         } catch (e: ParseException) {
             null
+        } finally {
+            // Parse may change the timezone to the timezone parsed by the String. This restores the original timezone
+            timeZone = currentTimeZone
         }
     }
 

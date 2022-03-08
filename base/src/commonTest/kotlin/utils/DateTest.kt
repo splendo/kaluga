@@ -18,7 +18,6 @@
 package com.splendo.kaluga.base.test.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.enUsPosix

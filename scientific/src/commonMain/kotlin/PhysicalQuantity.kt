@@ -20,7 +20,9 @@ package com.splendo.kaluga.scientific
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class PhysicalQuantity {
+sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
+    @Serializable
+    object Dimensionless : PhysicalQuantity()
     @Serializable
     object Acceleration : PhysicalQuantity()
     @Serializable

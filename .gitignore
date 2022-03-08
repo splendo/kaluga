@@ -18,6 +18,7 @@ build/
 DerivedData/
 .gradle/
 /kotlin-js-store/
+**/kotlin-js-store/
 
 ## Various settings
 *.pbxuser
