@@ -21,8 +21,8 @@ package com.splendo.kaluga.datetimepicker
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate.Companion.epoch
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlinx.coroutines.CoroutineScope
@@ -106,7 +106,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         private var cancelButtonTitle: String = ""
         private var confirmButtonTitle: String = ""
         private var locale: Locale = defaultLocale
-        private var selectedDate: KalugaDate = epoch()
+        private var selectedDate: KalugaDate = DefaultKalugaDate.epoch()
         private var type: DateTimePicker.Type = DateTimePicker.Type.TimeType
         internal val lock = Lock()
 
@@ -149,7 +149,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
             this.cancelButtonTitle = ""
             this.confirmButtonTitle = ""
             this.locale = defaultLocale
-            this.selectedDate = epoch()
+            this.selectedDate = DefaultKalugaDate.epoch()
             this.type = DateTimePicker.Type.TimeType
         }
 

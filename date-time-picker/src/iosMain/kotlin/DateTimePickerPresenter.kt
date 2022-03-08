@@ -20,6 +20,7 @@ package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
@@ -149,7 +150,7 @@ actual class DateTimePickerPresenter(
 
         @ObjCAction
         private fun onSelected() {
-            completion(KalugaDate.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
+            completion(DefaultKalugaDate.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
             dismissDateTimePicker(true)
         }
     }
