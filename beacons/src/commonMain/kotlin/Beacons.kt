@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.beacons
 import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.base.AtomicReferenceDelegate
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier

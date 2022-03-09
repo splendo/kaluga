@@ -22,7 +22,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import com.splendo.kaluga.base.utils.KalugaDate.Companion.epoch
+import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.epoch
 import com.splendo.kaluga.test.DateTimePickerPresenterTests
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
