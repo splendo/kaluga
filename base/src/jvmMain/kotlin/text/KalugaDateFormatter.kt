@@ -135,6 +135,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
                 DefaultKalugaDate(
                     calendar.apply {
                         time = date
+                        timeZone = currentTimeZone
                     }
                 )
             }
