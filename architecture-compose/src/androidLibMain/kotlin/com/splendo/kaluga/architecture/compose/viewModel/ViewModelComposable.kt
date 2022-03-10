@@ -44,7 +44,7 @@ private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {
             viewModelStoreOwner,
             @Suppress("UNCHECKED_CAST")
             object : ViewModelProvider.Factory {
-                override fun <T : androidx.lifecycle.ViewModel?> create(modelClass: Class<T>): T =
+                override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
                     viewModel as T
             }
         )
