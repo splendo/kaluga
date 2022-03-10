@@ -18,7 +18,9 @@
 package com.splendo.kaluga.bluetooth.device
 
 import co.touchlab.stately.collections.sharedMutableMapOf
+import co.touchlab.stately.concurrency.AtomicInt
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -51,16 +53,26 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
+    private val _mtu = AtomicInt(-1)
+    var mtu: Int
+        get() = _mtu.value
+        set(value) { _mtu.set(value) }
+
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
     abstract suspend fun disconnect()
     abstract suspend fun readRssi()
+    abstract suspend fun requestMtu(mtu: Int): Boolean
     abstract suspend fun performAction(action: DeviceAction)
 
     suspend fun handleNewRssi(rssi: Int) {
         stateRepo.takeAndChangeState {
             it.rssiDidUpdate(rssi)
         }
+    }
+
+    fun handleNewMtu(mtu: Int) {
+        this.mtu = mtu
     }
 
     suspend fun handleConnect() {

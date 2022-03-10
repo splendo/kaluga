@@ -228,6 +228,8 @@ fun Flow<Device?>.rssi(): Flow<Int> {
     return this.info().map { it.rssi }.distinctUntilChanged()
 }
 
+fun Flow<Device?>.mtu() = state().mapLatest { it.connectionManager.mtu }
+
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
     val lastNResults = sharedMutableListOf<Double>()
     return this.info().map { deviceInfo ->
@@ -250,6 +252,17 @@ suspend fun Flow<Device?>.updateRssi() {
             is Connected -> {
                 deviceState.readRssi()
                 emit(Unit)
+            }
+            else -> {}
+        }
+    }.first()
+}
+
+suspend fun Flow<Device?>.requestMtu(mtu: Int): Boolean {
+    return state().transformLatest { deviceState ->
+        when (deviceState) {
+            is Connected -> {
+                emit(deviceState.requestMtu(mtu))
             }
             else -> {}
         }

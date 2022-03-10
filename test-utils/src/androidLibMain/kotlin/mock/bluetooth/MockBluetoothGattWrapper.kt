@@ -31,6 +31,7 @@ class MockBluetoothGattWrapper : BluetoothGattWrapper {
     val disconnectCompleted = EmptyCompletableDeferred()
     val closeCompleted = EmptyCompletableDeferred()
     val readRemoteRssiCompleted = EmptyCompletableDeferred()
+    val requestMtuCompleted = EmptyCompletableDeferred()
     val readCharacteristicCompleted = CompletableDeferred<CharacteristicWrapper>()
     val readDescriptorCompleted = CompletableDeferred<DescriptorWrapper>()
     val writeCharacteristicCompleted = CompletableDeferred<CharacteristicWrapper>()
@@ -57,6 +58,11 @@ class MockBluetoothGattWrapper : BluetoothGattWrapper {
 
     override fun readRemoteRssi(): Boolean {
         readRemoteRssiCompleted.complete()
+        return true
+    }
+
+    override fun requestMtu(mtu: Int): Boolean {
+        requestMtuCompleted.complete()
         return true
     }
 
