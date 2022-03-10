@@ -72,7 +72,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+        freeCompilerArgs += ['-XXLanguage:+InlineClasses', '-Xjvm-default=compatibility']
     }
 
     if (gradle.component_type.contains("compose")) {
