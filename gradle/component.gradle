@@ -17,29 +17,17 @@ kotlin {
     }
 
     android("androidLib") {
-
         publishAllLibraryVariants()
     }
 
-    if (gradle.ios_primary_arch == "iosx64")
-        targetFromPreset(presets.iosX64, gradle.ios_primary_arch) {
+    gradle.ext.ios_targets.each {
+        "$it" {
             binaries {
                 // Use this entry point to turn the thread tests are run to a background thread instead of the main thread
                 // This better allows testing the main dispatcher, and testing cross thread access
                 binaries.getTest("DEBUG").freeCompilerArgs += ["-e", "com.splendo.kaluga.test.mainBackground"]
             }
-
         }
-
-    if (gradle.ios_primary_arch == "iosarm64")
-        targetFromPreset(presets.iosArm64, gradle.ios_primary_arch)
-
-    if (gradle.ios_primary_arch == "iosarm32")
-        targetFromPreset(presets.iosArm32, gradle.ios_primary_arch)
-
-    if (!gradle.ext.ios_one_sourceset) {
-        targetFromPreset(presets.iosArm32, 'iosarm32')
-        targetFromPreset(gradle.ios_secondary_arch == "iosx64" ? presets.iosX64 : presets.iosArm64, gradle.ios_secondary_arch)
     }
 
     jvm()
@@ -66,6 +54,7 @@ kotlin {
 
         commonTest {
             dependencies {
+                implementation kotlin('test')
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
             }
@@ -77,6 +66,7 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$gradle.kotlinx_coroutines_version"
             }
         }
+
         jvmTest {
             dependsOn commonTest
             dependencies {
@@ -84,66 +74,48 @@ kotlin {
                 implementation kotlin("test-junit")
             }
         }
+
         jsMain {
             dependencies {
                 implementation kotlin('stdlib-js')
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$gradle.kotlinx_coroutines_version"
             }
         }
+
         jsTest {
             dependencies {
                 implementation kotlin('test-js')
             }
         }
 
-        "${gradle.ios_primary_arch}Main" {
-            kotlin.srcDirs("src/iosMain/kotlin")
-            dependencies {
-                // none for now
-            }
+        iosMain {
+            dependsOn(commonMain)
         }
 
-        "${gradle.ios_primary_arch}Test" {
-            kotlin.srcDirs("src/iosTest/kotlin")
-            dependencies {
-                implementation kotlin('test')
-            }
+        iosTest {
+            dependsOn(commonTest)
         }
 
-
-        if (!gradle.ext.ios_one_sourceset) {
-
-            iosarm32Main {
-                kotlin.srcDirs("src/iosMain/kotlin")
+        gradle.ext.ios_targets.each {
+            "${it}Main" {
+                dependsOn(iosMain)
             }
-            iosarm32Test {
-                kotlin.srcDirs("src/iosTest/kotlin")
-                dependencies {
-                    implementation kotlin('test')
-                }
-            }
-            "${gradle.ios_secondary_arch}Main" {
-                kotlin.srcDirs("src/iosMain/kotlin")
-            }
-            "${gradle.ios_secondary_arch}Test" {
-                kotlin.srcDirs("src/iosTest/kotlin")
-                dependencies {
-                    implementation kotlin('test')
-                }
+            "${it}Test" {
+                dependsOn(iosTest)
             }
         }
 
         sourceSets.all {
             languageSettings {
-                useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
-                useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
-                useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
-                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
-                useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
-                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
+                optIn 'kotlinx.serialization.ExperimentalSerializationApi'
+                optIn 'kotlinx.coroutines.ExperimentalCoroutinesApi'
+                optIn 'kotlinx.coroutines.ObsoleteCoroutinesApi'
+                optIn 'kotlinx.coroutines.InternalCoroutinesApi'
+                optIn 'kotlinx.coroutines.FlowPreview'
+                optIn 'kotlin.ExperimentalUnsignedTypes'
+                optIn 'kotlin.ExperimentalStdlibApi'
+                optIn 'kotlin.time.ExperimentalTime'
+                optIn 'kotlin.ExperimentalStdlibApi'
                 enableLanguageFeature("InlineClasses")
             }
         }
@@ -181,16 +153,20 @@ task printConfigurations {
     }
 }
 
-task copyResources(type: Copy) {
-    from file('src/iosTest/res/.')
-    into file("$buildDir/bin/iosx64/debugTest")
-}
-
 afterEvaluate {
-    if (tasks.getNames().contains("linkDebugTestIosx64"))
-        tasks.named("linkDebugTestIosx64").configure {
-            dependsOn copyResources
-        }
+    gradle.ext.ios_targets.each { target ->
+        if (tasks.getNames().contains("linkDebugTest${target.capitalize()}"))
+            // creating copy task for the target
+            tasks.create(name: "copy${target.capitalize()}TestResources", type: Copy) {
+                from file('src/iosTest/resources/.')
+                into file("$buildDir/bin/$target/debugTest")
+            }
+
+            // apply copy task to the target
+            tasks.named("linkDebugTest${target.capitalize()}").configure {
+                dependsOn("copy${target.capitalize()}TestResources")
+            }
+    }
 }
 
 ktlint {

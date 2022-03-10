@@ -22,8 +22,10 @@ import com.splendo.kaluga.base.text.DateFormatter
 import com.splendo.kaluga.base.text.dateFormat
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
 import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.utc
 import kotlin.test.Test
@@ -64,6 +66,10 @@ class DateFormatterTest {
         assertEquals(2020, date.year)
         assertEquals(1, date.month)
         assertEquals(8, date.day)
+        assertEquals(0, date.hour)
+        assertEquals(0, date.minute)
+        assertEquals(0, date.second)
+        assertEquals(PSTTimeZone.identifier, date.timeZone.identifier)
     }
 
     @Test
@@ -103,5 +109,22 @@ class DateFormatterTest {
     fun testFailToParseInvalidString() {
         val formatter = DateFormatter.iso8601Pattern(TimeZone.utc)
         assertNull(formatter.parse("invalid date"))
+    }
+
+    @Test
+    fun testParseDateWithDifferentTimezone() {
+        val utcFormatter = DateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", TimeZone.utc, Locale.enUsPosix)
+        val pstFormatter = DateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", PSTTimeZone, Locale.enUsPosix)
+
+        val epochInUtc = Date.epoch(timeZone = TimeZone.utc, locale = Locale.enUsPosix)
+        val epochInPst = Date.epoch(timeZone = PSTTimeZone, locale = Locale.enUsPosix)
+        assertEquals("1970.01.01 AD at 00:00:00 ${TimeZone.utc.identifier}", utcFormatter.format(epochInUtc))
+        assertEquals("1970.01.01 AD at 00:00:00 ${TimeZone.utc.identifier}", utcFormatter.format(epochInPst))
+        assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInUtc))
+        assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInPst))
+        assertEquals(epochInUtc, utcFormatter.parse(utcFormatter.format(epochInUtc)))
+        assertEquals(epochInUtc, utcFormatter.parse(pstFormatter.format(epochInPst)))
+        assertEquals(epochInPst, pstFormatter.parse(utcFormatter.format(epochInUtc)))
+        assertEquals(epochInPst, pstFormatter.parse(pstFormatter.format(epochInPst)))
     }
 }

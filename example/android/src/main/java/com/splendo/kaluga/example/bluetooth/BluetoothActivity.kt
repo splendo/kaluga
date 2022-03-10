@@ -54,7 +54,7 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         viewModel.title.observe(::setTitle)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.bluetooth_menu, menu)
         return true
     }

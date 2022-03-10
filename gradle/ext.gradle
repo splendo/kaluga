@@ -23,19 +23,19 @@ String kotlinVersion = getProperty("kaluga.kotlinVersion")
 // set some global variables
 gradle.ext {
     kotlin_version = kotlinVersion
-    kotlinx_coroutines_version = '1.5.1-native-mt'
-    stately_version = '1.1.7'
-    stately_isolate_version = '1.1.7-a1'
-    koin_version = '3.1.2'
-    serialization_version = '1.2.1'
-    kydra_log_version = '1.1.5'
+    kotlinx_coroutines_version = '1.6.0-native-mt'
+    stately_version = '1.2.1'
+    stately_isolate_version = '1.2.1'
+    koin_version = '3.2.0-beta-1'
+    serialization_version = '1.3.2'
+    napier_version = '2.4.0'
     android_ble_scanner_version = '1.5.0'
-    library_version_base = '0.2.3'
+    library_version_base = '0.3.0'
     library_version = libraryVersionLocalProperties ?: "$library_version_base${System.properties.kaluga_branch_postfix}"
     android_min_sdk_version = 21
     android_compile_sdk_version = 31
-    android_target_sdk_version = 30
-    android_build_tools_version = "30.0.2"
+    android_target_sdk_version = 31
+    android_build_tools_version = "31.0.0"
 
     play_services_version = "17.1.0"
     play_core_version = "1.10.0"
@@ -52,7 +52,7 @@ gradle.ext {
     androidx_browser_version = "1.3.0"
     androidx_constraint_layout_version = "2.0.4"
 
-    androidx_compose_version = "1.0.1"
+    androidx_compose_version = "1.1.0-rc03"
     androidx_activity_compose_version = "1.3.0"
     androidx_navigation_compose_version = "2.4.0-alpha08"
     
@@ -105,22 +105,32 @@ if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
 
 // based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
 def sdkName = System.getenv("SDK_NAME") ?: "unknown"
-if (sdkName.startsWith("iphoneos")) {
-    gradle.ext.ios_primary_arch = "iosarm64"
-    gradle.ext.ios_secondary_arch = "iosx64"
+gradle.ext.is_real_ios_device = sdkName.startsWith("iphoneos")
+logger.lifecycle "Run on real ios device: $gradle.ext.is_real_ios_device from sdk: $sdkName"
+
+// Run on IntelliJ
+def ideaActive = System.getProperty("idea.active") == "true"
+gradle.ext.idea_active = ideaActive
+logger.lifecycle "Run on IntelliJ: $gradle.ext.idea_active"
+
+// Run on apple silicon
+def isAppleSilicon = System.getProperty("os.arch") == "aarch64"
+gradle.ext.is_apple_silicon = isAppleSilicon
+logger.lifecycle "Run on apple silicon: $gradle.ext.is_apple_silicon"
+
+def iosX64 = "iosX64"
+def iosArm64 = "iosArm64"
+def iosSimulatorArm64 = "iosSimulatorArm64"
+def allIosTargets = [iosX64, iosArm64, iosSimulatorArm64]
+if (!gradle.ext.idea_active) {
+    gradle.ext.ios_targets = allIosTargets
+} else {
+    if (gradle.ext.is_real_ios_device) {
+        gradle.ext.ios_targets = [iosArm64]
+    } else if (gradle.ext.is_apple_silicon) {
+        gradle.ext.ios_targets = [iosSimulatorArm64]
+    } else {
+        gradle.ext.ios_targets = [iosX64]
+    }
 }
-else {
-    gradle.ext.ios_primary_arch = "iosx64"
-    gradle.ext.ios_secondary_arch = "iosarm64"
-}
-
-println("Detected primary arch from sdk $sdkName: $gradle.ext.ios_primary_arch")
-
-
-// set global variable to decide how many iOS source sets to use. More than one sourceset can create problems for project dependencies and gives false errors in the IDE
-// currently the xcodecompat plugin also supports only arm64/iosx64 so this is off by default
-// it is automatically enabled when publishing, in order to generate multiple artifacts
-def envFlag = System.env.IOS_ONE_SOURCESET
-boolean isPublishTask = gradle.startParameter.taskNames.any  { it.startsWith("publish") }
-gradle.ext.ios_one_sourceset = envFlag == null ? !isPublishTask : Boolean.parseBoolean(envFlag)
-println "Using a single iOS sourceset (env IOS_ONE_SOURCESET=$envFlag, isPublishTask=$isPublishTask): $gradle.ext.ios_one_sourceset"
+logger.lifecycle "Run on ios targets: $gradle.ext.ios_targets"
