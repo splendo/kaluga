@@ -45,9 +45,7 @@ class Beacons(
     private val timeoutMs: Long = 10_000,
 ) {
 
-    private companion object {
-        const val TAG = "Beacons"
-    }
+    private companion object { const val TAG = "Beacons" }
 
     private val cache = BeaconsMap()
     private val cacheJob = Job()
@@ -113,8 +111,7 @@ class Beacons(
         this.map(String::lowercase).contains(element.lowercase())
 
     private suspend fun createBeaconWith(device: Device): BeaconInfo? {
-        val serviceData =
-            device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
+        val serviceData = device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null
         val rssi = device.map { it.rssi }.firstOrNull() ?: 0
