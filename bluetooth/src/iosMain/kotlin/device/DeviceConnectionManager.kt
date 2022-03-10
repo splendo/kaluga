@@ -145,9 +145,7 @@ internal actual class DeviceConnectionManager(
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
         }
-        launch {
-            handleNewMtu(max.toInt())
-        }
+        handleNewMtu(max.toInt())
         return true
     }
 

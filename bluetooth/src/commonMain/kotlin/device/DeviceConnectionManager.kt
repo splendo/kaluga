@@ -54,9 +54,7 @@ abstract class BaseDeviceConnectionManager(
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
     private val _mtu = AtomicInt(-1)
-    var mtu: Int
-        get() = _mtu.value
-        set(value) { _mtu.set(value) }
+    val mtu get() = _mtu.value
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -71,9 +69,7 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    fun handleNewMtu(mtu: Int) {
-        this.mtu = mtu
-    }
+    fun handleNewMtu(mtu: Int) = _mtu.set(mtu)
 
     suspend fun handleConnect() {
         stateRepo.takeAndChangeState { state ->

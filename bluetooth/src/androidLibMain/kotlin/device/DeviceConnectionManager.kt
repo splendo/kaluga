@@ -82,9 +82,7 @@ internal actual class DeviceConnectionManager(
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
             debug(TAG) { "onMtuChanged($gatt, $mtu, $status)" }
             if (status == GATT_SUCCESS) {
-                launch(mainDispatcher) {
-                    handleNewMtu(mtu)
-                }
+                handleNewMtu(mtu)
             }
         }
 
