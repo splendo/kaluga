@@ -85,6 +85,7 @@ class MockDeviceConnectionManager(
 
     override suspend fun requestMtu(mtu: Int): Boolean {
         requestMtuCompleted.get().complete(mtu)
+        handleNewMtu(mtu)
         return true
     }
 
