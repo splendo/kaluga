@@ -1,0 +1,202 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+package com.splendo.kaluga.datetime.timer
+
+import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.captureFor
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+import kotlin.time.Duration
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
+
+class RecurringTimerTest {
+
+    @Test
+    fun stateTransitions(): Unit = runBlocking {
+        val timer = RecurringTimer(
+            duration = Duration.milliseconds(100),
+            interval = Duration.milliseconds(10),
+            coroutineScope = this
+        )
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after creation")
+        timer.start()
+        assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
+        timer.pause()
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after pause")
+        delay(200)
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer pause is not working")
+        timer.start()
+        assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
+        delay(200)
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "timer was not finished after time elapsed")
+        timer.start()
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to start timer after finish")
+        timer.pause()
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to pause timer after finish")
+    }
+
+    @Test
+    fun awaitFinish(): Unit = runBlocking {
+        val timer = RecurringTimer(
+            duration = Duration.milliseconds(100),
+            interval = Duration.milliseconds(10),
+            coroutineScope = this
+        )
+
+        withTimeout(Duration.milliseconds(500)) {
+            timer.start()
+            timer.awaitFinish()
+        }
+    }
+
+    @Test
+    fun elapsedFlow(): Unit = runBlocking {
+        fun List<Duration>.isAscending(): Boolean =
+            windowed(size = 2).map { it[0] <= it[1] }.all { it }
+
+        val duration = Duration.milliseconds(500)
+        val timer = RecurringTimer(
+            duration = duration,
+            interval = Duration.milliseconds(50),
+            coroutineScope = this
+        )
+
+        // capture and validate an initial state
+        val initial = timer.elapsed().captureFor(Duration.milliseconds(100))
+        assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
+
+        // capture and validate a first chunk of data
+        timer.start()
+        val result0 = timer.elapsed().captureFor(Duration.milliseconds(200))
+        timer.pause()
+        assertTrue(result0.isNotEmpty(), "values not emitted")
+        assertTrue(initial.last() <= result0.first(), "values are not in ascending order")
+        assertTrue(result0.isAscending(), "values are not in ascending order")
+
+        // capture and validate the rest of the data
+        timer.start()
+        val result1 = timer.elapsed().captureFor(Duration.milliseconds(1000))
+        assertTrue(result1.isNotEmpty(), "values not emitted")
+        assertTrue(result0.last() <= result1.first(), "values are not in ascending order")
+        assertTrue(result1.isAscending(), "values are not in ascending order")
+
+        // capture from a finished timer
+        val final = timer.elapsed().captureFor(Duration.milliseconds(100))
+        assertEquals(listOf(duration), final, "timer did not finish in the right state")
+        assertTrue(result1.last() <= final.first(), "values are not in ascending order")
+    }
+
+    // MARK - elapsedIrregularFlow test
+    /** Provides mock time ticks. */
+    private class PredefinedTimeSource(val ticks: List<Duration>) : TimeSource {
+        override fun markNow(): TimeMark =
+            object : TimeMark() {
+                var index = 0
+                override fun elapsedNow(): Duration =
+                    if (index < ticks.size) {
+                        ticks[index].also { index++ }
+                    } else {
+                        throw IllegalStateException("Unexpected elapsedNow() call")
+                    }
+            }
+    }
+
+    /** Validates requested delays. */
+    private class PredefinedDelayHandler(val delays: List<Duration>) {
+        private val timerFinish = CompletableDeferred<Unit>()
+        private var index = -1 // -1 to capture overall timer finish delay
+
+        suspend fun delay(delay: Duration) {
+            if (index < 0) {
+                // capture timer finish delay
+                index ++
+                timerFinish.await()
+            } else {
+                if (index < delays.size) {
+                    assertEquals(delays[index], delay, "Unexpected delay #$index")
+                    index++
+                } else {
+                    throw IllegalStateException("Unexpected waitFor($delay) call")
+                }
+            }
+        }
+
+        fun finishTimer() {
+            timerFinish.complete(Unit)
+        }
+    }
+
+    @Test
+    fun elapsedIrregularFlow(): Unit = runBlocking {
+        val totalDuration = Duration.milliseconds(500)
+
+        class Timings(emit: Int, afterEmit: Int, correction: Int) {
+            val emit = Duration.milliseconds(emit)
+            val afterEmit = Duration.milliseconds(afterEmit)
+            val correction = Duration.milliseconds(correction)
+        }
+
+        val timings = listOf(
+            // 1ms delivery lag, 20ms processing lag, correction for 20ms
+            Timings(1, 20, 80),
+            // spot on, no correction
+            Timings(100, 100, 100),
+            // -1ms delivery lag, skipped a frame + 40ms in processing, correction for 40ms
+            Timings(199, 350, 50),
+            // -7ms delivery lag, -4ms af undershoot spot on, correction for 4ms
+            Timings(393, 396, 104),
+            // last interval: no delivery lag, 5 ms processing lag, no correction
+            Timings(500, 505, 0),
+        )
+
+        val timeSource = PredefinedTimeSource(
+            listOf(Duration.ZERO) + // a tick for the timer auto finish
+                timings.flatMap { listOf(it.emit, it.afterEmit) }
+        )
+        val delayHandler = PredefinedDelayHandler(timings.map(Timings::correction))
+
+        val timer = RecurringTimer(
+            duration = totalDuration,
+            interval = Duration.milliseconds(100),
+            timeSource = timeSource,
+            delayFunction = delayHandler::delay,
+            coroutineScope = this
+        )
+
+        // capture and validate an initial state
+        val initial = timer.elapsed().captureFor(Duration.milliseconds(100))
+        assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
+        // capture and validate a first chunk of data
+        timer.start()
+        val result = timer.elapsed().captureFor(Duration.milliseconds(500))
+        assertEquals(timings.map(Timings::emit), result, "Emitted incorrect values")
+
+        withTimeout(Duration.milliseconds(500)) {
+            delayHandler.finishTimer()
+            timer.awaitFinish()
+        }
+        // capture from a finished timer
+        val final = timer.elapsed().captureFor(Duration.milliseconds(100))
+        assertEquals(listOf(totalDuration), final, "timer did not finish in the right state")
+    }
+}

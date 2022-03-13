@@ -22,12 +22,17 @@ dependencies {
 }
 
 kotlin {
+    js {
+        nodejs()
+    }
+
     sourceSets {
         getByName("commonMain") {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":resources", ""))
             }
         }
         getByName("commonTest") {

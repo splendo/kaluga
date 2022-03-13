@@ -21,6 +21,7 @@ actual interface CharacteristicWrapper {
     actual val uuid: UUID
     actual val descriptors: List<DescriptorWrapper>
     actual val value: Value?
+    actual val properties: Int
 }
 
 actual interface DescriptorWrapper {

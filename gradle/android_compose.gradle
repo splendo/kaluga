@@ -32,7 +32,7 @@ dependencies {
 kotlin {
     sourceSets.all {
         languageSettings {
-            useExperimentalAnnotation 'androidx.compose.material.ExperimentalMaterialApi'
+            optIn 'androidx.compose.material.ExperimentalMaterialApi'
         }
     }
 }

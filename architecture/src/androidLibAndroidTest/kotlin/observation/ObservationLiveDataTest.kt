@@ -50,7 +50,7 @@ class ObservationLiveDataTest : BaseTest() {
 
         launch(Dispatchers.Main) {
             subject.liveData.observeForever {
-                channel.offer(it)
+                channel.trySend(it).isSuccess
             }
         }
 
@@ -69,7 +69,7 @@ class ObservationLiveDataTest : BaseTest() {
 
         launch(Dispatchers.Main) {
             observable.liveData.observeForever {
-                channel.offer(it)
+                channel.trySend(it).isSuccess
             }
         }
 
@@ -91,7 +91,7 @@ class ObservationLiveDataTest : BaseTest() {
 
         launch(Dispatchers.Main) {
             observable.liveData.observeForever {
-                channel.offer(it)
+                channel.trySend(it).isSuccess
             }
         }
 

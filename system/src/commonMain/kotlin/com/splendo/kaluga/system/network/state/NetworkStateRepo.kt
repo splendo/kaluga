@@ -25,8 +25,9 @@ import com.splendo.kaluga.system.network.Network
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 
-class NetworkStateRepo(
+open class NetworkStateRepo(
     private val networkManagerBuilder: BaseNetworkManager.Builder,
 ) : ColdStateRepo<NetworkState>() {
 
@@ -79,7 +80,7 @@ class NetworkStateRepo(
         }
     }
 
-    internal fun onNetworkStateChange(network: Network) {
+    protected fun onNetworkStateChange(network: Network) {
         runBlocking {
             takeAndChangeState { state: NetworkState ->
                 when (state) {
@@ -98,8 +99,12 @@ class NetworkStateRepo(
                     }
                     is NetworkState.Unavailable -> {
                         when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> state.remain()
-                            is Network.Unknown.WithLastNetwork -> state.remain()
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
                             is Network.Known.Cellular -> state.availableWithCellular
                             is Network.Known.Wifi -> state.availableWithWifi
                             Network.Known.Absent -> state.remain()
@@ -125,5 +130,7 @@ fun Flow<NetworkState>.network(): Flow<Network> {
 }
 
 fun Flow<NetworkState>.online(): Flow<Boolean> {
-    return map { it is NetworkState.Available }.distinctUntilChanged()
+    return network().mapLatest {
+        it is Network.Known.Wifi || it is Network.Known.Cellular
+    }
 }

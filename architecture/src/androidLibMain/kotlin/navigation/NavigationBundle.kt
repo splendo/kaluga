@@ -27,9 +27,8 @@ import com.splendo.kaluga.base.utils.Date
 fun <R : NavigationBundleSpecRow<*>> NavigationBundle<R>.toBundle(): Bundle {
     val bundle = Bundle()
 
-    values.entries.forEach { entry ->
-        val key = entry.key.key ?: entry.key.javaClass.simpleName
-        mapValue(key, entry.value, bundle)
+    values.entries.forEach { (key, value) ->
+        mapValue(key.key ?: key.javaClass.simpleName, value, bundle)
     }
 
     return bundle

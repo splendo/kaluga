@@ -13,6 +13,10 @@
 "feature_service_monitor" = "Service Monitor";
 "feature_system" = "System";
 
+"feature_resources" = "Resources";
+"feature_resources_color" = "Color";
+"feature_resources_button" = "Button";
+"feature_resources_label" = "Label";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";

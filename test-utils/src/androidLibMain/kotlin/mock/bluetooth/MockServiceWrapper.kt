@@ -25,11 +25,28 @@ import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import java.util.UUID
 
-class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), characteristicUuids: List<Pair<UUID, List<UUID>>> = emptyList()) : ServiceWrapper {
+class MockServiceWrapper(
+    override val uuid: UUID = UUID.randomUUID(),
+    initialCharacteristics: List<ServiceWrapperBuilder.Characteristic> = emptyList()
+) : ServiceWrapper {
+
+    constructor(builder: ServiceWrapperBuilder) : this(
+        builder.uuid,
+        builder.characteristics
+    )
 
     override val type: Int = 0
     override val instanceId: Int = 0
-    private val mutableCharacteristics = mutableListOf<CharacteristicWrapper>(*characteristicUuids.map { AndroidMockCharacteristicWrapper(it.first, it.second, this) }.toTypedArray())
+    private val mutableCharacteristics = mutableListOf<CharacteristicWrapper>(
+        *initialCharacteristics.map {
+            AndroidMockCharacteristicWrapper(
+                uuid = it.uuid,
+                descriptorUUIDs = it.descriptorUUIDs,
+                properties = it.properties,
+                service = this
+            )
+        }.toTypedArray()
+    )
     override val characteristics: List<CharacteristicWrapper>
         get() = mutableCharacteristics
     private val mutableIncludedServices = mutableListOf<ServiceWrapper>()

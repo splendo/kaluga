@@ -17,22 +17,32 @@
 
 package com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel
 
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
 
+sealed class ContactDetailsNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
+    class SendEmail(email: String) : ContactDetailsNavigation<String>(
+        email,
+        NavigationBundleSpecType.StringType
+    )
+    object Close : ContactDetailsNavigation<Unit>(Unit, NavigationBundleSpecType.UnitType)
+}
+
 class ContactDetailsViewModel(
     val contactDetails: ContactDetails,
-    navigator: Navigator<ContactsNavigation<*>>
-) : NavigatingViewModel<ContactsNavigation<*>>(navigator) {
+    navigator: Navigator<ContactDetailsNavigation<*>>
+) : NavigatingViewModel<ContactDetailsNavigation<*>>(navigator) {
 
     val sendEmailButtonText = "Send email"
 
     fun sendEmail() {
-        navigator.navigate(ContactsNavigation.ContactDetailsNavigation.SendEmail(contactDetails.email))
+        navigator.navigate(ContactDetailsNavigation.SendEmail(contactDetails.email))
     }
 
     fun back() {
-        navigator.navigate(ContactsNavigation.ContactDetailsNavigation.Close)
+        navigator.navigate(ContactDetailsNavigation.Close)
     }
 }
