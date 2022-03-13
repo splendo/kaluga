@@ -27,6 +27,7 @@ import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.utc
 import kotlinx.serialization.Serializable
@@ -73,7 +74,7 @@ class RouteTests {
 
     @Test
     fun testRoute() {
-        val time = KalugaDate.epoch(timeZone = TimeZone.utc)
+        val time = DefaultKalugaDate.epoch(timeZone = TimeZone.utc)
         val bundle = MockSpec.toBundle { row ->
             when (row) {
                 is MockSpecRow.StringSpecRow -> row.convertValue("string")
