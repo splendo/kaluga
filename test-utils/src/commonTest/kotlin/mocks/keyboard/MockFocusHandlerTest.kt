@@ -15,7 +15,7 @@
 
  */
 
-package mocks.keyboard
+package com.splendo.kaluga.test.keyboard
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.mock.focus.MockFocusHandler
@@ -27,35 +27,35 @@ class MockFocusHandlerTest {
 
     @Test
     fun test_initial_state() = testFocusHandler {
-        assertFalse { it.isFocused }
+        assertFalse(it.isFocused)
     }
 
     @Test
     fun test_give_focus() = testFocusHandler {
-        assertFalse { it.isFocused }
+        assertFalse(it.isFocused)
         it.simulateGiveFocus()
-        assertTrue { it.isFocused }
+        assertTrue(it.isFocused)
     }
 
     @Test
     fun test_remove_focus() = testFocusHandler {
-        assertFalse { it.isFocused }
+        assertFalse(it.isFocused)
         it.simulateGiveFocus()
-        assertTrue { it.isFocused }
+        assertTrue(it.isFocused)
 
         it.simulateRemoveFocus()
-        assertFalse { it.isFocused }
+        assertFalse(it.isFocused)
     }
 
     @Test
-    fun test_give_remove_multiple_times() = testFocusHandler {
-        assertFalse { it.isFocused }
-        for (i in 0..10) {
-            it.simulateGiveFocus()
-            assertTrue { it.isFocused }
+    fun test_give_remove_multiple_times() = testFocusHandler { focusHandler ->
+        assertFalse(focusHandler.isFocused)
+        repeat(10) {
+            focusHandler.simulateGiveFocus()
+            assertTrue(focusHandler.isFocused)
 
-            it.simulateRemoveFocus()
-            assertFalse { it.isFocused }
+            focusHandler.simulateRemoveFocus()
+            assertFalse(focusHandler.isFocused)
         }
     }
 

@@ -15,7 +15,7 @@
 
  */
 
-package mocks.keyboard
+package com.splendo.kaluga.test.keyboard
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.mock.focus.MockFocusHandler
@@ -30,40 +30,40 @@ class MockKeyboardManagerTest {
 
     @Test
     fun test_initial_manager_state() = testKeyboardManager {
-        assertFalse { it.isShown }
+        assertFalse(it.isShown)
     }
 
     @Test
     fun test_show_keyboard() = testKeyboardManager {
-        assertFalse { it.isShown }
+        assertFalse(it.isShown)
         it.show(focusHandler)
-        assertTrue { focusHandler.isFocused }
-        assertTrue { it.isShown }
+        assertTrue(focusHandler.isFocused)
+        assertTrue(it.isShown)
     }
 
     @Test
     fun test_hide_keyboard() = testKeyboardManager {
-        assertFalse { it.isShown }
+        assertFalse(it.isShown)
         it.show(focusHandler)
-        assertTrue { focusHandler.isFocused }
-        assertTrue { it.isShown }
+        assertTrue(focusHandler.isFocused)
+        assertTrue(it.isShown)
 
         it.hide()
-        assertFalse { focusHandler.isFocused }
-        assertFalse { it.isShown }
+        assertFalse(focusHandler.isFocused)
+        assertFalse(it.isShown)
     }
 
     @Test
-    fun test_show_hide_keyboard_multiple_times() = testKeyboardManager {
-        assertFalse { it.isShown }
-        for (i in 0..10) {
-            it.show(focusHandler)
-            assertTrue { focusHandler.isFocused }
-            assertTrue { it.isShown }
+    fun test_show_hide_keyboard_multiple_times() = testKeyboardManager { keyboardManager ->
+        assertFalse(keyboardManager.isShown)
+        repeat(10) {
+            keyboardManager.show(focusHandler)
+            assertTrue(focusHandler.isFocused)
+            assertTrue(keyboardManager.isShown)
 
-            it.hide()
-            assertFalse { focusHandler.isFocused }
-            assertFalse { it.isShown }
+            keyboardManager.hide()
+            assertFalse(focusHandler.isFocused)
+            assertFalse(keyboardManager.isShown)
         }
     }
 
