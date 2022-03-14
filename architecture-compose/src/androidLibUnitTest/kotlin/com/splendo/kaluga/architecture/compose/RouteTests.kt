@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.compose
 
+import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
