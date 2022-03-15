@@ -145,8 +145,10 @@ internal actual class DeviceConnectionManager(
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
         }
+        // Update MTU to current known value
         handleNewMtu(max.toInt())
-        return true
+        // Return false, because we can't request MTU change from iOS
+        return false
     }
 
     override suspend fun performAction(action: DeviceAction) {

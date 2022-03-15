@@ -29,6 +29,7 @@ interface BluetoothGattWrapper {
     fun disconnect()
     fun close()
     fun readRemoteRssi(): Boolean
+    /** Request MTU, returns `true` if the new MTU value has been requested successfully */
     fun requestMtu(mtu: Int): Boolean
 
     fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean

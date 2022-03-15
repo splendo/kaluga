@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class BluetoothRequestMtuTestTest : BluetoothFlowTest<Int>() {
 
@@ -41,7 +40,7 @@ class BluetoothRequestMtuTestTest : BluetoothFlowTest<Int>() {
         bluetooth.startScanning()
         action {
             connectDevice(device)
-            assertTrue(bluetooth.devices()[device.identifier].requestMtu(newMtu))
+            bluetooth.devices()[device.identifier].requestMtu(newMtu)
             connectionManager.requestMtuCompleted.get().await()
             device.filterIsInstance<DeviceState.Connected>().first()
             connectionManager.handleNewMtu(newMtu)
