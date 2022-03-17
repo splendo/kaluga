@@ -46,7 +46,9 @@ class Beacons(
     private val timeoutMs: Long = 10_000,
 ) {
 
-    private companion object { const val TAG = "Beacons" }
+    private companion object {
+        const val TAG = "Beacons"
+    }
 
     private val cache = BeaconsMap()
     private val cacheJob = Job()
@@ -85,34 +87,40 @@ class Beacons(
 
     private suspend fun updateBeacons(discovered: List<BeaconInfo>) {
         debug(TAG, "Total Beacons discovered: ${discovered.size}")
+        for (beaconInfo in discovered) {
+        debug(TAG, "Last seen: ${beaconInfo.lastSeen.hour}:${beaconInfo.lastSeen.minute}:${beaconInfo.lastSeen.second}")
+        }
         discovered.forEach { beacon ->
-            if (cache.containsKey(beacon.beaconID)) {
+            if (cache.access { it.containsKey(beacon.beaconID) }) {
                 debug(TAG, "[Found] $beacon")
-                cache.remove(beacon.beaconID)?.second?.cancel()
+                cache.access { it.remove(beacon.beaconID)?.second?.cancel() }
                 debug(TAG, "[Removed] $beacon")
             } else {
                 debug(TAG, "[New] $beacon")
             }
-            cache[beacon.beaconID] = beacon to coroutineScope.launch {
-                debug(TAG, "[Added] $beacon")
-                delay(beacon.lastSeen.millisecondSinceEpoch + timeoutMs - Date.now().millisecondSinceEpoch)
-                debug(TAG, "[Lost] $beacon")
-                cache.remove(beacon.beaconID)
-                updateList()
+            cache.access {
+                it[beacon.beaconID] = beacon to coroutineScope.launch {
+                    debug(TAG, "[Added] $beacon")
+                    delay(beacon.lastSeen.millisecondSinceEpoch + timeoutMs - Date.now().millisecondSinceEpoch)
+                    debug(TAG, "[Lost] $beacon")
+                    cache.access { it.remove(beacon.beaconID) }
+                    updateList()
+                }
             }
         }
         updateList()
     }
 
     private fun updateList() = _beacons.update {
-        cache.values.map(BeaconJob::first).toSet()
+        cache.access { it.values.map(BeaconJob::first).toSet() }
     }
 
     private fun List<String>.containsLowerCased(element: String): Boolean =
         this.map(String::lowercase).contains(element.lowercase())
 
     private suspend fun createBeaconWith(device: Device): BeaconInfo? {
-        val serviceData = device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
+        val serviceData =
+            device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null
         val rssi = device.map { it.rssi }.firstOrNull() ?: 0
