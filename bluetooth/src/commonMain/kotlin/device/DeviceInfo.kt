@@ -41,7 +41,8 @@ interface DeviceInfo {
 data class DeviceInfoImpl(
     internal val deviceWrapper: DeviceWrapper,
     override val rssi: Int,
-    override val advertisementData: BaseAdvertisementData
+    override val advertisementData: BaseAdvertisementData,
+    override val updatedAt: Date = Date.now()
 ) : DeviceInfo {
 
     override val identifier: Identifier
@@ -49,8 +50,6 @@ data class DeviceInfoImpl(
 
     override val name: String?
         get() = deviceWrapper.name
-
-    override val updatedAt = Date.now()
 
     override fun distance(environmentalFactor: Double): Double {
         if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN())

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
@@ -287,11 +288,11 @@ sealed class DeviceState(
     }
 
     fun rssiDidUpdate(rssi: Int): suspend () -> DeviceState {
-        return updateDeviceInfo(deviceInfo.copy(rssi = rssi))
+        return updateDeviceInfo(deviceInfo.copy(rssi = rssi, updatedAt = Date.now()))
     }
 
     fun advertisementDataAndRssiDidUpdate(advertisementData: BaseAdvertisementData, rssi: Int): suspend () -> DeviceState {
-        return updateDeviceInfo(deviceInfo.copy(rssi = rssi, advertisementData = advertisementData))
+        return updateDeviceInfo(deviceInfo.copy(rssi = rssi, advertisementData = advertisementData, updatedAt = Date.now()))
     }
 
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
