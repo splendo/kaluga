@@ -163,6 +163,10 @@ sealed class DeviceState(
             connectionManager.readRssi()
         }
 
+        suspend fun requestMtu(mtu: Int): Boolean {
+            return connectionManager.requestMtu(mtu)
+        }
+
         override suspend fun finalState() {
             super.finalState()
 
