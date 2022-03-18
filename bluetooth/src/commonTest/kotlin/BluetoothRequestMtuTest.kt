@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothRequestMtuTest: BluetoothFlowTest<Int>() {
+class BluetoothRequestMtuTest : BluetoothFlowTest<Int>() {
 
     override val flow = suspend {
         setup(Setup.DEVICE)
