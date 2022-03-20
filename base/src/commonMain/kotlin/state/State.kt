@@ -384,7 +384,6 @@ abstract class BaseColdStateRepo<S : State, F : MutableSharedFlow<S>>(
             val isInitialized = lazyMutableFlow.isInitialized()
             val flow = lazyMutableFlow.value
             if (!isInitialized && initialized.compareAndSet(expected = false, new = true)) {
-                debug("ColdStateRepo", "Initialize Flow: $flow for ${this::class.simpleName}")
                 launch(coroutineContext) {
                     flow.onCollectionEvent { event ->
                         when (event) {
