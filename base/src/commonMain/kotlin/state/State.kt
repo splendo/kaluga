@@ -414,9 +414,9 @@ abstract class BaseColdStateRepo<S : State, F : MutableSharedFlow<S>>(
  */
 open class ColdStateFlowRepo<S : State>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    val initChangeStateWithRepo: suspend (S?, ColdStateFlowRepo<S>) -> (suspend () -> S),
+    val initChangeStateWithRepo: suspend (S, ColdStateFlowRepo<S>) -> (suspend () -> S),
     val deinitChangeStateWithRepo: suspend (S, ColdStateFlowRepo<S>) -> (suspend () -> S)?,
-    val firstState: (suspend() -> S)? = null
+    val firstState: () -> S
 ) : StateFlowRepo<S>,
     BaseColdStateRepo<S, MutableStateFlow<S>>(
         context = coroutineContext,
@@ -425,12 +425,12 @@ open class ColdStateFlowRepo<S : State>(
     constructor(
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
         // order is different than below because here firstState is mandatory, and to avoid JVM signature clashes
-        firstState: suspend() -> S,
+        firstState: () -> S,
         initChangeState: suspend (S) -> (suspend () -> S),
         deinitChangeState: suspend (S) -> (suspend () -> S)
     ) : this(
         coroutineContext,
-        initChangeStateWithRepo = { state, _ -> state?.let { initChangeState(state) } ?: firstState },
+        initChangeStateWithRepo = { state, _ -> initChangeState(state) },
         deinitChangeStateWithRepo = { state, _ -> deinitChangeState(state) },
         firstState = firstState
     )
@@ -439,7 +439,7 @@ open class ColdStateFlowRepo<S : State>(
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
         init: suspend (ColdStateFlowRepo<S>) -> S,
         deinit: suspend (ColdStateFlowRepo<S>) -> S?,
-        firstState: (suspend() -> S)? = null
+        firstState: () -> S
     ) : this(
         coroutineContext,
         initChangeStateWithRepo = { _, repo -> { init(repo) } },
@@ -459,11 +459,9 @@ open class ColdStateFlowRepo<S : State>(
 
     override val lazyMutableFlow: Lazy<MutableStateFlow<S>> =
         lazy {
-            runBlocking {
-                MutableStateFlow(
-                    firstState?.invoke() ?: initChangeStateWithRepo(null, this@ColdStateFlowRepo)()
-                )
-            }
+            MutableStateFlow(
+                firstState()
+            )
         }
 
     override suspend fun firstCollection() {
