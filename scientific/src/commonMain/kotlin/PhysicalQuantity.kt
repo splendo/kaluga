@@ -24,6 +24,8 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     @Serializable
     object Dimensionless : PhysicalQuantity()
     @Serializable
+    object AerobicCapacity : PhysicalQuantity()
+    @Serializable
     object Acceleration : PhysicalQuantity()
     @Serializable
     object Action : PhysicalQuantity()
