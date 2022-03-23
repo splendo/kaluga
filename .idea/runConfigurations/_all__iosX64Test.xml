@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="[all] iosTest" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="[all] iosX64Test" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,8 +10,8 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="cleanIosx64Test" />
-          <option value="iosx64Test" />
+          <option value="cleanIosX64Test" />
+          <option value="iosX64Test" />
         </list>
       </option>
       <option name="vmOptions" value="" />

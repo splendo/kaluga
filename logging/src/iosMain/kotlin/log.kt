@@ -18,17 +18,11 @@
 package com.splendo.kaluga.logging
 
 import co.touchlab.stately.concurrency.value
-import ru.pocketbyte.kydra.log.NSLogger
+import io.github.aakira.napier.DebugAntilog
 import kotlin.native.concurrent.SharedImmutable
 
 @SharedImmutable
-actual val defaultLogger: Logger = TransformLogger(
-    KydraLogger(NSLogger()),
-    transformMessage = {
-        // Since on iOS Kydra uses NSLog, the messages is formatted. % signs should therefore be escaped
-        it?.replace("%", "%%")
-    }
-)
+actual val defaultLogger: Logger = NapierLogger(DebugAntilog())
 
 @SharedImmutable
 private val _logger = co.touchlab.stately.concurrency.AtomicReference(defaultLogger)

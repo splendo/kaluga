@@ -38,5 +38,7 @@ internal actual class DeviceConnectionManager(connectionSettings: ConnectionSett
 
     override suspend fun readRssi() {}
 
+    override suspend fun requestMtu(mtu: Int) = false
+
     override suspend fun performAction(action: DeviceAction) {}
 }

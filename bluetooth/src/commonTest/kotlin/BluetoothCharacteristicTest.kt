@@ -17,14 +17,22 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.test.mock.bluetooth.characteristic
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
 class BluetoothCharacteristicTest : BluetoothFlowTest<Characteristic?>() {
 
     override val flow = suspend {
-        setup(Setup.CHARACTERISTIC)
+        setup(Setup.CHARACTERISTIC) {
+            characteristics {
+                characteristic {
+                    properties = 0
+                }
+            }
+        }
         bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid]
     }
 
@@ -44,6 +52,14 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<Characteristic?>() {
         val characteristic = characteristic
         test {
             assertEquals(characteristic, it)
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Broadcast))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Read))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Write))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Notify))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Indicate))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.SignedWrite))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.ExtendedProperties))
         }
     }
 }

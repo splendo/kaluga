@@ -142,7 +142,7 @@ Kaluga also uses some multiplatform libraries itself, so our thanks to:
 
 Project | Usage
 --- | ---
-[kydra](https://github.com/PocketByte/kotlin-kydra-log) | powers the logging module
+[Napier](https://github.com/AAkira/Napier) | powers the logging module
 [stately](https://github.com/touchlab/Stately) | concurrency
 [Koin](https://insert-koin.io/) | dependency injection
 

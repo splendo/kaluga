@@ -236,6 +236,29 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
     }
 
     @Test
+    fun testRequestMtu() = testWithFlow {
+        getDisconnectedState()
+        connecting()
+        connect()
+
+        action {
+            deviceStateRepo.useState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected -> {
+                        assertTrue(deviceState.requestMtu(23))
+                        connectionManager.handleNewMtu(23)
+                    }
+                    else -> {}
+                }
+            }
+        }
+
+        val requestMtuCompleted = connectionManager.requestMtuCompleted.get()
+        assertTrue(requestMtuCompleted.isCompleted)
+        assertEquals(23, connectionManager.mtu)
+    }
+
+    @Test
     fun testDiscoverDevices() = testWithFlow {
         getDisconnectedState()
         connecting()

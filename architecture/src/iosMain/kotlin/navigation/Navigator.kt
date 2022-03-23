@@ -260,7 +260,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
             }
         }
         settings.body?.let { composeVC.setBody(it) }
-        settings.message?.let { composeVC.setMessage(it) }
+        settings.message?.let { composeVC.setMessageWorkAround(it) }
 
         if (MFMessageComposeViewController.canSendAttachments()) {
             settings.attachments.forEach {
@@ -352,3 +352,6 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
 
     private fun assertParent() = parent.get().also { assert(it != null) }
 }
+
+// Seems to be a bug on commonizer using new targets sourcesets which is preventing to infer the correct type
+expect fun MFMessageComposeViewController.setMessageWorkAround(message: platform.Messages.MSMessage?)
