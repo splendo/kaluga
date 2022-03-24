@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
+import platform.CoreBluetooth.CBCentralManagerScanOptionAllowDuplicatesKey
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSError
@@ -141,7 +142,10 @@ actual class Scanner internal constructor(
         discoveringDelegates.add(delegate)
         centralManager.delegate = delegate
         awaitPoweredOn.await()
-        centralManager.scanForPeripheralsWithServices(filter?.let { listOf(filter) }, null)
+        centralManager.scanForPeripheralsWithServices(
+            filter?.let { listOf(filter) },
+            mapOf(CBCentralManagerScanOptionAllowDuplicatesKey to true)
+        )
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) =
