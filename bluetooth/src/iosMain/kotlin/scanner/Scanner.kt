@@ -32,7 +32,6 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
