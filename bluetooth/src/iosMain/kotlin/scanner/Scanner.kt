@@ -142,7 +142,10 @@ actual class Scanner internal constructor(
         discoveringDelegates.add(delegate)
         centralManager.delegate = delegate
         awaitPoweredOn.await()
-        centralManager.scanForPeripheralsWithServices(filter?.let { listOf(filter) }, mapOf(CBCentralManagerScanOptionAllowDuplicatesKey to true))
+        centralManager.scanForPeripheralsWithServices(
+            filter?.let { listOf(filter) },
+            mapOf(CBCentralManagerScanOptionAllowDuplicatesKey to true)
+        )
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) =
