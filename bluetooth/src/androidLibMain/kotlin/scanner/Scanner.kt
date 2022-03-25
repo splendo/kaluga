@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.ParcelUuid
 import co.touchlab.stately.concurrency.AtomicReference
@@ -62,7 +63,8 @@ actual class Scanner internal constructor(
 
     class Builder(
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-        private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter(),
+        private val bluetoothAdapter: BluetoothAdapter? =
+            (ApplicationHolder.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter,
         private val scanSettings: ScanSettings = defaultScanSettings,
         private val applicationContext: Context = ApplicationHolder.applicationContext,
     ) : BaseScanner.Builder {
