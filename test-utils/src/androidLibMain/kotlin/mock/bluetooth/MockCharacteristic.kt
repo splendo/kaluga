@@ -23,8 +23,9 @@ import java.util.UUID
 
 class AndroidMockCharacteristicWrapper(
     override val uuid: UUID = UUID.randomUUID(),
-    descriptorUuids: List<UUID> = emptyList(),
-    override val service: ServiceWrapper
+    descriptorUUIDs: List<UUID> = emptyList(),
+    override val service: ServiceWrapper,
+    override val properties: Int = 0
 ) : MockCharacteristicWrapper {
 
     override var value: ByteArray? = null
@@ -32,10 +33,8 @@ class AndroidMockCharacteristicWrapper(
         this.value = value
     }
 
-    override val descriptors: List<DescriptorWrapper> = descriptorUuids.map { AndroidMockDescriptorWrapper(it, this) }
+    override val descriptors: List<DescriptorWrapper> = descriptorUUIDs.map { AndroidMockDescriptorWrapper(it, this) }
     override val permissions: Int
-        get() = 0
-    override val properties: Int
         get() = 0
     override var writeType = 0
 

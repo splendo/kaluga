@@ -29,6 +29,8 @@ interface BluetoothGattWrapper {
     fun disconnect()
     fun close()
     fun readRemoteRssi(): Boolean
+    /** Request MTU, returns `true` if the new MTU value has been requested successfully */
+    fun requestMtu(mtu: Int): Boolean
 
     fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean
     fun readDescriptor(wrapper: DescriptorWrapper): Boolean
@@ -57,6 +59,10 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
 
     override fun readRemoteRssi(): Boolean {
         return gatt.readRemoteRssi()
+    }
+
+    override fun requestMtu(mtu: Int): Boolean {
+        return gatt.requestMtu(mtu)
     }
 
     override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean {

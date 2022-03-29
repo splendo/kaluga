@@ -109,10 +109,33 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
     override fun getUpdatedValue(): ByteArray? {
         return wrapper.value?.asBytes
     }
+
+    fun hasProperty(property: CharacteristicProperties) = hasProperties(listOf(property))
+
+    private fun hasProperties(properties: List<CharacteristicProperties>) = wrapper
+        .containsAnyOf(*properties.map(CharacteristicProperties::rawValue).toIntArray())
 }
 
 expect interface CharacteristicWrapper {
     val uuid: UUID
     val descriptors: List<DescriptorWrapper>
     val value: Value?
+    val properties: Int
+}
+
+fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isNotEmpty()) {
+    properties and property.reduce { acc, i -> acc.or(i) } != 0
+} else { false }
+
+sealed class CharacteristicProperties(val rawValue: Int) {
+    object Broadcast : CharacteristicProperties(0x01)
+    object Read : CharacteristicProperties(0x02)
+    object WriteWithoutResponse : CharacteristicProperties(0x04)
+    object Write : CharacteristicProperties(0x08)
+    object Notify : CharacteristicProperties(0x10)
+    object Indicate : CharacteristicProperties(0x20)
+    object SignedWrite : CharacteristicProperties(0x40)
+    object ExtendedProperties : CharacteristicProperties(0x80)
+
+    infix fun or(other: CharacteristicProperties) = rawValue or other.rawValue
 }
