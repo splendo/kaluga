@@ -19,6 +19,8 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 
+
+expect class KalugaDateHolder
 /**
  * Class describing a point in time
  * Dates are localized according to a [Locale] and relative to a given [TimeZone]
@@ -117,6 +119,8 @@ interface KalugaDate : Comparable<KalugaDate> {
     override fun equals(other: Any?): Boolean
 
     override fun hashCode(): Int
+
+    val date: KalugaDateHolder
 }
 
 expect class DefaultKalugaDate : KalugaDate {

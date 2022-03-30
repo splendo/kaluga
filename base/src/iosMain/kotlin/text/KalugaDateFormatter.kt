@@ -79,29 +79,28 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
 
         // Due to a problem related to the commonizer we need to supply all the
         // default arguments expected from the method signature
-        private fun defaultDate(timeZone: TimeZone) = (
+        private fun defaultDate(timeZone: TimeZone) =
             DefaultKalugaDate.now(
                 offsetInMilliseconds = 0L,
                 timeZone = timeZone,
                 locale = Locale.defaultLocale
-            ) as DefaultKalugaDate
             ).apply {
-            // Cannot use .utc since it may not be available when this method is called
-            // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
-            // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
-            val epoch = DefaultKalugaDate.epoch(
-                offsetInMilliseconds = 0L,
-                timeZone = TimeZone.get("UTC")!!,
-                locale = Locale.defaultLocale
-            )
-            this.era = epoch.era
-            this.year = epoch.year
-            this.month = epoch.month
-            this.day = epoch.day
-            this.hour = epoch.hour
-            this.minute = epoch.minute
-            this.second = epoch.second
-        }.date
+                // Cannot use .utc since it may not be available when this method is called
+                // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
+                // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
+                val epoch = DefaultKalugaDate.epoch(
+                    offsetInMilliseconds = 0L,
+                    timeZone = TimeZone.get("UTC")!!,
+                    locale = Locale.defaultLocale
+                )
+                this.era = epoch.era
+                this.year = epoch.year
+                this.month = epoch.month
+                this.day = epoch.day
+                this.hour = epoch.hour
+                this.minute = epoch.minute
+                this.second = epoch.second
+            }.date
     }
 
     actual var pattern: String
@@ -137,7 +136,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
         get() = format.PMSymbol
         set(value) { format.PMSymbol = value }
 
-    actual fun format(date: KalugaDate): String = format.stringFromDate((date as DefaultKalugaDate).date)
+    actual fun format(date: KalugaDate): String = format.stringFromDate(date.date)
     actual fun parse(string: String): KalugaDate? {
         return format.dateFromString(string)?.let { date ->
             val calendar = format.calendar.copy() as NSCalendar

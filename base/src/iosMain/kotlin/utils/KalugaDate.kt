@@ -44,6 +44,8 @@ import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
 import kotlin.math.round
 
+actual typealias KalugaDateHolder = NSDate
+
 actual class DefaultKalugaDate internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : KalugaDate {
     actual companion object {
 
@@ -67,7 +69,7 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         }
     }
 
-    internal var date: NSDate = initialDate
+    override var date: NSDate = initialDate
 
     override var timeZone: TimeZone
         get() = TimeZone(calendar.timeZone)
@@ -135,7 +137,7 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         return result
     }
 
-    override fun compareTo(other: KalugaDate): Int = this.date.compare((other as DefaultKalugaDate).date).toInt()
+    override fun compareTo(other: KalugaDate): Int = this.date.compare(other.date).toInt()
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
         // Check whether this component update can use dateBySettingUnit.

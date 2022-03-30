@@ -18,6 +18,9 @@
 package com.splendo.kaluga.base.utils
 
 import java.util.Calendar
+import java.util.Date
+
+actual typealias KalugaDateHolder = Date
 
 actual class DefaultKalugaDate internal constructor(internal val calendar: Calendar) : KalugaDate {
 
@@ -92,10 +95,12 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
     }
 
     override fun compareTo(other: KalugaDate): Int {
-        return this.calendar.time.compareTo((other as DefaultKalugaDate).calendar.time)
+        return this.date.compareTo(other.date)
     }
 
     override fun hashCode(): Int {
         return calendar.hashCode()
     }
+
+    override val date: KalugaDateHolder = calendar.time
 }

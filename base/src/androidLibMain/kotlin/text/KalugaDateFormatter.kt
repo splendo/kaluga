@@ -123,7 +123,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         get() = symbols.amPmStrings.toList()[1]
         set(value) { updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() } }
 
-    actual fun format(date: KalugaDate): String = format.format((date as DefaultKalugaDate).calendar.time)
+    actual fun format(date: KalugaDate): String = format.format(date.date)
     actual fun parse(string: String): KalugaDate? {
         val currentTimeZone = timeZone
         return try {

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
@@ -62,7 +61,7 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: TimeZone, 
     actual var amString: String = ""
     actual var pmString: String = ""
 
-    actual fun format(date: KalugaDate): String = formatter((date as DefaultKalugaDate).date)
+    actual fun format(date: KalugaDate): String = formatter(date.date)
     actual fun parse(string: String): KalugaDate? = null
 }
 
