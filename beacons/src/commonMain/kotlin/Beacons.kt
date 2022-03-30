@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -95,7 +94,7 @@ class Beacons(
             }
             cache[beacon.beaconID] = beacon to coroutineScope.launch {
                 debug(TAG, "[Added] $beacon")
-                delay(beacon.lastSeen.millisecondSinceEpoch + timeoutMs - Date.now().millisecondSinceEpoch)
+                delay(beacon.lastSeen.millisecondSinceEpoch + timeoutMs - DefaultKalugaDate.now().millisecondSinceEpoch)
                 debug(TAG, "[Lost] $beacon")
                 cache.remove(beacon.beaconID)
                 updateList()

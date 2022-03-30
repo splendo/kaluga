@@ -21,7 +21,11 @@ package com.splendo.kaluga.base.utils
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlin.jvm.JvmName
 
+/**
+ * Class holding the platform value of the desired Date.
+ */
 expect class KalugaDateHolder
+
 /**
  * Class describing a point in time
  * Dates are localized according to a [Locale] and relative to a given [TimeZone]
