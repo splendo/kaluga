@@ -95,7 +95,7 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
     }
 
     override fun hashCode(): Int = calendar.hashCode()
-    override val date: KalugaDateHolder = calendar.time
+    override val date: KalugaDateHolder get() = calendar.time
 
     override fun compareTo(other: KalugaDate): Int {
         return this.calendar.time.compareTo(other.date)

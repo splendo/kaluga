@@ -102,5 +102,5 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
         return calendar.hashCode()
     }
 
-    override val date: KalugaDateHolder = calendar.time
+    override val date: KalugaDateHolder get() = calendar.time
 }
