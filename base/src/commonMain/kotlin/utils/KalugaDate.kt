@@ -14,11 +14,12 @@
     limitations under the License.
 
  */
+@file:JvmName("KalugaDateJvm")
 
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
-
+import kotlin.jvm.JvmName
 
 expect class KalugaDateHolder
 /**
