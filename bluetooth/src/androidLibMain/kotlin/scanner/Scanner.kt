@@ -50,10 +50,10 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
 actual class Scanner internal constructor(
-    private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter(),
-    private val scanSettings: ScanSettings = defaultScanSettings,
-    private val applicationContext: Context = ApplicationHolder.applicationContext,
+    private val applicationContext: Context,
+    private val bluetoothScanner: BluetoothLeScannerCompat,
+    private val bluetoothAdapter: BluetoothAdapter?,
+    private val scanSettings: ScanSettings,
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
@@ -62,11 +62,10 @@ actual class Scanner internal constructor(
 ) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
 
     class Builder(
-        private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-        private val bluetoothAdapter: BluetoothAdapter? =
-            (ApplicationHolder.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter,
-        private val scanSettings: ScanSettings = defaultScanSettings,
         private val applicationContext: Context = ApplicationHolder.applicationContext,
+        private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
+        private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter,
+        private val scanSettings: ScanSettings = defaultScanSettings,
     ) : BaseScanner.Builder {
 
         override fun create(
@@ -76,7 +75,7 @@ actual class Scanner internal constructor(
             autoEnableSensors: Boolean,
             scanningStateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
         ): BaseScanner {
-            return Scanner(bluetoothScanner, bluetoothAdapter, scanSettings, applicationContext, permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
+            return Scanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
         }
     }
 
