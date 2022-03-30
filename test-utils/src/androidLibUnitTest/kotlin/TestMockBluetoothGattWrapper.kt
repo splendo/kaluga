@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,10 +15,21 @@
 
  */
 
-package com.splendo.kaluga.test.mock.bluetooth
+package com.splendo.kaluga.test
 
-import com.splendo.kaluga.bluetooth.ServiceWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.mock.bluetooth.MockBluetoothGattWrapper
+import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-actual fun createDeviceWrapper(deviceName: String?): DeviceWrapper = TODO()
-actual fun ServiceWrapperBuilder.build(): ServiceWrapper = TODO()
+class TestMockBluetoothGattWrapper {
+
+    @Test
+    fun testRequestMtu() = runBlocking {
+        val mtu = 54
+        val mock = MockBluetoothGattWrapper()
+        assertTrue(mock.requestMtu(mtu))
+        assertEquals(mtu, mock.requestMtuCompleted.await())
+    }
+}

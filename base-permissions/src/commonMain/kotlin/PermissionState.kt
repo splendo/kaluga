@@ -91,12 +91,12 @@ abstract class PermissionStateRepo<P : Permission>(
     initChangeStateWithRepo = { state, repo ->
         val pm = (repo as PermissionStateRepo<P>).permissionManager
         pm.startMonitoring(monitoringInterval)
-        if (state == null || state is PermissionState.Unknown<P>)
+        if (state is PermissionState.Unknown<P>)
             suspend { pm.initializeState() }
         else
             suspend { state }
     },
-    deinitChangeStateWithRepo = { state, repo ->
+    deinitChangeStateWithRepo = { _, repo ->
         (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
         null
     },
