@@ -147,7 +147,7 @@ actual class Scanner internal constructor(
         awaitPoweredOn.await()
         centralManager.scanForPeripheralsWithServices(
             filter?.let { listOf(filter) },
-            scanSettings.scanOptions
+            scanSettings.parse()
         )
     }
 
@@ -201,7 +201,20 @@ actual class Scanner internal constructor(
         }
     }
 
-    class ScanSettings private constructor(val scanOptions: Map<Any?, *>) {
+    class ScanSettings private constructor(
+        private val allowDuplicateKeys: Boolean,
+        private val solicitedServiceUUIDsKey: List<UUID>?
+    ) {
+
+        fun parse(): Map<Any?, *> {
+            val result: MutableMap<String, Any> =
+                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
+            solicitedServiceUUIDsKey?.let {
+                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+            }
+            return result.toMap()
+        }
+
         data class Builder(
             // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
             var allowDuplicateKeys: Boolean = true,
@@ -214,14 +227,7 @@ actual class Scanner internal constructor(
             fun solicitedServiceUUIDsKey(keys: List<UUID>) =
                 apply { solicitedServiceUUIDsKey = keys }
 
-            fun build(): ScanSettings {
-                val result: MutableMap<String, Any> =
-                    mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
-                solicitedServiceUUIDsKey?.let {
-                    result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
-                }
-                return ScanSettings(result.toMap())
-            }
+            fun build(): ScanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
         }
     }
 }
