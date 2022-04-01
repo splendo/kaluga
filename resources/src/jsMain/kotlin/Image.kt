@@ -19,4 +19,4 @@ package com.splendo.kaluga.resources
 
 actual class Image
 
-actual fun Image.tinted(color: Color): Image? = null
+actual fun Image.tinted(color: KalugaColor): Image? = null

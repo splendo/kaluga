@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.TimeSource
-import com.splendo.kaluga.state.State as KalugaState
+import com.splendo.kaluga.state.KalugaState as KalugaState
 
 /** A coroutine delay function. */
 typealias DelayFunction = suspend (Duration) -> Unit
@@ -107,7 +107,7 @@ private class TimerStateRepo(
     }
 
     /** Timer state. */
-    sealed class State : KalugaState(), Timer.State {
+    sealed class State : KalugaState, Timer.State {
         abstract val totalDuration: Duration
         /** Timer is not running. */
         sealed class NotRunning(protected val elapsedSoFar: Duration) : State(), Timer.State.NotRunning {

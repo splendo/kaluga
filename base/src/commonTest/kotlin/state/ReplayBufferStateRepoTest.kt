@@ -31,16 +31,16 @@ import kotlin.test.assertEquals
 class ReplayBufferStateRepoTest : BaseTest() {
 
     companion object {
-        val state1 = object : State() {}
-        val state2 = object : State() {}
-        val state3 = object : State() {}
-        val state4 = object : State() {}
+        val state1 = object : KalugaState {}
+        val state2 = object : KalugaState {}
+        val state3 = object : KalugaState {}
+        val state4 = object : KalugaState {}
     }
 
-    class Repo : BaseHotStateRepo<State, MutableSharedFlow<State>>() {
+    class Repo : BaseHotStateRepo<KalugaState, MutableSharedFlow<KalugaState>>() {
         override suspend fun initialValue() = state1
         override val lazyMutableSharedFlow = lazy {
-            MutableSharedFlow<State>(3, 0)
+            MutableSharedFlow<KalugaState>(3, 0)
         }
     }
 

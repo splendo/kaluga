@@ -18,7 +18,8 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import platform.Foundation.NSCalendar
@@ -30,29 +31,29 @@ import platform.Foundation.NSDateFormatterNoStyle
 import platform.Foundation.NSDateFormatterShortStyle
 import platform.Foundation.NSDateFormatterStyle
 
-actual class DateFormatter private constructor(private val format: NSDateFormatter) {
+actual class KalugaDateFormatter private constructor(private val format: NSDateFormatter) {
 
     actual companion object {
         actual fun dateFormat(
             style: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = createDateFormatter(style, null, timeZone, locale)
+        ): KalugaDateFormatter = createDateFormatter(style, null, timeZone, locale)
 
         actual fun timeFormat(
             style: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = createDateFormatter(null, style, timeZone, locale)
+        ): KalugaDateFormatter = createDateFormatter(null, style, timeZone, locale)
 
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
+        ): KalugaDateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
 
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): KalugaDateFormatter = KalugaDateFormatter(
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
@@ -66,7 +67,7 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             timeStyle: DateFormatStyle?,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = DateFormatter(
+        ): KalugaDateFormatter = KalugaDateFormatter(
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
@@ -78,27 +79,28 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
 
         // Due to a problem related to the commonizer we need to supply all the
         // default arguments expected from the method signature
-        private fun defaultDate(timeZone: TimeZone) = Date.now(
-            offsetInMilliseconds = 0L,
-            timeZone = timeZone,
-            locale = Locale.defaultLocale
-        ).apply {
-            // Cannot use .utc since it may not be available when this method is called
-            // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
-            // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
-            val epoch = Date.epoch(
+        private fun defaultDate(timeZone: TimeZone) =
+            DefaultKalugaDate.now(
                 offsetInMilliseconds = 0L,
-                timeZone = TimeZone.get("UTC")!!,
+                timeZone = timeZone,
                 locale = Locale.defaultLocale
-            )
-            this.era = epoch.era
-            this.year = epoch.year
-            this.month = epoch.month
-            this.day = epoch.day
-            this.hour = epoch.hour
-            this.minute = epoch.minute
-            this.second = epoch.second
-        }.date
+            ).apply {
+                // Cannot use .utc since it may not be available when this method is called
+                // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
+                // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
+                val epoch = DefaultKalugaDate.epoch(
+                    offsetInMilliseconds = 0L,
+                    timeZone = TimeZone.get("UTC")!!,
+                    locale = Locale.defaultLocale
+                )
+                this.era = epoch.era
+                this.year = epoch.year
+                this.month = epoch.month
+                this.day = epoch.day
+                this.hour = epoch.hour
+                this.minute = epoch.minute
+                this.second = epoch.second
+            }.date
     }
 
     actual var pattern: String
@@ -134,12 +136,12 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
         get() = format.PMSymbol
         set(value) { format.PMSymbol = value }
 
-    actual fun format(date: Date): String = format.stringFromDate(date.date)
-    actual fun parse(string: String): Date? {
+    actual fun format(date: KalugaDate): String = format.stringFromDate(date.date)
+    actual fun parse(string: String): KalugaDate? {
         return format.dateFromString(string)?.let { date ->
             val calendar = format.calendar.copy() as NSCalendar
             calendar.timeZone = timeZone.timeZone
-            Date(calendar, date)
+            DefaultKalugaDate(calendar, date)
         }
     }
 }

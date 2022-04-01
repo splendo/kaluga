@@ -132,6 +132,6 @@ Use Decimals to do standard arithmetic operations. A Rounding mode or scale can 
 
 It's possible to format to and from some data types using Kaluga.
 
-- `Date` can be formatted and parsed using a `DateFormatter`
+- `Date` can be formatted and parsed using a `KalugaDateFormatter`
 - `Number` can be formatted and parsed using a `NumberFormatter`
 - `String` can be formatted to include different data types using `StringFormatter`
