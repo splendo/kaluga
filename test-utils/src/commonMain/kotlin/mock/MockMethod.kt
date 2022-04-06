@@ -84,7 +84,7 @@ abstract class BaseMethodMock<
                 val matcherAtIndexForAcc = acc.first().first[index]
                 val matcherAtIndexForPossibleBestMatch = possibleBestMatch.first[index]
                 when {
-                    matcherAtIndexForAcc > matcherAtIndexForPossibleBestMatch -> acc
+                    matcherAtIndexForAcc < matcherAtIndexForPossibleBestMatch -> acc
                     matcherAtIndexForAcc == matcherAtIndexForPossibleBestMatch -> acc.toMutableList() + possibleBestMatch
                     else -> listOf(possibleBestMatch)
                 }
@@ -130,7 +130,7 @@ class MethodMock<M : ParametersSpec.Matchers,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
     R>(override val ParametersSpec: W): BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
-    fun call(arguments: V): R = getStubFor(arguments).call(arguments)
+    internal fun call(arguments: V): R = getStubFor(arguments).call(arguments)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
 
@@ -156,7 +156,7 @@ class SuspendMethodMock<
     W : ParametersSpec<M, C, V>,
     R>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
 
-    suspend fun call(arguments: V): R = getStubFor(arguments).call(arguments)
+    internal suspend fun call(arguments: V): R = getStubFor(arguments).call(arguments)
 
     override fun createStub(matcher: M): Stub<M, V, R> =
         Stub(matcher)

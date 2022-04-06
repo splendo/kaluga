@@ -65,7 +65,7 @@ sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<Pa
         fun <F, S> anyPair() = any<Pair<F, S>>()
         fun <T> anySet() = any<Set<T>>()
         fun <F, S, T> anyTriple() = any<Triple<F,S,T>>()
-        fun any() = any<Any>()
+        fun anyObject() = any<Any>()
         fun <T> arg(condition: (T) -> Boolean): ParameterMatcher<T> = ConditionMatcher(condition)
 
         private val priorityOrder = setOf(EqualsMatcher::class, ConditionMatcher::class, NotEqualsMatcher::class, AnyNotNullMatcher::class, AnyMatcher::class)
