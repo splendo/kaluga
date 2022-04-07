@@ -67,3 +67,10 @@ class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseViewModel() {
     )
 } 
 ```
+
+### Notes
+There is a major difference when it comes to default reported device emissions between Android and iOS. Android will report multiple emissions of the same device, as iOS will filter them out.
+
+To make the API consistent between both platforms under the hood, we enable for iOS the [CBCentralManagerScanOptionAllowDuplicatesKey](https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey) option (which is disabled by default).
+
+In most cases (like observing the distance to a beacon) this behavior satisfies both platform needs. In the future, we will provide a common API that allows customization of the emission behavior.
