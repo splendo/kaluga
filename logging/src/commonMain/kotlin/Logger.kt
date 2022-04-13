@@ -38,14 +38,17 @@ open class TransformLogger(
 ) : Logger {
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-
+        val logLevel = transformLogLevel?.invoke(level) ?: level
+        val logTag = transformTag?.invoke(tag) ?: tag
+        val logThrowable = transformThrowable?.invoke(throwable) ?: throwable
+        val logMessage = transformMessage?.invoke(message?.invoke())?.let { { it } } ?: message
         logger.log(
-            transformLogLevel?.invoke(level) ?: level,
-            transformTag?.invoke(tag) ?: tag,
-            transformThrowable?.invoke(throwable) ?: throwable,
+            logLevel,
+            logTag,
+            logThrowable,
             // already resolve the lazy message if it needs transformation (else we cannot transform it)
             // after transform wrap it in a "lazy" closure again {{🤗}}
-            transformMessage?.invoke(message?.invoke())?.let { { it } } ?: message
+            logMessage
         )
     }
 }
