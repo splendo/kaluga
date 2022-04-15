@@ -38,6 +38,8 @@ import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
+import platform.CoreBluetooth.CBCentralManagerScanOptionAllowDuplicatesKey
+import platform.CoreBluetooth.CBCentralManagerScanOptionSolicitedServiceUUIDsKey
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSError
@@ -48,12 +50,13 @@ import platform.darwin.dispatch_get_main_queue
 actual class Scanner internal constructor(
     permissions: Permissions,
     private val connectionSettings: ConnectionSettings,
+    private val scanSettings: ScanSettings,
     autoRequestPermission: Boolean,
     autoEnableSensors: Boolean,
     stateRepo: ScanningStateFlowRepo,
 ) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
 
-    class Builder : BaseScanner.Builder {
+    class Builder(private val scanSettings: ScanSettings = defaultScanOptions) : BaseScanner.Builder {
 
         override fun create(
             permissions: Permissions,
@@ -62,12 +65,13 @@ actual class Scanner internal constructor(
             autoEnableSensors: Boolean,
             scanningStateRepo: ScanningStateFlowRepo,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
+            return Scanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo,)
         }
     }
 
     companion object {
         private const val TAG = "IOS Bluetooth Scanner"
+        private val defaultScanOptions = ScanSettings.Builder().build()
     }
 
     private class EnabledCBCentralManagerDelegate(private val isCheckEnabledCompleted: CompletableDeferred<Boolean>) : NSObject(), CBCentralManagerDelegateProtocol {
@@ -141,7 +145,10 @@ actual class Scanner internal constructor(
         discoveringDelegates.add(delegate)
         centralManager.delegate = delegate
         awaitPoweredOn.await()
-        centralManager.scanForPeripheralsWithServices(filter?.let { listOf(filter) }, null)
+        centralManager.scanForPeripheralsWithServices(
+            filter?.let { listOf(filter) },
+            scanSettings.parse()
+        )
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) =
@@ -191,6 +198,36 @@ actual class Scanner internal constructor(
                 DeviceConnectionManager.Builder(central, peripheral),
                 coroutineContext
             )
+        }
+    }
+
+    class ScanSettings private constructor(
+        private val allowDuplicateKeys: Boolean,
+        private val solicitedServiceUUIDsKey: List<UUID>?
+    ) {
+
+        fun parse(): Map<Any?, *> {
+            val result: MutableMap<String, Any> =
+                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
+            solicitedServiceUUIDsKey?.let {
+                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+            }
+            return result.toMap()
+        }
+
+        data class Builder(
+            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
+            var allowDuplicateKeys: Boolean = true,
+            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionsolicitedserviceuuidskey
+            var solicitedServiceUUIDsKey: List<UUID>? = null,
+        ) {
+            fun allowDuplicateKeys(allow: Boolean) =
+                apply { allowDuplicateKeys = allow }
+
+            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
+                apply { solicitedServiceUUIDsKey = keys }
+
+            fun build(): ScanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
         }
     }
 }
