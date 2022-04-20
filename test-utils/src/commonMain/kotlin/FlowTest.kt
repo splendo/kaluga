@@ -29,12 +29,10 @@ import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.test.UIThreadTest.EmptyTestContext
 import com.splendo.kaluga.test.UIThreadTest.TestContext
-import com.splendo.kaluga.test.koin.KoinUIThreadTest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlin.native.concurrent.SharedImmutable
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.AfterTest
@@ -72,8 +70,6 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
             block(this@FlowTest, it)
         }
 }
-
-abstract class BaseKoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<TC, T, F>()
 
 /*
 Context for each tests needs to be created and kept on the main thread for iOS.
