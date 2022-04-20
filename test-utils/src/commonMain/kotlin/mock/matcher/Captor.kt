@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.test.mock.matcher
 
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.orNull
-
 sealed interface Captor<T> : ParameterMatcherOrCaptor<T> {
     val captured: List<T>
     val lastCaptured: T?
@@ -34,7 +32,7 @@ class AnyCaptor<T : Any> : Captor<T> {
         _captured.add(value)
     }
 
-    override fun asMatcher(): ParameterMatcher<T> = ParameterMatcher.any<T>()
+    override fun asMatcher(): ParameterMatcher<T> = ParameterMatcher.any()
 }
 
 class AnyOrNullCaptor<T : Any> : Captor<T?> {
@@ -46,5 +44,5 @@ class AnyOrNullCaptor<T : Any> : Captor<T?> {
         _captured.add(value)
     }
 
-    override fun asMatcher(): ParameterMatcher<T?> = ParameterMatcher.any<T>().orNull()
+    override fun asMatcher(): ParameterMatcher<T?> = ParameterMatcher.any()
 }

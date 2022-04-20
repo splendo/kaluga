@@ -1,16 +1,11 @@
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.mock.answer.Answer
 import com.splendo.kaluga.test.mock.call
 import com.splendo.kaluga.test.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.any
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.anyInt
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.anyString
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.notEq
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.notNull
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.orNull
 import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.SingleParameters
 import com.splendo.kaluga.test.mock.parameters.mock
@@ -112,11 +107,11 @@ class MockMethodTest {
     @Test
     fun testMockMethodWithParamsAndReturnType() {
         val mock = mockableTestMethods::methodWithParamsAndReturnType.mock()
-        mock.verify(anyString(), never())
+        mock.verify(rule = never())
         val paramA = "A"
         val paramB = "B"
         assertEquals("", mock.call(paramA))
-        mock.verify(anyString())
+        mock.verify()
         mock.verify(eq(paramA))
         mock.verify(eq(paramB), never())
         mock.reset()
@@ -130,7 +125,7 @@ class MockMethodTest {
         mock.on(any()).doReturn(resultNotAOrB)
         assertEquals(resultA, mock.call(paramA))
         assertEquals(resultB, mock.call(paramB))
-        mock.verify(anyString(), 2)
+        mock.verify(times = 2)
         mock.verify(eq(paramA))
         mock.verify(notEq(paramA))
         mock.verify(eq(paramB))
@@ -150,16 +145,16 @@ class MockMethodTest {
     @Test
     fun testMockMethodWithMultipleParamsAndReturnType() {
         val mock = mockableTestMethods::methodWithMultipleParamsAndReturnType.mock()
-        mock.verify(anyInt(), anyString(), anyString().orNull(), anyInt().orNull(), never())
+        mock.verify(rule = never())
         val paramA1 = 1
         val paramA2 = "A"
         val paramA3 = "Something"
         val paramA4 = 10
         val paramB1 = 2
         assertEquals("", mock.call(paramA1, paramA2, paramA3, paramA4))
-        mock.verify(anyInt(), anyString(), anyString().orNull(), anyInt().orNull())
+        mock.verify()
         mock.verify(eq(paramA1), eq(paramA2), eq(paramA3), eq(paramA4))
-        mock.verify(eq(paramB1), any(), any(), any(), never())
+        mock.verify(first = eq(paramB1), rule = never())
         mock.reset()
         val result1 = "Result 1"
         val result2 = "Result 2"
@@ -171,19 +166,17 @@ class MockMethodTest {
     @Test
     fun testMockSuspendMethodWithParamsAndReturnType() = runBlocking {
         val mock = mockableTestMethods::suspendMethodWithParamsAndReturnType.mock()
-        mock.verify(anyString(), never())
+        mock.verify(rule = never())
         assertEquals("", mock.call(""))
         mock.reset()
         val result = "Result"
         val deferred = CompletableDeferred<String>()
-        val didFinish = EmptyCompletableDeferred()
-        mock.on(anyString()).doAwait(deferred)
+        val didCall = mock.on().doAwait(deferred)
         launch {
             assertEquals(result, mock.call("Value"))
-            didFinish.complete()
         }
+        didCall.await()
         deferred.complete(result)
-        didFinish.await()
-        mock.verify(anyString())
+        mock.verify()
     }
 }

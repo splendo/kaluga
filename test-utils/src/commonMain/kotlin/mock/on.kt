@@ -48,7 +48,7 @@ fun <
     Result,
     Answer,
     Stub
-    >.on(value: ParameterMatcher<Value>): Stub {
+    >.on(value: ParameterMatcher<Value> = ParameterMatcher.any()): Stub {
     return on(SingleParameters.Matchers(value))
 }
 
@@ -71,7 +71,10 @@ fun <
     Result,
     Answer,
     Stub
-    >.on(first: ParameterMatcher<T0>, second: ParameterMatcher<T1>): Stub {
+    >.on(
+    first: ParameterMatcher<T0> = ParameterMatcher.any(),
+    second: ParameterMatcher<T1> = ParameterMatcher.any()
+): Stub {
     return on(PairParameters.Matchers(first, second))
 }
 
@@ -95,7 +98,11 @@ fun <
     Result,
     Answer,
     Stub
-    >.on(first: ParameterMatcher<T0>, second: ParameterMatcher<T1>, third: ParameterMatcher<T2>): Stub {
+    >.on(
+    first: ParameterMatcher<T0> = ParameterMatcher.any(),
+    second: ParameterMatcher<T1> = ParameterMatcher.any(),
+    third: ParameterMatcher<T2> = ParameterMatcher.any()
+): Stub {
     return on(TripleParameters.Matchers(first, second, third))
 }
 
@@ -120,7 +127,12 @@ fun <
     Result,
     Answer,
     Stub
-    >.on(first: ParameterMatcher<T0>, second: ParameterMatcher<T1>, third: ParameterMatcher<T2>, fourth: ParameterMatcher<T3>): Stub {
+    >.on(
+    first: ParameterMatcher<T0> = ParameterMatcher.any(),
+    second: ParameterMatcher<T1> = ParameterMatcher.any(),
+    third: ParameterMatcher<T2> = ParameterMatcher.any(),
+    fourth: ParameterMatcher<T3> = ParameterMatcher.any()
+): Stub {
     return on(QuadrupleParameters.Matchers(first, second, third, fourth))
 }
 
@@ -146,6 +158,12 @@ fun <
     Result,
     Answer,
     Stub
-    >.on(first: ParameterMatcher<T0>, second: ParameterMatcher<T1>, third: ParameterMatcher<T2>, fourth: ParameterMatcher<T3>, fifth: ParameterMatcher<T4>): Stub {
+    >.on(
+    first: ParameterMatcher<T0> = ParameterMatcher.any(),
+    second: ParameterMatcher<T1> = ParameterMatcher.any(),
+    third: ParameterMatcher<T2> = ParameterMatcher.any(),
+    fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
+    fifth: ParameterMatcher<T4> = ParameterMatcher.any()
+): Stub {
     return on(QuintupleParameters.Matchers(first, second, third, fourth, fifth))
 }

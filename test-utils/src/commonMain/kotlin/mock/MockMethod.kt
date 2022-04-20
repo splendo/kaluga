@@ -22,6 +22,7 @@ import com.splendo.kaluga.test.mock.answer.BaseAnswer
 import com.splendo.kaluga.test.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.mock.parameters.ParametersSpec
 import com.splendo.kaluga.test.mock.verification.VerificationRule
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
 private fun expect(condition: Boolean, message: () -> String) {
@@ -50,13 +51,14 @@ abstract class BaseMethodMock<
         abstract val matchers: M
         protected var answer: A? = null
 
-        internal abstract fun createAnswer(result: (V) -> R): A
+        protected abstract fun createAnswer(result: (V) -> R): A
 
         fun doAnswer(answer: A) {
             this.answer = answer
         }
-        fun doReturn(value: R) = doAnswer(createAnswer { value })
-        fun doThrow(throwable: Throwable) = doAnswer(createAnswer { throw throwable })
+        fun doExecute(action: (V) -> R) = doAnswer(createAnswer(action))
+        fun doReturn(value: R) = doExecute { value }
+        fun doThrow(throwable: Throwable) = doExecute { throw throwable }
     }
 
     private val stubs: MutableMap<M, S> = mutableMapOf()
@@ -122,7 +124,7 @@ fun <
     V : ParametersSpec.Values,
     A : BaseAnswer<V, Unit>,
     Stub : BaseMethodMock.Stub<M, V, Unit, A>> Stub.doReturn() {
-        createAnswer { }
+        doExecute { }
     }
 
 class MethodMock<M : ParametersSpec.Matchers,
@@ -175,10 +177,18 @@ class SuspendMethodMock<
             return answer.call(arguments)
         }
 
-        fun doAwait(deferred: Deferred<R>) = doAnswer(
+        fun doExecuteSuspended(action: suspend (V) -> R) = doAnswer(
             object : SuspendedAnswer<V, R> {
-                override suspend fun call(arguments: V): R = deferred.await()
+                override suspend fun call(arguments: V): R = action(arguments)
             }
         )
+        fun doAwait(deferred: Deferred<R>): Deferred<V> {
+            val isCalled = CompletableDeferred<V>()
+            doExecuteSuspended {
+                isCalled.complete(it)
+                deferred.await()
+            }
+            return isCalled
+        }
     }
 }
