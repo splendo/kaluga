@@ -41,4 +41,6 @@ internal actual class DeviceConnectionManager(connectionSettings: ConnectionSett
     override suspend fun performAction(action: DeviceAction) {}
 
     override fun unpair() {}
+
+    override fun pair() {}
 }

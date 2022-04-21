@@ -31,6 +31,7 @@ class MockDeviceWrapper(override val name: String?, override val identifier: Ide
 
     val connectGattCompleted = CompletableDeferred<BluetoothGattCallback>()
     val removeBondCompleted = EmptyCompletableDeferred()
+    val createBondCompleted = EmptyCompletableDeferred()
 
     override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper {
         connectGattCompleted.complete(callback)
@@ -39,6 +40,10 @@ class MockDeviceWrapper(override val name: String?, override val identifier: Ide
 
     override fun removeBond() {
         removeBondCompleted.complete()
+    }
+
+    override fun createBond() {
+        createBondCompleted.complete()
     }
 
     override val device: BluetoothDevice

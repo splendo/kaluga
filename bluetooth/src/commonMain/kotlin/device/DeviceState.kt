@@ -163,6 +163,8 @@ sealed class DeviceState(
             connectionManager.readRssi()
         }
 
+        internal fun pair() = connectionManager.pair()
+
         override suspend fun finalState() {
             super.finalState()
 

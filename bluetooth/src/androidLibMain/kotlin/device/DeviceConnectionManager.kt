@@ -202,6 +202,12 @@ internal actual class DeviceConnectionManager(
         }
     }
 
+    override fun pair() {
+        if (device.bondState == BluetoothDevice.BOND_NONE) {
+            deviceWrapper.createBond()
+        }
+    }
+
     private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray?): Boolean {
         characteristic.wrapper.updateValue(value)
         return gatt.await().writeCharacteristic(characteristic.wrapper)
