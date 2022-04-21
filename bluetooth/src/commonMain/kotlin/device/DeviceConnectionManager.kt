@@ -57,6 +57,7 @@ abstract class BaseDeviceConnectionManager(
     abstract suspend fun readRssi()
     abstract suspend fun performAction(action: DeviceAction)
     abstract fun unpair()
+    abstract fun pair()
 
     suspend fun handleNewRssi(rssi: Int) {
         stateRepo.takeAndChangeState {

@@ -56,6 +56,7 @@ class MockDeviceConnectionManager(
     val handledAction = _handledAction.asSharedFlow()
     var willActionSucceed = AtomicBoolean(true)
     val unpairCompleted = AtomicReference(EmptyCompletableDeferred())
+    val pairCompleted = AtomicReference(EmptyCompletableDeferred())
 
     fun reset() {
         connectCompleted.set(EmptyCompletableDeferred())
@@ -66,6 +67,7 @@ class MockDeviceConnectionManager(
         performActionStarted.set(CompletableDeferred())
         _handledAction.resetReplayCache()
         unpairCompleted.set(EmptyCompletableDeferred())
+        pairCompleted.set(EmptyCompletableDeferred())
     }
 
     override suspend fun connect() {
@@ -135,4 +137,6 @@ class MockDeviceConnectionManager(
     }
 
     override fun unpair() = unpairCompleted.get().complete()
+
+    override fun pair() = pairCompleted.get().complete()
 }

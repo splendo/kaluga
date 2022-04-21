@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
@@ -28,5 +29,19 @@ import kotlinx.coroutines.flow.transformLatest
  */
 suspend fun Flow<Device?>.unpair() = transformLatest { device ->
     device?.useState { it.unpair() }
+    emit(Unit)
+}.first()
+
+/**
+ * Pairs Device by calling `createBond`
+ * if bond state == BluetoothDevice.BOND_NONE
+ */
+suspend fun Flow<Device?>.pair() = transformLatest { device ->
+    device?.useState {
+        when (it) {
+            is DeviceState.Connected -> it.pair()
+            else -> Unit
+        }
+    }
     emit(Unit)
 }.first()

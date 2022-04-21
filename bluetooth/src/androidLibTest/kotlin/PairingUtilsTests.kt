@@ -28,11 +28,12 @@ import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 import kotlin.coroutines.CoroutineContext
 
-class UnpairTests : BaseTest() {
+class PairingUtilsTests : BaseTest() {
 
     private object Mocks {
 
@@ -73,5 +74,22 @@ class UnpairTests : BaseTest() {
         val flow = flowOf(device)
         flow.unpair()
         assert(device.mockManager.unpairCompleted.get().isCompleted)
+    }
+
+    @Test
+    fun pairTest(): Unit = runBlocking {
+        val device = Mocks.device(coroutineContext)
+        device.mockManager.reset()
+        val flow = flowOf(device)
+
+        val connectingJob = async {
+            flow.connect()
+        }
+        device.mockManager.connectCompleted.get().await()
+        device.mockManager.handleConnect()
+        connectingJob.await()
+
+        flow.pair()
+        assert(device.mockManager.pairCompleted.get().isCompleted)
     }
 }
