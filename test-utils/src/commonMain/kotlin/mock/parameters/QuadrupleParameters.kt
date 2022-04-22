@@ -25,6 +25,7 @@ import com.splendo.kaluga.test.mock.matcher.Captor
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.mock.on
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 class QuadrupleParameters<T0, T1, T2, T3> : ParametersSpec<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>> {
@@ -66,7 +67,7 @@ class QuadrupleParameters<T0, T1, T2, T3> : ParametersSpec<QuadrupleParameters.M
     }
 }
 
-fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = MethodMock<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>, QuadrupleParameters<T0, T1, T2, T3>, R>(QuadrupleParameters())
+internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = MethodMock<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>, QuadrupleParameters<T0, T1, T2, T3>, R>(QuadrupleParameters())
 
 fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mock(defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>()).doAnswer(defaultAnswer)
@@ -148,14 +149,20 @@ fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> Set<R>).mock() = mock(emptySet())
 @JvmName("mockMap")
 fun <T0, T1, T2, T3, K, V> ((T0, T1, T2, T3) -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
+@JsName("mockQuadrupleNullable")
 fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockQuadrupleNonNullable")
+fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R).mock() = asMock()
 
-fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asMock() = SuspendMethodMock<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>, QuadrupleParameters<T0, T1, T2, T3>, R>(QuadrupleParameters())
+internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = SuspendMethodMock<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>, QuadrupleParameters<T0, T1, T2, T3>, R>(QuadrupleParameters())
 
-fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mock(defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) = asMock().also {
+fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mock(defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) = asSuspendedMock()
+    .also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>()).doAnswer(defaultAnswer)
 }
-fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mock(defaultValue: R) = asMock().also {
+fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mock(defaultValue: R) = asSuspendedMock()
+    .also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>()).doReturn(defaultValue)
 }
 
@@ -232,4 +239,8 @@ fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> Set<R>).mock() = mock(empty
 @JvmName("mockMap")
 fun <T0, T1, T2, T3, K, V> (suspend (T0, T1, T2, T3) -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
-fun <T0, T1, T2, T3, R : Any> (suspend (T0, T1, T2, T3) -> R?).mock() = mock( null)
+@JsName("mockQuadrupleNullableSuspended")
+fun <T0, T1, T2, T3, R : Any> (suspend (T0, T1, T2, T3) -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockQuadrupleNonNullableSuspended")
+fun <T0, T1, T2, T3, R : Any> (suspend (T0, T1, T2, T3) -> R).mock() = asSuspendedMock()

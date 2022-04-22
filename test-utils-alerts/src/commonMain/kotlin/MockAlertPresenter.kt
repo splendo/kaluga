@@ -20,6 +20,8 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
@@ -32,7 +34,7 @@ class MockAlertPresenter (val alert: Alert) : BaseAlertPresenter(alert) {
 
         init {
             createMock.on().doExecute {
-                MockAlertPresenter(it.first).also {
+                MockAlertPresenter(it.value).also {
                     builtAlerts.add(it)
                 }
             }
@@ -52,19 +54,37 @@ class MockAlertPresenter (val alert: Alert) : BaseAlertPresenter(alert) {
         get() = _afterHandler.get()
         set(value) = _afterHandler.set(value)
 
-    fun closeWithAction(action: Alert.Action?) {
-        action?.let {
-            if (alert.actions.contains(it)) {
-                it.handler()
-                it
-            } else {
-                null
+    val closeWithActionMock = this::closeWithAction.mock().apply {
+        on().doExecute { parameters ->
+            val action = parameters.value
+            action?.let {
+                if (alert.actions.contains(it)) {
+                    it.handler()
+                    it
+                } else {
+                    null
+                }
+            }.apply {
+                afterHandler?.invoke(this)
             }
-        }.apply {
-            afterHandler?.invoke(this)
+            dismissAlert(false)
         }
-        dismissAlert(false)
     }
+    fun closeWithAction(action: Alert.Action?): Unit = closeWithActionMock.call(action)
+
+    val showAsyncMock = this::showAsync.mock().apply {
+        on().doExecute {
+            showAlert(it.first, completion = it.second)
+        }
+    }
+    override fun showAsync(animated: Boolean, completion: () -> Unit): Unit  = showAsyncMock.call(animated, completion)
+
+    val dismissMock = this::dismiss.mock().apply {
+        on().doExecute {
+            dismissAlert(it.value)
+        }
+    }
+    override fun dismiss(animated: Boolean): Unit = dismissMock.call(animated)
 
     override fun dismissAlert(animated: Boolean) {
         isPresented = false

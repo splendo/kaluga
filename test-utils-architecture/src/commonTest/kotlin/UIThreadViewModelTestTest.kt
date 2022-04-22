@@ -18,23 +18,20 @@
 package com.splendo.kaluga.test.architecture
 
 import co.touchlab.stately.concurrency.AtomicBoolean
-import com.splendo.kaluga.alerts.BaseAlertPresenter
-import com.splendo.kaluga.alerts.buildAlert
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.CustomUIThreadViewModelTestTest.CustomViewModelTestContext
-import com.splendo.kaluga.test.CustomUIThreadViewModelTestTest.MyViewModel
-import com.splendo.kaluga.test.LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext
-import com.splendo.kaluga.test.LazyUIThreadViewModelTestTest.ViewModel
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
-import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.withTimeout
-import kotlin.test.*
-import kotlin.time.seconds
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
-class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelTestContext, ViewModel>() {
+class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
         val isDisposed = AtomicBoolean(false)
@@ -84,36 +81,29 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelT
     }
 }
 
-class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomViewModelTestContext, MyViewModel>() {
+class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadViewModelTestTest.CustomViewModelTestContext, CustomUIThreadViewModelTestTest.MyViewModel>() {
 
-    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class MyViewModel(testFlow: MutableStateFlow<Int>) : BaseViewModel() {
+        val testObservable = testFlow.map { it.toString() }.toInitializedObservable("", coroutineScope)
+        val testSubject = testFlow.toInitializedSubject(coroutineScope)
+    }
 
     class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
-        val mockAlertBuilder = MockAlertPresenter.Builder()
-        override val viewModel: MyViewModel = MyViewModel(mockAlertBuilder)
+        val mockFlow = MutableStateFlow(1)
+        override val viewModel: MyViewModel = MyViewModel(mockFlow)
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> CustomViewModelTestContext = { CustomViewModelTestContext() }
 
     @Test
     fun testCustomUIThreadViewModelTest() = testOnUIThread {
-
-        val done = EmptyCompletableDeferred()
-        withTimeout(2.seconds) {
-            // we can use alertBuilder from our viewModel
-            viewModel.alertBuilder.buildAlert(this) {
-                setTitle("foo")
-                setPositiveButton("OK")
-            }.showAsync {
-                done.complete()
-            }
-
-            // **mock**AlertBuilder is available also from our context
-            mockAlertBuilder.builtAlerts.first().apply {
-                closeWithAction(alert.actions.first())
-            }
-
-            done.await()
-        }
+        assertEquals("1", viewModel.testObservable.current)
+        assertEquals(1, viewModel.testSubject.current)
+        viewModel.testSubject.stateFlow.value = 2
+        assertEquals("2", viewModel.testObservable.current)
+        assertEquals(2, viewModel.testSubject.current)
+        mockFlow.value = 3
+        assertEquals("3", viewModel.testObservable.current)
+        assertEquals(3, viewModel.testSubject.current)
     }
 }

@@ -31,6 +31,7 @@ kotlin {
         }
         commonTest {
             dependencies {
+                api(project(":test-utils-architecture"))
             }
         }
     }

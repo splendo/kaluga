@@ -25,6 +25,7 @@ import com.splendo.kaluga.test.mock.matcher.Captor
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.mock.on
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>> {
@@ -55,7 +56,7 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     }
 }
 
-fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = MethodMock<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>, TripleParameters<T0, T1, T2>, R>(TripleParameters())
+internal fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = MethodMock<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>, TripleParameters<T0, T1, T2>, R>(TripleParameters())
 
 fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mock(defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
@@ -137,14 +138,19 @@ fun <T0, T1, T2, R> ((T0, T1, T2) -> Set<R>).mock() = mock(emptySet())
 @JvmName("mockMap")
 fun <T0, T1, T2, K, V> ((T0, T1, T2) -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
+@JsName("mockTripleNullable")
 fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockTripleNonNullable")
+fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R).mock() = asMock()
 
-fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asMock() = SuspendMethodMock<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>, TripleParameters<T0, T1, T2>, R>(TripleParameters())
+internal fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asSuspendedMock() = SuspendMethodMock<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>, TripleParameters<T0, T1, T2>, R>(TripleParameters())
 
-fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mock(defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>) = asMock().also {
+fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mock(defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>) = asSuspendedMock()
+    .also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }
-fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mock(defaultValue: R) = asMock().also {
+fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mock(defaultValue: R) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doReturn(defaultValue)
 }
 
@@ -221,4 +227,8 @@ fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> Set<R>).mock() = mock(emptySet())
 @JvmName("mockMap")
 fun <T0, T1, T2, K, V> (suspend (T0, T1, T2) -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
-fun <T0, T1, T2, R : Any> (suspend (T0, T1, T2) -> R?).mock() = mock( null)
+@JsName("mockTripleNullableSuspended")
+fun <T0, T1, T2, R : Any> (suspend (T0, T1, T2) -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockTripleNonNullableSuspended")
+fun <T0, T1, T2, R : Any> (suspend (T0, T1, T2) -> R).mock() = asSuspendedMock()

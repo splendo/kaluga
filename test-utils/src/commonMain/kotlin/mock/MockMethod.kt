@@ -96,9 +96,17 @@ abstract class BaseMethodMock<
         return matchedStubs.first().second
     }
 
-    fun reset() {
+    fun resetCalls() {
         callParameters.clear()
+    }
+
+    fun resetStubs() {
         stubs.clear()
+    }
+
+    fun reset() {
+        resetCalls()
+        resetStubs()
     }
 
     internal fun verify(parameters: C, times: Int = 1) {

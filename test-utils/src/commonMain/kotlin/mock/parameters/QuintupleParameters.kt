@@ -25,6 +25,7 @@ import com.splendo.kaluga.test.mock.matcher.Captor
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.mock.on
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>> {
@@ -71,7 +72,7 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
     }
 }
 
-fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = MethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
+internal fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = MethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
 
 fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).mock(defaultAnswer: Answer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doAnswer(defaultAnswer)
@@ -153,14 +154,20 @@ fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> Set<R>).mock() = mock(empty
 @JvmName("mockMap")
 fun <T0, T1, T2, T3, T4, K, V> ((T0, T1, T2, T3, T4) -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
+@JsName("mockQuintupleNullable")
 fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockQuintupleNonNullable")
+fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R).mock() = asMock()
 
-fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asMock() = SuspendMethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
+internal fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asSuspendedMock() = SuspendMethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
 
-fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>) = asMock().also {
+fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>) = asSuspendedMock()
+    .also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doAnswer(defaultAnswer)
 }
-fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultValue: R) = asMock().also {
+fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultValue: R) = asSuspendedMock()
+    .also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doReturn(defaultValue)
 }
 
@@ -237,4 +244,8 @@ fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> Set<R>).mock() = mo
 @JvmName("mockMap")
 fun <T0, T1, T2, T3, T4, K, V> (suspend (T0, T1, T2, T3, T4) -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
-fun <T0, T1, T2, T3, T4, R : Any> (suspend (T0, T1, T2, T3, T4) -> R?).mock() = mock( null)
+@JsName("mockQuintupleNullableSuspended")
+fun <T0, T1, T2, T3, T4, R : Any> (suspend (T0, T1, T2, T3, T4) -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockQuintupleNonNullableSuspended")
+fun <T0, T1, T2, T3, T4, R : Any> (suspend (T0, T1, T2, T3, T4) -> R).mock() = asSuspendedMock()

@@ -23,6 +23,7 @@ import com.splendo.kaluga.test.mock.answer.Answer
 import com.splendo.kaluga.test.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.mock.on
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values> {
@@ -38,7 +39,7 @@ object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.M
     override fun MatchersOrCaptor.capture(values: Values) {}
 }
 
-fun <R> (() -> R).asMock() = MethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
+internal fun <R> (() -> R).asMock() = MethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
 
 fun <R> (() -> R).mock(defaultAnswer: Answer<VoidParameters.Values, R>) = asMock().also {
     it.on().doAnswer(defaultAnswer)
@@ -120,15 +121,20 @@ fun <R> (() -> Set<R>).mock() = mock(emptySet())
 @JvmName("mockMap")
 fun <K, V> (() -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
+@JsName("mockVoidNullable")
 fun <R : Any> (() -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockVoidNonNullable")
+fun <R : Any> (() -> R).mock() = asMock()
 
-fun <R> (suspend () -> R).asMock() = SuspendMethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
+internal fun <R> (suspend () -> R).asSuspendedMock() = SuspendMethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
 
-fun <R> (suspend () -> R).mock(defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>) = asMock().also {
+fun <R> (suspend () -> R).mock(defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>) = asSuspendedMock()
+    .also {
     it.on().doAnswer(defaultAnswer)
 }
 
-fun <R> (suspend () -> R).mock(defaultValue: R) = asMock().also {
+fun <R> (suspend () -> R).mock(defaultValue: R) = asSuspendedMock().also {
     it.on().doReturn(defaultValue)
 }
 
@@ -205,4 +211,8 @@ fun <R> (suspend () -> Set<R>).mock() = mock(emptySet())
 @JvmName("mockMap")
 fun <K, V> (suspend () -> Map<K, V>).mock() = mock(emptyMap())
 @JvmName("mockNullable")
-fun <R : Any> (suspend () -> R?).mock() = mock( null)
+@JsName("mockVoidNullableSuspended")
+fun <R : Any> (suspend () -> R?).mock() = mock(null)
+@JvmName("mockNonNullable")
+@JsName("mockVoidNonNullableSuspended")
+fun <R : Any> (suspend () -> R).mock() = asSuspendedMock()
