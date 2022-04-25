@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.test.mock.resources
 
-import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.Image
+import com.splendo.kaluga.resources.KalugaColor
 import platform.UIKit.UIColor
 
-actual fun mockColor(): Color = Color(UIColor.blackColor())
+actual fun mockColor(): KalugaColor = KalugaColor(UIColor.blackColor())
 actual fun mockImage(): Image = Image()
 actual fun mockFont(): Font = Font()

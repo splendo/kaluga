@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -75,6 +76,13 @@ internal actual class DeviceConnectionManager(
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
             launch(mainDispatcher) {
                 handleNewRssi(rssi)
+            }
+        }
+
+        override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
+            debug(TAG) { "onMtuChanged($gatt, $mtu, $status)" }
+            if (status == GATT_SUCCESS) {
+                handleNewMtu(mtu)
             }
         }
 
@@ -175,6 +183,10 @@ internal actual class DeviceConnectionManager(
 
     override suspend fun readRssi() {
         gatt.await().readRemoteRssi()
+    }
+
+    override suspend fun requestMtu(mtu: Int): Boolean {
+        return gatt.await().requestMtu(mtu)
     }
 
     override suspend fun performAction(action: DeviceAction) {

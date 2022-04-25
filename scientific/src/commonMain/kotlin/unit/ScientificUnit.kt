@@ -128,4 +128,5 @@ val Units: Set<ScientificUnit<*>> get() = AccelerationUnits +
     VolumetricFluxUnits +
     VolumeUnits +
     WeightUnits +
-    YankUnits
+    YankUnits +
+    DimensionlessUnits

@@ -1,6 +1,6 @@
 ## Logging
 
-This module provided simplified access to logging capabilities of [Kotlin Kydra Log](https://github.com/PocketByte/kotlin-kydra-log).
+This module provided simplified access to logging capabilities of [Kotlin Napier Log](https://github.com/AAkira/Napier).
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Logging as follows:
@@ -18,10 +18,6 @@ dependencies {
 ```
 
 ### How to
-
-#### NOTE
-* Because of Kydra Log limitation logger can be initialized only once. All subsequent calls to initialize will return first logger used for initialization.
-* If `initLogger(logger: Logger)` was not called before any logging calls, then default logger will be instantiated.
 
 #### Initialization
 

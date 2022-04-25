@@ -17,7 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlin.math.pow
 
 expect class Identifier
@@ -36,7 +37,7 @@ interface DeviceInfo {
     val name: String?
     val rssi: Int
     val advertisementData: BaseAdvertisementData
-    val updatedAt: Date
+    val updatedAt: KalugaDate
     fun distance(environmentalFactor: Double = 2.0): Double
 }
 
@@ -52,7 +53,7 @@ data class DeviceInfoImpl(
     override val name: String?
         get() = deviceWrapper.name
 
-    override val updatedAt = Date.now()
+    override val updatedAt = DefaultKalugaDate.now()
 
     override fun distance(environmentalFactor: Double): Double {
         if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN())

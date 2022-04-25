@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import com.splendo.kaluga.system.network.Network
 
 sealed class NetworkState(
     open val networkType: Network,
-) : State() {
+) : KalugaState {
 
     data class Unknown(
         override val networkType: Network.Unknown

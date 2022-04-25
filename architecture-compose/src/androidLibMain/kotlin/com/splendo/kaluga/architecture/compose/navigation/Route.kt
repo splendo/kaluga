@@ -22,7 +22,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationBundleValue
-import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import kotlinx.serialization.builtins.BooleanArraySerializer
 import kotlinx.serialization.builtins.ByteArraySerializer
@@ -129,9 +129,9 @@ private val NavigationBundleValue<*>.routeArgument: String?
         is NavigationBundleValue.CharValue -> Json.encodeToString(Char.serializer(), value)
         is NavigationBundleValue.DateArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
-            value.map { DateFormatter.Companion.iso8601Pattern().format(it) }
+            value.map { KalugaDateFormatter.Companion.iso8601Pattern().format(it) }
         )
-        is NavigationBundleValue.DateValue -> DateFormatter.Companion.iso8601Pattern().format(value)
+        is NavigationBundleValue.DateValue -> KalugaDateFormatter.Companion.iso8601Pattern().format(value)
         is NavigationBundleValue.DoubleArrayValue -> Json.encodeToString(
             DoubleArraySerializer(),
             value

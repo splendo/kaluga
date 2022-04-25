@@ -51,9 +51,9 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     }
 }
 
-actual class DefaultColorLoader(private val context: Context?) : ColorLoader {
+actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    override fun loadColor(identifier: String, defaultValue: Color?): Color? {
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "color", context.packageName)

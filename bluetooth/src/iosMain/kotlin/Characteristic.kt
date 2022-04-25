@@ -29,6 +29,7 @@ actual interface CharacteristicWrapper {
     actual val uuid: CBUUID
     actual val descriptors: List<DescriptorWrapper>
     actual val value: NSData?
+    actual val properties: Int
 
     fun readValue(peripheral: CBPeripheral)
     fun writeValue(value: NSData, peripheral: CBPeripheral)
@@ -40,6 +41,7 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic)
     override val uuid: CBUUID get() { return characteristic.UUID }
     override val descriptors: List<DescriptorWrapper> = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) } ?: emptyList()
     override val value: NSData? get() { return characteristic.value }
+    override val properties get() = characteristic.properties.toInt()
 
     override fun readValue(peripheral: CBPeripheral) {
         peripheral.readValueForCharacteristic(characteristic)
