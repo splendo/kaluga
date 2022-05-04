@@ -25,6 +25,7 @@ class MockNetworkManager(
 }
 
 class MockNetworkManagerBuilder : BaseNetworkManager.Builder {
+
     override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
         MockNetworkManager(onNetworkStateChange)
 }

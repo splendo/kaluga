@@ -111,6 +111,9 @@ if (!(ext["example_as_root"] as Boolean)) {
     include(":resources")
     project(":resources").projectDir = file("../../../resources")
 
+    include(":resources-compose")
+    project(":resources-compose").projectDir = file("../../../resources-compose")
+
     include(":review")
     project(":review").projectDir = file("../../../review")
 

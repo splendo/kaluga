@@ -10,6 +10,10 @@
 "feature_permissions" = "Permissions";
 "feature_links" = "Links";
 "feature_beacons" = "Beacons";
+"feature_resources" = "Resources";
+"feature_resources_color" = "Color";
+"feature_resources_button" = "Button";
+"feature_resources_label" = "Label";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";

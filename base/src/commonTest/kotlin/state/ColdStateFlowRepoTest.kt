@@ -31,13 +31,16 @@ import kotlin.test.assertEquals
 class ColdStateFlowRepoTest : BaseTest() {
 
     companion object {
-        val first = object : State() {}
-        val active = object : State() {}
-        val deinit = object : State() {}
+        val first = object : KalugaState {}
+        val active = object : KalugaState {}
+        val deinit = object : KalugaState {}
     }
 
-    class Repo : ColdStateFlowRepo<State>(
-        init = { active },
+    class Repo : ColdStateFlowRepo<KalugaState>(
+        init = {
+            delay(100) // give some time for the `first` state to be collected
+            active
+        },
         deinit = { deinit },
         firstState = { first }
     )
@@ -51,8 +54,8 @@ class ColdStateFlowRepoTest : BaseTest() {
             assertEquals(first, state)
         }
 
-        val firstCollect = CompletableDeferred<State>()
-        val secondCollect = CompletableDeferred<State>()
+        val firstCollect = CompletableDeferred<KalugaState>()
+        val secondCollect = CompletableDeferred<KalugaState>()
         val job = launch {
             repo.collect {
                 if (!firstCollect.isCompleted)
@@ -62,10 +65,8 @@ class ColdStateFlowRepoTest : BaseTest() {
             }
         }
 
-        // if (firstCollect.await() != active) { // active is also technically correct, if the collection even ran before
         assertEquals(first, firstCollect.await())
         assertEquals(active, secondCollect.await())
-        // }
 
         repo.useState { state ->
             assertEquals(state, active)

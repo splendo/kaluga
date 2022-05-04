@@ -48,7 +48,7 @@ interface Formattable {
 
 /**
  * Formats a given [String] using a printf-style format strings.
- * Supports formats for [Number], [String], [Char], [Boolean], and [com.splendo.kaluga.base.utils.Date].
+ * Supports formats for [Number], [String], [Char], [Boolean], and [com.splendo.kaluga.base.utils.KalugaDate].
  * Custom formatting is supported by implementing [Formattable].
  * Flags, precision and width are supported by this formatter as well.
  * Formatting will adjust for a provided [Locale].

@@ -9,7 +9,7 @@ afterEvaluate {
                 release(MavenPublication) {
                     from components.release
 
-                    artifactId = module.name
+                    artifactId = project.name
                     groupId = "com.splendo.kaluga"
                     version = gradle.ext.library_version
                 }
@@ -17,13 +17,13 @@ afterEvaluate {
                 debug(MavenPublication) {
                     from components.debug
 
-                    artifactId = module.name
+                    artifactId = project.name
                     groupId = "com.splendo.kaluga"
                     version = gradle.ext.library_version
                 }
             } else {
                 kotlinMultiplatform { publication ->
-                    artifactId = module.name
+                    artifactId = project.name
                     groupId = "com.splendo.kaluga"
                     version = gradle.ext.library_version
                 }

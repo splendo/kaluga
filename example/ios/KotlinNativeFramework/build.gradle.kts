@@ -9,30 +9,38 @@ buildscript {
 
 plugins {
     kotlin("multiplatform")
-    kotlin("xcode-compat") version "0.2.5"
     id("org.jlleitschuh.gradle.ktlint")
 }
 
 kotlin {
 
-    xcode {
-        setupFramework("KotlinNativeFramework") {
-
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = "KotlinNativeFramework"
             export(project(":shared"))
-
             transitiveExport = true
         }
     }
 
     sourceSets {
-        getByName("KotlinNativeFrameworkMain") {
-
-            val ext = (gradle as ExtensionAware).extra
-            val primaryIosArch = ext["ios_primary_arch"]
-
+        val commonMain by getting {
             dependencies {
-                api(project(":shared", "${primaryIosArch}Default"))
+                api(project(":shared"))
             }
+        }
+
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
         }
     }
 }

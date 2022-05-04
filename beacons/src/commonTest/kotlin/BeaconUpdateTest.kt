@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -38,7 +38,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
             )
         }
 
-        val lastSeen = Date.now()
+        val lastSeen = DefaultKalugaDate.now()
 
         action {
             delay(1_000)

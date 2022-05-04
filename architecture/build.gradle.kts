@@ -28,18 +28,13 @@ dependencies {
 }
 
 kotlin {
+    js {
+        nodejs()
+    }
 
     sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
-
-        // For IDE
-        val ios_primary_arch: String by ext
-        getByName("${ios_primary_arch}Main") {
-            dependencies {
-                api(project(":base", ""))
-            }
-        }
 
         getByName("commonMain") {
             dependencies {

@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import com.splendo.kaluga.system.network.Network
 
 sealed class NetworkState(
     open val networkType: Network,
-) : State() {
+) : KalugaState {
 
     data class Unknown(
         override val networkType: Network.Unknown
@@ -75,6 +75,14 @@ sealed class NetworkState(
 
         val availableWithCellular: suspend () -> Available = {
             Available(Network.Known.Cellular())
+        }
+
+        val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
+            Unknown(Network.Unknown.WithLastNetwork(network, reason))
+        }
+
+        val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
+            Unknown(Network.Unknown.WithoutLastNetwork(it))
         }
     }
 }

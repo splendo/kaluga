@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
  * A row within a [NavigationBundleSpec] that is associated with a given [NavigationBundleSpecType]
  * @param associatedType The [NavigationBundleSpecType] associated with this row
  */
-open class NavigationBundleSpecRow<T>(internal val associatedType: NavigationBundleSpecType<T>) {
+open class NavigationBundleSpecRow<T>(val associatedType: NavigationBundleSpecType<T>) {
     /**
      * Key for this row. Used for converting rows to data types.
      * Defaults to the name of the row, but can be overwritten if required
@@ -196,14 +196,14 @@ sealed class NavigationBundleSpecType<T> {
         }
     }
 
-    object DateType : NavigationBundleSpecType<Date>() {
-        override fun convertValue(value: Date): NavigationBundleValue<Date> {
+    object DateType : NavigationBundleSpecType<KalugaDate>() {
+        override fun convertValue(value: KalugaDate): NavigationBundleValue<KalugaDate> {
             return NavigationBundleValue.DateValue(value)
         }
     }
 
-    object DateArrayType : NavigationBundleSpecType<List<Date>>() {
-        override fun convertValue(value: List<Date>): NavigationBundleValue<List<Date>> {
+    object DateArrayType : NavigationBundleSpecType<List<KalugaDate>>() {
+        override fun convertValue(value: List<KalugaDate>): NavigationBundleValue<List<KalugaDate>> {
             return NavigationBundleValue.DateArrayValue(value)
         }
     }
@@ -220,7 +220,7 @@ sealed class NavigationBundleSpecType<T> {
 /**
  * A set of [NavigationBundleSpecRow]s that can be used to form a [NavigationBundle] using [NavigationBundleSpec.toBundle]
  */
-open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(internal val rows: Set<R>)
+open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(val rows: Set<R>)
 
 /**
  * A [NavigationBundleSpec] that only provides a single [NavigationBundleSpecRow]

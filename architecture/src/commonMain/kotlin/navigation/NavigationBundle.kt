@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
@@ -172,8 +172,8 @@ sealed class NavigationBundleValue<T> {
     data class StringValue internal constructor(override val value: String) : NavigationBundleValue<String>()
     data class StringArrayValue internal constructor(override val value: List<String>) : NavigationBundleValue<List<String>>()
 
-    data class DateValue internal constructor(override val value: Date) : NavigationBundleValue<Date>()
-    data class DateArrayValue internal constructor(override val value: List<Date>) : NavigationBundleValue<List<Date>>()
+    data class DateValue internal constructor(override val value: KalugaDate) : NavigationBundleValue<KalugaDate>()
+    data class DateArrayValue internal constructor(override val value: List<KalugaDate>) : NavigationBundleValue<List<KalugaDate>>()
 
     data class OptionalValue<T> internal constructor(val optionalValue: NavigationBundleValue<T>?) : NavigationBundleValue<T?>() {
         override val value: T? = optionalValue?.value
@@ -185,7 +185,7 @@ class NavigationBundleGetError : Exception()
 /**
  * A container class that bundles a set of data for sharing between classes. Only takes values in a [NavigationBundleSpec] [R]
  */
-class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>, internal val values: Map<R, NavigationBundleValue<*>>) {
+class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>, val values: Map<R, NavigationBundleValue<*>>) {
 
     /**
      * Tries to get data of a given [NavigationBundleSpecRow] from this bundle

@@ -20,6 +20,10 @@ dependencies {
 }
 
 kotlin {
+    js {
+        nodejs()
+    }
+
     sourceSets {
         commonMain {
             dependencies {

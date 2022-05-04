@@ -20,14 +20,14 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
  * State of a [Permission]
  */
-sealed class PermissionState<P : Permission> : State() {
+sealed class PermissionState<P : Permission> : KalugaState {
 
     class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
 
@@ -91,12 +91,12 @@ abstract class PermissionStateRepo<P : Permission>(
     initChangeStateWithRepo = { state, repo ->
         val pm = (repo as PermissionStateRepo<P>).permissionManager
         pm.startMonitoring(monitoringInterval)
-        if (state == null || state is PermissionState.Unknown<P>)
+        if (state is PermissionState.Unknown<P>)
             suspend { pm.initializeState() }
         else
             suspend { state }
     },
-    deinitChangeStateWithRepo = { state, repo ->
+    deinitChangeStateWithRepo = { _, repo ->
         (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
         null
     },

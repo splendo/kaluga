@@ -19,13 +19,13 @@
 package com.splendo.kaluga.logging
 
 import android.os.Build
-import ru.pocketbyte.kydra.log.AndroidLogger
+import io.github.aakira.napier.DebugAntilog
 import java.lang.Integer.min
 
 actual val defaultLogger: Logger =
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
         TransformLogger(
-            KydraLogger(AndroidLogger()),
+            NapierLogger(DebugAntilog()),
             transformTag = { tag ->
                 tag?.let {
                     val maxSize = min(23, tag.length - 1)
@@ -38,6 +38,6 @@ actual val defaultLogger: Logger =
             }
         )
     else
-        KydraLogger(AndroidLogger())
+        NapierLogger(DebugAntilog())
 
 actual var logger: Logger = defaultLogger

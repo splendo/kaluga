@@ -15,6 +15,7 @@
 
  */
 
+@file:JvmName("DecimalJVM")
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.RoundingMode.RoundDown
@@ -84,15 +85,26 @@ actual fun Decimal.times(
 ).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
-    this.round(
-        MathContext(
-            scale + this.toInt().length(),
-            NativeRoundingMode.valueOf(roundingMode.java)
-        )
+    this.setScale(
+        scale,
+        NativeRoundingMode.valueOf(roundingMode.java)
     )
 
-actual fun Double.toDecimal() = BigDecimal.valueOf(this)
-actual fun Int.toDecimal() = BigDecimal.valueOf(this.toDouble())
+actual infix fun Decimal.pow(n: Int): Decimal = this.pow(n, MathContext.DECIMAL128)
+actual fun Decimal.pow(n: Int, scale: Int): Decimal = this.pow(n, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun Decimal.pow(
+    n: Int,
+    scale: Int,
+    roundingMode: RoundingMode
+): Decimal = this.pow(
+    n,
+    MathContext(
+        MathContext.DECIMAL128.precision,
+        NativeRoundingMode.valueOf(roundingMode.java)
+    )
+).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
+
+actual fun Number.toDecimal() = BigDecimal(this.toString())
 actual fun String.toDecimal() = BigDecimal(this)
 
 actual fun Decimal.toDouble() = this.toDouble()

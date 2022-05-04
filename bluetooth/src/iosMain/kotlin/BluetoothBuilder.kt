@@ -14,10 +14,11 @@ actual class BluetoothBuilder(
         PermissionsBuilder(bundle).apply {
             registerBluetoothPermission()
         }
-    )
+    ),
+    private val scannerBuilder: Scanner.Builder = Scanner.Builder()
 ) : Bluetooth.Builder {
 
     override fun create(connectionSettings: ConnectionSettings, autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, coroutineScope: CoroutineScope): Bluetooth {
-        return Bluetooth(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, Scanner.Builder(), coroutineScope)
+        return Bluetooth(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineScope)
     }
 }
