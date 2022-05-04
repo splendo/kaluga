@@ -37,7 +37,7 @@ actual class PlatformLinksHandler : LinksHandler {
         if (queryItems == null) {
             return emptyMap()
         }
-        val result = queryItems.filterNot { it.value == null }.map { it.name to (it.value as String) }
+        val result = queryItems.map { it.name to (it.value as String) }
         return result.toMap()
     }
 }
