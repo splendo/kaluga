@@ -18,6 +18,7 @@
 package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.manager.MockLinksBuilder
+import com.splendo.kaluga.links.manager.MockLinksHandler
 import com.splendo.kaluga.links.manager.TestConstants
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
@@ -66,8 +67,8 @@ data class DataTypesValues(
             null
         )
 
-        val urlHost = "https://test.io/"
-        val urlQuery = """stringValue=Test&
+        const val testUrl = "https://test.io/"
+        val testUrlQuery = """stringValue=Test&
                 intValue=0&
                 longValue=3&
                 floatValue=3.14&
@@ -78,13 +79,14 @@ data class DataTypesValues(
                 listValue.1=first&
                 listValue.2=second""".lines().joinToString("") { it.trim() }
 
-        val url = "$urlHost?$urlQuery"
+        val url = "$testUrl?$testUrlQuery"
     }
 }
 
 class LinksTest {
 
-    private val linksBuilder = MockLinksBuilder()
+    private val linksHandler = MockLinksHandler()
+    private val linksBuilder = MockLinksBuilder(linksHandler)
     private val links: Links = linksBuilder.create()
 
     @Test
@@ -95,6 +97,7 @@ class LinksTest {
 
     @Test
     fun testIncomingTransaction() {
+        linksHandler.extractQueryValue.value = DataTypesValues.validParameters
         val result = links.handleIncomingLink(DataTypesValues.url, DataTypesValues.serializer())
         assertEquals(DataTypesValues.expectedValidValues, result)
     }
