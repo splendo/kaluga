@@ -40,9 +40,9 @@ actual class DefaultStringLoader(private val bundle: NSBundle, private val table
     }
 }
 
-actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ColorLoader {
+actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : KalugaColorLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    override fun loadColor(identifier: String, defaultValue: Color?): Color? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { Color(it) } ?: defaultValue
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { KalugaColor(it) } ?: defaultValue
 }
 
 actual class DefaultImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ImageLoader {

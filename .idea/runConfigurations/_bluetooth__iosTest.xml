@@ -10,8 +10,8 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="cleanIosx64Test" />
-          <option value="iosx64Test" />
+          <option value="cleanIosX64Test" />
+          <option value="iosX64Test" />
         </list>
       </option>
       <option name="vmOptions" value="" />

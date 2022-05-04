@@ -80,7 +80,8 @@ dependencies {
     androidTestImplementation("co.touchlab:stately-iso-collections:$gradle.stately_isolate_version")
 
     def excluded = ["androidtesthelper", // this project
-                    "architecture-compose" // TODO, Compose in test helper not yet supported
+                    "architecture-compose",
+                    "resources-compose" // TODO, Compose in test helper not yet supported
                     ]
     rootProject.subprojects.findAll{ !excluded.contains(it.name) }.each {
         implementation project(path: ":$it.name")

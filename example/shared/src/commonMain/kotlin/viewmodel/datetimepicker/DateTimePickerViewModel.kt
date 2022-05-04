@@ -3,8 +3,8 @@ package com.splendo.kaluga.example.shared.viewmodel.datetimepicker
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.DateFormatter
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.text.KalugaDateFormatter
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.buildDatePicker
 import com.splendo.kaluga.datetimepicker.buildTimePicker
@@ -16,11 +16,11 @@ import kotlinx.coroutines.launch
 class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder) : BaseViewModel() {
 
     companion object {
-        private val formatter = DateFormatter.dateTimeFormat(DateFormatStyle.Long, DateFormatStyle.Long)
+        private val formatter = KalugaDateFormatter.dateTimeFormat(DateFormatStyle.Long, DateFormatStyle.Long)
     }
 
     private val selectedDate = MutableStateFlow(
-        Date.now().apply {
+        DefaultKalugaDate.now().apply {
             second = 0
             millisecond = 0
         }
@@ -29,7 +29,11 @@ class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePicker
 
     fun onSelectDatePressed() {
         coroutineScope.launch {
-            dateTimePickerPresenterBuilder.buildDatePicker(this, Date.epoch(), Date.now()) {
+            dateTimePickerPresenterBuilder.buildDatePicker(
+                this,
+                DefaultKalugaDate.epoch(),
+                DefaultKalugaDate.now()
+            ) {
                 setSelectedDate(this@DateTimePickerViewModel.selectedDate.value)
                 setCancelButtonTitle("cancel_selection".localized())
                 setConfirmButtonTitle("confirm_selection".localized())

@@ -28,7 +28,7 @@ actual interface CharacteristicWrapper {
     val service: ServiceWrapper
     actual val descriptors: List<DescriptorWrapper>
     val permissions: Int
-    val properties: Int
+    actual val properties: Int
     var writeType: Int
 
     fun setValue(newValue: String): Boolean
@@ -39,12 +39,6 @@ actual interface CharacteristicWrapper {
     fun floatValue(formatType: Int, offset: Int): Float
     fun intValue(formatType: Int, offset: Int): Int
 }
-
-fun CharacteristicWrapper.containsAnyOf(vararg property: Int) =
-    if (property.count() > 0)
-        properties and property.reduce { acc, i -> acc.or(i) } != 0
-    else
-        false
 
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
 

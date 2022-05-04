@@ -18,7 +18,7 @@
 package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 
 /**
  * Converts a [NavigationBundle] to a [Bundle]
@@ -133,10 +133,10 @@ internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>)
             }
         }
         is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
-            specType.convertValue(Date.epoch(value))
+            specType.convertValue(DefaultKalugaDate.epoch(value))
         }
         is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
-            specType.convertValue(array.map { Date.epoch(it) })
+            specType.convertValue(array.map { DefaultKalugaDate.epoch(it) })
         }
     }
 }

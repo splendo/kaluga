@@ -18,7 +18,8 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
@@ -107,9 +108,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Long,
             is Int,
             is Short -> {
-                Date.epoch((arg as Number).toLong(), TimeZone.current(), locale)
+                DefaultKalugaDate.epoch((arg as Number).toLong(), TimeZone.current(), locale)
             }
-            is Date -> {
+            is KalugaDate -> {
                 arg.copy()
             }
             else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
@@ -346,7 +347,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(time: Date, currentChar: ParsingCharacter.DateTime, locale: Locale) {
+    private fun print(time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: Locale) {
         val sb = StringBuilder()
         print(sb, time, currentChar, locale)
 
@@ -358,7 +359,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(sb: StringBuilder, time: Date, currentChar: ParsingCharacter.DateTime, locale: Locale): StringBuilder {
+    private fun print(sb: StringBuilder, time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: Locale): StringBuilder {
         when (currentChar.dateTime) {
             DateTime.HOUR_OF_DAY_0, DateTime.HOUR_0, DateTime.HOUR_OF_DAY, DateTime.HOUR -> {
                 // 'l' (1 - 12) -- like I
@@ -396,7 +397,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.AM_PM -> {
                 // 'p' (am or pm)
                 val isAm = time.hour < 12
-                val dateFormat = DateFormatter.patternFormat("aa", TimeZone.current(), locale)
+                val dateFormat = KalugaDateFormatter.patternFormat("aa", TimeZone.current(), locale)
                 sb.append((if (isAm) dateFormat.amString else dateFormat.pmString).lowerCased(locale))
             }
             DateTime.SECONDS_SINCE_EPOCH -> {
@@ -430,14 +431,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.NAME_OF_DAY_ABBREV, DateTime.NAME_OF_DAY -> {
                 // 'A'
                 val i: Int = time.weekDay - 1
-                val dateFormat = DateFormatter.patternFormat("EEEE")
+                val dateFormat = KalugaDateFormatter.patternFormat("EEEE")
                 val weekdays = if (currentChar.dateTime == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
                 sb.append(weekdays[i])
             }
             DateTime.NAME_OF_MONTH_ABBREV, DateTime.NAME_OF_MONTH_ABBREV_X, DateTime.NAME_OF_MONTH -> {
                 // 'B'
                 val i: Int = time.month - 1
-                val dateFormat = DateFormatter.patternFormat("MMMM")
+                val dateFormat = KalugaDateFormatter.patternFormat("MMMM")
                 val months = if (currentChar.dateTime == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
                 sb.append(months[i])
             }

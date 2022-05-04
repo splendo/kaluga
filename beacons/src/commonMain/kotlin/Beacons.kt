@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.base.AtomicReferenceDelegate
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -95,7 +94,7 @@ class Beacons(
             }
             cache[beacon.beaconID] = beacon to coroutineScope.launch {
                 debug(TAG, "[Added] $beacon")
-                delay(timeoutMs)
+                delay(beacon.lastSeen.millisecondSinceEpoch + timeoutMs - DefaultKalugaDate.now().millisecondSinceEpoch)
                 debug(TAG, "[Lost] $beacon")
                 cache.remove(beacon.beaconID)
                 updateList()
@@ -116,7 +115,7 @@ class Beacons(
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null
         val rssi = device.map { it.rssi }.firstOrNull() ?: 0
-        val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: Date.now()
+        val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: DefaultKalugaDate.now()
         return BeaconInfo(device.identifier, frame.uid, frame.txPower, rssi, lastSeen)
     }
 }
