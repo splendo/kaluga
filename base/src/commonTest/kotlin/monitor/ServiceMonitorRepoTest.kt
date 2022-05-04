@@ -78,12 +78,12 @@ class ServiceMonitorRepoTest : SimpleFlowTest<ServiceMonitorState>() {
         runBlocking {
             test_init_state_is_not_initialized()
             repo.takeAndChangeState { { ServiceMonitorStateImpl.Initialized.Enabled } }
+            delay(SERVICE_MONITOR_DELAY)
             val job = launch {
                 repo.collect {
                     assertIs<ServiceMonitorState.Initialized.Enabled>(it)
                 }
             }
-            delay(SERVICE_MONITOR_DELAY)
             job.cancel()
         }
     }
@@ -93,12 +93,12 @@ class ServiceMonitorRepoTest : SimpleFlowTest<ServiceMonitorState>() {
         runBlocking {
             test_init_state_is_not_initialized()
             repo.takeAndChangeState { { ServiceMonitorStateImpl.Initialized.Disabled } }
+            delay(SERVICE_MONITOR_DELAY)
             val job = launch {
                 repo.collect {
                     assertIs<ServiceMonitorState.Initialized.Disabled>(it)
                 }
             }
-            delay(SERVICE_MONITOR_DELAY)
             job.cancel()
         }
     }
