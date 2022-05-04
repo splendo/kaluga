@@ -27,7 +27,7 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.uses24HourClock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +50,7 @@ actual class DateTimePickerPresenter(
     }
 
     private sealed class DialogPresentation {
-        data class Showing(val animated: Boolean, val completion: (Date?) -> Unit) : DialogPresentation()
+        data class Showing(val animated: Boolean, val completion: (KalugaDate?) -> Unit) : DialogPresentation()
         object Hidden : DialogPresentation()
     }
 
@@ -74,7 +74,7 @@ actual class DateTimePickerPresenter(
         presentation.value = DialogPresentation.Hidden
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
+    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         presentation.value = DialogPresentation.Showing(animated, completion)
     }
 

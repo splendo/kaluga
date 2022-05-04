@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,14 +15,21 @@
 
  */
 
-package com.splendo.kaluga.test.mock.resources
+package com.splendo.kaluga.test
 
-import android.graphics.drawable.ColorDrawable
-import com.splendo.kaluga.resources.Font
-import com.splendo.kaluga.resources.Image
-import com.splendo.kaluga.resources.KalugaColor
-import org.mockito.Mockito
+import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.mock.bluetooth.MockBluetoothGattWrapper
+import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-actual fun mockColor(): KalugaColor = 0
-actual fun mockImage(): Image = Image(ColorDrawable(0))
-actual fun mockFont(): Font = Font.DEFAULT ?: Mockito.mock(Font::class.java)
+class TestMockBluetoothGattWrapper {
+
+    @Test
+    fun testRequestMtu() = runBlocking {
+        val mtu = 54
+        val mock = MockBluetoothGattWrapper()
+        assertTrue(mock.requestMtu(mtu))
+        assertEquals(mtu, mock.requestMtuCompleted.await())
+    }
+}

@@ -17,72 +17,74 @@
 
 package com.splendo.kaluga.base.utils
 
+actual typealias KalugaDateHolder = kotlin.js.Date
+
 // TODO Implement with proper date solution for Java Script
-actual class Date internal constructor(internal val date: kotlin.js.Date) : Comparable<Date> {
+actual class DefaultKalugaDate internal constructor(override val date: KalugaDateHolder) : KalugaDate {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(offsetInMilliseconds))
+        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offsetInMilliseconds))
     }
 
-    actual var timeZone: TimeZone
+    override var timeZone: TimeZone
         get() = TimeZone()
         set(value) { }
 
-    actual var era: Int
+    override var era: Int
         get() = 0
         set(value) { }
-    actual var year: Int
+    override var year: Int
         get() = date.getFullYear()
         set(value) { }
-    actual var month: Int
+    override var month: Int
         get() = date.getMonth()
         set(value) { }
-    actual val daysInMonth: Int = 0
-    actual var weekOfYear: Int
+    override val daysInMonth: Int = 0
+    override var weekOfYear: Int
         get() = 0
         set(value) { }
-    actual var weekOfMonth: Int
+    override var weekOfMonth: Int
         get() = 0
         set(value) { }
-    actual var day: Int
+    override var day: Int
         get() = 0
         set(value) { }
-    actual var dayOfYear: Int
+    override var dayOfYear: Int
         get() = date.getDay()
         set(value) { }
-    actual var weekDay: Int
+    override var weekDay: Int
         get() = date.getDate() + 1
         set(value) { }
-    actual var firstWeekDay: Int
+    override var firstWeekDay: Int
         get() = 1
         set(value) { }
 
-    actual var hour: Int
+    override var hour: Int
         get() = date.getHours()
         set(value) { }
-    actual var minute: Int
+    override var minute: Int
         get() = date.getMinutes()
         set(value) { }
-    actual var second: Int
+    override var second: Int
         get() = date.getSeconds()
         set(value) { }
-    actual var millisecond: Int
+    override var millisecond: Int
         get() = date.getMilliseconds()
         set(value) { }
-    actual var millisecondSinceEpoch: Long
+    override var millisecondSinceEpoch: Long
         get() = date.getTime().toLong()
         set(value) { }
 
-    actual fun copy(): Date = Date(kotlin.js.Date(date.getMilliseconds()))
+    override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getMilliseconds()))
 
-    actual override fun equals(other: Any?): Boolean {
-        return (other as? Date)?.let {
+    override fun equals(other: Any?): Boolean {
+        return (other as? KalugaDate)?.let {
             timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
-    override fun compareTo(other: Date): Int {
+    override fun compareTo(other: KalugaDate): Int {
         return when {
             date.getMilliseconds() < other.millisecond -> -1
             date.getMilliseconds() == other.millisecond -> 0
@@ -90,7 +92,7 @@ actual class Date internal constructor(internal val date: kotlin.js.Date) : Comp
         }
     }
 
-    actual override fun hashCode(): Int {
+    override fun hashCode(): Int {
         return date.hashCode()
     }
 }

@@ -17,34 +17,34 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 
 // TODO Implement with proper dateformatter solution for Java Script
-actual class DateFormatter private constructor(initialTimeZone: TimeZone, private val formatter: (kotlin.js.Date) -> String) {
+actual class KalugaDateFormatter private constructor(initialTimeZone: TimeZone, private val formatter: (kotlin.js.Date) -> String) {
 
     actual companion object {
         actual fun dateFormat(
             style: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         actual fun timeFormat(
             style: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
     }
 
     actual var pattern: String = ""
@@ -61,8 +61,8 @@ actual class DateFormatter private constructor(initialTimeZone: TimeZone, privat
     actual var amString: String = ""
     actual var pmString: String = ""
 
-    actual fun format(date: Date): String = formatter(date.date)
-    actual fun parse(string: String): Date? = null
+    actual fun format(date: KalugaDate): String = formatter(date.date)
+    actual fun parse(string: String): KalugaDate? = null
 }
 
 private fun DateFormatStyle.stringValue(): String = when (this) {

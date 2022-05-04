@@ -22,4 +22,4 @@ import platform.UIKit.UIImageRenderingMode
 
 actual typealias Image = UIImage
 
-actual fun Image.tinted(color: Color): Image? = this.imageWithTintColor(color.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)
+actual fun Image.tinted(color: KalugaColor): Image? = this.imageWithTintColor(color.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)

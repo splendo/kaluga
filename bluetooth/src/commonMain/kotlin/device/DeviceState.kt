@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
-import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.KalugaState
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +58,7 @@ typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceSt
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
     open val connectionManager: BaseDeviceConnectionManager
-) : State(), DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
+) : KalugaState, DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
 
     sealed class Connected(
         deviceInfo: DeviceInfoImpl,
@@ -161,6 +161,10 @@ sealed class DeviceState(
 
         suspend fun readRssi() {
             connectionManager.readRssi()
+        }
+
+        suspend fun requestMtu(mtu: Int): Boolean {
+            return connectionManager.requestMtu(mtu)
         }
 
         override suspend fun finalState() {

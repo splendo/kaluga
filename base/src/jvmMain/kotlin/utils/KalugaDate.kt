@@ -18,80 +18,86 @@
 package com.splendo.kaluga.base.utils
 
 import java.util.Calendar
+import java.util.Date
 
-actual class Date internal constructor(internal val calendar: Calendar) : Comparable<Date> {
+actual typealias KalugaDateHolder = Date
+
+actual class DefaultKalugaDate internal constructor(internal val calendar: Calendar) : KalugaDate {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(
+        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 add(Calendar.MILLISECOND, offsetInMilliseconds.toInt())
             }
         )
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 timeInMillis = offsetInMilliseconds
             }
         )
     }
 
-    actual var timeZone: TimeZone
+    override var timeZone: TimeZone
         get() = TimeZone(calendar.timeZone)
         set(value) { calendar.timeZone = value.timeZone }
 
-    actual var era: Int
+    override var era: Int
         get() = calendar.get(Calendar.ERA)
         set(value) { calendar.set(Calendar.ERA, value) }
-    actual var year: Int
+    override var year: Int
         get() = calendar.get(Calendar.YEAR)
         set(value) { calendar.set(Calendar.YEAR, value) }
-    actual var month: Int
+    override var month: Int
         get() = calendar.get(Calendar.MONTH) + 1
         set(value) { calendar.set(Calendar.MONTH, value - 1) }
-    actual val daysInMonth: Int get() = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-    actual var weekOfYear: Int
+    override val daysInMonth: Int get() = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+    override var weekOfYear: Int
         get() = calendar.get(Calendar.WEEK_OF_YEAR)
         set(value) { calendar.set(Calendar.WEEK_OF_YEAR, value) }
-    actual var weekOfMonth: Int
+    override var weekOfMonth: Int
         get() = calendar.get(Calendar.WEEK_OF_MONTH)
         set(value) { calendar.set(Calendar.WEEK_OF_MONTH, value) }
-    actual var day: Int
+    override var day: Int
         get() = calendar.get(Calendar.DAY_OF_MONTH)
         set(value) { calendar.set(Calendar.DAY_OF_MONTH, value) }
-    actual var dayOfYear: Int
+    override var dayOfYear: Int
         get() = calendar.get(Calendar.DAY_OF_YEAR)
         set(value) { calendar.set(Calendar.DAY_OF_YEAR, value) }
-    actual var weekDay: Int
+    override var weekDay: Int
         get() = calendar.get(Calendar.DAY_OF_WEEK)
         set(value) { calendar.set(Calendar.DAY_OF_WEEK, value) }
-    actual var firstWeekDay: Int
+    override var firstWeekDay: Int
         get() = calendar.firstDayOfWeek
         set(value) { calendar.firstDayOfWeek = value }
 
-    actual var hour: Int
+    override var hour: Int
         get() = calendar.get(Calendar.HOUR_OF_DAY)
         set(value) { calendar.set(Calendar.HOUR_OF_DAY, value) }
-    actual var minute: Int
+    override var minute: Int
         get() = calendar.get(Calendar.MINUTE)
         set(value) { calendar.set(Calendar.MINUTE, value) }
-    actual var second: Int
+    override var second: Int
         get() = calendar.get(Calendar.SECOND)
         set(value) { calendar.set(Calendar.SECOND, value) }
-    actual var millisecond: Int
+    override var millisecond: Int
         get() = calendar.get(Calendar.MILLISECOND)
         set(value) { calendar.set(Calendar.MILLISECOND, value) }
-    actual var millisecondSinceEpoch: Long
+    override var millisecondSinceEpoch: Long
         get() = calendar.timeInMillis
         set(value) { calendar.timeInMillis = value }
 
-    actual fun copy(): Date = Date(calendar.clone() as Calendar)
+    override fun copy(): KalugaDate = DefaultKalugaDate(calendar.clone() as Calendar)
 
-    actual override fun equals(other: Any?): Boolean {
-        return (other as? Date)?.let {
+    override fun equals(other: Any?): Boolean {
+        return (other as? KalugaDate)?.let {
             timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
-    override fun compareTo(other: Date): Int {
-        return this.calendar.time.compareTo(other.calendar.time)
+    override fun hashCode(): Int = calendar.hashCode()
+    override val date: KalugaDateHolder get() = calendar.time
+
+    override fun compareTo(other: KalugaDate): Int {
+        return this.calendar.time.compareTo(other.date)
     }
 }

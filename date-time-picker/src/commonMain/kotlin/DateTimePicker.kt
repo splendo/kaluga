@@ -21,8 +21,8 @@ package com.splendo.kaluga.datetimepicker
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
-import com.splendo.kaluga.base.utils.Date
-import com.splendo.kaluga.base.utils.Date.Companion.epoch
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +35,7 @@ data class DateTimePicker(
     val confirmButtonTitle: String,
     val type: Type,
     val locale: Locale,
-    val selectedDate: Date
+    val selectedDate: KalugaDate
 ) {
 
     /**
@@ -47,8 +47,8 @@ data class DateTimePicker(
          * A range can be provided to limit the dates selectable
          */
         class DateType(
-            val earliestDate: Date? = null,
-            val latestDate: Date? = null
+            val earliestDate: KalugaDate? = null,
+            val latestDate: KalugaDate? = null
         ) : Type()
 
         /**
@@ -68,15 +68,15 @@ interface DateTimePickerActions {
      * @param animated Pass `true` to animate the presentation
      * @param completion The callback invoked when a Date is selected or the dialog is cancelled
      */
-    fun showAsync(animated: Boolean = true, completion: (Date?) -> Unit = {})
+    fun showAsync(animated: Boolean = true, completion: (KalugaDate?) -> Unit = {})
 
     /**
      * Presents an DateTimePicker and suspends
      *
      * @param animated
-     * @return The [Date] that was selected or `null` if the DateTimePicker was cancelled
+     * @return The [KalugaDate] that was selected or `null` if the DateTimePicker was cancelled
      */
-    suspend fun show(animated: Boolean = true): Date?
+    suspend fun show(animated: Boolean = true): KalugaDate?
 
     /**
      * Dismisses the DateTimePicker, which was presented previously
@@ -106,7 +106,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         private var cancelButtonTitle: String = ""
         private var confirmButtonTitle: String = ""
         private var locale: Locale = defaultLocale
-        private var selectedDate: Date = epoch()
+        private var selectedDate: KalugaDate = DefaultKalugaDate.epoch()
         private var type: DateTimePicker.Type = DateTimePicker.Type.TimeType
         internal val lock = Lock()
 
@@ -132,7 +132,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
          */
         fun setLocale(locale: Locale) = apply { this.locale = locale }
 
-        fun setSelectedDate(date: Date) = apply { this.selectedDate = date }
+        fun setSelectedDate(date: KalugaDate) = apply { this.selectedDate = date }
 
         /**
          * Sets a style of the alert
@@ -149,7 +149,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
             this.cancelButtonTitle = ""
             this.confirmButtonTitle = ""
             this.locale = defaultLocale
-            this.selectedDate = epoch()
+            this.selectedDate = DefaultKalugaDate.epoch()
             this.type = DateTimePicker.Type.TimeType
         }
 
@@ -174,11 +174,11 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         abstract fun create(coroutineScope: CoroutineScope): BaseDateTimePickerPresenter
     }
 
-    override fun showAsync(animated: Boolean, completion: (Date?) -> Unit) {
+    override fun showAsync(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         showDateTimePicker(animated, completion = completion)
     }
 
-    override suspend fun show(animated: Boolean): Date? =
+    override suspend fun show(animated: Boolean): KalugaDate? =
         suspendCancellableCoroutine { continuation ->
             continuation.invokeOnCancellation {
                 dismissDateTimePicker(animated)
@@ -195,7 +195,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
 
     protected abstract fun showDateTimePicker(
         animated: Boolean = true,
-        completion: (Date?) -> Unit = {}
+        completion: (KalugaDate?) -> Unit = {}
     )
 }
 
@@ -223,8 +223,8 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
  */
 fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
     coroutineScope: CoroutineScope,
-    earliestDate: Date? = null,
-    latestDate: Date? = null,
+    earliestDate: KalugaDate? = null,
+    latestDate: KalugaDate? = null,
     initialize: BaseDateTimePickerPresenter.Builder.() -> Unit
 ): BaseDateTimePickerPresenter = lock.withLock {
     reset()

@@ -50,6 +50,7 @@ class MockDeviceConnectionManager(
     val discoverServicesCompleted = AtomicReference(EmptyCompletableDeferred())
     val disconnectCompleted = AtomicReference(EmptyCompletableDeferred())
     val readRssiCompleted = AtomicReference(EmptyCompletableDeferred())
+    val requestMtuCompleted = AtomicReference(CompletableDeferred<Int?>())
     val performActionCompleted = AtomicReference(CompletableDeferred<DeviceAction>())
     val performActionStarted = AtomicReference(CompletableDeferred<DeviceAction>())
     private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -80,6 +81,12 @@ class MockDeviceConnectionManager(
 
     override suspend fun readRssi() {
         readRssiCompleted.get().complete()
+    }
+
+    override suspend fun requestMtu(mtu: Int): Boolean {
+        requestMtuCompleted.get().complete(mtu)
+        handleNewMtu(mtu)
+        return true
     }
 
     var waitAfterHandlingAction: MutableMap<KClass<out DeviceAction>, EmptyCompletableDeferred> = sharedMutableMapOf()
