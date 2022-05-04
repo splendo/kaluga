@@ -50,6 +50,11 @@ actual interface LocationMonitor : ServiceMonitor {
                 "LocationService should not be null, please check your device capabilities."
             )
     ) {
+        actual constructor() : this(
+            ApplicationHolder.applicationContext,
+            ApplicationHolder.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        )
+
         actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor = DefaultLocationMonitor(
             applicationContext = applicationContext,
             locationManager = locationManager,

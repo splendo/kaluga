@@ -24,6 +24,8 @@ import kotlin.coroutines.CoroutineContext
 actual interface LocationMonitor : ServiceMonitor {
 
     actual class Builder {
+        actual constructor()
+
         /**
          * Builder's create method.
          * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.

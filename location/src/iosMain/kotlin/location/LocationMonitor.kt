@@ -35,6 +35,8 @@ actual interface LocationMonitor : ServiceMonitor {
     actual class Builder(
         private val locationManager: CLLocationManager = CLLocationManager()
     ) {
+        actual constructor() : this(CLLocationManager())
+
         /**
          * Builder's create method.
          * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.

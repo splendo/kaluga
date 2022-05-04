@@ -26,6 +26,8 @@ import kotlin.coroutines.CoroutineContext
  */
 expect interface LocationMonitor : ServiceMonitor {
     class Builder {
+        constructor()
+
         fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor
     }
 }
