@@ -40,6 +40,8 @@ actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder(
         private val centralManager: CBCentralManager = CBCentralManager()
     ) {
+        actual constructor() : this(CBCentralManager())
+
         /**
          * Builder's create method.
          * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.

@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -48,6 +49,13 @@ actual interface BluetoothMonitor : ServiceMonitor {
         private val context: Context = ApplicationHolder.applicationContext,
         private val adapter: BluetoothAdapter?
     ) {
+        actual constructor() : this(
+            ApplicationHolder.applicationContext,
+            (ApplicationHolder.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter ?: throw IllegalArgumentException(
+                "BluetoothAdapter should not be null, please check your device capabilities."
+            )
+        )
+
         /**
          * Builder's create method.
          * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.
