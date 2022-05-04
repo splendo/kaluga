@@ -22,6 +22,7 @@ import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.models.LinksHandler
 import com.splendo.kaluga.links.models.LinksManager
 import com.splendo.kaluga.links.models.ParametersNameValue
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean = when (url) {
@@ -29,22 +30,19 @@ class MockLinksHandler : LinksHandler {
         else -> TestConstants.VALID_URLS.contains(url)
     }
 
-    override fun extractQuery(url: String): ParametersNameValue =
-        when (url) {
-            DataTypesValues.url -> DataTypesValues.validParameters
-            else -> emptyMap()
-        }
+    val extractQueryValue = MutableStateFlow(emptyMap<String, String>())
+    override fun extractQuery(url: String): ParametersNameValue = extractQueryValue.value
 }
 
-class MockLinksManagerBuilder : LinksManager.Builder {
+class MockLinksManagerBuilder(private val linksHandler: LinksHandler) : LinksManager.Builder {
     override fun create(): LinksManager {
-        return DefaultLinksManager(MockLinksHandler())
+        return DefaultLinksManager(linksHandler)
     }
 }
 
-class MockLinksBuilder : Links.Builder {
+class MockLinksBuilder(private val linksHandler: LinksHandler) : Links.Builder {
     override fun create(): Links {
-        return Links(MockLinksManagerBuilder())
+        return Links(MockLinksManagerBuilder(linksHandler))
     }
 }
 
