@@ -134,3 +134,5 @@ include(":shared")
 project(":shared").projectDir = file("../../shared")
 
 rootProject.name = file("../..").name
+
+includeBuild("../../..")
