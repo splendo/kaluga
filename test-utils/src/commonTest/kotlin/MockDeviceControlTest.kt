@@ -15,6 +15,7 @@
 
  */
 
+import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.randomUUID
@@ -97,6 +98,18 @@ class MockDeviceControlTest : SimpleFlowTest<DeviceState>() {
         test {
             assertNotNull(control.mock.services()[firstUUID].first(), "It should discover the first added service")
             assertNotNull(control.mock.services()[secondUUID].first(), "It should discover the second added service")
+        }
+    }
+
+    @Test
+    fun testWriteToCharacteristic() = testWithFlow {
+        val serviceUUID = randomUUID()
+        val characteristicUUID = randomUUID()
+
+        val data = byteArrayOf(0x01, 0x0, 0xf, 0x4)
+        action {
+            val characteristic = control.mock.services()[serviceUUID].characteristics()[characteristicUUID].first()
+            characteristic?.writeValue(data)
         }
     }
 
