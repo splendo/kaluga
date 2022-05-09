@@ -89,7 +89,7 @@ if (System.env.containsKey("EXAMPLE_EMBEDDING_METHOD")) {
 }
 
 if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
-    gradle.ext.example_maven_addIntoExamplerepo = System.env.EXAMPLE_MAVEN_REPO
+    gradle.ext.example_maven_repo = System.env.EXAMPLE_MAVEN_REPO
     logger.lifecycle "System env EXAMPLE_MAVEN_REPO set to $System.env.EXAMPLE_MAVEN_REPO, using $gradle.ext.example_maven_repo"
 } else {
     // load some more from local.properties or set defaults.
