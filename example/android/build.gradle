@@ -70,33 +70,9 @@ apply from: "../../gradle/android_compose.gradle"
 gradle.ext.component_type = gradle.ext.component_type_default
 
 dependencies {
-
-
-    if (gradle.ext.example_embedding_method == "as-root") {
-            implementation project(':shared')
-            implementation project(":base-permissions")
-            implementation project(":location-permissions")
-            implementation project(":bluetooth-permissions")
-            implementation project(":camera-permissions")
-            implementation project(":contacts-permissions")
-            implementation project(":microphone-permissions")
-            implementation project(":storage-permissions")
-            implementation project(":notifications-permissions")
-            implementation project(":calendar-permissions")
-            implementation project(":logging")
-            implementation project(":alerts")
-            implementation project(":hud")
-            implementation project(":architecture")
-            implementation project(":architecture-compose")
-            implementation project(":resources")
-            implementation project(":resources-compose")
-    }
-    else {
-            // if the example is the root we use a maven dependency instead of the project
-            implementation "com.splendo.kaluga:architecture-compose:$gradle.ext.library_version"
-            implementation "com.splendo.kaluga:resources-compose:$gradle.ext.library_version"
-            implementation project(':shared')
-    }
+    implementation "com.splendo.kaluga:architecture-compose:$gradle.ext.library_version"
+    implementation "com.splendo.kaluga:resources-compose:$gradle.ext.library_version"
+    implementation project(':shared')
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"
     implementation "com.google.android.gms:play-services-location:$gradle.play_services_version"

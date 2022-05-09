@@ -44,20 +44,6 @@ apply("../../../gradle/ext.gradle")
 val ext = (gradle as ExtensionAware).extra
 
 when (ext["example_embedding_method"] ) {
-    "as-root" -> {
-        var modules = listOf(
-            "alerts", "architecture", "base", "architecture-compose", "bluetooth", "beacons",
-            "date-time-picker", "hud", "keyboard", "links", "location", "logging",
-            "base-permissions", "location-permissions", "bluetooth-permissions",
-            "contacts-permissions", "microphone-permissions", "storage-permissions",
-            "notifications-permissions", "calendar-permissions",
-            "resources", "resources-compose", "review", "system", "test-utils"
-        )
-        modules.forEach { module ->
-            include(":$module")
-            project(":$module").projectDir = file("../../../$module")
-        }
-    }
     "composite" -> {
         includeBuild("../../..")
     }
