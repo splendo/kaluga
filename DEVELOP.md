@@ -80,7 +80,7 @@ For example if the version in `ext.gradle` is `1.1` and `feature/123_fix_bug` is
 
 Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`oss.sonatype.org`). Test both on Android and iOS example app just adding the following code inside the `local.properties` file:
 ```
-kaluga.exampleAsRoot=true
+kaluga.exampleEmbeddingMethod=composite
 kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/
 kaluga.libraryVersion=LIBRARY_VERSION
 ```
