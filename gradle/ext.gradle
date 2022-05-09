@@ -16,7 +16,7 @@ if (propFile.exists()) {
 }
 
 String libraryVersionLocalProperties = props["kaluga.libraryVersion"]
-String exampleAsRootLocalProperties = props["kaluga.exampleAsRoot"]
+String exampleEmbeddingMethodLocalProperties = props["kaluga.exampleEmbeddingMethod"]
 String exampleMavenRepoLocalProperties = props["kaluga.exampleMavenRepo"]
 String kotlinVersion = getProperty("kaluga.kotlinVersion")
 
@@ -80,17 +80,16 @@ gradle.ext {
     component_type = component_type_default
 }
 
-if (System.env.containsKey("EXAMPLE_AS_ROOT")) {
-    gradle.ext.example_as_root = Boolean.parseBoolean(System.env.EXAMPLE_AS_ROOT)
-    logger.lifecycle "System env EXAMPLE_AS_ROOT set to $System.env.EXAMPLE_AS_ROOT, using $gradle.ext.example_as_root"
+if (System.env.containsKey("EXAMPLE_EMBEDDING_METHOD")) {
+    gradle.ext.example_embedding_method = System.env.EXAMPLE_EMBEDDING_METHOD
+    logger.lifecycle "System env EXAMPLE_EMBEDDING_METHOD set to $System.env.EXAMPLE_EMBEDDING_METHOD, using $gradle.ext.example_embedding_method"
 } else {
-    // load some more from local.properties or set defaults.
-    gradle.ext.example_as_root = exampleAsRootLocalProperties?.toBoolean() ?: false
-    logger.lifecycle "local.properties read (kaluga.exampleAsRoot=$exampleAsRootLocalProperties, using $gradle.ext.example_as_root)"
+    gradle.ext.example_embedding_method = exampleEmbeddingMethodLocalProperties ?: "composite"
+    logger.lifecycle "local.properties read (kaluga.exampleEmbeddingMethod=$exampleEmbeddingMethodLocalProperties, using $gradle.ext.example_embedding_method)"
 }
 
 if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
-    gradle.ext.example_maven_repo = System.env.EXAMPLE_MAVEN_REPO
+    gradle.ext.example_maven_addIntoExamplerepo = System.env.EXAMPLE_MAVEN_REPO
     logger.lifecycle "System env EXAMPLE_MAVEN_REPO set to $System.env.EXAMPLE_MAVEN_REPO, using $gradle.ext.example_maven_repo"
 } else {
     // load some more from local.properties or set defaults.
