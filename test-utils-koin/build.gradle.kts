@@ -25,7 +25,7 @@ kotlin {
         commonMain {
             val ext = (gradle as ExtensionAware).extra
             dependencies {
-                api(project(":test-utils"))
+                api(project(":test-utils-base"))
                 implementation(project(":test-utils-architecture"))
                 implementation("io.insert-koin:koin-core:" + ext["koin_version"])
             }

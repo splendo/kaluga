@@ -73,7 +73,7 @@ include(":review")
 include(":scientific")
 include(":system")
 // Test Utils
-include(":test-utils")
+include(":test-utils-base")
 include(":test-utils-alerts")
 include(":test-utils-architecture")
 include(":test-utils-bluetooth")

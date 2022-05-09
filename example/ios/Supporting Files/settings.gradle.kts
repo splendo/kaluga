@@ -120,8 +120,8 @@ if (!(ext["example_as_root"] as Boolean)) {
     include(":system")
     project(":system").projectDir = file("../../../system")
 
-    include(":test-utils")
-    project(":test-utils").projectDir = file("../../../test-utils")
+    include(":test-utils-base")
+    project(":test-utils-base").projectDir = file("../../../test-utils-base")
 }
 
 include(":android")

@@ -36,7 +36,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils"))
+                implementation(project(":test-utils-base"))
             }
         }
     }

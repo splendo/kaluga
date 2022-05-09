@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.test.koin
 
-import com.splendo.kaluga.test.BaseKoinFlowTest
-import com.splendo.kaluga.test.koin.KoinUIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.component.inject

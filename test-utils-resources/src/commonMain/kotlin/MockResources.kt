@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.resources
 
-import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.FontLoader
 import com.splendo.kaluga.resources.Image
@@ -25,60 +24,71 @@ import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.StringLoader
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 
-class MockStringLoader private constructor (
-    private val string: String?,
-    private val quantityString: String?,
-    private val stringMap: Map<String, String?>,
-    private val quantityStringMap: Map<String, String?>
-) : StringLoader {
-    constructor(string: String? = null, quantityString: String? = null) :
-        this(string, quantityString, emptyMap(), emptyMap())
-    constructor(stringMap: Map<String, String?>, quantityStringMap: Map<String, String?>) :
-        this(null, null, stringMap, quantityStringMap)
+class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 
-    override fun loadString(identifier: String, defaultValue: String): String =
-        stringMap[identifier] ?: string ?: defaultValue
+    val loadStringMock = ::loadString.mock()
+    val loadQuantityStringMock = ::loadQuantityString.mock()
+
+    init {
+        loadStringMock.on().doExecute { values ->
+                if (returnMock) values.first else values.second
+            }
+        loadQuantityStringMock.on().doExecute { values ->
+            if (returnMock) "${values.first}_${values.second}" else values.third
+        }
+    }
+
+    override fun loadString(identifier: String, defaultValue: String): String = loadStringMock.call(identifier, defaultValue)
 
     override fun loadQuantityString(
         identifier: String,
         quantity: Int,
         defaultValue: String
-    ): String =
-        (quantityStringMap[identifier] ?: quantityString)?.format(quantity) ?: defaultValue
+    ): String = loadQuantityStringMock.call(identifier, quantity, defaultValue)
 }
 
-class MockColorLoader private constructor (
-    private val color: KalugaColor?,
-    private val colorMap: Map<String, KalugaColor?>
-) : KalugaColorLoader {
-    constructor(color: KalugaColor? = null) : this(color, emptyMap())
-    constructor(colorMap: Map<String, KalugaColor?>) : this(null, colorMap)
+class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoader {
 
-    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? =
-        colorMap[identifier] ?: color ?: defaultValue
+    val loadColorMock = ::loadColor.mock()
+
+    init {
+        loadColorMock.on().doExecute { values ->
+            if (returnMock) mockColor() else values.second
+        }
+    }
+
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = loadColorMock.call(identifier, defaultValue)
 }
 
-class MockImageLoader private constructor (
-    private val image: Image?,
-    private val imageMap: Map<String, Image?>
-) : ImageLoader {
-    constructor(image: Image? = null) : this(image, emptyMap())
-    constructor(imageMap: Map<String, Image?>) : this(null, imageMap)
+class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
 
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? =
-        imageMap[identifier] ?: image ?: defaultValue
+    val loadImageMock = ::loadImage.mock()
+
+    init {
+        loadImageMock.on().doExecute { values ->
+            if (returnMock) mockImage() else values.second
+        }
+    }
+
+    override fun loadImage(identifier: String, defaultValue: Image?): Image? = loadImageMock.call(identifier, defaultValue)
 }
 
-class MockFontLoader private constructor (
-    private val font: Font?,
-    private val fontMap: Map<String, Font?>
-) : FontLoader {
-    constructor(font: Font? = null) : this(font, emptyMap())
-    constructor(fontMap: Map<String, Font?>) : this(null, fontMap)
+class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
+
+    val loadFontMock = ::loadFont.mock()
+
+    init {
+        loadFontMock.on().doExecute { values ->
+            if (returnMock) mockFont() else values.second
+        }
+    }
 
     override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
-        fontMap[identifier] ?: font ?: defaultValue
+        loadFontMock.call(identifier, defaultValue)
 }
 
 expect fun mockColor(): KalugaColor

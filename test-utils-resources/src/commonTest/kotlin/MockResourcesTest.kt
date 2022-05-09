@@ -23,15 +23,11 @@ import com.splendo.kaluga.resources.asFont
 import com.splendo.kaluga.resources.asImage
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.quantity
-import com.splendo.kaluga.test.mock.resources.MockColorLoader
-import com.splendo.kaluga.test.mock.resources.MockFontLoader
-import com.splendo.kaluga.test.mock.resources.MockImageLoader
-import com.splendo.kaluga.test.mock.resources.MockStringLoader
-import com.splendo.kaluga.test.mock.resources.mockColor
-import com.splendo.kaluga.test.mock.resources.mockFont
-import com.splendo.kaluga.test.mock.resources.mockImage
+import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.mock.on
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class MockResourcesTest {
@@ -43,72 +39,72 @@ class MockResourcesTest {
 
     @Test
     fun testMockStringLoaderGeneric() {
-        val loader = MockStringLoader("abc", "abc %s")
-        assertEquals("abc", ID.localized(stringLoader = loader))
-        assertEquals("abc 1", ID.quantity(1, stringLoader = loader))
-
-        assertEquals("abc", ANOTHER_ID.localized(stringLoader = loader))
-        assertEquals("abc 1", ANOTHER_ID.quantity(1, stringLoader = loader))
-    }
-
-    @Test
-    fun testMockStringLoaderSpecific() {
-        val loader = MockStringLoader(
-            mapOf(ID to "abc"),
-            mapOf(ID to "abc %s")
-        )
-        assertEquals("abc", ID.localized(stringLoader = loader))
-        assertEquals("abc 1", ID.quantity(1, stringLoader = loader))
+        val loader = MockStringLoader()
+        assertEquals(ID, ID.localized(stringLoader = loader))
+        assertEquals(ID, ID.quantity(1, stringLoader = loader))
 
         assertEquals(ANOTHER_ID, ANOTHER_ID.localized(stringLoader = loader))
         assertEquals(ANOTHER_ID, ANOTHER_ID.quantity(1, stringLoader = loader))
     }
 
     @Test
+    fun testMockStringLoaderSpecific() {
+        val loader = MockStringLoader(true)
+        loader.loadStringMock.on(eq(ID)).doReturn("abc")
+        loader.loadQuantityStringMock.on(eq(ID), eq(1)).doReturn("abc 1")
+        assertEquals("abc", ID.localized(stringLoader = loader))
+        assertEquals("abc 1", ID.quantity(1, stringLoader = loader))
+
+        assertEquals(ANOTHER_ID, ANOTHER_ID.localized(stringLoader = loader))
+        assertEquals("${ANOTHER_ID}_1", ANOTHER_ID.quantity(1, stringLoader = loader))
+    }
+
+    @Test
     fun testMockColorLoaderGeneric() {
-        val mock = mockColor()
-        val loader = MockColorLoader(mock)
-        assertEquals(mock, ID.asColor(colorLoader = loader))
-        assertEquals(mock, ANOTHER_ID.asColor(colorLoader = loader))
+        val loader = MockColorLoader()
+        assertNull(ID.asColor(colorLoader = loader))
+        assertNull(ANOTHER_ID.asColor(colorLoader = loader))
     }
 
     @Test
     fun testMockColorLoaderSpecific() {
         val mock = mockColor()
-        val loader = MockColorLoader(mapOf(ID to mock))
+        val loader = MockColorLoader(true)
+        loader.loadColorMock.on(eq(ID)).doReturn(mock)
         assertEquals(mock, ID.asColor(colorLoader = loader))
-        assertNull(ANOTHER_ID.asColor(colorLoader = loader))
+        assertNotNull(ANOTHER_ID.asColor(colorLoader = loader))
     }
 
     @Test
     fun testMockImageLoaderGeneric() {
-        val mock = mockImage()
-        val loader = MockImageLoader(mock)
-        assertEquals(mock, ID.asImage(imageLoader = loader))
-        assertEquals(mock, ANOTHER_ID.asImage(imageLoader = loader))
+        val loader = MockImageLoader()
+        assertNull(ID.asImage(imageLoader = loader))
+        assertNull(ANOTHER_ID.asImage(imageLoader = loader))
     }
 
     @Test
     fun testMockImageLoaderSpecific() {
         val mock = mockImage()
-        val loader = MockImageLoader(mapOf(ID to mock))
+        val loader = MockImageLoader(true)
+        loader.loadImageMock.on(eq(ID)).doReturn(mock)
         assertEquals(mock, ID.asImage(imageLoader = loader))
-        assertNull(ANOTHER_ID.asImage(imageLoader = loader))
+        assertNotNull(ANOTHER_ID.asImage(imageLoader = loader))
     }
 
     @Test
     fun testMockFontLoaderGeneric() = runBlocking {
-        val mock = mockFont()
-        val loader = MockFontLoader(mock)
-        assertEquals(mock, ID.asFont(fontLoader = loader))
-        assertEquals(mock, ANOTHER_ID.asFont(fontLoader = loader))
+        val loader = MockFontLoader()
+        assertNull(ID.asFont(fontLoader = loader))
+        assertNull(ANOTHER_ID.asFont(fontLoader = loader))
     }
 
     @Test
     fun testMockFontLoaderSpecific() = runBlocking {
         val mock = mockFont()
-        val loader = MockFontLoader(mapOf(ID to mock))
+        val loader = MockFontLoader(true)
+        loader.loadFontMock.on(eq(ID)).doReturn(mock)
         assertEquals(mock, ID.asFont(fontLoader = loader))
-        assertNull(ANOTHER_ID.asFont(fontLoader = loader))
+        assertNotNull(ANOTHER_ID.asFont(fontLoader = loader))
+        Unit
     }
 }

@@ -32,13 +32,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.CustomViewModelTestContext, MockAlertPresenterTest.MyViewModel>() {
+class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.CustomViewModelTestContext, MockAlertPresenterTest.ViewModel>() {
 
-    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
 
-    class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
+    class CustomViewModelTestContext : ViewModelTestContext<ViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder()
-        override val viewModel: MyViewModel = MyViewModel(mockAlertBuilder)
+        override val viewModel: ViewModel = ViewModel(mockAlertBuilder)
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> CustomViewModelTestContext = { CustomViewModelTestContext() }

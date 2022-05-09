@@ -63,12 +63,12 @@ fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute
 
 sealed class StringStyleAttribute {
     sealed class CharacterStyleAttribute : StringStyleAttribute() {
-        data class BackgroundColor(val color: Color) : CharacterStyleAttribute()
-        data class ForegroundColor(val color: Color) : CharacterStyleAttribute()
+        data class BackgroundColor(val color: KalugaColor) : CharacterStyleAttribute()
+        data class ForegroundColor(val color: KalugaColor) : CharacterStyleAttribute()
         data class TextStyle(val textStyle: com.splendo.kaluga.resources.stylable.TextStyle) : CharacterStyleAttribute()
         data class Font(val font: com.splendo.kaluga.resources.Font, val size: Float) : CharacterStyleAttribute()
-        data class Stroke(val width: Float, val color: Color) : CharacterStyleAttribute()
-        data class Shadow(val color: Color, val xOffset: Float, val yOffset: Float, val blurRadius: Float) : CharacterStyleAttribute()
+        data class Stroke(val width: Float, val color: KalugaColor) : CharacterStyleAttribute()
+        data class Shadow(val color: KalugaColor, val xOffset: Float, val yOffset: Float, val blurRadius: Float) : CharacterStyleAttribute()
         data class Kerning(val kern: Float) : CharacterStyleAttribute()
         object Strikethrough : CharacterStyleAttribute()
         object Underline : CharacterStyleAttribute()

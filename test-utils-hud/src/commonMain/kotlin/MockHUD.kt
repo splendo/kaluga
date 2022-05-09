@@ -17,35 +17,64 @@
 
 package com.splendo.kaluga.test.hud
 
+import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
-class MockHUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
+class MockHUD(
+    override val hudConfig: HudConfig,
+    setupMocks: Boolean = true,
+    coroutineScope: CoroutineScope
+) : BaseHUD(coroutineScope) {
 
-    class Builder : BaseHUD.Builder() {
+    class Builder(setupMocks: Boolean = true) : BaseHUD.Builder() {
 
-        val builtHUDs = mutableListOf<MockHUD>()
+        val builtHUDs = IsoMutableList<MockHUD>()
+        val createMock = ::create.mock()
 
-        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): MockHUD {
-            return MockHUD(hudConfig, coroutineScope).also {
-                builtHUDs.add(it)
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): MockHUD =
+            createMock.call(hudConfig, coroutineScope)
+
+        init {
+            if (setupMocks) {
+                val builtHUDs = builtHUDs
+                createMock.on().doExecute { values ->
+                    MockHUD(values.first, setupMocks, values.second).also {
+                        builtHUDs.add(it)
+                    }
+                }
             }
         }
     }
 
-    private var _isVisible = AtomicBoolean(false)
+    private val _isVisible = AtomicBoolean(false)
     override var isVisible: Boolean
         get() = _isVisible.value
-        private set(value) { _isVisible.value = value }
+        private set(value) {
+            _isVisible.value = value
+        }
 
-    override suspend fun present(animated: Boolean): BaseHUD {
-        isVisible = true
-        return this
+    val presentMock = ::present.mock()
+    val dismissMock = ::dismiss.mock()
+
+    init {
+        if (setupMocks) {
+            presentMock.on().doExecute {
+                isVisible = true
+                this
+            }
+            dismissMock.on().doExecute {
+                isVisible = false
+            }
+        }
     }
 
-    override suspend fun dismiss(animated: Boolean) {
-        isVisible = false
-    }
+    override suspend fun present(animated: Boolean): BaseHUD = presentMock.call(animated)
+
+    override suspend fun dismiss(animated: Boolean): Unit = dismissMock.call(animated)
 }

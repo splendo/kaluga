@@ -17,10 +17,7 @@
 
 package com.splendo.kaluga.test.koin
 
-import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.architecture.koin.KoinUIThreadViewModelTest
-import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -28,7 +25,6 @@ import org.koin.core.logger.Level
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class KoinUIThreadViewModelTestTest :
     KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
@@ -44,15 +40,12 @@ class KoinUIThreadViewModelTestTest :
             },
             module {
                 single { "S" }
-                single<BaseAlertPresenter.Builder> { MockAlertPresenter.Builder() }
                 single { KoinViewModel() }
             }
         ) {
 
         // if you're using this as example and don't want inject your viewmodel you can instead use `by lazy`
         override val viewModel: KoinViewModel by inject()
-
-        val builder: BaseAlertPresenter.Builder by inject() // test injecting into context
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> MyKoinViewModelTestContext =
@@ -61,7 +54,6 @@ class KoinUIThreadViewModelTestTest :
     @Test
     fun testKoinViewModelTestContext() = testOnUIThread {
         assertEquals("S", viewModel.s)
-        assertTrue(builder is MockAlertPresenter.Builder)
         assertEquals(
             Level.DEBUG,
             viewModel.getKoin().logger.level,

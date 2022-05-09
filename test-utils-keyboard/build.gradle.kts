@@ -24,7 +24,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":test-utils"))
+                api(project(":test-utils-base"))
                 api(project(":keyboard"))
             }
         }

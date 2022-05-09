@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.test.mock
 
+import co.touchlab.stately.collections.IsoMutableList
+import co.touchlab.stately.collections.IsoMutableMap
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.test.mock.answer.Answer
 import com.splendo.kaluga.test.mock.answer.BaseAnswer
 import com.splendo.kaluga.test.mock.answer.SuspendedAnswer
@@ -49,20 +52,20 @@ abstract class BaseMethodMock<
         > {
 
         abstract val matchers: M
-        protected var answer: A? = null
+        protected val answer = AtomicReference<A?>(null)
 
         protected abstract fun createAnswer(result: (V) -> R): A
 
         fun doAnswer(answer: A) {
-            this.answer = answer
+            this.answer.set(answer)
         }
         fun doExecute(action: (V) -> R) = doAnswer(createAnswer(action))
         fun doReturn(value: R) = doExecute { value }
         fun doThrow(throwable: Throwable) = doExecute { throw throwable }
     }
 
-    private val stubs: MutableMap<M, S> = mutableMapOf()
-    private val callParameters: MutableList<V> = mutableListOf()
+    private val stubs: IsoMutableMap<M, S> = IsoMutableMap()
+    private val callParameters: IsoMutableList<V> = IsoMutableList()
     protected abstract val ParametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
@@ -74,8 +77,9 @@ abstract class BaseMethodMock<
 
     protected fun getStubFor(values: V): S {
         callParameters.add(values)
-        val matchingStubs = stubs.mapNotNull { (matchers, stub) ->
-            if (ParametersSpec.run { matchers.matches(values) }) matchers.asList().sorted() to stub else null
+        val matchingStubs = stubs.keys.mapNotNull { matchers ->
+            val stub = stubs[matchers]
+            if (ParametersSpec.run { matchers.matches(values) } && stub != null) matchers.asList().sorted() to stub else null
         }
         if (matchingStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
         val matchedStubs = (0..matchingStubs.first().first.size).fold(matchingStubs) { remainingMatches, index ->
@@ -152,7 +156,7 @@ class MethodMock<M : ParametersSpec.Matchers,
             override fun call(arguments: V): R = result(arguments)
         }
         fun call(arguments: V): R {
-            val answer = this.answer ?: fail { "No Answer set for this stub" }
+            val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
             return answer.call(arguments)
         }
     }
@@ -181,7 +185,7 @@ class SuspendMethodMock<
         }
 
         suspend fun call(arguments: V): R {
-            val answer = this.answer ?: fail { "No Answer set for this stub" }
+            val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
             return answer.call(arguments)
         }
 
