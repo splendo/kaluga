@@ -59,8 +59,10 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         if (setupMocks) {
             showMock.on().doExecute { values ->
                 focusHandler = values.value
+                (focusHandler as? MockFocusHandler)?.simulateGiveFocus()
             }
             hideMock.on().doExecute {
+                (focusHandler as? MockFocusHandler)?.simulateRemoveFocus()
                 focusHandler = null
             }
         }

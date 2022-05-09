@@ -35,7 +35,7 @@ import kotlin.test.assertTrue
 
  */
 
-class MockHUDTest : UIThreadViewModelTest<MockHUDTest.CustomViewModelTestContext, MockHUDTest.ViewModel>() {
+class MockHUDTest : UIThreadViewModelTest<MockHUDTest.TestContext, MockHUDTest.ViewModel>() {
 
     class ViewModel(val hudBuilder: BaseHUD.Builder) : BaseViewModel() {
         fun buildAndShowHud(config: HudConfig, isFinished: Deferred<Unit>): Pair<Deferred<BaseHUD>, Deferred<Unit>> {
@@ -53,15 +53,15 @@ class MockHUDTest : UIThreadViewModelTest<MockHUDTest.CustomViewModelTestContext
         }
     }
 
-    class CustomViewModelTestContext : ViewModelTestContext<ViewModel> {
+    class TestContext : ViewModelTestContext<ViewModel> {
         val mockHudBuilder = MockHUD.Builder()
         override val viewModel: ViewModel = ViewModel(mockHudBuilder)
     }
 
-    override val createTestContext: suspend (scope: CoroutineScope) -> CustomViewModelTestContext = { CustomViewModelTestContext() }
+    override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext() }
 
     @Test
-    fun testCustomUIThreadViewModelTest() = testOnUIThread {
+    fun testMockHUDBuilder() = testOnUIThread {
         val config = HudConfig(HUDStyle.CUSTOM, "title")
         val isFinished = EmptyCompletableDeferred()
         val (isShowing, hasFinishedShowing) = viewModel.buildAndShowHud(config, isFinished)

@@ -32,19 +32,19 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.CustomViewModelTestContext, MockAlertPresenterTest.ViewModel>() {
+class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.TestContext, MockAlertPresenterTest.ViewModel>() {
 
     class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
 
-    class CustomViewModelTestContext : ViewModelTestContext<ViewModel> {
+    class TestContext : ViewModelTestContext<ViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder()
         override val viewModel: ViewModel = ViewModel(mockAlertBuilder)
     }
 
-    override val createTestContext: suspend (scope: CoroutineScope) -> CustomViewModelTestContext = { CustomViewModelTestContext() }
+    override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext() }
 
     @Test
-    fun testCustomUIThreadViewModelTest() = testOnUIThread {
+    fun testMockAlertPresenter() = testOnUIThread {
 
         val done = EmptyCompletableDeferred()
         withTimeout(2.seconds) {
