@@ -1,10 +1,3 @@
-import com.splendo.kaluga.alerts.BaseAlertPresenter
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.alerts.MockAlertPresenter
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
-import kotlinx.coroutines.CoroutineScope
-import kotlin.test.Test
-
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
 
@@ -21,6 +14,23 @@ import kotlin.test.Test
     limitations under the License.
 
  */
+
+package com.splendo.kaluga.test.alerts
+
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.BaseAlertPresenter
+import com.splendo.kaluga.alerts.buildAlert
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.mock.matcher.AnyCaptor
+import com.splendo.kaluga.test.mock.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withTimeout
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.CustomViewModelTestContext, MockAlertPresenterTest.MyViewModel>() {
 
@@ -46,8 +56,16 @@ class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.Cust
                 done.complete()
             }
 
+            val captor = AnyCaptor<Alert>()
+            mockAlertBuilder.createMock.verify(captor)
+            assertEquals(Alert.Style.ALERT, captor.lastCaptured?.style)
+            assertEquals("foo", captor.lastCaptured?.title)
+            assertEquals(1, captor.lastCaptured?.actions?.size)
+            assertEquals("OK", captor.lastCaptured?.actions?.first()?.title)
+            assertEquals(Alert.Action.Style.POSITIVE, captor.lastCaptured?.actions?.first()?.style)
             // **mock**AlertBuilder is available also from our context
             mockAlertBuilder.builtAlerts.first().apply {
+                assertEquals(alert, captor.lastCaptured)
                 closeWithAction(alert.actions.first())
             }
 

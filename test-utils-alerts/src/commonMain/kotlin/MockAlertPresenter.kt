@@ -25,22 +25,24 @@ import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
-class MockAlertPresenter (val alert: Alert) : BaseAlertPresenter(alert) {
+class MockAlertPresenter (val alert: Alert, setupMocks: Boolean = true) : BaseAlertPresenter(alert) {
 
-    class Builder : BaseAlertPresenter.Builder() {
+    class Builder(setupMocks: Boolean = true) : BaseAlertPresenter.Builder() {
 
         val builtAlerts = mutableListOf<MockAlertPresenter>()
         val createMock = this::createAlertFromAlert.mock()
 
         init {
-            createMock.on().doExecute {
-                MockAlertPresenter(it.value).also {
-                    builtAlerts.add(it)
+            if (setupMocks) {
+                createMock.on().doExecute { values ->
+                    MockAlertPresenter(values.value, setupMocks).also {
+                        builtAlerts.add(it)
+                    }
                 }
             }
         }
 
-        override fun create(coroutineScope: CoroutineScope): MockAlertPresenter = createAlertFromAlert(createAlert())
+        override fun create(coroutineScope: CoroutineScope): BaseAlertPresenter = createAlertFromAlert(createAlert())
         private fun createAlertFromAlert(alert: Alert): MockAlertPresenter = createMock.call(alert)
     }
 
@@ -55,33 +57,39 @@ class MockAlertPresenter (val alert: Alert) : BaseAlertPresenter(alert) {
         set(value) = _afterHandler.set(value)
 
     val closeWithActionMock = this::closeWithAction.mock().apply {
-        on().doExecute { parameters ->
-            val action = parameters.value
-            action?.let {
-                if (alert.actions.contains(it)) {
-                    it.handler()
-                    it
-                } else {
-                    null
+        if (setupMocks) {
+            on().doExecute { parameters ->
+                val action = parameters.value
+                action?.let {
+                    if (alert.actions.contains(it)) {
+                        it.handler()
+                        it
+                    } else {
+                        null
+                    }
+                }.apply {
+                    afterHandler?.invoke(this)
                 }
-            }.apply {
-                afterHandler?.invoke(this)
+                dismissAlert(false)
             }
-            dismissAlert(false)
         }
     }
     fun closeWithAction(action: Alert.Action?): Unit = closeWithActionMock.call(action)
 
     val showAsyncMock = this::showAsync.mock().apply {
-        on().doExecute {
-            showAlert(it.first, completion = it.second)
+        if (setupMocks) {
+            on().doExecute {
+                showAlert(it.first, completion = it.second)
+            }
         }
     }
     override fun showAsync(animated: Boolean, completion: () -> Unit): Unit  = showAsyncMock.call(animated, completion)
 
     val dismissMock = this::dismiss.mock().apply {
-        on().doExecute {
-            dismissAlert(it.value)
+        if (setupMocks) {
+            on().doExecute {
+                dismissAlert(it.value)
+            }
         }
     }
     override fun dismiss(animated: Boolean): Unit = dismissMock.call(animated)
