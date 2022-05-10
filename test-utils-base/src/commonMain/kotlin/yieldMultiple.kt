@@ -15,9 +15,18 @@
 
  */
 
-package com.splendo.kaluga.test.permissions
+package com.splendo.kaluga.test
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.test.mock.android.MockContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
+import kotlin.time.Duration
 
-actual val mockPermissionContext get() = PermissionContext(MockContext())
+suspend fun yieldMultiple(times: Int) = repeat(times) {
+    yield()
+}
+
+suspend fun yieldUntil(timeout: Duration = Duration.INFINITE, constraint: () -> Boolean) = withTimeout(timeout) {
+    while (!constraint()) {
+        yield()
+    }
+}

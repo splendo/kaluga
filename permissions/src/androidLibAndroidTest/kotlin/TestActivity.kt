@@ -13,11 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.test.permissions
+package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.test.mock.android.MockContext
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
-actual val mockPermissionContext get() = PermissionContext(MockContext())
+class TestActivity : AppCompatActivity()

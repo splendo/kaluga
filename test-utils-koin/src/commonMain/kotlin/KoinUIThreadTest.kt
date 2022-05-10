@@ -17,7 +17,8 @@
 
 package com.splendo.kaluga.test.koin
 
-import com.splendo.kaluga.test.UIThreadTest
+import com.splendo.kaluga.test.BaseUIThreadTest
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
@@ -25,7 +26,29 @@ import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : UIThreadTest<TC>(allowFreezing) {
+abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : BaseKoinUIThreadTest<Unit, TC>(allowFreezing) {
+
+    open class KoinTestContext(
+        appDeclaration: KoinAppDeclaration? = null,
+        koinModules: List<Module>
+    ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules) {
+
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+            appDeclaration,
+            koinModules.toList()
+        )
+    }
+
+    abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
+    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC = { _, scope ->
+        createTestContext(scope)
+    }
+
+    fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) = testOnUIThread(Unit, cancelScopeAfterTest, block)
+}
+
+abstract class BaseKoinUIThreadTest<CONF, TC : BaseKoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : BaseUIThreadTest<CONF, TC>(allowFreezing) {
 
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,

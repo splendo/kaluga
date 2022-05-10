@@ -45,8 +45,6 @@ import com.splendo.kaluga.permissions.notifications.NotificationsPermissionState
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
-import com.splendo.kaluga.test.MockPermissionManager
-import com.splendo.kaluga.test.MockPermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 expect val mockPermissionContext: PermissionContext

@@ -31,12 +31,12 @@ sealed class PermissionState<P : Permission> : KalugaState {
 
     class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
 
-    // TODO: consider below states could be wrapped in a sealed Known, and Flows could expose PermissionState.Known where applicable
+    sealed class Known<P : Permission> : PermissionState<P>()
 
     /**
      * When in this state the [Permission] has been granted
      */
-    class Allowed<P : Permission> : PermissionState<P>() {
+    class Allowed<P : Permission> : Known<P>() {
 
         internal fun deny(locked: Boolean): Denied<P> {
             return if (locked) Denied.Locked() else Denied.Requestable()
@@ -46,7 +46,7 @@ sealed class PermissionState<P : Permission> : KalugaState {
     /**
      * When in this state the [Permission] is denied. If can either be requestable of blocked from request.
      */
-    sealed class Denied<P : Permission> : PermissionState<P>() {
+    sealed class Denied<P : Permission> : Known<P>() {
 
         internal val allow: suspend () -> Allowed<P> = {
             Allowed()
@@ -98,7 +98,7 @@ abstract class PermissionStateRepo<P : Permission>(
     },
     deinitChangeStateWithRepo = { _, repo ->
         (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
-        null
+        suspend { PermissionState.Unknown() }
     },
     firstState = { PermissionState.Unknown() }
 ) {

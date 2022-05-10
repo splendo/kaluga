@@ -18,6 +18,20 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.test.BaseFlowTest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-abstract class BaseKoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<TC, T, F>()
+typealias KoinFlowTestBlock<TC, T, F> = suspend KoinFlowTest<TC, T, F>.(F) -> Unit
+
+abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseKoinFlowTest<Unit, TC, T, F>() {
+    abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
+    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC = { _, scope ->
+        createTestContext(scope)
+    }
+
+    fun testWithFlow(block: KoinFlowTestBlock<TC, T, F>) =
+        super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
+            block(this@KoinFlowTest, it)
+        }
+}
+abstract class BaseKoinFlowTest<CONF, TC : BaseKoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<CONF, TC, T, F>()

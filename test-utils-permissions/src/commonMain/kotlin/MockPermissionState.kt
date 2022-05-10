@@ -18,14 +18,12 @@
 package com.splendo.kaluga.test.permissions
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import kotlinx.coroutines.CompletableDeferred
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.parameters.mock
 
 class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
 
@@ -34,45 +32,42 @@ class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
 
 class MockPermissionManager<P : Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
 
-    private val _currentState: AtomicReference<PermissionState<P>> = AtomicReference(PermissionState.Denied.Requestable())
-    var currentState: PermissionState<P>
+    private val _currentState: AtomicReference<PermissionState.Known<P>> = AtomicReference(PermissionState.Denied.Requestable())
+    var currentState: PermissionState.Known<P>
         get() = _currentState.get()
         set(s) = _currentState.set(s)
 
-    fun setPermissionAllowed() {
-        changePermission { grantPermission() }
+    suspend fun setPermissionAllowed() = changePermission(PermissionState.Allowed())
+
+    suspend fun setPermissionDenied() = changePermission(PermissionState.Denied.Requestable())
+
+    suspend fun setPermissionLocked() = changePermission(PermissionState.Denied.Locked())
+
+    private suspend fun changePermission(desiredState: PermissionState.Known<P>) {
+        permissionRepo.takeAndChangeState { state ->
+            when (state) {
+                is PermissionState.Unknown -> state.remain()
+                else -> suspend { desiredState }
+            }
+        }
+        currentState = desiredState
     }
 
-    fun setPermissionDenied() {
-        changePermission { revokePermission(false) }
-    }
+    val requestPermissionMock = ::requestPermission.mock()
+    val startMonitoringMock = ::startMonitoring.mock()
+    val stopMonitoringMock = ::stopMonitoring.mock()
 
-    fun setPermissionLocked() {
-        changePermission { revokePermission(true) }
-    }
-
-    private fun changePermission(action: suspend () -> Unit) = runBlocking {
-        permissionRepo.useState { action() }
-        permissionRepo.useState { currentState = it }
-    }
-
-    val hasRequestedPermission = EmptyCompletableDeferred()
-    val hasStartedMonitoring = CompletableDeferred<Long>()
-    val hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    override suspend fun requestPermission() {
-        hasRequestedPermission.complete()
-    }
+    override suspend fun requestPermission(): Unit = requestPermissionMock.call()
 
     override suspend fun initializeState(): PermissionState<P> {
         return currentState
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        hasStartedMonitoring.complete(interval)
+    override suspend fun startMonitoring(interval: Long): Unit {
+        startMonitoringMock.call(interval)
     }
 
-    override suspend fun stopMonitoring() {
-        hasStoppedMonitoring.complete()
+    override suspend fun stopMonitoring(): Unit {
+        stopMonitoringMock.call()
     }
 }

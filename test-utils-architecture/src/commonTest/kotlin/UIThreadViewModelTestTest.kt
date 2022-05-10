@@ -31,7 +31,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
+class LazyUIThreadViewModelTestTest : UnitUIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
         val isDisposed = AtomicBoolean(false)
@@ -81,7 +81,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
     }
 }
 
-class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadViewModelTestTest.CustomViewModelTestContext, CustomUIThreadViewModelTestTest.MyViewModel>() {
+class CustomUIThreadViewModelTestTest : UnitUIThreadViewModelTest<CustomUIThreadViewModelTestTest.CustomViewModelTestContext, CustomUIThreadViewModelTestTest.MyViewModel>() {
 
     class MyViewModel(testFlow: MutableStateFlow<Int>) : BaseViewModel() {
         val testObservable = testFlow.map { it.toString() }.toInitializedObservable("", coroutineScope)

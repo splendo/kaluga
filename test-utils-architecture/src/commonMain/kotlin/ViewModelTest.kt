@@ -42,7 +42,7 @@ abstract class ViewModelTest<VM : ViewModel>(allowFreezing: Boolean = false) : B
 }
 
 abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
-    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
+    UnitUIThreadViewModelTest<UnitUIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
 
     override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<VM> =
         { LazyViewModelTestContext(it, ::createViewModel) }
@@ -50,7 +50,7 @@ abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
     abstract fun createViewModel(): VM
 }
 
-abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+abstract class UnitUIThreadViewModelTest<VMC : UnitUIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
     UIThreadTest<VMC>(allowFreezing) {
 
     open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :

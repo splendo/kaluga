@@ -5,7 +5,7 @@ import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HUDStyle
 import com.splendo.kaluga.hud.HudConfig
 import com.splendo.kaluga.hud.presentDuring
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
 import com.splendo.kaluga.test.hud.MockHUD
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.verify
@@ -35,7 +35,7 @@ import kotlin.test.assertTrue
 
  */
 
-class MockHUDTest : UIThreadViewModelTest<MockHUDTest.TestContext, MockHUDTest.ViewModel>() {
+class MockHUDTest : UnitUIThreadViewModelTest<MockHUDTest.TestContext, MockHUDTest.ViewModel>() {
 
     class ViewModel(val hudBuilder: BaseHUD.Builder) : BaseViewModel() {
         fun buildAndShowHud(config: HudConfig, isFinished: Deferred<Unit>): Pair<Deferred<BaseHUD>, Deferred<Unit>> {

@@ -24,12 +24,21 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":test-utils-base"))
-                api(project(":permissions"))
+                implementation(project(":base"))
+                api(project(":base-permissions"))
+                api(project(":bluetooth-permissions"))
+                api(project(":calendar-permissions"))
+                api(project(":location-permissions"))
+                api(project(":storage-permissions"))
+                api(project(":notifications-permissions"))
+                api(project(":contacts-permissions"))
+                api(project(":microphone-permissions"))
+                api(project(":camera-permissions"))
             }
         }
         commonTest {
             dependencies {
+                implementation(project(":test-utils-base"))
             }
         }
     }

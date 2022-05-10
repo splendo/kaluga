@@ -17,32 +17,30 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.test.FlowTest
-import com.splendo.kaluga.test.FlowTestBlock
-import com.splendo.kaluga.test.MockPermissionManager
-import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.test.BaseFlowTest
+import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
+import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.test.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext
-import kotlin.test.AfterTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertIs
 
-class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
+class LocationStateTest :
+    BaseFlowTest<LocationStateTest.Configuration, LocationStateTest.Context, LocationState, LocationStateRepo>() {
 
     companion object {
         private val location1 = Location.KnownLocation(
@@ -67,94 +65,146 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
         )
     }
 
-    private val testCoroutine = SupervisorJob()
+    data class Configuration(
+        val locationPermission: LocationPermission,
+        val autoRequestPermission: Boolean,
+        val autoEnableLocations: Boolean,
+        val initialPermissionState: PermissionState.Known<LocationPermission>,
+        val locationEnabled: Boolean
+    )
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + testCoroutine)
+    class Context(configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
+        val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder().apply {
+            registerAllPermissionsBuilders()
+        }
+        val permissions = Permissions(
+            permissionsBuilder,
+            coroutineContext = coroutineScope.coroutineContext
+        ).apply {
+            // Make sure permissionState has been created as it may break the tests otherwise
+            get(configuration.locationPermission)
+        }
+        val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
 
-    private val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder().apply {
-        registerAllPermissionsBuilders()
+        val locationStateRepo = locationStateRepoBuilder.create(
+            configuration.locationPermission,
+            configuration.autoRequestPermission,
+            configuration.autoEnableLocations,
+            coroutineScope.coroutineContext
+        )
+        val locationManager = locationStateRepoBuilder.locationManager.apply {
+            locationEnabled.value = configuration.locationEnabled
+        }
+        val permissionManager = permissionsBuilder.locationPMManager!!.apply {
+            currentState = configuration.initialPermissionState
+        }
     }
-    private val permissions = Permissions(permissionsBuilder, coroutineContext = coroutineScope.coroutineContext)
-    private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
 
-    private lateinit var permissionManager: MockPermissionManager<LocationPermission>
-    private lateinit var locationManager: MockLocationManager
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context = { configuration, scope -> Context(configuration, scope) }
+    override val flowFromTestContext: suspend Context.() -> LocationStateRepo = { locationStateRepo }
 
-    override val flow = suspend { locationStateRepo }
-
-    lateinit var locationStateRepo: LocationStateRepo
-
-    @AfterTest
-    override fun afterTest() {
-        super.afterTest()
-        permissions.clean()
-    }
+    override val filter: (Flow<LocationState>) -> Flow<LocationState> = { it.filterOnlyImportant() }
 
     @Test
-    fun testStartEnabled() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
-        assertFalse(permissionManager.hasStartedMonitoring.isCompleted)
-        assertFalse(permissionManager.hasStoppedMonitoring.isCompleted)
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-        val locationManager = locationManager
-        val permissionManager = permissionManager
+    fun testStartEnabled() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
+        }
         test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
             locationManager.startMonitoringPermissionsCompleted.await()
             locationManager.startMonitoringLocationEnabledCompleted.complete()
             locationManager.startMonitoringLocationCompleted.complete()
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
-        }
-
-        resetFlow()
-
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
-    }
-
-    @Test
-    fun testStartNoPermission() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Denied.Requestable()
-        val permissionManager = permissionManager
-        val locationManager = locationManager
-        test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
-            locationManager.startMonitoringPermissionsCompleted.await()
-            assertTrue(it is LocationState.Disabled.NotPermitted)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
-        }
-
-        resetFlow()
-
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted
-        )
-        delay(500)
-    }
-
-    @Test
-    fun testStartNoPermissionAutoRequest() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Denied.Requestable()
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
-        test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
-            awaitAll(
-                locationManager.startMonitoringPermissionsCompleted,
-                permissionManager.hasRequestedPermission
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
             )
-            assertTrue(it is LocationState.Disabled.NotPermitted)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
         }
+
         action {
+            resetFlow()
+        }
+
+        mainAction {
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+            permissionManager.stopMonitoringMock.verify(2)
+        }
+    }
+
+    @Test
+    fun testStartNoPermission() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = false,
+        PermissionState.Denied.Requestable(),
+        false
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
+        }
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            locationManager.startMonitoringPermissionsCompleted.await()
+            assertIs<LocationState.Disabled.NotPermitted>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
+                it.location
+            )
+        }
+
+        action {
+            resetFlow()
+        }
+
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            locationManager.stopMonitoringPermissionsCompleted.await()
+        }
+    }
+
+    @Test
+    fun testStartNoPermissionAutoRequest() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = true,
+        autoEnableLocations = false,
+        PermissionState.Denied.Requestable(),
+        false
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
+        }
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            awaitAll(
+                locationManager.startMonitoringPermissionsCompleted
+            )
+            assertIs<LocationState.Disabled.NotPermitted>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.locationEnabled.value = true
             permissionManager.setPermissionAllowed()
         }
@@ -163,241 +213,353 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
                 locationManager.startMonitoringLocationEnabledCompleted,
                 locationManager.startMonitoringLocationCompleted
             )
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
+                it.location
+            )
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testStartNoPermissionAutoRequestNoGPS() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Denied.Requestable()
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
-        test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
-            awaitAll(
-                locationManager.startMonitoringPermissionsCompleted,
-                permissionManager.hasRequestedPermission
-            )
-            assertTrue(it is LocationState.Disabled.NotPermitted)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
+    fun testStartNoPermissionAutoRequestNoGPS() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = true,
+        autoEnableLocations = false,
+        PermissionState.Denied.Requestable(),
+        false
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            awaitAll(
+                locationManager.startMonitoringPermissionsCompleted
+            )
+            assertIs<LocationState.Disabled.NotPermitted>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
+                it.location
+            )
+        }
+        mainAction {
             permissionManager.setPermissionAllowed()
         }
         test {
             locationManager.startMonitoringLocationEnabledCompleted.await()
-            assertTrue(it is LocationState.Disabled.NoGPS)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS), it.location)
+            assertIs<LocationState.Disabled.NoGPS>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
+                it.location
+            )
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testStartNoGPS() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = false
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
+    fun testStartNoGPS() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        false
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
+        }
         test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
             locationManager.startMonitoringPermissionsCompleted.await()
             locationManager.startMonitoringLocationEnabledCompleted.await()
-            assertTrue(it is LocationState.Disabled.NoGPS)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS), it.location)
+            assertIs<LocationState.Disabled.NoGPS>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
+                it.location
+            )
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testStartNoGPSAutoRequest() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true) {
-        assertFalse(permissionManager.hasStartedMonitoring.isCompleted)
-        assertFalse(permissionManager.hasStoppedMonitoring.isCompleted)
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = false
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
+    fun testStartNoGPSAutoRequest() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = true,
+        PermissionState.Allowed(),
+        false
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
+        }
         test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
             awaitAll(
                 locationManager.startMonitoringPermissionsCompleted,
                 locationManager.startMonitoringLocationEnabledCompleted
             )
-            assertTrue(it is LocationState.Disabled.NoGPS)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS), it.location)
+            assertIs<LocationState.Disabled.NoGPS>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
+                it.location
+            )
         }
-        action {
+        mainAction {
             locationManager.locationEnabled.value = true
         }
         test {
             locationManager.startMonitoringLocationCompleted.await()
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS), it.location)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
+                it.location
+            )
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testLocationChanged() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-        test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+    fun testLocationChanged() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = true,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.handleLocationChanged(location1)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
-        action {
+        mainAction {
             locationManager.handleLocationChanged(location2)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location2, it.location)
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testMultipleLocationChanged() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-        test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+    fun testMultipleLocationChanged() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = true,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.handleLocationChanged(listOf(location1, location2))
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location2, it.location)
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testPermissionRevoked() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
-        test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+    fun testPermissionRevoked() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = true,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.handleLocationChanged(location1)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
-        action {
+        mainAction {
             permissionManager.setPermissionDenied()
         }
         test {
 
             awaitAll(
-                permissionManager.hasRequestedPermission,
                 locationManager.stopMonitoringLocationEnabledCompleted,
                 locationManager.stopMonitoringLocationCompleted
             )
-            assertTrue(it is LocationState.Disabled.NotPermitted)
-            assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
+            assertIs<LocationState.Disabled.NotPermitted>(it)
+            assertEquals(
+                Location.UnknownLocation.WithLastLocation(
+                    location1,
+                    Location.UnknownLocation.Reason.PERMISSION_DENIED
+                ), it.location
+            )
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            locationManager.stopMonitoringPermissionsCompleted.await()
+        }
     }
 
     @Test
-    fun testGPSDisabled() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
-        test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+    fun testGPSDisabled() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = true,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.handleLocationChanged(location1)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
-        action {
+        mainAction {
             locationManager.locationEnabled.value = false
         }
         test {
@@ -405,161 +567,249 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
                 locationManager.requestLocationEnableCompleted,
                 locationManager.stopMonitoringLocationCompleted
             )
-            assertTrue(it is LocationState.Disabled.NoGPS)
-            assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.NO_GPS), it.location)
+            assertIs<LocationState.Disabled.NoGPS>(it)
+            assertEquals(
+                Location.UnknownLocation.WithLastLocation(
+                    location1,
+                    Location.UnknownLocation.Reason.NO_GPS
+                ), it.location
+            )
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
-    fun testResumeFlow() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-        test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+    fun testResumeFlow() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.handleLocationChanged(location1)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
 
-        resetFlow()
+        action {
+            resetFlow()
+        }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
 
         test {
-            assertTrue(it is LocationState.Enabled)
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 4)
+            permissionManager.stopMonitoringMock.verify(3)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        action {
+            resetFlow()
+        }
+
+        mainAction {
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+            permissionManager.stopMonitoringMock.verify(4)
+        }
     }
 
     @Test
-    @Ignore // Unstable test
-    fun testResumeFlowPermissionDenied() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-
-        test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+    fun testResumeFlowPermissionDenied() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
+        mainAction {
+            permissionManager.startMonitoringMock.verify(rule = never())
+            permissionManager.stopMonitoringMock.verify(rule = never())
         }
-        action {
+        test {
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
+        }
+        mainAction {
             locationManager.handleLocationChanged(location1)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
 
-        resetFlow()
-
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
-
-        permissionManager.currentState = PermissionState.Denied.Locked()
-
-        test {
-            assertTrue(it is LocationState.Disabled.NotPermitted)
-            assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
+        action {
+            resetFlow()
         }
 
-        resetFlow()
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted
-        )
+            permissionManager.setPermissionLocked()
+        }
+
+        test {
+            assertIs<LocationState.Disabled.NotPermitted>(it)
+            assertEquals(
+                Location.UnknownLocation.WithLastLocation(
+                    location1,
+                    Location.UnknownLocation.Reason.PERMISSION_DENIED
+                ), it.location
+            )
+        }
+
+        action {
+            resetFlow()
+        }
+
+        mainAction {
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted
+            )
+        }
     }
 
     @Test
-    @Ignore // TODO
-    fun testResumeFlowGPSDisabled() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
-        permissionManager.currentState = PermissionState.Allowed()
-        locationManager.locationEnabled.value = true
-
-        val locationManager = locationManager
-        val permissionManager = permissionManager
-
+    fun testResumeFlowGPSDisabled() = testLocationState(
+        LocationPermission(background = false, precise = false),
+        autoRequestPermission = false,
+        autoEnableLocations = false,
+        PermissionState.Allowed(),
+        true
+    ) {
         test {
-            assertTrue(it is LocationState.Enabled)
-            assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+            yieldMultiple(6)
+            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval), 2)
+            permissionManager.stopMonitoringMock.verify(1)
+            assertIs<LocationState.Enabled>(it)
+            assertEquals(
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
+                it.location
+            )
         }
-        action {
+        mainAction {
             locationManager.handleLocationChanged(location1)
         }
         test {
-            assertTrue(it is LocationState.Enabled)
+            assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
         }
 
-        resetFlow()
-
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
-
-        locationManager.locationEnabled.value = false
-
-        test {
-            assertTrue(it is LocationState.Disabled.NoGPS)
-            assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.NO_GPS), it.location)
+        action {
+            resetFlow()
         }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        mainAction {
+            permissionManager.stopMonitoringMock.verify(2)
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+
+            locationManager.locationEnabled.value = false
+        }
+
+        test {
+            assertIs<LocationState.Disabled.NoGPS>(it)
+            assertEquals(
+                Location.UnknownLocation.WithLastLocation(
+                    location1,
+                    Location.UnknownLocation.Reason.NO_GPS
+                ), it.location
+            )
+        }
+        mainAction {
+            awaitAll(
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
-    private fun testLocationState(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, test: FlowTestBlock<LocationState, LocationStateRepo>) {
+    private fun testLocationState(
+        locationPermission: LocationPermission,
+        autoRequestPermission: Boolean,
+        autoEnableLocations: Boolean,
+        initialPermissionState: PermissionState.Known<LocationPermission>,
+        locationEnabled: Boolean,
+        test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit
+    ) {
 
-        // Make sure permissionState has been created as it may break the tests otherwise
-        permissions[locationPermission]
-
-        locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations, coroutineScope.coroutineContext)
-        locationManager = locationStateRepoBuilder.locationManager
-        permissionManager = permissionsBuilder.locationPMManager!!
-
-        testWithFlow(test)
+        testWithFlowAndTestContext(
+            Configuration(
+                locationPermission,
+                autoRequestPermission,
+                autoEnableLocations,
+                initialPermissionState,
+                locationEnabled
+            ), blockWithContext = test
+        )
     }
 }
 
-class MockLocationStateRepoBuilder(private val permissions: Permissions) : LocationStateRepo.Builder {
+class MockLocationStateRepoBuilder(private val permissions: Permissions) :
+    LocationStateRepo.Builder {
 
     lateinit var locationManager: MockLocationManager
 
-    override fun create(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
+    override fun create(
+        locationPermission: LocationPermission,
+        autoRequestPermission: Boolean,
+        autoEnableLocations: Boolean,
+        coroutineContext: CoroutineContext
+    ): LocationStateRepo {
         return LocationStateRepo(
             locationPermission,
             permissions,
@@ -574,7 +824,13 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
                     autoEnableLocations: Boolean,
                     locationStateRepo: LocationStateRepo
                 ): BaseLocationManager {
-                    locationManager = MockLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
+                    locationManager = MockLocationManager(
+                        locationPermission,
+                        permissions,
+                        autoRequestPermission,
+                        autoEnableLocations,
+                        locationStateRepo
+                    )
                     return locationManager
                 }
             },

@@ -23,7 +23,7 @@ import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
 import com.splendo.kaluga.test.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.mock.verify
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
 
-class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.TestContext, MockAlertPresenterTest.ViewModel>() {
+class MockAlertPresenterTest : UnitUIThreadViewModelTest<MockAlertPresenterTest.TestContext, MockAlertPresenterTest.ViewModel>() {
 
     class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
 

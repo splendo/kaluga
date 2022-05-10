@@ -25,7 +25,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class KoinFlowTestTest :
-    BaseKoinFlowTest<KoinFlowTestTest.TestContext, Int, MutableStateFlow<Int>>() {
+    KoinFlowTest<KoinFlowTestTest.TestContext, Int, MutableStateFlow<Int>>() {
 
     class TestContext : KoinUIThreadTest.KoinTestContext(
         module {
@@ -42,7 +42,7 @@ class KoinFlowTestTest :
     override val createTestContext: suspend (scope: CoroutineScope) -> TestContext = { TestContext() }
 
     @Test
-    fun testFlowActionFirst() = testWithFlowAndTestContext { flow ->
+    fun testFlowActionFirst() = testWithFlow { flow ->
 
         mainAction {
             flow.emit(i)

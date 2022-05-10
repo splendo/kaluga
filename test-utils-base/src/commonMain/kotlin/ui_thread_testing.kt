@@ -42,7 +42,35 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseTest() {
+abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseUIThreadTest<Unit, TC>(allowFreezing) {
+    interface TestContext : BaseUIThreadTest.TestContext
+
+    class EmptyTestContext private constructor() : TestContext {
+        companion object {
+            val INSTANCE = EmptyTestContext()
+        }
+    }
+
+    abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
+    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC = { _, scope ->
+        createTestContext(scope)
+    }
+
+    fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) = testOnUIThread(Unit, cancelScopeAfterTest, block)
+}
+
+/**
+ * This class allows a test block to be run on the UI thread inside a custom context
+ * that is also created in the UI Thread.
+ *
+ * While normally iOS tests already run on the UI thread, this prevents the Main dispatcher from working as long as that Thread is blocked,
+ * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.mainBackground] entry point.
+ *
+ * It is useful for Kotlin Native classes that only work when created on the UI thread,
+ * as it eases dealing with immutability and allows a shared context.
+ *
+ */
+abstract class BaseUIThreadTest<CONF, TC : BaseUIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseTest() {
 
     init {
         if (!allowFreezing) ensureNeverFrozen()
@@ -58,7 +86,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
         }
     }
 
-    abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
+    abstract val createTestContextWithConfiguration: suspend (configuration: CONF, scope: CoroutineScope) -> TC
 
     private companion object {
         val cancellationException = CancellationException("Scope canceled by testOnUIThread because cancelScopeAfterTest was set to true.")
@@ -78,12 +106,12 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
      * @param cancelScopeAfterTest whether to cancel the coroutinescope your block ran in after it's done.
      *
      */
-    fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
+    fun testOnUIThread(configuration: CONF, cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
         try {
 
-            val createTestContext = createTestContext
+            val createTestContextWithConfiguration = createTestContextWithConfiguration
             val test: suspend (CoroutineScope) -> Unit = {
-                val testContext = createTestContext(it)
+                val testContext = createTestContextWithConfiguration(configuration, it)
                 yield()
                 try {
                     block(testContext)
@@ -91,7 +119,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
                     testContext.dispose()
                 }
             }
-            createTestContext.freeze()
+            createTestContextWithConfiguration.freeze()
             test.freeze()
 
             if (cancelScopeAfterTest)

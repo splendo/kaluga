@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -55,12 +54,12 @@ abstract class BaseLocationManager(
 
         if (monitoringPermissionsJob.compareAndSet(null, job))
             launch(job) {
-                locationPermissionRepo.collect { state ->
+                locationPermissionRepo.filterOnlyImportant().collect { state ->
                     if (state is PermissionState.Denied.Requestable && autoRequestPermission)
                         state.request(permissions.getManager(locationPermission))
                     val hasPermission = state is PermissionState.Allowed
 
-                    locationStateRepo.takeAndChangeState { locationState ->
+                    locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { locationState ->
                         when (locationState) {
                             is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
                             is LocationState.Disabled.NotPermitted -> if (hasPermission) locationState.permit(isLocationEnabled()) else locationState.remain()
@@ -101,7 +100,7 @@ abstract class BaseLocationManager(
     internal abstract suspend fun requestLocationEnable()
 
     private suspend fun handleLocationEnabledChanged() {
-        locationStateRepo.takeAndChangeState { state ->
+        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { state ->
             when (state) {
                 is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
                 is LocationState.Disabled.NotPermitted -> state.remain()
@@ -122,7 +121,7 @@ abstract class BaseLocationManager(
     }
 
     internal suspend fun handleLocationChanged(location: Location) {
-        locationStateRepo.takeAndChangeState { state ->
+        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { state ->
             when (state) {
                 is LocationState.Disabled.NoGPS -> {
                     { state.copy(location = location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)) }

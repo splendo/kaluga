@@ -18,8 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
-import com.splendo.kaluga.test.koin.KoinUIThreadTest
+import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -30,7 +29,7 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
-        UIThreadViewModelTest.ViewModelTestContext<VM> {
+        UnitUIThreadViewModelTest.ViewModelTestContext<VM> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
