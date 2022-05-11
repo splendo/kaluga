@@ -27,10 +27,6 @@ actual class CalendarPermissionManager(actual val calendar: CalendarPermission, 
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<CalendarPermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

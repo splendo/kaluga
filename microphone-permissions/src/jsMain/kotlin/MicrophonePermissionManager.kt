@@ -27,10 +27,6 @@ actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : 
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<MicrophonePermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

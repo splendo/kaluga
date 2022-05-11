@@ -29,10 +29,6 @@ actual class NotificationsPermissionManager(actual val notifications: Notificati
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

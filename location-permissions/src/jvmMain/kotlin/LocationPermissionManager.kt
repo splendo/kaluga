@@ -27,10 +27,6 @@ actual class LocationPermissionManager(actual val location: LocationPermission, 
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<LocationPermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

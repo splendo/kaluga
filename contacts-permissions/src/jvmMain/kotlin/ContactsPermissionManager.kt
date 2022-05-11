@@ -27,10 +27,6 @@ actual class ContactsPermissionManager(actual val contacts: ContactsPermission, 
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<ContactsPermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

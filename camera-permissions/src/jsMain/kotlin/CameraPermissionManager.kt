@@ -27,10 +27,6 @@ actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : Permissi
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<CameraPermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

@@ -27,10 +27,6 @@ actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : Pe
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<BluetoothPermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }

@@ -142,10 +142,6 @@ class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : Permi
         hasRequestedPermission.complete()
     }
 
-    override suspend fun initializeState(): PermissionState<DummyPermission> {
-        return initialState
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         hasStartedMonitoring.complete(interval)
     }

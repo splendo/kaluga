@@ -27,10 +27,6 @@ actual class StoragePermissionManager(actual val storage: StoragePermission, rep
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
-        TODO("not implemented")
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented")
     }
