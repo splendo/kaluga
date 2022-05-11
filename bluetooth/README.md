@@ -43,7 +43,9 @@ bluetooth.devices()[someUUID].disconnect()
 ### Android
 You may notice that when you ask for kaluga's `Permission.Bluetooth` the android request alert will prompt `Location` permission. This behaviour is encountered because Android system requires Location to access the hardware identifiers of nearby external devices via Bluetooth.
 
-In order to setup a bluetooth repo on android you need to do the following:
+### Setup
+In order to setup a bluetooth repo you need to do the following:
+
 ```kotlin
 // Somewhere in Android code
 val permissions = Permissions(
@@ -53,7 +55,30 @@ val permissions = Permissions(
     }
 )
 
+val scanSettings = ScanSettings.Builder()
+    .setScanMode(..)
+    .setNumOfMatches(..)
+    .build()
+
+val scannerBuilder = Scanner.Builder(scanSettings = scanSettings,..)
+
 val bluetoothBuilder = BluetoothBuilder(permissions = permissions)
+CommonViewModel(bluetoothBuilder)
+...
+
+// Somewhere in iOS code
+val permissions = Permissions(
+    PermissionsBuilder().apply {
+        registerBluetoothPermission()
+        registerLocationPermission()
+    }
+)
+
+val scanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
+
+val scannerBuilder = Scanner.Builder(scanSettings)
+
+val bluetoothBuilder = BluetoothBuilder(permissions = permissions, scannerBuilder = scannerBuilder)
 CommonViewModel(bluetoothBuilder)
 ...
 
@@ -67,3 +92,8 @@ class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseViewModel() {
     )
 } 
 ```
+
+### Notes
+There is a major difference when it comes to the reporting of scanned devices between Android and iOS. Android report multiple scans of the same device, whereas iOS filters them out.
+
+To align the behaviour across platforms the [CBCentralManagerScanOptionAllowDuplicatesKey](https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey) option is enabled on iOS. It can be set to another value using `ScanSettings` as shown above.

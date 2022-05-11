@@ -44,20 +44,20 @@ interface StringLoader {
 expect class DefaultStringLoader() : StringLoader
 
 /**
- * Loads a [Color] based on a provided identifier.
+ * Loads a [KalugaColor] based on a provided identifier.
  */
-interface ColorLoader {
+interface KalugaColorLoader {
     /**
-     * Attempts to load the [Color] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
-     * @param identifier The identifier to find the [Color] resource for.
-     * @param defaultValue The [Color] to return if no match was found for the identifier.
-     * @return The associated [Color] resources or [defaultValue] if no such resource was found.
+     * Attempts to load the [KalugaColor] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [KalugaColor] resource for.
+     * @param defaultValue The [KalugaColor] to return if no match was found for the identifier.
+     * @return The associated [KalugaColor] resources or [defaultValue] if no such resource was found.
      */
-    fun loadColor(identifier: String, defaultValue: Color?): Color?
+    fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor?
 }
 
-/** Default implementation of a [ColorLoader]. */
-expect class DefaultColorLoader() : ColorLoader
+/** Default implementation of a [KalugaColorLoader]. */
+expect class DefaultColorLoader() : KalugaColorLoader
 
 /**
  * Loads an [Image] based on a provided identifier.
@@ -117,18 +117,18 @@ fun String.quantity(
 ): String = stringLoader.loadQuantityString(this, quantity, defaultValue)
 
 /**
- * Treats this string as a resource identifier for a [Color] and grabs the associated [Color]
- * @param colorLoader The [ColorLoader] used for loading the associated [Color] resource.
- * @param defaultValue The [Color] to return if no match was found for the identifier. Defaults to `null`.
- * @return The [Color] associated with the identifier represented by this String, or [defaultValue] if no such [Color] could be found.
+ * Treats this string as a resource identifier for a [KalugaColor] and grabs the associated [KalugaColor]
+ * @param colorLoader The [KalugaColorLoader] used for loading the associated [KalugaColor] resource.
+ * @param defaultValue The [KalugaColor] to return if no match was found for the identifier. Defaults to `null`.
+ * @return The [KalugaColor] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaColor] could be found.
  */
 fun String.asColor(
-    colorLoader: ColorLoader = DefaultColorLoader(),
-    defaultValue: Color? = null
-): Color? = colorLoader.loadColor(this, defaultValue)
+    colorLoader: KalugaColorLoader = DefaultColorLoader(),
+    defaultValue: KalugaColor? = null
+): KalugaColor? = colorLoader.loadColor(this, defaultValue)
 
 /**
- * Treats this string as a resource identifier for a [Color] and grabs the associated [Image]
+ * Treats this string as a resource identifier for a [KalugaColor] and grabs the associated [Image]
  * @param imageLoader The [ImageLoader] used for loading the associated [Image] resource.
  * @param defaultValue The [Image] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [Image] associated with the identifier represented by this String, or [defaultValue] if no such [Image] could be found.

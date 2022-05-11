@@ -30,63 +30,66 @@ import kotlin.jvm.JvmName
 /**
  * Class describing a color
  */
-expect class Color
+expect class KalugaColor
+
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
+typealias Color = KalugaColor
 
 @Serializable(with = ColorSerializer::class)
-data class SerializableColor(val color: Color)
+data class SerializableColor(val color: KalugaColor)
 
-val Color.serializable get() = SerializableColor(this)
+val KalugaColor.serializable get() = SerializableColor(this)
 
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`
  */
-expect val Color.red: Double
+expect val KalugaColor.red: Double
 /**
  * Gets the red value of the color in a range between `0` and `255`
  */
-expect val Color.redInt: Int
+expect val KalugaColor.redInt: Int
 /**
  * Gets the green value of the color in a range between `0.0` and `1.0`
  */
-expect val Color.green: Double
+expect val KalugaColor.green: Double
 /**
  * Gets the green value of the color in a range between `0` and `255`
  */
-expect val Color.greenInt: Int
+expect val KalugaColor.greenInt: Int
 /**
  * Gets the blue value of the color in a range between `0.0` and `1.0`
  */
-expect val Color.blue: Double
+expect val KalugaColor.blue: Double
 /**
  * Gets the blue value of the color in a range between `0` and `255`
  */
-expect val Color.blueInt: Int
+expect val KalugaColor.blueInt: Int
 /**
  * Gets the alpha value of the color in a range between `0.0` and `1.0`
  */
-expect val Color.alpha: Double
+expect val KalugaColor.alpha: Double
 /**
  * Gets the alpha value of the color in a range between `0` and `255`
  */
-expect val Color.alphaInt: Int
+expect val KalugaColor.alphaInt: Int
 
 /**
- * Creates a [Color] using red, green, blue, and (optional) alpha, all ranging between `0.0` and `1.0`.
+ * Creates a [KalugaColor] using red, green, blue, and (optional) alpha, all ranging between `0.0` and `1.0`.
  * @param red The red color value ranging between `0.0` and `1.0`.
  * @param green The green color value ranging between `0.0` and `1.0`.
  * @param blue The blue color value ranging between `0.0` and `1.0`.
  * @param alpha The alpha color value ranging between `0.0` and `1.0`. Defaults to `1.0`
- * @return The [Color] with the corresponding red, green, blue, and alpha values
+ * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
  */
-expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1.0): Color
+expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1.0): KalugaColor
 
 /**
- * Creates a [Color] using red, green, blue, and (optional) alpha, all ranging between `0` and `255`.
+ * Creates a [KalugaColor] using red, green, blue, and (optional) alpha, all ranging between `0` and `255`.
  * @param red The red color value ranging between `0` and `255`.
  * @param green The green color value ranging between `0` and `255`.
  * @param blue The blue color value ranging between `0` and `255`.
  * @param alpha The alpha color value ranging between `0` and `255`. Defaults to `255`
- * @return The [Color] with the corresponding red, green, blue, and alpha values
+ * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
  */
 expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): Color
 
