@@ -61,6 +61,7 @@ abstract class BaseLocationManager(
 
                     locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { locationState ->
                         when (locationState) {
+                            is LocationState.Initializing -> locationState.initialize(hasPermission, isLocationEnabled())
                             is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
                             is LocationState.Disabled.NotPermitted -> if (hasPermission) locationState.permit(isLocationEnabled()) else locationState.remain()
                         }
@@ -102,6 +103,7 @@ abstract class BaseLocationManager(
     private suspend fun handleLocationEnabledChanged() {
         locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { state ->
             when (state) {
+                is LocationState.Initializing -> state.remain()
                 is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
                 is LocationState.Disabled.NotPermitted -> state.remain()
                 is LocationState.Enabled -> if (isLocationEnabled()) state.remain() else state.disable
@@ -123,6 +125,9 @@ abstract class BaseLocationManager(
     internal suspend fun handleLocationChanged(location: Location) {
         locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { state ->
             when (state) {
+                is LocationState.Initializing -> {
+                    { state.copy(location = location)}
+                }
                 is LocationState.Disabled.NoGPS -> {
                     { state.copy(location = location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)) }
                 }

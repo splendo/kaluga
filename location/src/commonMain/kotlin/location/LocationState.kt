@@ -77,6 +77,7 @@ sealed class LocationState : KalugaState {
         override suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
                 is Unknown,
+                is Initializing,
                 is Disabled.NotPermitted -> locationManager.stopMonitoringLocationEnabled()
                 else -> {}
             }
@@ -85,8 +86,20 @@ sealed class LocationState : KalugaState {
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
                 is Unknown,
+                is Initializing,
                 is Disabled.NotPermitted -> locationManager.startMonitoringLocationEnabled()
                 else -> {}
+            }
+        }
+    }
+
+    data class Initializing(override val location: Location, override val locationManager: BaseLocationManager) : Known(), SpecialFlowValue.NotImportant {
+
+        fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState = suspend {
+            when {
+                !hasPermission -> Disabled.NotPermitted(location.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED), locationManager)
+                !enabled -> Disabled.NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
+                else -> Enabled(location, locationManager)
             }
         }
     }
@@ -205,19 +218,7 @@ class LocationStateRepo(
         val locationManager = (repo as LocationStateRepo).locationManager
         val lastKnownLocation = locationState.location
         {
-            if (!locationManager.isPermitted()) {
-                LocationState.Disabled.NotPermitted(
-                    lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED),
-                    locationManager
-                )
-            } else if (!locationManager.isLocationEnabled()) {
-                LocationState.Disabled.NoGPS(
-                    lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS),
-                    locationManager
-                )
-            } else {
-                LocationState.Enabled(lastKnownLocation, locationManager)
-            }
+            LocationState.Initializing(lastKnownLocation, locationManager)
         }
     },
     deinitChangeStateWithRepo = { locationState, _ ->
