@@ -45,13 +45,6 @@ actual class LocationPermissionManager(
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<LocationPermission> {
-        return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         permissionsManager.startMonitoring(interval)
     }

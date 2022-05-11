@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 abstract class BaseLocationManager(
@@ -76,10 +75,6 @@ abstract class BaseLocationManager(
             if (monitoringPermissionsJob.compareAndSet(it, null))
                 it.cancel()
         }
-    }
-
-    internal suspend fun isPermitted(): Boolean {
-        return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
     internal open suspend fun startMonitoringLocationEnabled() {

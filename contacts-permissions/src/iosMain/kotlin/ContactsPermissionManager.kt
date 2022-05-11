@@ -68,10 +68,6 @@ actual class ContactsPermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<ContactsPermission> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }

@@ -36,13 +36,6 @@ actual class ContactsPermissionManager(
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<ContactsPermission> {
-        return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         permissionsManager.startMonitoring(interval)
     }

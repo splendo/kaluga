@@ -66,10 +66,6 @@ actual class LocationPermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<LocationPermission> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         locationManager.delegate = delegate
     }

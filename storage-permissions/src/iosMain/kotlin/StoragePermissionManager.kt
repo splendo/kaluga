@@ -59,10 +59,6 @@ actual class StoragePermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }

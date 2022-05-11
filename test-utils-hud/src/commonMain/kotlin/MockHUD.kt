@@ -43,8 +43,8 @@ class MockHUD(
         init {
             if (setupMocks) {
                 val builtHUDs = builtHUDs
-                createMock.on().doExecute { values ->
-                    MockHUD(values.first, setupMocks, values.second).also {
+                createMock.on().doExecute { (hudConfig, coroutineScope) ->
+                    MockHUD(hudConfig, setupMocks, coroutineScope).also {
                         builtHUDs.add(it)
                     }
                 }

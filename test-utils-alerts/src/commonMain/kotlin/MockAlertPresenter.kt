@@ -19,7 +19,6 @@ package com.splendo.kaluga.test.alerts
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.test.mock.call
@@ -37,8 +36,8 @@ class MockAlertPresenter (val alert: Alert, setupMocks: Boolean = true) : BaseAl
         init {
             if (setupMocks) {
                 val builtAlerts = builtAlerts
-                createMock.on().doExecute { values ->
-                    MockAlertPresenter(values.value, setupMocks).also {
+                createMock.on().doExecute { (alert) ->
+                    MockAlertPresenter(alert, setupMocks).also {
                         builtAlerts.add(it)
                     }
                 }
@@ -65,8 +64,7 @@ class MockAlertPresenter (val alert: Alert, setupMocks: Boolean = true) : BaseAl
 
     init {
         if (setupMocks) {
-            closeWithActionMock.on().doExecute { parameters ->
-                val action = parameters.value
+            closeWithActionMock.on().doExecute { (action) ->
                 action?.let {
                     if (alert.actions.contains(it)) {
                         it.handler()
@@ -79,11 +77,11 @@ class MockAlertPresenter (val alert: Alert, setupMocks: Boolean = true) : BaseAl
                 }
                 dismissAlert(false)
             }
-            showAsyncMock.on().doExecute {
-                showAlert(it.first, completion = it.second)
+            showAsyncMock.on().doExecute { (animated, completion) ->
+                showAlert(animated, completion = completion)
             }
-            dismissMock.on().doExecute {
-                dismissAlert(it.value)
+            dismissMock.on().doExecute { (animated) ->
+                dismissAlert(animated)
             }
         }
     }

@@ -68,15 +68,11 @@ class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, private v
         }
     }
 
-    suspend fun initializeState(): PermissionState<P> {
-        return when {
-            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> PermissionState.Denied.Locked()
-            else -> IOSPermissionsHelper.getPermissionState(authorizationStatus())
-        }
-    }
-
     suspend fun startMonitoring(interval: Long) {
-        timerHelper.startMonitoring(interval)
+        when {
+            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> type.permissionManager.revokePermission(true)
+            else -> timerHelper.startMonitoring(interval)
+        }
     }
 
     suspend fun stopMonitoring() {

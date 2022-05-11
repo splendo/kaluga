@@ -130,12 +130,10 @@ class MockMethodTest {
         mock.verify(notEq(paramA))
         mock.verify(eq(paramB))
         mock.reset()
-        mock.on(eq(paramB)).doAnswer(object : Answer<SingleParameters.Values<String>, String> {
-            override fun call(arguments: SingleParameters.Values<String>): String {
-                assertEquals(paramB, arguments.value)
-                return resultB
-            }
-        })
+        mock.on(eq(paramB)).doExecute { (parameter) ->
+            assertEquals(paramB, parameter)
+            resultB
+        }
         assertEquals(resultB, mock.call(paramB))
         val captor = AnyCaptor<String>()
         mock.verify(captor)

@@ -34,11 +34,11 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
     val loadQuantityStringMock = ::loadQuantityString.mock()
 
     init {
-        loadStringMock.on().doExecute { values ->
-                if (returnMock) values.first else values.second
+        loadStringMock.on().doExecute { (identifier, defaultValue) ->
+                if (returnMock) identifier else defaultValue
             }
-        loadQuantityStringMock.on().doExecute { values ->
-            if (returnMock) "${values.first}_${values.second}" else values.third
+        loadQuantityStringMock.on().doExecute { (identifier, quantity, defaultValue) ->
+            if (returnMock) "${identifier}_${quantity}" else defaultValue
         }
     }
 
@@ -56,8 +56,8 @@ class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoad
     val loadColorMock = ::loadColor.mock()
 
     init {
-        loadColorMock.on().doExecute { values ->
-            if (returnMock) mockColor() else values.second
+        loadColorMock.on().doExecute { (_, defaultValue) ->
+            if (returnMock) mockColor() else defaultValue
         }
     }
 
@@ -69,8 +69,8 @@ class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
     val loadImageMock = ::loadImage.mock()
 
     init {
-        loadImageMock.on().doExecute { values ->
-            if (returnMock) mockImage() else values.second
+        loadImageMock.on().doExecute { (_, defaultValue) ->
+            if (returnMock) mockImage() else defaultValue
         }
     }
 
@@ -82,8 +82,8 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
     val loadFontMock = ::loadFont.mock()
 
     init {
-        loadFontMock.on().doExecute { values ->
-            if (returnMock) mockFont() else values.second
+        loadFontMock.on().doExecute { (_, defaultValue) ->
+            if (returnMock) mockFont() else defaultValue
         }
     }
 

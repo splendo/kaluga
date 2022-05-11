@@ -69,9 +69,15 @@ class LocationStateTest :
         val locationPermission: LocationPermission,
         val autoRequestPermission: Boolean,
         val autoEnableLocations: Boolean,
-        val initialPermissionState: PermissionState.Known<LocationPermission>,
+        val initialPermissionState: PermissionState,
         val locationEnabled: Boolean
-    )
+    ) {
+        enum class PermissionState {
+            ALLOWED,
+            DISABLED,
+            LOCKED
+        }
+    }
 
     class Context(configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder().apply {
@@ -96,7 +102,11 @@ class LocationStateTest :
             locationEnabled.value = configuration.locationEnabled
         }
         val permissionManager = permissionsBuilder.locationPMManager!!.apply {
-            currentState = configuration.initialPermissionState
+            currentState.value = when (configuration.initialPermissionState) {
+                Configuration.PermissionState.ALLOWED -> PermissionState.Allowed(monitoringInterval, this)
+                Configuration.PermissionState.DISABLED -> PermissionState.Denied.Requestable(monitoringInterval, this)
+                Configuration.PermissionState.LOCKED -> PermissionState.Denied.Locked(monitoringInterval, this)
+            }
         }
     }
 
@@ -110,7 +120,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -149,7 +159,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        PermissionState.Denied.Requestable(),
+        Configuration.PermissionState.DISABLED,
         false
     ) {
         mainAction {
@@ -182,7 +192,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        PermissionState.Denied.Requestable(),
+        Configuration.PermissionState.DISABLED,
         false
     ) {
         mainAction {
@@ -236,7 +246,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        PermissionState.Denied.Requestable(),
+        Configuration.PermissionState.DISABLED,
         false
     ) {
         mainAction {
@@ -285,7 +295,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         false
     ) {
         mainAction {
@@ -322,7 +332,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = true,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         false
     ) {
         mainAction {
@@ -373,7 +383,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -423,7 +433,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -470,7 +480,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -526,7 +536,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = true,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -584,7 +594,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -647,7 +657,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         mainAction {
@@ -712,7 +722,7 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        PermissionState.Allowed(),
+        Configuration.PermissionState.ALLOWED,
         true
     ) {
         test {
@@ -768,7 +778,7 @@ class LocationStateTest :
         locationPermission: LocationPermission,
         autoRequestPermission: Boolean,
         autoEnableLocations: Boolean,
-        initialPermissionState: PermissionState.Known<LocationPermission>,
+        initialPermissionState: Configuration.PermissionState,
         locationEnabled: Boolean,
         test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit
     ) {

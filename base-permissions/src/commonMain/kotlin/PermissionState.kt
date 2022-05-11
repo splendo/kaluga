@@ -20,6 +20,8 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.state.ColdStateFlowRepo
+import com.splendo.kaluga.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.KalugaState
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -31,15 +33,42 @@ sealed class PermissionState<P : Permission> : KalugaState {
 
     class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
 
-    sealed class Known<P : Permission> : PermissionState<P>()
+    sealed class Known<P : Permission> : PermissionState<P>(), HandleBeforeOldStateIsRemoved<PermissionState<P>>, HandleAfterNewStateIsSet<PermissionState<P>> {
+        abstract val monitoringInterval: Long
+        abstract val permissionManager: PermissionManager<P>
+
+        override suspend fun afterNewStateIsSet(newState: PermissionState<P>) {
+            when (newState) {
+                is Unknown -> permissionManager.stopMonitoring()
+                else -> {}
+            }
+        }
+
+        override suspend fun beforeOldStateIsRemoved(oldState: PermissionState<P>) {
+            when (oldState) {
+                is Unknown -> permissionManager.startMonitoring(monitoringInterval)
+                else -> {}
+            }
+        }
+    }
+
+    data class Initializing<P : Permission>(override val monitoringInterval: Long, override val permissionManager: PermissionManager<P>) : Known<P>(), SpecialFlowValue.NotImportant {
+        fun initialize(allowed: Boolean, locked: Boolean): suspend() -> PermissionState<P> = {
+            when {
+                !allowed && locked -> Denied.Locked(monitoringInterval, permissionManager)
+                !allowed ->  Denied.Requestable(monitoringInterval, permissionManager)
+                else -> Allowed(monitoringInterval, permissionManager)
+            }
+        }
+    }
 
     /**
      * When in this state the [Permission] has been granted
      */
-    class Allowed<P : Permission> : Known<P>() {
+    data class Allowed<P : Permission>(override val monitoringInterval: Long, override val permissionManager: PermissionManager<P>) : Known<P>() {
 
         internal fun deny(locked: Boolean): Denied<P> {
-            return if (locked) Denied.Locked() else Denied.Requestable()
+            return if (locked) Denied.Locked(monitoringInterval, permissionManager) else Denied.Requestable(monitoringInterval, permissionManager)
         }
     }
 
@@ -49,30 +78,30 @@ sealed class PermissionState<P : Permission> : KalugaState {
     sealed class Denied<P : Permission> : Known<P>() {
 
         internal val allow: suspend () -> Allowed<P> = {
-            Allowed()
+            Allowed(monitoringInterval, permissionManager)
         }
 
         /**
          * When in this state the [Permission] is denied and cannot be requested
          */
-        class Locked<P : Permission>() : Denied<P>() {
+        data class Locked<P : Permission>(override val monitoringInterval: Long, override val permissionManager: PermissionManager<P>) : Denied<P>() {
 
             internal val unlock: suspend () -> Requestable<P> = {
-                Requestable()
+                Requestable(monitoringInterval, permissionManager)
             }
         }
 
         /**
          * When in this state the [Permission] is denied but can be requested. Use [request] to request the permission.
          */
-        class Requestable<P : Permission> : Denied<P>() {
+        data class Requestable<P : Permission>(override val monitoringInterval: Long, override val permissionManager: PermissionManager<P>) : Denied<P>() {
 
             suspend fun request(permissionManager: PermissionManager<out Permission>) {
                 permissionManager.requestPermission()
             }
 
             internal val lock: suspend () -> Locked<P> = {
-                Locked()
+                Locked(monitoringInterval, permissionManager)
             }
         }
     }
@@ -88,16 +117,11 @@ abstract class PermissionStateRepo<P : Permission>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : ColdStateFlowRepo<PermissionState<P>>(
     coroutineContext,
-    initChangeStateWithRepo = { state, repo ->
+    initChangeStateWithRepo = { _, repo ->
         val pm = (repo as PermissionStateRepo<P>).permissionManager
-        pm.startMonitoring(monitoringInterval)
-        if (state is PermissionState.Unknown<P>)
-            suspend { pm.initializeState() }
-        else
-            suspend { state }
+        suspend { PermissionState.Initializing(monitoringInterval, pm) }
     },
-    deinitChangeStateWithRepo = { _, repo ->
-        (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
+    deinitChangeStateWithRepo = { _, _ ->
         suspend { PermissionState.Unknown() }
     },
     firstState = { PermissionState.Unknown() }

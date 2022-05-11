@@ -35,10 +35,6 @@ actual class MicrophonePermissionManager(
         avPermissionHelper.requestPermission()
     }
 
-    override suspend fun initializeState(): PermissionState<MicrophonePermission> {
-        return avPermissionHelper.initializeState()
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         avPermissionHelper.startMonitoring(interval)
     }

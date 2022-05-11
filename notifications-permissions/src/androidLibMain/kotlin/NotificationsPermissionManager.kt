@@ -29,16 +29,11 @@ actual class NotificationsPermissionManager(
 ) : PermissionManager<NotificationsPermission>(stateRepo) {
 
     override suspend fun requestPermission() {
-        // No need to do anything, permission always granted
-    }
-
-    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
-        // Permission always granted
-        return PermissionState.Allowed()
+        grantPermission()
     }
 
     override suspend fun startMonitoring(interval: Long) {
-        // No need to do anything, permission always granted
+        grantPermission()
     }
 
     override suspend fun stopMonitoring() {

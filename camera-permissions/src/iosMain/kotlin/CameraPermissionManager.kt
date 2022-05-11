@@ -35,10 +35,6 @@ actual class CameraPermissionManager(
         avPermissionHelper.requestPermission()
     }
 
-    override suspend fun initializeState(): PermissionState<CameraPermission> {
-        return avPermissionHelper.initializeState()
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         avPermissionHelper.startMonitoring(interval)
     }

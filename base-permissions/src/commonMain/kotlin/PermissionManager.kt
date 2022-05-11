@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.permissions.PermissionState.Allowed
 import com.splendo.kaluga.permissions.PermissionState.Denied
+import com.splendo.kaluga.permissions.PermissionState.Initializing
 import com.splendo.kaluga.permissions.PermissionState.Unknown
 import kotlinx.coroutines.CoroutineScope
 
@@ -33,12 +34,6 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
      * Requests the permission
      */
     abstract suspend fun requestPermission()
-
-    /**
-     * Determines the [PermissionState] at which to start.
-     */
-    abstract suspend fun initializeState(): PermissionState<P>
-
     /**
      * Starts monitoring for changes to the permission.
      * @param interval The interval in milliseconds between checking for changes to the permission state
@@ -57,6 +52,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
     open fun grantPermission() {
         stateRepo.launchTakeAndChangeState { state ->
             when (state) {
+                is Initializing -> state.initialize(allowed = true, locked = false)
                 is Denied -> state.allow
                 is Allowed, is Unknown -> state.remain()
             }
@@ -71,6 +67,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
     open fun revokePermission(locked: Boolean) {
         stateRepo.launchTakeAndChangeState { state ->
             when (state) {
+                is Initializing -> state.initialize(false, locked)
                 is Allowed -> suspend { state.deny(locked) }
                 is Denied.Requestable -> {
                     if (locked) state.lock else state.remain()
