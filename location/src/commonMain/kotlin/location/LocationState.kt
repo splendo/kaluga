@@ -41,24 +41,37 @@ sealed class LocationState : KalugaState {
 
     abstract val location: Location
 
-    data class Unknown(
-        override val location: Location
-    ) : LocationState(), SpecialFlowValue.NotImportant
+    sealed class Inactive : LocationState(), SpecialFlowValue.NotImportant
 
-    sealed class Known() : LocationState(), HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
+    data class Uninitialized(
+        override val location: Location
+    ) : Inactive() {
+        fun initialize(locationManager: BaseLocationManager): suspend () -> LocationState = { Initializing(location, locationManager) }
+    }
+
+    data class Deinitialized(
+        override val location: Location,
+        private val locationManager: BaseLocationManager
+    ) : Inactive() {
+        val reinitialize: suspend () -> LocationState = { Initializing(location, locationManager) }
+    }
+
+    sealed class Active : LocationState(), HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
 
         protected abstract val locationManager: BaseLocationManager
 
+        val deinitialize: suspend () -> LocationState = { Deinitialized(location, locationManager) }
+
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
-                is Unknown -> locationManager.startMonitoringPermissions()
+                is Inactive -> locationManager.startMonitoringPermissions()
                 else -> {}
             }
         }
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
-                is Unknown -> locationManager.stopMonitoringPermissions()
+                is Inactive -> locationManager.stopMonitoringPermissions()
                 else -> {}
             }
         }
@@ -76,7 +89,7 @@ sealed class LocationState : KalugaState {
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
-                is Unknown,
+                is Inactive,
                 is Initializing,
                 is Disabled.NotPermitted -> locationManager.stopMonitoringLocationEnabled()
                 else -> {}
@@ -85,7 +98,7 @@ sealed class LocationState : KalugaState {
 
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
-                is Unknown,
+                is Inactive,
                 is Initializing,
                 is Disabled.NotPermitted -> locationManager.startMonitoringLocationEnabled()
                 else -> {}
@@ -93,7 +106,7 @@ sealed class LocationState : KalugaState {
         }
     }
 
-    data class Initializing(override val location: Location, override val locationManager: BaseLocationManager) : Known(), SpecialFlowValue.NotImportant {
+    data class Initializing(override val location: Location, override val locationManager: BaseLocationManager) : Active(), SpecialFlowValue.NotImportant {
 
         fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState = suspend {
             when {
@@ -107,7 +120,7 @@ sealed class LocationState : KalugaState {
     /**
      * A [LocationState] that is not actively fetching new [Location]s.
      */
-    sealed class Disabled : Known() {
+    sealed class Disabled : Active() {
 
         /**
          * A [LocationState.Disabled] that was disabled due to missing permissions.
@@ -161,7 +174,7 @@ sealed class LocationState : KalugaState {
     /**
      * A [LocationState] that is actively updating its [Location].
      */
-    data class Enabled(override val location: Location, override val locationManager: BaseLocationManager) : Known(), Permitted {
+    data class Enabled(override val location: Location, override val locationManager: BaseLocationManager) : Active(), Permitted {
 
         private val permittedHandler = PermittedHandler(location, locationManager)
 
@@ -215,16 +228,22 @@ class LocationStateRepo(
 ) : ColdStateFlowRepo<LocationState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { locationState, repo ->
-        val locationManager = (repo as LocationStateRepo).locationManager
-        val lastKnownLocation = locationState.location
-        {
-            LocationState.Initializing(lastKnownLocation, locationManager)
+        when (locationState) {
+            is LocationState.Uninitialized -> {
+                val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, (repo  as LocationStateRepo))
+                locationState.initialize(locationManager)
+            }
+            is LocationState.Deinitialized -> locationState.reinitialize
+            else -> locationState.remain()
         }
     },
     deinitChangeStateWithRepo = { locationState, _ ->
-        { LocationState.Unknown(locationState.location) }
+        when (locationState) {
+            is LocationState.Active -> locationState.deinitialize
+            else -> locationState.remain()
+        }
     },
-    firstState = { LocationState.Unknown(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)) }
+    firstState = { LocationState.Uninitialized(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)) }
 ) {
 
     /**
@@ -246,8 +265,6 @@ class LocationStateRepo(
             coroutineContext: CoroutineContext = Dispatchers.Main
         ): LocationStateRepo
     }
-
-    private val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, this)
 }
 
 expect class LocationStateRepoBuilder : LocationStateRepo.Builder

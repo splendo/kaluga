@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,8 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.test-utils-location
 
-object DummyPermission : Permission()
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+
+class TestActivity : AppCompatActivity()

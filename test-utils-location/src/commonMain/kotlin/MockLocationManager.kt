@@ -15,16 +15,22 @@
 
  */
 
-package com.splendo.kaluga.location
+package com.splendo.kaluga.test.location
 
+import co.touchlab.stately.collections.IsoMutableList
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.location.BaseLocationManager
+import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import kotlinx.coroutines.flow.Flow
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockLocationManager(
+    initialLocationEnabled: Boolean,
     locationPermission: LocationPermission,
     permissions: Permissions,
     autoRequestPermission: Boolean,
@@ -38,7 +44,32 @@ class MockLocationManager(
     locationStateRepo
 ) {
 
-    val locationEnabled = MutableStateFlow(false)
+    class Builder(initialLocationEnabled: Boolean, setupMocks: Boolean = true) : BaseLocationManager.Builder {
+
+        val builtLocationManagers = IsoMutableList<MockLocationManager>()
+        val createMock = ::create.mock()
+
+        init {
+            if (setupMocks) {
+                val builtLocationManagers = builtLocationManagers
+                createMock.on().doExecute { (locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) ->
+                    MockLocationManager(initialLocationEnabled, locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo).also {
+                        builtLocationManagers.add(it)
+                    }
+                }
+            }
+        }
+
+        override fun create(
+            locationPermission: LocationPermission,
+            permissions: Permissions,
+            autoRequestPermission: Boolean,
+            autoEnableLocations: Boolean,
+            locationStateRepo: LocationStateRepo
+        ): BaseLocationManager = createMock.call(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
+    }
+
+    val locationEnabled = MutableStateFlow(initialLocationEnabled)
 
     val startMonitoringPermissionsCompleted = EmptyCompletableDeferred()
     val stopMonitoringPermissionsCompleted = EmptyCompletableDeferred()
@@ -48,16 +79,7 @@ class MockLocationManager(
     val startMonitoringLocationCompleted = EmptyCompletableDeferred()
     val stopMonitoringLocationCompleted = EmptyCompletableDeferred()
 
-    override val locationMonitor: LocationMonitor = object : LocationMonitor {
-        override val isServiceEnabled: Boolean
-            get() = locationEnabled.value
-
-        override val isEnabled: Flow<Boolean>
-            get() = locationEnabled
-
-        override fun startMonitoring() {}
-        override fun stopMonitoring() {}
-    }
+    override val locationMonitor = MockLocationMonitor(locationEnabled)
 
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()

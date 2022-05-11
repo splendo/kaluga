@@ -14,23 +14,22 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 dependencies {
-    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
-    implementation("com.google.android.gms:play-services-location:$play_services_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9")
+    /* Uncomment these lines if you are using fragments
+    val ext = (gradle as ExtensionAware).extra
+    androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
+    */
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":location-permissions", ""))
-                implementation(project(":logging", ""))
-                implementation(project(":base", ""))
+                api(project(":location"))
+                api(project(":test-utils-permissions"))
             }
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils-location", ""))
             }
         }
     }

@@ -24,6 +24,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.permissions.DummyPermission
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import org.mockito.ArgumentMatchers

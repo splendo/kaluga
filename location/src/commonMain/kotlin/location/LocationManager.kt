@@ -40,13 +40,13 @@ abstract class BaseLocationManager(
 
     private val locationPermissionRepo get() = permissions[locationPermission]
     abstract val locationMonitor: LocationMonitor
-    private var monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
+    private val monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
     private val _monitoringLocationEnabledJob: AtomicReference<Job?> = AtomicReference(null)
     private var monitoringLocationEnabledJob: Job?
         get() = _monitoringLocationEnabledJob.get()
         set(value) { _monitoringLocationEnabledJob.set(value) }
 
-    internal open fun startMonitoringPermissions() {
+    open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob.get() != null) return // optimization to skip making a job
 
         val job = Job(this.coroutineContext[Job])
@@ -58,7 +58,7 @@ abstract class BaseLocationManager(
                         state.request(permissions.getManager(locationPermission))
                     val hasPermission = state is PermissionState.Allowed
 
-                    locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { locationState ->
+                    locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { locationState ->
                         when (locationState) {
                             is LocationState.Initializing -> locationState.initialize(hasPermission, isLocationEnabled())
                             is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
@@ -70,14 +70,14 @@ abstract class BaseLocationManager(
         // else job.cancel() <-- not needed since the job is just garbage collected and never started anything.
     }
 
-    internal open fun stopMonitoringPermissions() {
+    open fun stopMonitoringPermissions() {
         monitoringPermissionsJob.get()?.let {
             if (monitoringPermissionsJob.compareAndSet(it, null))
                 it.cancel()
         }
     }
 
-    internal open suspend fun startMonitoringLocationEnabled() {
+    open suspend fun startMonitoringLocationEnabled() {
         locationMonitor.startMonitoring()
         if (monitoringLocationEnabledJob != null)
             return
@@ -87,16 +87,16 @@ abstract class BaseLocationManager(
             }
         }
     }
-    internal open fun stopMonitoringLocationEnabled() {
+    open fun stopMonitoringLocationEnabled() {
         locationMonitor.stopMonitoring()
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null
     }
     internal fun isLocationEnabled(): Boolean = locationMonitor.isServiceEnabled
-    internal abstract suspend fun requestLocationEnable()
+    abstract suspend fun requestLocationEnable()
 
     private suspend fun handleLocationEnabledChanged() {
-        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { state ->
+        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { state ->
             when (state) {
                 is LocationState.Initializing -> state.remain()
                 is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
@@ -106,10 +106,10 @@ abstract class BaseLocationManager(
         }
     }
 
-    internal abstract suspend fun startMonitoringLocation()
-    internal abstract suspend fun stopMonitoringLocation()
+    abstract suspend fun startMonitoringLocation()
+    abstract suspend fun stopMonitoringLocation()
 
-    internal fun handleLocationChanged(locations: List<Location>) {
+    fun handleLocationChanged(locations: List<Location>) {
         launch {
             locations.forEach { location ->
                 handleLocationChanged(location)
@@ -117,8 +117,8 @@ abstract class BaseLocationManager(
         }
     }
 
-    internal suspend fun handleLocationChanged(location: Location) {
-        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Known::class) { state ->
+    suspend fun handleLocationChanged(location: Location) {
+        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { state ->
             when (state) {
                 is LocationState.Initializing -> {
                     { state.copy(location = location)}

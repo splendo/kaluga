@@ -25,6 +25,8 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.test.BaseFlowTest
+import com.splendo.kaluga.test.location.MockLocationManager
+import com.splendo.kaluga.test.location.MockLocationStateRepoBuilder
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.mock.verify
@@ -90,7 +92,7 @@ class LocationStateTest :
             // Make sure permissionState has been created as it may break the tests otherwise
             get(configuration.locationPermission)
         }
-        val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
+        val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions, MockLocationManager.Builder(configuration.locationEnabled))
 
         val locationStateRepo = locationStateRepoBuilder.create(
             configuration.locationPermission,
@@ -98,9 +100,7 @@ class LocationStateTest :
             configuration.autoEnableLocations,
             coroutineScope.coroutineContext
         )
-        val locationManager = locationStateRepoBuilder.locationManager.apply {
-            locationEnabled.value = configuration.locationEnabled
-        }
+        val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
         val permissionManager = permissionsBuilder.locationPMManager!!.apply {
             currentState.value = when (configuration.initialPermissionState) {
                 Configuration.PermissionState.ALLOWED -> PermissionState.Allowed(monitoringInterval, this)

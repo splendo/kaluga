@@ -26,6 +26,7 @@ import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.permissions.DummyPermission
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred

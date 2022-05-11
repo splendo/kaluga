@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,8 @@
 
  */
 
-package com.splendo.kaluga.fields
+package com.splendo.kaluga.test.permissions
 
-import com.splendo.kaluga.fields.FieldContent.*
+import com.splendo.kaluga.permissions.Permission
 
-fun parseEmailAddress(email: String, invalid: Reason, empty: Reason? = null): EmailAddress {
-    TODO()
-}
-
-sealed class EmailAddress(override val content: FieldContent, reason: Reason? = null) : Field(content, reason) {
-
-    fun parse(): EmailAddress {
-        TODO()
-    }
-
-    class ValidEmailAddress(override val content: FieldContent, reason: Reason? = null)
-}
+object DummyPermission : Permission()
