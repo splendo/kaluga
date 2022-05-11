@@ -19,9 +19,9 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
-import com.splendo.kaluga.test.mock.bluetooth.createMockDevice
-import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.createMockDevice
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

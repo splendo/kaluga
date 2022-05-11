@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.test.mock.bluetooth.createMockDevice
-import com.splendo.kaluga.test.mock.bluetooth.uuid
+import com.splendo.kaluga.test.bluetooth.createMockDevice
+import com.splendo.kaluga.test.bluetooth.uuid
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertContentEquals

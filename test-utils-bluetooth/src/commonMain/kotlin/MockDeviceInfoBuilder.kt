@@ -25,8 +25,8 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlin.coroutines.CoroutineContext
 
 @MockBuilderDsl

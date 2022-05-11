@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

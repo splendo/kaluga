@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth
 import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

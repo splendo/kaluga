@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.PermissionState.Denied.Requestable
 import com.splendo.kaluga.test.FlowTest
+import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -32,12 +33,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermissionStateRepo>() {
+class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermissionStateRepo<DummyPermission>>() {
     override val filter: (Flow<PermissionState<DummyPermission>>) -> (Flow<PermissionState<DummyPermission>>) = {
         it.filterOnlyImportant()
     }
 
-    override val flow = suspend { MockPermissionStateRepo() }
+    override val flow = suspend { MockPermissionStateRepo<DummyPermission>() }
 
     @Test
     fun testInitialState() = testWithFlow { permissionStateRepo ->
@@ -122,31 +123,5 @@ class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermi
             permissionStateRepo.permissionManager.revokePermission(true)
         }
         assertFalse(hasRequested.await())
-    }
-}
-
-class MockPermissionStateRepo : PermissionStateRepo<DummyPermission>() {
-
-    override val permissionManager = MockPermissionManager(this)
-}
-
-class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<DummyPermission>(mockPermissionRepo) {
-
-    var initialState: PermissionState<DummyPermission> = Requestable()
-
-    val hasRequestedPermission = EmptyCompletableDeferred()
-    val hasStartedMonitoring = CompletableDeferred<Long>()
-    val hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    override suspend fun requestPermission() {
-        hasRequestedPermission.complete()
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        hasStartedMonitoring.complete(interval)
-    }
-
-    override suspend fun stopMonitoring() {
-        hasStoppedMonitoring.complete()
     }
 }

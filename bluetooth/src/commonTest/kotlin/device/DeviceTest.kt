@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.HandlingAction
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
-import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test

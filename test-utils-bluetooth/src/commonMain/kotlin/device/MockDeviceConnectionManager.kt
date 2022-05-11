@@ -31,8 +31,8 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.test.mock.bluetooth.MockCharacteristicWrapper
-import com.splendo.kaluga.test.mock.bluetooth.MockDescriptorWrapper
+import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
+import com.splendo.kaluga.test.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

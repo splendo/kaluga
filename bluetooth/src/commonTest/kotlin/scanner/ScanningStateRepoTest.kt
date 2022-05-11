@@ -28,7 +28,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetoot
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NotInitialized
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNot

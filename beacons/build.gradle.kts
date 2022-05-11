@@ -24,7 +24,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils-base"))
+                implementation(project(":test-utils-bluetooth"))
             }
         }
     }

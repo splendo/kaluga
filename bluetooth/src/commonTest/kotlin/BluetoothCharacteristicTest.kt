@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.test.mock.bluetooth.characteristic
+import com.splendo.kaluga.test.bluetooth.characteristic
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
