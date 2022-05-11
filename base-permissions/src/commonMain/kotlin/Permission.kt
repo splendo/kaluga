@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions
 
 import co.touchlab.stately.collections.IsoMutableMap
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
@@ -121,7 +122,9 @@ class Permissions(private val builder: PermissionsBuilder, private val coroutine
  * @return `true` if the permission was granted, `false` otherwise.
  */
 suspend fun <P : Permission> Flow<PermissionState<out P>>.request(permissionManager: PermissionManager<out P>): Boolean {
+    debug("Request", "Request")
     return this.transformLatest { state ->
+        debug("Request", "Latest $state")
         when (state) {
             is PermissionState.Allowed -> emit(true)
             is PermissionState.Denied.Requestable -> state.request(permissionManager)

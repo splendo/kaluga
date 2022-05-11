@@ -113,7 +113,7 @@ sealed class PermissionState<P : Permission> : KalugaState {
  * @param monitoringInterval The interval in milliseconds between checking for a change in [PermissionState]
  */
 abstract class PermissionStateRepo<P : Permission>(
-    private val monitoringInterval: Long = defaultMonitoringInterval,
+    protected val monitoringInterval: Long = defaultMonitoringInterval,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : ColdStateFlowRepo<PermissionState<P>>(
     coroutineContext,

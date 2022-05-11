@@ -35,6 +35,7 @@ kotlin {
         // Disable JS browser tests for now
         // See https://github.com/splendo/kaluga/issues/97
         // browser()
+        nodejs()
         configure([compilations.main, compilations.test]) {
             tasks.getByName(compileKotlinTaskName).kotlinOptions {
                 metaInfo = true

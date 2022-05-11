@@ -17,10 +17,6 @@ version = ext["library_version"]!!
 dependencies {}
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext

@@ -20,10 +20,6 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         getByName("commonMain") {
             val ext = (gradle as ExtensionAware).extra

@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
 
-    override val permissionManager = MockPermissionManager(this)
+    override val permissionManager = MockPermissionManager(this, monitoringInterval)
 }
 
 class MockPermissionManager<P : Permission>(private val permissionRepo: PermissionStateRepo<P>, val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval) : PermissionManager<P>(permissionRepo) {
@@ -54,6 +54,8 @@ class MockPermissionManager<P : Permission>(private val permissionRepo: Permissi
     val requestPermissionMock = ::requestPermission.mock()
     val startMonitoringMock = ::startMonitoring.mock()
     val stopMonitoringMock = ::stopMonitoring.mock()
+    val grandPermissionMock = ::grantPermission.mock()
+    val revokePermissionMock = ::revokePermission.mock()
 
     override suspend fun requestPermission(): Unit = requestPermissionMock.call()
 
@@ -65,4 +67,15 @@ class MockPermissionManager<P : Permission>(private val permissionRepo: Permissi
     }
 
     override suspend fun stopMonitoring(): Unit = stopMonitoringMock.call()
+
+    override fun grantPermission() {
+        grandPermissionMock.call()
+        super.grantPermission()
+    }
+
+    override fun revokePermission(locked: Boolean) {
+        revokePermissionMock.call(locked)
+        super.revokePermission(locked)
+    }
+
 }

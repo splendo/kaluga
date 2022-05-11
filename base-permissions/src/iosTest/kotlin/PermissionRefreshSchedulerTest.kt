@@ -23,6 +23,11 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
+import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.permissions.MockPermissionManager
+import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlin.test.BeforeTest
@@ -32,13 +37,13 @@ import kotlin.test.assertTrue
 
 class PermissionRefreshSchedulerTest : BaseTest() {
 
-    private lateinit var permissionsManager: MockStoragePermissionManager
+    private lateinit var permissionsManager: MockPermissionManager<DummyPermission>
 
     @BeforeTest
     fun setUp() {
         super.beforeTest()
 
-        val repo = MockStoragePermissionStateRepo()
+        val repo = MockPermissionStateRepo<DummyPermission>()
         permissionsManager = repo.permissionManager
     }
 
@@ -49,73 +54,32 @@ class PermissionRefreshSchedulerTest : BaseTest() {
 
         timerHelper.startMonitoring(50)
         delay(50)
-        assertFalse(permissionsManager.didGrantPermission.value.isCompleted)
-        assertFalse(permissionsManager.didRevokePermission.value.isCompleted)
+        permissionsManager.grandPermissionMock.verify(rule = never())
+        permissionsManager.revokePermissionMock.verify(rule = never())
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
-        permissionsManager.reset()
         delay(60)
-        assertTrue(permissionsManager.didGrantPermission.value.isCompleted)
+        permissionsManager.grandPermissionMock.verify()
 
         timerHelper.isWaiting.value = true
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Denied)
-        permissionsManager.reset()
+        permissionsManager.grandPermissionMock.resetCalls()
+        permissionsManager.revokePermissionMock.resetCalls()
         delay(60)
-        assertFalse(permissionsManager.didGrantPermission.value.isCompleted)
-        assertFalse(permissionsManager.didRevokePermission.value.isCompleted)
+        permissionsManager.grandPermissionMock.verify(rule = never())
+        permissionsManager.revokePermissionMock.verify(rule = never())
 
         timerHelper.isWaiting.value = false
         delay(50)
-        assertTrue(permissionsManager.didRevokePermission.value.await())
+        permissionsManager.revokePermissionMock.verify(eq(true))
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
-        permissionsManager.reset()
+        permissionsManager.grandPermissionMock.resetCalls()
+        permissionsManager.revokePermissionMock.resetCalls()
         timerHelper.stopMonitoring()
         delay(50)
-        assertFalse(permissionsManager.didGrantPermission.value.isCompleted)
-        assertFalse(permissionsManager.didRevokePermission.value.isCompleted)
+        permissionsManager.grandPermissionMock.verify(rule = never())
+        permissionsManager.revokePermissionMock.verify(rule = never())
         Unit
-    }
-}
-
-private class MockStoragePermissionStateRepo : PermissionStateRepo<DummyPermission>() {
-
-    override val permissionManager = MockStoragePermissionManager(this)
-}
-
-private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<DummyPermission>(mockPermissionRepo) {
-
-    var didGrantPermission: AtomicReference<EmptyCompletableDeferred> = AtomicReference(EmptyCompletableDeferred())
-    var didRevokePermission: AtomicReference<CompletableDeferred<Boolean>> = AtomicReference(CompletableDeferred())
-
-    var initialState: PermissionState<DummyPermission> = PermissionState.Denied.Requestable()
-
-    val hasRequestedPermission = EmptyCompletableDeferred()
-    val hasStartedMonitoring = CompletableDeferred<Long>()
-    val hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    override suspend fun requestPermission() {
-        hasRequestedPermission.complete()
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        hasStartedMonitoring.complete(interval)
-    }
-
-    override suspend fun stopMonitoring() {
-        hasStoppedMonitoring.complete()
-    }
-
-    override fun grantPermission() {
-        didGrantPermission.value.complete()
-    }
-
-    override fun revokePermission(locked: Boolean) {
-        didRevokePermission.value.complete(locked)
-    }
-
-    fun reset() {
-        didGrantPermission.set(EmptyCompletableDeferred())
-        didRevokePermission.set(CompletableDeferred())
     }
 }

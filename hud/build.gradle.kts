@@ -21,10 +21,6 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         getByName("commonMain") {
             dependencies {

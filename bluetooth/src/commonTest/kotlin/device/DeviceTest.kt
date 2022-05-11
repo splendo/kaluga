@@ -66,7 +66,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
     fun testInitialState() = testWithFlow {
         val rssi = rssi
         test {
-            assertTrue(it is DeviceState.Disconnected)
+            assertIs<DeviceState.Disconnected>(it)
             assertEquals(rssi, it.deviceInfo.rssi)
         }
     }
@@ -139,7 +139,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val connectCompleted = connectionManager.connectCompleted.get()
         test {
             assertTrue(connectCompleted.isCompleted)
-            assertTrue(it is DeviceState.Reconnecting)
+            assertIs<DeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         action {
@@ -151,7 +151,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             }
         }
         test {
-            assertTrue(it is DeviceState.Connected)
+            assertIs<DeviceState.Connected>(it)
         }
     }
 
@@ -174,7 +174,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val connectCompleted = connectionManager.connectCompleted.get()
         test {
             assertTrue(connectCompleted.isCompleted)
-            assertTrue(it is DeviceState.Reconnecting)
+            assertIs<DeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         action {
@@ -189,7 +189,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val connectCompletedSecond = connectionManager.connectCompleted.get()
         test {
             assertTrue(connectCompletedSecond.isCompleted)
-            assertTrue(it is DeviceState.Reconnecting)
+            assertIs<DeviceState.Reconnecting>(it)
             assertEquals(1, it.attempt)
         }
         action {
@@ -204,7 +204,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val connectCompletedThird = connectionManager.connectCompleted.get()
         test {
             assertFalse(connectCompletedThird.isCompleted)
-            assertTrue(it is DeviceState.Disconnected)
+            assertIs<DeviceState.Disconnected>(it)
         }
     }
 
@@ -230,7 +230,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val readRssiCompleted = connectionManager.readRssiCompleted.get()
         test {
             assertTrue(readRssiCompleted.isCompleted)
-            assertTrue(it is DeviceState.Connected)
+            assertIs<DeviceState.Connected>(it)
             assertEquals(-20, it.deviceInfo.rssi)
         }
     }
@@ -274,7 +274,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val discoverServicesCompleted = connectionManager.discoverServicesCompleted.get()
         test {
             assertTrue(discoverServicesCompleted.isCompleted)
-            assertTrue(it is DeviceState.Connected.Discovering)
+            assertIs<DeviceState.Connected.Discovering>(it)
         }
         val services = listOf(service)
         action {
@@ -286,7 +286,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             }
         }
         test {
-            assertTrue(it is Idle)
+            assertIs<Idle>(it)
             assertEquals(services, it.services)
         }
     }
@@ -307,7 +307,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val discoverServicesCompleted = connectionManager.discoverServicesCompleted.get()
         test {
             assertTrue(discoverServicesCompleted.isCompleted)
-            assertTrue(it is DeviceState.Connected.Discovering)
+            assertIs<DeviceState.Connected.Discovering>(it)
         }
         val services = listOf(service)
         action {
@@ -320,7 +320,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         }
         val service = service
         test {
-            assertTrue(it is Idle)
+            assertIs<Idle>(it)
             assertEquals(listOf(service), it.services)
         }
 
@@ -353,7 +353,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
         val handledAction = connectionManager.handledAction
         test {
-            assertTrue(it is HandlingAction)
+            assertIs<HandlingAction>(it)
             assertTrue(handledAction.first() is DeviceAction.Read)
         }
 
@@ -365,17 +365,17 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         test {
             // filter because the second event might not be written yet
             assertTrue(handledActionSecond.filter { action -> action !is DeviceAction.Read }.first() is DeviceAction.Write)
-            assertTrue(it is HandlingAction)
+            assertIs<HandlingAction>(it)
         }
 
         test {
-            assertTrue(it is Idle)
+            assertIs<Idle>(it)
         }
     }
 
     private suspend fun getDisconnectedState() {
         test {
-            assertTrue(it is DeviceState.Disconnected)
+            assertIs<DeviceState.Disconnected>(it)
         }
     }
 
@@ -383,7 +383,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val disconnectCompleted = connectionManager.disconnectCompleted.get()
         test {
             disconnectCompleted.await()
-            assertTrue(it is DeviceState.Disconnecting)
+            assertIs<DeviceState.Disconnecting>(it)
         }
     }
 
@@ -400,7 +400,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val connectCompleted = connectionManager.connectCompleted.get()
         test {
             connectCompleted.await()
-            assertTrue(it is DeviceState.Connecting)
+            assertIs<DeviceState.Connecting>(it)
         }
     }
 
@@ -414,7 +414,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             }
         }
         test {
-            assertTrue(it is DeviceState.Connected.NoServices)
+            assertIs<DeviceState.Connected.NoServices>(it)
         }
     }
 

@@ -26,6 +26,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
@@ -34,8 +35,8 @@ class RecurringTimerTest {
     @Test
     fun stateTransitions(): Unit = runBlocking {
         val timer = RecurringTimer(
-            duration = Duration.milliseconds(100),
-            interval = Duration.milliseconds(10),
+            duration = 100.milliseconds,
+            interval = 10.milliseconds,
             coroutineScope = this
         )
         assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after creation")
@@ -58,12 +59,12 @@ class RecurringTimerTest {
     @Test
     fun awaitFinish(): Unit = runBlocking {
         val timer = RecurringTimer(
-            duration = Duration.milliseconds(100),
-            interval = Duration.milliseconds(10),
+            duration = 100.milliseconds,
+            interval = 10.milliseconds,
             coroutineScope = this
         )
 
-        withTimeout(Duration.milliseconds(500)) {
+        withTimeout(500.milliseconds) {
             timer.start()
             timer.awaitFinish()
         }
@@ -74,20 +75,20 @@ class RecurringTimerTest {
         fun List<Duration>.isAscending(): Boolean =
             windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
-        val duration = Duration.milliseconds(500)
+        val duration = 500.milliseconds
         val timer = RecurringTimer(
             duration = duration,
-            interval = Duration.milliseconds(50),
+            interval = 50.milliseconds,
             coroutineScope = this
         )
 
         // capture and validate an initial state
-        val initial = timer.elapsed().captureFor(Duration.milliseconds(100))
+        val initial = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
 
         // capture and validate a first chunk of data
         timer.start()
-        val result0 = timer.elapsed().captureFor(Duration.milliseconds(200))
+        val result0 = timer.elapsed().captureFor(200.milliseconds)
         timer.pause()
         assertTrue(result0.isNotEmpty(), "values not emitted")
         assertTrue(initial.last() <= result0.first(), "values are not in ascending order")
@@ -95,13 +96,13 @@ class RecurringTimerTest {
 
         // capture and validate the rest of the data
         timer.start()
-        val result1 = timer.elapsed().captureFor(Duration.milliseconds(1000))
+        val result1 = timer.elapsed().captureFor(1000.milliseconds)
         assertTrue(result1.isNotEmpty(), "values not emitted")
         assertTrue(result0.last() <= result1.first(), "values are not in ascending order")
         assertTrue(result1.isAscending(), "values are not in ascending order")
 
         // capture from a finished timer
-        val final = timer.elapsed().captureFor(Duration.milliseconds(100))
+        val final = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(duration), final, "timer did not finish in the right state")
         assertTrue(result1.last() <= final.first(), "values are not in ascending order")
     }
@@ -148,12 +149,12 @@ class RecurringTimerTest {
 
     @Test
     fun elapsedIrregularFlow(): Unit = runBlocking {
-        val totalDuration = Duration.milliseconds(500)
+        val totalDuration = 500.milliseconds
 
         class Timings(emit: Int, afterEmit: Int, correction: Int) {
-            val emit = Duration.milliseconds(emit)
-            val afterEmit = Duration.milliseconds(afterEmit)
-            val correction = Duration.milliseconds(correction)
+            val emit = emit.milliseconds
+            val afterEmit = afterEmit.milliseconds
+            val correction = correction.milliseconds
         }
 
         val timings = listOf(
@@ -177,26 +178,26 @@ class RecurringTimerTest {
 
         val timer = RecurringTimer(
             duration = totalDuration,
-            interval = Duration.milliseconds(100),
+            interval = 100.milliseconds,
             timeSource = timeSource,
             delayFunction = delayHandler::delay,
             coroutineScope = this
         )
 
         // capture and validate an initial state
-        val initial = timer.elapsed().captureFor(Duration.milliseconds(100))
+        val initial = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
         // capture and validate a first chunk of data
         timer.start()
-        val result = timer.elapsed().captureFor(Duration.milliseconds(500))
+        val result = timer.elapsed().captureFor(500.milliseconds)
         assertEquals(timings.map(Timings::emit), result, "Emitted incorrect values")
 
-        withTimeout(Duration.milliseconds(500)) {
+        withTimeout(500.milliseconds) {
             delayHandler.finishTimer()
             timer.awaitFinish()
         }
         // capture from a finished timer
-        val final = timer.elapsed().captureFor(Duration.milliseconds(100))
+        val final = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(totalDuration), final, "timer did not finish in the right state")
     }
 }

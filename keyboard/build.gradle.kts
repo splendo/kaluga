@@ -14,10 +14,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         getByName("commonMain") {
             dependencies {

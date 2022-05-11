@@ -30,6 +30,7 @@ import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 sealed class TrafficLightState :
@@ -109,7 +110,7 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
     fun testChangeState() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
-            assertTrue(it is TrafficLightState.GreenLight)
+            assertIs<TrafficLightState.GreenLight>(it)
             greenStateDeferred.complete(it)
             assertTrue(it.initialStateDone.isCompleted)
         }
@@ -149,7 +150,7 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
             }
         }
         test {
-            assertTrue(it is TrafficLightState.RedLight)
+            assertIs<TrafficLightState.RedLight>(it)
             assertTrue(greenState.beforeCreatingNewStateDone.isCompleted)
             assertEquals(it, greenState.afterCreatingNewStateDone.getCompleted())
             assertEquals(it, greenState.afterNewStateIsSetDone.getCompleted())
@@ -162,7 +163,7 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
     fun testChangeStateDouble() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
-            assertTrue(it is TrafficLightState.GreenLight)
+            assertIs<TrafficLightState.GreenLight>(it)
             greenStateDeferred.complete(it)
         }
         action {
@@ -180,7 +181,7 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
             }
         }
         test {
-            assertTrue(it is TrafficLightState.RedLight)
+            assertIs<TrafficLightState.RedLight>(it)
         }
     }
 
@@ -188,7 +189,7 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
     fun testChangeStateDoubleConcurrent() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
-            assertTrue(it is TrafficLightState.GreenLight)
+            assertIs<TrafficLightState.GreenLight>(it)
             greenStateDeferred.complete(it)
         }
         action {
@@ -215,7 +216,7 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
             awaitAll(delayedTransition, slowTransition)
         }
         test {
-            assertTrue(it is TrafficLightState.YellowLight)
+            assertIs<TrafficLightState.YellowLight>(it)
         }
     }
 
@@ -265,10 +266,10 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
             // state mutex should protect the order here
 
             test {
-                assertTrue(it is TrafficLightState.YellowLight)
+                assertIs<TrafficLightState.YellowLight>(it)
             }
             test {
-                assertTrue(it is TrafficLightState.RedLight)
+                assertIs<TrafficLightState.RedLight>(it)
             }
 
             transitionsCompleted.await()
