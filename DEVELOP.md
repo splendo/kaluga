@@ -82,7 +82,7 @@ Before doing any publishing, make sure that changes are working with the one ava
 Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/ios/Supporting\ Files`.
 ```
 kaluga.exampleEmbeddingMethod=composite
-kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/ https://oss.sonatype.org/service/local/repositories/comsplendo-1027/
+kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/
 kaluga.libraryVersion=LIBRARY_VERSION
 ```
 Where 
