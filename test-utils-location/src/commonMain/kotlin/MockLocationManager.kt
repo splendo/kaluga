@@ -71,45 +71,45 @@ class MockLocationManager(
 
     val locationEnabled = MutableStateFlow(initialLocationEnabled)
 
-    val startMonitoringPermissionsCompleted = EmptyCompletableDeferred()
-    val stopMonitoringPermissionsCompleted = EmptyCompletableDeferred()
-    val startMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
-    val stopMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
-    val requestLocationEnableCompleted = EmptyCompletableDeferred()
-    val startMonitoringLocationCompleted = EmptyCompletableDeferred()
-    val stopMonitoringLocationCompleted = EmptyCompletableDeferred()
-
     override val locationMonitor = MockLocationMonitor(locationEnabled)
+
+    val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
+    val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
+    val startMonitoringLocationEnabledMock = ::startMonitoringLocationEnabled.mock()
+    val stopMonitoringLocationEnabledMock = ::stopMonitoringLocationEnabled.mock()
+    val requestLocationEnableMock = ::requestLocationEnable.mock()
+    val startMonitoringLocationMock = ::startMonitoringLocation.mock()
+    val stopMonitoringLocationMock = ::stopMonitoringLocation.mock()
 
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
-        startMonitoringPermissionsCompleted.complete()
+        startMonitoringPermissionsMock.call()
     }
 
     override fun stopMonitoringPermissions() {
         super.stopMonitoringPermissions()
-        stopMonitoringPermissionsCompleted.complete()
+        stopMonitoringPermissionsMock.call()
     }
 
     override suspend fun startMonitoringLocationEnabled() {
         super.startMonitoringLocationEnabled()
-        startMonitoringLocationEnabledCompleted.complete()
+        startMonitoringLocationEnabledMock.call()
     }
 
     override fun stopMonitoringLocationEnabled() {
         super.stopMonitoringLocationEnabled()
-        stopMonitoringLocationEnabledCompleted.complete()
+        stopMonitoringLocationEnabledMock.call()
     }
 
     override suspend fun requestLocationEnable() {
-        requestLocationEnableCompleted.complete()
+        requestLocationEnableMock.call()
     }
 
     override suspend fun startMonitoringLocation() {
-        startMonitoringLocationCompleted.complete()
+        startMonitoringLocationMock.call()
     }
 
     override suspend fun stopMonitoringLocation() {
-        stopMonitoringLocationCompleted.complete()
+        stopMonitoringLocationMock.call()
     }
 }
