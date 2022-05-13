@@ -24,10 +24,11 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 
 actual class CameraPermissionManager(
     context: Context,
-    stateRepo: CameraPermissionStateRepo
+    stateRepo: PermissionStateRepo<CameraPermission>
 ) : PermissionManager<CameraPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
@@ -53,7 +54,7 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
+    override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> {
         return CameraPermissionManager(context.context, repo)
     }
 }

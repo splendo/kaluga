@@ -19,24 +19,32 @@ package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionContext
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the users Location
  * @param background If `true` scanning for location in the background is permitted
  * @param precise If `true` precise location scanning is permitted
  */
-data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) : Permission()
+data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) :
+    Permission()
 
-fun PermissionsBuilder.registerLocationPermission() =
-    registerLocationPermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(LocationPermission::class) { permission, coroutineContext ->
-            DefaultLocationPermissionStateRepo(permission as LocationPermission, builder as BaseLocationPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerLocationPermission(
+    locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerLocationPermission(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+        LocationPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerLocationPermissionBuilder(context: PermissionContext = defaultPermissionContext): LocationPermissionManagerBuilder = register(
-    builder = LocationPermissionManagerBuilder(context),
-    permission = LocationPermission::class
-)
+fun PermissionsBuilder.registerLocationPermission(
+    locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
+    locationPermissionStateRepoBuilder: (LocationPermission, BaseLocationPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<LocationPermission>
+) = locationPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<LocationPermission> { permission, coroutineContext ->
+        locationPermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

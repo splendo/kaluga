@@ -19,22 +19,29 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionContext
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the users Microphone
  */
 object MicrophonePermission : Permission()
 
-fun PermissionsBuilder.registerMicrophonePermission() =
-    registerMicrophonePermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(MicrophonePermission::class) { _, coroutineContext ->
-            MicrophonePermissionStateRepo(builder as BaseMicrophonePermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerMicrophonePermission(
+    microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerMicrophonePermission(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
+        MicrophonePermissionStateRepo(builder, monitoringInterval, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: PermissionContext = defaultPermissionContext): MicrophonePermissionManagerBuilder = register(
-    builder = MicrophonePermissionManagerBuilder(context),
-    permission = MicrophonePermission::class
-)
+fun PermissionsBuilder.registerMicrophonePermission(
+    microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
+    microphonePermissionStateRepoBuilder: (BaseMicrophonePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<MicrophonePermission>
+) = microphonePermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<MicrophonePermission> { _, coroutineContext ->
+        microphonePermissionStateRepoBuilder(it, coroutineContext)
+    }
+}

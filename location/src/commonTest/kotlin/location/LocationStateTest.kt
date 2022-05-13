@@ -20,6 +20,7 @@ package com.splendo.kaluga.location
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
@@ -28,8 +29,10 @@ import com.splendo.kaluga.test.BaseFlowTest
 import com.splendo.kaluga.test.location.MockLocationManager
 import com.splendo.kaluga.test.location.MockLocationStateRepoBuilder
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.test.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
@@ -71,18 +74,14 @@ class LocationStateTest :
         val locationPermission: LocationPermission,
         val autoRequestPermission: Boolean,
         val autoEnableLocations: Boolean,
-        val initialPermissionState: PermissionState,
+        val initialPermissionState: MockPermissionManager.MockPermissionState,
         val locationEnabled: Boolean
-    ) {
-        enum class PermissionState {
-            ALLOWED,
-            DISABLED,
-            LOCKED
-        }
-    }
+    )
 
-    class Context(configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
-        val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder().apply {
+    class Context(private val configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
+        val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
+            initialPermissionState = configuration.initialPermissionState
+        ).apply {
             registerAllPermissionsBuilders()
         }
         val permissions = Permissions(
@@ -101,13 +100,7 @@ class LocationStateTest :
             coroutineScope.coroutineContext
         )
         val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
-        val permissionManager = permissionsBuilder.locationPMManager!!.apply {
-            currentState.value = when (configuration.initialPermissionState) {
-                Configuration.PermissionState.ALLOWED -> PermissionState.Allowed(monitoringInterval, this)
-                Configuration.PermissionState.DISABLED -> PermissionState.Denied.Requestable(monitoringInterval, this)
-                Configuration.PermissionState.LOCKED -> PermissionState.Denied.Locked(monitoringInterval, this)
-            }
-        }
+        val permissionManager get() = permissionsBuilder.createdLocationPermissionManagers.first()
     }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context = { configuration, scope -> Context(configuration, scope) }
@@ -120,12 +113,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -159,12 +151,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        Configuration.PermissionState.DISABLED,
+        MockPermissionManager.MockPermissionState.DENIED,
         false
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -192,12 +183,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        Configuration.PermissionState.DISABLED,
+        MockPermissionManager.MockPermissionState.DENIED,
         false
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -246,12 +236,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        Configuration.PermissionState.DISABLED,
+        MockPermissionManager.MockPermissionState.DENIED,
         false
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -295,12 +284,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         false
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -332,12 +320,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = true,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         false
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -383,12 +370,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -433,12 +419,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -480,12 +465,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -536,12 +520,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = true,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -594,12 +577,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -657,12 +639,11 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
         mainAction {
-            permissionManager.startMonitoringMock.verify(rule = never())
-            permissionManager.stopMonitoringMock.verify(rule = never())
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
         }
         test {
             yieldMultiple(6)
@@ -693,6 +674,7 @@ class LocationStateTest :
                 locationManager.stopMonitoringLocationEnabledCompleted
             )
 
+            debug("Set Permission Locked")
             permissionManager.setPermissionLocked()
         }
 
@@ -722,9 +704,12 @@ class LocationStateTest :
         LocationPermission(background = false, precise = false),
         autoRequestPermission = false,
         autoEnableLocations = false,
-        Configuration.PermissionState.ALLOWED,
+        MockPermissionManager.MockPermissionState.ALLOWED,
         true
     ) {
+        mainAction {
+            permissionsBuilder.createLocationPermissionManagerMock.verify(rule = never())
+        }
         test {
             yieldMultiple(6)
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
@@ -778,7 +763,7 @@ class LocationStateTest :
         locationPermission: LocationPermission,
         autoRequestPermission: Boolean,
         autoEnableLocations: Boolean,
-        initialPermissionState: Configuration.PermissionState,
+        initialPermissionState: MockPermissionManager.MockPermissionState,
         locationEnabled: Boolean,
         test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit
     ) {

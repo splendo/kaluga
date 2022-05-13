@@ -22,6 +22,7 @@ import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.defaultPermissionContext
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -31,16 +32,16 @@ expect class ContactsPermissionManager : PermissionManager<ContactsPermission> {
     /**
      * The [Permission.Contacts] managed by this manager
      */
-    val contacts: ContactsPermission
+    val contactsPermission: ContactsPermission
 }
 
-interface BaseContactsPermissionManagerBuilder : BasePermissionsBuilder {
+interface BaseContactsPermissionManagerBuilder : BasePermissionsBuilder<ContactsPermission> {
 
     /**
      * Creates a [ContactsPermissionManager]
      * @param repo The [ContactsPermissionStateRepo] associated with the [ContactsPermission]
      */
-    fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission>
+    fun create(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission>
 }
 
 /**
@@ -53,7 +54,9 @@ expect class ContactsPermissionManagerBuilder(context: PermissionContext = defau
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class ContactsPermissionStateRepo(contacts: ContactsPermission, builder: BaseContactsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<ContactsPermission>(coroutineContext = coroutineContext) {
-
-    override val permissionManager: PermissionManager<ContactsPermission> = builder.create(contacts, this)
-}
+class ContactsPermissionStateRepo(
+    contactsPermission: ContactsPermission,
+    builder: BaseContactsPermissionManagerBuilder,
+    monitoringInterval: Long = defaultMonitoringInterval,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+) : PermissionStateRepo<ContactsPermission>(monitoringInterval, coroutineContext, { builder.create(contactsPermission, it) })

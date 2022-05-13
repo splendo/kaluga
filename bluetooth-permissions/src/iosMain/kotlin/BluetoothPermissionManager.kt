@@ -24,6 +24,7 @@ import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -47,7 +48,7 @@ const val NSBluetoothPeripheralUsageDescription = "NSBluetoothPeripheralUsageDes
 
 actual class BluetoothPermissionManager(
     private val bundle: NSBundle,
-    stateRepo: BluetoothPermissionStateRepo
+    stateRepo: PermissionStateRepo<BluetoothPermission>
 ) : PermissionManager<BluetoothPermission>(stateRepo) {
 
     private val centralManager = lazy {
@@ -93,7 +94,7 @@ actual class BluetoothPermissionManagerBuilder actual constructor(
     private val context: PermissionContext
 ) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
+    override fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> {
         return BluetoothPermissionManager(context, repo)
     }
 }

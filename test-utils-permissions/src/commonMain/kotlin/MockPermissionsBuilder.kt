@@ -17,202 +17,246 @@
 
 package com.splendo.kaluga.test.permissions
 
-import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.collections.IsoMutableList
+import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
 import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermission
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
+import com.splendo.kaluga.permissions.calendar.registerCalendarPermission
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermission
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
+import com.splendo.kaluga.permissions.camera.registerCameraPermission
 import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermission
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
+import com.splendo.kaluga.permissions.contacts.registerContactsPermission
 import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
+import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermission
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
+import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermission
+import com.splendo.kaluga.permissions.storage.StoragePermissionManager
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
+import com.splendo.kaluga.permissions.storage.registerStoragePermission
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 expect val mockPermissionContext: PermissionContext
 
-class MockPermissionsBuilder : PermissionsBuilder(mockPermissionContext) {
+class MockPermissionsBuilder(
+    initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.DENIED,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
+    setupMocks: Boolean = true
+) : PermissionsBuilder(mockPermissionContext) {
 
-    private val _cameraPMManager = AtomicReference<MockPermissionManager<CameraPermission>?>(null)
-    var cameraPMManager: MockPermissionManager<CameraPermission>?
-        get() = _cameraPMManager.get()
-        set(value) = _cameraPMManager.set(value)
-
+    val createdCameraPermissionManagers = IsoMutableList<MockPermissionManager<CameraPermission>>()
+    val createCameraPermissionManagerMock = ::createCameraPermissionManager.mock()
+    private fun createCameraPermissionManager(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> = createCameraPermissionManagerMock.call(repo)
     private val cameraPMBuilder: BaseCameraPermissionManagerBuilder = object : BaseCameraPermissionManagerBuilder {
-        override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
-            cameraPMManager = MockPermissionManager(repo)
-            return cameraPMManager!!
-        }
+        override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> = createCameraPermissionManager(repo)
     }
 
-    private val _contactsPMManager = AtomicReference<MockPermissionManager<ContactsPermission>?>(null)
-    var contactsPMManager: MockPermissionManager<ContactsPermission>?
-        get() = _contactsPMManager.get()
-        set(value) = _contactsPMManager.set(value)
+    val buildCameraStateRepos = IsoMutableList<PermissionStateRepo<CameraPermission>>()
+    val cameraStateRepoBuilderMock = ::cameraStateRepoBuilder.mock()
+    private fun cameraStateRepoBuilder(builder: BaseCameraPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<CameraPermission> = cameraStateRepoBuilderMock.call(builder, context)
 
+    val createdContactsPermissionManagers = IsoMutableList<MockPermissionManager<ContactsPermission>>()
+    val createContactsPermissionManagerMock = ::createContactsPermissionManager.mock()
+    private fun createContactsPermissionManager(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> = createContactsPermissionManagerMock.call(contactsPermission, repo)
     private val contactsPMBuilder: BaseContactsPermissionManagerBuilder = object : BaseContactsPermissionManagerBuilder {
-        override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
-            contactsPMManager = MockPermissionManager(repo)
-            return contactsPMManager!!
-        }
+        override fun create(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> = createContactsPermissionManager(contactsPermission, repo)
     }
 
-    private val _microphonePMManager = AtomicReference<MockPermissionManager<MicrophonePermission>?>(null)
-    var microphonePMManager: MockPermissionManager<MicrophonePermission>?
-        get() = _microphonePMManager.get()
-        set(value) = _microphonePMManager.set(value)
+    val buildContactsStateRepos = IsoMutableList<PermissionStateRepo<ContactsPermission>>()
+    val contactsStateRepoBuilderMock = ::contactsStateRepoBuilder.mock()
+    private fun contactsStateRepoBuilder(contactsPermission: ContactsPermission, builder: BaseContactsPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<ContactsPermission> = contactsStateRepoBuilderMock.call(contactsPermission, builder, context)
 
+    val createdMicrophonePermissionManagers = IsoMutableList<MockPermissionManager<MicrophonePermission>>()
+    val createMicrophonePermissionManagerMock = ::createMicrophonePermissionManager.mock()
+    private fun createMicrophonePermissionManager(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> = createMicrophonePermissionManagerMock.call(repo)
     private val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder = object : BaseMicrophonePermissionManagerBuilder {
-        override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
-            microphonePMManager = MockPermissionManager(repo)
-            return microphonePMManager!!
-        }
+        override fun create(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> = createMicrophonePermissionManager(repo)
     }
 
-    private val _notificationsPMManager = AtomicReference<MockPermissionManager<NotificationsPermission>?>(null)
-    var notificationsPMManager: MockPermissionManager<NotificationsPermission>?
-        get() = _notificationsPMManager.get()
-        set(value) = _notificationsPMManager.set(value)
+    val buildMicrophoneStateRepos = IsoMutableList<PermissionStateRepo<MicrophonePermission>>()
+    val microphoneStateRepoBuilderMock = ::microphoneStateRepoBuilder.mock()
+    private fun microphoneStateRepoBuilder(builder: BaseMicrophonePermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<MicrophonePermission> = microphoneStateRepoBuilderMock.call(builder, context)
 
+    val createdNotificationsPermissionManagers = IsoMutableList<MockPermissionManager<NotificationsPermission>>()
+    val createNotificationsPermissionManagerMock = ::createNotificationsPermissionManager.mock()
+    private fun createNotificationsPermissionManager(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> = createNotificationsPermissionManagerMock.call(notificationsPermission, repo)
     private val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder = object : BaseNotificationsPermissionManagerBuilder {
-        override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
-            notificationsPMManager = MockPermissionManager(repo)
-            return notificationsPMManager!!
-        }
+        override fun create(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> = createNotificationsPermissionManager(notificationsPermission, repo)
     }
 
-    private val _bluetoothPMManager = AtomicReference<MockPermissionManager<BluetoothPermission>?>(null)
-    var bluetoothPMManager: MockPermissionManager<BluetoothPermission>?
-        get() = _bluetoothPMManager.get()
-        set(value) = _bluetoothPMManager.set(value)
+    val buildNotificationsStateRepos = IsoMutableList<PermissionStateRepo<NotificationsPermission>>()
+    val notificationsStateRepoBuilderMock = ::notificationsStateRepoBuilder.mock()
+    private fun notificationsStateRepoBuilder(notificationsPermission: NotificationsPermission, builder: BaseNotificationsPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<NotificationsPermission> = notificationsStateRepoBuilderMock.call(notificationsPermission, builder, context)
 
+    val createdBluetoothPermissionManagers = IsoMutableList<MockPermissionManager<BluetoothPermission>>()
+    val createBluetoothPermissionManagerMock = ::createBluetoothPermissionManager.mock()
+    private fun createBluetoothPermissionManager(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> = createBluetoothPermissionManagerMock.call(repo)
     private val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder = object : BaseBluetoothPermissionManagerBuilder {
-        override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
-            bluetoothPMManager = MockPermissionManager(repo)
-            return bluetoothPMManager!!
-        }
+        override fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> = createBluetoothPermissionManager(repo)
     }
 
-    private val _locationPMManager = AtomicReference<MockPermissionManager<LocationPermission>?>(null)
-    var locationPMManager: MockPermissionManager<LocationPermission>?
-        get() = _locationPMManager.get()
-        set(value) = _locationPMManager.set(value)
+    val buildBluetoothStateRepos = IsoMutableList<PermissionStateRepo<BluetoothPermission>>()
+    val bluetoothStateRepoBuilderMock = ::bluetoothStateRepoBuilder.mock()
+    private fun bluetoothStateRepoBuilder(builder: BaseBluetoothPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<BluetoothPermission> = bluetoothStateRepoBuilderMock.call(builder, context)
 
+    val createdLocationPermissionManagers = IsoMutableList<MockPermissionManager<LocationPermission>>()
+    val createLocationPermissionManagerMock = ::createLocationPermissionManager.mock()
+    private fun createLocationPermissionManager(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> = createLocationPermissionManagerMock.call(locationPermission, repo)
     private val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
-        override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-            return MockPermissionManager(repo).also {
-                locationPMManager = it
-            }
-        }
+        override fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> = createLocationPermissionManager(locationPermission, repo)
     }
 
-    private val _calendarPMManager = AtomicReference<MockPermissionManager<CalendarPermission>?>(null)
-    var calendarPMManager: MockPermissionManager<CalendarPermission>?
-        get() = _calendarPMManager.get()
-        set(value) = _calendarPMManager.set(value)
+    val buildLocationStateRepos = IsoMutableList<PermissionStateRepo<LocationPermission>>()
+    val locationStateRepoBuilderMock = ::locationStateRepoBuilder.mock()
+    private fun locationStateRepoBuilder(locationPermission: LocationPermission, builder: BaseLocationPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<LocationPermission> = locationStateRepoBuilderMock.call(locationPermission, builder, context)
 
+    val createdCalendarPermissionManagers = IsoMutableList<MockPermissionManager<CalendarPermission>>()
+    val createCalendarPermissionManagerMock = ::createCalendarPermissionManager.mock()
+    private fun createCalendarPermissionManager(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> = createCalendarPermissionManagerMock.call(calendarPermission, repo)
     private val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = object : BaseCalendarPermissionManagerBuilder {
-        override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
-            calendarPMManager = MockPermissionManager(repo)
-            return calendarPMManager!!
-        }
+        override fun create(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> = createCalendarPermissionManager(calendarPermission, repo)
     }
 
-    private val _storagePMManager = AtomicReference<MockPermissionManager<StoragePermission>?>(null)
-    var storagePMManager: MockPermissionManager<StoragePermission>?
-        get() = _storagePMManager.get()
-        set(value) = _storagePMManager.set(value)
+    val buildCalendarStateRepos = IsoMutableList<PermissionStateRepo<CalendarPermission>>()
+    val calendarStateRepoBuilderMock = ::calendarStateRepoBuilder.mock()
+    private fun calendarStateRepoBuilder(calendarPermission: CalendarPermission, builder: BaseCalendarPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<CalendarPermission> = calendarStateRepoBuilderMock.call(calendarPermission, builder, context)
 
+    val createdStoragePermissionManagers = IsoMutableList<MockPermissionManager<StoragePermission>>()
+    val createStoragePermissionManagerMock = ::createStoragePermissionManager.mock()
+    private fun createStoragePermissionManager(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> = createStoragePermissionManagerMock.call(storagePermission, repo)
     private val storagePMBuilder: BaseStoragePermissionManagerBuilder = object : BaseStoragePermissionManagerBuilder {
-        override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-            storagePMManager = MockPermissionManager(repo)
-            return storagePMManager!!
+        override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> = createStoragePermissionManager(storagePermission, repo)
+    }
+
+    val buildStorageStateRepos = IsoMutableList<PermissionStateRepo<StoragePermission>>()
+    val storageStateRepoBuilderMock = ::storageStateRepoBuilder.mock()
+    private fun storageStateRepoBuilder(storagePermission: StoragePermission, builder: BaseStoragePermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<StoragePermission> = storageStateRepoBuilderMock.call(storagePermission, builder, context)
+
+    init {
+        if (setupMocks) {
+            createBluetoothPermissionManagerMock.on().doExecute { (repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdBluetoothPermissionManagers.add(it)
+                }
+            }
+            bluetoothStateRepoBuilderMock.on().doExecute { (builder, coroutineContext) ->
+                BluetoothPermissionStateRepo(builder, coroutineContext = coroutineContext).also {
+                    buildBluetoothStateRepos.add(it)
+                }
+            }
+
+            createLocationPermissionManagerMock.on().doExecute { (_, repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdLocationPermissionManagers.add(it)
+                }
+            }
+            locationStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
+                LocationPermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                    buildLocationStateRepos.add(it)
+                }
+            }
+
+            createCalendarPermissionManagerMock.on().doExecute { (_, repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdCalendarPermissionManagers.add(it)
+                }
+            }
+            calendarStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
+                CalendarPermissionStateRepo(permission, builder, coroutineContext = coroutineContext).also {
+                    buildCalendarStateRepos.add(it)
+                }
+            }
+
+            createStoragePermissionManagerMock.on().doExecute { (_, repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdStoragePermissionManagers.add(it)
+                }
+            }
+            storageStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
+                StoragePermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                    buildStorageStateRepos.add(it)
+                }
+            }
+
+            createCameraPermissionManagerMock.on().doExecute { (repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdCameraPermissionManagers.add(it)
+                }
+            }
+            cameraStateRepoBuilderMock.on().doExecute { (builder, coroutineContext) ->
+                CameraPermissionStateRepo( builder, coroutineContext = coroutineContext).also {
+                    buildCameraStateRepos.add(it)
+                }
+            }
+
+            createContactsPermissionManagerMock.on().doExecute { (_, repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdContactsPermissionManagers.add(it)
+                }
+            }
+            contactsStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
+                ContactsPermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                    buildContactsStateRepos.add(it)
+                }
+            }
+
+            createMicrophonePermissionManagerMock.on().doExecute { (repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdMicrophonePermissionManagers.add(it)
+                }
+            }
+            microphoneStateRepoBuilderMock.on().doExecute { (builder, coroutineContext) ->
+                MicrophonePermissionStateRepo( builder, coroutineContext = coroutineContext).also {
+                    buildMicrophoneStateRepos.add(it)
+                }
+            }
+
+            createNotificationsPermissionManagerMock.on().doExecute { (_, repo) ->
+                MockPermissionManager(repo, initialPermissionState, monitoringInterval).also {
+                    createdNotificationsPermissionManagers.add(it)
+                }
+            }
+            notificationsStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
+                NotificationsPermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                    buildNotificationsStateRepos.add(it)
+                }
+            }
         }
     }
 
     fun registerAllPermissionsBuilders() {
-        register(bluetoothPMBuilder, BluetoothPermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(BluetoothPermission::class) { permission, coroutineContext ->
-                MockBluetoothPermissionStateRepo(builder, coroutineContext)
-            }
-        }
-        register(locationPMBuilder, LocationPermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(LocationPermission::class) { permission, coroutineContext ->
-                MockLocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
-            }
-        }
-        register(calendarPMBuilder, CalendarPermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(CalendarPermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<CalendarPermission>()
-            }
-        }
-        register(storagePMBuilder, StoragePermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(StoragePermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<StoragePermission>()
-            }
-        }
-        register(cameraPMBuilder, CameraPermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(CameraPermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<CameraPermission>()
-            }
-        }
-        register(contactsPMBuilder, ContactsPermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(ContactsPermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<ContactsPermission>()
-            }
-        }
-        register(microphonePMBuilder, MicrophonePermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(MicrophonePermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<MicrophonePermission>()
-            }
-        }
-        register(notificationsPMBuilder, NotificationsPermission::class).also { builder ->
-            registerPermissionStateRepoBuilder(NotificationsPermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<NotificationsPermission>()
-            }
-        }
-    }
-
-    private class MockBluetoothPermissionStateRepo(
-        builder: BaseBluetoothPermissionManagerBuilder,
-        coroutineContext: CoroutineContext
-    ) : BluetoothPermissionStateRepo(coroutineContext) {
-        private val _permissionManager = AtomicReference<PermissionManager<BluetoothPermission>?>(null)
-        override val permissionManager: PermissionManager<BluetoothPermission> by lazy { _permissionManager.get()!! }
-
-        init {
-            _permissionManager.set(builder.create(this))
-        }
-    }
-
-    private class MockLocationPermissionStateRepo(
-        location: LocationPermission,
-        builder: BaseLocationPermissionManagerBuilder,
-        coroutineContext: CoroutineContext
-    ) : LocationPermissionStateRepo(coroutineContext) {
-        private val _permissionManager = AtomicReference<PermissionManager<LocationPermission>?>(null)
-        override val permissionManager: PermissionManager<LocationPermission> by lazy { _permissionManager.get()!! }
-
-        init {
-            _permissionManager.set(builder.create(location, this))
-        }
+        registerBluetoothPermission({ bluetoothPMBuilder }, ::bluetoothStateRepoBuilder)
+        registerLocationPermission({ locationPMBuilder }, ::locationStateRepoBuilder)
+        registerCalendarPermission({ calendarPMBuilder }, ::calendarStateRepoBuilder)
+        registerStoragePermission({ storagePMBuilder }, ::storageStateRepoBuilder)
+        registerCameraPermission({ cameraPMBuilder }, ::cameraStateRepoBuilder)
+        registerContactsPermission({ contactsPMBuilder }, ::contactsStateRepoBuilder)
+        registerMicrophonePermission({ microphonePMBuilder }, ::microphoneStateRepoBuilder)
+        registerNotificationsPermission({ notificationsPMBuilder }, ::notificationsStateRepoBuilder)
     }
 }

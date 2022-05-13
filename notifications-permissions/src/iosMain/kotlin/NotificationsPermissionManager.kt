@@ -24,6 +24,7 @@ import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import platform.UserNotifications.UNAuthorizationOptionNone
@@ -38,8 +39,8 @@ import platform.UserNotifications.UNUserNotificationCenter
 actual data class NotificationOptions(val options: UNAuthorizationOptions)
 
 actual class NotificationsPermissionManager(
-    actual val notifications: NotificationsPermission,
-    stateRepo: NotificationsPermissionStateRepo
+    actual val notificationsPermission: NotificationsPermission,
+    stateRepo: PermissionStateRepo<NotificationsPermission>
 ) : PermissionManager<NotificationsPermission>(stateRepo) {
 
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
@@ -59,7 +60,7 @@ actual class NotificationsPermissionManager(
     override suspend fun requestPermission() {
         timerHelper.isWaiting.value = true
         notificationCenter.requestAuthorizationWithOptions(
-            notifications.options?.options ?: UNAuthorizationOptionNone,
+            notificationsPermission.options?.options ?: UNAuthorizationOptionNone,
             mainContinuation { authorization, error ->
                 timerHelper.isWaiting.value = false
                 error?.let {
@@ -82,8 +83,8 @@ actual class NotificationsPermissionManager(
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
-        return NotificationsPermissionManager(notifications, repo)
+    override fun create(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> {
+        return NotificationsPermissionManager(notificationsPermission, repo)
     }
 }
 

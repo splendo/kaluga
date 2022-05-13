@@ -36,7 +36,6 @@ import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
@@ -80,14 +79,14 @@ abstract class BaseScanner constructor(
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch(stateRepo.coroutineContext) {
             bluetoothPermissionRepo.collect { state ->
-                handlePermissionState(state, BluetoothPermission)
+                handlePermissionState(state)
             }
         }
     }
 
-    protected suspend fun <P : Permission> handlePermissionState(state: PermissionState<P>, permission: P) {
+    protected suspend fun <P : Permission> handlePermissionState(state: PermissionState<P, *>) {
         when (state) {
-            is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(permission))
+            is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
             else -> {}
         }
         stateRepo.takeAndChangeState { scanState ->

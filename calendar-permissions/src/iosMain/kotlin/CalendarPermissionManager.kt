@@ -25,6 +25,7 @@ import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import platform.EventKit.EKAuthorizationStatus
 import platform.EventKit.EKAuthorizationStatusAuthorized
 import platform.EventKit.EKAuthorizationStatusDenied
@@ -38,8 +39,8 @@ const val NSCalendarsUsageDescription = "NSCalendarsUsageDescription"
 
 actual class CalendarPermissionManager(
     private val bundle: NSBundle,
-    actual val calendar: CalendarPermission,
-    stateRepo: CalendarPermissionStateRepo
+    actual val calendarPermission: CalendarPermission,
+    stateRepo: PermissionStateRepo<CalendarPermission>
 ) : PermissionManager<CalendarPermission>(stateRepo) {
 
     private val eventStore = EKEventStore()
@@ -79,8 +80,8 @@ actual class CalendarPermissionManager(
 
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
-        return CalendarPermissionManager(context, calendar, repo)
+    override fun create(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> {
+        return CalendarPermissionManager(context, calendarPermission, repo)
     }
 }
 

@@ -23,6 +23,7 @@ import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.defaultPermissionContext
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -30,12 +31,12 @@ import kotlin.coroutines.CoroutineContext
  */
 expect class BluetoothPermissionManager : PermissionManager<BluetoothPermission>
 
-interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder {
+interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<BluetoothPermission> {
     /**
      * Creates a [BluetoothPermissionManager]
      * @param repo The [BluetoothPermissionStateRepo] associated with the [BluetoothPermission]
      */
-    fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission>
+    fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission>
 }
 
 /**
@@ -48,12 +49,9 @@ expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defa
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class DefaultBluetoothPermissionStateRepo(
+class BluetoothPermissionStateRepo(
     builder: BaseBluetoothPermissionManagerBuilder,
-    coroutineContext: CoroutineContext
-) : BluetoothPermissionStateRepo(coroutineContext = coroutineContext) {
-    override val permissionManager: PermissionManager<BluetoothPermission> =
-        builder.create(this)
-}
+    monitoringInterval: Long = defaultMonitoringInterval,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, coroutineContext, { builder.create(it) })
 
-abstract class BluetoothPermissionStateRepo(coroutineContext: CoroutineContext) : PermissionStateRepo<BluetoothPermission>(coroutineContext = coroutineContext)

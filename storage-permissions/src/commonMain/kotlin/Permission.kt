@@ -19,8 +19,9 @@ package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionContext
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the users device storage.
@@ -29,14 +30,25 @@ import com.splendo.kaluga.permissions.defaultPermissionContext
  */
 data class StoragePermission(val allowWrite: Boolean = false) : Permission()
 
-fun PermissionsBuilder.registerStoragePermission() =
-    registerStoragePermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(StoragePermission::class) { permission, coroutineContext ->
-            StoragePermissionStateRepo(permission as StoragePermission, builder as BaseStoragePermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerStoragePermission(
+    storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerStoragePermission(storagePermissionManagerBuilderBuilder) { storagePermission, baseStoragePermissionManagerBuilder, coroutineContext ->
+        StoragePermissionStateRepo(
+            storagePermission,
+            baseStoragePermissionManagerBuilder,
+            monitoringInterval,
+            coroutineContext
+        )
     }
 
-internal fun PermissionsBuilder.registerStoragePermissionBuilder(context: PermissionContext = defaultPermissionContext): StoragePermissionManagerBuilder = register(
-    builder = StoragePermissionManagerBuilder(context),
-    permission = StoragePermission::class
-)
+fun PermissionsBuilder.registerStoragePermission(
+    storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
+    storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>
+) = storagePermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<StoragePermission> { permission, coroutineContext ->
+        storagePermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

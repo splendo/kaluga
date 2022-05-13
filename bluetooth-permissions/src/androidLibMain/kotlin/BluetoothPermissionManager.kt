@@ -24,11 +24,12 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 
 actual class BluetoothPermissionManager(
     context: Context,
     bluetoothAdapter: BluetoothAdapter?,
-    stateRepo: BluetoothPermissionStateRepo
+    stateRepo: PermissionStateRepo<BluetoothPermission>
 ) : PermissionManager<BluetoothPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION))
@@ -59,7 +60,7 @@ actual class BluetoothPermissionManagerBuilder(
 
     actual constructor(context: PermissionContext) : this(context, BluetoothAdapter.getDefaultAdapter())
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
+    override fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> {
         return BluetoothPermissionManager(context.context, bluetoothAdapter, repo)
     }
 }

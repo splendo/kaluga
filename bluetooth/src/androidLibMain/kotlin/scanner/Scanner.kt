@@ -169,7 +169,7 @@ actual class Scanner internal constructor(
         if (monitoringLocationPermissionsJob.compareAndSet(null, job)) {
             launch(job) {
                 locationPermissionRepo.collect { state ->
-                    handlePermissionState(state, locationPermission)
+                    handlePermissionState(state)
                 }
             }
         }

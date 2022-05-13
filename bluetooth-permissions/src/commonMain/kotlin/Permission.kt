@@ -19,22 +19,33 @@ package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionContext
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the Bluetooth scanner
  */
 object BluetoothPermission : Permission()
 
-fun PermissionsBuilder.registerBluetoothPermission() =
-    registerBluetoothBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(BluetoothPermission::class) { _, coroutineContext ->
-            DefaultBluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerBluetoothPermission(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) ->  BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
+        BluetoothPermissionStateRepo(
+            baseBluetoothPermissionManagerBuilder,
+            monitoringInterval,
+            coroutineContext
+        )
     }
 
-internal fun PermissionsBuilder.registerBluetoothBuilder(context: PermissionContext = defaultPermissionContext): BluetoothPermissionManagerBuilder = register(
-    builder = BluetoothPermissionManagerBuilder(context),
-    permission = BluetoothPermission::class
-)
+fun PermissionsBuilder.registerBluetoothPermission(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) ->  BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
+) = bluetoothPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<BluetoothPermission> { _, coroutineContext ->
+        stateRepoBuilder(it, coroutineContext)
+    }
+}

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.permissions
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -26,26 +27,35 @@ import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
+class MockPermissionManager<P : Permission>(
+    private val permissionRepo: PermissionStateRepo<P>,
+    initialState: MockPermissionState = MockPermissionState.DENIED,
+    val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
+) : PermissionManager<P>(permissionRepo) {
 
-    override val permissionManager = MockPermissionManager(this, monitoringInterval)
-}
+    enum class MockPermissionState {
+        ALLOWED,
+        DENIED,
+        LOCKED
+    }
 
-class MockPermissionManager<P : Permission>(private val permissionRepo: PermissionStateRepo<P>, val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval) : PermissionManager<P>(permissionRepo) {
+    val currentState = MutableStateFlow(initialState.toPermissionState())
+    private val isMonitoring = AtomicBoolean(false)
 
-    val currentState = MutableStateFlow<PermissionState.Known<P>>(PermissionState.Denied.Requestable(monitoringInterval, this))
+    suspend fun setPermissionAllowed() = changePermission(MockPermissionState.ALLOWED)
 
-    suspend fun setPermissionAllowed() = changePermission(PermissionState.Allowed(monitoringInterval, this))
+    suspend fun setPermissionDenied() = changePermission(MockPermissionState.DENIED)
 
-    suspend fun setPermissionDenied() = changePermission(PermissionState.Denied.Requestable(monitoringInterval, this))
+    suspend fun setPermissionLocked() = changePermission(MockPermissionState.LOCKED)
 
-    suspend fun setPermissionLocked() = changePermission(PermissionState.Denied.Locked(monitoringInterval, this))
-
-    private suspend fun changePermission(desiredState: PermissionState.Known<P>) {
-        permissionRepo.takeAndChangeState { state ->
-            when (state) {
-                is PermissionState.Unknown -> state.remain()
-                else -> suspend { desiredState }
+    private suspend fun changePermission(desiredState: MockPermissionState) = changePermission(desiredState.toPermissionState())
+    private suspend fun changePermission(desiredState: PermissionState.Active<P>) {
+        if (isMonitoring.value) {
+            permissionRepo.takeAndChangeState { state ->
+                when (state) {
+                    is PermissionState.Uninitialized -> state.remain()
+                    else -> suspend { desiredState }
+                }
             }
         }
         currentState.value = desiredState
@@ -60,13 +70,17 @@ class MockPermissionManager<P : Permission>(private val permissionRepo: Permissi
     override suspend fun requestPermission(): Unit = requestPermissionMock.call()
 
     override suspend fun startMonitoring(interval: Long) {
+        isMonitoring.value = true
         launch {
             changePermission(currentState.value)
         }
         startMonitoringMock.call(interval)
     }
 
-    override suspend fun stopMonitoring(): Unit = stopMonitoringMock.call()
+    override suspend fun stopMonitoring() {
+        isMonitoring.value = false
+        stopMonitoringMock.call()
+    }
 
     override fun grantPermission() {
         grandPermissionMock.call()
@@ -76,6 +90,12 @@ class MockPermissionManager<P : Permission>(private val permissionRepo: Permissi
     override fun revokePermission(locked: Boolean) {
         revokePermissionMock.call(locked)
         super.revokePermission(locked)
+    }
+
+    private fun MockPermissionState.toPermissionState(): PermissionState.Active<P> = when (this) {
+        MockPermissionState.ALLOWED -> PermissionState.Allowed(monitoringInterval, this@MockPermissionManager)
+        MockPermissionState.DENIED -> PermissionState.Denied.Requestable(monitoringInterval, this@MockPermissionManager)
+        MockPermissionState.LOCKED -> PermissionState.Denied.Locked(monitoringInterval, this@MockPermissionManager)
     }
 
 }

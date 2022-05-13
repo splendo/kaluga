@@ -22,6 +22,7 @@ import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -34,30 +35,30 @@ const val NSLocationAlwaysUsageDescription = "NSLocationAlwaysUsageDescription"
 
 actual class LocationPermissionManager(
     private val bundle: NSBundle,
-    actual val location: LocationPermission,
-    stateRepo: LocationPermissionStateRepo
+    actual val locationPermission: LocationPermission,
+    stateRepo: PermissionStateRepo<LocationPermission>
 ) : PermissionManager<LocationPermission>(stateRepo) {
 
     private val locationManager = CLLocationManager()
     private val authorizationStatus = {
-        CLLocationManager.authorizationStatus().toCLAuthorizationStatusKotlin().toAuthorizationStatus(location.background)
+        CLLocationManager.authorizationStatus().toCLAuthorizationStatusKotlin().toAuthorizationStatus(locationPermission.background)
     }
 
     private val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
         override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus /* = kotlin.Int */) {
             val locationPermissionManager = this@LocationPermissionManager
-            IOSPermissionsHelper.handleAuthorizationStatus(didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin().toAuthorizationStatus(locationPermissionManager.location.background), locationPermissionManager)
+            IOSPermissionsHelper.handleAuthorizationStatus(didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin().toAuthorizationStatus(locationPermissionManager.locationPermission.background), locationPermissionManager)
         }
     }
 
     override suspend fun requestPermission() {
         val locationDeclarations = mutableListOf(NSLocationWhenInUseUsageDescription)
-        if (location.background) {
+        if (locationPermission.background) {
             locationDeclarations.addAll(listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription))
         }
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
-            if (location.background)
+            if (locationPermission.background)
                 locationManager.requestAlwaysAuthorization()
             else
                 locationManager.requestWhenInUseAuthorization()
@@ -77,8 +78,8 @@ actual class LocationPermissionManager(
 
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-        return LocationPermissionManager(context, location, repo)
+    override fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> {
+        return LocationPermissionManager(context, locationPermission, repo)
     }
 }
 

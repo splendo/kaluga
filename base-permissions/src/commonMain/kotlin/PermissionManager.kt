@@ -21,7 +21,7 @@ package com.splendo.kaluga.permissions
 import com.splendo.kaluga.permissions.PermissionState.Allowed
 import com.splendo.kaluga.permissions.PermissionState.Denied
 import com.splendo.kaluga.permissions.PermissionState.Initializing
-import com.splendo.kaluga.permissions.PermissionState.Unknown
+import com.splendo.kaluga.permissions.PermissionState.Inactive
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -54,7 +54,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
             when (state) {
                 is Initializing -> state.initialize(allowed = true, locked = false)
                 is Denied -> state.allow
-                is Allowed, is Unknown -> state.remain()
+                is Allowed, is Inactive -> state.remain()
             }
         }
     }
@@ -75,7 +75,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
                 is Denied.Locked -> {
                     if (locked) state.remain() else state.unlock
                 }
-                is Unknown -> state.remain()
+                is Inactive -> state.remain()
             }
         }
     }
