@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base
+package com.splendo.kaluga.base.monitor
 
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.Flow

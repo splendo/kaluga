@@ -17,11 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth.device
 
-import co.touchlab.stately.collections.sharedMutableMapOf
+import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicBoolean
-import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
@@ -33,109 +30,103 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.bluetooth.MockDescriptorWrapper
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.launch
-import kotlin.reflect.KClass
 
 class MockDeviceConnectionManager(
+    initialWillActionSucceed: Boolean = true,
     connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
-    stateRepo: DeviceStateFlowRepo
+    stateRepo: DeviceStateFlowRepo,
+    setupMocks: Boolean = true
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
 
-    val connectCompleted = AtomicReference(EmptyCompletableDeferred())
-    val discoverServicesCompleted = AtomicReference(EmptyCompletableDeferred())
-    val disconnectCompleted = AtomicReference(EmptyCompletableDeferred())
-    val readRssiCompleted = AtomicReference(EmptyCompletableDeferred())
-    val requestMtuCompleted = AtomicReference(CompletableDeferred<Int?>())
-    val performActionCompleted = AtomicReference(CompletableDeferred<DeviceAction>())
-    val performActionStarted = AtomicReference(CompletableDeferred<DeviceAction>())
-    private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    val handledAction = _handledAction.asSharedFlow()
-    var willActionSucceed = AtomicBoolean(true)
+    class Builder(initialWillActionSucceed: Boolean = true, setupMocks: Boolean = true) : BaseDeviceConnectionManager.Builder {
 
-    fun reset() {
-        connectCompleted.set(EmptyCompletableDeferred())
-        discoverServicesCompleted.set(EmptyCompletableDeferred())
-        disconnectCompleted.set(EmptyCompletableDeferred())
-        readRssiCompleted.set(EmptyCompletableDeferred())
-        performActionCompleted.set(CompletableDeferred())
-        performActionStarted.set(CompletableDeferred())
-        _handledAction.resetReplayCache()
-    }
+        val createdDeviceConnectionManager = sharedMutableListOf<MockDeviceConnectionManager>()
+        val createMock = ::create.mock()
 
-    override suspend fun connect() {
-        connectCompleted.get().complete()
-    }
-
-    override suspend fun discoverServices() {
-        discoverServicesCompleted.get().complete()
-    }
-
-    override suspend fun disconnect() {
-        disconnectCompleted.get().complete()
-    }
-
-    override suspend fun readRssi() {
-        readRssiCompleted.get().complete()
-    }
-
-    override suspend fun requestMtu(mtu: Int): Boolean {
-        requestMtuCompleted.get().complete(mtu)
-        handleNewMtu(mtu)
-        return true
-    }
-
-    var waitAfterHandlingAction: MutableMap<KClass<out DeviceAction>, EmptyCompletableDeferred> = sharedMutableMapOf()
-
-    override suspend fun performAction(action: DeviceAction) {
-        currentAction = action
-        debug("Mock Action: $currentAction")
-        performActionStarted.get().complete(action)
-
-        when (action) {
-            is DeviceAction.Read.Characteristic -> launch {
-                handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed.value) {
-                    debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+        init {
+            if (setupMocks) {
+                createMock.on().doExecute { (connectionSettings, deviceWrapper, stateRepo) ->
+                    MockDeviceConnectionManager(initialWillActionSucceed, connectionSettings, deviceWrapper, stateRepo, setupMocks).also {
+                        createdDeviceConnectionManager.add(it)
+                    }
                 }
-                _handledAction.emit(action)
-            }
-            is DeviceAction.Read.Descriptor -> launch {
-                handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed.value)
-                _handledAction.emit(action)
-            }
-            is DeviceAction.Write.Characteristic -> launch {
-                (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
-                handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed.value) {
-                    debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
-                }
-                debug("Will emit write action")
-                _handledAction.emit(action)
-                debug("Did emit write action")
-            }
-            is DeviceAction.Write.Descriptor -> launch {
-                (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
-                handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed.value)
-                _handledAction.emit(action)
-            }
-            is DeviceAction.Notification -> launch {
-                handleCurrentActionCompleted(willActionSucceed.value)
-                _handledAction.emit(action)
             }
         }
 
-        performActionCompleted.get().complete(action)
+        override fun create(
+            connectionSettings: ConnectionSettings,
+            deviceWrapper: DeviceWrapper,
+            stateRepo: DeviceStateFlowRepo
+        ): BaseDeviceConnectionManager = createMock.call(connectionSettings, deviceWrapper, stateRepo)
+    }
+
+    private val _willActionSucceed = AtomicBoolean(initialWillActionSucceed)
+    var willActionSucceed: Boolean
+        get() = _willActionSucceed.value
+        set(value) { _willActionSucceed.value = value }
+
+    val connectMock = ::connect.mock()
+    val discoverServicesMock = ::discoverServices.mock()
+    val disconnectMock = ::disconnect.mock()
+    val readRssiMock = ::readRssi.mock()
+    val requestMtuMock = ::requestMtu.mock()
+    val performActionMock = ::performAction.mock()
+    val handleCurrentActionCompletedMock = ::handleCurrentActionCompletedWithAction.mock()
+
+    init {
+        if (setupMocks) {
+            requestMtuMock.on().doExecuteSuspended { (mtu) ->
+                handleNewMtu(mtu)
+                true
+            }
+
+            performActionMock.on().doExecuteSuspended { (action) ->
+                currentAction = action
+            }
+        }
+    }
+
+    override suspend fun connect(): Unit = connectMock.call()
+
+    override suspend fun discoverServices(): Unit = discoverServicesMock.call()
+
+    override suspend fun disconnect(): Unit = disconnectMock.call()
+
+    override suspend fun readRssi(): Unit = readRssiMock.call()
+
+    override suspend fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
+
+    override suspend fun performAction(action: DeviceAction): Unit = performActionMock.call(action)
+
+    suspend fun handleCurrentAction() {
+        when (val action = currentAction) {
+            is DeviceAction.Read.Characteristic -> handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
+                debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+            }
+            is DeviceAction.Read.Descriptor -> handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
+            is DeviceAction.Write.Characteristic -> {
+                (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
+                handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
+                    debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+                }
+            }
+            is DeviceAction.Write.Descriptor -> {
+                (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
+                handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
+            }
+            is DeviceAction.Notification -> handleCurrentActionCompleted(willActionSucceed)
+        }
     }
 
     override suspend fun handleCurrentActionCompleted(succeeded: Boolean): DeviceState {
-
-        currentAction?.let { currentAction ->
-            val wait = waitAfterHandlingAction[currentAction::class]
-            wait?.await()
-        }
+        handleCurrentActionCompletedWithAction(succeeded, currentAction)
         return super.handleCurrentActionCompleted(succeeded)
     }
+
+    private fun handleCurrentActionCompletedWithAction(succeeded: Boolean, deviceAction: DeviceAction?): Unit = handleCurrentActionCompletedMock.call(succeeded, deviceAction)
 }

@@ -49,7 +49,7 @@ import platform.darwin.dispatch_get_main_queue
 
 actual class Scanner internal constructor(
     permissions: Permissions,
-    private val connectionSettings: ConnectionSettings,
+    connectionSettings: ConnectionSettings,
     private val scanSettings: ScanSettings,
     autoRequestPermission: Boolean,
     autoEnableSensors: Boolean,
@@ -96,7 +96,7 @@ actual class Scanner internal constructor(
 
         fun handlePeripheral(didConnectPeripheral: CBPeripheral, block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
             scanner.stateRepo.launchUseState { scannerState ->
-                if (scannerState is ScanningState.Initialized.Enabled)
+                if (scannerState is ScanningState.Enabled)
                     scannerState.discovered.devices.find { it.identifier == didConnectPeripheral.identifier }
                         ?.let { device ->
                             block(device.peekState().connectionManager)

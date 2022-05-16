@@ -18,8 +18,6 @@
 package com.splendo.kaluga.test.location
 
 import co.touchlab.stately.collections.IsoMutableList
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.Permissions

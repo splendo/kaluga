@@ -15,16 +15,21 @@
 
  */
 
-package com.splendo.kaluga.test.bluetooth
+package com.splendo.kaluga.test.monitor
 
-import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 import com.splendo.kaluga.test.mock.call
 import com.splendo.kaluga.test.mock.parameters.mock
+import kotlinx.coroutines.flow.StateFlow
 
-class MockCharacteristic(characteristic: CharacteristicWrapper, stateRepo: DeviceStateFlowRepo) : Characteristic(characteristic, stateRepo = stateRepo) {
+abstract class MockServiceMonitor : ServiceMonitor {
+    abstract override val isEnabled: StateFlow<Boolean>
+    override val isServiceEnabled: Boolean
+        get() = isEnabled.value
 
-    val updateMock = ::updateValue.mock()
-    override suspend fun updateValue(): Unit = updateMock.call()
+    val startMonitoringMock = ::startMonitoring.mock()
+    val stopMonitoringMock = ::stopMonitoring.mock()
+
+    override fun startMonitoring(): Unit = startMonitoringMock.call()
+    override fun stopMonitoring(): Unit = stopMonitoringMock.call()
 }

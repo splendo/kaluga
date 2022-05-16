@@ -46,7 +46,7 @@ sealed class LocationState : KalugaState {
     data class Uninitialized(
         override val location: Location
     ) : Inactive() {
-        fun initialize(locationManager: BaseLocationManager): suspend () -> LocationState = { Initializing(location, locationManager) }
+        fun startInitializing(locationManager: BaseLocationManager): suspend () -> LocationState = { Initializing(location, locationManager) }
     }
 
     data class Deinitialized(
@@ -65,14 +65,14 @@ sealed class LocationState : KalugaState {
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
                 is Inactive -> locationManager.startMonitoringPermissions()
-                else -> {}
+                is Active -> {}
             }
         }
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
                 is Inactive -> locationManager.stopMonitoringPermissions()
-                else -> {}
+                is Active -> {}
             }
         }
     }
@@ -231,10 +231,10 @@ class LocationStateRepo(
         when (locationState) {
             is LocationState.Uninitialized -> {
                 val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, (repo  as LocationStateRepo))
-                locationState.initialize(locationManager)
+                locationState.startInitializing(locationManager)
             }
             is LocationState.Deinitialized -> locationState.reinitialize
-            else -> locationState.remain()
+            is LocationState.Active -> locationState.remain()
         }
     },
     deinitChangeStateWithRepo = { locationState, _ ->

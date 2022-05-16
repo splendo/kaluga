@@ -17,77 +17,61 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.CompletableDeferred
 
-class MockBluetoothGattWrapper : BluetoothGattWrapper {
+class MockBluetoothGattWrapper(setupMocks: Boolean) : BluetoothGattWrapper {
 
-    val connectCompleted = EmptyCompletableDeferred()
-    val discoverServicesCompleted = EmptyCompletableDeferred()
-    val disconnectCompleted = EmptyCompletableDeferred()
-    val closeCompleted = EmptyCompletableDeferred()
-    val readRemoteRssiCompleted = EmptyCompletableDeferred()
-    val requestMtuCompleted = CompletableDeferred<Int?>()
-    val readCharacteristicCompleted = CompletableDeferred<CharacteristicWrapper>()
-    val readDescriptorCompleted = CompletableDeferred<DescriptorWrapper>()
-    val writeCharacteristicCompleted = CompletableDeferred<CharacteristicWrapper>()
-    val writeDescriptorCompleted = CompletableDeferred<DescriptorWrapper>()
-    val setCharacteristicNotificationCompleted = CompletableDeferred<Pair<CharacteristicWrapper, Boolean>>()
+    val connectMock = ::connect.mock()
+    val discoverServicesMock = ::discoverServices.mock()
+    val disconnectMock = ::disconnect.mock()
+    val closeMock = ::close.mock()
+    val readRemoteRssiMock = ::readRemoteRssi.mock()
+    val requestMtuMock = ::requestMtu.mock()
+    val readCharacteristicMock = ::readCharacteristic.mock()
+    val readDescriptorMock = ::readDescriptor.mock()
+    val writeCharacteristicMock = ::writeCharacteristic.mock()
+    val writeDescriptorMock = ::writeDescriptor.mock()
+    val setCharacteristicNotificationMock = ::setCharacteristicNotification.mock()
 
-    override fun connect(): Boolean {
-        connectCompleted.complete()
-        return true
+    init {
+        if (setupMocks) {
+            connectMock.on().doReturn(true)
+            discoverServicesMock.on().doReturn(true)
+            readRemoteRssiMock.on().doReturn(true)
+            requestMtuMock.on().doReturn(true)
+            readCharacteristicMock.on().doReturn(true)
+            readDescriptorMock.on().doReturn(true)
+            writeCharacteristicMock.on().doReturn(true)
+            writeDescriptorMock.on().doReturn(true)
+            setCharacteristicNotificationMock.on().doReturn(true)
+        }
     }
 
-    override fun discoverServices(): Boolean {
-        discoverServicesCompleted.complete()
-        return true
-    }
+    override fun connect(): Boolean = connectMock.call()
 
-    override fun disconnect() {
-        disconnectCompleted.complete()
-    }
+    override fun discoverServices(): Boolean = discoverServicesMock.call()
 
-    override fun close() {
-        closeCompleted.complete()
-    }
+    override fun disconnect(): Unit = disconnectMock.call()
 
-    override fun readRemoteRssi(): Boolean {
-        readRemoteRssiCompleted.complete()
-        return true
-    }
+    override fun close(): Unit = closeMock.call()
 
-    override fun requestMtu(mtu: Int): Boolean {
-        requestMtuCompleted.complete(mtu)
-        return true
-    }
+    override fun readRemoteRssi(): Boolean = readRemoteRssiMock.call()
 
-    override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean {
-        readCharacteristicCompleted.complete(wrapper)
-        return true
-    }
+    override fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
 
-    override fun readDescriptor(wrapper: DescriptorWrapper): Boolean {
-        readDescriptorCompleted.complete(wrapper)
-        return true
-    }
+    override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean = readCharacteristicMock.call(wrapper)
 
-    override fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean {
-        writeCharacteristicCompleted.complete(wrapper)
-        return true
-    }
+    override fun readDescriptor(wrapper: DescriptorWrapper): Boolean = readDescriptorMock.call(wrapper)
 
-    override fun writeDescriptor(wrapper: DescriptorWrapper): Boolean {
-        writeDescriptorCompleted.complete(wrapper)
-        return true
-    }
+    override fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean = writeCharacteristicMock.call(wrapper)
 
-    override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {
-        setCharacteristicNotificationCompleted.complete(Pair(wrapper, enable))
-        return true
-    }
+    override fun writeDescriptor(wrapper: DescriptorWrapper): Boolean = writeDescriptorMock.call(wrapper)
+
+    override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean = setCharacteristicNotificationMock.call(wrapper, enable)
 }

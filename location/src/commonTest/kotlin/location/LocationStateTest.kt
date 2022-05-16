@@ -154,6 +154,7 @@ class LocationStateTest :
         test {
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             locationManager.startMonitoringPermissionsMock.verify()
+            locationManager.startMonitoringLocationEnabledMock.verify(rule = never())
             assertIs<LocationState.Disabled.NotPermitted>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
@@ -185,6 +186,7 @@ class LocationStateTest :
         test {
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             locationManager.startMonitoringPermissionsMock.verify()
+            locationManager.startMonitoringLocationEnabledMock.verify(rule = never())
             assertIs<LocationState.Disabled.NotPermitted>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),

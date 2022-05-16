@@ -17,17 +17,14 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.parameters.mock
 
 class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: DeviceStateFlowRepo) : Descriptor(descriptorWrapper, stateRepo = stateRepo) {
 
-    val didUpdate = EmptyCompletableDeferred()
-
-    override suspend fun updateValue() {
-        didUpdate.complete()
-    }
+    val updateMock = ::updateValue.mock()
+    override suspend fun updateValue(): Unit = updateMock.call()
 }

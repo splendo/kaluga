@@ -20,26 +20,38 @@ package com.splendo.kaluga.test.bluetooth
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
+import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
-import kotlinx.coroutines.CompletableDeferred
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
 
-class MockDeviceWrapper(override val name: String?, override val identifier: Identifier, override val bondState: Int) : DeviceWrapper {
+class MockDeviceWrapper(
+    override val name: String?,
+    override val identifier: Identifier,
+    override val bondState: Int,
+    setupMocks: Boolean = true
+    ) : DeviceWrapper {
 
-    val connectGattCompleted = CompletableDeferred<BluetoothGattCallback>()
-    val removeBondCompleted = EmptyCompletableDeferred()
+    val gattWrappers = sharedMutableListOf<MockBluetoothGattWrapper>()
+    val connectGattMock = ::connectGatt.mock()
+    val removeBondMock = ::removeBond.mock()
 
-    override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper {
-        connectGattCompleted.complete(callback)
-        return MockBluetoothGattWrapper()
+    init {
+        if (setupMocks) {
+            connectGattMock.on().doExecute {
+                MockBluetoothGattWrapper(setupMocks).also {
+                    gattWrappers.add(it)
+                }
+            }
+        }
     }
 
-    override fun removeBond() {
-        removeBondCompleted.complete()
-    }
+    override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper = connectGattMock.call(context, autoConnect, callback)
+
+    override fun removeBond(): Unit = removeBondMock.call()
 
     override val device: BluetoothDevice
         get() = error("This is a mock device")

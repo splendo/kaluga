@@ -67,17 +67,7 @@ fun createMockDevice(
     connectionSettings: ConnectionSettings = ConnectionSettings(
         ConnectionSettings.ReconnectionSettings.Never
     ),
-    connectionBuilder: BaseDeviceConnectionManager.Builder = object : BaseDeviceConnectionManager.Builder {
-        override fun create(
-            connectionSettings: ConnectionSettings,
-            deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo
-        ) = MockDeviceConnectionManager(
-            connectionSettings,
-            deviceWrapper,
-            stateRepo
-        )
-    },
+    connectionBuilder: BaseDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),
     builder: MockDeviceInfoBuilder.() -> Unit
 ) = Device(
     connectionSettings = connectionSettings,

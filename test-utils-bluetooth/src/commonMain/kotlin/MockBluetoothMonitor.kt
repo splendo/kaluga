@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,10 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.test.monitor.MockServiceMonitor
+import kotlinx.coroutines.flow.StateFlow
 
-actual interface BluetoothMonitor : ServiceMonitor {
-    actual class Builder {
-        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor()
-    }
-}
-
-class DefaultBluetoothMonitor : DefaultServiceMonitor(), BluetoothMonitor {
-
-    override val isServiceEnabled: Boolean
-        get() = TODO("Not yet implemented")
-}
+class MockBluetoothMonitor(override val isEnabled: StateFlow<Boolean>) : MockServiceMonitor(), BluetoothMonitor

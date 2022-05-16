@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.collections.sharedMutableListOf
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
@@ -96,12 +97,12 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    override fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+    override fun devices(): Flow<List<Device>> = combine(scanningStateRepo.filterOnlyImportant(), scanMode) { scanState, scanMode ->
         when (scanState) {
-            is ScanningState.Initialized.Enabled.Idle -> when (scanMode) {
+            is ScanningState.Enabled.Idle -> when (scanMode) {
                 is ScanMode.Scan -> {
                     scanningStateRepo.takeAndChangeState(
-                        remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class
+                        remainIfStateNot = ScanningState.Enabled.Idle::class
                     ) { it.startScanning(scanMode.filter) }
                     if (scanState.discovered.filter == scanMode.filter) {
                         scanState.discovered.devices
@@ -111,33 +112,25 @@ class Bluetooth internal constructor(
                 }
                 is ScanMode.Stopped -> emptyList()
             }
-            is ScanningState.Initialized.Enabled.Scanning -> when (scanMode) {
+            is ScanningState.Enabled.Scanning -> when (scanMode) {
                 is ScanMode.Scan -> {
                     if (scanState.discovered.filter == scanMode.filter) {
                         scanState.discovered.devices
                     } else {
                         scanningStateRepo.takeAndChangeState(
-                            remainIfStateNot = ScanningState.Initialized.Enabled.Scanning::class
+                            remainIfStateNot = ScanningState.Enabled.Scanning::class
                         ) { it.stopScanning }
                         emptyList()
                     }
                 }
                 is ScanMode.Stopped -> {
                     scanningStateRepo.takeAndChangeState(
-                        remainIfStateNot = ScanningState.Initialized.Enabled.Scanning::class
+                        remainIfStateNot = ScanningState.Enabled.Scanning::class
                     ) { it.stopScanning }
                     scanState.discovered.devices
                 }
             }
-            is ScanningState.Initialized.NoBluetooth -> {
-                emptyList()
-            }
-            is ScanningState.NotInitialized -> {
-                scanningStateRepo.takeAndChangeState(
-                    remainIfStateNot = ScanningState.NotInitialized::class
-                ) { it.initialize(scanningStateRepo) }
-                emptyList()
-            }
+            is ScanningState.NoBluetooth, is ScanningState.NoHardware, is ScanningState.Inactive, is ScanningState.Initializing -> emptyList()
         }
     }.distinctUntilChanged()
 
@@ -150,11 +143,11 @@ class Bluetooth internal constructor(
     }
 
     override suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
-        scanState is ScanningState.Initialized.Enabled.Scanning && scanMode is ScanMode.Scan
+        scanState is ScanningState.Enabled.Scanning && scanMode is ScanMode.Scan
     }.stateIn(this)
 
     override val isEnabled = scanningStateRepo
-        .mapLatest { it is ScanningState.Initialized.Enabled }
+        .mapLatest { it is ScanningState.Enabled }
 }
 
 expect class BluetoothBuilder : Bluetooth.Builder
