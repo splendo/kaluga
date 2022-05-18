@@ -39,9 +39,8 @@ class MockDeviceConnectionManagerTest {
             deviceWrapper = createDeviceWrapper("foo"),
             stateRepo = device
         )
-        assertEquals(-1, mock.mtuFlow)
+        assertEquals(-1, mock.mtu)
         assertTrue(mock.requestMtu(42))
-        assertEquals(42, mock.requestMtuCompleted.get().await())
-        assertEquals(42, mock.mtuFlow)
+        assertEquals(42, mock.mtu)
     }
 }

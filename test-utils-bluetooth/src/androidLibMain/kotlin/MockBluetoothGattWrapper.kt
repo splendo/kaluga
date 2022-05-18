@@ -25,7 +25,7 @@ import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.CompletableDeferred
 
-class MockBluetoothGattWrapper(setupMocks: Boolean) : BluetoothGattWrapper {
+class MockBluetoothGattWrapper(setupMocks: Boolean = true) : BluetoothGattWrapper {
 
     val connectMock = ::connect.mock()
     val discoverServicesMock = ::discoverServices.mock()

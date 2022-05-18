@@ -20,12 +20,18 @@ package com.splendo.kaluga.state
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.yieldMultiple
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,6 +42,7 @@ class ColdStateRepoTest : BaseTest() {
 
         override suspend fun initialState() {
             super.initialState()
+
             initialStateCounter.value++
         }
 
@@ -44,32 +51,46 @@ class ColdStateRepoTest : BaseTest() {
     }
 
     class Repo : ColdStateRepo<CircuitState>() {
-        override suspend fun initialValue(): CircuitState {
-            debug("ColdStateRepoTest") { "initialValue" }
-            return CircuitState.Open
+
+        val initialValueMock = ::initialValue.mock()
+        val deinitializeMock = ::deinitialize.mock()
+
+        init {
+            initialValueMock.on().doExecuteSuspended {
+                debug("ColdStateRepoTest") { "initialValue" }
+                CircuitState.Open
+            }
+
+            deinitializeMock.on().doExecuteSuspended {
+                debug("ColdStateRepoTest") { "deinitialize" }
+            }
         }
 
-        override suspend fun deinitialize(state: CircuitState) {
-            debug("ColdStateRepoTest") { "deinitialize" }
-        }
+        override suspend fun initialValue(): CircuitState = initialValueMock.call()
+
+        override suspend fun deinitialize(state: CircuitState): Unit = deinitializeMock.call(state)
     }
 
     @Test
     fun testLaterCollectionsCallsInitialState() = runBlocking {
         val repo = Repo()
         for (times in 1..2) {
+            debug("Test $times")
             repo.testCollectionIsCalledTimes(times)
         }
     }
 
     private suspend fun Repo.testCollectionIsCalledTimes(times: Int) {
         val job = launch { collect() }
+        // For some reason yield is not reliable here
         delay(100)
         useState {
-            val isCalledTimes = it.initialStateCounter.filter { it == times }.first()
-            assertEquals(times, isCalledTimes)
+            assertEquals(times, it.initialStateCounter.value)
+            initialValueMock.verify(times)
             assertEquals(CircuitState.Open, it)
         }
         job.cancel()
+        delay(100)
+        deinitializeMock.verify(times = times)
     }
 }

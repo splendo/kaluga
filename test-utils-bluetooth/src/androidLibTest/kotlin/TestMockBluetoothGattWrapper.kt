@@ -18,6 +18,8 @@
 package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.mock.verify
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -29,6 +31,5 @@ class TestMockBluetoothGattWrapper {
         val mtu = 54
         val mock = MockBluetoothGattWrapper()
         assertTrue(mock.requestMtu(mtu))
-        assertEquals(mtu, mock.requestMtuCompleted.await())
     }
 }

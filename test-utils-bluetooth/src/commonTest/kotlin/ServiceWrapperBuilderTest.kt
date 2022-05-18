@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

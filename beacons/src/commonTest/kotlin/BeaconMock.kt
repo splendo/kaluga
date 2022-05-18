@@ -78,9 +78,9 @@ object BeaconMock {
             deviceWrapper: DeviceWrapper,
             stateRepo: DeviceStateFlowRepo
         ) = MockDeviceConnectionManager(
-            connectionSettings,
-            deviceWrapper,
-            stateRepo
+            connectionSettings = connectionSettings,
+            deviceWrapper = deviceWrapper,
+            stateRepo = stateRepo
         )
     }
 
