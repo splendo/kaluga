@@ -19,8 +19,6 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
-import com.splendo.kaluga.test.bluetooth.createMockDevice
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,9 +39,9 @@ class MockDeviceConnectionManagerTest {
             deviceWrapper = createDeviceWrapper("foo"),
             stateRepo = device
         )
-        assertEquals(-1, mock.mtu)
+        assertEquals(-1, mock.mtuFlow)
         assertTrue(mock.requestMtu(42))
         assertEquals(42, mock.requestMtuCompleted.get().await())
-        assertEquals(42, mock.mtu)
+        assertEquals(42, mock.mtuFlow)
     }
 }

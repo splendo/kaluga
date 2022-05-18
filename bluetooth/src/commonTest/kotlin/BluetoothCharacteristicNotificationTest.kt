@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.test.mock.matcher.AnyOrNullCaptor
@@ -29,7 +28,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.fail

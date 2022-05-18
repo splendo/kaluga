@@ -33,7 +33,6 @@ import com.splendo.kaluga.test.bluetooth.MockDescriptorWrapper
 import com.splendo.kaluga.test.mock.call
 import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
-import kotlinx.coroutines.launch
 
 class MockDeviceConnectionManager(
     initialWillActionSucceed: Boolean = true,

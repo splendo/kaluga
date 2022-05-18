@@ -180,6 +180,24 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
             )
         }
 
+        suspend fun awaitScanDevice(
+            device: Device,
+            deviceWrapper: DeviceWrapper,
+            rssi: Int,
+            advertisementData: BaseAdvertisementData
+        ) {
+            bluetooth.scanningStateRepo.filter {
+                it is ScanningState.Enabled.Scanning
+            }.first()
+            bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
+                state.discoverDevice(
+                    deviceWrapper.identifier,
+                    rssi,
+                    advertisementData
+                ) { device }
+            }
+        }
+
         fun scanDevice(
             device: Device,
             deviceWrapper: DeviceWrapper,
@@ -187,29 +205,24 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
             advertisementData: BaseAdvertisementData
         ) {
             coroutineScope.launch {
-                bluetooth.scanningStateRepo.filter {
-                    it is ScanningState.Enabled.Scanning
-                }.first()
-                bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
-                    state.discoverDevice(
-                        deviceWrapper.identifier,
-                        rssi,
-                        advertisementData
-                    ) { device }
-                }
+                awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
             }
         }
 
         suspend fun connectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
             connectionManager.connectMock.on().doExecuteSuspended {
-                connectionManager.handleConnect()
+                coroutineScope.launch {
+                    connectionManager.handleConnect()
+                }
             }
             bluetooth.devices()[device.identifier].connect()
         }
 
         suspend fun disconnectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
             connectionManager.disconnectMock.on().doExecuteSuspended {
-                connectionManager.handleDisconnect()
+                coroutineScope.launch {
+                    connectionManager.handleDisconnect()
+                }
             }
             bluetooth.devices()[device.identifier].disconnect()
         }
@@ -237,20 +250,24 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
             advertisementData: BaseAdvertisementData = configuration.advertisementData
         ) = super.scanDevice(device, deviceWrapper, rssi, advertisementData)
         suspend fun connectDevice() = connectDevice(device, connectionManager)
+        suspend fun disconnectDevice() = disconnectDevice(device, connectionManager)
 
     }
     class DeviceContext(configuration: Configuration.DeviceWithoutService, coroutineScope: CoroutineScope) : BaseDeviceContext<Configuration.DeviceWithoutService>(configuration, coroutineScope)
     sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
+        val serviceUuid = serviceWrapper.uuid
         val service by lazy { Service(serviceWrapper, connectionManager.stateRepo) }
         suspend fun discoverService() =
             discoverService(service, device, connectionManager)
     }
     class ServiceContext(configuration: Configuration.DeviceWithService, coroutineScope: CoroutineScope) : BaseServiceContext<Configuration.DeviceWithService>(configuration, coroutineScope)
     sealed class BaseCharacteristicContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseServiceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Characteristic {
+        val characteristicUuid = serviceWrapper.characteristics.first().uuid
         val characteristic by lazy { service.characteristics.first() }
     }
     class CharacteristicContext(configuration: Configuration.DeviceWithCharacteristic, coroutineScope: CoroutineScope) : BaseCharacteristicContext<Configuration.DeviceWithCharacteristic>(configuration, coroutineScope)
     sealed class BaseDescriptorContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseCharacteristicContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Descriptor {
+        val descriptorUuid = serviceWrapper.characteristics.first().descriptors.first().uuid
         val descriptor by lazy { characteristic.descriptors.first() }
     }
     class DescriptorContext(configuration: Configuration.DeviceWithDescriptor, coroutineScope: CoroutineScope) : BaseDescriptorContext<Configuration.DeviceWithDescriptor>(configuration, coroutineScope)

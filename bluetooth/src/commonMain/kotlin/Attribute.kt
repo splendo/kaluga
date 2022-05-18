@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -58,7 +59,9 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected suspend fun addAction(action: DeviceAction) {
+        debug("Add Action")
         stateRepo.takeAndChangeState { state ->
+            debug("Add Action State $state")
             when (state) {
                 is DeviceState.Connected.Idle -> {
                     state.handleAction(action)

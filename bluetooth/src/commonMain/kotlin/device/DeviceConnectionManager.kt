@@ -18,9 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import co.touchlab.stately.collections.sharedMutableMapOf
-import co.touchlab.stately.concurrency.AtomicInt
 import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -28,6 +26,8 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class BaseDeviceConnectionManager(
     val connectionSettings: ConnectionSettings = ConnectionSettings(),
@@ -53,8 +53,9 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val _mtu = AtomicInt(-1)
-    val mtu get() = _mtu.value
+    private val _mtu = MutableStateFlow(-1)
+    val mtuFlow: Flow<Int> = _mtu
+    val mtu: Int get() = _mtu.value
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -69,10 +70,14 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    fun handleNewMtu(mtu: Int) = _mtu.set(mtu)
+    fun handleNewMtu(mtu: Int) {
+        _mtu.value = mtu
+    }
 
     suspend fun handleConnect() {
+        debug("Handle Connect")
         stateRepo.takeAndChangeState { state ->
+            debug("Handle Connect $state")
             when (state) {
                 is DeviceState.Connecting -> state.didConnect
                 is DeviceState.Reconnecting -> state.didConnect

@@ -128,12 +128,7 @@ class DeviceTest :
             assertEquals(0, it.attempt)
         }
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Reconnecting -> deviceState.didConnect
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleConnect()
         }
         test {
             assertIs<DeviceState.Connected>(it)
@@ -155,12 +150,7 @@ class DeviceTest :
         connect()
 
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected -> deviceState.reconnect
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleDisconnect()
         }
 
         test {
@@ -169,12 +159,7 @@ class DeviceTest :
             assertEquals(0, it.attempt)
         }
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Reconnecting -> deviceState.retry()
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleDisconnect()
         }
         test {
             connectionManager.connectMock.verify(3)
@@ -182,12 +167,7 @@ class DeviceTest :
             assertEquals(1, it.attempt)
         }
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Reconnecting -> deviceState.retry()
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleDisconnect()
         }
         test {
             connectionManager.connectMock.verify(3)
@@ -231,7 +211,6 @@ class DeviceTest :
                 when (deviceState) {
                     is DeviceState.Connected -> {
                         assertTrue(deviceState.requestMtu(23))
-                        connectionManager.handleNewMtu(23)
                     }
                     else -> {}
                 }
@@ -248,10 +227,10 @@ class DeviceTest :
         connecting()
         connect()
         mainAction {
-            device.takeAndChangeState { deviceState ->
+            device.useState { deviceState ->
                 when (deviceState) {
-                    is DeviceState.Connected.NoServices -> deviceState.discoverServices
-                    else -> deviceState.remain()
+                    is DeviceState.Connected.NoServices -> deviceState.startDiscovering()
+                    else -> {}
                 }
             }
         }
@@ -260,16 +239,7 @@ class DeviceTest :
             assertIs<DeviceState.Connected.Discovering>(it)
         }
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.Discovering -> deviceState.didDiscoverServices(
-                        listOf(
-                            service
-                        )
-                    )
-                    else -> deviceState.remain()
-                }
-            }
+            discoverService()
         }
         test {
             assertIs<Idle>(it)
@@ -283,10 +253,10 @@ class DeviceTest :
         connecting()
         connect()
         mainAction {
-            device.takeAndChangeState { deviceState ->
+            device.useState { deviceState ->
                 when (deviceState) {
-                    is DeviceState.Connected.NoServices -> deviceState.discoverServices
-                    else -> deviceState.remain()
+                    is DeviceState.Connected.NoServices -> deviceState.startDiscovering()
+                    else -> {}
                 }
             }
         }
@@ -295,16 +265,7 @@ class DeviceTest :
             assertIs<DeviceState.Connected.Discovering>(it)
         }
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.Discovering -> deviceState.didDiscoverServices(
-                        listOf(
-                            service
-                        )
-                    )
-                    else -> deviceState.remain()
-                }
-            }
+            discoverService()
         }
         test {
             assertIs<Idle>(it)
@@ -399,7 +360,6 @@ class DeviceTest :
     private suspend fun connecting() {
         mainAction {
             device.takeAndChangeState { deviceState ->
-                println("state: $deviceState")
                 when (deviceState) {
                     is DeviceState.Disconnected -> deviceState.connect(deviceState)
                     else -> fail("$deviceState is not expected")
@@ -414,12 +374,7 @@ class DeviceTest :
 
     private suspend fun connect() {
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connecting -> deviceState.didConnect
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleConnect()
         }
         test {
             assertEquals(configuration.rssi, it.rssi)
@@ -441,12 +396,7 @@ class DeviceTest :
 
     private suspend fun disconnect() {
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Disconnecting -> deviceState.didDisconnect
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleDisconnect()
         }
         getDisconnectedState()
     }

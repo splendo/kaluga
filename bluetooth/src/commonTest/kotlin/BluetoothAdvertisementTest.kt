@@ -21,7 +21,6 @@ import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
