@@ -29,7 +29,7 @@ import kotlin.coroutines.CoroutineContext
 object BluetoothPermission : Permission()
 
 fun PermissionsBuilder.registerBluetoothPermission(
-    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) ->  BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
 ) =
     registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
@@ -41,7 +41,7 @@ fun PermissionsBuilder.registerBluetoothPermission(
     }
 
 fun PermissionsBuilder.registerBluetoothPermission(
-    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) ->  BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
 ) = bluetoothPermissionManagerBuilderBuilder(context).also {
     register(it)

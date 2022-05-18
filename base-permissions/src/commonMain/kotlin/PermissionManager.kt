@@ -20,8 +20,8 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.permissions.PermissionState.Allowed
 import com.splendo.kaluga.permissions.PermissionState.Denied
-import com.splendo.kaluga.permissions.PermissionState.Initializing
 import com.splendo.kaluga.permissions.PermissionState.Inactive
+import com.splendo.kaluga.permissions.PermissionState.Initializing
 import kotlinx.coroutines.CoroutineScope
 
 /**

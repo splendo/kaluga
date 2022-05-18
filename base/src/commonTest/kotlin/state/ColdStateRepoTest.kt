@@ -24,14 +24,10 @@ import com.splendo.kaluga.test.mock.call
 import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
 import com.splendo.kaluga.test.mock.verify
-import com.splendo.kaluga.test.yieldMultiple
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

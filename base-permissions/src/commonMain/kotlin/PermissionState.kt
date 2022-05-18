@@ -65,7 +65,7 @@ sealed class PermissionState<P : Permission> : KalugaState {
         fun initialize(allowed: Boolean, locked: Boolean): suspend() -> PermissionState<P> = {
             when {
                 !allowed && locked -> Denied.Locked(monitoringInterval, permissionManager)
-                !allowed ->  Denied.Requestable(monitoringInterval, permissionManager)
+                !allowed -> Denied.Requestable(monitoringInterval, permissionManager)
                 else -> Allowed(monitoringInterval, permissionManager)
             }
         }

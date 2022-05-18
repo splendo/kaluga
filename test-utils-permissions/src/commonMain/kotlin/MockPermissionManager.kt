@@ -97,5 +97,4 @@ class MockPermissionManager<P : Permission>(
         MockPermissionState.DENIED -> PermissionState.Denied.Requestable(monitoringInterval, this@MockPermissionManager)
         MockPermissionState.LOCKED -> PermissionState.Denied.Locked(monitoringInterval, this@MockPermissionManager)
     }
-
 }

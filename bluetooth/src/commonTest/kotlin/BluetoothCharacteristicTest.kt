@@ -26,9 +26,11 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, Characteristic?>() {
+class BluetoothCharacteristicTest :
+    BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, Characteristic?>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext = { configuration, scope -> CharacteristicContext(configuration, scope) }
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext =
+        { configuration, scope -> CharacteristicContext(configuration, scope) }
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<Characteristic?> = {
         bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid]
     }
@@ -77,13 +79,12 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
             serviceWrapperBuilder = {
                 characteristics {
                     characteristic {
-                        properties =
-                            CharacteristicProperties.Read or
-                                CharacteristicProperties.WriteWithoutResponse
+                        properties = CharacteristicProperties.Read or CharacteristicProperties.WriteWithoutResponse
                     }
                 }
             }
-        )) {
+        )
+    ) {
         mainAction {
             bluetooth.startScanning()
             scanDevice()

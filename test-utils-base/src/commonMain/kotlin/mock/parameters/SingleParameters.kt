@@ -47,7 +47,9 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
 
 internal fun <T0, R> ((T0) -> R).asMock() = MethodMock<SingleParameters.Matchers<T0>, SingleParameters.MatchersOrCaptor<T0>, SingleParameters.Values<T0>, SingleParameters<T0>, R>(SingleParameters())
 
-fun <T0, R> ((T0) -> R).mock(defaultAnswer: Answer<SingleParameters.Values<T0>, R>) = asMock().also {
+fun <T0, R> ((T0) -> R).mock(
+    defaultAnswer: Answer<SingleParameters.Values<T0>, R>
+) = asMock().also {
     it.on(ParameterMatcher.any<T0>()).doAnswer(defaultAnswer)
 }
 fun <T0, R> ((T0) -> R).mock(defaultValue: R) = asMock().also {
@@ -77,23 +79,23 @@ fun <T0> ((T0) -> Float).mock() = mock(0.0f)
 @JvmName("mockFloatArray")
 fun <T0> ((T0) -> FloatArray).mock() = mock(floatArrayOf())
 @JvmName("mockInt")
-fun <T0> ((T0) -> Int).mock() = mock( 0)
+fun <T0> ((T0) -> Int).mock() = mock(0)
 @JvmName("mockIntArray")
 fun <T0> ((T0) -> IntArray).mock() = mock(intArrayOf())
 @JvmName("mockIntRange")
 fun <T0> ((T0) -> IntRange).mock() = mock(IntRange.EMPTY)
 @JvmName("mockLong")
-fun <T0> ((T0) -> Long).mock() = mock( 0L)
+fun <T0> ((T0) -> Long).mock() = mock(0L)
 @JvmName("mockLongArray")
 fun <T0> ((T0) -> LongArray).mock() = mock(longArrayOf())
 @JvmName("mockLongRange")
 fun <T0> ((T0) -> LongRange).mock() = mock(LongRange.EMPTY)
 @JvmName("mockNumber")
-fun <T0> ((T0) -> Number).mock() = mock( 0)
+fun <T0> ((T0) -> Number).mock() = mock(0)
 @JvmName("mockShort")
 fun <T0> ((T0) -> Short).mock() = mock(0.toShort())
 @JvmName("mockShortArray")
-fun <T0> ((T0) -> ShortArray).mock() = mock( shortArrayOf())
+fun <T0> ((T0) -> ShortArray).mock() = mock(shortArrayOf())
 @JvmName("mockString")
 fun <T0> ((T0) -> String).mock() = mock("")
 @JvmName("mockUByte")
@@ -107,13 +109,13 @@ fun <T0> ((T0) -> UIntArray).mock() = mock(uintArrayOf())
 @JvmName("mockUIntRange")
 fun <T0> ((T0) -> UIntRange).mock() = mock(UIntRange.EMPTY)
 @JvmName("mockULong")
-fun <T0> ((T0) -> ULong).mock() = mock( 0UL)
+fun <T0> ((T0) -> ULong).mock() = mock(0UL)
 @JvmName("mockULongArray")
 fun <T0> ((T0) -> ULongArray).mock() = mock(ulongArrayOf())
 @JvmName("mockULongRange")
 fun <T0> ((T0) -> ULongRange).mock() = mock(ULongRange.EMPTY)
 @JvmName("mockUShort")
-fun <T0> ((T0) -> UShort).mock() = mock( 0.toUShort())
+fun <T0> ((T0) -> UShort).mock() = mock(0.toUShort())
 @JvmName("mockUShortArray")
 fun <T0> ((T0) -> UShortArray).mock() = mock(ushortArrayOf())
 @JvmName("mockUnit")
@@ -135,8 +137,9 @@ fun <T0, R : Any> ((T0) -> R).mock() = asMock()
 
 internal fun <T0, R> (suspend (T0) -> R).asSuspendedMock() = SuspendMethodMock<SingleParameters.Matchers<T0>, SingleParameters.MatchersOrCaptor<T0>, SingleParameters.Values<T0>, SingleParameters<T0>, R>(SingleParameters())
 
-fun <T0, R> (suspend (T0) -> R).mock(defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>) = asSuspendedMock()
-    .also {
+fun <T0, R> (suspend (T0) -> R).mock(
+    defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>
+) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>()).doAnswer(defaultAnswer)
 }
 fun <T0, R> (suspend (T0) -> R).mock(defaultValue: R) = asSuspendedMock().also {

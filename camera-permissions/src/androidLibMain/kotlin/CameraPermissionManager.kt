@@ -23,7 +23,6 @@ import android.content.pm.PackageManager
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
 actual class CameraPermissionManager(

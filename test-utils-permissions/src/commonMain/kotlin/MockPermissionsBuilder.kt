@@ -18,7 +18,6 @@
 package com.splendo.kaluga.test.permissions
 
 import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -53,7 +52,6 @@ import com.splendo.kaluga.permissions.notifications.NotificationsPermissionState
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermission
-import com.splendo.kaluga.permissions.storage.StoragePermissionManager
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
 import com.splendo.kaluga.test.mock.call
@@ -176,7 +174,7 @@ class MockPermissionsBuilder(
                 }
             }
             locationStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
-                LocationPermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                LocationPermissionStateRepo(permission, builder, coroutineContext = coroutineContext).also {
                     buildLocationStateRepos.add(it)
                 }
             }
@@ -198,7 +196,7 @@ class MockPermissionsBuilder(
                 }
             }
             storageStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
-                StoragePermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                StoragePermissionStateRepo(permission, builder, coroutineContext = coroutineContext).also {
                     buildStorageStateRepos.add(it)
                 }
             }
@@ -209,7 +207,7 @@ class MockPermissionsBuilder(
                 }
             }
             cameraStateRepoBuilderMock.on().doExecute { (builder, coroutineContext) ->
-                CameraPermissionStateRepo( builder, coroutineContext = coroutineContext).also {
+                CameraPermissionStateRepo(builder, coroutineContext = coroutineContext).also {
                     buildCameraStateRepos.add(it)
                 }
             }
@@ -220,7 +218,7 @@ class MockPermissionsBuilder(
                 }
             }
             contactsStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
-                ContactsPermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                ContactsPermissionStateRepo(permission, builder, coroutineContext = coroutineContext).also {
                     buildContactsStateRepos.add(it)
                 }
             }
@@ -231,7 +229,7 @@ class MockPermissionsBuilder(
                 }
             }
             microphoneStateRepoBuilderMock.on().doExecute { (builder, coroutineContext) ->
-                MicrophonePermissionStateRepo( builder, coroutineContext = coroutineContext).also {
+                MicrophonePermissionStateRepo(builder, coroutineContext = coroutineContext).also {
                     buildMicrophoneStateRepos.add(it)
                 }
             }
@@ -242,7 +240,7 @@ class MockPermissionsBuilder(
                 }
             }
             notificationsStateRepoBuilderMock.on().doExecute { (permission, builder, coroutineContext) ->
-                NotificationsPermissionStateRepo( permission, builder, coroutineContext = coroutineContext).also {
+                NotificationsPermissionStateRepo(permission, builder, coroutineContext = coroutineContext).also {
                     buildNotificationsStateRepos.add(it)
                 }
             }

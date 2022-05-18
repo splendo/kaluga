@@ -234,7 +234,7 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
     }
 
     class BluetoothContext(configuration: Configuration.Bluetooth, coroutineScope: CoroutineScope) : Context<Configuration.Bluetooth>(configuration, coroutineScope)
-    sealed class BaseDeviceContext<C: Configuration.Device>(configuration: C, coroutineScope: CoroutineScope) : Context<C>(configuration, coroutineScope) {
+    sealed class BaseDeviceContext<C : Configuration.Device>(configuration: C, coroutineScope: CoroutineScope) : Context<C>(configuration, coroutineScope) {
         val deviceWrapper = createDeviceWrapper()
         val deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder()
         val device = createDevice()
@@ -251,7 +251,6 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
         ) = super.scanDevice(device, deviceWrapper, rssi, advertisementData)
         suspend fun connectDevice() = connectDevice(device, connectionManager)
         suspend fun disconnectDevice() = disconnectDevice(device, connectionManager)
-
     }
     class DeviceContext(configuration: Configuration.DeviceWithoutService, coroutineScope: CoroutineScope) : BaseDeviceContext<Configuration.DeviceWithoutService>(configuration, coroutineScope)
     sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {

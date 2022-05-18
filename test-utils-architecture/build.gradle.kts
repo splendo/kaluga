@@ -29,9 +29,7 @@ kotlin {
             }
         }
         commonTest {
-            dependencies {
-
-            }
+            dependencies { }
         }
     }
 }

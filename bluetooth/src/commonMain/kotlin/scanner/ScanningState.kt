@@ -85,7 +85,9 @@ sealed class ScanningState : KalugaState {
             { Initializing(previouslyDiscovered, scanner) }
     }
 
-    sealed class Active : ScanningState(), HandleBeforeOldStateIsRemoved<ScanningState>,
+    sealed class Active :
+        ScanningState(),
+        HandleBeforeOldStateIsRemoved<ScanningState>,
         HandleAfterNewStateIsSet<ScanningState> {
         override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
             when (oldState) {
@@ -273,7 +275,6 @@ sealed class ScanningState : KalugaState {
                 else Disabled(scanner)
             }
         }
-
     }
 
     object NoHardware : ScanningState()

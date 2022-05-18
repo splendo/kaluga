@@ -292,7 +292,6 @@ class DeviceTest :
             assertIs<HandlingAction>(it)
             assertIs<DeviceAction.Read.Characteristic>(it.action)
             assertEquals(0, it.nextActions.size)
-
         }
 
         mainAction {

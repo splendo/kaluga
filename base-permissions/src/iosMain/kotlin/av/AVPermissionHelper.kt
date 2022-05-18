@@ -23,7 +23,6 @@ import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
 import platform.AVFoundation.AVAuthorizationStatus
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied

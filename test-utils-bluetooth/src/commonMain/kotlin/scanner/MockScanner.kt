@@ -74,7 +74,7 @@ class MockScanner(
 
     val isEnabled = MutableStateFlow(initialBluetoothEnabled)
 
-    override public val bluetoothEnabledMonitor = MockBluetoothMonitor(isEnabled)
+    public override val bluetoothEnabledMonitor = MockBluetoothMonitor(isEnabled)
 
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()

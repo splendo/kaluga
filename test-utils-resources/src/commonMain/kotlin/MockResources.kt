@@ -35,10 +35,10 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 
     init {
         loadStringMock.on().doExecute { (identifier, defaultValue) ->
-                if (returnMock) identifier else defaultValue
-            }
+            if (returnMock) identifier else defaultValue
+        }
         loadQuantityStringMock.on().doExecute { (identifier, quantity, defaultValue) ->
-            if (returnMock) "${identifier}_${quantity}" else defaultValue
+            if (returnMock) "${identifier}_$quantity" else defaultValue
         }
     }
 

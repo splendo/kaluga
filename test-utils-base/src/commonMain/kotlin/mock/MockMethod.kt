@@ -83,7 +83,7 @@ abstract class BaseMethodMock<
         }
         if (matchingStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
         val matchedStubs = (0..matchingStubs.first().first.size).fold(matchingStubs) { remainingMatches, index ->
-            remainingMatches.fold(emptyList()) inner@ { acc, possibleBestMatch ->
+            remainingMatches.fold(emptyList()) inner@{ acc, possibleBestMatch ->
                 if (acc.isEmpty()) {
                     return@inner listOf(possibleBestMatch)
                 }
@@ -136,14 +136,14 @@ fun <
     V : ParametersSpec.Values,
     A : BaseAnswer<V, Unit>,
     Stub : BaseMethodMock.Stub<M, V, Unit, A>> Stub.doReturn() {
-        doExecute { }
-    }
+    doExecute { }
+}
 
 class MethodMock<M : ParametersSpec.Matchers,
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
-    R>(override val ParametersSpec: W): BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
+    R>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
     internal fun call(arguments: V): R = getStubFor(arguments).call(arguments)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
@@ -160,7 +160,6 @@ class MethodMock<M : ParametersSpec.Matchers,
             return answer.call(arguments)
         }
     }
-
 }
 
 class SuspendMethodMock<

@@ -138,7 +138,6 @@ actual class Scanner internal constructor(
 
     private val locationPermissionRepo get() = permissions[locationPermission]
 
-
     override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
     override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }

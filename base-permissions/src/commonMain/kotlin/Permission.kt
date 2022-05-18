@@ -59,7 +59,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     private val builders = IsoMutableMap<KClassifier, BasePermissionsBuilder<*>>()
     private val repoBuilders = IsoMutableMap<KClassifier, PermissionStateRepoBuilder<*>>()
 
-    inline fun <reified P: Permission, B : BasePermissionsBuilder<P>> register(builder: B): B = register(P::class, builder)
+    inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> register(builder: B): B = register(P::class, builder)
     fun <P : Permission, B : BasePermissionsBuilder<P>> register(permission: KClass<P>, builder: B): B {
         builders[permission] = builder
         return builder

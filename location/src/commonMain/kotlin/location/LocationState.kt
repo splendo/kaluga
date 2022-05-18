@@ -230,7 +230,7 @@ class LocationStateRepo(
     initChangeStateWithRepo = { locationState, repo ->
         when (locationState) {
             is LocationState.Uninitialized -> {
-                val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, (repo  as LocationStateRepo))
+                val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, (repo as LocationStateRepo))
                 locationState.startInitializing(locationManager)
             }
             is LocationState.Deinitialized -> locationState.reinitialize

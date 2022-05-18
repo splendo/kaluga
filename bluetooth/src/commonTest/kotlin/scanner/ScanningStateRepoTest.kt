@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
-import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
@@ -82,10 +81,12 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
-    fun testStartWithoutPermissionNoAutoRequest() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(
-        autoRequestPermission = false,
-        initialPermissionState = MockPermissionManager.MockPermissionState.DENIED
-    )) {
+    fun testStartWithoutPermissionNoAutoRequest() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService(
+            autoRequestPermission = false,
+            initialPermissionState = MockPermissionManager.MockPermissionState.DENIED
+        )
+    ) {
         test {
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             permissionManager.requestPermissionMock.verify(rule = never())

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.resources
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity()

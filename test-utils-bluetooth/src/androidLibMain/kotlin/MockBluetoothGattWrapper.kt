@@ -23,7 +23,6 @@ import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.test.mock.call
 import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
-import kotlinx.coroutines.CompletableDeferred
 
 class MockBluetoothGattWrapper(setupMocks: Boolean = true) : BluetoothGattWrapper {
 

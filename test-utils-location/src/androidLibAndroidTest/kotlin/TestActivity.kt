@@ -15,9 +15,8 @@
 
 */
 
-package com.splendo.kaluga.test-utils-location
+package com.splendo.kaluga.test.location
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity()

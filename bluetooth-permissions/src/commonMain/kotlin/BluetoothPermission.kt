@@ -54,4 +54,3 @@ class BluetoothPermissionStateRepo(
     monitoringInterval: Long = defaultMonitoringInterval,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, coroutineContext, { builder.create(it) })
-

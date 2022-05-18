@@ -1,5 +1,4 @@
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.mock.answer.Answer
 import com.splendo.kaluga.test.mock.call
 import com.splendo.kaluga.test.mock.matcher.AnyCaptor
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.any
@@ -7,7 +6,6 @@ import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.notEq
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.notNull
 import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.SingleParameters
 import com.splendo.kaluga.test.mock.parameters.mock
 import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.times

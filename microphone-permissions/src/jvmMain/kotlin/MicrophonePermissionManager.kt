@@ -19,9 +19,9 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 
-actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : PermissionManager<MicrophonePermission>(repo) {
+actual class MicrophonePermissionManager(repo: PermissionStateRepo<MicrophonePermission>) : PermissionManager<MicrophonePermission>(repo) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
@@ -38,7 +38,7 @@ actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : 
 
 actual class MicrophonePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
+    override fun create(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> {
         return MicrophonePermissionManager(repo)
     }
 }

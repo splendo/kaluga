@@ -121,7 +121,7 @@ abstract class BaseLocationManager(
         locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { state ->
             when (state) {
                 is LocationState.Initializing -> {
-                    { state.copy(location = location)}
+                    { state.copy(location = location) }
                 }
                 is LocationState.Disabled.NoGPS -> {
                     { state.copy(location = location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)) }

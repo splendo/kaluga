@@ -35,8 +35,7 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
         val third: ParameterMatcher<T2>,
         val fourth: ParameterMatcher<T3>,
         val fifth: ParameterMatcher<T4>
-        ) :
-        ParametersSpec.Matchers {
+    ) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third, fourth, fifth)
     }
     data class MatchersOrCaptor<T0, T1, T2, T3, T4>(
@@ -44,8 +43,8 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
         val second: ParameterMatcherOrCaptor<T1>,
         val third: ParameterMatcherOrCaptor<T2>,
         val fourth: ParameterMatcherOrCaptor<T3>,
-        val fifth: ParameterMatcherOrCaptor<T4>) :
-        ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3, T4>> {
+        val fifth: ParameterMatcherOrCaptor<T4>
+    ) : ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3, T4>> {
         override fun asMatchers(): Matchers<T0, T1, T2, T3, T4> = Matchers(
             first.asMatcher(),
             second.asMatcher(),
@@ -62,7 +61,6 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
         fourth.matches(values.fourth) &&
         fifth.matches(values.fifth)
 
-
     override fun MatchersOrCaptor<T0, T1, T2, T3, T4>.capture(values: Values<T0, T1, T2, T3, T4>) {
         (first as? Captor<T0>)?.capture(values.first)
         (second as? Captor<T1>)?.capture(values.second)
@@ -74,7 +72,9 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
 
 internal fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = MethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
 
-fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).mock(defaultAnswer: Answer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>) = asMock().also {
+fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).mock(
+    defaultAnswer: Answer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>
+) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doAnswer(defaultAnswer)
 }
 fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).mock(defaultValue: R) = asMock().also {
@@ -104,23 +104,23 @@ fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Float).mock() = mock(0.0f)
 @JvmName("mockFloatArray")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> FloatArray).mock() = mock(floatArrayOf())
 @JvmName("mockInt")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Int).mock() = mock( 0)
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Int).mock() = mock(0)
 @JvmName("mockIntArray")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> IntArray).mock() = mock(intArrayOf())
 @JvmName("mockIntRange")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> IntRange).mock() = mock(IntRange.EMPTY)
 @JvmName("mockLong")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Long).mock() = mock( 0L)
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Long).mock() = mock(0L)
 @JvmName("mockLongArray")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> LongArray).mock() = mock(longArrayOf())
 @JvmName("mockLongRange")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> LongRange).mock() = mock(LongRange.EMPTY)
 @JvmName("mockNumber")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Number).mock() = mock( 0)
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Number).mock() = mock(0)
 @JvmName("mockShort")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Short).mock() = mock(0.toShort())
 @JvmName("mockShortArray")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> ShortArray).mock() = mock( shortArrayOf())
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> ShortArray).mock() = mock(shortArrayOf())
 @JvmName("mockString")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> String).mock() = mock("")
 @JvmName("mockUByte")
@@ -134,13 +134,13 @@ fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> UIntArray).mock() = mock(uintA
 @JvmName("mockUIntRange")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> UIntRange).mock() = mock(UIntRange.EMPTY)
 @JvmName("mockULong")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> ULong).mock() = mock( 0UL)
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> ULong).mock() = mock(0UL)
 @JvmName("mockULongArray")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> ULongArray).mock() = mock(ulongArrayOf())
 @JvmName("mockULongRange")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> ULongRange).mock() = mock(ULongRange.EMPTY)
 @JvmName("mockUShort")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> UShort).mock() = mock( 0.toUShort())
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> UShort).mock() = mock(0.toUShort())
 @JvmName("mockUShortArray")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> UShortArray).mock() = mock(ushortArrayOf())
 @JvmName("mockUnit")
@@ -162,12 +162,12 @@ fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R).mock() = asMock()
 
 internal fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asSuspendedMock() = SuspendMethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
 
-fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>) = asSuspendedMock()
-    .also {
+fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(
+    defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>
+) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doAnswer(defaultAnswer)
 }
-fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultValue: R) = asSuspendedMock()
-    .also {
+fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mock(defaultValue: R) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doReturn(defaultValue)
 }
 

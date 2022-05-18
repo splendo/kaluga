@@ -26,7 +26,7 @@ import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
-class MockAlertPresenter (val alert: Alert, setupMocks: Boolean = true) : BaseAlertPresenter(alert) {
+class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAlertPresenter(alert) {
 
     class Builder(setupMocks: Boolean = true) : BaseAlertPresenter.Builder() {
 
@@ -88,8 +88,7 @@ class MockAlertPresenter (val alert: Alert, setupMocks: Boolean = true) : BaseAl
 
     fun closeWithAction(action: Alert.Action?): Unit = closeWithActionMock.call(action)
 
-    override fun showAsync(animated: Boolean, completion: () -> Unit): Unit  = showAsyncMock.call(animated, completion)
-
+    override fun showAsync(animated: Boolean, completion: () -> Unit): Unit = showAsyncMock.call(animated, completion)
 
     override fun dismiss(animated: Boolean): Unit = dismissMock.call(animated)
 

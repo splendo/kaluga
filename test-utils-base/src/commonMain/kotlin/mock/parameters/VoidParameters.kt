@@ -41,7 +41,9 @@ object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.M
 
 internal fun <R> (() -> R).asMock() = MethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
 
-fun <R> (() -> R).mock(defaultAnswer: Answer<VoidParameters.Values, R>) = asMock().also {
+fun <R> (() -> R).mock(
+    defaultAnswer: Answer<VoidParameters.Values, R>
+) = asMock().also {
     it.on().doAnswer(defaultAnswer)
 }
 fun <R> (() -> R).mock(defaultValue: R) = asMock().also {
@@ -71,23 +73,23 @@ fun (() -> Float).mock() = mock(0.0f)
 @JvmName("mockFloatArray")
 fun (() -> FloatArray).mock() = mock(floatArrayOf())
 @JvmName("mockInt")
-fun (() -> Int).mock() = mock( 0)
+fun (() -> Int).mock() = mock(0)
 @JvmName("mockIntArray")
 fun (() -> IntArray).mock() = mock(intArrayOf())
 @JvmName("mockIntRange")
 fun (() -> IntRange).mock() = mock(IntRange.EMPTY)
 @JvmName("mockLong")
-fun (() -> Long).mock() = mock( 0L)
+fun (() -> Long).mock() = mock(0L)
 @JvmName("mockLongArray")
 fun (() -> LongArray).mock() = mock(longArrayOf())
 @JvmName("mockLongRange")
 fun (() -> LongRange).mock() = mock(LongRange.EMPTY)
 @JvmName("mockNumber")
-fun (() -> Number).mock() = mock( 0)
+fun (() -> Number).mock() = mock(0)
 @JvmName("mockShort")
 fun (() -> Short).mock() = mock(0.toShort())
 @JvmName("mockShortArray")
-fun (() -> ShortArray).mock() = mock( shortArrayOf())
+fun (() -> ShortArray).mock() = mock(shortArrayOf())
 @JvmName("mockString")
 fun (() -> String).mock() = mock("")
 @JvmName("mockUByte")
@@ -101,13 +103,13 @@ fun (() -> UIntArray).mock() = mock(uintArrayOf())
 @JvmName("mockUIntRange")
 fun (() -> UIntRange).mock() = mock(UIntRange.EMPTY)
 @JvmName("mockULong")
-fun (() -> ULong).mock() = mock( 0UL)
+fun (() -> ULong).mock() = mock(0UL)
 @JvmName("mockULongArray")
 fun (() -> ULongArray).mock() = mock(ulongArrayOf())
 @JvmName("mockULongRange")
 fun (() -> ULongRange).mock() = mock(ULongRange.EMPTY)
 @JvmName("mockUShort")
-fun (() -> UShort).mock() = mock( 0.toUShort())
+fun (() -> UShort).mock() = mock(0.toUShort())
 @JvmName("mockUShortArray")
 fun (() -> UShortArray).mock() = mock(ushortArrayOf())
 @JvmName("mockUnit")
@@ -129,8 +131,9 @@ fun <R : Any> (() -> R).mock() = asMock()
 
 internal fun <R> (suspend () -> R).asSuspendedMock() = SuspendMethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
 
-fun <R> (suspend () -> R).mock(defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>) = asSuspendedMock()
-    .also {
+fun <R> (suspend () -> R).mock(
+    defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>
+) = asSuspendedMock().also {
     it.on().doAnswer(defaultAnswer)
 }
 

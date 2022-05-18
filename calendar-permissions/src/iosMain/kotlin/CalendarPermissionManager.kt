@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import platform.EventKit.EKAuthorizationStatus
 import platform.EventKit.EKAuthorizationStatusAuthorized

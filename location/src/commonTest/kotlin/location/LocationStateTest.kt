@@ -466,7 +466,8 @@ class LocationStateTest :
                 Location.UnknownLocation.WithLastLocation(
                     location1,
                     Location.UnknownLocation.Reason.PERMISSION_DENIED
-                ), it.location
+                ),
+                it.location
             )
         }
 
@@ -517,7 +518,8 @@ class LocationStateTest :
                 Location.UnknownLocation.WithLastLocation(
                     location1,
                     Location.UnknownLocation.Reason.NO_GPS
-                ), it.location
+                ),
+                it.location
             )
         }
 
@@ -637,7 +639,8 @@ class LocationStateTest :
                 Location.UnknownLocation.WithLastLocation(
                     location1,
                     Location.UnknownLocation.Reason.PERMISSION_DENIED
-                ), it.location
+                ),
+                it.location
             )
         }
 
@@ -696,7 +699,8 @@ class LocationStateTest :
                 Location.UnknownLocation.WithLastLocation(
                     location1,
                     Location.UnknownLocation.Reason.NO_GPS
-                ), it.location
+                ),
+                it.location
             )
         }
         mainAction {
@@ -721,7 +725,8 @@ class LocationStateTest :
                 autoEnableLocations,
                 initialPermissionState,
                 locationEnabled
-            ), blockWithContext = test
+            ),
+            blockWithContext = test
         )
     }
 }

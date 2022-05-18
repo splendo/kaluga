@@ -19,7 +19,6 @@ package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
 actual class NotificationOptions

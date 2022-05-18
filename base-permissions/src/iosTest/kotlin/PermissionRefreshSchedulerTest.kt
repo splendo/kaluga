@@ -20,8 +20,6 @@ package com.splendo.kaluga.permissions
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
@@ -29,12 +27,9 @@ import com.splendo.kaluga.test.mock.verify
 import com.splendo.kaluga.test.permissions.DummyPermission
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class PermissionRefreshSchedulerTest : BaseTest() {
 

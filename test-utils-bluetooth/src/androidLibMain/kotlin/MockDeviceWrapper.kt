@@ -33,7 +33,7 @@ class MockDeviceWrapper(
     override val identifier: Identifier,
     override val bondState: Int,
     setupMocks: Boolean = true
-    ) : DeviceWrapper {
+) : DeviceWrapper {
 
     val gattWrappers = sharedMutableListOf<MockBluetoothGattWrapper>()
     val connectGattMock = ::connectGatt.mock()
