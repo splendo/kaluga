@@ -71,7 +71,6 @@ class ColdStateRepoTest : BaseTest() {
     fun testLaterCollectionsCallsInitialState() = runBlocking {
         val repo = Repo()
         for (times in 1..2) {
-            debug("Test $times")
             repo.testCollectionIsCalledTimes(times)
         }
     }

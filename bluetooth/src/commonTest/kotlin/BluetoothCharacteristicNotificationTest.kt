@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.test.mock.matcher.AnyOrNullCaptor
@@ -35,7 +36,7 @@ import kotlin.test.fail
 class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, DeviceState>() {
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext = { configuration, scope -> CharacteristicContext(configuration, scope) }
-    override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<DeviceState> = { device }
+    override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<DeviceState> = { device.filterOnlyImportant() }
 
     @Test
     fun testEnableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
@@ -105,6 +106,9 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
     }
 
     private suspend fun connect() {
+        test {
+            assertIs<DeviceState.Disconnected>(it)
+        }
         mainAction {
             device.takeAndChangeState { deviceState ->
                 println("state: $deviceState")

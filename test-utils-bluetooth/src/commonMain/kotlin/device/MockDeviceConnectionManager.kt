@@ -61,7 +61,9 @@ class MockDeviceConnectionManager(
             connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
             stateRepo: DeviceStateFlowRepo
-        ): BaseDeviceConnectionManager = createMock.call(connectionSettings, deviceWrapper, stateRepo)
+        ): BaseDeviceConnectionManager {
+            return createMock.call(connectionSettings, deviceWrapper, stateRepo)
+        }
     }
 
     private val _willActionSucceed = AtomicBoolean(initialWillActionSucceed)

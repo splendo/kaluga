@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.HandlingAction
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
@@ -25,6 +26,7 @@ import com.splendo.kaluga.test.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.mock.verify
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -34,7 +36,7 @@ import kotlin.test.fail
 class DeviceTest :
     BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, DeviceState>() {
 
-    override val flowFromTestContext: suspend DescriptorContext.() -> Device = { device }
+    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<DeviceState> = { device.filterOnlyImportant() }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext =
         { configuration, scope -> DescriptorContext(configuration, scope) }

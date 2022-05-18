@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
@@ -26,6 +27,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
@@ -57,13 +59,54 @@ typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceSt
 
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
-    open val connectionManager: BaseDeviceConnectionManager
-) : KalugaState, DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
+    coroutineScope: CoroutineScope
+) : KalugaState, DeviceInfo by deviceInfo, CoroutineScope by coroutineScope {
+
+    data class Initializing(
+        private val connectionSettings: ConnectionSettings,
+        override val deviceInfo: DeviceInfoImpl,
+        private val connectionBuilder: BaseDeviceConnectionManager.Builder,
+        private val repo: DeviceStateFlowRepo
+    ) : DeviceState(deviceInfo, repo), SpecialFlowValue.NotImportant {
+        init {
+            launch(coroutineContext) {
+                yield()
+                repo.takeAndChangeState { state ->
+                    when (state) {
+                        is Initializing -> {
+                            {
+                                val deviceConnectionManager = connectionBuilder.create(
+                                    connectionSettings,
+                                    deviceInfo.deviceWrapper,
+                                    repo
+                                )
+                                Disconnected(deviceInfo, deviceConnectionManager)
+                            }
+                        }
+                        is Initialized -> state.remain()
+                    }
+                }
+            }
+        }
+    }
+
+    sealed class Initialized(
+        deviceInfo: DeviceInfoImpl,
+        open val connectionManager: BaseDeviceConnectionManager
+    ) : DeviceState(deviceInfo, connectionManager) {
+        internal val didDisconnect = suspend {
+            Disconnected(deviceInfo, connectionManager)
+        }
+
+        internal val disconnecting = suspend {
+            Disconnecting(deviceInfo, connectionManager)
+        }
+    }
 
     sealed class Connected(
         deviceInfo: DeviceInfoImpl,
         connectionManager: BaseDeviceConnectionManager
-    ) : DeviceState(deviceInfo, connectionManager) {
+    ) : Initialized(deviceInfo, connectionManager) {
 
         data class NoServices constructor(
             override val deviceInfo: DeviceInfoImpl,
@@ -176,7 +219,7 @@ sealed class DeviceState(
     data class Connecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
+    ) : Initialized(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
         val cancelConnection = disconnecting
 
@@ -214,7 +257,7 @@ sealed class DeviceState(
         val services: List<Service>?,
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
+    ) : Initialized(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
         fun retry(): suspend () -> DeviceState {
             return when (val reconnectionSetting = connectionManager.connectionSettings.reconnectionSettings) {
@@ -259,7 +302,7 @@ sealed class DeviceState(
     data class Disconnected constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : DeviceState(deviceInfo, connectionManager) {
+    ) : Initialized(deviceInfo, connectionManager) {
 
         fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
             coroutineContext,
@@ -280,7 +323,7 @@ sealed class DeviceState(
     data class Disconnecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
+    ) : Initialized(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
             when (oldState) {
@@ -301,6 +344,7 @@ sealed class DeviceState(
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
         return {
             when (this) {
+                is Initializing -> copy(deviceInfo = newDeviceInfo)
                 is Connected.NoServices -> copy(deviceInfo = newDeviceInfo)
                 is Connected.Idle -> copy(deviceInfo = newDeviceInfo)
                 is Connected.HandlingAction -> copy(deviceInfo = newDeviceInfo)
@@ -312,14 +356,6 @@ sealed class DeviceState(
             }
         }
     }
-
-    internal val didDisconnect = suspend {
-        Disconnected(deviceInfo, connectionManager)
-    }
-
-    internal val disconnecting = suspend {
-        Disconnecting(deviceInfo, connectionManager)
-    }
 }
 
 class Device constructor(
@@ -330,8 +366,7 @@ class Device constructor(
 ) : HotStateFlowRepo<DeviceState>(
     coroutineContext = coroutineContext,
     initialState = {
-        val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceWrapper, it)
-        DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
+        DeviceState.Initializing(connectionSettings, initialDeviceInfo, connectionBuilder, it)
     }
 ) {
     val identifier: Identifier

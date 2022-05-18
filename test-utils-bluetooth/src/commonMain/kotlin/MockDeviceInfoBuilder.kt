@@ -72,4 +72,4 @@ fun createMockDevice(
     connectionBuilder = connectionBuilder,
     initialDeviceInfo = MockDeviceInfoBuilder().apply(builder).build(),
     coroutineContext = coroutineContext
-)
+).also { it.stateFlow }

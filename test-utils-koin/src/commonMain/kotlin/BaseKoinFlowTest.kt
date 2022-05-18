@@ -25,8 +25,11 @@ typealias KoinFlowTestBlock<TC, T, F> = suspend KoinFlowTest<TC, T, F>.(F) -> Un
 
 abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseKoinFlowTest<Unit, TC, T, F>() {
     abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
-    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC = { _, scope ->
-        createTestContext(scope)
+    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC get() {
+        val createTestContext = this.createTestContext
+        return { _, scope ->
+            createTestContext(scope)
+        }
     }
 
     fun testWithFlow(block: KoinFlowTestBlock<TC, T, F>) =

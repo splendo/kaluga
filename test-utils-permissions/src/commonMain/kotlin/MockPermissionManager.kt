@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.test.permissions
 
+import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.test.mock.call
+import com.splendo.kaluga.test.mock.on
 import com.splendo.kaluga.test.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -32,6 +34,22 @@ class MockPermissionManager<P : Permission>(
     initialState: MockPermissionState = MockPermissionState.DENIED,
     val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
 ) : PermissionManager<P>(permissionRepo) {
+
+    class Builder<P : Permission>(
+        val initialState: MockPermissionState = MockPermissionState.DENIED,
+        val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
+    ) {
+        val createdManagers = sharedMutableListOf<MockPermissionManager<P>>()
+        val createMock = ::create.mock()
+
+        init {
+            createMock.on().doExecute { (repo) ->
+                MockPermissionManager(repo, initialState, monitoringInterval).also { createdManagers.add(it) }
+            }
+        }
+
+        fun create(repo: PermissionStateRepo<P>): MockPermissionManager<P> = createMock.call(repo)
+    }
 
     enum class MockPermissionState {
         ALLOWED,

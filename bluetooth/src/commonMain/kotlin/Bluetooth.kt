@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.jvm.JvmName
@@ -159,9 +160,9 @@ operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     }
 }
 
-fun Flow<Device?>.state(): Flow<DeviceState> {
+fun Flow<Device?>.state(): Flow<DeviceState.Initialized> {
     return this.flatMapLatest { device ->
-        device ?: emptyFlow()
+        device?.filterOnlyImportant()?.mapNotNull { it as? DeviceState.Initialized } ?: emptyFlow()
     }
 }
 

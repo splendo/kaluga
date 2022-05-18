@@ -75,9 +75,7 @@ abstract class BaseDeviceConnectionManager(
     }
 
     suspend fun handleConnect() {
-        debug("Handle Connect")
         stateRepo.takeAndChangeState { state ->
-            debug("Handle Connect $state")
             when (state) {
                 is DeviceState.Connecting -> state.didConnect
                 is DeviceState.Reconnecting -> state.didConnect
@@ -99,7 +97,7 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
         }
 
-        stateRepo.takeAndChangeState { state ->
+        stateRepo.takeAndChangeState(remainIfStateNot = DeviceState.Initialized::class) { state ->
             when (state) {
                 is DeviceState.Reconnecting -> {
                     state.retry().also {
