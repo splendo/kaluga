@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.base.BaseFlowTest
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder
 import com.splendo.kaluga.test.bluetooth.characteristic
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
@@ -35,7 +36,6 @@ import com.splendo.kaluga.test.bluetooth.descriptor
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.test.bluetooth.scanner.MockScanner
-import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -176,7 +176,7 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
                 connectionSettings,
                 DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
                 deviceConnectionManagerBuilder,
-                coroutineScope.coroutineContext
+                coroutineScope
             )
         }
 
@@ -229,7 +229,7 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
 
         suspend fun discoverService(service: Service, device: Device, connectionManager: MockDeviceConnectionManager) {
             device.filter { it is DeviceState.Connected.Discovering }.first()
-            connectionManager.handleScanCompleted(listOf(service))
+            connectionManager.handleDiscoverCompleted(listOf(service))
         }
     }
 
@@ -255,7 +255,7 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
     class DeviceContext(configuration: Configuration.DeviceWithoutService, coroutineScope: CoroutineScope) : BaseDeviceContext<Configuration.DeviceWithoutService>(configuration, coroutineScope)
     sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
         val serviceUuid = serviceWrapper.uuid
-        val service by lazy { Service(serviceWrapper, connectionManager.stateRepo) }
+        val service by lazy { Service(serviceWrapper, connectionManager.newAction) }
         suspend fun discoverService() =
             discoverService(service, device, connectionManager)
     }

@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.KalugaState
@@ -27,7 +27,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
@@ -59,54 +58,13 @@ typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceSt
 
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
-    coroutineScope: CoroutineScope
-) : KalugaState, DeviceInfo by deviceInfo, CoroutineScope by coroutineScope {
-
-    data class Initializing(
-        private val connectionSettings: ConnectionSettings,
-        override val deviceInfo: DeviceInfoImpl,
-        private val connectionBuilder: BaseDeviceConnectionManager.Builder,
-        private val repo: DeviceStateFlowRepo
-    ) : DeviceState(deviceInfo, repo), SpecialFlowValue.NotImportant {
-        init {
-            launch(coroutineContext) {
-                yield()
-                repo.takeAndChangeState { state ->
-                    when (state) {
-                        is Initializing -> {
-                            {
-                                val deviceConnectionManager = connectionBuilder.create(
-                                    connectionSettings,
-                                    deviceInfo.deviceWrapper,
-                                    repo
-                                )
-                                Disconnected(deviceInfo, deviceConnectionManager)
-                            }
-                        }
-                        is Initialized -> state.remain()
-                    }
-                }
-            }
-        }
-    }
-
-    sealed class Initialized(
-        deviceInfo: DeviceInfoImpl,
-        open val connectionManager: BaseDeviceConnectionManager
-    ) : DeviceState(deviceInfo, connectionManager) {
-        internal val didDisconnect = suspend {
-            Disconnected(deviceInfo, connectionManager)
-        }
-
-        internal val disconnecting = suspend {
-            Disconnecting(deviceInfo, connectionManager)
-        }
-    }
+    open val connectionManager: BaseDeviceConnectionManager
+) : KalugaState, DeviceInfo by deviceInfo {
 
     sealed class Connected(
         deviceInfo: DeviceInfoImpl,
         connectionManager: BaseDeviceConnectionManager
-    ) : Initialized(deviceInfo, connectionManager) {
+    ) : DeviceState(deviceInfo, connectionManager) {
 
         data class NoServices constructor(
             override val deviceInfo: DeviceInfoImpl,
@@ -114,14 +72,7 @@ sealed class DeviceState(
         ) : Connected(deviceInfo, connectionManager) {
 
             fun startDiscovering() {
-                launch(coroutineContext) {
-                    connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                        if (deviceState is NoServices)
-                            discoverServices
-                        else
-                            deviceState.remain()
-                    }
-                }
+                connectionManager.startDiscovering()
             }
 
             val discoverServices = suspend {
@@ -192,10 +143,7 @@ sealed class DeviceState(
             }
         }
 
-        fun startDisconnected() =
-            connectionManager.stateRepo.launchTakeAndChangeState(remainIfStateNot = Connected::class) {
-                disconnecting
-            }
+        fun startDisconnected() = connectionManager.startDisconnecting()
 
         val reconnect = suspend {
             // All services, characteristics and descriptors become invalidated after it disconnects
@@ -219,21 +167,11 @@ sealed class DeviceState(
     data class Connecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : Initialized(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
+    ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
         val cancelConnection = disconnecting
 
-        fun handleCancel() {
-            launch(coroutineContext) {
-                connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    if (deviceState is Connecting) {
-                        cancelConnection
-                    } else {
-                        deviceState.remain()
-                    }
-                }
-            }
-        }
+        fun handleCancel() = connectionManager.cancelConnecting()
 
         internal val didConnect = suspend {
             Connected.NoServices(deviceInfo, connectionManager)
@@ -257,15 +195,15 @@ sealed class DeviceState(
         val services: List<Service>?,
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : Initialized(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
+    ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
-        fun retry(): suspend () -> DeviceState {
-            return when (val reconnectionSetting = connectionManager.connectionSettings.reconnectionSettings) {
+        fun retry(reconnectionSettings: ConnectionSettings.ReconnectionSettings): suspend () -> DeviceState {
+            return when (reconnectionSettings) {
                 is ConnectionSettings.ReconnectionSettings.Always -> remain()
                 is ConnectionSettings.ReconnectionSettings.Never -> didDisconnect
                 is ConnectionSettings.ReconnectionSettings.Limited -> {
                     val nextAttempt = attempt + 1
-                    if (nextAttempt < reconnectionSetting.attempts) {
+                    if (nextAttempt < reconnectionSettings.attempts) {
                         suspend { copy(attempt = nextAttempt) }
                     } else {
                         didDisconnect
@@ -274,18 +212,9 @@ sealed class DeviceState(
             }
         }
 
-        fun handleCancel() {
-            launch(coroutineContext) {
-                connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    if (deviceState is Reconnecting)
-                        cancelConnection
-                    else
-                        deviceState.remain()
-                }
-            }
-        }
+        fun handleCancel() = connectionManager.cancelConnecting()
 
-        private val cancelConnection = disconnecting
+        val cancelConnection = disconnecting
 
         internal val didConnect = suspend {
             services?.let { Connected.Idle(services, deviceInfo, connectionManager) } ?: Connected.NoServices(deviceInfo, connectionManager)
@@ -302,14 +231,9 @@ sealed class DeviceState(
     data class Disconnected constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : Initialized(deviceInfo, connectionManager) {
+    ) : DeviceState(deviceInfo, connectionManager) {
 
-        fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
-            coroutineContext,
-            remainIfStateNot = Disconnected::class
-        ) { deviceState ->
-            connect(deviceState)
-        }
+        fun startConnecting() = connectionManager.startConnecting()
 
         fun connect(deviceState: DeviceState): suspend () -> DeviceState =
             if (deviceInfo.advertisementData.isConnectible)
@@ -323,7 +247,7 @@ sealed class DeviceState(
     data class Disconnecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
-    ) : Initialized(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
+    ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
             when (oldState) {
@@ -344,7 +268,6 @@ sealed class DeviceState(
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
         return {
             when (this) {
-                is Initializing -> copy(deviceInfo = newDeviceInfo)
                 is Connected.NoServices -> copy(deviceInfo = newDeviceInfo)
                 is Connected.Idle -> copy(deviceInfo = newDeviceInfo)
                 is Connected.HandlingAction -> copy(deviceInfo = newDeviceInfo)
@@ -356,19 +279,220 @@ sealed class DeviceState(
             }
         }
     }
+
+    internal val didDisconnect = suspend {
+        Disconnected(deviceInfo, connectionManager)
+    }
+
+    internal val disconnecting = suspend {
+        Disconnecting(deviceInfo, connectionManager)
+    }
 }
 
 class Device constructor(
-    connectionSettings: ConnectionSettings,
+    private val connectionSettings: ConnectionSettings,
+    private val connectionManager: BaseDeviceConnectionManager,
     private val initialDeviceInfo: DeviceInfoImpl,
-    connectionBuilder: BaseDeviceConnectionManager.Builder,
     coroutineContext: CoroutineContext
 ) : HotStateFlowRepo<DeviceState>(
     coroutineContext = coroutineContext,
     initialState = {
-        DeviceState.Initializing(connectionSettings, initialDeviceInfo, connectionBuilder, it)
+        DeviceState.Disconnected(initialDeviceInfo, connectionManager)
     }
 ) {
+
+    private companion object {
+        const val TAG = "Device"
+    }
+
+    constructor(
+        connectionSettings: ConnectionSettings,
+        initialDeviceInfo: DeviceInfoImpl,
+        connectionManagerBuilder: BaseDeviceConnectionManager.Builder,
+        coroutineScope: CoroutineScope
+    ) : this(
+        connectionSettings,
+        connectionManagerBuilder.create(initialDeviceInfo.deviceWrapper, coroutineScope),
+        initialDeviceInfo,
+        coroutineScope.coroutineContext
+    )
+
     val identifier: Identifier
         get() = initialDeviceInfo.identifier
+
+    init {
+        monitorRssi()
+        monitorConnecting()
+        monitorCancelConnection()
+        monitorConnected()
+        monitorDisconnecting()
+        monitorDisconnected()
+        monitorDiscovering()
+        monitorDiscovered()
+        monitorNewActions()
+        monitorActionCompleted()
+    }
+
+    private fun monitorRssi() {
+        launch {
+            connectionManager.rssiUpdate.collect { rssi ->
+                takeAndChangeState {
+                    it.rssiDidUpdate(rssi)
+                }
+            }
+        }
+    }
+
+    private fun monitorConnecting() {
+        launch {
+            connectionManager.startedConnecting.collect {
+                takeAndChangeState(
+                    remainIfStateNot = DeviceState.Disconnected::class
+                ) { deviceState ->
+                    deviceState.connect(deviceState)
+                }
+            }
+        }
+    }
+    private fun monitorCancelConnection() {
+        launch {
+            connectionManager.cancelledConnecting.collect {
+                takeAndChangeState { deviceState ->
+                    when (deviceState) {
+                        is DeviceState.Connecting -> deviceState.cancelConnection
+                        is DeviceState.Reconnecting -> deviceState.cancelConnection
+                        else -> deviceState.remain()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun monitorConnected() {
+        launch {
+            connectionManager.didConnect.collect {
+                takeAndChangeState { state ->
+                    when (state) {
+                        is DeviceState.Connecting -> state.didConnect
+                        is DeviceState.Reconnecting -> state.didConnect
+                        is DeviceState.Connected -> state.remain()
+                        else -> {
+                            connectionManager.reset()
+                            state.remain()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun monitorDisconnecting() {
+        launch {
+            connectionManager.startedDisconnecting.collect {
+                takeAndChangeState(remainIfStateNot = DeviceState.Connected::class) { deviceState ->
+                    deviceState.disconnecting
+                }
+            }
+        }
+    }
+
+    private fun monitorDisconnected() {
+        launch {
+            connectionManager.didDisconnect.collect { clean ->
+                takeAndChangeState { state ->
+                    when (state) {
+                        is DeviceState.Reconnecting -> {
+                            state.retry(connectionSettings.reconnectionSettings).also {
+                                if (it == state.didDisconnect) {
+                                    clean()
+                                }
+                            }
+                        }
+                        is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+                            is ConnectionSettings.ReconnectionSettings.Always,
+                            is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
+                            is ConnectionSettings.ReconnectionSettings.Never -> {
+                                clean()
+                                state.didDisconnect
+                            }
+                        }
+                        is DeviceState.Disconnected -> state.remain()
+                        is DeviceState.Connecting,
+                        is DeviceState.Disconnecting -> {
+                            clean()
+                            state.didDisconnect
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun monitorDiscovering() {
+        launch {
+            connectionManager.startedDiscovering.collect {
+                takeAndChangeState { deviceState ->
+                    if (deviceState is DeviceState.Connected.NoServices)
+                        deviceState.discoverServices
+                    else
+                        deviceState.remain()
+                }
+            }
+        }
+    }
+
+    private fun monitorDiscovered() {
+        launch {
+            connectionManager.discoverCompleted.collect { services ->
+                takeAndChangeState { state ->
+                    when (state) {
+                        is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
+                        else -> state.remain()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun monitorNewActions() {
+        launch {
+            connectionManager.newAction.collect { action ->
+                takeAndChangeState() { state ->
+                    when (state) {
+                        is DeviceState.Connected.Idle -> {
+                            state.handleAction(action)
+                        }
+                        is DeviceState.Connected.HandlingAction -> {
+                            state.addAction(action)
+                        }
+                        is DeviceState.Connected.NoServices,
+                        is DeviceState.Connected.Discovering,
+                        is DeviceState.Connecting,
+                        is DeviceState.Reconnecting,
+                        is DeviceState.Disconnected,
+                        is DeviceState.Disconnecting,
+                        -> {
+                            state.remain() // TODO consider an optional buffer
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun monitorActionCompleted() {
+        launch {
+            connectionManager.actionCompleted.collect { (action, succeeded) ->
+                takeAndChangeState { state ->
+                    if (state is DeviceState.Connected.HandlingAction && state.action == action) {
+                        state.action.completedSuccessfully.complete(succeeded)
+                        debug(TAG) { "Action $action has been succeeded: $succeeded" }
+                        state.actionCompleted
+                    } else {
+                        state.remain()
+                    }
+                }
+            }
+        }
+    }
 }

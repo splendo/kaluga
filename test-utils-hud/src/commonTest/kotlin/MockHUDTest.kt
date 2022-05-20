@@ -6,9 +6,9 @@ import com.splendo.kaluga.hud.HUDStyle
 import com.splendo.kaluga.hud.HudConfig
 import com.splendo.kaluga.hud.presentDuring
 import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
-import com.splendo.kaluga.test.hud.MockHUD
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.hud.MockHUD
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred

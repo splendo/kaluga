@@ -36,7 +36,7 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
  * that is also created in the UI Thread.
  *
  * While normally iOS tests already run on the UI thread, this prevents the Main dispatcher from working as long as that Thread is blocked,
- * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.mainBackground] entry point.
+ * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.base.mainBackground] entry point.
  *
  * It is useful for Kotlin Native classes that only work when created on the UI thread,
  * as it eases dealing with immutability and allows a shared context.
@@ -67,7 +67,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
  * that is also created in the UI Thread.
  *
  * While normally iOS tests already run on the UI thread, this prevents the Main dispatcher from working as long as that Thread is blocked,
- * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.mainBackground] entry point.
+ * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.base.mainBackground] entry point.
  *
  * It is useful for Kotlin Native classes that only work when created on the UI thread,
  * as it eases dealing with immutability and allows a shared context.

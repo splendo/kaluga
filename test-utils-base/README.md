@@ -31,7 +31,7 @@ for `.gradle`
 binaries {
     // Use this entry point to turn the thread tests are run to a background thread instead of the main thread
     // This better allows testing the Main dispatcher, and testing cross thread access
-    binaries.getTest("DEBUG").freeCompilerArgs += ["-e", "com.splendo.kaluga.test.mainBackground"]
+    binaries.getTest("DEBUG").freeCompilerArgs += ["-e", "com.splendo.kaluga.test.base.mainBackground"]
 }
 ```
 for `.gradle.kts`
@@ -40,7 +40,7 @@ for `.gradle.kts`
 binaries {
     getTest("DEBUG").apply {
         freeCompilerArgs = freeCompilerArgs + "-e"
-        freeCompilerArgs = freeCompilerArgs + "com.splendo.kaluga.test.mainBackground"
+        freeCompilerArgs = freeCompilerArgs + "com.splendo.kaluga.test.base.mainBackground"
     }
 }
 ```

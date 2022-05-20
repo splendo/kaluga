@@ -19,11 +19,12 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import kotlinx.coroutines.flow.MutableSharedFlow
 
-class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: DeviceStateFlowRepo) : Descriptor(descriptorWrapper, stateRepo = stateRepo) {
+class MockDescriptor(descriptorWrapper: DescriptorWrapper, newActionFlow: MutableSharedFlow<DeviceAction>) : Descriptor(descriptorWrapper, newActionFlow = newActionFlow) {
 
     val updateMock = ::updateValue.mock()
     override suspend fun updateValue(): Unit = updateMock.call()

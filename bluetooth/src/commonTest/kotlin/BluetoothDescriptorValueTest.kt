@@ -20,9 +20,9 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertIs
 import kotlin.test.assertNull
@@ -53,8 +53,9 @@ class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configu
         mainAction {
             connectDevice()
             discoverService()
-            yield()
+            yieldMultiple(5)
             descriptor.writeValue(newValue)
+            yieldMultiple(2)
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)

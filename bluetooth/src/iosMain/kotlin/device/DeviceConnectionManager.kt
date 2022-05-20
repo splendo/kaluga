@@ -24,6 +24,7 @@ import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
@@ -40,23 +41,20 @@ import platform.darwin.NSObject
 internal actual class DeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
-    connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
-    stateRepo: DeviceStateFlowRepo,
-) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
+    coroutineScope: CoroutineScope,
+) : BaseDeviceConnectionManager(deviceWrapper, coroutineScope = coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(
-            connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo
+            coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
             return DeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
-                connectionSettings,
                 deviceWrapper,
-                stateRepo
+                coroutineScope
             )
         }
     }
@@ -221,8 +219,8 @@ internal actual class DeviceConnectionManager(
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             launch {
-                val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), stateRepo) } ?: emptyList()
-                handleScanCompleted(services)
+                val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), newAction) } ?: emptyList()
+                handleDiscoverCompleted(services)
             }
         }
     }

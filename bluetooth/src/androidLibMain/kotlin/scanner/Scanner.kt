@@ -37,6 +37,7 @@ import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -131,7 +132,7 @@ actual class Scanner internal constructor(
 
             handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
                 val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, stateRepo.coroutineContext)
+                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, CoroutineScope(stateRepo.coroutineContext))
             }
         }
     }

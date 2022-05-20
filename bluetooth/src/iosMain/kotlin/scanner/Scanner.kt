@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
-import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
@@ -33,11 +32,10 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -102,10 +100,7 @@ actual class Scanner internal constructor(
                 if (scannerState is ScanningState.Enabled)
                     scannerState.discovered.devices.find { it.identifier == didConnectPeripheral.identifier }
                         ?.let { device ->
-                            val connectionManager = device
-                                .filterOnlyImportant()
-                                .mapNotNull { state -> (state as? DeviceState.Initialized)?.connectionManager }
-                                .first()
+                            val connectionManager = device.first().connectionManager
                             block(connectionManager)
                         }
             }
@@ -203,7 +198,7 @@ actual class Scanner internal constructor(
                 connectionSettings,
                 deviceInfo,
                 DeviceConnectionManager.Builder(central, peripheral),
-                coroutineContext
+                CoroutineScope(coroutineContext)
             )
         }
     }

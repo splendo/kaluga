@@ -18,11 +18,9 @@
 package com.splendo.kaluga.test.base
 
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.test.base.FlowTest
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test

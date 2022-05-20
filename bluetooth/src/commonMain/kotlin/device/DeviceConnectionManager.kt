@@ -19,31 +19,33 @@ package com.splendo.kaluga.bluetooth.device
 
 import co.touchlab.stately.collections.sharedMutableMapOf
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 abstract class BaseDeviceConnectionManager(
-    val connectionSettings: ConnectionSettings = ConnectionSettings(),
     val deviceWrapper: DeviceWrapper,
-    val stateRepo: DeviceStateFlowRepo
-) : CoroutineScope by stateRepo {
+    private val bufferCapacity: Int = BUFFER_CAPACITY,
+    coroutineScope: CoroutineScope
+) : CoroutineScope by coroutineScope {
 
     private companion object {
-        const val TAG = "DeviceConnectionManager"
+        const val BUFFER_CAPACITY = 256
     }
 
     interface Builder {
         fun create(
-            connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo
+            coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager
     }
 
@@ -52,6 +54,26 @@ abstract class BaseDeviceConnectionManager(
         get() = _currentAction.get()
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
+
+    private val _rssiUpdate = createSharedFlow<Int>()
+    val rssiUpdate: Flow<Int> = _rssiUpdate
+    private val _startedConnecting = createSharedFlow<Unit>()
+    val startedConnecting: Flow<Unit> = _startedConnecting
+    private val _cancelledConnecting = createSharedFlow<Unit>()
+    val cancelledConnecting: Flow<Unit> = _cancelledConnecting
+    private val _didConnect = createSharedFlow<Unit>()
+    val didConnect: Flow<Unit> = _didConnect
+    private val _startedDisconnecting = createSharedFlow<Unit>()
+    val startedDisconnecting: Flow<Unit> = _startedDisconnecting
+    private val _didDisconnect = createSharedFlow<suspend () -> Unit>()
+    val didDisconnect: Flow<suspend () -> Unit> = _didDisconnect
+    private val _startedDiscovering = createSharedFlow<Unit>()
+    val startedDiscovering: Flow<Unit> = _startedDiscovering
+    private val _discoverCompleted = createSharedFlow<List<Service>>()
+    val discoverCompleted: Flow<List<Service>> = _discoverCompleted
+    val newAction = createSharedFlow<DeviceAction>()
+    private val _actionCompleted = createSharedFlow<Pair<DeviceAction?, Boolean>>()
+    val actionCompleted: Flow<Pair<DeviceAction?, Boolean>> = _actionCompleted
 
     private val _mtu = MutableStateFlow(-1)
     val mtuFlow: Flow<Int> = _mtu
@@ -65,84 +87,59 @@ abstract class BaseDeviceConnectionManager(
     abstract suspend fun performAction(action: DeviceAction)
 
     suspend fun handleNewRssi(rssi: Int) {
-        stateRepo.takeAndChangeState {
-            it.rssiDidUpdate(rssi)
-        }
+        _rssiUpdate.emit(rssi)
     }
 
     fun handleNewMtu(mtu: Int) {
         _mtu.value = mtu
     }
 
+    fun startConnecting() {
+        launch {
+            _startedConnecting.emit(Unit)
+        }
+    }
+
+    fun cancelConnecting() {
+        launch {
+            _cancelledConnecting.emit(Unit)
+        }
+    }
+
     suspend fun handleConnect() {
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Connecting -> state.didConnect
-                is DeviceState.Reconnecting -> state.didConnect
-                is DeviceState.Connected -> state.remain()
-                else -> {
-                    currentAction = null
-                    notifyingCharacteristics.clear()
-                    disconnect()
-                    state.remain()
-                }
-            }
+        _didConnect.emit(Unit)
+    }
+
+    fun startDisconnecting() {
+        launch {
+            _startedDisconnecting.emit(Unit)
         }
     }
 
     suspend fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null) {
+        val currentAction = _currentAction
+        val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
-            currentAction = null
+            currentAction.value = null
             notifyingCharacteristics.clear()
             onDisconnect?.invoke()
+            Unit
         }
-
-        stateRepo.takeAndChangeState(remainIfStateNot = DeviceState.Initialized::class) { state ->
-            when (state) {
-                is DeviceState.Reconnecting -> {
-                    state.retry().also {
-                        if (it == state.didDisconnect) {
-                            clean()
-                        }
-                    }
-                }
-                is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
-                    is ConnectionSettings.ReconnectionSettings.Always,
-                    is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
-                    is ConnectionSettings.ReconnectionSettings.Never -> {
-                        clean()
-                        state.didDisconnect
-                    }
-                }
-                is DeviceState.Disconnected -> state.remain()
-                is DeviceState.Connecting,
-                is DeviceState.Disconnecting -> {
-                    clean()
-                    state.didDisconnect
-                }
-            }
-        }
+        _didDisconnect.emit(clean)
     }
 
-    suspend fun handleScanCompleted(services: List<Service>) {
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
-                else -> state.remain()
-            }
-        }
+    fun startDiscovering() {
+        launch { _startedDiscovering.emit(Unit) }
     }
 
-    open suspend fun handleCurrentActionCompleted(succeeded: Boolean) = stateRepo.takeAndChangeState { state ->
-        (
-            if (state is DeviceState.Connected.HandlingAction && state.action == currentAction) {
-                state.action.completedSuccessfully.complete(succeeded)
-                debug(TAG) { "Action $currentAction has been succeeded: $succeeded" }
-                state.actionCompleted
-            } else {
-                state.remain()
-            }
-            ).also { currentAction = null }
+    suspend fun handleDiscoverCompleted(services: List<Service>) {
+        _discoverCompleted.emit(services)
+    }
+
+    open suspend fun handleCurrentActionCompleted(succeeded: Boolean) {
+        val currentAction = this.currentAction
+        _currentAction.value = null
+        _actionCompleted.emit(currentAction to succeeded)
     }
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
@@ -189,6 +186,14 @@ abstract class BaseDeviceConnectionManager(
             handleCurrentActionCompleted(succeeded)
         }
     }
+
+    suspend fun reset() {
+        currentAction = null
+        notifyingCharacteristics.clear()
+        disconnect()
+    }
+
+    private fun <T> createSharedFlow(): MutableSharedFlow<T> = MutableSharedFlow(0, bufferCapacity, BufferOverflow.DROP_OLDEST)
 }
 
 internal expect class DeviceConnectionManager : BaseDeviceConnectionManager

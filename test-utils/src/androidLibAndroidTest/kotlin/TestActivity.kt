@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,22 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.test
 
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import kotlinx.coroutines.flow.MutableSharedFlow
+import androidx.appcompat.app.AppCompatActivity
 
-class Service(
-    service: ServiceWrapper,
-    private val newActionFlow: MutableSharedFlow<DeviceAction>
-) {
-    val uuid = service.uuid
-    val characteristics = service.characteristics.map { Characteristic(it, newActionFlow = newActionFlow) }
-}
-
-expect interface ServiceWrapper {
-    val characteristics: List<CharacteristicWrapper>
-    val uuid: UUID
-}
+class TestActivity : AppCompatActivity()
