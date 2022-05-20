@@ -15,16 +15,16 @@
   
  */
 
-package com.splendo.kaluga.test.mock
+package com.splendo.kaluga.test.base.mock
 
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.IsoMutableMap
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.test.mock.answer.Answer
-import com.splendo.kaluga.test.mock.answer.BaseAnswer
-import com.splendo.kaluga.test.mock.answer.SuspendedAnswer
-import com.splendo.kaluga.test.mock.parameters.ParametersSpec
-import com.splendo.kaluga.test.mock.verification.VerificationRule
+import com.splendo.kaluga.test.base.mock.answer.Answer
+import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
+import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
+import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
+import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 

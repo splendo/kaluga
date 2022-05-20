@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.base
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete

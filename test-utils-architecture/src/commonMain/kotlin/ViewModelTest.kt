@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.architecture
 
 import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
-import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.test.UIThreadTest
+import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 

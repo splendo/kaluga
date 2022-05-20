@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.mock.verification
+package com.splendo.kaluga.test.base.mock.verification
 
 sealed interface VerificationRule {
     fun matches(times: Int): Boolean

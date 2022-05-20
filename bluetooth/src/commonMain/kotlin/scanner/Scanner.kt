@@ -27,8 +27,8 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope

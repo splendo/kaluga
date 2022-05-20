@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.mock.matcher
+package com.splendo.kaluga.test.base.mock.matcher
 
 sealed interface Captor<T> : ParameterMatcherOrCaptor<T> {
     val captured: List<T>

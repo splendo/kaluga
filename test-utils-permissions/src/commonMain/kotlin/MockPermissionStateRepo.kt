@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.test.permissions
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 class MockPermissionStateRepo<P : Permission>(

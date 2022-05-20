@@ -17,7 +17,7 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.captureFor
+import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout

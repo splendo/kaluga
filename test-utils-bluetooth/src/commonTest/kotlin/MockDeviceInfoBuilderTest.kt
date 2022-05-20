@@ -19,7 +19,7 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.test.UIThreadTest
+import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test

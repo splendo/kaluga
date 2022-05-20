@@ -16,12 +16,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.permissions.PermissionState.Allowed
-import com.splendo.kaluga.permissions.PermissionState.Denied
-import com.splendo.kaluga.permissions.PermissionState.Inactive
-import com.splendo.kaluga.permissions.PermissionState.Initializing
+import com.splendo.kaluga.permissions.base.PermissionState.Allowed
+import com.splendo.kaluga.permissions.base.PermissionState.Denied
+import com.splendo.kaluga.permissions.base.PermissionState.Inactive
+import com.splendo.kaluga.permissions.base.PermissionState.Initializing
 import kotlinx.coroutines.CoroutineScope
 
 /**

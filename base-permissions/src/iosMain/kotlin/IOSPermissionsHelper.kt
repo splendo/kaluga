@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error

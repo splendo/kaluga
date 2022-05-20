@@ -18,10 +18,10 @@
 package com.splendo.kaluga.test.permissions
 
 import co.touchlab.stately.collections.IsoMutableList
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
@@ -54,9 +54,9 @@ import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilde
 import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 expect val mockPermissionContext: PermissionContext

@@ -23,8 +23,8 @@ import com.splendo.kaluga.resources.asFont
 import com.splendo.kaluga.resources.asImage
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.quantity
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.mock.on
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.on
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

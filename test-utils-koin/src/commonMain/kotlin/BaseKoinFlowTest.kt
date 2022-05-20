@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.koin
 
-import com.splendo.kaluga.test.BaseFlowTest
+import com.splendo.kaluga.test.base.BaseFlowTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 

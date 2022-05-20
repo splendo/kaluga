@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.architecture
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.parameters.mock
 
 class MockNavigator<A : NavigationAction<*>> : Navigator<A> {
 

@@ -14,11 +14,11 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.base.test.flow
+package com.splendo.kaluga.base.test
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.SimpleFlowTest
+import com.splendo.kaluga.test.base.SimpleFlowTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf

@@ -15,9 +15,9 @@
 
  */
 
-package com.splendo.kaluga.test.mock.parameters
+package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 
 interface ParametersSpec<M : ParametersSpec.Matchers, C : ParametersSpec.MatchersOrCaptor<M>, V : ParametersSpec.Values> {
     interface Matchers {

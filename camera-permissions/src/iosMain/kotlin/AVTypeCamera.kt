@@ -1,11 +1,3 @@
-import com.splendo.kaluga.base.isOnMainThread
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.base.BaseTest
-import kotlinx.coroutines.Dispatchers
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-
 /*
  * Copyright 2022 Splendo Consulting B.V. The Netherlands
  *
@@ -22,15 +14,16 @@ import kotlin.test.assertTrue
  *     limitations under the License.
  */
 
-class IsOnMainThreadTest : BaseTest() {
+package com.splendo.kaluga.permissions.camera
 
-    @Test
-    fun testIsOnMainThread() = runBlocking(Dispatchers.Main) {
-        assertTrue(isOnMainThread)
-    }
+import com.splendo.kaluga.permissions.base.av.AVType
+import platform.AVFoundation.AVMediaTypeVideo
 
-    @Test
-    fun testIsNotOnMainThread() = runBlocking(Dispatchers.Default) {
-        assertFalse(isOnMainThread)
-    }
+const val NSCameraUsageDescription = "NSCameraUsageDescription"
+const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
+
+class AVTypeCamera(override val permissionManager: CameraPermissionManager) : AVType<CameraPermission>() {
+
+    override val avMediaType = AVMediaTypeVideo
+    override val declarationName = NSCameraUsageDescription
 }

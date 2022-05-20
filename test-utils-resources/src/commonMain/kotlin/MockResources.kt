@@ -24,9 +24,9 @@ import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaColorLoader
 import com.splendo.kaluga.resources.StringLoader
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
 
 class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 

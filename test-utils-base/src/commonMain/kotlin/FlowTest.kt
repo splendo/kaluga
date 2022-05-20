@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.base
 
 import co.touchlab.stately.concurrency.AtomicLong
 import co.touchlab.stately.ensureNeverFrozen
@@ -27,8 +27,8 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
-import com.splendo.kaluga.test.BaseUIThreadTest.EmptyTestContext
-import com.splendo.kaluga.test.BaseUIThreadTest.TestContext
+import com.splendo.kaluga.test.base.BaseUIThreadTest.EmptyTestContext
+import com.splendo.kaluga.test.base.BaseUIThreadTest.TestContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow

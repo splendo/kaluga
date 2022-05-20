@@ -22,7 +22,7 @@ import co.touchlab.stately.freeze
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals

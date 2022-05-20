@@ -21,9 +21,9 @@ import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
 class MockHUD(

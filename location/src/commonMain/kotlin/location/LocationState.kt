@@ -19,8 +19,8 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.ColdStateRepo

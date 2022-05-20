@@ -19,11 +19,11 @@ package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect

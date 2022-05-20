@@ -80,7 +80,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     val _isFoldedOut = MutableStateFlow(false)
     val isFoldedOut = _isFoldedOut.toInitializedObservable(coroutineScope)
 
-    private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): UninitializedObservable<T> = device.state().map { mapper(it) }.toUninitializedObservable(coroutineScope)
+    private fun <T> deviceStateObservable(mapper: (DeviceState.Initialized) -> T): UninitializedObservable<T> = device.state().map { mapper(it) }.toUninitializedObservable(coroutineScope)
 
     fun toggleFoldOut() = coroutineScope.launch {
         _isFoldedOut.value = !_isFoldedOut.value

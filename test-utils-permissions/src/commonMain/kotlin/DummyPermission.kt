@@ -17,6 +17,6 @@
 
 package com.splendo.kaluga.test.permissions
 
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.base.Permission
 
 object DummyPermission : Permission()

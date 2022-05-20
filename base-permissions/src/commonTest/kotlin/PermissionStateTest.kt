@@ -15,16 +15,16 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.permissions.PermissionState.Allowed
-import com.splendo.kaluga.permissions.PermissionState.Denied.Locked
-import com.splendo.kaluga.permissions.PermissionState.Denied.Requestable
-import com.splendo.kaluga.test.BaseFlowTest
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.permissions.base.PermissionState.Allowed
+import com.splendo.kaluga.permissions.base.PermissionState.Denied.Locked
+import com.splendo.kaluga.permissions.base.PermissionState.Denied.Requestable
+import com.splendo.kaluga.test.base.BaseFlowTest
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.permissions.DummyPermission
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionStateRepo

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.koin
 
-import com.splendo.kaluga.test.BaseUIThreadTest
+import com.splendo.kaluga.test.base.BaseUIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.loadKoinModules

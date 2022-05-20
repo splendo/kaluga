@@ -15,9 +15,9 @@
 
  */
 
-package com.splendo.kaluga.test.mock.answer
+package com.splendo.kaluga.test.base.mock.answer
 
-import com.splendo.kaluga.test.mock.parameters.ParametersSpec
+import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
 
 sealed interface BaseAnswer<V : ParametersSpec.Values, R>
 interface Answer<V : ParametersSpec.Values, R> : BaseAnswer<V, R> {

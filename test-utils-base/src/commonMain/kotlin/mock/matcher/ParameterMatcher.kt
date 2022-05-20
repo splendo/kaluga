@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.mock.matcher
+package com.splendo.kaluga.test.base.mock.matcher
 
 import kotlin.reflect.KClass
 

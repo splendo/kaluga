@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

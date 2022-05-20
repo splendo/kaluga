@@ -19,13 +19,13 @@ package com.splendo.kaluga.test.permissions
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicBoolean
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 

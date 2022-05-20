@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.base
 
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.Deferred

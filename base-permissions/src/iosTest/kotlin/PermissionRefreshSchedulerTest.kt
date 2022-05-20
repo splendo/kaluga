@@ -15,16 +15,16 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.mock.verification.VerificationRule.Companion.never
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
+import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.permissions.DummyPermission
 import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
 import kotlinx.coroutines.Dispatchers

@@ -24,12 +24,12 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockScanner(

@@ -20,11 +20,11 @@ package com.splendo.kaluga.test.location
 import co.touchlab.stately.collections.IsoMutableList
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.LocationStateRepo
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.on
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockLocationManager(

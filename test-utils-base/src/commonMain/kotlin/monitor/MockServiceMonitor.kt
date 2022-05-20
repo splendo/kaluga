@@ -15,11 +15,11 @@
 
  */
 
-package com.splendo.kaluga.test.monitor
+package com.splendo.kaluga.test.base.monitor
 
 import com.splendo.kaluga.base.monitor.ServiceMonitor
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class MockServiceMonitor : ServiceMonitor {

@@ -22,9 +22,9 @@ import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.HandlingAction
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.base
 
 import co.touchlab.stately.isFrozen
 import kotlin.native.concurrent.SharedImmutable

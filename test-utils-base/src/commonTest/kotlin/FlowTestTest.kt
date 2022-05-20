@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.base.test.flow
+package com.splendo.kaluga.test.base
 
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.test.FlowTest
+import com.splendo.kaluga.test.base.FlowTest
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow

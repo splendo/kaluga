@@ -24,8 +24,8 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
-import com.splendo.kaluga.test.mock.matcher.AnyCaptor
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.base.mock.matcher.AnyCaptor
+import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test

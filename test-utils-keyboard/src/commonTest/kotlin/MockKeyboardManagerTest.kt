@@ -20,7 +20,7 @@ package com.splendo.kaluga.test.keyboard
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
-import com.splendo.kaluga.test.mock.verify
+import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertFalse

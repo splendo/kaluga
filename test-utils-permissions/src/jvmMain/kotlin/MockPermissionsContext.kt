@@ -17,6 +17,6 @@
 
 package com.splendo.kaluga.test.permissions
 
-import com.splendo.kaluga.permissions.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionContext
 
 actual val mockPermissionContext = PermissionContext()

@@ -18,7 +18,7 @@
 package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import com.splendo.kaluga.test.monitor.MockServiceMonitor
+import com.splendo.kaluga.test.base.monitor.MockServiceMonitor
 import kotlinx.coroutines.flow.StateFlow
 
 class MockBluetoothMonitor(override val isEnabled: StateFlow<Boolean>) : MockServiceMonitor(), BluetoothMonitor

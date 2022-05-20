@@ -20,7 +20,7 @@ package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.FlowTest
+import com.splendo.kaluga.test.base.FlowTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

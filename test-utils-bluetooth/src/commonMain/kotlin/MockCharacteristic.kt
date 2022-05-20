@@ -20,8 +20,8 @@ package com.splendo.kaluga.test.bluetooth
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
-import com.splendo.kaluga.test.mock.call
-import com.splendo.kaluga.test.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.parameters.mock
 
 class MockCharacteristic(characteristic: CharacteristicWrapper, stateRepo: DeviceStateFlowRepo) : Characteristic(characteristic, stateRepo = stateRepo) {
 

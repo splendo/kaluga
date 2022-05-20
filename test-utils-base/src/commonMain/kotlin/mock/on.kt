@@ -1,13 +1,13 @@
-package com.splendo.kaluga.test.mock
+package com.splendo.kaluga.test.base.mock
 
-import com.splendo.kaluga.test.mock.answer.BaseAnswer
-import com.splendo.kaluga.test.mock.matcher.ParameterMatcher
-import com.splendo.kaluga.test.mock.parameters.PairParameters
-import com.splendo.kaluga.test.mock.parameters.QuadrupleParameters
-import com.splendo.kaluga.test.mock.parameters.QuintupleParameters
-import com.splendo.kaluga.test.mock.parameters.SingleParameters
-import com.splendo.kaluga.test.mock.parameters.TripleParameters
-import com.splendo.kaluga.test.mock.parameters.VoidParameters
+import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
+import com.splendo.kaluga.test.base.mock.parameters.PairParameters
+import com.splendo.kaluga.test.base.mock.parameters.QuadrupleParameters
+import com.splendo.kaluga.test.base.mock.parameters.QuintupleParameters
+import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
+import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
+import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 
 fun <
     Result,
