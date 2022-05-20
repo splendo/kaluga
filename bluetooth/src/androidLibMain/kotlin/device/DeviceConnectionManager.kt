@@ -47,9 +47,10 @@ import kotlin.coroutines.CoroutineContext
 internal actual class DeviceConnectionManager(
     private val context: Context,
     deviceWrapper: DeviceWrapper,
+    bufferCapacity: Int = BUFFER_CAPACITY,
     val mainDispatcher: CoroutineContext = Dispatchers.Main.immediate, // can be replaced for testing,
     coroutineScope: CoroutineScope
-) : BaseDeviceConnectionManager(deviceWrapper, coroutineScope = coroutineScope) {
+) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
     private companion object {
         const val TAG = "Android Bluetooth DeviceConnectionManager"
@@ -59,9 +60,10 @@ internal actual class DeviceConnectionManager(
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
+            bufferCapacity: Int,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(context, deviceWrapper, coroutineScope = coroutineScope)
+            return DeviceConnectionManager(context, deviceWrapper, bufferCapacity, coroutineScope = coroutineScope)
         }
     }
 

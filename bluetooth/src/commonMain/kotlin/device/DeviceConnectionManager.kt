@@ -38,13 +38,14 @@ abstract class BaseDeviceConnectionManager(
     coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
-    private companion object {
+    internal companion object {
         const val BUFFER_CAPACITY = 256
     }
 
     interface Builder {
         fun create(
             deviceWrapper: DeviceWrapper,
+            bufferCapacity: Int = BUFFER_CAPACITY,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager
     }

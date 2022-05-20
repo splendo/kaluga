@@ -33,7 +33,7 @@ abstract class DefaultServiceMonitor : ServiceMonitor {
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
-    protected val _isEnabled = MutableStateFlow(isServiceEnabled)
+    private val _isEnabled = MutableStateFlow(false)
     override val isEnabled = _isEnabled.asStateFlow()
 
     override fun startMonitoring() {

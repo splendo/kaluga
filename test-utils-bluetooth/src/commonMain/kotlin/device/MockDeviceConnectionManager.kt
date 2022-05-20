@@ -35,9 +35,10 @@ import kotlinx.coroutines.CoroutineScope
 class MockDeviceConnectionManager(
     initialWillActionSucceed: Boolean = true,
     deviceWrapper: DeviceWrapper,
+    bufferCapacity: Int,
     coroutineScope: CoroutineScope,
     setupMocks: Boolean = true
-) : BaseDeviceConnectionManager(deviceWrapper, coroutineScope = coroutineScope) {
+) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
     class Builder(initialWillActionSucceed: Boolean = true, setupMocks: Boolean = true) : BaseDeviceConnectionManager.Builder {
 
@@ -46,8 +47,8 @@ class MockDeviceConnectionManager(
 
         init {
             if (setupMocks) {
-                createMock.on().doExecute { (deviceWrapper, coroutineScope) ->
-                    MockDeviceConnectionManager(initialWillActionSucceed, deviceWrapper, coroutineScope, setupMocks).also {
+                createMock.on().doExecute { (deviceWrapper, bufferCapacity, coroutineScope) ->
+                    MockDeviceConnectionManager(initialWillActionSucceed, deviceWrapper, bufferCapacity, coroutineScope, setupMocks).also {
                         createdDeviceConnectionManager.add(it)
                     }
                 }
@@ -56,9 +57,10 @@ class MockDeviceConnectionManager(
 
         override fun create(
             deviceWrapper: DeviceWrapper,
+            bufferCapacity: Int,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
-            return createMock.call(deviceWrapper, coroutineScope)
+            return createMock.call(deviceWrapper, bufferCapacity, coroutineScope)
         }
     }
 

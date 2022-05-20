@@ -312,7 +312,7 @@ class Device constructor(
         coroutineScope: CoroutineScope
     ) : this(
         connectionSettings,
-        connectionManagerBuilder.create(initialDeviceInfo.deviceWrapper, coroutineScope),
+        connectionManagerBuilder.create(initialDeviceInfo.deviceWrapper, coroutineScope = coroutineScope),
         initialDeviceInfo,
         coroutineScope.coroutineContext
     )

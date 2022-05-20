@@ -65,7 +65,6 @@ class PermissionRefreshScheduler<P : Permission>(
      * @param interval The interval in milliseconds between checking for changes to the permission.
      */
     suspend fun startMonitoring(interval: Long) {
-        updateLastPermission()
         launchTimerJob(interval)
     }
 

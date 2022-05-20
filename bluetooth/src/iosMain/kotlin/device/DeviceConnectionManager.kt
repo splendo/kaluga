@@ -42,18 +42,21 @@ internal actual class DeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
     deviceWrapper: DeviceWrapper,
+    bufferCapacity: Int = BUFFER_CAPACITY,
     coroutineScope: CoroutineScope,
-) : BaseDeviceConnectionManager(deviceWrapper, coroutineScope = coroutineScope) {
+) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
+            bufferCapacity: Int,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
             return DeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
                 deviceWrapper,
+                bufferCapacity,
                 coroutineScope
             )
         }
