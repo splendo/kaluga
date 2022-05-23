@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.architecture
 import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.BaseUIThreadTest
 import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
@@ -42,7 +43,7 @@ abstract class ViewModelTest<VM : ViewModel>(allowFreezing: Boolean = false) : B
 }
 
 abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
-    UnitUIThreadViewModelTest<UnitUIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
+    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
 
     override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<VM> =
         { LazyViewModelTestContext(it, ::createViewModel) }
@@ -50,8 +51,21 @@ abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
     abstract fun createViewModel(): VM
 }
 
-abstract class UnitUIThreadViewModelTest<VMC : UnitUIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
     UIThreadTest<VMC>(allowFreezing) {
+
+    open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
+        ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
+        override val viewModel: VM by lazy { createViewModel() }
+    }
+
+    interface ViewModelTestContext<VM> : TestContext {
+        val viewModel: VM
+    }
+}
+
+abstract class BaseUIThreadViewModelTest<CONF, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+    BaseUIThreadTest<CONF, VMC>(allowFreezing) {
 
     open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
         ViewModelTestContext<VM>, CoroutineScope by coroutineScope {

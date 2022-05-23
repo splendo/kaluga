@@ -18,7 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
-import com.splendo.kaluga.test.architecture.UnitUIThreadViewModelTest
+import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -29,7 +29,23 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
-        UnitUIThreadViewModelTest.ViewModelTestContext<VM> {
+        UIThreadViewModelTest.ViewModelTestContext<VM> {
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+            appDeclaration,
+            koinModules.toList()
+        )
+    }
+}
+
+abstract class BaseKoinUIThreadViewModelTest<CONF, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+    BaseKoinUIThreadTest<CONF, KVMC>(allowFreezing) {
+
+    abstract class KoinViewModelTestContext<VM>(
+        appDeclaration: KoinAppDeclaration? = null,
+        koinModules: List<Module>
+    ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
+        UIThreadViewModelTest.ViewModelTestContext<VM> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
