@@ -457,7 +457,7 @@ class Device constructor(
     private fun monitorNewActions() {
         launch {
             connectionManager.newAction.collect { action ->
-                takeAndChangeState() { state ->
+                takeAndChangeState { state ->
                     when (state) {
                         is DeviceState.Connected.Idle -> {
                             state.handleAction(action)
