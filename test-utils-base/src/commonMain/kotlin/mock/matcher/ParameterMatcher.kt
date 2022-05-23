@@ -27,7 +27,7 @@ sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<Pa
     companion object {
         fun <T> eq(value: T): ParameterMatcher<T> = EqualsMatcher(value)
         fun <T> notEq(value: T): ParameterMatcher<T> = NotEqualsMatcher(value)
-        fun <T> onOf(values: List<T>): ParameterMatcher<T> = OneOfMatcher(values)
+        fun <T> oneOf(values: List<T>): ParameterMatcher<T> = OneOfMatcher(values)
         fun <T> matching(condition: (T) -> Boolean): ParameterMatcher<T> = ConditionMatcher(condition)
         fun <T : Any, S : T> isInstance(subclass: KClass<S>): ParameterMatcher<T> = SubClassMatcher(subclass)
         fun <T : Any> notNull(): ParameterMatcher<T?> = AnyNotNullMatcher()

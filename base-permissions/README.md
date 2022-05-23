@@ -23,7 +23,7 @@ Supported device features:
  // ...
  dependencies {
      // ...
-     implementation("com.splendo.kaluga:permissions:$kalugaVersion")
+     implementation("com.splendo.kaluga:base-permissions:$kalugaVersion")
  }
  ```
 

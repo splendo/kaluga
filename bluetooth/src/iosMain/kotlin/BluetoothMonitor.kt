@@ -22,7 +22,6 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitor
-import kotlinx.coroutines.flow.MutableStateFlow
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
