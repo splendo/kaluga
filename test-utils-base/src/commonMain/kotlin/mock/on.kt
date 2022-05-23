@@ -9,6 +9,10 @@ import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
 import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
 import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 
+/**
+ * Generates a stub for a [BaseMethodMock] without and parameters
+ * @return The [Stub] associated with the [BaseMethodMock]
+ */
 fun <
     Result,
     Answer : BaseAnswer<VoidParameters.Values, Result>,
@@ -30,6 +34,11 @@ fun <
     return on(VoidParameters.Matchers)
 }
 
+/**
+ * Generates a stub for a [BaseMethodMock] with one parameter
+ * @param value The [ParameterMatcher] for the parameter of the method.
+ * @return The [Stub] associated with the [BaseMethodMock]
+ */
 fun <
     Value,
     Result,
@@ -52,6 +61,12 @@ fun <
     return on(SingleParameters.Matchers(value))
 }
 
+/**
+ * Generates a stub for a [BaseMethodMock] with two parameters
+ * @param first The [ParameterMatcher] for the first parameter of the method.
+ * @param second The [ParameterMatcher] for the second parameter of the method.
+ * @return The [Stub] associated with the [BaseMethodMock]
+ */
 fun <
     T0,
     T1,
@@ -78,6 +93,13 @@ fun <
     return on(PairParameters.Matchers(first, second))
 }
 
+/**
+ * Generates a stub for a [BaseMethodMock] with three parameters
+ * @param first The [ParameterMatcher] for the first parameter of the method.
+ * @param second The [ParameterMatcher] for the second parameter of the method.
+ * @param third The [ParameterMatcher] for the third parameter of the method.
+ * @return The [Stub] associated with the [BaseMethodMock]
+ */
 fun <
     T0,
     T1,
@@ -106,6 +128,14 @@ fun <
     return on(TripleParameters.Matchers(first, second, third))
 }
 
+/**
+ * Generates a stub for a [BaseMethodMock] with four parameters
+ * @param first The [ParameterMatcher] for the first parameter of the method.
+ * @param second The [ParameterMatcher] for the second parameter of the method.
+ * @param third The [ParameterMatcher] for the third parameter of the method.
+ * @param fourth The [ParameterMatcher] for the fourth parameter of the method.
+ * @return The [Stub] associated with the [BaseMethodMock]
+ */
 fun <
     T0,
     T1,
@@ -136,6 +166,15 @@ fun <
     return on(QuadrupleParameters.Matchers(first, second, third, fourth))
 }
 
+/**
+ * Generates a stub for a [BaseMethodMock] with five parameters
+ * @param first The [ParameterMatcher] for the first parameter of the method.
+ * @param second The [ParameterMatcher] for the second parameter of the method.
+ * @param third The [ParameterMatcher] for the third parameter of the method.
+ * @param fourth The [ParameterMatcher] for the fourth parameter of the method.
+ * @param fifth The [ParameterMatcher] for the fifth parameter of the method.
+ * @return The [Stub] associated with the [BaseMethodMock]
+ */
 fun <
     T0,
     T1,

@@ -26,13 +26,28 @@ import com.splendo.kaluga.test.base.mock.on
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
+/**
+ * The [ParametersSpec] without parameters
+ */
 object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values> {
+
+    /**
+     * The [ParametersSpec.Matchers] without parameters
+     */
     object Matchers : ParametersSpec.Matchers {
         override fun asList(): List<ParameterMatcher<*>> = emptyList()
     }
+
+    /**
+     * The [ParametersSpec.MatchersOrCaptor] without parameters
+     */
     object MatchersOrCaptor : ParametersSpec.MatchersOrCaptor<Matchers> {
         override fun asMatchers(): Matchers = Matchers
     }
+
+    /**
+     * The [ParametersSpec.Values] without parameters
+     */
     object Values : ParametersSpec.Values
 
     override fun Matchers.matches(values: Values): Boolean = true

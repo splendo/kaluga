@@ -19,10 +19,33 @@ package com.splendo.kaluga.test.base.mock.answer
 
 import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
 
+/**
+ * Receives [ParametersSpec.Values] to return a result
+ */
 sealed interface BaseAnswer<V : ParametersSpec.Values, R>
+
+/**
+ * A [BaseAnswer] for non-suspending methods
+ */
 interface Answer<V : ParametersSpec.Values, R> : BaseAnswer<V, R> {
+
+    /**
+     * Answers with a result for a set of arguments
+     * @param arguments The [V] arguments received
+     * @return The [R] result based on [arguments]
+     */
     fun call(arguments: V): R
 }
+
+/**
+ * A [BaseAnswer] for suspending methods
+ */
 interface SuspendedAnswer<V : ParametersSpec.Values, R> : BaseAnswer<V, R> {
+
+    /**
+     * Answers suspended with a result for a set of arguments
+     * @param arguments The [V] arguments received
+     * @return The [R] result based on [arguments]
+     */
     suspend fun call(arguments: V): R
 }

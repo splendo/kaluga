@@ -28,7 +28,19 @@ import com.splendo.kaluga.test.base.mock.on
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
+/**
+ * The [ParametersSpec] for a five parameters
+ */
 class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>> {
+
+    /**
+     * The [ParametersSpec.Matchers] for five parameters
+     * @param first the first parameters [ParameterMatcher]
+     * @param second the second parameters [ParameterMatcher]
+     * @param third the third parameters [ParameterMatcher]
+     * @param fourth the fourth parameters [ParameterMatcher]
+     * @param fifth the fifth parameters [ParameterMatcher]
+     */
     data class Matchers<T0, T1, T2, T3, T4>(
         val first: ParameterMatcher<T0>,
         val second: ParameterMatcher<T1>,
@@ -38,6 +50,15 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
     ) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third, fourth, fifth)
     }
+
+    /**
+     * The [ParametersSpec.MatchersOrCaptor] for five parameters
+     * @param first the first parameters [ParameterMatcherOrCaptor]
+     * @param second the second parameters [ParameterMatcherOrCaptor]
+     * @param third the third parameters [ParameterMatcherOrCaptor]
+     * @param fourth the fourth parameters [ParameterMatcherOrCaptor]
+     * @param fifth the fifth parameters [ParameterMatcherOrCaptor]
+     */
     data class MatchersOrCaptor<T0, T1, T2, T3, T4>(
         val first: ParameterMatcherOrCaptor<T0>,
         val second: ParameterMatcherOrCaptor<T1>,
@@ -53,6 +74,15 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
             fifth.asMatcher()
         )
     }
+
+    /**
+     * The [ParametersSpec.Values] for five parameters
+     * @property first the first parameter
+     * @property second the second parameter
+     * @property third the third parameter
+     * @property fourth the fourth parameter
+     * @property fifth the fifth parameter
+     */
     data class Values<T0, T1, T2, T3, T4>(val first: T0, val second: T1, val third: T2, val fourth: T3, val fifth: T4) : ParametersSpec.Values
 
     override fun Matchers<T0, T1, T2, T3, T4>.matches(values: Values<T0, T1, T2, T3, T4>): Boolean = first.matches(values.first) &&

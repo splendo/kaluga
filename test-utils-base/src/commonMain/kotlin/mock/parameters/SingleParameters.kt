@@ -28,15 +28,33 @@ import com.splendo.kaluga.test.base.mock.on
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
+/**
+ * The [ParametersSpec] for a single parameter
+ */
 class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, SingleParameters.MatchersOrCaptor<T0>, SingleParameters.Values<T0>> {
+
+    /**
+     * The [ParametersSpec.Matchers] for a single
+     * @param value the parameter [ParameterMatcher]
+     */
     data class Matchers<T0>(val value: ParameterMatcher<T0>) :
         ParametersSpec.Matchers {
         override fun asList() = listOf(value)
     }
+
+    /**
+     * The [ParametersSpec.MatchersOrCaptor] for a single
+     * @param value the parameter [ParameterMatcherOrCaptor]
+     */
     data class MatchersOrCaptor<T0>(val value: ParameterMatcherOrCaptor<T0>) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0>> {
         override fun asMatchers(): Matchers<T0> = Matchers(value.asMatcher())
     }
+
+    /**
+     * The [ParametersSpec.Values] for a single parameter
+     * @property value the parameter
+     */
     data class Values<T0>(val value: T0) : ParametersSpec.Values
 
     override fun Matchers<T0>.matches(values: Values<T0>): Boolean = value.matches(values.value)

@@ -11,6 +11,10 @@ import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
 import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 
+/**
+ * Verifies that a [BaseMethodMock] without parameters has been called
+ * @param times The number of times the mock must be called
+ */
 fun <
     Result,
     Answer : BaseAnswer<VoidParameters.Values, Result>,
@@ -32,6 +36,10 @@ fun <
     verify(VoidParameters.MatchersOrCaptor, times)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] without parameters has been called
+ * @param rule The [VerificationRule] for matching the calls
+ */
 fun <
     Result,
     Answer : BaseAnswer<VoidParameters.Values, Result>,
@@ -53,6 +61,11 @@ fun <
     verify(VoidParameters.MatchersOrCaptor, rule)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with one parameters has been called with a [ParameterMatcherOrCaptor]
+ * @param value The [ParameterMatcherOrCaptor] for the parameter
+ * @param times The number of times the mock must be called the parameter matching [ParameterMatcherOrCaptor]
+ */
 fun <
     Value,
     Result,
@@ -75,6 +88,11 @@ fun <
     verify(SingleParameters.MatchersOrCaptor(value), times)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with one parameters has been called with a [ParameterMatcherOrCaptor]
+ * @param value The [ParameterMatcherOrCaptor] for the parameter
+ * @param rule The [VerificationRule] for matching the calls
+ */
 fun <
     Value,
     Result,
@@ -100,6 +118,12 @@ fun <
     verify(SingleParameters.MatchersOrCaptor(value), rule)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with two parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param times The number of times the mock must be called with parameters matching their [ParameterMatcherOrCaptor]
+ */
 fun <
     T0,
     T1,
@@ -127,6 +151,12 @@ fun <
     verify(PairParameters.MatchersOrCaptor(first, second), times)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with two parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param rule The [VerificationRule] for matching the calls
+ */
 fun <
     T0,
     T1,
@@ -154,6 +184,13 @@ fun <
     verify(PairParameters.MatchersOrCaptor(first, second), rule)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with three parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param third The [ParameterMatcherOrCaptor] for the third parameter
+ * @param times The number of times the mock must be called with parameters matching their [ParameterMatcherOrCaptor]
+ */
 fun <
     T0,
     T1,
@@ -183,6 +220,13 @@ fun <
     verify(TripleParameters.MatchersOrCaptor(first, second, third), times)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with three parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param third The [ParameterMatcherOrCaptor] for the third parameter
+ * @param rule The [VerificationRule] for matching the calls
+ */
 fun <
     T0,
     T1,
@@ -212,6 +256,14 @@ fun <
     verify(TripleParameters.MatchersOrCaptor(first, second, third), rule)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with four parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param third The [ParameterMatcherOrCaptor] for the third parameter
+ * @param fourth The [ParameterMatcherOrCaptor] for the fourth parameter
+ * @param times The number of times the mock must be called with parameters matching their [ParameterMatcherOrCaptor]
+ */
 fun <
     T0,
     T1,
@@ -243,6 +295,14 @@ fun <
     verify(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), times)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with four parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param third The [ParameterMatcherOrCaptor] for the third parameter
+ * @param fourth The [ParameterMatcherOrCaptor] for the fourth parameter
+ * @param rule The [VerificationRule] for matching the calls
+ */
 fun <
     T0,
     T1,
@@ -274,6 +334,15 @@ fun <
     verify(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), rule)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with five parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param third The [ParameterMatcherOrCaptor] for the third parameter
+ * @param fourth The [ParameterMatcherOrCaptor] for the fourth parameter
+ * @param fifth The [ParameterMatcherOrCaptor] for the fifth parameter
+ * @param times The number of times the mock must be called with parameters matching their [ParameterMatcherOrCaptor]
+ */
 fun <
     T0,
     T1,
@@ -307,6 +376,15 @@ fun <
     verify(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), times)
 }
 
+/**
+ * Verifies that a [BaseMethodMock] with five parameters has been called with all parameters matching their respective [ParameterMatcherOrCaptor]
+ * @param first The [ParameterMatcherOrCaptor] for the first parameter
+ * @param second The [ParameterMatcherOrCaptor] for the second parameter
+ * @param third The [ParameterMatcherOrCaptor] for the third parameter
+ * @param fourth The [ParameterMatcherOrCaptor] for the fourth parameter
+ * @param fifth The [ParameterMatcherOrCaptor] for the fifth parameter
+ * @param rule The [VerificationRule] for matching the calls
+ */
 fun <
     T0,
     T1,

@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.test.base.mock.matcher
 
+/**
+ * Either a [ParameterMatcher] or a [Captor]
+ */
 sealed interface ParameterMatcherOrCaptor<in T> {
+    /**
+     * Converts this [ParameterMatcherOrCaptor] into a [ParameterMatcher]
+     */
     fun asMatcher(): ParameterMatcher<T>
 }

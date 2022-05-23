@@ -24,6 +24,9 @@ import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
 import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
 import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 
+/**
+ * Calls a [MethodMock] without any parameters
+ */
 fun <
     Result,
     > MethodMock<
@@ -36,6 +39,9 @@ fun <
     return call(VoidParameters.Values)
 }
 
+/**
+ * Calls a [SuspendMethodMock] without any parameters
+ */
 suspend fun <
     Result,
     > SuspendMethodMock<
@@ -48,6 +54,10 @@ suspend fun <
     return call(VoidParameters.Values)
 }
 
+/**
+ * Calls a [MethodMock] with one parameter
+ * @param value The parameter to pass to the method
+ */
 fun <
     Value,
     Result,
@@ -61,6 +71,11 @@ fun <
     return call(SingleParameters.Values(value))
 }
 
+
+/**
+ * Calls a [SuspendMethodMock] with one parameter
+ * @param value The parameter to pass to the method
+ */
 suspend fun <
     Value,
     Result,
@@ -74,6 +89,11 @@ suspend fun <
     return call(SingleParameters.Values(value))
 }
 
+/**
+ * Calls a [MethodMock] with two parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ */
 fun <
     T0,
     T1,
@@ -88,6 +108,11 @@ fun <
     return call(PairParameters.Values(first, second))
 }
 
+/**
+ * Calls a [SuspendMethodMock] with two parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ */
 suspend fun <
     T0,
     T1,
@@ -102,6 +127,12 @@ suspend fun <
     return call(PairParameters.Values(first, second))
 }
 
+/**
+ * Calls a [MethodMock] with three parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ * @param third The third parameter to pass to the method
+ */
 fun <
     T0,
     T1,
@@ -117,6 +148,12 @@ fun <
     return call(TripleParameters.Values(first, second, third))
 }
 
+/**
+ * Calls a [SuspendMethodMock] with three parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ * @param third The third parameter to pass to the method
+ */
 suspend fun <
     T0,
     T1,
@@ -132,6 +169,13 @@ suspend fun <
     return call(TripleParameters.Values(first, second, third))
 }
 
+/**
+ * Calls a [MethodMock] with four parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ * @param third The third parameter to pass to the method
+ * @param fourth The fourth parameter to pass to the method
+ */
 fun <
     T0,
     T1,
@@ -148,6 +192,13 @@ fun <
     return call(QuadrupleParameters.Values(first, second, third, fourth))
 }
 
+/**
+ * Calls a [SuspendMethodMock] with four parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ * @param third The third parameter to pass to the method
+ * @param fourth The fourth parameter to pass to the method
+ */
 suspend fun <
     T0,
     T1,
@@ -164,6 +215,14 @@ suspend fun <
     return call(QuadrupleParameters.Values(first, second, third, fourth))
 }
 
+/**
+ * Calls a [MethodMock] with five parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ * @param third The third parameter to pass to the method
+ * @param fourth The fourth parameter to pass to the method
+ * @param fifth The fifth parameter to pass to the method
+ */
 fun <
     T0,
     T1,
@@ -181,6 +240,14 @@ fun <
     return call(QuintupleParameters.Values(first, second, third, fourth, fifth))
 }
 
+/**
+ * Calls a [SuspendMethodMock] with five parameters
+ * @param first The first parameter to pass to the method
+ * @param second The second parameter to pass to the method
+ * @param third The third parameter to pass to the method
+ * @param fourth The fourth parameter to pass to the method
+ * @param fifth The fifth parameter to pass to the method
+ */
 suspend fun <
     T0,
     T1,

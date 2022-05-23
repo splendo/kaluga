@@ -34,7 +34,10 @@ private fun expect(condition: Boolean, message: () -> String) {
 
 private fun fail(message: () -> String): Nothing = throw AssertionError(message())
 
-abstract class BaseMethodMock<
+/**
+ * Class for mocking a method that takes parameters described by [W] and can be stubbed to [S]
+ */
+sealed class BaseMethodMock<
     M : ParametersSpec.Matchers,
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
@@ -44,6 +47,9 @@ abstract class BaseMethodMock<
     S : BaseMethodMock.Stub<M, V, R, A>
     > {
 
+    /**
+     * A Stub is a class that provides an [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
+     */
     abstract class Stub<
         M : ParametersSpec.Matchers,
         V : ParametersSpec.Values,
@@ -56,11 +62,30 @@ abstract class BaseMethodMock<
 
         protected abstract fun createAnswer(result: (V) -> R): A
 
+        /**
+         * Sets the answer for this stub to a given answer.
+         * @param answer The [BaseAnswer] [A] to provide the answer for this stub.
+         */
         fun doAnswer(answer: A) {
             this.answer.set(answer)
         }
+
+        /**
+         * Sets the answer to execute a given code block.
+         * @param action The code block to execute as an answer to the stub being called.
+         */
         fun doExecute(action: (V) -> R) = doAnswer(createAnswer(action))
+
+        /**
+         * Sets the answer to return a given value.
+         * @param value the result to return as an answer to the stub being called.
+         */
         fun doReturn(value: R) = doExecute { value }
+
+        /**
+         * Sets the answer to throw a given [Throwable]
+         * @param throwable The [Throwable] to throw as an answer to the stub being called.
+         */
         fun doThrow(throwable: Throwable) = doExecute { throw throwable }
     }
 
@@ -77,37 +102,53 @@ abstract class BaseMethodMock<
 
     protected fun getStubFor(values: V): S {
         callParameters.add(values)
+        // First find all the stubs whose matchers match the values received and sort their matchers per parameter in order of strongest constraint.
         val matchingStubs = stubs.keys.mapNotNull { matchers ->
             val stub = stubs[matchers]
             if (ParametersSpec.run { matchers.matches(values) } && stub != null) matchers.asList().sorted() to stub else null
         }
+        // Ensure there is at least one stub. Otherwise fail
         if (matchingStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
         val matchedStubs = (0..matchingStubs.first().first.size).fold(matchingStubs) { remainingMatches, index ->
+            // Find the best matching stub.
+            // Iterate over the length of the number of parameters passed to the method
             remainingMatches.fold(emptyList()) inner@{ acc, possibleBestMatch ->
+                // If we dont have a best possible match yet, just use the first element.
                 if (acc.isEmpty()) {
                     return@inner listOf(possibleBestMatch)
                 }
+                // Check whether possibleBestMatch has better, equal, or worse parameter matching for the parameter at index
                 val matcherAtIndexForAcc = acc.first().first[index]
                 val matcherAtIndexForPossibleBestMatch = possibleBestMatch.first[index]
                 when {
-                    matcherAtIndexForAcc < matcherAtIndexForPossibleBestMatch -> acc
-                    matcherAtIndexForAcc == matcherAtIndexForPossibleBestMatch -> acc.toMutableList() + possibleBestMatch
-                    else -> listOf(possibleBestMatch)
+                    matcherAtIndexForAcc < matcherAtIndexForPossibleBestMatch -> acc // Worse, so return acc
+                    matcherAtIndexForAcc == matcherAtIndexForPossibleBestMatch -> acc.toMutableList() + possibleBestMatch // Equal so return acc + possibleBestMatch
+                    else -> listOf(possibleBestMatch) // Better so return possibleBestMatch
                 }
             }
         }
+        // Return the first element of the remaining list of stubbs
         if (matchedStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
         return matchedStubs.first().second
     }
 
+    /**
+     * Resets all calls to this mock method. This means that `verify(times=0)` should succeed
+     */
     fun resetCalls() {
         callParameters.clear()
     }
 
+    /**
+     * Removes all stubbs from this mock method. Note that this also removes any default stubbs that may have been created when declaring the mock.
+     */
     fun resetStubs() {
         stubs.clear()
     }
 
+    /**
+     * Resets both calls and stubbs. Shorthand for [resetCalls] and [resetStubs]
+     */
     fun reset() {
         resetCalls()
         resetStubs()
@@ -131,6 +172,9 @@ abstract class BaseMethodMock<
     }
 }
 
+/**
+ * Sets the answer of a [BaseMethodMock.Stub] that returns Unit to simply return Unit.
+ */
 fun <
     M : ParametersSpec.Matchers,
     V : ParametersSpec.Values,
@@ -139,6 +183,9 @@ fun <
     doExecute { }
 }
 
+/**
+ * A [BaseMethodMock] for non-suspending methods.
+ */
 class MethodMock<M : ParametersSpec.Matchers,
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
@@ -148,6 +195,9 @@ class MethodMock<M : ParametersSpec.Matchers,
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
 
+    /**
+     * A [BaseMethodMock.Stub] for non-suspending methods.
+     */
     class Stub<
         M : ParametersSpec.Matchers,
         V : ParametersSpec.Values,
@@ -155,6 +205,11 @@ class MethodMock<M : ParametersSpec.Matchers,
         override fun createAnswer(result: (V) -> R): Answer<V, R> = object : Answer<V, R> {
             override fun call(arguments: V): R = result(arguments)
         }
+
+        /**
+         * Calls this stub with a given set of arguments
+         * @param arguments the arguments with which to call the stub.
+         */
         fun call(arguments: V): R {
             val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
             return answer.call(arguments)
@@ -162,6 +217,9 @@ class MethodMock<M : ParametersSpec.Matchers,
     }
 }
 
+/**
+ * A [BaseMethodMock] for suspending methods.
+ */
 class SuspendMethodMock<
     M : ParametersSpec.Matchers,
     C : ParametersSpec.MatchersOrCaptor<M>,
@@ -174,6 +232,9 @@ class SuspendMethodMock<
     override fun createStub(matcher: M): Stub<M, V, R> =
         Stub(matcher)
 
+    /**
+     * A [BaseMethodMock.Stub] for suspending methods.
+     */
     class Stub<
         M : ParametersSpec.Matchers,
         V : ParametersSpec.Values,
@@ -183,16 +244,30 @@ class SuspendMethodMock<
             override suspend fun call(arguments: V): R = result(arguments)
         }
 
+        /**
+         * Calls this stub with a given set of arguments
+         * @param arguments the arguments with which to call the stub.
+         */
         suspend fun call(arguments: V): R {
             val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
             return answer.call(arguments)
         }
 
+        /**
+         * Sets the answer to execute a given suspended code block.
+         * @param action The code block to execute as an answer to the stub being called.
+         */
         fun doExecuteSuspended(action: suspend (V) -> R) = doAnswer(
             object : SuspendedAnswer<V, R> {
                 override suspend fun call(arguments: V): R = action(arguments)
             }
         )
+
+        /**
+         * Sets the answer await and return the value of a given [Deferred].
+         * @param deferred The [Deferred] to wait for and return.
+         * @return a [Deferred] to be completed when this answer is called.
+         */
         fun doAwait(deferred: Deferred<R>): Deferred<V> {
             val isCalled = CompletableDeferred<V>()
             doExecuteSuspended {

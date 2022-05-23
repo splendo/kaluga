@@ -28,8 +28,19 @@ import com.splendo.kaluga.test.base.mock.on
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
+/**
+ * The [ParametersSpec] for a four parameters
+ */
 class QuadrupleParameters<T0, T1, T2, T3> :
     ParametersSpec<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>> {
+
+    /**
+     * The [ParametersSpec.Matchers] for four parameters
+     * @param first the first parameters [ParameterMatcher]
+     * @param second the second parameters [ParameterMatcher]
+     * @param third the third parameters [ParameterMatcher]
+     * @param fourth the fourth parameters [ParameterMatcher]
+     */
     data class Matchers<T0, T1, T2, T3>(
         val first: ParameterMatcher<T0>,
         val second: ParameterMatcher<T1>,
@@ -40,6 +51,13 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         override fun asList() = listOf(first, second, third, fourth)
     }
 
+    /**
+     * The [ParametersSpec.MatchersOrCaptor] for four parameters
+     * @param first the first parameters [ParameterMatcherOrCaptor]
+     * @param second the second parameters [ParameterMatcherOrCaptor]
+     * @param third the third parameters [ParameterMatcherOrCaptor]
+     * @param fourth the fourth parameters [ParameterMatcherOrCaptor]
+     */
     data class MatchersOrCaptor<T0, T1, T2, T3>(
         val first: ParameterMatcherOrCaptor<T0>,
         val second: ParameterMatcherOrCaptor<T1>,
@@ -55,6 +73,13 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         )
     }
 
+    /**
+     * The [ParametersSpec.Values] for four parameters
+     * @property first the first parameter
+     * @property second the second parameter
+     * @property third the third parameter
+     * @property fourth the fourth parameter
+     */
     data class Values<T0, T1, T2, T3>(
         val first: T0,
         val second: T1,

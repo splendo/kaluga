@@ -28,15 +28,36 @@ import com.splendo.kaluga.test.base.mock.on
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
+/**
+ * The [ParametersSpec] for a two parameters
+ */
 class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, PairParameters.MatchersOrCaptor<T0, T1>, PairParameters.Values<T0, T1>> {
+
+    /**
+     * The [ParametersSpec.Matchers] for two parameters
+     * @param first the first parameters [ParameterMatcher]
+     * @param second the second parameters [ParameterMatcher]
+     */
     data class Matchers<T0, T1>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>) :
         ParametersSpec.Matchers {
         override fun asList() = listOf(first, second)
     }
+
+    /**
+     * The [ParametersSpec.MatchersOrCaptor] for two parameters
+     * @param first the first parameters [ParameterMatcherOrCaptor]
+     * @param second the second parameters [ParameterMatcherOrCaptor]
+     */
     data class MatchersOrCaptor<T0, T1>(val first: ParameterMatcherOrCaptor<T0>, val second: ParameterMatcherOrCaptor<T1>) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0, T1>> {
         override fun asMatchers(): Matchers<T0, T1> = Matchers(first.asMatcher(), second.asMatcher())
     }
+
+    /**
+     * The [ParametersSpec.Values] for two parameters
+     * @property first the first parameter
+     * @property second the second parameter
+     */
     data class Values<T0, T1>(val first: T0, val second: T1) : ParametersSpec.Values
 
     override fun Matchers<T0, T1>.matches(values: Values<T0, T1>): Boolean = first.matches(values.first) && second.matches(values.second)

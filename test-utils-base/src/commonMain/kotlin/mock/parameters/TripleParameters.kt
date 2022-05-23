@@ -29,6 +29,13 @@ import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>> {
+
+    /**
+     * The [ParametersSpec.Matchers] for three parameters
+     * @param first the first parameters [ParameterMatcher]
+     * @param second the second parameters [ParameterMatcher]
+     * @param third the third parameters [ParameterMatcher]
+     */
     data class Matchers<T0, T1, T2>(
         val first: ParameterMatcher<T0>,
         val second: ParameterMatcher<T1>,
@@ -36,6 +43,13 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     ) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third)
     }
+
+    /**
+     * The [ParametersSpec.MatchersOrCaptor] for three parameters
+     * @param first the first parameters [ParameterMatcherOrCaptor]
+     * @param second the second parameters [ParameterMatcherOrCaptor]
+     * @param third the third parameters [ParameterMatcherOrCaptor]
+     */
     data class MatchersOrCaptor<T0, T1, T2>(
         val first: ParameterMatcherOrCaptor<T0>,
         val second: ParameterMatcherOrCaptor<T1>,
@@ -43,6 +57,12 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     ) : ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2>> {
         override fun asMatchers(): Matchers<T0, T1, T2> = Matchers(first.asMatcher(), second.asMatcher(), third.asMatcher())
     }
+    /**
+     * The [ParametersSpec.Values] for three parameters
+     * @property first the first parameter
+     * @property second the second parameter
+     * @property third the third parameter
+     */
     data class Values<T0, T1, T2>(val first: T0, val second: T1, val third: T2) : ParametersSpec.Values
 
     override fun Matchers<T0, T1, T2>.matches(values: Values<T0, T1, T2>): Boolean = first.matches(values.first) &&

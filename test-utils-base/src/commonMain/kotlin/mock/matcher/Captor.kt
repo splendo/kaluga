@@ -17,12 +17,30 @@
 
 package com.splendo.kaluga.test.base.mock.matcher
 
+/**
+ * Captures a parameter to it can be extracted from [com.splendo.kaluga.test.base.mock.verify]
+ */
 sealed interface Captor<T> : ParameterMatcherOrCaptor<T> {
+    /**
+     * The list of all parameters that were captured by this captor
+     */
     val captured: List<T>
+
+    /**
+     * The last parameter captured by this captor or null if no parameter was captured
+     */
     val lastCaptured: T?
+
+    /**
+     * Captures a given value
+     * @param value the value to capture.
+     */
     fun capture(value: T)
 }
 
+/**
+ * A [Captor] for capturing non-nullable parameters
+ */
 class AnyCaptor<T : Any> : Captor<T> {
     private val _captured = mutableListOf<T>()
     override val captured: List<T> get() = _captured.toList()
@@ -35,6 +53,9 @@ class AnyCaptor<T : Any> : Captor<T> {
     override fun asMatcher(): ParameterMatcher<T> = ParameterMatcher.any()
 }
 
+/**
+ * A [Captor] for capturing nullable parameters
+ */
 class AnyOrNullCaptor<T : Any> : Captor<T?> {
     private val _captured = mutableListOf<T?>()
     override val captured: List<T?> get() = _captured.toList()

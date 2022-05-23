@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +28,7 @@ import kotlin.test.assertEquals
 class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context>() {
 
     class Context(coroutineScope: CoroutineScope) : TestContext {
-        val device = createMockDevice(coroutineScope.coroutineContext) {
+        val device = createMockDevice(coroutineScope) {
             deviceName = "foo"
             rssi = -43
             manufacturerId = 0x1234
@@ -47,9 +46,8 @@ class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context
     override val createTestContext: suspend (scope: CoroutineScope) -> Context = { Context(it) }
 
     @Test
-    fun testBuilder() = testOnUIThread {
-
-        val device = device.filterOnlyImportant().first()
+    fun testBuilder() = testOnUIThread(cancelScopeAfterTest = true) {
+        val device = device.first()
 
         assertEquals("foo", device.name)
         assertEquals(-43, device.rssi)
