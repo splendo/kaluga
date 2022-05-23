@@ -33,13 +33,13 @@ class BluetoothMock(
 ) : BluetoothService {
 
     val pairedDevices = MutableStateFlow(emptyList<Identifier>())
-    val devices = MutableStateFlow(emptyList<Device>())
+    val discoveredDevices = MutableStateFlow(emptyList<Device>())
 
     override val isEnabled = flowOf(true)
 
     override fun startScanning(filter: Set<UUID>) { }
     override fun stopScanning() { }
     override suspend fun pairedDevices(filter: Set<UUID>) = pairedDevices.first()
-    override fun devices() = devices.asStateFlow()
+    override fun devices() = discoveredDevices.asStateFlow()
     override suspend fun isScanning() = flowOf(true).stateIn(coroutineScope)
 }
