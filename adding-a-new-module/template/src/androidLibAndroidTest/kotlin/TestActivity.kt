@@ -15,7 +15,7 @@
 
 */
 
-package com.splendo.kaluga.%MODULE%
+package com.splendo.kaluga.%PACKAGE%
 
 import androidx.appcompat.app.AppCompatActivity
 

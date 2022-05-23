@@ -2,22 +2,23 @@
 This **project** includes all common dependencies and settings for kaluga module.
 
 # Steps for adding a new module
-1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module>` from the root directory.
-1. Include your module to kaluga project edit `kaluga/settings.gradle.kts` by adding: `include(":<your-module>")`.
-1. Add Unit tests
+1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package>` from the root directory.
+   * `package_name` can be omitted if the module and package names are the same.
+2. Include your module to kaluga project edit `kaluga/settings.gradle.kts` by adding: `include(":<your-module>")`.
+3. Add Unit tests
     * [Common Unit Tests](#commonTests)
     * [iOS Unit Tests](#iosTests)
     * [Android Unit Tests](#androidLibTests)
-1. [Add Android Instrumented Unit Tests](#instrumentedUnitTests)
-1. Add your source code
+4. [Add Android Instrumented Unit Tests](#instrumentedUnitTests)
+5. Add your source code
     * <a name="commonMain-sources"></a>**commonMain** - non-platform-specific implementation and `expect` declaration.
     * <a name="iosMain-sources"></a>**iosMain** - iOS specific implementation.
     * <a name="androidLibMain-sources"></a>**androidLibMain** - Android specific implementation.
     * <a name="jvmMain-sources"></a>**jvmMain** - jvm specific implementation.
     * <a name="jsMain-sources"></a>**jvmMain** - js specific implementation.
-1. Don't forget to update copyright if files were imported from another project. To do that use **Code > Update Copyright...**.
-1. Add documentation to your code if needed.
-1. Add an example of usage to the example project.
+6. Don't forget to update copyright if files were imported from another project. To do that use **Code > Update Copyright...**.
+7. Add documentation to your code if needed.
+8. Add an example of usage to the example project.
 
 ---
 
