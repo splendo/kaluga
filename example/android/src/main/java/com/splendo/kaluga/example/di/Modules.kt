@@ -91,6 +91,7 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.registerAllPermissions
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager

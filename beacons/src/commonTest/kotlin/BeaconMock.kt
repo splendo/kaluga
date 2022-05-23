@@ -24,12 +24,11 @@ import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
 
 typealias ServiceData = Map<UUID, ByteArray?>
 
@@ -39,11 +38,11 @@ object BeaconMock {
         namespace.decodeHex()!! +
         instance.decodeHex()!!
 
-    fun mockGenericDevice(name: String, coroutineContext: CoroutineContext) = makeDevice(
-        name, coroutineContext = coroutineContext
+    fun mockGenericDevice(name: String, coroutineScope: CoroutineScope) = makeDevice(
+        name, coroutineScope = coroutineScope
     )
 
-    fun mockBeaconDevice(id: String, coroutineContext: CoroutineContext): Device {
+    fun mockBeaconDevice(id: String, coroutineScope: CoroutineScope): Device {
         val beaconId = BeaconID(
             namespace = id.substring(0..19),
             instance = id.substring(20)
@@ -53,19 +52,19 @@ object BeaconMock {
             serviceData = mapOf(
                 Eddystone.SERVICE_UUID to beaconId.asByteArray()
             ),
-            coroutineContext
+            coroutineScope
         )
     }
 
     private fun makeDevice(
         name: String,
         serviceData: ServiceData = emptyMap(),
-        coroutineContext: CoroutineContext
+        coroutineScope: CoroutineScope
     ) = Device(
         settings,
         makeDeviceInfo(name, serviceData),
         manager,
-        coroutineContext
+        coroutineScope
     )
 
     private val settings = ConnectionSettings(
@@ -74,13 +73,13 @@ object BeaconMock {
 
     private val manager = object : BaseDeviceConnectionManager.Builder {
         override fun create(
-            connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo
+            bufferCapacity: Int,
+            coroutineScope: CoroutineScope
         ) = MockDeviceConnectionManager(
-            connectionSettings = connectionSettings,
             deviceWrapper = deviceWrapper,
-            stateRepo = stateRepo
+            bufferCapacity = bufferCapacity,
+            coroutineScope = coroutineScope
         )
     }
 
