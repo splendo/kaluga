@@ -27,11 +27,26 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Mock implementation of [BaseKeyboardManager]
+ * @param setupMocks If `true` configure mocks to display the keyboard
+ */
 class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
 
+    /**
+     * Mock implementation of [BaseKeyboardManager.Builder]
+     * @param setupMocks If `true` sets up [createMock] to build [MockKeyboardManager]
+     */
     class Builder(setupMocks: Boolean = true) : BaseKeyboardManager.Builder {
 
+        /**
+         * List of created [MockKeyboardManager]
+         */
         val builtKeyboardManagers = IsoMutableList<MockKeyboardManager>()
+
+        /**
+         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         */
         val createMock = ::create.mock()
 
         init {
@@ -48,11 +63,22 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
     }
 
     val _focusHandler = AtomicReference<FocusHandler?>(null)
+
+    /**
+     * Gets the current [FocusHandler]
+     */
     var focusHandler: FocusHandler?
         get() = _focusHandler.value
         private set(value) = _focusHandler.set(value)
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [show]
+     */
     val showMock = ::show.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [hide]
+     */
     val hideMock = ::hide.mock()
 
     init {

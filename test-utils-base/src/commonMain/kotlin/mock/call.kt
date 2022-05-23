@@ -71,7 +71,6 @@ fun <
     return call(SingleParameters.Values(value))
 }
 
-
 /**
  * Calls a [SuspendMethodMock] with one parameter
  * @param value The parameter to pass to the method

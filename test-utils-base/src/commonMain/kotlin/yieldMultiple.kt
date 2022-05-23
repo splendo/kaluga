@@ -21,10 +21,19 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
 import kotlin.time.Duration
 
+/**
+ * Calls yield for a number of times
+ * @param times the number of times to call yield.
+ */
 suspend fun yieldMultiple(times: Int) = repeat(times) {
     yield()
 }
 
+/**
+ * Calls yield until a constraint is met
+ * @param timeout The duration after which to stop
+ * @param constraint The constraint to check for.
+ */
 suspend fun yieldUntil(timeout: Duration = Duration.INFINITE, constraint: () -> Boolean) = withTimeout(timeout) {
     while (!constraint()) {
         yield()

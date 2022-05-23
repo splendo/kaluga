@@ -34,6 +34,9 @@ open class BaseMockFocusHandler {
     }
 }
 
+/**
+ * Mock implementation of [FocusHandler]
+ */
 expect class MockFocusHandler constructor() : BaseMockFocusHandler, FocusHandler {
     fun simulateGiveFocus()
     fun simulateRemoveFocus()

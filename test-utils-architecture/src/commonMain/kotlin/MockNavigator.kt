@@ -22,8 +22,14 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 
+/**
+ * Mock implementation of [Navigator]
+ */
 class MockNavigator<A : NavigationAction<*>> : Navigator<A> {
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] of [navigate]
+     */
     val navigateMock = this::navigate.mock()
     override fun navigate(action: A): Unit = navigateMock.call(action)
 }

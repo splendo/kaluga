@@ -51,6 +51,9 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
         }
     }
 
+    /**
+     * Creates the Test Context based on a CoroutineScope
+     */
     abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
     override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC get() {
         val createTestContext = this.createTestContext
@@ -59,12 +62,26 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
         }
     }
 
+    /**
+     * Run your test block on the UI thread and inside the TestContext.
+     *
+     * Optionally with [cancelScopeAfterTest] you can run your test block inside a separately launched job, which
+     * is canceled after your block is run. The scope waits till this is completed by joining.
+     *
+     * This can be handy for testing classes that rely on scopes that eventually get canceled,
+     * e.g. because they are canceled automatically by a lifecycle event.
+     *
+     * @param block test block to be run on the UI thread and in the test context.
+     *
+     * @param cancelScopeAfterTest whether to cancel the coroutinescope your block ran in after it's done.
+     *
+     */
     fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) = testOnUIThread(Unit, cancelScopeAfterTest, block)
 }
 
 /**
  * This class allows a test block to be run on the UI thread inside a custom context
- * that is also created in the UI Thread.
+ * that is also created in the UI Thread using a configuration.
  *
  * While normally iOS tests already run on the UI thread, this prevents the Main dispatcher from working as long as that Thread is blocked,
  * so this class is mostly used in conjunction with the [com.splendo.kaluga.test.base.mainBackground] entry point.
@@ -89,6 +106,9 @@ abstract class BaseUIThreadTest<CONF, TC : BaseUIThreadTest.TestContext>(allowFr
         }
     }
 
+    /**
+     * Creates the TestContext based on Configuration and CoroutineScope
+     */
     abstract val createTestContextWithConfiguration: suspend (configuration: CONF, scope: CoroutineScope) -> TC
 
     private companion object {
@@ -104,6 +124,7 @@ abstract class BaseUIThreadTest<CONF, TC : BaseUIThreadTest.TestContext>(allowFr
      * This can be handy for testing classes that rely on scopes that eventually get canceled,
      * e.g. because they are canceled automatically by a lifecycle event.
      *
+     * @param configuration The [CONF] to configure the TestContext.
      * @param block test block to be run on the UI thread and in the test context.
      *
      * @param cancelScopeAfterTest whether to cancel the coroutinescope your block ran in after it's done.

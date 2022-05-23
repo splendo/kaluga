@@ -22,12 +22,22 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * Mock implementation of [ServiceMonitor]
+ */
 abstract class MockServiceMonitor : ServiceMonitor {
     abstract override val isEnabled: StateFlow<Boolean>
     override val isServiceEnabled: Boolean
         get() = isEnabled.value
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.MethodMock] for [startMonitoring]
+     */
     val startMonitoringMock = ::startMonitoring.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.MethodMock] for [stopMonitoring]
+     */
     val stopMonitoringMock = ::stopMonitoring.mock()
 
     override fun startMonitoring(): Unit = startMonitoringMock.call()

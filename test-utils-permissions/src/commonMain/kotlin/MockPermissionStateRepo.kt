@@ -21,10 +21,16 @@ import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Mock implementation of [PermissionStateRepo]
+ */
 class MockPermissionStateRepo<P : Permission>(
     val builder: MockPermissionManager.Builder<P> = MockPermissionManager.Builder(),
     coroutineContext: CoroutineContext
 ) : PermissionStateRepo<P>(builder.monitoringInterval, coroutineContext, { builder.create(it) }) {
 
+    /**
+     * The [MockPermissionManager] of this repo
+     */
     val permissionManager get() = builder.createdManagers.first()
 }

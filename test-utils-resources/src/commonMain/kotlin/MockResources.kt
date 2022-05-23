@@ -28,9 +28,20 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 
+/**
+ * Mock implementation of [StringLoader]
+ * @param returnMock If `true` returns the identifier rather than the default value
+ */
 class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadString]
+     */
     val loadStringMock = ::loadString.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadQuantityString]
+     */
     val loadQuantityStringMock = ::loadQuantityString.mock()
 
     init {
@@ -51,8 +62,15 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
     ): String = loadQuantityStringMock.call(identifier, quantity, defaultValue)
 }
 
+/**
+ * Mock implementation of [StringLoader]
+ * @param returnMock If `true` returns [mockColor] rather than the default value
+ */
 class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoader {
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadColor]
+     */
     val loadColorMock = ::loadColor.mock()
 
     init {
@@ -64,8 +82,15 @@ class MockColorLoader(private val returnMock: Boolean = false) : KalugaColorLoad
     override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = loadColorMock.call(identifier, defaultValue)
 }
 
+/**
+ * Mock implementation of [StringLoader]
+ * @param returnMock If `true` returns [mockImage] rather than the default value
+ */
 class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadImage]
+     */
     val loadImageMock = ::loadImage.mock()
 
     init {
@@ -77,8 +102,15 @@ class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
     override fun loadImage(identifier: String, defaultValue: Image?): Image? = loadImageMock.call(identifier, defaultValue)
 }
 
+/**
+ * Mock implementation of [StringLoader]
+ * @param returnMock If `true` returns [mockFont] rather than the default value
+ */
 class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [loadFont]
+     */
     val loadFontMock = ::loadFont.mock()
 
     init {
@@ -91,6 +123,17 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
         loadFontMock.call(identifier, defaultValue)
 }
 
+/**
+ * Creates a mocked [KalugaColor]
+ */
 expect fun mockColor(): KalugaColor
+
+/**
+ * Creates a mocked [Image]
+ */
 expect fun mockImage(): Image
+
+/**
+ * Creates a mocked [Font]
+ */
 expect fun mockFont(): Font

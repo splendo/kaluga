@@ -27,6 +27,15 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * Mock implementation of [BaseLocationManager]
+ * @param initialLocationEnabled Sets the initial state of location
+ * @param locationPermission The [LocationPermission] managed by this manager
+ * @param permissions The [Permissions] to get the requested [locationPermission] from
+ * @param autoRequestPermission If `true` this will automatically request permissions if missing
+ * @param autoEnableLocations If `true` this will automatically try to enable locations
+ * @param locationStateRepo The [LocationStateRepo] managed by this manager
+ */
 class MockLocationManager(
     initialLocationEnabled: Boolean,
     locationPermission: LocationPermission,
@@ -42,9 +51,21 @@ class MockLocationManager(
     locationStateRepo
 ) {
 
+    /**
+     * Mock implementation of [BaseLocationManager.Builder]
+     * @param initialLocationEnabled Sets the initial state of location
+     * @param setupMocks If `true` sets up [createMock] to build [MockLocationManager]
+     */
     class Builder(initialLocationEnabled: Boolean, setupMocks: Boolean = true) : BaseLocationManager.Builder {
 
+        /**
+         * Ths list of build [MockLocationManager]
+         */
         val builtLocationManagers = IsoMutableList<MockLocationManager>()
+
+        /**
+         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         */
         val createMock = ::create.mock()
 
         init {
@@ -67,16 +88,46 @@ class MockLocationManager(
         ): BaseLocationManager = createMock.call(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
     }
 
+    /**
+     * Sets whether location is enabled
+     */
     val locationEnabled = MutableStateFlow(initialLocationEnabled)
 
     override val locationMonitor = MockLocationMonitor(locationEnabled)
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringPermissions]
+     */
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringPermissions]
+     */
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringLocationEnabled]
+     */
     val startMonitoringLocationEnabledMock = ::startMonitoringLocationEnabled.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringLocationEnabled]
+     */
     val stopMonitoringLocationEnabledMock = ::stopMonitoringLocationEnabled.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [requestLocationEnable]
+     */
     val requestLocationEnableMock = ::requestLocationEnable.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringLocation]
+     */
     val startMonitoringLocationMock = ::startMonitoringLocation.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoringLocation]
+     */
     val stopMonitoringLocationMock = ::stopMonitoringLocation.mock()
 
     override fun startMonitoringPermissions() {

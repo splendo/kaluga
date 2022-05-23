@@ -20,6 +20,9 @@ package com.splendo.kaluga.test.bluetooth.device
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 
+/**
+ * Mock implementation of [BaseAdvertisementData]
+ */
 data class MockAdvertisementData(
     override val name: String? = null,
     override val manufacturerId: Int? = null,

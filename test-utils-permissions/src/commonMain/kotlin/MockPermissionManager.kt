@@ -29,17 +29,35 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Mock implementation of [PermissionManager]
+ * @param permissionRepo The [PermissionStateRepo] for managing this permission
+ * @param initialState The initial [MockPermissionState] to configure for this [MockPermissionManager]
+ * @param monitoringInterval The interval between checking whether permissions have changed
+ */
 class MockPermissionManager<P : Permission>(
     private val permissionRepo: PermissionStateRepo<P>,
     initialState: MockPermissionState = MockPermissionState.DENIED,
     val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
 ) : PermissionManager<P>(permissionRepo) {
 
+    /**
+     * Builder class for creating a [MockPermissionManager]
+     * @param initialState The initial [MockPermissionState] to configure for created [MockPermissionManager]
+     * @param monitoringInterval The interval between checking whether permissions have changes
+     */
     class Builder<P : Permission>(
         val initialState: MockPermissionState = MockPermissionState.DENIED,
         val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
     ) {
+        /**
+         * List of built [MockPermissionManager]
+         */
         val createdManagers = sharedMutableListOf<MockPermissionManager<P>>()
+
+        /**
+         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         */
         val createMock = ::create.mock()
 
         init {
@@ -51,19 +69,45 @@ class MockPermissionManager<P : Permission>(
         fun create(repo: PermissionStateRepo<P>): MockPermissionManager<P> = createMock.call(repo)
     }
 
+    /**
+     * Mocked permission state
+     */
     enum class MockPermissionState {
+        /**
+         * Permission is granted
+         */
         ALLOWED,
+
+        /**
+         * Permission is denied but requestable
+         */
         DENIED,
+
+        /**
+         * Permission is denied and locked.
+         */
         LOCKED
     }
 
+    /**
+     * Current [PermissionState]
+     */
     val currentState = MutableStateFlow(initialState.toPermissionState())
     private val isMonitoring = AtomicBoolean(false)
 
+    /**
+     * Sets the permission to be granted
+     */
     suspend fun setPermissionAllowed() = changePermission(MockPermissionState.ALLOWED)
 
+    /**
+     * Sets the permission to be denied
+     */
     suspend fun setPermissionDenied() = changePermission(MockPermissionState.DENIED)
 
+    /**
+     * Sets the permission to be locked
+     */
     suspend fun setPermissionLocked() = changePermission(MockPermissionState.LOCKED)
 
     private suspend fun changePermission(desiredState: MockPermissionState) = changePermission(desiredState.toPermissionState())
@@ -79,10 +123,29 @@ class MockPermissionManager<P : Permission>(
         currentState.value = desiredState
     }
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [requestPermission]
+     */
     val requestPermissionMock = ::requestPermission.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoring]
+     */
     val startMonitoringMock = ::startMonitoring.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoring]
+     */
     val stopMonitoringMock = ::stopMonitoring.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [grantPermission]
+     */
     val grandPermissionMock = ::grantPermission.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [revokePermission]
+     */
     val revokePermissionMock = ::revokePermission.mock()
 
     override suspend fun requestPermission(): Unit = requestPermissionMock.call()

@@ -19,4 +19,7 @@ package com.splendo.kaluga.test.permissions
 
 import com.splendo.kaluga.permissions.base.Permission
 
+/**
+ * A mocked [Permission]
+ */
 object DummyPermission : Permission()

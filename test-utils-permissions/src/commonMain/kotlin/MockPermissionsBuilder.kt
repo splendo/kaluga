@@ -61,97 +61,215 @@ import kotlin.coroutines.CoroutineContext
 
 expect val mockPermissionContext: PermissionContext
 
+/**
+ * Mock implementation of [PermissionsBuilder]
+ * @param initialPermissionState The initial [MockPermissionManager.MockPermissionState] of all [MockPermissionManager]
+ * @param monitoringInterval The interval between monitoring for permission changes
+ * @param setupMocks If `true` automatically sets up all permission managers.
+ */
 class MockPermissionsBuilder(
     initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.DENIED,
     monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
     setupMocks: Boolean = true
 ) : PermissionsBuilder(mockPermissionContext) {
 
+    /**
+     * List of created [MockPermissionManager] for [CameraPermission]
+     */
     val createdCameraPermissionManagers = IsoMutableList<MockPermissionManager<CameraPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [CameraPermission]
+     */
     val createCameraPermissionManagerMock = ::createCameraPermissionManager.mock()
     private fun createCameraPermissionManager(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> = createCameraPermissionManagerMock.call(repo)
     private val cameraPMBuilder: BaseCameraPermissionManagerBuilder = object : BaseCameraPermissionManagerBuilder {
         override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> = createCameraPermissionManager(repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [CameraPermission]
+     */
     val buildCameraStateRepos = IsoMutableList<PermissionStateRepo<CameraPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CameraPermission]
+     */
     val cameraStateRepoBuilderMock = ::cameraStateRepoBuilder.mock()
     private fun cameraStateRepoBuilder(builder: BaseCameraPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<CameraPermission> = cameraStateRepoBuilderMock.call(builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [ContactsPermission]
+     */
     val createdContactsPermissionManagers = IsoMutableList<MockPermissionManager<ContactsPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [ContactsPermission]
+     */
     val createContactsPermissionManagerMock = ::createContactsPermissionManager.mock()
     private fun createContactsPermissionManager(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> = createContactsPermissionManagerMock.call(contactsPermission, repo)
     private val contactsPMBuilder: BaseContactsPermissionManagerBuilder = object : BaseContactsPermissionManagerBuilder {
         override fun create(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> = createContactsPermissionManager(contactsPermission, repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [ContactsPermission]
+     */
     val buildContactsStateRepos = IsoMutableList<PermissionStateRepo<ContactsPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [ContactsPermission]
+     */
     val contactsStateRepoBuilderMock = ::contactsStateRepoBuilder.mock()
     private fun contactsStateRepoBuilder(contactsPermission: ContactsPermission, builder: BaseContactsPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<ContactsPermission> = contactsStateRepoBuilderMock.call(contactsPermission, builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [MicrophonePermission]
+     */
     val createdMicrophonePermissionManagers = IsoMutableList<MockPermissionManager<MicrophonePermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [MicrophonePermission]
+     */
     val createMicrophonePermissionManagerMock = ::createMicrophonePermissionManager.mock()
     private fun createMicrophonePermissionManager(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> = createMicrophonePermissionManagerMock.call(repo)
     private val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder = object : BaseMicrophonePermissionManagerBuilder {
         override fun create(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> = createMicrophonePermissionManager(repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [MicrophonePermission]
+     */
     val buildMicrophoneStateRepos = IsoMutableList<PermissionStateRepo<MicrophonePermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [MicrophonePermission]
+     */
     val microphoneStateRepoBuilderMock = ::microphoneStateRepoBuilder.mock()
     private fun microphoneStateRepoBuilder(builder: BaseMicrophonePermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<MicrophonePermission> = microphoneStateRepoBuilderMock.call(builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [NotificationsPermission]
+     */
     val createdNotificationsPermissionManagers = IsoMutableList<MockPermissionManager<NotificationsPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [NotificationsPermission]
+     */
     val createNotificationsPermissionManagerMock = ::createNotificationsPermissionManager.mock()
     private fun createNotificationsPermissionManager(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> = createNotificationsPermissionManagerMock.call(notificationsPermission, repo)
     private val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder = object : BaseNotificationsPermissionManagerBuilder {
         override fun create(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> = createNotificationsPermissionManager(notificationsPermission, repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [NotificationsPermission]
+     */
     val buildNotificationsStateRepos = IsoMutableList<PermissionStateRepo<NotificationsPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [NotificationsPermission]
+     */
     val notificationsStateRepoBuilderMock = ::notificationsStateRepoBuilder.mock()
     private fun notificationsStateRepoBuilder(notificationsPermission: NotificationsPermission, builder: BaseNotificationsPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<NotificationsPermission> = notificationsStateRepoBuilderMock.call(notificationsPermission, builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [BluetoothPermission]
+     */
     val createdBluetoothPermissionManagers = IsoMutableList<MockPermissionManager<BluetoothPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [BluetoothPermission]
+     */
     val createBluetoothPermissionManagerMock = ::createBluetoothPermissionManager.mock()
     private fun createBluetoothPermissionManager(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> = createBluetoothPermissionManagerMock.call(repo)
     private val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder = object : BaseBluetoothPermissionManagerBuilder {
         override fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> = createBluetoothPermissionManager(repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [BluetoothPermission]
+     */
     val buildBluetoothStateRepos = IsoMutableList<PermissionStateRepo<BluetoothPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [BluetoothPermission]
+     */
     val bluetoothStateRepoBuilderMock = ::bluetoothStateRepoBuilder.mock()
     private fun bluetoothStateRepoBuilder(builder: BaseBluetoothPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<BluetoothPermission> = bluetoothStateRepoBuilderMock.call(builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [LocationPermission]
+     */
     val createdLocationPermissionManagers = IsoMutableList<MockPermissionManager<LocationPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [LocationPermission]
+     */
     val createLocationPermissionManagerMock = ::createLocationPermissionManager.mock()
     private fun createLocationPermissionManager(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> = createLocationPermissionManagerMock.call(locationPermission, repo)
     private val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
         override fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> = createLocationPermissionManager(locationPermission, repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [LocationPermission]
+     */
     val buildLocationStateRepos = IsoMutableList<PermissionStateRepo<LocationPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [LocationPermission]
+     */
     val locationStateRepoBuilderMock = ::locationStateRepoBuilder.mock()
     private fun locationStateRepoBuilder(locationPermission: LocationPermission, builder: BaseLocationPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<LocationPermission> = locationStateRepoBuilderMock.call(locationPermission, builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [CalendarPermission]
+     */
     val createdCalendarPermissionManagers = IsoMutableList<MockPermissionManager<CalendarPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [CalendarPermission]
+     */
     val createCalendarPermissionManagerMock = ::createCalendarPermissionManager.mock()
     private fun createCalendarPermissionManager(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> = createCalendarPermissionManagerMock.call(calendarPermission, repo)
     private val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = object : BaseCalendarPermissionManagerBuilder {
         override fun create(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> = createCalendarPermissionManager(calendarPermission, repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [CalendarPermission]
+     */
     val buildCalendarStateRepos = IsoMutableList<PermissionStateRepo<CalendarPermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CalendarPermission]
+     */
     val calendarStateRepoBuilderMock = ::calendarStateRepoBuilder.mock()
     private fun calendarStateRepoBuilder(calendarPermission: CalendarPermission, builder: BaseCalendarPermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<CalendarPermission> = calendarStateRepoBuilderMock.call(calendarPermission, builder, context)
 
+    /**
+     * List of created [MockPermissionManager] for [StoragePermission]
+     */
     val createdStoragePermissionManagers = IsoMutableList<MockPermissionManager<StoragePermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionManager] for [StoragePermission]
+     */
     val createStoragePermissionManagerMock = ::createStoragePermissionManager.mock()
     private fun createStoragePermissionManager(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> = createStoragePermissionManagerMock.call(storagePermission, repo)
     private val storagePMBuilder: BaseStoragePermissionManagerBuilder = object : BaseStoragePermissionManagerBuilder {
         override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> = createStoragePermissionManager(storagePermission, repo)
     }
 
+    /**
+     * List of created [PermissionStateRepo] for [StoragePermission]
+     */
     val buildStorageStateRepos = IsoMutableList<PermissionStateRepo<StoragePermission>>()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [StoragePermission]
+     */
     val storageStateRepoBuilderMock = ::storageStateRepoBuilder.mock()
     private fun storageStateRepoBuilder(storagePermission: StoragePermission, builder: BaseStoragePermissionManagerBuilder, context: CoroutineContext): PermissionStateRepo<StoragePermission> = storageStateRepoBuilderMock.call(storagePermission, builder, context)
 
@@ -247,6 +365,9 @@ class MockPermissionsBuilder(
         }
     }
 
+    /**
+     * Registers all [MockPermissionManager] and [MockPermissionStateRepo]
+     */
     fun registerAllPermissionsBuilders() {
         registerBluetoothPermission({ bluetoothPMBuilder }, ::bluetoothStateRepoBuilder)
         registerLocationPermission({ locationPMBuilder }, ::locationStateRepoBuilder)

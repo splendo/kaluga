@@ -24,8 +24,14 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableSharedFlow
 
+/**
+ * Mock implementation of [Descriptor]
+ */
 class MockDescriptor(descriptorWrapper: DescriptorWrapper, newActionFlow: MutableSharedFlow<DeviceAction>) : Descriptor(descriptorWrapper, newActionFlow = newActionFlow) {
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]
+     */
     val updateMock = ::updateValue.mock()
     override suspend fun updateValue(): Unit = updateMock.call()
 }

@@ -32,6 +32,14 @@ import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Mock implementation of [BaseDeviceConnectionManager]
+ * @param initialWillActionSucceed Sets the initial status of whether actions will succeed
+ * @param deviceWrapper The [DeviceWrapper] to connect to
+ * @param bufferCapacity The capacity of the buffer for state transitions
+ * @param coroutineScope The [CoroutineScope] of the [BaseDeviceConnectionManager]
+ * @param setupMocks If `true` this will automatically configure the mocks to handle connecting
+ */
 class MockDeviceConnectionManager(
     initialWillActionSucceed: Boolean = true,
     deviceWrapper: DeviceWrapper,
@@ -40,9 +48,21 @@ class MockDeviceConnectionManager(
     setupMocks: Boolean = true
 ) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
+    /**
+     * Mock implementation of [BaseDeviceConnectionManager.Builder]
+     * @param initialWillActionSucceed Sets the initial status of whether actions will succeed for each created [MockDeviceConnectionManager]
+     * @param setupMocks If `true` this will automatically configure the [createMock] to create a [MockDeviceConnectionManager]
+     */
     class Builder(initialWillActionSucceed: Boolean = true, setupMocks: Boolean = true) : BaseDeviceConnectionManager.Builder {
 
+        /**
+         * List of created [MockDeviceConnectionManager]
+         */
         val createdDeviceConnectionManager = sharedMutableListOf<MockDeviceConnectionManager>()
+
+        /**
+         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         */
         val createMock = ::create.mock()
 
         init {
@@ -65,16 +85,47 @@ class MockDeviceConnectionManager(
     }
 
     private val _willActionSucceed = AtomicBoolean(initialWillActionSucceed)
+
+    /**
+     * Configure whether a [DeviceAction] will succeed
+     */
     var willActionSucceed: Boolean
         get() = _willActionSucceed.value
         set(value) { _willActionSucceed.value = value }
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [connect]
+     */
     val connectMock = ::connect.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [discoverServices]
+     */
     val discoverServicesMock = ::discoverServices.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [disconnect]
+     */
     val disconnectMock = ::disconnect.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [readRssi]
+     */
     val readRssiMock = ::readRssi.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [requestMtu]
+     */
     val requestMtuMock = ::requestMtu.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [performAction]
+     */
     val performActionMock = ::performAction.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [handleCurrentActionCompleted]
+     */
     val handleCurrentActionCompletedMock = ::handleCurrentActionCompletedWithAction.mock()
 
     init {

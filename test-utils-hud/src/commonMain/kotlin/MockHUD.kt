@@ -26,15 +26,32 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Mock implementation of [BaseHUD]
+ * @param hudConfig The [HudConfig] of the [MockHUD]
+ * @param setupMocks If `true` sets up mocks to display the hud
+ * @param coroutineScope The [CoroutineScope] of the [MockHUD]
+ */
 class MockHUD(
     override val hudConfig: HudConfig,
     setupMocks: Boolean = true,
     coroutineScope: CoroutineScope
 ) : BaseHUD(coroutineScope) {
 
+    /**
+     * Mock implementation of [BaseHUD.Builder]
+     * @param setupMocks If `true` sets up [createMock] to build a [MockHUD]
+     */
     class Builder(setupMocks: Boolean = true) : BaseHUD.Builder() {
 
+        /**
+         * List of build [MockHUD]
+         */
         val builtHUDs = IsoMutableList<MockHUD>()
+
+        /**
+         * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
+         */
         val createMock = ::create.mock()
 
         override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): MockHUD =
@@ -53,13 +70,24 @@ class MockHUD(
     }
 
     private val _isVisible = AtomicBoolean(false)
+
+    /**
+     * If `true` the HUD is currently being displayed
+     */
     override var isVisible: Boolean
         get() = _isVisible.value
         private set(value) {
             _isVisible.value = value
         }
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [present]
+     */
     val presentMock = ::present.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [dismiss]
+     */
     val dismissMock = ::dismiss.mock()
 
     init {
