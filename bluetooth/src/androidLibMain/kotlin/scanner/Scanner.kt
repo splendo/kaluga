@@ -231,7 +231,11 @@ actual class Scanner internal constructor(
 
     override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
         ?.bondedDevices
-        ?.filter { it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) == true }
+        ?.filter {
+            // If no uuids available return this device
+            // Otherwise check if it constains any of given service uuid
+            it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+        }
         ?.map { it.address }
         ?: emptyList()
 }
