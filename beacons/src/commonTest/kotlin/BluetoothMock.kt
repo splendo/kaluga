@@ -24,6 +24,7 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 
@@ -38,7 +39,7 @@ class BluetoothMock(
 
     override fun startScanning(filter: Set<UUID>) { }
     override fun stopScanning() { }
-    override fun pairedDevices(filter: Set<UUID>) = pairedDevices.asStateFlow()
+    override suspend fun pairedDevices(filter: Set<UUID>) = pairedDevices.first()
     override fun devices() = devices.asStateFlow()
     override suspend fun isScanning() = flowOf(true).stateIn(coroutineScope)
 }
