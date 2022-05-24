@@ -18,10 +18,7 @@
 package com.splendo.kaluga.test.architecture
 
 import co.touchlab.stately.ensureNeverFrozen
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest.LazyViewModelTestContext
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest.ViewModelTestContext
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.BaseUIThreadTest
 import com.splendo.kaluga.test.base.UIThreadTest
@@ -46,7 +43,7 @@ abstract class ViewModelTest<VM : ViewModel>(allowFreezing: Boolean = false) : B
 }
 
 abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
-    UIThreadViewModelTest<ViewModelTestContext<VM>, VM>(allowFreezing = true) {
+    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
 
     override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<VM> =
         { LazyViewModelTestContext(it, ::createViewModel) }
@@ -57,7 +54,7 @@ abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
 /**
  * A [UIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class UIThreadViewModelTest<VMC : ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
     UIThreadTest<VMC>(allowFreezing) {
 
     /**
@@ -65,39 +62,34 @@ abstract class UIThreadViewModelTest<VMC : ViewModelTestContext<VM>, VM : ViewMo
      * @param coroutineScope The [CoroutineScope] of the [LazyViewModelTestContext]
      * @param createViewModel Creator for the [ViewModel]
      */
-    open class LazyViewModelTestContext<VM  : ViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
-        ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
-        override val viewModel: VM by lazy { createViewModel() }
-    }
+    open class LazyViewModelTestContext<VM : ViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) : BaseUIThreadViewModelTest.LazyViewModelTestContext<VM>(coroutineScope, createViewModel), ViewModelTestContext<VM>
 
     /**
      * A [UIThreadTest.TestContext] that provides a [ViewModel]
      */
-    interface ViewModelTestContext<VM : ViewModel> : TestContext {
-        val viewModel: VM
-    }
+    interface ViewModelTestContext<VM : ViewModel> : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, TestContext
 }
 
 /**
  * A [BaseUIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class BaseUIThreadViewModelTest<CONF, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : BaseViewModel>(allowFreezing: Boolean = false) :
+abstract class BaseUIThreadViewModelTest<CONF, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
     BaseUIThreadTest<CONF, VMC>(allowFreezing) {
 
     /**
      * [ViewModelTestContext] that lazily creates the view model
      * @param coroutineScope The [CoroutineScope] of the [LazyViewModelTestContext]
-     * @param createViewModel Creator for the [BaseViewModel]
+     * @param createViewModel Creator for the [ViewModel]
      */
-    open class LazyViewModelTestContext<VM : BaseViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
+    open class LazyViewModelTestContext<VM : ViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
         ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
         override val viewModel: VM by lazy { createViewModel() }
     }
 
     /**
-     * A [BaseUIThreadTest.TestContext] that provides a [BaseViewModel]
+     * A [BaseUIThreadTest.TestContext] that provides a [ViewModel]
      */
-    interface ViewModelTestContext<VM : BaseViewModel> : TestContext {
+    interface ViewModelTestContext<VM : ViewModel> : TestContext {
         val viewModel: VM
     }
 }
