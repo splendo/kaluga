@@ -16,4 +16,7 @@
 
 package com.splendo.kaluga.base
 
-expect val isOnMainThread: Boolean
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+
+actual fun singleThreadDispatcher(name: String): CoroutineDispatcher = Dispatchers.Default

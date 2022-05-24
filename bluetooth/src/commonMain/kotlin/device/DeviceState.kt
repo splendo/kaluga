@@ -24,6 +24,7 @@ import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.KalugaState
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -309,12 +310,12 @@ class Device constructor(
         connectionSettings: ConnectionSettings,
         initialDeviceInfo: DeviceInfoImpl,
         connectionManagerBuilder: BaseDeviceConnectionManager.Builder,
-        coroutineScope: CoroutineScope
+        coroutineContext: CoroutineContext
     ) : this(
         connectionSettings,
-        connectionManagerBuilder.create(initialDeviceInfo.deviceWrapper, coroutineScope = coroutineScope),
+        connectionManagerBuilder.create(initialDeviceInfo.deviceWrapper, coroutineScope = CoroutineScope(coroutineContext + CoroutineName("ConnectionManager"))),
         initialDeviceInfo,
-        coroutineScope.coroutineContext
+        coroutineContext
     )
 
     val identifier: Identifier

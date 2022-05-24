@@ -1,11 +1,3 @@
-import com.splendo.kaluga.base.KalugaThread
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.base.BaseTest
-import kotlinx.coroutines.Dispatchers
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-
 /*
  * Copyright 2022 Splendo Consulting B.V. The Netherlands
  *
@@ -22,15 +14,23 @@ import kotlin.test.assertTrue
  *     limitations under the License.
  */
 
-class IsOnMainThreadTest : BaseTest() {
+package com.splendo.kaluga.base
 
-    @Test
-    fun testIsOnMainThread() = runBlocking(Dispatchers.Main) {
-        assertTrue(KalugaThread.currentThread.isMainThread)
+import kotlinx.coroutines.CompletableDeferred
+import javax.swing.SwingUtilities
+
+actual data class KalugaThread(val thread: Thread) {
+
+    actual companion object {
+        actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
     }
 
-    @Test
-    fun testIsNotOnMainThread() = runBlocking(Dispatchers.Default) {
-        assertFalse(KalugaThread.currentThread.isMainThread)
+    actual val name: String get() = thread.name
+    actual val isMainThread: Boolean get() = runBlocking {
+        val isMainThreadDeferred = CompletableDeferred<Boolean>()
+        thread.run {
+            isMainThreadDeferred.complete(SwingUtilities.isEventDispatchThread())
+        }
+        isMainThreadDeferred.await()
     }
 }

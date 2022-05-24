@@ -1,11 +1,3 @@
-import com.splendo.kaluga.base.KalugaThread
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.base.BaseTest
-import kotlinx.coroutines.Dispatchers
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-
 /*
  * Copyright 2022 Splendo Consulting B.V. The Netherlands
  *
@@ -22,15 +14,9 @@ import kotlin.test.assertTrue
  *     limitations under the License.
  */
 
-class IsOnMainThreadTest : BaseTest() {
+package com.splendo.kaluga.base
 
-    @Test
-    fun testIsOnMainThread() = runBlocking(Dispatchers.Main) {
-        assertTrue(KalugaThread.currentThread.isMainThread)
-    }
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.newSingleThreadContext
 
-    @Test
-    fun testIsNotOnMainThread() = runBlocking(Dispatchers.Default) {
-        assertFalse(KalugaThread.currentThread.isMainThread)
-    }
-}
+actual fun singleThreadDispatcher(name: String): CoroutineDispatcher = newSingleThreadContext(name)

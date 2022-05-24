@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
@@ -37,6 +38,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,7 +77,7 @@ class Bluetooth internal constructor(
             connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
             autoRequestPermission: Boolean = true,
             autoEnableBluetooth: Boolean = true,
-            coroutineScope: CoroutineScope = MainScope()
+            coroutineScope: CoroutineScope = CoroutineScope(singleThreadDispatcher("Bluetooth"))
         ): Bluetooth
     }
 
@@ -88,7 +90,8 @@ class Bluetooth internal constructor(
         connectionSettings,
         autoRequestPermission,
         autoEnableBluetooth,
-        scannerBuilder
+        scannerBuilder,
+        coroutineContext + singleThreadDispatcher("Scanner")
     )
 
     sealed class ScanMode {
