@@ -34,7 +34,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -283,7 +282,6 @@ fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> {
 @JvmName("getAttribute")
 operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID): Flow<T?> {
     return this.map { attribute ->
-        debug("Get attribute $attribute")
         attribute.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
@@ -292,7 +290,6 @@ operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write
 
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value(): Flow<ByteArray?> {
     return this.flatMapLatest { attribute ->
-        debug("Flatmap value $attribute")
         attribute ?: flowOf(null)
     } // TODO: we probably want to read duplicate values so this is for now disabled: .distinctUntilChanged()
 }

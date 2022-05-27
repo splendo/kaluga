@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 /**
  * Mock implementation of [Characteristic]
  */
-class MockCharacteristic(characteristic: CharacteristicWrapper, newActionFlow: MutableSharedFlow<DeviceAction>) : Characteristic(characteristic, newActionFlow = newActionFlow) {
+class MockCharacteristic(characteristic: CharacteristicWrapper, newActionFlow: MutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>) : Characteristic(characteristic, newActionFlow = newActionFlow) {
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]

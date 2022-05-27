@@ -321,178 +321,115 @@ class Device constructor(
         get() = initialDeviceInfo.identifier
 
     init {
-        monitorRssi()
-        monitorConnecting()
-        monitorCancelConnection()
-        monitorConnected()
-        monitorDisconnecting()
-        monitorDisconnected()
-        monitorDiscovering()
-        monitorDiscovered()
-        monitorNewActions()
-        monitorActionCompleted()
-    }
-
-    private fun monitorRssi() {
         launch {
-            connectionManager.rssiUpdate.collect { rssi ->
-                takeAndChangeState {
-                    it.rssiDidUpdate(rssi)
-                }
+            connectionManager.events.collect { event ->
+                event.handle()
             }
         }
     }
 
-    private fun monitorConnecting() {
-        launch {
-            connectionManager.startedConnecting.collect {
-                takeAndChangeState(
-                    remainIfStateNot = DeviceState.Disconnected::class
-                ) { deviceState ->
-                    deviceState.connect(deviceState)
-                }
-            }
-        }
+    private suspend fun BaseDeviceConnectionManager.Event.handle() = takeAndChangeState {
+        stateTransition(it)
     }
-    private fun monitorCancelConnection() {
-        launch {
-            connectionManager.cancelledConnecting.collect {
-                takeAndChangeState { deviceState ->
-                    when (deviceState) {
-                        is DeviceState.Connecting -> deviceState.cancelConnection
-                        is DeviceState.Reconnecting -> deviceState.cancelConnection
-                        else -> deviceState.remain()
-                    }
-                }
-            }
+
+    private suspend fun BaseDeviceConnectionManager.Event.stateTransition(state: DeviceState): suspend () -> DeviceState = when (this) {
+        is BaseDeviceConnectionManager.Event.RssiUpdate -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Connecting -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.CancelledConnecting -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Connected -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Disconnecting -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Disconnected -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Discovering -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.AddAction -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
+    }
+
+    private fun BaseDeviceConnectionManager.Event.RssiUpdate.stateTransition(state: DeviceState) = state.rssiDidUpdate(rrsi)
+
+    private fun BaseDeviceConnectionManager.Event.Connecting.stateTransition(state: DeviceState) = if (state is DeviceState.Disconnected)
+        state.connect(state)
+    else
+        state.remain()
+
+    private fun BaseDeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Connecting -> state.cancelConnection
+        is DeviceState.Reconnecting -> state.cancelConnection
+        else -> state.remain()
+    }
+
+    private suspend fun BaseDeviceConnectionManager.Event.Connected.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Connecting -> state.didConnect
+        is DeviceState.Reconnecting -> state.didConnect
+        is DeviceState.Connected -> state.remain()
+        else -> {
+            connectionManager.reset()
+            state.remain()
         }
     }
 
-    private fun monitorConnected() {
-        launch {
-            connectionManager.didConnect.collect {
-                takeAndChangeState { state ->
-                    when (state) {
-                        is DeviceState.Connecting -> state.didConnect
-                        is DeviceState.Reconnecting -> state.didConnect
-                        is DeviceState.Connected -> state.remain()
-                        else -> {
-                            connectionManager.reset()
-                            state.remain()
-                        }
-                    }
+    private fun BaseDeviceConnectionManager.Event.Disconnecting.stateTransition(state: DeviceState) = if (state is DeviceState.Connected)
+        state.disconnecting
+    else
+        state.remain()
+
+    private suspend fun BaseDeviceConnectionManager.Event.Disconnected.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Reconnecting -> {
+            state.retry(connectionSettings.reconnectionSettings).also {
+                if (it == state.didDisconnect) {
+                    onDisconnect()
                 }
             }
+        }
+        is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+            is ConnectionSettings.ReconnectionSettings.Always,
+            is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
+            is ConnectionSettings.ReconnectionSettings.Never -> {
+                onDisconnect()
+                state.didDisconnect
+            }
+        }
+        is DeviceState.Disconnected -> state.remain()
+        is DeviceState.Connecting,
+        is DeviceState.Disconnecting -> {
+            onDisconnect()
+            state.didDisconnect
         }
     }
 
-    private fun monitorDisconnecting() {
-        launch {
-            connectionManager.startedDisconnecting.collect {
-                takeAndChangeState(remainIfStateNot = DeviceState.Connected::class) { deviceState ->
-                    deviceState.disconnecting
-                }
-            }
+    private fun BaseDeviceConnectionManager.Event.Discovering.stateTransition(state: DeviceState) = if (state is DeviceState.Connected.NoServices)
+        state.discoverServices
+    else
+        state.remain()
+
+    private fun BaseDeviceConnectionManager.Event.DiscoveredServices.stateTransition(state: DeviceState) = if (state is DeviceState.Connected.Discovering)
+        state.didDiscoverServices(services)
+    else
+        state.remain()
+
+    private fun BaseDeviceConnectionManager.Event.AddAction.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Connected.Idle -> {
+            state.handleAction(action)
+        }
+        is DeviceState.Connected.HandlingAction -> {
+            state.addAction(action)
+        }
+        is DeviceState.Connected.NoServices,
+        is DeviceState.Connected.Discovering,
+        is DeviceState.Connecting,
+        is DeviceState.Reconnecting,
+        is DeviceState.Disconnected,
+        is DeviceState.Disconnecting,
+        -> {
+            state.remain() // TODO consider an optional buffer
         }
     }
 
-    private fun monitorDisconnected() {
-        launch {
-            connectionManager.didDisconnect.collect { clean ->
-                takeAndChangeState { state ->
-                    when (state) {
-                        is DeviceState.Reconnecting -> {
-                            state.retry(connectionSettings.reconnectionSettings).also {
-                                if (it == state.didDisconnect) {
-                                    clean()
-                                }
-                            }
-                        }
-                        is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
-                            is ConnectionSettings.ReconnectionSettings.Always,
-                            is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
-                            is ConnectionSettings.ReconnectionSettings.Never -> {
-                                clean()
-                                state.didDisconnect
-                            }
-                        }
-                        is DeviceState.Disconnected -> state.remain()
-                        is DeviceState.Connecting,
-                        is DeviceState.Disconnecting -> {
-                            clean()
-                            state.didDisconnect
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun monitorDiscovering() {
-        launch {
-            connectionManager.startedDiscovering.collect {
-                takeAndChangeState { deviceState ->
-                    if (deviceState is DeviceState.Connected.NoServices)
-                        deviceState.discoverServices
-                    else
-                        deviceState.remain()
-                }
-            }
-        }
-    }
-
-    private fun monitorDiscovered() {
-        launch {
-            connectionManager.discoverCompleted.collect { services ->
-                takeAndChangeState { state ->
-                    when (state) {
-                        is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
-                        else -> state.remain()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun monitorNewActions() {
-        launch {
-            connectionManager.newAction.collect { action ->
-                takeAndChangeState { state ->
-                    when (state) {
-                        is DeviceState.Connected.Idle -> {
-                            state.handleAction(action)
-                        }
-                        is DeviceState.Connected.HandlingAction -> {
-                            state.addAction(action)
-                        }
-                        is DeviceState.Connected.NoServices,
-                        is DeviceState.Connected.Discovering,
-                        is DeviceState.Connecting,
-                        is DeviceState.Reconnecting,
-                        is DeviceState.Disconnected,
-                        is DeviceState.Disconnecting,
-                        -> {
-                            state.remain() // TODO consider an optional buffer
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun monitorActionCompleted() {
-        launch {
-            connectionManager.actionCompleted.collect { (action, succeeded) ->
-                takeAndChangeState { state ->
-                    if (state is DeviceState.Connected.HandlingAction && state.action == action) {
-                        state.action.completedSuccessfully.complete(succeeded)
-                        debug(TAG) { "Action $action has been succeeded: $succeeded" }
-                        state.actionCompleted
-                    } else {
-                        state.remain()
-                    }
-                }
-            }
-        }
+    private fun BaseDeviceConnectionManager.Event.CompletedAction.stateTransition(state: DeviceState) = if (state is DeviceState.Connected.HandlingAction && state.action === action) {
+        state.action.completedSuccessfully.complete(succeeded)
+        debug(TAG) { "Action $action has been succeeded: $succeeded" }
+        state.actionCompleted
+    } else {
+        state.remain()
     }
 }

@@ -106,7 +106,7 @@ class DeviceTest :
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
                 ConnectionSettings.ReconnectionSettings.Limited(
-                    2
+                    attempts =2
                 )
             )
         )
@@ -124,7 +124,7 @@ class DeviceTest :
             }
         }
         test {
-            connectionManager.connectMock.verify(2)
+            connectionManager.connectMock.verify(times = 2)
             assertIs<DeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
@@ -141,7 +141,7 @@ class DeviceTest :
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
                 ConnectionSettings.ReconnectionSettings.Limited(
-                    2
+                    attempts = 2
                 )
             )
         )
@@ -155,7 +155,7 @@ class DeviceTest :
         }
 
         test {
-            connectionManager.connectMock.verify(2)
+            connectionManager.connectMock.verify(times = 2)
             assertIs<DeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
@@ -163,7 +163,7 @@ class DeviceTest :
             connectionManager.handleDisconnect()
         }
         test {
-            connectionManager.connectMock.verify(3)
+            connectionManager.connectMock.verify(times = 3)
             assertIs<DeviceState.Reconnecting>(it)
             assertEquals(1, it.attempt)
         }
@@ -171,7 +171,7 @@ class DeviceTest :
             connectionManager.handleDisconnect()
         }
         test {
-            connectionManager.connectMock.verify(3)
+            connectionManager.connectMock.verify(times = 3)
             assertIs<DeviceState.Disconnected>(it)
         }
     }

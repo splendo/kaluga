@@ -255,7 +255,7 @@ abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : Blu
     class DeviceContext(configuration: Configuration.DeviceWithoutService, coroutineScope: CoroutineScope) : BaseDeviceContext<Configuration.DeviceWithoutService>(configuration, coroutineScope)
     sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
         val serviceUuid = serviceWrapper.uuid
-        val service by lazy { Service(serviceWrapper, connectionManager.newAction) }
+        val service by lazy { connectionManager.createService(serviceWrapper) }
         suspend fun discoverService() =
             discoverService(service, device, connectionManager)
     }

@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: MutableSharedFlow<DeviceAction>) : Flow<ByteArray?> {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: MutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =
@@ -56,6 +57,6 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected suspend fun addAction(action: DeviceAction) {
-        newActionFlow.emit(action)
+        newActionFlow.emit(BaseDeviceConnectionManager.Event.AddAction(action))
     }
 }

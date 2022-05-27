@@ -586,10 +586,10 @@ class LocationStateTest :
         }
 
         mainAction {
-            locationManager.stopMonitoringPermissionsMock.verify(2)
-            locationManager.stopMonitoringLocationMock.verify(2)
-            locationManager.stopMonitoringLocationEnabledMock.verify(2)
-            permissionManager.stopMonitoringMock.verify(2)
+            locationManager.stopMonitoringPermissionsMock.verify(times = 2)
+            locationManager.stopMonitoringLocationMock.verify(times = 2)
+            locationManager.stopMonitoringLocationEnabledMock.verify(times = 2)
+            permissionManager.stopMonitoringMock.verify(times = 2)
         }
     }
 
@@ -649,7 +649,7 @@ class LocationStateTest :
         }
 
         mainAction {
-            locationManager.stopMonitoringPermissionsMock.verify(2)
+            locationManager.stopMonitoringPermissionsMock.verify(times = 2)
         }
     }
 

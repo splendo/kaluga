@@ -98,7 +98,7 @@ internal actual class DeviceConnectionManager(
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             launch(mainDispatcher) {
-                val services = gatt?.services?.map { Service(DefaultGattServiceWrapper(it), newAction) } ?: emptyList()
+                val services = gatt?.services?.map { DefaultGattServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
         }
@@ -274,6 +274,7 @@ internal actual class DeviceConnectionManager(
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun unpair() {
         // unpair to prevent connection problems
         if (device.bondState != BluetoothDevice.BOND_NONE) {

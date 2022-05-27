@@ -222,7 +222,7 @@ internal actual class DeviceConnectionManager(
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             launch {
-                val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), newAction) } ?: emptyList()
+                val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
         }
