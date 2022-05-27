@@ -1,6 +1,8 @@
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
@@ -19,10 +21,24 @@ actual class BluetoothBuilder(
             context
         )
     },
-    private val scannerBuilder: Scanner.Builder = Scanner.Builder()
+    private val scannerBuilder: DefaultScanner.Builder = DefaultScanner.Builder()
 ) : Bluetooth.Builder {
 
-    override fun create(connectionSettings: ConnectionSettings, autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, coroutineScope: CoroutineScope): Bluetooth {
-        return Bluetooth(permissionsBuilder(coroutineScope.coroutineContext), connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineScope)
+    override fun create(
+        connectionSettings: ConnectionSettings,
+        autoRequestPermission: Boolean,
+        autoEnableBluetooth: Boolean,
+        coroutineContext: CoroutineContext,
+        contextCreator: CoroutineContext.(String) -> CoroutineContext
+    ): Bluetooth {
+        return Bluetooth(
+            permissionsBuilder,
+            connectionSettings,
+            autoRequestPermission,
+            autoEnableBluetooth,
+            scannerBuilder,
+            coroutineContext,
+            contextCreator
+        )
     }
 }

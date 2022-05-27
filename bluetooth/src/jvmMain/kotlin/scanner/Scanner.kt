@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.permissions.base.Permissions
 
-actual class Scanner(
+actual class DefaultScanner(
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,

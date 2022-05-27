@@ -26,11 +26,15 @@ actual data class KalugaThread(val thread: Thread) {
     }
 
     actual val name: String get() = thread.name
-    actual val isMainThread: Boolean get() = runBlocking {
-        val isMainThreadDeferred = CompletableDeferred<Boolean>()
-        thread.run {
-            isMainThreadDeferred.complete(SwingUtilities.isEventDispatchThread())
+    actual val isMainThread: Boolean get() = if (thread == currentThread.thread) {
+        SwingUtilities.isEventDispatchThread()
+    } else {
+        runBlocking {
+            val isMainThreadDeferred = CompletableDeferred<Boolean>()
+            thread.run {
+                isMainThreadDeferred.complete(SwingUtilities.isEventDispatchThread())
+            }
+            isMainThreadDeferred.await()
         }
-        isMainThreadDeferred.await()
     }
 }

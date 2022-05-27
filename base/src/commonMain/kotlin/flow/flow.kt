@@ -67,18 +67,18 @@ suspend fun <T> MutableSharedFlow<T>.onCollectionEvent(onEvent: suspend MutableS
  *
  * Extension methods to Flow can be used to filter and/or terminate on these values.
  */
-sealed class SpecialFlowValue { // TODO: this can be a sealed interface one day
+sealed interface SpecialFlowValue {
 
     /**
      * Indicates this value is the last in a series.
      * This is useful in particular to terminate collection from endless flows such as SharedFlow and StateFlow.
      */
-    interface Last
+    interface Last : SpecialFlowValue
 
     /**
      * Indicates the value is less meaningful (e.g. an initial state with no value yet) that can usually be skipped
      */
-    interface NotImportant
+    interface NotImportant : SpecialFlowValue
 }
 
 fun <T> Flow<T>.takeUntilLast(includeLast: Boolean = true): Flow<T> = transformWhile {

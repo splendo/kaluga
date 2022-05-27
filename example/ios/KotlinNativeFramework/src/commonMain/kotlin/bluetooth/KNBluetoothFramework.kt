@@ -17,10 +17,11 @@
 
 package com.splendo.kaluga.example.ios.bluetooth
 
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import kotlinx.coroutines.MainScope
 
 class KNBluetoothFramework {
     val mainScope = MainScope()
-    val bluetooth = BluetoothBuilder().create(coroutineScope = mainScope)
+    val bluetooth = BluetoothBuilder().create(coroutineContext = singleThreadDispatcher("Bluetooth"))
 }

@@ -34,12 +34,11 @@ import com.splendo.kaluga.bluetooth.device.DeviceState.Reconnecting
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.bluetooth.scanner.ScanningStateImpl
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.Permissions
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,6 +52,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 
 interface BluetoothService {
@@ -64,20 +64,22 @@ interface BluetoothService {
 }
 
 class Bluetooth internal constructor(
-    permissions: Permissions,
+    permissionsBuilder: (CoroutineContext) -> Permissions,
     connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
     autoEnableBluetooth: Boolean,
     scannerBuilder: BaseScanner.Builder,
-    coroutineScope: CoroutineScope
-) : BluetoothService, CoroutineScope by coroutineScope {
+    coroutineContext: CoroutineContext,
+    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
+) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
     interface Builder {
         fun create(
             connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
             autoRequestPermission: Boolean = true,
             autoEnableBluetooth: Boolean = true,
-            coroutineScope: CoroutineScope = CoroutineScope(singleThreadDispatcher("Bluetooth"))
+            coroutineContext: CoroutineContext = singleThreadDispatcher("Bluetooth"),
+            contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
         ): Bluetooth
     }
 
@@ -86,12 +88,12 @@ class Bluetooth internal constructor(
     }
 
     internal val scanningStateRepo = ScanningStateRepo(
-        permissions,
+        permissionsBuilder,
         connectionSettings,
         autoRequestPermission,
         autoEnableBluetooth,
         scannerBuilder,
-        coroutineContext + singleThreadDispatcher("Scanner")
+        coroutineContext.contextCreator("Scanner")
     )
 
     sealed class ScanMode {
@@ -286,7 +288,6 @@ fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> {
 @JvmName("getAttribute")
 operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID): Flow<T?> {
     return this.map { attribute ->
-        debug("Get attribute $attribute")
         attribute.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
@@ -295,7 +296,6 @@ operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write
 
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value(): Flow<ByteArray?> {
     return this.flatMapLatest { attribute ->
-        debug("Flatmap value $attribute")
         attribute ?: flowOf(null)
     } // TODO: we probably want to read duplicate values so this is for now disabled: .distinctUntilChanged()
 }

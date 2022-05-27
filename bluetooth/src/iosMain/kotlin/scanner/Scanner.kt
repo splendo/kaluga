@@ -33,6 +33,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.permissions.base.Permissions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
@@ -47,14 +48,15 @@ import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_queue_create
 
-actual class Scanner internal constructor(
+actual class DefaultScanner internal constructor(
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
     private val scanSettings: ScanSettings,
     autoRequestPermission: Boolean,
     autoEnableSensors: Boolean,
-    stateRepo: ScanningStateFlowRepo,
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
+    eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
+    coroutineScope: CoroutineScope
+) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, eventBufferSize, coroutineScope) {
 
     class Builder(private val scanSettings: ScanSettings = defaultScanOptions) : BaseScanner.Builder {
 
@@ -63,9 +65,10 @@ actual class Scanner internal constructor(
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
             autoEnableSensors: Boolean,
-            scanningStateRepo: ScanningStateFlowRepo,
+            eventBufferSize: Int,
+            coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo,)
+            return DefaultScanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, eventBufferSize, coroutineScope)
         }
     }
 
@@ -75,7 +78,7 @@ actual class Scanner internal constructor(
     }
 
     @Suppress("CONFLICTING_OVERLOADS")
-    private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
+    private class PoweredOnCBCentralManagerDelegate(private val scanner: DefaultScanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             if (central.state == CBCentralManagerStatePoweredOn) {
@@ -87,27 +90,16 @@ actual class Scanner internal constructor(
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
-        fun handlePeripheral(didConnectPeripheral: CBPeripheral, block: suspend BaseDeviceConnectionManager.() -> Unit) {
-            scanner.stateRepo.launchUseState { scannerState ->
-                if (scannerState is ScanningState.Enabled)
-                    scannerState.discovered.devices.find { it.identifier == didConnectPeripheral.identifier }
-                        ?.let { device ->
-                            val connectionManager = device.first().connectionManager
-                            block(connectionManager)
-                        }
-            }
-        }
-
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            handlePeripheral(didConnectPeripheral) { handleConnect() }
+            scanner.handleDeviceConnected(didConnectPeripheral.identifier)
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
+            scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier)
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
+            scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier)
         }
     }
 

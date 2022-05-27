@@ -50,7 +50,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
-actual class Scanner internal constructor(
+actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
     private val bluetoothScanner: BluetoothLeScannerCompat,
     private val bluetoothAdapter: BluetoothAdapter?,
