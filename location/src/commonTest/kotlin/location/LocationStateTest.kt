@@ -31,6 +31,7 @@ import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -457,6 +458,7 @@ class LocationStateTest :
         }
         mainAction {
             permissionManager.setPermissionDenied()
+            yield()
         }
         test {
             locationManager.stopMonitoringLocationEnabledMock.verify()
