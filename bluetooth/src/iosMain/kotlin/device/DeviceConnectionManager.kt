@@ -21,7 +21,6 @@ import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
-import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope

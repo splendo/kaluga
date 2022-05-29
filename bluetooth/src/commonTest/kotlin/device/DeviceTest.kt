@@ -106,7 +106,7 @@ class DeviceTest :
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
                 ConnectionSettings.ReconnectionSettings.Limited(
-                    attempts =2
+                    attempts = 2
                 )
             )
         )

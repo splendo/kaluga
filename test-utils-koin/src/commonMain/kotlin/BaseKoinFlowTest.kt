@@ -37,4 +37,4 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
             block(this@KoinFlowTest, it)
         }
 }
-abstract class BaseKoinFlowTest<CONF, TC : BaseKoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<CONF, TC, T, F>()
+abstract class BaseKoinFlowTest<C, TC : BaseKoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<C, TC, T, F>()

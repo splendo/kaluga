@@ -1,23 +1,3 @@
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.hud.BaseHUD
-import com.splendo.kaluga.hud.HUDStyle
-import com.splendo.kaluga.hud.HudConfig
-import com.splendo.kaluga.hud.presentDuring
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.hud.MockHUD
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.launch
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
 
@@ -34,6 +14,27 @@ import kotlin.test.assertTrue
     limitations under the License.
 
  */
+
+package com.splendo.kaluga.test.hud
+
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.hud.BaseHUD
+import com.splendo.kaluga.hud.HUDStyle
+import com.splendo.kaluga.hud.HudConfig
+import com.splendo.kaluga.hud.presentDuring
+import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verify
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class MockHUDTest : UIThreadViewModelTest<MockHUDTest.TestContext, MockHUDTest.ViewModel>() {
 

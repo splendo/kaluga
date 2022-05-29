@@ -16,4 +16,5 @@
 
 package com.splendo.kaluga.test
 
-// This empty file exists to ensure this module can be published
+@Deprecated("Moved to test-utils-base", ReplaceWith("mainBackground(args)", "com.splendo.kaluga.test.base.mainBackground"))
+fun mainBackground(args: Array<String>) = com.splendo.kaluga.test.base.mainBackground(args)

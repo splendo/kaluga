@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: MutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =

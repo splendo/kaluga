@@ -20,9 +20,7 @@ package com.splendo.kaluga.base.monitor
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.mapNotNull
 
 interface ServiceMonitor {
     val isServiceEnabled: Boolean

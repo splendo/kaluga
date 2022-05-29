@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BluetoothFlowTest<CONF : BluetoothFlowTest.Configuration, C : BluetoothFlowTest.Context<CONF>, T> : BaseFlowTest<CONF, C, T, Flow<T>>() {
+abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : BluetoothFlowTest.Context<C>, T> : BaseFlowTest<C, TC, T, Flow<T>>() {
 
     companion object {
         fun defaultService(): ServiceWrapperBuilder.() -> Unit = {

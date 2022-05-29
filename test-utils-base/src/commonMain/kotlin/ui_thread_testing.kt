@@ -90,7 +90,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class BaseUIThreadTest<CONF, TC : BaseUIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseTest() {
+abstract class BaseUIThreadTest<C, TC : BaseUIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseTest() {
 
     init {
         if (!allowFreezing) ensureNeverFrozen()
@@ -109,7 +109,7 @@ abstract class BaseUIThreadTest<CONF, TC : BaseUIThreadTest.TestContext>(allowFr
     /**
      * Creates the TestContext based on Configuration and CoroutineScope
      */
-    abstract val createTestContextWithConfiguration: suspend (configuration: CONF, scope: CoroutineScope) -> TC
+    abstract val createTestContextWithConfiguration: suspend (configuration: C, scope: CoroutineScope) -> TC
 
     private companion object {
         val cancellationException = CancellationException("Scope canceled by testOnUIThread because cancelScopeAfterTest was set to true.")
@@ -124,13 +124,13 @@ abstract class BaseUIThreadTest<CONF, TC : BaseUIThreadTest.TestContext>(allowFr
      * This can be handy for testing classes that rely on scopes that eventually get canceled,
      * e.g. because they are canceled automatically by a lifecycle event.
      *
-     * @param configuration The [CONF] to configure the TestContext.
+     * @param configuration The [C] to configure the TestContext.
      * @param block test block to be run on the UI thread and in the test context.
      *
      * @param cancelScopeAfterTest whether to cancel the coroutinescope your block ran in after it's done.
      *
      */
-    fun testOnUIThread(configuration: CONF, cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
+    fun testOnUIThread(configuration: C, cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
         try {
 
             val createTestContextWithConfiguration = createTestContextWithConfiguration
