@@ -135,7 +135,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     private suspend fun awaitTestBlocks() {
 
-        // tests.removeAll { !it.isActive }
+        val tests = this.tests
 
         if (tests.size == 0) {
             debug("await all test blocks, but none found, skip waiting")
@@ -147,7 +147,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 debug("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
                 tests.awaitAll()
             } finally {
-                tests.removeAll { !it.isActive }
+                this@BaseFlowTest.tests.removeAll(tests)
             }
         }
     }

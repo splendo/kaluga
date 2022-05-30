@@ -25,6 +25,7 @@ import com.splendo.kaluga.test.base.BaseFlowTest
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.permissions.DummyPermission
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
@@ -62,6 +63,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
             resetFlow()
         }
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
         }
     }
@@ -85,6 +87,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
             resetFlow()
         }
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
         }
     }
@@ -107,6 +110,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
             resetFlow()
         }
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
         }
     }
@@ -128,6 +132,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
             resetFlow()
         }
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
         }
     }
