@@ -21,7 +21,8 @@ import java.util.Calendar
 abstract class NewModule : DefaultTask() {
 
     private companion object {
-        const val VALID_NAME_REGEX = "^[^\\dA-Z-][a-z]+[a-z-]*\\Z"
+        const val VALID_MODULE_NAME_REGEX = "^[^\\dA-Z-][a-z]+[a-z-]*\\Z"
+        const val VALID_PACKAGE_NAME = "^[a-z]+(\\.[a-z]+)*\\Z"
         const val TEMPLATE_PATH = "adding-a-new-module/template"
         const val BUILD_GRADLE_KTS = "build.gradle.kts"
         val CREATE_DIRS = listOf(
@@ -39,6 +40,8 @@ abstract class NewModule : DefaultTask() {
 
     @get:Internal
     abstract val outputDir: DirectoryProperty
+    @get:Input
+    abstract val packageName: Property<String>
 
     @TaskAction
     fun create() {
@@ -51,22 +54,24 @@ abstract class NewModule : DefaultTask() {
         if (file.exists()) {
             throw GradleException("Module `$module` already exists!")
         }
-        if (module.matches(Regex(VALID_NAME_REGEX))) {
-            CREATE_DIRS.forEach { pair ->
-                val dir = outputDir.dir("src/${pair.first}")
-                val kotlinDir = dir.dir("kotlin")
-                Files.createDirectories(kotlinDir.asFile.toPath())
-                pair.second.forEach {
-                    val from = outputDir.file("../$TEMPLATE_PATH/src/${pair.first}/$it").asFile
-                    val to = dir.file(it).asFile
-                    from.copyRecursively(to)
-                    replaceVariable(to, module)
+        when {
+            !module.matches(Regex(VALID_MODULE_NAME_REGEX)) -> throw GradleException("`$module` is not valid module name!")
+            !packageName.matches(Regex(VALID_PACKAGE_NAME)) -> throw GradleException("`$packageName` is not a valid package name!")
+            else -> {
+                CREATE_DIRS.forEach { pair ->
+                    val dir = outputDir.dir("src/${pair.first}")
+                    val kotlinDir = dir.dir("kotlin")
+                    Files.createDirectories(kotlinDir.asFile.toPath())
+                    pair.second.forEach {
+                        val from = outputDir.file("../$TEMPLATE_PATH/src/${pair.first}/$it").asFile
+                        val to = dir.file(it).asFile
+                        from.copyRecursively(to)
+                        replaceVariable(to, packageName)
+                    }
                 }
+                val buildGradleFile = outputDir.file("../$TEMPLATE_PATH/$BUILD_GRADLE_KTS").asFile
+                buildGradleFile.copyTo(outputDir.file(BUILD_GRADLE_KTS).asFile)
             }
-            val buildGradleFile = outputDir.file("../$TEMPLATE_PATH/$BUILD_GRADLE_KTS").asFile
-            buildGradleFile.copyTo(outputDir.file(BUILD_GRADLE_KTS).asFile)
-        } else {
-            throw GradleException("`$module` is not valid module name!")
         }
         logger.lifecycle("New module `$module` has been created:")
         outputDir.asFileTree.visit {
@@ -87,5 +92,6 @@ tasks.register<NewModule>("createNewModule") {
     group = "utils"
     if (project.hasProperty("module_name")) {
         outputDir.set(file(project.property("module_name").toString()))
+        packageName.set(project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString())
     }
 }
