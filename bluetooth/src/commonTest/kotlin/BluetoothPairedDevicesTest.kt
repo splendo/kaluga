@@ -49,7 +49,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(bluetooth.pairedDevices().isEmpty())
         }
 
-        val list =  listOf(randomIdentifier())
+        val list = listOf(randomIdentifier())
         mockBaseScanner().pairedDevices.value = list
 
         test {
