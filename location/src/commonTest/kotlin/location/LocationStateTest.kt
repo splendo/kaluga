@@ -25,13 +25,13 @@ import com.splendo.kaluga.test.base.BaseFlowTest
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.location.MockLocationManager
 import com.splendo.kaluga.test.location.MockLocationStateRepoBuilder
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -134,6 +134,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -168,6 +169,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
         }
@@ -213,6 +215,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
@@ -257,6 +260,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -290,6 +294,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -334,6 +339,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
@@ -380,6 +386,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
@@ -423,6 +430,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
@@ -458,7 +466,7 @@ class LocationStateTest :
         }
         mainAction {
             permissionManager.setPermissionDenied()
-            yield()
+            yieldMultiple(2)
         }
         test {
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -478,6 +486,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
         }
@@ -511,6 +520,7 @@ class LocationStateTest :
         }
         mainAction {
             locationManager.locationEnabled.value = false
+            yieldMultiple(2)
         }
         test {
             locationManager.requestLocationEnableMock.verify()
@@ -530,6 +540,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -568,6 +579,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
@@ -577,7 +589,7 @@ class LocationStateTest :
         test {
             permissionManager.startMonitoringMock.verify(
                 eq(PermissionStateRepo.defaultMonitoringInterval),
-                2
+                times = 2
             )
             assertIs<LocationState.Enabled>(it)
             assertEquals(location1, it.location)
@@ -588,6 +600,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             locationManager.stopMonitoringPermissionsMock.verify(times = 2)
             locationManager.stopMonitoringLocationMock.verify(times = 2)
             locationManager.stopMonitoringLocationEnabledMock.verify(times = 2)
@@ -627,6 +640,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
@@ -651,6 +665,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             locationManager.stopMonitoringPermissionsMock.verify(times = 2)
         }
     }
@@ -687,6 +702,7 @@ class LocationStateTest :
         }
 
         mainAction {
+            yieldMultiple(10)
             permissionManager.stopMonitoringMock.verify()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()

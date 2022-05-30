@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -152,6 +153,7 @@ class DeviceTest :
 
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
 
         test {
@@ -161,6 +163,7 @@ class DeviceTest :
         }
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
         test {
             connectionManager.connectMock.verify(times = 3)
@@ -169,6 +172,7 @@ class DeviceTest :
         }
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
         test {
             connectionManager.connectMock.verify(times = 3)
@@ -234,6 +238,7 @@ class DeviceTest :
                     else -> {}
                 }
             }
+            yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()
@@ -260,6 +265,7 @@ class DeviceTest :
                     else -> {}
                 }
             }
+            yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()
@@ -318,6 +324,7 @@ class DeviceTest :
 
         mainAction {
             connectionManager.handleCurrentAction()
+            yieldMultiple(2)
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.handleCurrentActionCompletedMock.verify(eq(true), captor)
             assertIs<DeviceAction.Read.Characteristic>(captor.lastCaptured)

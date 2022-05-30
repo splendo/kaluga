@@ -119,7 +119,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     suspend fun resetFlow() {
         awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
         debug("job: $job")
-        job?.cancel()
+        job?.cancelAndJoin()
         debug("Ending flow, job canceled")
 
         firstTestBlock = true

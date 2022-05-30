@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
@@ -65,6 +66,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
 
         mainAction {
             characteristic.disableNotification()
+            yieldMultiple(2)
         }
 
         test {
@@ -94,6 +96,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
         mainAction {
             assertFalse(characteristic.isNotifying)
             characteristic.enableNotification()
+            yieldMultiple(2)
         }
         test {
             val captor = AnyOrNullCaptor<DeviceAction>()
@@ -166,6 +169,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
         mainAction {
             assertFalse(characteristic.isNotifying, "Notifications already enabled!")
             characteristic.enableNotification()
+            yieldMultiple(2)
         }
         test {
             val captor = AnyOrNullCaptor<DeviceAction>()
