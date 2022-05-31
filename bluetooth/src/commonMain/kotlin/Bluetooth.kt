@@ -54,6 +54,7 @@ import kotlin.jvm.JvmName
 interface BluetoothService {
     fun startScanning(filter: Set<UUID> = emptySet())
     fun stopScanning()
+    suspend fun pairedDevices(filter: Set<UUID> = emptySet()): List<Identifier>
     fun devices(): Flow<List<Device>>
     suspend fun isScanning(): StateFlow<Boolean>
     val isEnabled: Flow<Boolean>
@@ -95,6 +96,19 @@ class Bluetooth internal constructor(
     }
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
+
+    override suspend fun pairedDevices(filter: Set<UUID>): List<Identifier> = scanningStateRepo
+        .transformLatest { state ->
+            when (state) {
+                is ScanningState.Initialized.Enabled -> emit(state.pairedDevices(filter))
+                is ScanningState.Initialized.NoBluetooth -> {}
+                is ScanningState.NotInitialized ->
+                    scanningStateRepo.takeAndChangeState(
+                        remainIfStateNot = ScanningState.NotInitialized::class
+                    ) { it.initialize(scanningStateRepo) }
+            }
+        }
+        .first()
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {

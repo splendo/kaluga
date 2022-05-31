@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
 
 actual class Scanner(
@@ -55,4 +56,6 @@ actual class Scanner(
     override fun stopMonitoringSensors() {}
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
+
+    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = emptyList()
 }
