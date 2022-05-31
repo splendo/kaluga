@@ -19,20 +19,16 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
@@ -45,30 +41,21 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
-import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_queue_create
 
 actual class DefaultScanner internal constructor(
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
+    settings: BaseScanner.Settings,
     private val scanSettings: ScanSettings,
-    autoRequestPermission: Boolean,
-    autoEnableSensors: Boolean,
-    eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
     coroutineScope: CoroutineScope
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, eventBufferSize, coroutineScope) {
+) : BaseScanner(settings, coroutineScope) {
 
     class Builder(private val scanSettings: ScanSettings = defaultScanOptions) : BaseScanner.Builder {
 
         override fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            eventBufferSize: Int,
+            settings: Settings,
             coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return DefaultScanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, eventBufferSize, coroutineScope)
+            return DefaultScanner(settings, scanSettings, coroutineScope)
         }
     }
 
@@ -148,7 +135,7 @@ actual class DefaultScanner internal constructor(
                 suspend {
                     val options =
                         mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
-                    CBCentralManager(null, dispatch_get_main_queue(), options)
+                    CBCentralManager(null, enabledQueue, options)
                     bluetoothEnabledMonitor.isEnabled.first { it }
                 }
             } else null
@@ -162,13 +149,13 @@ actual class DefaultScanner internal constructor(
 
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
+        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
             val deviceInfo = DeviceInfoImpl(deviceWrapper, rssi, advertisementData)
             Device(
                 connectionSettings,
                 deviceInfo,
                 DeviceConnectionManager.Builder(central, peripheral),
-                coroutineContext + singleThreadDispatcher("Device ${deviceWrapper.identifier.UUIDString}")
+                coroutineContext
             )
         }
     }

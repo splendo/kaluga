@@ -21,11 +21,9 @@ import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
@@ -124,11 +122,6 @@ sealed class ScanningStateImpl {
 
     companion object {
         val nothingDiscovered = Discovered(emptySet())
-        const val TAG = "BluetoothManager"
-    }
-
-    fun logError(error: Error) {
-        error.message?.let { com.splendo.kaluga.logging.error(TAG, it) }
     }
 
     data class Discovered(
@@ -415,6 +408,7 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
+                    is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning }
                     is Scanner.Event.DeviceDiscovered -> handleDeviceDiscovered(event)
                     is Scanner.Event.DeviceConnected -> handleDeviceConnectionChanged(event.identifier, true)
                     is Scanner.Event.DeviceDisconnected -> handleDeviceConnectionChanged(event.identifier, false)
@@ -442,7 +436,7 @@ open class ScanningStateImplRepo(
     private suspend fun handleDeviceDiscovered(event: Scanner.Event.DeviceDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
         state.discoverDevice(event.identifier, event.rssi, event.advertisementData) {
             event.deviceCreator(
-                CoroutineScope(coroutineContext.contextCreator("Device ${event.identifier.stringValue}"))
+                coroutineContext.contextCreator("Device ${event.identifier.stringValue}")
             )
         }
     }
@@ -461,21 +455,15 @@ open class ScanningStateImplRepo(
 }
 
 class ScanningStateRepo(
-    permissionsBuilder: (CoroutineContext) -> Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableBluetooth: Boolean,
+    settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : ScanningStateImplRepo(
     createScanner = {
         builder.create(
-            permissionsBuilder(coroutineContext.contextCreator("BluetoothPermissions")),
-            connectionSettings,
-            autoRequestPermission,
-            autoEnableBluetooth,
-            coroutineScope = CoroutineScope(coroutineContext.contextCreator("BluetoothScanner"))
+            settingsBuilder(coroutineContext.contextCreator("BluetoothPermissions")),
+            CoroutineScope(coroutineContext.contextCreator("BluetoothScanner"))
         )
     },
     coroutineContext = coroutineContext,

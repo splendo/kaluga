@@ -54,7 +54,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         test {
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             scanner.startMonitoringPermissionsMock.verify()
-            scanner.startMonitoringSensorsMock.verify()
+            scanner.startMonitoringHardwareEnabledMock.verify()
             assertIs<Idle>(it)
             assertEquals(emptySet(), it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
@@ -67,7 +67,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             permissionManager.requestPermissionMock.verify()
             scanner.startMonitoringPermissionsMock.verify()
-            scanner.startMonitoringSensorsMock.verify(rule = never())
+            scanner.startMonitoringHardwareEnabledMock.verify(rule = never())
             assertIs<MissingPermissions>(it)
         }
         mainAction {
@@ -91,7 +91,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             permissionManager.requestPermissionMock.verify(rule = never())
             scanner.startMonitoringPermissionsMock.verify()
-            scanner.startMonitoringSensorsMock.verify(rule = never())
+            scanner.startMonitoringHardwareEnabledMock.verify(rule = never())
             assertIs<MissingPermissions>(it)
         }
     }
@@ -179,7 +179,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
 
         mainAction {
             scanner.stopMonitoringPermissionsMock.verify()
-            scanner.stopMonitoringSensorsMock.verify()
+            scanner.stopMonitoringHardwareEnabledMock.verify()
         }
 
         test {

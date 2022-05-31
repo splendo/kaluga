@@ -64,10 +64,7 @@ interface BluetoothService {
 }
 
 class Bluetooth internal constructor(
-    permissionsBuilder: (CoroutineContext) -> Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableBluetooth: Boolean,
+    scannerSettingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     scannerBuilder: BaseScanner.Builder,
     coroutineContext: CoroutineContext,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
@@ -75,9 +72,7 @@ class Bluetooth internal constructor(
 
     interface Builder {
         fun create(
-            connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
-            autoRequestPermission: Boolean = true,
-            autoEnableBluetooth: Boolean = true,
+            scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
             coroutineContext: CoroutineContext = singleThreadDispatcher("Bluetooth"),
             contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
         ): Bluetooth
@@ -88,10 +83,7 @@ class Bluetooth internal constructor(
     }
 
     internal val scanningStateRepo = ScanningStateRepo(
-        permissionsBuilder,
-        connectionSettings,
-        autoRequestPermission,
-        autoEnableBluetooth,
+        scannerSettingsBuilder,
         scannerBuilder,
         coroutineContext.contextCreator("Scanner")
     )
