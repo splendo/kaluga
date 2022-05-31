@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import kotlinx.coroutines.flow.MutableSharedFlow
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import kotlinx.coroutines.flow.FlowCollector
 
 class Service(
     service: ServiceWrapper,
-    private val newActionFlow: MutableSharedFlow<DeviceAction>
+    private val newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>
 ) {
     val uuid = service.uuid
     val characteristics = service.characteristics.map { Characteristic(it, newActionFlow = newActionFlow) }

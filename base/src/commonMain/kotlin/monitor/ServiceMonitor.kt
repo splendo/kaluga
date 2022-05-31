@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.monitor
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 
 interface ServiceMonitor {
     val isServiceEnabled: Boolean
@@ -33,16 +33,16 @@ abstract class DefaultServiceMonitor : ServiceMonitor {
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
-    private val _isEnabled = MutableStateFlow(false)
-    override val isEnabled = _isEnabled.asStateFlow()
+    private val _isEnabled = MutableStateFlow<Boolean?>(null)
+    override val isEnabled get() = _isEnabled.filterNotNull()
 
     override fun startMonitoring() {
         debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
         updateState()
     }
     override fun stopMonitoring() {
-        debug(TAG) { "Stop monitoring service state ($isServiceEnabled)" }
-        updateState()
+        debug(TAG) { "Stop monitoring service state" }
+        _isEnabled.value = null
     }
 
     protected fun updateState() {

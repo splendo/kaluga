@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 import com.splendo.kaluga.state.KalugaState as KalugaState
 
@@ -45,7 +46,7 @@ typealias DelayFunction = suspend (Duration) -> Unit
  */
 class RecurringTimer(
     override val duration: Duration,
-    interval: Duration = Duration.milliseconds(100),
+    interval: Duration = 100.milliseconds,
     timeSource: TimeSource = TimeSource.Monotonic,
     delayFunction: DelayFunction = { duration -> delay(duration) },
     coroutineScope: CoroutineScope = MainScope()

@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.FlowCollector
 
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
-    newActionFlow: MutableSharedFlow<DeviceAction>
+    newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>
 ) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, newActionFlow) {
 
     override val uuid = wrapper.uuid

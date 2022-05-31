@@ -17,14 +17,13 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
-import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
+import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.darwin.NSObject
 
 actual interface BluetoothMonitor : ServiceMonitor {
@@ -43,12 +42,8 @@ class DefaultBluetoothMonitor internal constructor(
         private val updateEnabledState: () -> Unit
     ) : NSObject(), CBCentralManagerDelegateProtocol {
 
-        val isMonitoring = AtomicBoolean(false)
-
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            if (isMonitoring.value) {
-                updateEnabledState()
-            }
+            updateEnabledState()
         }
     }
 
@@ -56,23 +51,20 @@ class DefaultBluetoothMonitor internal constructor(
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
-        get() = initializeCentralManagerIfNotInitialized().state == CBCentralManagerStatePoweredOn
+        get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
 
     private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = centralManager.value ?: centralManagerBuilder().apply {
-        delegate = centralManagerDelegate
         centralManager.set(this)
     }
 
     override fun startMonitoring() {
         super.startMonitoring()
-        initializeCentralManagerIfNotInitialized()
+        initializeCentralManagerIfNotInitialized().delegate = centralManagerDelegate
         updateState()
-        centralManagerDelegate.isMonitoring.value = true
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
-        initializeCentralManagerIfNotInitialized()
-        centralManagerDelegate.isMonitoring.value = false
+        centralManager.value?.delegate = null
     }
 }

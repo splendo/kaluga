@@ -41,7 +41,7 @@ typealias TestBlock<TC, T> = suspend TC.(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
 typealias ScopeActionBlock<TC> = suspend TC.() -> Unit
 
-typealias FlowTestBlockWithContext<CONF, TC, T, F> = suspend BaseFlowTest<CONF, TC, T, F>.(F) -> Unit
+typealias FlowTestBlockWithContext<C, TC, T, F> = suspend BaseFlowTest<C, TC, T, F>.(F) -> Unit
 
 typealias FlowTestBlock<T, F> = suspend FlowTest<T, F>.(F) -> Unit
 
@@ -89,7 +89,7 @@ private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: su
 @SharedImmutable
 private val cookieTin = AtomicLong(0L)
 
-abstract class BaseFlowTest<CONF, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<CONF, TC>(), CoroutineScope by scope {
+abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
 
     // used for thread local map access to store the testContext
     private val cookie = cookieTin.incrementAndGet()
@@ -119,7 +119,7 @@ abstract class BaseFlowTest<CONF, TC : TestContext, T, F : Flow<T>>(val scope: C
     suspend fun resetFlow() {
         awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
         debug("job: $job")
-        job?.cancel()
+        job?.cancelAndJoin()
         debug("Ending flow, job canceled")
 
         firstTestBlock = true
@@ -135,7 +135,7 @@ abstract class BaseFlowTest<CONF, TC : TestContext, T, F : Flow<T>>(val scope: C
 
     private suspend fun awaitTestBlocks() {
 
-        tests.removeAll { !it.isActive }
+        val tests = this.tests
 
         if (tests.size == 0) {
             debug("await all test blocks, but none found, skip waiting")
@@ -147,19 +147,19 @@ abstract class BaseFlowTest<CONF, TC : TestContext, T, F : Flow<T>>(val scope: C
                 debug("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
                 tests.awaitAll()
             } finally {
-                tests.removeAll { !it.isActive }
+                this@BaseFlowTest.tests.removeAll(tests)
             }
         }
     }
 
     private var lateflow: F? = null
-    private var lateConfiguration: CONF? = null
+    private var lateConfiguration: C? = null
 
     fun testWithFlowAndTestContext(
-        configuration: CONF,
+        configuration: C,
         createFlowInMainScope: Boolean = true,
         retainContextAfterTest: Boolean = false,
-        blockWithContext: FlowTestBlockWithContext<CONF, TC, T, F>
+        blockWithContext: FlowTestBlockWithContext<C, TC, T, F>
     ) {
 
         runBlocking {
@@ -204,7 +204,7 @@ abstract class BaseFlowTest<CONF, TC : TestContext, T, F : Flow<T>>(val scope: C
     }
 
     @Suppress("SuspendFunctionOnCoroutineScope")
-    private suspend fun startFlow(configuration: CONF, flow: F) {
+    private suspend fun startFlow(configuration: C, flow: F) {
         this.ensureNeverFrozen()
         debug("launch flow scope...")
         val testChannel = testChannel

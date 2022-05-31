@@ -32,7 +32,6 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
-import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
@@ -98,7 +97,7 @@ internal actual class DeviceConnectionManager(
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             launch(mainDispatcher) {
-                val services = gatt?.services?.map { Service(DefaultGattServiceWrapper(it), newAction) } ?: emptyList()
+                val services = gatt?.services?.map { DefaultGattServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
         }
@@ -274,6 +273,7 @@ internal actual class DeviceConnectionManager(
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun unpair() {
         // unpair to prevent connection problems
         if (device.bondState != BluetoothDevice.BOND_NONE) {

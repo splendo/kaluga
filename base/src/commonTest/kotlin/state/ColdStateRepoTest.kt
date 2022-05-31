@@ -24,10 +24,12 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.base.mock.verify
-import kotlinx.coroutines.delay
+import com.splendo.kaluga.test.base.yieldMultiple
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -46,7 +48,7 @@ class ColdStateRepoTest : BaseTest() {
         object Closed : CircuitState()
     }
 
-    class Repo : ColdStateRepo<CircuitState>() {
+    class Repo(coroutineContext: CoroutineContext) : ColdStateRepo<CircuitState>(coroutineContext = coroutineContext) {
 
         val initialValueMock = ::initialValue.mock()
         val deinitializeMock = ::deinitialize.mock()
@@ -69,23 +71,25 @@ class ColdStateRepoTest : BaseTest() {
 
     @Test
     fun testLaterCollectionsCallsInitialState() = runBlocking {
-        val repo = Repo()
-        for (times in 1..2) {
-            repo.testCollectionIsCalledTimes(times)
-        }
+        launch {
+            val repo = Repo(coroutineContext)
+            for (times in 1..2) {
+                repo.testCollectionIsCalledTimes(times)
+            }
+            repo.cancel()
+        }.join()
     }
 
     private suspend fun Repo.testCollectionIsCalledTimes(times: Int) {
         val job = launch { collect() }
-        // For some reason yield is not reliable here
-        delay(100)
+        yieldMultiple(2)
         useState {
             assertEquals(times, it.initialStateCounter.value)
             initialValueMock.verify(times)
             assertEquals(CircuitState.Open, it)
         }
         job.cancel()
-        delay(100)
+        yieldMultiple(3)
         deinitializeMock.verify(times = times)
     }
 }

@@ -51,7 +51,7 @@ abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFree
     fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) = testOnUIThread(Unit, cancelScopeAfterTest, block)
 }
 
-abstract class BaseKoinUIThreadTest<CONF, TC : BaseKoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : BaseUIThreadTest<CONF, TC>(allowFreezing) {
+abstract class BaseKoinUIThreadTest<C, TC : BaseKoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : BaseUIThreadTest<C, TC>(allowFreezing) {
 
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,

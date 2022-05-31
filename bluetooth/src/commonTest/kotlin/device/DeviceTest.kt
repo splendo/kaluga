@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -106,7 +107,7 @@ class DeviceTest :
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
                 ConnectionSettings.ReconnectionSettings.Limited(
-                    2
+                    attempts = 2
                 )
             )
         )
@@ -124,7 +125,7 @@ class DeviceTest :
             }
         }
         test {
-            connectionManager.connectMock.verify(2)
+            connectionManager.connectMock.verify(times = 2)
             assertIs<DeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
@@ -141,7 +142,7 @@ class DeviceTest :
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
                 ConnectionSettings.ReconnectionSettings.Limited(
-                    2
+                    attempts = 2
                 )
             )
         )
@@ -152,26 +153,29 @@ class DeviceTest :
 
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
 
         test {
-            connectionManager.connectMock.verify(2)
+            connectionManager.connectMock.verify(times = 2)
             assertIs<DeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
         test {
-            connectionManager.connectMock.verify(3)
+            connectionManager.connectMock.verify(times = 3)
             assertIs<DeviceState.Reconnecting>(it)
             assertEquals(1, it.attempt)
         }
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
         test {
-            connectionManager.connectMock.verify(3)
+            connectionManager.connectMock.verify(times = 3)
             assertIs<DeviceState.Disconnected>(it)
         }
     }
@@ -234,6 +238,7 @@ class DeviceTest :
                     else -> {}
                 }
             }
+            yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()
@@ -260,6 +265,7 @@ class DeviceTest :
                     else -> {}
                 }
             }
+            yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()
@@ -318,6 +324,7 @@ class DeviceTest :
 
         mainAction {
             connectionManager.handleCurrentAction()
+            yieldMultiple(2)
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.handleCurrentActionCompletedMock.verify(eq(true), captor)
             assertIs<DeviceAction.Read.Characteristic>(captor.lastCaptured)

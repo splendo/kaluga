@@ -21,7 +21,6 @@ import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
-import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
@@ -222,7 +221,7 @@ internal actual class DeviceConnectionManager(
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             launch {
-                val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), newAction) } ?: emptyList()
+                val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
         }

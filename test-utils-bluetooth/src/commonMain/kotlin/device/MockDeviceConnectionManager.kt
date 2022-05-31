@@ -173,7 +173,7 @@ class MockDeviceConnectionManager(
         }
     }
 
-    override suspend fun handleCurrentActionCompleted(succeeded: Boolean) {
+    override fun handleCurrentActionCompleted(succeeded: Boolean) {
         handleCurrentActionCompletedWithAction(succeeded, currentAction)
         return super.handleCurrentActionCompleted(succeeded)
     }

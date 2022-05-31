@@ -73,8 +73,8 @@ abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestCo
 /**
  * A [BaseUIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class BaseUIThreadViewModelTest<CONF, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
-    BaseUIThreadTest<CONF, VMC>(allowFreezing) {
+abstract class BaseUIThreadViewModelTest<C, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+    BaseUIThreadTest<C, VMC>(allowFreezing) {
 
     /**
      * [ViewModelTestContext] that lazily creates the view model

@@ -74,7 +74,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         test {
-            scanner.stopScanningMock.verify(2)
+            scanner.stopScanningMock.verify(times = 2)
             assertEquals(emptyList(), it)
         }
     }

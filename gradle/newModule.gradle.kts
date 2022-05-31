@@ -55,7 +55,7 @@ abstract class NewModule : DefaultTask() {
         if (file.exists()) {
             throw GradleException("Module `$module` already exists!")
         }
-
+        
         when {
             !module.matches(Regex(VALID_MODULE_NAME_REGEX)) -> throw GradleException("`$module` is not valid module name!")
             !packageName.matches(Regex(VALID_PACKAGE_NAME)) -> throw GradleException("`$packageName` is not a valid package name!")

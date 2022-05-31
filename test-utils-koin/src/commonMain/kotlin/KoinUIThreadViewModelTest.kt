@@ -39,8 +39,8 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
     }
 }
 
-abstract class BaseKoinUIThreadViewModelTest<CONF, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
-    BaseKoinUIThreadTest<CONF, KVMC>(allowFreezing) {
+abstract class BaseKoinUIThreadViewModelTest<C, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+    BaseKoinUIThreadTest<C, KVMC>(allowFreezing) {
 
     abstract class KoinViewModelTestContext<VM : ViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
