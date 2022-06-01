@@ -48,8 +48,7 @@ class RecurringTimerTest {
         assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer pause is not working")
         timer.start()
         assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
-        // FIXME: Test failed test
-        delay(5)
+        delay(500)
         assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "timer was not finished after time elapsed")
         timer.start()
         assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to start timer after finish")
