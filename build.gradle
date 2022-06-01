@@ -46,7 +46,7 @@ allprojects {
 
 apply from:"gradle/ext.gradle"
 apply from:"gradle/newModule.gradle.kts"
-apply from:"gradle/mergeReports.gradle.kts"
+apply from:"gradle/copyReports.gradle.kts"
 
 group 'com.splendo.kaluga'
 version gradle.ext.library_version

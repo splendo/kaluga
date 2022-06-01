@@ -17,7 +17,7 @@
 
 /** Copies all subprojects reports into single directory */
 tasks.register<Copy>("copyReports") {
-    group = "utils"
+    group = "publishing"
     into(layout.buildDirectory.dir("allReports"))
     subprojects.forEach { module ->
         from(module.buildDir) {
