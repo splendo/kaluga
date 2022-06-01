@@ -19,10 +19,12 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -60,7 +62,8 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             val rssi = -100
             val advertisementData = MockAdvertisementData()
             val deviceWrapper = createDeviceWrapper()
-            val device = createDevice(ConnectionSettings(), deviceWrapper, rssi, advertisementData)
+            val connectionManager = MockDeviceConnectionManager(true, deviceWrapper, 1, coroutineScope)
+            val device = createDevice(ConnectionSettings(), deviceWrapper, rssi, advertisementData, connectionManager)
             deferredDevice.complete(device)
             scanDevice(device, deviceWrapper, rssi, advertisementData)
         }

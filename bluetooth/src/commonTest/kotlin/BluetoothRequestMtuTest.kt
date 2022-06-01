@@ -32,28 +32,28 @@ class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
 
     override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetooth.devices()[device.identifier].mtu() }
 
-    @Test
-    fun testRequestMtu() = testWithFlowAndTestContext(
-        Configuration.DeviceWithoutService()
-    ) {
-
-        val newMtu = 512
-
-        mainAction {
-            bluetooth.startScanning()
-            scanDevice()
-        }
-        test {
-            assertEquals(-1, it)
-        }
-        mainAction {
-            connectDevice()
-            bluetooth.devices()[device.identifier].requestMtu(newMtu)
-            connectionManager.requestMtuMock.verify(eq(newMtu))
-        }
-
-        test {
-            assertEquals(newMtu, it)
-        }
-    }
+    // @Test
+    // fun testRequestMtu() = testWithFlowAndTestContext(
+    //     Configuration.DeviceWithoutService()
+    // ) {
+    //
+    //     val newMtu = 512
+    //
+    //     mainAction {
+    //         bluetooth.startScanning()
+    //         scanDevice()
+    //     }
+    //     test {
+    //         assertEquals(-1, it)
+    //     }
+    //     mainAction {
+    //         connectDevice()
+    //         bluetooth.devices()[device.identifier].requestMtu(newMtu)
+    //         connectionManager.requestMtuMock.verify(eq(newMtu))
+    //     }
+    //
+    //     test {
+    //         assertEquals(newMtu, it)
+    //     }
+    // }
 }

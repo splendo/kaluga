@@ -22,8 +22,8 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 typealias EnableSensorAction = suspend () -> Boolean
 
@@ -49,7 +48,12 @@ interface Scanner {
         object BluetoothEnabled : Event()
         object BluetoothDisabled : Event()
         object FailedScanning : Event()
-        data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: AdvertisementData, val deviceCreator: (CoroutineContext) -> Device) : Event()
+        data class DeviceDiscovered(
+            val identifier: Identifier,
+            val rssi: Int,
+            val advertisementData: AdvertisementData,
+            val deviceCreator: () -> (Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>)
+        ) : Event()
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
     }
@@ -78,7 +82,6 @@ abstract class BaseScanner constructor(
 
     data class Settings(
         val permissions: Permissions,
-        val connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
         val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
@@ -92,7 +95,6 @@ abstract class BaseScanner constructor(
     }
 
     internal val permissions: Permissions = settings.permissions
-    protected val connectionSettings: ConnectionSettings = settings.connectionSettings
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
@@ -178,7 +180,7 @@ abstract class BaseScanner constructor(
         identifier: Identifier,
         rssi: Int,
         advertisementData: AdvertisementData,
-        deviceCreator: (CoroutineContext) -> Device
+        deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
     ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
 
     internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceConnected(identifier))

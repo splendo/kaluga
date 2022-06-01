@@ -18,11 +18,16 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceState
+import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.base.Permissions
@@ -165,11 +170,11 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                         // Make sure permissionState has been created as it may break the tests otherwise
                         get(BluetoothPermission)
                     },
-                    ConnectionSettings(),
                     configuration.autoRequestPermission,
                     configuration.autoEnableBluetooth
                 )
             },
+            ConnectionSettings(),
             scannerBuilder,
             coroutineScope.coroutineContext
         )
@@ -182,13 +187,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             deviceWrapper: DeviceWrapper,
             rssi: Int,
             advertisementData: BaseAdvertisementData,
-            deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder()
+            deviceConnectionManager: BaseDeviceConnectionManager
         ): Device {
-            return Device(
+            return DeviceImpl(
+                deviceWrapper.identifier,
+                DeviceInfoImpl(deviceWrapper.name, rssi, advertisementData),
                 connectionSettings,
-                DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
-                deviceConnectionManagerBuilder,
-                coroutineScope.coroutineContext
+                deviceConnectionManager,
+                coroutineScope,
+                ::ConnectibleDeviceStateImplRepo
             )
         }
 
@@ -240,7 +247,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         }
 
         suspend fun discoverService(service: Service, device: Device, connectionManager: MockDeviceConnectionManager) {
-            device.filter { it is DeviceState.Connected.Discovering }.first()
+            device.state.filter { it is ConnectibleDeviceState.Connected.Discovering }.first()
             connectionManager.handleDiscoverCompleted(listOf(service))
         }
     }
@@ -255,7 +262,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun createDevice(
             deviceWrapper: DeviceWrapper = this.deviceWrapper,
             deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder
-        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData, deviceConnectionManagerBuilder)
+        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData, deviceConnectionManagerBuilder.create(deviceWrapper, 1, coroutineScope))
 
         fun scanDevice(
             rssi: Int = configuration.rssi,

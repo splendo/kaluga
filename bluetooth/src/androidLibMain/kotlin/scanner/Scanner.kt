@@ -29,6 +29,7 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
@@ -112,9 +113,8 @@ actual class DefaultScanner internal constructor(
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
-            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) { coroutineContext ->
-                val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, coroutineContext)
+            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
+                deviceWrapper to deviceConnectionManagerBuilder
             }
         }
     }

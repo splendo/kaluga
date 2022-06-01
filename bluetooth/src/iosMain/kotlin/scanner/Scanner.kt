@@ -26,9 +26,7 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
@@ -149,14 +147,8 @@ actual class DefaultScanner internal constructor(
 
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
-            val deviceInfo = DeviceInfoImpl(deviceWrapper, rssi, advertisementData)
-            Device(
-                connectionSettings,
-                deviceInfo,
-                DeviceConnectionManager.Builder(central, peripheral),
-                coroutineContext
-            )
+        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
+            deviceWrapper to DeviceConnectionManager.Builder(central, peripheral)
         }
     }
 

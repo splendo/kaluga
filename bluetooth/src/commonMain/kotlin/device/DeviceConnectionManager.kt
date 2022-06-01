@@ -74,10 +74,10 @@ abstract class BaseDeviceConnectionManager(
     private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.DROP_OLDEST)
     val events = sharedEvents.asSharedFlow()
 
-    private val sharedRssi = MutableSharedFlow<Int>(0, 0, BufferOverflow.DROP_OLDEST)
+    private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     val rssi = sharedRssi.asSharedFlow()
 
-    private val sharedMtu = MutableSharedFlow<Int>(0, 0, BufferOverflow.DROP_OLDEST)
+    private val sharedMtu = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     val mtuFlow: Flow<Int> = sharedMtu.asSharedFlow()
 
     abstract suspend fun connect()

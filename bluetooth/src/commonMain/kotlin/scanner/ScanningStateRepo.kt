@@ -17,8 +17,11 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +30,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -59,8 +61,8 @@ abstract class BaseScanningStateRepo(
 
 open class ScanningStateImplRepo(
     createScanner: () -> Scanner,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    private val contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
+    private val createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
     createInitializingState = { state ->
@@ -117,20 +119,18 @@ open class ScanningStateImplRepo(
 
     private suspend fun handleDeviceDiscovered(event: Scanner.Event.DeviceDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
         state.discoverDevice(event.identifier, event.rssi, event.advertisementData) {
-            event.deviceCreator(
-                coroutineContext.contextCreator("Device ${event.identifier.stringValue}")
-            )
+            val (deviceWrapper, connectionManagerBuilder) = event.deviceCreator()
+        createDevice(event.identifier, DeviceInfoImpl(deviceWrapper.name, event.rssi, event.advertisementData), deviceWrapper, connectionManagerBuilder)
         }
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
         if (state is ScanningState.Enabled) {
             state.discovered.devices.find { it.identifier == identifier }?.let { device ->
-                val connectionManager = device.first().connectionManager
                 if (connected)
-                    connectionManager.handleConnect()
+                    device.handleConnected()
                 else
-                    connectionManager.handleDisconnect()
+                    device.handleDisconnected()
             }
         }
     }
@@ -139,6 +139,7 @@ open class ScanningStateImplRepo(
 class ScanningStateRepo(
     settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
+    createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : ScanningStateImplRepo(
@@ -148,6 +149,6 @@ class ScanningStateRepo(
             CoroutineScope(coroutineContext.contextCreator("BluetoothScanner"))
         )
     },
+    createDevice = createDevice,
     coroutineContext = coroutineContext,
-    contextCreator = contextCreator
 )
