@@ -221,8 +221,12 @@ fun Flow<Device?>.advertisement(): Flow<BaseAdvertisementData> = info().map { it
 
 fun Flow<Device?>.rssi(): Flow<Int> = info().map { it.rssi }.distinctUntilChanged()
 
-fun Flow<Device?>.mtu() = flatMapLatest { device ->
-    device?.mtu ?: emptyFlow()
+fun Flow<Device?>.mtu() = state().map { state ->
+    if (state is ConnectibleDeviceState.Connected) {
+        state.mtu
+    } else {
+        null
+    }
 }.distinctUntilChanged()
 
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {

@@ -77,9 +77,13 @@ sealed interface ConnectibleDeviceState : DeviceState, KalugaState {
             val actionCompleted: suspend () -> DiscoveredServices
         }
 
+        val mtu: Int?
+
         fun startDisconnected()
 
         val reconnect: suspend () -> Reconnecting
+        fun didUpdateMtu(mtu: Int): suspend () -> Connected
+
         suspend fun readRssi()
         suspend fun requestMtu(mtu: Int): Boolean
     }
@@ -133,6 +137,7 @@ sealed class ConnectibleDeviceStateImpl {
     sealed class Connected : ConnectibleDeviceStateImpl() {
 
         data class NoServices constructor(
+            override val mtu: Int?,
             override val deviceConnectionManager: BaseDeviceConnectionManager
         ) : Connected(), ConnectibleDeviceState.Connected.NoServices {
 
@@ -141,19 +146,24 @@ sealed class ConnectibleDeviceStateImpl {
             }
 
             override val discoverServices = suspend {
-                Discovering(deviceConnectionManager)
+                Discovering(mtu, deviceConnectionManager)
             }
+
+            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
         }
 
         data class Discovering constructor(
+            override val mtu: Int?,
             override val deviceConnectionManager: BaseDeviceConnectionManager
         ) : Connected(),
             ConnectibleDeviceState.Connected.Discovering,
             HandleAfterOldStateIsRemoved<ConnectibleDeviceState> {
 
             override fun didDiscoverServices(services: List<Service>): suspend () -> Idle {
-                return { Idle(services, deviceConnectionManager) }
+                return { Idle(mtu, services, deviceConnectionManager) }
             }
+
+            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
 
             override suspend fun afterOldStateIsRemoved(oldState: ConnectibleDeviceState) {
                 deviceConnectionManager.discoverServices()
@@ -161,21 +171,25 @@ sealed class ConnectibleDeviceStateImpl {
         }
 
         data class Idle constructor(
+            override val mtu: Int?,
             override val services: List<Service>,
             override val deviceConnectionManager: BaseDeviceConnectionManager
         ) : Connected(), ConnectibleDeviceState.Connected.Idle {
 
-            override fun handleAction(action: DeviceAction) = suspend { HandlingAction(action, emptyList(), services, deviceConnectionManager) }
+            override fun handleAction(action: DeviceAction) = suspend { HandlingAction(action, emptyList(), mtu, services, deviceConnectionManager) }
+            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
         }
 
         data class HandlingAction constructor(
             override val action: DeviceAction,
             override val nextActions: List<DeviceAction>,
+            override val mtu: Int?,
             override val services: List<Service>,
             override val deviceConnectionManager: BaseDeviceConnectionManager
         ) : Connected(), ConnectibleDeviceState.Connected.HandlingAction, HandleAfterOldStateIsRemoved<ConnectibleDeviceState> {
 
-            override fun addAction(newAction: DeviceAction) = suspend { HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), services, deviceConnectionManager) }
+            override fun addAction(newAction: DeviceAction) = suspend { HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), mtu, services, deviceConnectionManager) }
+            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
 
             override val actionCompleted: suspend () -> ConnectibleDeviceState.Connected.DiscoveredServices = suspend {
                 when (action) {
@@ -187,11 +201,11 @@ sealed class ConnectibleDeviceStateImpl {
                     is DeviceAction.Notification.Disable -> { }
                 }
                 if (nextActions.isEmpty()) {
-                    Idle(services, deviceConnectionManager)
+                    Idle(mtu, services, deviceConnectionManager)
                 } else {
                     val nextAction = nextActions.first()
                     val remainingActions = nextActions.drop(1)
-                    HandlingAction(nextAction, remainingActions, services, deviceConnectionManager)
+                    HandlingAction(nextAction, remainingActions, mtu, services, deviceConnectionManager)
                 }
             }
 
@@ -226,7 +240,7 @@ sealed class ConnectibleDeviceStateImpl {
         override fun handleCancel() = deviceConnectionManager.cancelConnecting()
 
         override val didConnect = suspend {
-            Connected.NoServices(deviceConnectionManager)
+            Connected.NoServices(null, deviceConnectionManager)
         }
 
         override suspend fun afterOldStateIsRemoved(oldState: ConnectibleDeviceState) {
@@ -254,7 +268,7 @@ sealed class ConnectibleDeviceStateImpl {
 
         override val raiseAttempt = suspend { Reconnecting(attempt+1, services, deviceConnectionManager) }
         override val didConnect: suspend () -> ConnectibleDeviceState.Connected = suspend {
-            services?.let { Connected.Idle(services, deviceConnectionManager) } ?: Connected.NoServices(deviceConnectionManager)
+            services?.let { Connected.Idle(null, services, deviceConnectionManager) } ?: Connected.NoServices(null, deviceConnectionManager)
         }
 
         override suspend fun afterOldStateIsRemoved(oldState: ConnectibleDeviceState) {

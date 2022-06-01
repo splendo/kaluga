@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.updateAndGet
@@ -43,7 +42,6 @@ interface Device {
     val identifier: Identifier
     val info: Flow<DeviceInfo>
     val state: Flow<DeviceState>
-    val mtu: Flow<Int>
 
     suspend fun connect(): Boolean
     fun handleConnected()
@@ -79,7 +77,6 @@ class DeviceImpl(
     }.distinctUntilChanged().flatMapLatest {
         it ?: flowOf(NotConnectableDeviceStateImpl)
     }
-    override val mtu: Flow<Int> = connectionManager.mtuFlow
 
     init {
         launch {
@@ -103,7 +100,8 @@ class DeviceImpl(
                     is BaseDeviceConnectionManager.Event.AddAction,
                     is BaseDeviceConnectionManager.Event.CompletedAction,
                     is BaseDeviceConnectionManager.Event.Disconnecting,
-                    is BaseDeviceConnectionManager.Event.Disconnected -> deviceStateRepo.value
+                    is BaseDeviceConnectionManager.Event.Disconnected,
+                    is BaseDeviceConnectionManager.Event.MtuUpdated -> deviceStateRepo.value
                 }
                 repo?.takeAndChangeState { state ->
                     event.stateTransition(state)
@@ -168,6 +166,7 @@ class DeviceImpl(
             is BaseDeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
             is BaseDeviceConnectionManager.Event.AddAction -> stateTransition(state)
             is BaseDeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
+            is BaseDeviceConnectionManager.Event.MtuUpdated -> stateTransition(state)
         }
 
     private fun BaseDeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectibleDeviceState) =
@@ -264,6 +263,12 @@ class DeviceImpl(
         } else {
             state.remain()
         }
+
+    private fun BaseDeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectibleDeviceState) = if (state is ConnectibleDeviceState.Connected) {
+        state.didUpdateMtu(newMtu)
+    } else {
+        state.remain()
+    }
 }
 
 abstract class BaseConnectibleDeviceStateRepo(

@@ -23,37 +23,38 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int>() {
+class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int?>() {
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
         DeviceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetooth.devices()[device.identifier].mtu() }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int?> = { bluetooth.devices()[device.identifier].mtu() }
 
-    // @Test
-    // fun testRequestMtu() = testWithFlowAndTestContext(
-    //     Configuration.DeviceWithoutService()
-    // ) {
-    //
-    //     val newMtu = 512
-    //
-    //     mainAction {
-    //         bluetooth.startScanning()
-    //         scanDevice()
-    //     }
-    //     test {
-    //         assertEquals(-1, it)
-    //     }
-    //     mainAction {
-    //         connectDevice()
-    //         bluetooth.devices()[device.identifier].requestMtu(newMtu)
-    //         connectionManager.requestMtuMock.verify(eq(newMtu))
-    //     }
-    //
-    //     test {
-    //         assertEquals(newMtu, it)
-    //     }
-    // }
+    @Test
+    fun testRequestMtu() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService()
+    ) {
+
+        val newMtu = 512
+
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
+        test {
+            assertNull(it)
+        }
+        mainAction {
+            connectDevice()
+            bluetooth.devices()[device.identifier].requestMtu(newMtu)
+            connectionManager.requestMtuMock.verify(eq(newMtu))
+        }
+
+        test {
+            assertEquals(newMtu, it)
+        }
+    }
 }

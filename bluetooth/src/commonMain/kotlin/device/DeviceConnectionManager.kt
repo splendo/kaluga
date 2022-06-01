@@ -63,6 +63,7 @@ abstract class BaseDeviceConnectionManager(
         data class DiscoveredServices(val services: List<Service>) : Event()
         data class AddAction(val action: DeviceAction) : Event()
         data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
+        data class MtuUpdated(val newMtu: Int) : Event()
     }
 
     private val _currentAction = AtomicReference<DeviceAction?>(null)
@@ -77,9 +78,6 @@ abstract class BaseDeviceConnectionManager(
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     val rssi = sharedRssi.asSharedFlow()
 
-    private val sharedMtu = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
-    val mtuFlow: Flow<Int> = sharedMtu.asSharedFlow()
-
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
     abstract suspend fun disconnect()
@@ -92,7 +90,7 @@ abstract class BaseDeviceConnectionManager(
     }
 
     fun handleNewMtu(mtu: Int) {
-        sharedMtu.tryEmit(mtu)
+        sharedEvents.tryEmit(Event.MtuUpdated(mtu))
     }
 
     fun startConnecting() {
