@@ -120,7 +120,7 @@ open class ScanningStateImplRepo(
     private suspend fun handleDeviceDiscovered(event: Scanner.Event.DeviceDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
         state.discoverDevice(event.identifier, event.rssi, event.advertisementData) {
             val (deviceWrapper, connectionManagerBuilder) = event.deviceCreator()
-        createDevice(event.identifier, DeviceInfoImpl(deviceWrapper.name, event.rssi, event.advertisementData), deviceWrapper, connectionManagerBuilder)
+            createDevice(event.identifier, DeviceInfoImpl(deviceWrapper.name, event.rssi, event.advertisementData), deviceWrapper, connectionManagerBuilder)
         }
     }
 

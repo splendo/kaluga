@@ -266,7 +266,7 @@ sealed class ConnectibleDeviceStateImpl {
 
         override val cancelConnection = disconnecting
 
-        override val raiseAttempt = suspend { Reconnecting(attempt+1, services, deviceConnectionManager) }
+        override val raiseAttempt = suspend { Reconnecting(attempt + 1, services, deviceConnectionManager) }
         override val didConnect: suspend () -> ConnectibleDeviceState.Connected = suspend {
             services?.let { Connected.Idle(null, services, deviceConnectionManager) } ?: Connected.NoServices(null, deviceConnectionManager)
         }

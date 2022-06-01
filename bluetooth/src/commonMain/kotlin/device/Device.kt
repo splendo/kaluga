@@ -82,9 +82,9 @@ class DeviceImpl(
         launch {
             sharedInfo.map { it.advertisementData.isConnectable }.distinctUntilChanged()
                 .filterNot { it }.collect {
-                connectionManager.disconnect()
-                deviceStateRepo.value = null
-            }
+                    connectionManager.disconnect()
+                    deviceStateRepo.value = null
+                }
         }
         launch {
             connectionManager.rssi.collect(::rssiDidUpdate)

@@ -58,7 +58,7 @@ sealed interface ScanningState : KalugaState {
         val deinitialize: suspend () -> Deinitialized
     }
 
-    interface Initializing: Active, SpecialFlowValue.NotImportant {
+    interface Initializing : Active, SpecialFlowValue.NotImportant {
         fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
     }
     sealed interface Initialized : Active
@@ -141,7 +141,8 @@ sealed class ScanningStateImpl {
         override val reinitialize = suspend { Initializing(previouslyDiscovered, scanner) }
     }
 
-    sealed class Active : ScanningStateImpl(),
+    sealed class Active :
+        ScanningStateImpl(),
         HandleBeforeOldStateIsRemoved<ScanningState>,
         HandleAfterNewStateIsSet<ScanningState> {
         override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
@@ -256,8 +257,7 @@ sealed class ScanningStateImpl {
         ) : Enabled(),
             HandleAfterOldStateIsRemoved<ScanningState>,
             HandleAfterCreating<ScanningState>,
-            ScanningState.Enabled.Scanning
-        {
+            ScanningState.Enabled.Scanning {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(scanner)
 

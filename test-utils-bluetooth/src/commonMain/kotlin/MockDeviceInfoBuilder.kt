@@ -22,10 +22,8 @@ import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData

@@ -48,13 +48,10 @@ sealed class MockScanningState {
     sealed class Inactive : MockScanningState()
     data class NotInitialized(val isHardwareSupported: Boolean) : Inactive(), ScanningState.NotInitialized {
 
-        fun startInitializing(
-        ): suspend () -> ScanningState {
-            return if (!isHardwareSupported) {
-                { NoHardware }
-            } else {
-                { Initializing(nothingDiscovered) }
-            }
+        fun startInitializing() = if (!isHardwareSupported) {
+            { NoHardware }
+        } else {
+            { Initializing(nothingDiscovered) }
         }
     }
 
@@ -120,8 +117,7 @@ sealed class MockScanningState {
         class Scanning(
             override val discovered: ScanningState.Discovered
         ) : Enabled(),
-            ScanningState.Enabled.Scanning
-        {
+            ScanningState.Enabled.Scanning {
 
             override val permittedHandler: PermittedHandler = PermittedHandler()
 
