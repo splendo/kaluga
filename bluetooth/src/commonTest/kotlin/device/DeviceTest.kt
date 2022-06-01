@@ -75,7 +75,7 @@ class DeviceTest :
     @Test
     fun testConnectNotConnectible() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor(
-            advertisementData = MockAdvertisementData(isConnectible = false)
+            advertisementData = MockAdvertisementData(isConnectable = false)
         )
     ) {
         getDisconnectedState()

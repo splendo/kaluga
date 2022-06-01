@@ -31,7 +31,6 @@ expect interface DeviceWrapper {
 }
 
 interface DeviceInfo {
-    val identifier: Identifier
     val name: String?
     val rssi: Int
     val advertisementData: BaseAdvertisementData
@@ -40,16 +39,10 @@ interface DeviceInfo {
 }
 
 data class DeviceInfoImpl(
-    internal val deviceWrapper: DeviceWrapper,
+    override val name: String?,
     override val rssi: Int,
     override val advertisementData: BaseAdvertisementData
 ) : DeviceInfo {
-
-    override val identifier: Identifier
-        get() = deviceWrapper.identifier
-
-    override val name: String?
-        get() = deviceWrapper.name
 
     override val updatedAt = DefaultKalugaDate.now()
 

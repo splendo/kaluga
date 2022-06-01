@@ -18,34 +18,21 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.KalugaState
-import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 typealias Filter = Set<UUID>
 
 sealed interface ScanningState : KalugaState {
 
-    interface Permitted : HandleBeforeOldStateIsRemoved<ScanningState>, HandleAfterNewStateIsSet<ScanningState> {
+    interface Permitted {
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions
     }
 
@@ -65,10 +52,7 @@ sealed interface ScanningState : KalugaState {
         val reinitialize: suspend () -> Initializing
     }
 
-    sealed interface Active :
-        ScanningState,
-        HandleBeforeOldStateIsRemoved<ScanningState>,
-        HandleAfterNewStateIsSet<ScanningState> {
+    sealed interface Active : ScanningState {
 
         val discovered: Discovered
         val deinitialize: suspend () -> Deinitialized
@@ -89,9 +73,7 @@ sealed interface ScanningState : KalugaState {
             fun refresh(filter: Set<UUID> = discovered.filter): suspend () -> Idle
         }
 
-        interface Scanning : Enabled,
-            HandleAfterOldStateIsRemoved<ScanningState>,
-            HandleAfterCreating<ScanningState> {
+        interface Scanning : Enabled {
 
             suspend fun discoverDevice(
                 identifier: Identifier,
@@ -159,8 +141,10 @@ sealed class ScanningStateImpl {
         override val reinitialize = suspend { Initializing(previouslyDiscovered, scanner) }
     }
 
-    sealed class Active : ScanningStateImpl() {
-        open suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
+    sealed class Active : ScanningStateImpl(),
+        HandleBeforeOldStateIsRemoved<ScanningState>,
+        HandleAfterNewStateIsSet<ScanningState> {
+        override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
             when (oldState) {
                 is ScanningState.Inactive -> {
                     scanner.startMonitoringPermissions()
@@ -169,7 +153,7 @@ sealed class ScanningStateImpl {
             }
         }
 
-        open suspend fun afterNewStateIsSet(newState: ScanningState) {
+        override suspend fun afterNewStateIsSet(newState: ScanningState) {
             when (newState) {
                 is ScanningState.Inactive -> {
                     scanner.stopMonitoringPermissions()
@@ -186,7 +170,7 @@ sealed class ScanningStateImpl {
 
         override val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
 
-        override suspend fun afterNewStateIsSet(newState: ScanningState) {
+        fun afterNewStateIsSet(newState: ScanningState) {
             when (newState) {
                 is ScanningState.Inactive,
                 is ScanningState.Initializing,
@@ -196,7 +180,7 @@ sealed class ScanningStateImpl {
             }
         }
 
-        override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
+        fun beforeOldStateIsRemoved(oldState: ScanningState) {
             when (oldState) {
                 is ScanningState.Inactive,
                 is ScanningState.Initializing,
@@ -270,6 +254,8 @@ sealed class ScanningStateImpl {
             override val discovered: ScanningState.Discovered,
             override val scanner: Scanner
         ) : Enabled(),
+            HandleAfterOldStateIsRemoved<ScanningState>,
+            HandleAfterCreating<ScanningState>,
             ScanningState.Enabled.Scanning
         {
 
@@ -348,124 +334,3 @@ sealed class ScanningStateImpl {
 
     object NoHardware : ScanningStateImpl(), ScanningState.NoHardware
 }
-
-typealias ScanningStateFlowRepo = StateRepo<ScanningState, MutableStateFlow<ScanningState>>
-
-abstract class BaseScanningStateRepo(
-    createNotInitializedState: () -> ScanningState.NotInitialized,
-    createInitializingState: ColdStateFlowRepo<ScanningState>.(ScanningState.Inactive) -> suspend () -> ScanningState,
-    createDeinitializingState: ColdStateFlowRepo<ScanningState>.(ScanningState.Active) -> suspend () -> ScanningState.Deinitialized,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : ColdStateFlowRepo<ScanningState>(
-    coroutineContext = coroutineContext,
-    initChangeStateWithRepo = { state, repo ->
-        when (state) {
-            is ScanningState.Inactive -> {
-                repo.createInitializingState(state)
-            }
-            is ScanningState.Active, is ScanningState.NoHardware -> state.remain()
-        }
-    },
-    deinitChangeStateWithRepo = { state, repo ->
-        when (state) {
-            is ScanningState.Active -> repo.createDeinitializingState(state)
-            is ScanningState.Inactive, is ScanningState.NoHardware -> state.remain()
-        }
-    },
-    firstState = createNotInitializedState
-)
-
-open class ScanningStateImplRepo(
-    createScanner: () -> Scanner,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    private val contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
-) : BaseScanningStateRepo(
-    createNotInitializedState = { ScanningStateImpl.NotInitialized },
-    createInitializingState = { state ->
-        when (val stateImpl = state as ScanningStateImpl.Inactive) {
-            is ScanningStateImpl.NotInitialized -> {
-                val scanner = createScanner()
-                (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
-                stateImpl.startInitializing(scanner)
-            }
-            is ScanningStateImpl.Deinitialized -> {
-                (this as ScanningStateImplRepo).startMonitoringScanner(stateImpl.scanner)
-                stateImpl.reinitialize
-            }
-        }
-    },
-    createDeinitializingState = { state ->
-        (this as ScanningStateImplRepo).superVisorJob.cancelChildren()
-        (state as ScanningStateImpl.Active).deinitialize
-    }
-) {
-
-    private val superVisorJob = SupervisorJob(coroutineContext[Job])
-    private fun startMonitoringScanner(scanner: Scanner) {
-        CoroutineScope(coroutineContext + superVisorJob).launch {
-            scanner.events.collect { event ->
-                when (event) {
-                    is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
-                    is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
-                    is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
-                    is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning }
-                    is Scanner.Event.DeviceDiscovered -> handleDeviceDiscovered(event)
-                    is Scanner.Event.DeviceConnected -> handleDeviceConnectionChanged(event.identifier, true)
-                    is Scanner.Event.DeviceDisconnected -> handleDeviceConnectionChanged(event.identifier, false)
-                }
-            }
-        }
-    }
-
-    private suspend fun handlePermissionChangedEvent(event: Scanner.Event.PermissionChanged, scanner: Scanner) = takeAndChangeState { state ->
-        when (state) {
-            is ScanningState.Initializing -> {
-                state.initialized(event.hasPermission, scanner.isHardwareEnabled())
-            }
-            is ScanningState.Permitted -> {
-                if (event.hasPermission)
-                    state.remain()
-                else
-                    state.revokePermission
-            }
-            is ScanningState.NoBluetooth.MissingPermissions -> if (event.hasPermission) state.permit(scanner.isHardwareEnabled()) else state.remain()
-            else -> { state.remain() }
-        }
-    }
-
-    private suspend fun handleDeviceDiscovered(event: Scanner.Event.DeviceDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
-        state.discoverDevice(event.identifier, event.rssi, event.advertisementData) {
-            event.deviceCreator(
-                coroutineContext.contextCreator("Device ${event.identifier.stringValue}")
-            )
-        }
-    }
-
-    private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
-        if (state is ScanningState.Enabled) {
-            state.discovered.devices.find { it.identifier == identifier }?.let { device ->
-                val connectionManager = device.first().connectionManager
-                if (connected)
-                    connectionManager.handleConnect()
-                else
-                    connectionManager.handleDisconnect()
-            }
-        }
-    }
-}
-
-class ScanningStateRepo(
-    settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
-    builder: BaseScanner.Builder,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
-) : ScanningStateImplRepo(
-    createScanner = {
-        builder.create(
-            settingsBuilder(coroutineContext.contextCreator("BluetoothPermissions")),
-            CoroutineScope(coroutineContext.contextCreator("BluetoothScanner"))
-        )
-    },
-    coroutineContext = coroutineContext,
-    contextCreator = contextCreator
-)

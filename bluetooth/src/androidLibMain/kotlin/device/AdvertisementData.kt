@@ -43,6 +43,6 @@ actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvert
         get() = scanRecord?.serviceData?.mapKeys { it.key.uuid } ?: emptyMap()
     override val txPowerLevel: Int
         get() = scanRecord?.txPowerLevel ?: Int.MIN_VALUE
-    override val isConnectible: Boolean
+    override val isConnectable: Boolean
         get() = scanResult?.isConnectable == true
 }

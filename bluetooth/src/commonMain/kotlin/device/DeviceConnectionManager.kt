@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.jvm.JvmName
 
 abstract class BaseDeviceConnectionManager(
@@ -53,7 +54,6 @@ abstract class BaseDeviceConnectionManager(
     }
 
     sealed class Event {
-        data class RssiUpdate(val rrsi: Int) : Event()
         object Connecting : Event()
         object CancelledConnecting : Event()
         object Connected : Event()
@@ -74,9 +74,11 @@ abstract class BaseDeviceConnectionManager(
     private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.DROP_OLDEST)
     val events = sharedEvents.asSharedFlow()
 
-    private val _mtu = MutableStateFlow(-1)
-    val mtuFlow: Flow<Int> = _mtu
-    val mtu: Int get() = _mtu.value
+    private val sharedRssi = MutableSharedFlow<Int>(0, 0, BufferOverflow.DROP_OLDEST)
+    val rssi = sharedRssi.asSharedFlow()
+
+    private val sharedMtu = MutableSharedFlow<Int>(0, 0, BufferOverflow.DROP_OLDEST)
+    val mtuFlow: Flow<Int> = sharedMtu.asSharedFlow()
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -86,11 +88,11 @@ abstract class BaseDeviceConnectionManager(
     abstract suspend fun performAction(action: DeviceAction)
 
     fun handleNewRssi(rssi: Int) {
-        sharedEvents.tryEmit(Event.RssiUpdate(rssi))
+        sharedRssi.tryEmit(rssi)
     }
 
     fun handleNewMtu(mtu: Int) {
-        _mtu.value = mtu
+        sharedMtu.tryEmit(mtu)
     }
 
     fun startConnecting() {
