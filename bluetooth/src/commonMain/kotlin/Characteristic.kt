@@ -21,7 +21,6 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 

@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import kotlinx.coroutines.flow.FlowCollector
 
 open class Descriptor(
     val wrapper: DescriptorWrapper,

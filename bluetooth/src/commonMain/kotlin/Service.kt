@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import kotlinx.coroutines.flow.FlowCollector
 
 class Service(
     service: ServiceWrapper,
