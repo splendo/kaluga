@@ -26,8 +26,8 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -89,7 +89,7 @@ actual class DefaultScanner internal constructor(
                 else -> Pair("Reason Unknown", true)
             }
 
-            com.splendo.kaluga.logging.error("ScanningStateImplRepo", error.first)
+            logError { error.first }
             if (error.second) {
                 sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.FailedScanning)
             }
@@ -119,7 +119,7 @@ actual class DefaultScanner internal constructor(
     private val locationPermissionRepo get() = permissions[locationPermission]
 
     override val isSupported: Boolean = bluetoothAdapter != null
-    private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
+    private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
     override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
@@ -131,6 +131,7 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
+        super.scanForDevices(filter)
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -141,6 +142,7 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun stopScanning() {
+        super.stopScanning()
         bluetoothScanner.stopScan(callback)
     }
 

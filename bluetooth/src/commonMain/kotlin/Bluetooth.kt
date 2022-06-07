@@ -78,10 +78,6 @@ class Bluetooth internal constructor(
         ): Bluetooth
     }
 
-    companion object {
-        private const val LOG_TAG = "Kaluga Bluetooth"
-    }
-
     internal val scanningStateRepo = ScanningStateRepo(
         scannerSettingsBuilder,
         scannerBuilder,
@@ -90,7 +86,7 @@ class Bluetooth internal constructor(
                 identifier,
                 deviceInfo,
                 connectionSettings,
-                { connectionManagerBuilder.create(deviceWrapper, connectionSettings.eventBufferSize, CoroutineScope(coroutineContext.contextCreator("ConnectionManager ${identifier.stringValue}"))) },
+                { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext.contextCreator("ConnectionManager ${identifier.stringValue}"))) },
                 CoroutineScope(coroutineContext.contextCreator("Device ${identifier.stringValue}"))
             ) { connectionManager, coroutineContext ->
                 ConnectibleDeviceStateImplRepo(

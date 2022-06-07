@@ -17,15 +17,25 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: SequentialMutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
+    initialValue: ByteArray? = null,
+    private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    private val parentLogTag: String,
+    private val logLevel: ConnectionSettings.LogLevel
+) : Flow<ByteArray?> {
+
+    val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
+
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =
@@ -50,14 +60,19 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     internal abstract fun createWriteAction(newValue: ByteArray?): W
 
-    open suspend fun updateValue() {
+    open fun updateValue() {
         val nextValue = getUpdatedValue()
-        sharedFlow.emit(nextValue)
+        if (logLevel == ConnectionSettings.LogLevel.VERBOSE) {
+            debug(logTag, "Updated value to $nextValue")
+        }
+        sharedFlow.tryEmit(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected fun addAction(action: DeviceAction) {
-        newActionFlow.tryEmitOrLaunchAndEmit(BaseDeviceConnectionManager.Event.AddAction(action))
+        if (logLevel != ConnectionSettings.LogLevel.NONE)
+            info(logTag, "Add action $action")
+        emitNewAction(DeviceConnectionManager.Event.AddAction(action))
     }
 }

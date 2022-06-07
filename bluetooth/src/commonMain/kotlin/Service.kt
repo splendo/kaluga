@@ -17,15 +17,24 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 
 class Service(
     service: ServiceWrapper,
-    private val newActionFlow: SequentialMutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    parentLogTag: String,
+    logLevel: ConnectionSettings.LogLevel
 ) {
     val uuid = service.uuid
-    val characteristics = service.characteristics.map { Characteristic(it, newActionFlow = newActionFlow) }
+    val characteristics = service.characteristics.map {
+        Characteristic(
+            it,
+            emitNewAction = emitNewAction,
+            parentLogTag = "$parentLogTag Service ${uuid.uuidString}",
+            logLevel = logLevel
+        )
+    }
 }
 
 expect interface ServiceWrapper {

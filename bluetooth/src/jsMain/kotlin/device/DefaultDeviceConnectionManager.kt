@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import kotlinx.coroutines.CoroutineScope
 
-internal actual class DeviceConnectionManager(
+internal actual class DefaultDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
     bufferCapacity: Int = BUFFER_CAPACITY,
     coroutineScope: CoroutineScope
@@ -31,8 +31,8 @@ internal actual class DeviceConnectionManager(
             deviceWrapper: DeviceWrapper,
             bufferCapacity: Int,
             coroutineScope: CoroutineScope
-        ): DeviceConnectionManager {
-            return DeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope)
+        ): DefaultDeviceConnectionManager {
+            return DefaultDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope)
         }
     }
 

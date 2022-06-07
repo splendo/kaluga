@@ -26,7 +26,7 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
-import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
@@ -42,7 +42,7 @@ import platform.darwin.NSObject
 import platform.darwin.dispatch_queue_create
 
 actual class DefaultScanner internal constructor(
-    settings: BaseScanner.Settings,
+    settings: Settings,
     private val scanSettings: ScanSettings,
     coroutineScope: CoroutineScope
 ) : BaseScanner(settings, coroutineScope) {
@@ -58,7 +58,6 @@ actual class DefaultScanner internal constructor(
     }
 
     companion object {
-        private const val TAG = "IOS Bluetooth Scanner"
         private val defaultScanOptions = ScanSettings.Builder().build()
     }
 
@@ -110,13 +109,17 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) =
-        if (filter.isEmpty())
+    override suspend fun scanForDevices(filter: Set<UUID>) {
+        super.scanForDevices(filter)
+        if (filter.isEmpty()) {
             scan()
-        else
+        } else {
             filter.forEach { scan(it) }
+        }
+    }
 
     override suspend fun stopScanning() {
+        super.stopScanning()
         centralManagers.forEach { centralManager ->
             if (centralManager.state == CBCentralManagerStatePoweredOn) {
                 centralManager.stopScan()
@@ -148,7 +151,7 @@ actual class DefaultScanner internal constructor(
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
         handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
-            deviceWrapper to DeviceConnectionManager.Builder(central, peripheral)
+            deviceWrapper to DefaultDeviceConnectionManager.Builder(central, peripheral)
         }
     }
 

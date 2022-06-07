@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
@@ -68,11 +69,12 @@ class MockDeviceInfoBuilder {
 fun createMockDevice(
     identifier: Identifier,
     connectionSettings: ConnectionSettings = ConnectionSettings(
+        eventBufferSize = 1,
         reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
     ),
-    connectionManagerBuilder: () -> BaseDeviceConnectionManager,
+    connectionManagerBuilder: (ConnectionSettings) -> DeviceConnectionManager,
     builder: MockDeviceInfoBuilder.() -> Unit,
-    createDeviceStateFlow: (BaseDeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = { manager, coroutineContext -> ConnectibleDeviceStateImplRepo(manager, coroutineContext) },
+    createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = { manager, coroutineContext -> ConnectibleDeviceStateImplRepo(manager, coroutineContext) },
     coroutineScope: CoroutineScope
 ) = DeviceImpl(
     identifier = identifier,
@@ -87,9 +89,10 @@ fun createMockDevice(
     wrapper: DeviceWrapper,
     coroutineScope: CoroutineScope,
     connectionSettings: ConnectionSettings = ConnectionSettings(
+        eventBufferSize = 1,
         reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
     ),
     connectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),
-    createDeviceStateFlow: (BaseDeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = { manager, coroutineContext -> ConnectibleDeviceStateImplRepo(manager, coroutineContext) },
+    createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = { manager, coroutineContext -> ConnectibleDeviceStateImplRepo(manager, coroutineContext) },
     builder: MockDeviceInfoBuilder.() -> Unit,
-) = createMockDevice(wrapper.identifier, connectionSettings, { connectionManagerBuilder.create(wrapper, 1, coroutineScope) }, builder, createDeviceStateFlow, coroutineScope)
+) = createMockDevice(wrapper.identifier, connectionSettings, { connectionManagerBuilder.create(wrapper, it, coroutineScope) }, builder, createDeviceStateFlow, coroutineScope)

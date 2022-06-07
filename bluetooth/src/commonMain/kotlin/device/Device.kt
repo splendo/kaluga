@@ -57,16 +57,16 @@ class DeviceImpl(
     override val identifier: Identifier,
     initialDeviceInfo: DeviceInfoImpl,
     private val connectionSettings: ConnectionSettings,
-    private val connectionManagerBuilder: () -> BaseDeviceConnectionManager,
+    private val connectionManagerBuilder: (ConnectionSettings) -> DeviceConnectionManager,
     private val coroutineScope: CoroutineScope,
-    private val createDeviceStateFlow: (BaseDeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = ::ConnectibleDeviceStateImplRepo
+    private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = ::ConnectibleDeviceStateImplRepo
 ) : Device, CoroutineScope by coroutineScope {
 
     companion object {
         const val TAG = "DeviceImp"
     }
 
-    private val connectionManager = CompletableDeferred<BaseDeviceConnectionManager>()
+    private val connectionManager = CompletableDeferred<DeviceConnectionManager>()
     private val sharedInfo = MutableStateFlow(initialDeviceInfo)
     private val deviceStateRepo = MutableStateFlow<ConnectibleDeviceStateFlowRepo?>(null)
     override val info: Flow<DeviceInfo> = sharedInfo.asStateFlow()
@@ -74,7 +74,6 @@ class DeviceImpl(
         sharedInfo.map { it.advertisementData.isConnectable },
         deviceStateRepo
     ) { isConnectable, repo ->
-        debug("TEST $isConnectable ${repo == null}")
         when {
             !isConnectable -> null
             repo != null -> repo
@@ -102,16 +101,16 @@ class DeviceImpl(
         launch {
             connectionManager.await().events.collect { event ->
                 val repo = when (event) {
-                    is BaseDeviceConnectionManager.Event.Connecting,
-                    is BaseDeviceConnectionManager.Event.Connected -> createDeviceStateRepoIfNotCreated()
-                    is BaseDeviceConnectionManager.Event.CancelledConnecting,
-                    is BaseDeviceConnectionManager.Event.Discovering,
-                    is BaseDeviceConnectionManager.Event.DiscoveredServices,
-                    is BaseDeviceConnectionManager.Event.AddAction,
-                    is BaseDeviceConnectionManager.Event.CompletedAction,
-                    is BaseDeviceConnectionManager.Event.Disconnecting,
-                    is BaseDeviceConnectionManager.Event.Disconnected,
-                    is BaseDeviceConnectionManager.Event.MtuUpdated -> deviceStateRepo.value
+                    is DeviceConnectionManager.Event.Connecting,
+                    is DeviceConnectionManager.Event.Connected -> createDeviceStateRepoIfNotCreated()
+                    is DeviceConnectionManager.Event.CancelledConnecting,
+                    is DeviceConnectionManager.Event.Discovering,
+                    is DeviceConnectionManager.Event.DiscoveredServices,
+                    is DeviceConnectionManager.Event.AddAction,
+                    is DeviceConnectionManager.Event.CompletedAction,
+                    is DeviceConnectionManager.Event.Disconnecting,
+                    is DeviceConnectionManager.Event.Disconnected,
+                    is DeviceConnectionManager.Event.MtuUpdated -> deviceStateRepo.value
                 }
                 repo?.takeAndChangeState { state ->
                     event.stateTransition(state)
@@ -157,10 +156,10 @@ class DeviceImpl(
         sharedInfo.value = sharedInfo.value.copy(rssi = rssi, advertisementData = advertisementData)
     }
 
-    private fun createConnectionManagerIfNotCreated(): BaseDeviceConnectionManager = if (connectionManager.isCompleted) {
+    private fun createConnectionManagerIfNotCreated(): DeviceConnectionManager = if (connectionManager.isCompleted) {
         connectionManager.getCompleted()
     } else {
-        connectionManagerBuilder().also {
+        connectionManagerBuilder(connectionSettings).also {
             connectionManager.complete(it)
         }
     }
@@ -173,34 +172,34 @@ class DeviceImpl(
             ) else null
         }
 
-    private suspend fun BaseDeviceConnectionManager.Event.stateTransition(state: ConnectibleDeviceState): suspend () -> ConnectibleDeviceState =
+    private suspend fun DeviceConnectionManager.Event.stateTransition(state: ConnectibleDeviceState): suspend () -> ConnectibleDeviceState =
         when (this) {
-            is BaseDeviceConnectionManager.Event.Connecting -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.CancelledConnecting -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.Connected -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.Disconnecting -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.Disconnected -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.Discovering -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.AddAction -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
-            is BaseDeviceConnectionManager.Event.MtuUpdated -> stateTransition(state)
+            is DeviceConnectionManager.Event.Connecting -> stateTransition(state)
+            is DeviceConnectionManager.Event.CancelledConnecting -> stateTransition(state)
+            is DeviceConnectionManager.Event.Connected -> stateTransition(state)
+            is DeviceConnectionManager.Event.Disconnecting -> stateTransition(state)
+            is DeviceConnectionManager.Event.Disconnected -> stateTransition(state)
+            is DeviceConnectionManager.Event.Discovering -> stateTransition(state)
+            is DeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
+            is DeviceConnectionManager.Event.AddAction -> stateTransition(state)
+            is DeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
+            is DeviceConnectionManager.Event.MtuUpdated -> stateTransition(state)
         }
 
-    private fun BaseDeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectibleDeviceState) =
         if (state is ConnectibleDeviceState.Disconnected)
             state.connect
         else
             state.remain()
 
-    private fun BaseDeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: ConnectibleDeviceState) =
         when (state) {
             is ConnectibleDeviceState.Connecting -> state.cancelConnection
             is ConnectibleDeviceState.Reconnecting -> state.cancelConnection
             else -> state.remain()
         }
 
-    private suspend fun BaseDeviceConnectionManager.Event.Connected.stateTransition(state: ConnectibleDeviceState) =
+    private suspend fun DeviceConnectionManager.Event.Connected.stateTransition(state: ConnectibleDeviceState) =
         when (state) {
             is ConnectibleDeviceState.Connecting -> state.didConnect
             is ConnectibleDeviceState.Reconnecting -> state.didConnect
@@ -211,13 +210,13 @@ class DeviceImpl(
             }
         }
 
-    private fun BaseDeviceConnectionManager.Event.Disconnecting.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.Disconnecting.stateTransition(state: ConnectibleDeviceState) =
         if (state is ConnectibleDeviceState.Connected)
             state.disconnecting
         else
             state.remain()
 
-    private suspend fun BaseDeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectibleDeviceState) =
+    private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectibleDeviceState) =
         when (state) {
             is ConnectibleDeviceState.Reconnecting -> {
                 state.retry(connectionSettings.reconnectionSettings).also {
@@ -242,19 +241,19 @@ class DeviceImpl(
             }
         }
 
-    private fun BaseDeviceConnectionManager.Event.Discovering.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.Discovering.stateTransition(state: ConnectibleDeviceState) =
         if (state is ConnectibleDeviceState.Connected.NoServices)
             state.discoverServices
         else
             state.remain()
 
-    private fun BaseDeviceConnectionManager.Event.DiscoveredServices.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.DiscoveredServices.stateTransition(state: ConnectibleDeviceState) =
         if (state is ConnectibleDeviceState.Connected.Discovering)
             state.didDiscoverServices(services)
         else
             state.remain()
 
-    private fun BaseDeviceConnectionManager.Event.AddAction.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.AddAction.stateTransition(state: ConnectibleDeviceState) =
         when (state) {
             is ConnectibleDeviceState.Connected.Idle -> {
                 state.handleAction(action)
@@ -273,7 +272,7 @@ class DeviceImpl(
             }
         }
 
-    private fun BaseDeviceConnectionManager.Event.CompletedAction.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.CompletedAction.stateTransition(state: ConnectibleDeviceState) =
         if (state is ConnectibleDeviceState.Connected.HandlingAction && state.action === action) {
             state.action.completedSuccessfully.complete(succeeded)
             debug(TAG) { "Action $action has been succeeded: $succeeded" }
@@ -282,7 +281,7 @@ class DeviceImpl(
             state.remain()
         }
 
-    private fun BaseDeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectibleDeviceState) =
+    private fun DeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectibleDeviceState) =
         if (state is ConnectibleDeviceState.Connected) {
             state.didUpdateMtu(newMtu)
         } else {
@@ -299,22 +298,22 @@ abstract class BaseConnectibleDeviceStateRepo(
 )
 
 class ConnectibleDeviceStateImplRepo(
-    connectionManager: BaseDeviceConnectionManager,
+    connectionManager: DeviceConnectionManager,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : BaseConnectibleDeviceStateRepo(
     initialState = {
         when (connectionManager.getCurrentState()) {
-            BaseDeviceConnectionManager.State.CONNECTED -> ConnectibleDeviceStateImpl.Connected.NoServices(
+            DeviceConnectionManager.State.CONNECTED -> ConnectibleDeviceStateImpl.Connected.NoServices(
                 null,
                 connectionManager
             )
-            BaseDeviceConnectionManager.State.CONNECTING -> ConnectibleDeviceStateImpl.Connecting(
+            DeviceConnectionManager.State.CONNECTING -> ConnectibleDeviceStateImpl.Connecting(
                 connectionManager
             )
-            BaseDeviceConnectionManager.State.DISCONNECTED -> ConnectibleDeviceStateImpl.Disconnected(
+            DeviceConnectionManager.State.DISCONNECTED -> ConnectibleDeviceStateImpl.Disconnected(
                 connectionManager
             )
-            BaseDeviceConnectionManager.State.DISCONNECTING -> ConnectibleDeviceStateImpl.Disconnecting(
+            DeviceConnectionManager.State.DISCONNECTING -> ConnectibleDeviceStateImpl.Disconnecting(
                 connectionManager
             )
         }

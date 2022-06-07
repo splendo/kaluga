@@ -184,7 +184,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             deviceWrapper: DeviceWrapper,
             rssi: Int,
             advertisementData: BaseAdvertisementData,
-            deviceConnectionManagerBuilder: () -> BaseDeviceConnectionManager
+            deviceConnectionManagerBuilder: (ConnectionSettings) -> BaseDeviceConnectionManager
         ): Device {
             return DeviceImpl(
                 deviceWrapper.identifier,
@@ -259,7 +259,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun createDevice(
             deviceWrapper: DeviceWrapper = this.deviceWrapper,
             deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder
-        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, 1, coroutineScope) }
+        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, ConnectionSettings(eventBufferSize = 1), coroutineScope) }
 
         fun scanDevice(
             rssi: Int = configuration.rssi,
