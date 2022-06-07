@@ -18,8 +18,8 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.flow.tryEmitOrLaunchAndEmit
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -31,9 +31,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
@@ -99,7 +97,7 @@ abstract class BaseScanner constructor(
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
-    protected val sharedEvents = MutableSharedFlow<Scanner.Event>(0, settings.eventBufferSize, BufferOverflow.DROP_OLDEST)
+    protected val sharedEvents = SequentialMutableSharedFlow<Scanner.Event>(0, settings.eventBufferSize, coroutineScope)
     override val events: Flow<Scanner.Event> = sharedEvents.asSharedFlow()
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
@@ -167,7 +165,7 @@ abstract class BaseScanner constructor(
     override suspend fun requestEnableHardware() {
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {
-            sharedEvents.tryEmitOrLaunchAndEmit(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled, coroutineScope)
+            sharedEvents.tryEmitOrLaunchAndEmit(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
         } else if (
             flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
                 acc && action()
@@ -182,16 +180,16 @@ abstract class BaseScanner constructor(
         rssi: Int,
         advertisementData: AdvertisementData,
         deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
-    ) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator), coroutineScope)
+    ) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
 
-    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceConnected(identifier), coroutineScope)
-    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDisconnected(identifier), coroutineScope)
+    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceConnected(identifier))
+    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDisconnected(identifier))
 
     internal open suspend fun checkHardwareEnabledChanged() {
         if (isHardwareEnabled())
-            sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.BluetoothEnabled, coroutineScope)
+            sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.BluetoothEnabled)
         else {
-            sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.BluetoothDisabled, coroutineScope)
+            sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.BluetoothDisabled)
             if (autoEnableSensors) {
                 requestEnableHardware()
             }

@@ -23,7 +23,6 @@ import android.content.Context
 import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.flow.tryEmitOrLaunchAndEmit
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -92,7 +91,7 @@ actual class DefaultScanner internal constructor(
 
             com.splendo.kaluga.logging.error("ScanningStateImplRepo", error.first)
             if (error.second) {
-                sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.FailedScanning, coroutineScope)
+                sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.FailedScanning)
             }
         }
 

@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import co.touchlab.stately.collections.sharedMutableMapOf
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
-import com.splendo.kaluga.base.flow.tryEmitOrLaunchAndEmit
+import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -77,7 +77,7 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.SUSPEND)
+    private val sharedEvents = SequentialMutableSharedFlow<Event>(0, bufferCapacity, coroutineScope)
     val events = sharedEvents.asSharedFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
@@ -97,23 +97,23 @@ abstract class BaseDeviceConnectionManager(
     }
 
     fun handleNewMtu(mtu: Int) {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.MtuUpdated(mtu), coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.MtuUpdated(mtu))
     }
 
     fun startConnecting() {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.Connecting, coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Connecting)
     }
 
     fun cancelConnecting() {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.CancelledConnecting, coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.CancelledConnecting)
     }
 
     fun handleConnect() {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.Connected, coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Connected)
     }
 
     fun startDisconnecting() {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.Disconnecting, coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Disconnecting)
     }
 
     fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, sharedEvents)
@@ -127,24 +127,24 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
             Unit
         }
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.Disconnected(clean), coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Disconnected(clean))
     }
 
     fun startDiscovering() {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.Discovering, coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Discovering)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
     fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     fun handleDiscoverCompleted(services: List<Service>) {
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.DiscoveredServices(services), coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.DiscoveredServices(services))
     }
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
         val currentAction = this.currentAction
         _currentAction.value = null
-        sharedEvents.tryEmitOrLaunchAndEmit(Event.CompletedAction(currentAction, succeeded), coroutineScope)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.CompletedAction(currentAction, succeeded))
     }
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import kotlinx.coroutines.channels.BufferOverflow
@@ -24,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: SequentialMutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =
@@ -33,7 +34,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     // TODO make configurable
     private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
 
-    suspend fun readValue(): DeviceAction {
+    fun readValue(): DeviceAction {
         val action = createReadAction()
         addAction(action)
         return action
@@ -41,7 +42,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     internal abstract fun createReadAction(): R
 
-    suspend fun writeValue(newValue: ByteArray?): DeviceAction {
+    fun writeValue(newValue: ByteArray?): DeviceAction {
         val action = createWriteAction(newValue)
         addAction(action)
         return action
@@ -56,7 +57,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     internal abstract fun getUpdatedValue(): ByteArray?
 
-    protected suspend fun addAction(action: DeviceAction) {
-        newActionFlow.emit(BaseDeviceConnectionManager.Event.AddAction(action))
+    protected fun addAction(action: DeviceAction) {
+        newActionFlow.tryEmitOrLaunchAndEmit(BaseDeviceConnectionManager.Event.AddAction(action))
     }
 }
