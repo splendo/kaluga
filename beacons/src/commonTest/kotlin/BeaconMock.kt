@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
@@ -39,7 +40,7 @@ object BeaconMock {
         instance.decodeHex()!!
 
     fun mockGenericDevice(name: String, coroutineScope: CoroutineScope) = makeDevice(
-        name, coroutineScope = coroutineScope
+        createDeviceWrapper(name), coroutineScope = coroutineScope
     )
 
     fun mockBeaconDevice(id: String, coroutineScope: CoroutineScope): Device {
@@ -48,7 +49,7 @@ object BeaconMock {
             instance = id.substring(20)
         )
         return makeDevice(
-            name = "Beacon:" + beaconId.namespace + beaconId.instance,
+            deviceWrapper = createDeviceWrapper("Beacon:" + beaconId.namespace + beaconId.instance),
             serviceData = mapOf(
                 Eddystone.SERVICE_UUID to beaconId.asByteArray()
             ),
@@ -57,34 +58,27 @@ object BeaconMock {
     }
 
     private fun makeDevice(
-        name: String,
+        deviceWrapper: DeviceWrapper,
         serviceData: ServiceData = emptyMap(),
         coroutineScope: CoroutineScope
-    ) = Device(
+    ) = DeviceImpl(
+        deviceWrapper.identifier,
+        makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
         settings,
-        makeDeviceInfo(name, serviceData),
-        manager,
+        MockDeviceConnectionManager(
+            deviceWrapper = deviceWrapper,
+            bufferCapacity = 1,
+            coroutineScope = coroutineScope
+        ),
         coroutineScope
     )
 
     private val settings = ConnectionSettings(
-        ConnectionSettings.ReconnectionSettings.Limited(2)
+        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(2)
     )
 
-    private val manager = object : BaseDeviceConnectionManager.Builder {
-        override fun create(
-            deviceWrapper: DeviceWrapper,
-            bufferCapacity: Int,
-            coroutineScope: CoroutineScope
-        ) = MockDeviceConnectionManager(
-            deviceWrapper = deviceWrapper,
-            bufferCapacity = bufferCapacity,
-            coroutineScope = coroutineScope
-        )
-    }
-
     private fun makeDeviceInfo(name: String, serviceData: ServiceData) = DeviceInfoImpl(
-        createDeviceWrapper(name),
+        name,
         rssi = -78,
         MockAdvertisementData(name, serviceData = serviceData)
     )

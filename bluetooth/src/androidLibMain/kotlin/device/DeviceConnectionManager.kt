@@ -135,6 +135,14 @@ internal actual class DeviceConnectionManager(
     }
     private var lastKnownState = BluetoothProfile.STATE_DISCONNECTED
 
+    override fun getCurrentState(): State = when (lastKnownState) {
+        BluetoothProfile.STATE_CONNECTED -> State.CONNECTED
+        BluetoothProfile.STATE_CONNECTING -> State.CONNECTING
+        BluetoothProfile.STATE_DISCONNECTED -> State.DISCONNECTED
+        BluetoothProfile.STATE_DISCONNECTING -> State.DISCONNECTING
+        else -> State.DISCONNECTED
+    }
+
     @SuppressLint("MissingPermission")
     override suspend fun connect() {
         if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {

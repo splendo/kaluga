@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.flow.tryEmitOrLaunchAndEmit
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -73,7 +74,7 @@ interface Scanner {
 
 abstract class BaseScanner constructor(
     settings: Settings,
-    coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope
 ) : Scanner, CoroutineScope by coroutineScope {
 
     companion object {
@@ -166,7 +167,7 @@ abstract class BaseScanner constructor(
     override suspend fun requestEnableHardware() {
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {
-            sharedEvents.tryEmit(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
+            sharedEvents.tryEmitOrLaunchAndEmit(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled, coroutineScope)
         } else if (
             flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
                 acc && action()
@@ -181,16 +182,16 @@ abstract class BaseScanner constructor(
         rssi: Int,
         advertisementData: AdvertisementData,
         deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
-    ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    ) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator), coroutineScope)
 
-    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceConnected(identifier))
-    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceDisconnected(identifier))
+    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceConnected(identifier), coroutineScope)
+    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDisconnected(identifier), coroutineScope)
 
     internal open suspend fun checkHardwareEnabledChanged() {
         if (isHardwareEnabled())
-            sharedEvents.tryEmit(Scanner.Event.BluetoothEnabled)
+            sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.BluetoothEnabled, coroutineScope)
         else {
-            sharedEvents.tryEmit(Scanner.Event.BluetoothDisabled)
+            sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.BluetoothDisabled, coroutineScope)
             if (autoEnableSensors) {
                 requestEnableHardware()
             }

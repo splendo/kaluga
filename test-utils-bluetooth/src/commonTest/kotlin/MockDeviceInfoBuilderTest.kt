@@ -28,7 +28,8 @@ import kotlin.test.assertEquals
 class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context>() {
 
     class Context(coroutineScope: CoroutineScope) : TestContext {
-        val device = createMockDevice(coroutineScope) {
+        val deviceWrapper = createDeviceWrapper("foo")
+        val device = createMockDevice(deviceWrapper, coroutineScope) {
             deviceName = "foo"
             rssi = -43
             manufacturerId = 0x1234
@@ -47,24 +48,24 @@ class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context
 
     @Test
     fun testBuilder() = testOnUIThread(cancelScopeAfterTest = true) {
-        val device = device.first()
+        val deviceInfo = device.info.first()
 
-        assertEquals("foo", device.name)
-        assertEquals(-43, device.rssi)
-        assertEquals(0x1234, device.advertisementData.manufacturerId)
+        assertEquals("foo", deviceInfo.name)
+        assertEquals(-43, deviceInfo.rssi)
+        assertEquals(0x1234, deviceInfo.advertisementData.manufacturerId)
         assertContentEquals(
             byteArrayOf(1, 2, 3),
-            device.advertisementData.manufacturerData
+            deviceInfo.advertisementData.manufacturerData
         )
-        assertEquals(10, device.advertisementData.txPowerLevel)
+        assertEquals(10, deviceInfo.advertisementData.txPowerLevel)
         assertContentEquals(
             listOf(uuidFrom("180d")),
-            device.advertisementData.serviceUUIDs
+            deviceInfo.advertisementData.serviceUUIDs
         )
-        assertEquals(1, device.advertisementData.serviceData.size)
+        assertEquals(1, deviceInfo.advertisementData.serviceData.size)
         assertContentEquals(
             byteArrayOf(4, 5, 6),
-            device.advertisementData.serviceData[uuidFrom("180a")]
+            deviceInfo.advertisementData.serviceData[uuidFrom("180a")]
         )
     }
 }

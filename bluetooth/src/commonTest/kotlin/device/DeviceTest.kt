@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
@@ -42,7 +43,17 @@ class DeviceTest :
     @Test
     fun testInitialState() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
         test {
+            deviceConnectionManagerBuilder.createMock.verify()
             assertIs<ConnectibleDeviceState.Disconnected>(it)
+            assertEquals(configuration.rssi, device.info.first().rssi)
+        }
+    }
+
+    @Test
+    fun testNotConnectableState() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor(advertisementData = MockAdvertisementData(isConnectable = false))) {
+        test {
+            deviceConnectionManagerBuilder.createMock.verify(rule = never())
+            assertIs<NotConnectableDeviceState>(it)
             assertEquals(configuration.rssi, device.info.first().rssi)
         }
     }
@@ -63,17 +74,6 @@ class DeviceTest :
         }
         disconnecting()
         disconnect()
-    }
-
-    @Test
-    fun testConnectNotConnectible() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor(
-            advertisementData = MockAdvertisementData(isConnectable = false)
-        )
-    ) {
-        test {
-            assertIs<NotConnectableDeviceState>(it)
-        }
     }
 
     @Test
@@ -159,7 +159,7 @@ class DeviceTest :
     }
 
     @Test
-    fun testDiscoverDevices() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
+    fun testDiscoverServices() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
         getDisconnectedState()
         connecting()
         connect()

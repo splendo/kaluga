@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
@@ -94,6 +95,11 @@ class MockDeviceConnectionManager(
         set(value) { _willActionSucceed.value = value }
 
     /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [getCurrentState]
+     */
+    val getCurrentStateMock = ::getCurrentState.mock()
+
+    /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [connect]
      */
     val connectMock = ::connect.mock()
@@ -130,6 +136,7 @@ class MockDeviceConnectionManager(
 
     init {
         if (setupMocks) {
+            getCurrentStateMock.on().doReturn(State.DISCONNECTED)
             requestMtuMock.on().doExecuteSuspended { (mtu) ->
                 handleNewMtu(mtu)
                 true
@@ -140,6 +147,8 @@ class MockDeviceConnectionManager(
             }
         }
     }
+
+    override fun getCurrentState(): State = getCurrentStateMock.call()
 
     override suspend fun connect(): Unit = connectMock.call()
 

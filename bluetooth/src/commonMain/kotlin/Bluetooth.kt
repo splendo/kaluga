@@ -90,7 +90,7 @@ class Bluetooth internal constructor(
                 identifier,
                 deviceInfo,
                 connectionSettings,
-                connectionManagerBuilder.create(deviceWrapper, connectionSettings.eventBufferSize, CoroutineScope(coroutineContext.contextCreator("ConnectionManager ${identifier.stringValue}"))),
+                { connectionManagerBuilder.create(deviceWrapper, connectionSettings.eventBufferSize, CoroutineScope(coroutineContext.contextCreator("ConnectionManager ${identifier.stringValue}"))) },
                 CoroutineScope(coroutineContext.contextCreator("Device ${identifier.stringValue}"))
             ) { connectionManager, coroutineContext ->
                 ConnectibleDeviceStateImplRepo(

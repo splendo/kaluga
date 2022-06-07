@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import co.touchlab.stately.collections.sharedMutableMapOf
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import com.splendo.kaluga.base.flow.tryEmitOrLaunchAndEmit
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -35,7 +36,7 @@ import kotlin.jvm.JvmName
 abstract class BaseDeviceConnectionManager(
     val deviceWrapper: DeviceWrapper,
     bufferCapacity: Int = BUFFER_CAPACITY,
-    coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {
@@ -48,6 +49,13 @@ abstract class BaseDeviceConnectionManager(
             bufferCapacity: Int = BUFFER_CAPACITY,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager
+    }
+
+    enum class State {
+        DISCONNECTED,
+        DISCONNECTING,
+        CONNECTED,
+        CONNECTING
     }
 
     sealed class Event {
@@ -69,11 +77,13 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.DROP_OLDEST)
+    private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.SUSPEND)
     val events = sharedEvents.asSharedFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     val rssi = sharedRssi.asSharedFlow()
+
+    abstract fun getCurrentState(): State
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -87,23 +97,23 @@ abstract class BaseDeviceConnectionManager(
     }
 
     fun handleNewMtu(mtu: Int) {
-        sharedEvents.tryEmit(Event.MtuUpdated(mtu))
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.MtuUpdated(mtu), coroutineScope)
     }
 
     fun startConnecting() {
-        sharedEvents.tryEmit(Event.Connecting)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Connecting, coroutineScope)
     }
 
     fun cancelConnecting() {
-        sharedEvents.tryEmit(Event.CancelledConnecting)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.CancelledConnecting, coroutineScope)
     }
 
     fun handleConnect() {
-        sharedEvents.tryEmit(Event.Connected)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Connected, coroutineScope)
     }
 
     fun startDisconnecting() {
-        sharedEvents.tryEmit(Event.Disconnecting)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Disconnecting, coroutineScope)
     }
 
     fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, sharedEvents)
@@ -117,24 +127,24 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
             Unit
         }
-        sharedEvents.tryEmit(Event.Disconnected(clean))
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Disconnected(clean), coroutineScope)
     }
 
     fun startDiscovering() {
-        sharedEvents.tryEmit(Event.Discovering)
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.Discovering, coroutineScope)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
     fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     fun handleDiscoverCompleted(services: List<Service>) {
-        sharedEvents.tryEmit(Event.DiscoveredServices(services))
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.DiscoveredServices(services), coroutineScope)
     }
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
         val currentAction = this.currentAction
         _currentAction.value = null
-        sharedEvents.tryEmit(Event.CompletedAction(currentAction, succeeded))
+        sharedEvents.tryEmitOrLaunchAndEmit(Event.CompletedAction(currentAction, succeeded), coroutineScope)
     }
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {

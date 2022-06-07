@@ -16,9 +16,11 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -55,7 +57,7 @@ class DeviceImpl(
     override val identifier: Identifier,
     initialDeviceInfo: DeviceInfoImpl,
     private val connectionSettings: ConnectionSettings,
-    private val connectionManager: BaseDeviceConnectionManager,
+    private val connectionManagerBuilder: () -> BaseDeviceConnectionManager,
     private val coroutineScope: CoroutineScope,
     private val createDeviceStateFlow: (BaseDeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = ::ConnectibleDeviceStateImplRepo
 ) : Device, CoroutineScope by coroutineScope {
@@ -64,15 +66,19 @@ class DeviceImpl(
         const val TAG = "DeviceImp"
     }
 
+    private val connectionManager = CompletableDeferred<BaseDeviceConnectionManager>()
     private val sharedInfo = MutableStateFlow(initialDeviceInfo)
     private val deviceStateRepo = MutableStateFlow<ConnectibleDeviceStateFlowRepo?>(null)
     override val info: Flow<DeviceInfo> = sharedInfo.asStateFlow()
-    override val state: Flow<DeviceState> = combine(sharedInfo.map { it.advertisementData.isConnectable }, deviceStateRepo) { isConnectable, repo ->
+    override val state: Flow<DeviceState> = combine(
+        sharedInfo.map { it.advertisementData.isConnectable },
+        deviceStateRepo
+    ) { isConnectable, repo ->
         debug("TEST $isConnectable ${repo == null}")
         when {
             !isConnectable -> null
             repo != null -> repo
-            else -> createDeviceStateRepoIfNotExisting()
+            else -> createDeviceStateRepoIfNotCreated()
         }
     }.distinctUntilChanged().flatMapLatest {
         it ?: flowOf(NotConnectableDeviceStateImpl)
@@ -80,20 +86,24 @@ class DeviceImpl(
 
     init {
         launch {
+            sharedInfo.map { it.advertisementData.isConnectable }.first { it }
+            createConnectionManagerIfNotCreated()
+        }
+        launch {
             sharedInfo.map { it.advertisementData.isConnectable }.distinctUntilChanged()
                 .filterNot { it }.collect {
-                    connectionManager.disconnect()
+                    connectionManager.getCompletedOrNull()?.disconnect()
                     deviceStateRepo.value = null
                 }
         }
         launch {
-            connectionManager.rssi.collect(::rssiDidUpdate)
+            connectionManager.await().rssi.collect(::rssiDidUpdate)
         }
         launch {
-            connectionManager.events.collect { event ->
+            connectionManager.await().events.collect { event ->
                 val repo = when (event) {
                     is BaseDeviceConnectionManager.Event.Connecting,
-                    is BaseDeviceConnectionManager.Event.Connected -> createDeviceStateRepoIfNotExisting()
+                    is BaseDeviceConnectionManager.Event.Connected -> createDeviceStateRepoIfNotCreated()
                     is BaseDeviceConnectionManager.Event.CancelledConnecting,
                     is BaseDeviceConnectionManager.Event.Discovering,
                     is BaseDeviceConnectionManager.Event.DiscoveredServices,
@@ -110,7 +120,7 @@ class DeviceImpl(
         }
     }
 
-    override suspend fun connect(): Boolean = createDeviceStateRepoIfNotExisting()?.let { repo ->
+    override suspend fun connect(): Boolean = createDeviceStateRepoIfNotCreated()?.let { repo ->
         repo.transformLatest { deviceState ->
             when (deviceState) {
                 is ConnectibleDeviceState.Disconnected -> deviceState.startConnecting()
@@ -120,7 +130,7 @@ class DeviceImpl(
         }.first()
     } ?: false
 
-    override fun handleConnected() = connectionManager.handleConnect()
+    override fun handleConnected() = createConnectionManagerIfNotCreated().handleConnect()
 
     override suspend fun disconnect() {
         deviceStateRepo.value?.transformLatest { deviceState ->
@@ -134,7 +144,7 @@ class DeviceImpl(
         }?.first()
     }
 
-    override suspend fun handleDisconnected() = connectionManager.handleDisconnect()
+    override suspend fun handleDisconnected() = createConnectionManagerIfNotCreated().handleDisconnect()
 
     override fun rssiDidUpdate(rssi: Int) {
         sharedInfo.value = sharedInfo.value.copy(rssi = rssi)
@@ -147,10 +157,18 @@ class DeviceImpl(
         sharedInfo.value = sharedInfo.value.copy(rssi = rssi, advertisementData = advertisementData)
     }
 
-    private fun createDeviceStateRepoIfNotExisting(): ConnectibleDeviceStateFlowRepo? =
+    private fun createConnectionManagerIfNotCreated(): BaseDeviceConnectionManager = if (connectionManager.isCompleted) {
+        connectionManager.getCompleted()
+    } else {
+        connectionManagerBuilder().also {
+            connectionManager.complete(it)
+        }
+    }
+
+    private fun createDeviceStateRepoIfNotCreated(): ConnectibleDeviceStateFlowRepo? =
         deviceStateRepo.updateAndGet { repo ->
             repo ?: if (sharedInfo.value.advertisementData.isConnectable) createDeviceStateFlow(
-                connectionManager,
+                createConnectionManagerIfNotCreated(),
                 coroutineScope.coroutineContext
             ) else null
         }
@@ -188,7 +206,7 @@ class DeviceImpl(
             is ConnectibleDeviceState.Reconnecting -> state.didConnect
             is ConnectibleDeviceState.Connected -> state.remain()
             else -> {
-                connectionManager.reset()
+                connectionManager.getCompletedOrNull()?.reset()
                 state.remain()
             }
         }
@@ -264,15 +282,16 @@ class DeviceImpl(
             state.remain()
         }
 
-    private fun BaseDeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectibleDeviceState) = if (state is ConnectibleDeviceState.Connected) {
-        state.didUpdateMtu(newMtu)
-    } else {
-        state.remain()
-    }
+    private fun BaseDeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectibleDeviceState) =
+        if (state is ConnectibleDeviceState.Connected) {
+            state.didUpdateMtu(newMtu)
+        } else {
+            state.remain()
+        }
 }
 
 abstract class BaseConnectibleDeviceStateRepo(
-    initialState: () -> ConnectibleDeviceState.Disconnected,
+    initialState: () -> ConnectibleDeviceState,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : HotStateFlowRepo<ConnectibleDeviceState>(
     coroutineContext = coroutineContext,
@@ -283,6 +302,22 @@ class ConnectibleDeviceStateImplRepo(
     connectionManager: BaseDeviceConnectionManager,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : BaseConnectibleDeviceStateRepo(
-    initialState = { ConnectibleDeviceStateImpl.Disconnected(connectionManager) },
+    initialState = {
+        when (connectionManager.getCurrentState()) {
+            BaseDeviceConnectionManager.State.CONNECTED -> ConnectibleDeviceStateImpl.Connected.NoServices(
+                null,
+                connectionManager
+            )
+            BaseDeviceConnectionManager.State.CONNECTING -> ConnectibleDeviceStateImpl.Connecting(
+                connectionManager
+            )
+            BaseDeviceConnectionManager.State.DISCONNECTED -> ConnectibleDeviceStateImpl.Disconnected(
+                connectionManager
+            )
+            BaseDeviceConnectionManager.State.DISCONNECTING -> ConnectibleDeviceStateImpl.Disconnecting(
+                connectionManager
+            )
+        }
+    },
     coroutineContext = coroutineContext
 )

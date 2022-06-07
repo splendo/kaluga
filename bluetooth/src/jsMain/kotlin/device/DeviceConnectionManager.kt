@@ -36,6 +36,8 @@ internal actual class DeviceConnectionManager(
         }
     }
 
+    override fun getCurrentState(): State = State.DISCONNECTED
+
     override suspend fun connect() {}
 
     override suspend fun discoverServices() {}
