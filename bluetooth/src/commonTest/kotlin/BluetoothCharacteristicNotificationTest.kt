@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceState
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
@@ -73,7 +73,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor, 2)
             assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
-            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Disable>(it.action)
         }
         mainAction {
@@ -83,7 +83,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
             assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
         }
         test {
-            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
             assertFalse(characteristic.isNotifying)
         }
     }
@@ -102,7 +102,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
-            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)
             assertFalse(characteristic.isNotifying)
         }
@@ -110,7 +110,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
 
     private suspend fun connect() {
         test {
-            assertIs<ConnectibleDeviceState.Disconnected>(it)
+            assertIs<ConnectableDeviceState.Disconnected>(it)
         }
         mainAction {
             connectionManager.startConnecting()
@@ -118,13 +118,13 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
         }
         test {
             connectionManager.connectMock.verify()
-            assertIs<ConnectibleDeviceState.Connecting>(it)
+            assertIs<ConnectableDeviceState.Connecting>(it)
         }
         mainAction {
             connectionManager.handleConnect()
         }
         test {
-            assertIs<ConnectibleDeviceState.Connected.NoServices>(it)
+            assertIs<ConnectableDeviceState.Connected.NoServices>(it)
         }
     }
 
@@ -134,13 +134,13 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
         }
         test {
             connectionManager.discoverServicesMock.verify()
-            assertIs<ConnectibleDeviceState.Connected.Discovering>(it)
+            assertIs<ConnectableDeviceState.Connected.Discovering>(it)
         }
         mainAction {
             connectionManager.handleDiscoverCompleted(listOf(service))
         }
         test {
-            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
             assertEquals(listOf(service), it.services)
         }
     }
@@ -155,7 +155,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
-            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)
         }
         mainAction {
@@ -163,7 +163,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
         }
         test {
             assertTrue(characteristic.isNotifying)
-            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
         }
     }
 }

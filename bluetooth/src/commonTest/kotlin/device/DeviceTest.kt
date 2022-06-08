@@ -44,7 +44,7 @@ class DeviceTest :
     fun testInitialState() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
         test {
             deviceConnectionManagerBuilder.createMock.verify()
-            assertIs<ConnectibleDeviceState.Disconnected>(it)
+            assertIs<ConnectableDeviceState.Disconnected>(it)
             assertEquals(configuration.rssi, device.info.first().rssi)
         }
     }
@@ -104,14 +104,14 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 2)
-            assertIs<ConnectibleDeviceState.Reconnecting>(it)
+            assertIs<ConnectableDeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         mainAction {
             connectionManager.handleConnect()
         }
         test {
-            assertIs<ConnectibleDeviceState.Connected>(it)
+            assertIs<ConnectableDeviceState.Connected>(it)
         }
     }
 
@@ -136,7 +136,7 @@ class DeviceTest :
 
         test {
             connectionManager.connectMock.verify(times = 2)
-            assertIs<ConnectibleDeviceState.Reconnecting>(it)
+            assertIs<ConnectableDeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         mainAction {
@@ -145,7 +145,7 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 3)
-            assertIs<ConnectibleDeviceState.Reconnecting>(it)
+            assertIs<ConnectableDeviceState.Reconnecting>(it)
             assertEquals(1, it.attempt)
         }
         mainAction {
@@ -154,7 +154,7 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 3)
-            assertIs<ConnectibleDeviceState.Disconnected>(it)
+            assertIs<ConnectableDeviceState.Disconnected>(it)
         }
     }
 
@@ -169,13 +169,13 @@ class DeviceTest :
         }
         test {
             connectionManager.discoverServicesMock.verify()
-            assertIs<ConnectibleDeviceState.Connected.Discovering>(it)
+            assertIs<ConnectableDeviceState.Connected.Discovering>(it)
         }
         mainAction {
             discoverService()
         }
         test {
-            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
             assertEquals(listOf(service), it.services)
         }
     }
@@ -191,13 +191,13 @@ class DeviceTest :
         }
         test {
             connectionManager.discoverServicesMock.verify()
-            assertIs<ConnectibleDeviceState.Connected.Discovering>(it)
+            assertIs<ConnectableDeviceState.Connected.Discovering>(it)
         }
         mainAction {
             discoverService()
         }
         test {
-            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
             assertEquals(listOf(service), it.services)
         }
 
@@ -209,7 +209,7 @@ class DeviceTest :
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Read.Characteristic>(captor.lastCaptured)
-            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Read.Characteristic>(it.action)
             assertEquals(0, it.nextActions.size)
         }
@@ -220,7 +220,7 @@ class DeviceTest :
 
         test {
             connectionManager.performActionMock.verify()
-            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Read.Characteristic>(it.action)
             assertEquals(1, it.nextActions.size)
         }
@@ -237,7 +237,7 @@ class DeviceTest :
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor, 2)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
-            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Write.Descriptor>(it.action)
             assertEquals(0, it.nextActions.size)
         }
@@ -250,20 +250,20 @@ class DeviceTest :
         }
 
         test {
-            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
         }
     }
 
     private suspend fun getDisconnectedState() {
         test {
-            assertIs<ConnectibleDeviceState.Disconnected>(it)
+            assertIs<ConnectableDeviceState.Disconnected>(it)
         }
     }
 
     private suspend fun getDisconnectingState() {
         test {
             connectionManager.disconnectMock.verify()
-            assertIs<ConnectibleDeviceState.Disconnecting>(it)
+            assertIs<ConnectableDeviceState.Disconnecting>(it)
         }
     }
 
@@ -274,7 +274,7 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify()
-            assertIs<ConnectibleDeviceState.Connecting>(it)
+            assertIs<ConnectableDeviceState.Connecting>(it)
         }
     }
 
@@ -284,7 +284,7 @@ class DeviceTest :
         }
         test {
             assertEquals(configuration.rssi, device.info.first().rssi)
-            assertIs<ConnectibleDeviceState.Connected.NoServices>(it)
+            assertIs<ConnectableDeviceState.Connected.NoServices>(it)
         }
     }
 
