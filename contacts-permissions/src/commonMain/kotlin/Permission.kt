@@ -29,7 +29,9 @@ import kotlin.time.Duration
  * Permission to access the users Contacts
  * @param allowWrite If `true` writing to the contacts is permitted
  */
-data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
+data class ContactsPermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Contacts - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
 fun PermissionsBuilder.registerContactsPermission(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,

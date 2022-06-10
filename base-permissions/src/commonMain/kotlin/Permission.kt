@@ -18,11 +18,13 @@
 package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.collections.IsoMutableMap
+import com.splendo.kaluga.base.singleThreadDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
@@ -31,7 +33,9 @@ import kotlin.reflect.KClassifier
  * Permissions that can be requested by Kaluga
  * Each permission component should declare subclass of [Permission]
  */
-abstract class Permission
+abstract class Permission {
+    abstract val name: String
+}
 
 /**
  *  Base type for all permissions builders. Each permission component implements a concrete permissions builder
@@ -91,19 +95,23 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
  * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
-class Permissions(private val builder: PermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main) {
+class Permissions(
+    private val builder: PermissionsBuilder,
+    private val coroutineContext: CoroutineContext = singleThreadDispatcher("Permissions"),
+    private val contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) }
+) {
 
     private val permissionStateRepos: IsoMutableMap<Permission, BasePermissionStateRepo<*>> = IsoMutableMap()
 
     private fun <P : Permission> permissionStateRepo(permission: P) =
-        (permissionStateRepos[permission] ?: builder.createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }) as BasePermissionStateRepo<P>
+        (permissionStateRepos[permission] ?: builder.createPermissionStateRepo(permission, coroutineContext.contextCreator(permission.name)).also { permissionStateRepos[permission] = it }) as BasePermissionStateRepo<P>
 
     /**
      * Gets a [Flow] of [PermissionState] for a given [Permission]
      * @param permission The [Permission] for which the [PermissionState] flow should be provided
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
-    operator fun <P : Permission> get(permission: P): Flow<PermissionState<P>> {
+    operator fun <P : Permission> get(permission: P): PermissionStateFlowRepo<P> {
         return permissionStateRepo(permission)
     }
 
@@ -112,7 +120,11 @@ class Permissions(private val builder: PermissionsBuilder, private val coroutine
      * @return `true` if the permission was granted, `false` otherwise.
      */
     suspend fun <P : Permission> request(p: P): Boolean {
-        return get(p).request()
+        return get(p).run {
+            withContext(coroutineContext) {
+                request()
+            }
+        }
     }
 
     fun clean() {

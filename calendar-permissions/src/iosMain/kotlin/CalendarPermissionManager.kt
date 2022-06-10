@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.calendar
 
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -24,7 +25,9 @@ import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.EventKit.EKAuthorizationStatus
 import platform.EventKit.EKAuthorizationStatusAuthorized
 import platform.EventKit.EKAuthorizationStatusDenied
@@ -33,6 +36,7 @@ import platform.EventKit.EKAuthorizationStatusRestricted
 import platform.EventKit.EKEntityType
 import platform.EventKit.EKEventStore
 import platform.Foundation.NSBundle
+import platform.Foundation.NSError
 import kotlin.time.Duration
 
 const val NSCalendarsUsageDescription = "NSCalendarsUsageDescription"
@@ -53,16 +57,27 @@ actual class DefaultCalendarPermissionManager(
     override fun requestPermission() {
         super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            eventStore.requestAccessToEntityType(
-                EKEntityType.EKEntityTypeEvent
-            ) { success, error ->
-                timerHelper.isWaiting.value = false
-                error?.let {
-                    debug(it.localizedDescription)
+            launch {
+                timerHelper.isWaiting.value = true
+                val deferred = CompletableDeferred<Boolean>()
+                val callback = { success: Boolean, error: NSError? ->
+                    error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
+                    Unit
+                }.freeze()
+                eventStore.requestAccessToEntityType(
+                    EKEntityType.EKEntityTypeEvent,
+                    callback
+                )
+
+                try {
+                    if (deferred.await())
+                        grantPermission()
+                    else
+                        revokePermission(true)
+                } catch (t : Throwable) {
                     revokePermission(true)
-                } ?: run {
-                    if (success) grantPermission() else revokePermission(true)
+                } finally {
+                    timerHelper.isWaiting.value = false
                 }
             }
         } else {

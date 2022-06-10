@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
@@ -26,6 +27,7 @@ import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import platform.Foundation.NSError
 import platform.UserNotifications.UNAuthorizationOptionNone
 import platform.UserNotifications.UNAuthorizationOptions
 import platform.UserNotifications.UNAuthorizationStatus
@@ -33,6 +35,7 @@ import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
 import platform.UserNotifications.UNAuthorizationStatusProvisional
+import platform.UserNotifications.UNNotificationSettings
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.time.Duration
 
@@ -48,9 +51,13 @@ actual class DefaultNotificationsPermissionManager(
     private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
         val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
         launch {
-            notificationCenter.getNotificationSettingsWithCompletionHandler { settings ->
-                authorizationStatus.complete(settings?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
-            }
+            val deferred = CompletableDeferred<UNNotificationSettings?>()
+            val callback = { setting: UNNotificationSettings? ->
+                deferred.complete(setting)
+                Unit
+            }.freeze()
+            notificationCenter.getNotificationSettingsWithCompletionHandler(callback)
+            authorizationStatus.complete(deferred.await()?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
         }
         authorizationStatus.await()
     }
@@ -58,15 +65,24 @@ actual class DefaultNotificationsPermissionManager(
 
     override fun requestPermission() {
         super.requestPermission()
-        timerHelper.isWaiting.value = true
-        notificationCenter.requestAuthorizationWithOptions(
-            permission.options?.options ?: UNAuthorizationOptionNone
-        ) { authorization, error ->
-            timerHelper.isWaiting.value = false
-            error?.let {
+        launch {
+            timerHelper.isWaiting.value = true
+            val deferred = CompletableDeferred<Boolean>()
+            val callback = { authorization: Boolean, error: NSError? ->
+                error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }
+                Unit
+            }.freeze()
+            notificationCenter.requestAuthorizationWithOptions(
+                permission.options?.options ?: UNAuthorizationOptionNone,
+                callback
+            )
+
+            try {
+                if (deferred.await()) grantPermission() else revokePermission(true)
+            } catch (t : Throwable) {
                 revokePermission(true)
-            } ?: run {
-                if (authorization) grantPermission() else revokePermission(true)
+            } finally {
+                timerHelper.isWaiting.value = false
             }
         }
     }

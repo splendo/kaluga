@@ -28,7 +28,9 @@ import kotlin.time.Duration
 /**
  * Permission to access the users Camera
  */
-object CameraPermission : Permission()
+object CameraPermission : Permission() {
+    override val name: String = "Camera"
+}
 
 fun PermissionsBuilder.registerCameraPermission(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,

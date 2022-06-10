@@ -29,7 +29,9 @@ import kotlin.time.Duration
  * Permission to access the users Notifications.
  * @param options The [NotificationOptions] determining the type of notifications that can be accessed
  */
-data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
+data class NotificationsPermission(val options: NotificationOptions? = null) : Permission() {
+    override val name: String = "Notifications - ${options?.toString().orEmpty().ifEmpty { "Without Options" }}"
+}
 
 fun PermissionsBuilder.registerNotificationsPermission(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,

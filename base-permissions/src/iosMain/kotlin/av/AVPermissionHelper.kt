@@ -17,10 +17,13 @@
 
 package com.splendo.kaluga.permissions.base.av
 
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.AVFoundation.AVAuthorizationStatus
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied
@@ -43,7 +46,7 @@ class AVPermissionHelper(
     private val type: AVType,
     private val onPermissionChanged: (IOSPermissionsHelper.AuthorizationStatus) -> Unit,
     coroutineScope: CoroutineScope
-) {
+) : CoroutineScope by coroutineScope {
 
     private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
@@ -52,10 +55,19 @@ class AVPermissionHelper(
 
     fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            AVCaptureDevice.requestAccessForMediaType(
-                type.avMediaType
-            ) { allowed ->
+            launch {
+                timerHelper.isWaiting.value = true
+                val deferred = CompletableDeferred<Boolean>()
+                val callback = { allowed: Boolean ->
+                    deferred.complete(allowed)
+                    Unit
+                }.freeze()
+                AVCaptureDevice.requestAccessForMediaType(
+                    type.avMediaType,
+                    callback
+                )
+
+                val allowed = deferred.await()
                 timerHelper.isWaiting.value = false
                 if (allowed) {
                     onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Authorized)

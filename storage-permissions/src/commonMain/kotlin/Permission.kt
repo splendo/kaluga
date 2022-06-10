@@ -30,7 +30,9 @@ import kotlin.time.Duration
  * On iOS this corresponds to the Photos permission
  * @param allowWrite If `true` writing to the storage is permitted
  */
-data class StoragePermission(val allowWrite: Boolean = false) : Permission()
+data class StoragePermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Storage - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
 fun PermissionsBuilder.registerStoragePermission(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,

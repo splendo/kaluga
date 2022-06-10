@@ -28,7 +28,9 @@ import kotlin.time.Duration
 /**
  * Permission to access the users Microphone
  */
-object MicrophonePermission : Permission()
+object MicrophonePermission : Permission() {
+    override val name: String = "Microphone"
+}
 
 fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,

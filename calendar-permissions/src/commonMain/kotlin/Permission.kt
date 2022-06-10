@@ -29,7 +29,9 @@ import kotlin.time.Duration
  * Permission to access the users Calendar
  * @param allowWrite If `true` writing to the calendar is permitted
  */
-data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
+data class CalendarPermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Calendar - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
 fun PermissionsBuilder.registerCalendarPermission(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,

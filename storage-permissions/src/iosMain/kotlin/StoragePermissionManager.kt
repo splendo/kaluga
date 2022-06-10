@@ -17,13 +17,17 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import co.touchlab.stately.freeze
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized
@@ -50,8 +54,16 @@ actual class DefaultStoragePermissionManager(
     override fun requestPermission() {
         super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            PHPhotoLibrary.requestAuthorization { status ->
+            launch {
+                timerHelper.isWaiting.value = true
+                val deferred = CompletableDeferred<PHAuthorizationStatus>()
+                val callback = { status: PHAuthorizationStatus ->
+                    deferred.complete(status)
+                    Unit
+                }.freeze()
+                PHPhotoLibrary.requestAuthorization(callback)
+
+                val status = deferred.await()
                 timerHelper.isWaiting.value = false
                 handleAuthorizationStatus(status.toAuthorizationStatus())
             }

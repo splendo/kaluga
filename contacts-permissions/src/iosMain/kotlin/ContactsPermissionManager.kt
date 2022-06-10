@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.contacts
 
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -24,7 +25,9 @@ import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.Contacts.CNAuthorizationStatus
 import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
@@ -33,6 +36,7 @@ import platform.Contacts.CNAuthorizationStatusRestricted
 import platform.Contacts.CNContactStore
 import platform.Contacts.CNEntityType
 import platform.Foundation.NSBundle
+import platform.Foundation.NSError
 import kotlin.time.Duration
 
 const val NSContactsUsageDescription = "NSContactsUsageDescription"
@@ -52,16 +56,27 @@ actual class DefaultContactsPermissionManager(
 
     override fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            contactStore.requestAccessForEntityType(
-                CNEntityType.CNEntityTypeContacts
-            ) { success, error ->
-                error?.let {
-                    debug(it.localizedDescription)
+            launch {
+                timerHelper.isWaiting.value = true
+                val deferred = CompletableDeferred<Boolean>()
+                val callback = { success: Boolean, error: NSError? ->
+                    error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
+                    Unit
+                }.freeze()
+                contactStore.requestAccessForEntityType(
+                    CNEntityType.CNEntityTypeContacts,
+                    callback
+                )
+
+                try {
+                    if (deferred.await())
+                        grantPermission()
+                    else
+                        revokePermission(true)
+                } catch (t : Throwable) {
                     revokePermission(true)
-                } ?: run {
+                } finally {
                     timerHelper.isWaiting.value = false
-                    if (success) grantPermission() else revokePermission(true)
                 }
             }
         } else {

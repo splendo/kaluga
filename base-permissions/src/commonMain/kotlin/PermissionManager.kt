@@ -21,12 +21,7 @@ package com.splendo.kaluga.permissions.base
 import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.permissions.base.PermissionState.Allowed
-import com.splendo.kaluga.permissions.base.PermissionState.Denied
-import com.splendo.kaluga.permissions.base.PermissionState.Inactive
-import com.splendo.kaluga.permissions.base.PermissionState.Initializing
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.time.Duration

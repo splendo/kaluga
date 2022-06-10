@@ -31,7 +31,9 @@ import kotlin.time.Duration
  * @param precise If `true` precise location scanning is permitted
  */
 data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) :
-    Permission()
+    Permission() {
+    override val name: String = listOfNotNull(if (background) "Background" else null, "Location", "-", if (precise) "Precise" else "Coarse").joinToString(" ")
+}
 
 fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,

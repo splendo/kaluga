@@ -82,7 +82,8 @@ open class PermissionStateRepo<P : Permission>(
     createDeinitializedState = { state ->
         (this as PermissionStateRepo<P>).superVisorJob.cancelChildren()
         state.deinitialize
-    }
+    },
+    coroutineContext = coroutineContext
 ) {
 
     companion object {

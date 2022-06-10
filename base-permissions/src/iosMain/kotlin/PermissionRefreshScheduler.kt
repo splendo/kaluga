@@ -100,6 +100,7 @@ class PermissionRefreshScheduler(
                 }
             }
         }
+        lastPermission.set(null)
     }
 
     private suspend fun updateLastPermission() {
