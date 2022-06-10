@@ -20,34 +20,50 @@ package com.splendo.kaluga.permissions.storage
 import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class StoragePermissionManager(
+actual class DefaultStoragePermissionManager(
     context: Context,
-    actual val storagePermission: StoragePermission,
-    stateRepo: PermissionStateRepo<StoragePermission>
-) : PermissionManager<StoragePermission>(stateRepo) {
+    storagePermission: StoragePermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, if (storagePermission.allowWrite) arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) else arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        if (storagePermission.allowWrite)
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        else
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+        coroutineScope,
+        ::logDebug,
+        ::logError,
+        ::handleAndroidPermissionState
+    )
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         permissionsManager.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         permissionsManager.stopMonitoring()
     }
 }
 
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(context.context, storagePermission, repo)
+    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
+        return DefaultStoragePermissionManager(context.context, storagePermission, settings, coroutineScope)
     }
 }

@@ -19,57 +19,49 @@ package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
-import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.permissions.DummyPermission
-import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 class PermissionRefreshSchedulerTest : BaseTest() {
 
     @Test
     fun testStartMonitoring() = runBlocking {
-        val repo = MockPermissionStateRepo<DummyPermission>(coroutineContext = Dispatchers.Default)
-        repo.filterOnlyImportant().first()
-        val permissionManager = repo.permissionManager
         val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> = AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
-        val timerHelper = PermissionRefreshScheduler(permissionManager, { authorization.value }, this)
+        val callback: (IOSPermissionsHelper.AuthorizationStatus) -> Unit = {}
+        val permissionsChangedMock = callback.mock()
+        val timerHelper = PermissionRefreshScheduler({ authorization.value }, permissionsChangedMock::call, this)
 
-        timerHelper.startMonitoring(50)
+        timerHelper.startMonitoring(50.milliseconds)
         delay(50)
-        permissionManager.grandPermissionMock.verify(rule = never())
-        permissionManager.revokePermissionMock.verify(rule = never())
+        permissionsChangedMock.verify(rule = never())
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
         delay(60)
-        permissionManager.grandPermissionMock.verify()
+        permissionsChangedMock.verify(eq(IOSPermissionsHelper.AuthorizationStatus.Authorized))
 
         timerHelper.isWaiting.value = true
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Denied)
-        permissionManager.grandPermissionMock.resetCalls()
-        permissionManager.revokePermissionMock.resetCalls()
+        permissionsChangedMock.resetCalls()
         delay(60)
-        permissionManager.grandPermissionMock.verify(rule = never())
-        permissionManager.revokePermissionMock.verify(rule = never())
+        permissionsChangedMock.verify(rule = never())
 
         timerHelper.isWaiting.value = false
         delay(50)
-        permissionManager.revokePermissionMock.verify(eq(true))
+        permissionsChangedMock.verify(eq(IOSPermissionsHelper.AuthorizationStatus.Denied))
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
-        permissionManager.grandPermissionMock.resetCalls()
-        permissionManager.revokePermissionMock.resetCalls()
+        permissionsChangedMock.resetCalls()
         timerHelper.stopMonitoring()
         delay(50)
-        permissionManager.grandPermissionMock.verify(rule = never())
-        permissionManager.revokePermissionMock.verify(rule = never())
+        permissionsChangedMock.verify(rule = never())
         Unit
     }
 }

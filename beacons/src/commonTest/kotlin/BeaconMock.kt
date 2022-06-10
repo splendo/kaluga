@@ -65,11 +65,13 @@ object BeaconMock {
         deviceWrapper.identifier,
         makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
         settings,
-        MockDeviceConnectionManager(
-            deviceWrapper = deviceWrapper,
-            bufferCapacity = 1,
-            coroutineScope = coroutineScope
-        ),
+        {
+            MockDeviceConnectionManager(
+                deviceWrapper = deviceWrapper,
+                connectionSettings = it,
+                coroutineScope = coroutineScope
+            )
+        },
         coroutineScope
     )
 

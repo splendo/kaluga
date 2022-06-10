@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.permissions.calendar
 
-import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CoroutineScope
 import platform.EventKit.EKAuthorizationStatus
 import platform.EventKit.EKAuthorizationStatusAuthorized
 import platform.EventKit.EKAuthorizationStatusDenied
@@ -33,54 +33,58 @@ import platform.EventKit.EKAuthorizationStatusRestricted
 import platform.EventKit.EKEntityType
 import platform.EventKit.EKEventStore
 import platform.Foundation.NSBundle
+import kotlin.time.Duration
 
 const val NSCalendarsUsageDescription = "NSCalendarsUsageDescription"
 
-actual class CalendarPermissionManager(
+actual class DefaultCalendarPermissionManager(
     private val bundle: NSBundle,
-    actual val calendarPermission: CalendarPermission,
-    stateRepo: PermissionStateRepo<CalendarPermission>
-) : PermissionManager<CalendarPermission>(stateRepo) {
+    calendarPermission: CalendarPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
     private val eventStore = EKEventStore()
     private val authorizationStatus = suspend {
         EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
     }
-    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
+    private var timerHelper = PermissionRefreshScheduler(authorizationStatus, ::handleAuthorizationStatus, coroutineScope)
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
             timerHelper.isWaiting.value = true
             eventStore.requestAccessToEntityType(
-                EKEntityType.EKEntityTypeEvent,
-                mainContinuation { success, error ->
-                    timerHelper.isWaiting.value = false
-                    error?.let {
-                        debug(it.localizedDescription)
-                        revokePermission(true)
-                    } ?: run {
-                        if (success) grantPermission() else revokePermission(true)
-                    }
+                EKEntityType.EKEntityTypeEvent
+            ) { success, error ->
+                timerHelper.isWaiting.value = false
+                error?.let {
+                    debug(it.localizedDescription)
+                    revokePermission(true)
+                } ?: run {
+                    if (success) grantPermission() else revokePermission(true)
                 }
-            )
+            }
         } else {
             revokePermission(true)
         }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         timerHelper.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         timerHelper.stopMonitoring()
     }
 }
 
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> {
-        return CalendarPermissionManager(context, calendarPermission, repo)
+    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
+        return DefaultCalendarPermissionManager(context, calendarPermission, settings, coroutineScope)
     }
 }
 

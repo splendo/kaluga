@@ -55,7 +55,7 @@ actual class DefaultScanner internal constructor(
     class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-        private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter,
+        private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter,
         private val scanSettings: ScanSettings = defaultScanSettings,
     ) : BaseScanner.Builder {
 

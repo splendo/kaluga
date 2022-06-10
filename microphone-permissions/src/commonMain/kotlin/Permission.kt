@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Microphone
@@ -30,10 +32,11 @@ object MicrophonePermission : Permission()
 
 fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerMicrophonePermission(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
-        MicrophonePermissionStateRepo(builder, monitoringInterval, coroutineContext)
+        MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerMicrophonePermission(

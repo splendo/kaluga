@@ -17,28 +17,16 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
-actual class StoragePermissionManager(actual val storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>) : PermissionManager<StoragePermission>(repo) {
-
-    override suspend fun requestPermission() {
-        TODO("not implemented")
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
-    }
-}
+actual class DefaultStoragePermissionManager(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope)
 
 actual class StoragePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(storagePermission, repo)
+    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<StoragePermission> {
+        return DefaultStoragePermissionManager(storagePermission, settings, coroutineScope)
     }
 }

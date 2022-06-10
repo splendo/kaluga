@@ -44,7 +44,7 @@ interface BasePermissionsBuilder<P : Permission>
  * Each platform registers [PermissionStateRepoBuilder] in the register permission helper method.
  */
 private interface PermissionStateRepoBuilder<P : Permission> {
-    fun create(permission: P, coroutineContext: CoroutineContext): PermissionStateRepo<P>
+    fun create(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<P>
 }
 
 expect class PermissionContext
@@ -68,19 +68,19 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     operator fun <P : Permission> get(permission: P): BasePermissionsBuilder<P> =
         builders[permission::class] as? BasePermissionsBuilder<P> ?: throw Error("The Builder for $permission was not registered")
 
-    inline fun <reified P : Permission> registerPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> PermissionStateRepo<P>) = registerPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
-    fun <P : Permission> registerPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> PermissionStateRepo<P>) {
+    inline fun <reified P : Permission> registerPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+    fun <P : Permission> registerPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) {
         repoBuilders[permission] = object : PermissionStateRepoBuilder<P> {
             override fun create(
                 permission: P,
                 coroutineContext: CoroutineContext
-            ): PermissionStateRepo<P> {
+            ): BasePermissionStateRepo<P> {
                 return permissionStateRepoBuilder(permission, coroutineContext)
             }
         }
     }
 
-    fun <P : Permission> createPermissionStateRepo(permission: P, coroutineContext: CoroutineContext): PermissionStateRepo<*> =
+    fun <P : Permission> createPermissionStateRepo(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<*> =
         (repoBuilders[permission::class] as? PermissionStateRepoBuilder<P>)?.let {
             it.create(permission, coroutineContext)
         } ?: throw Error("Permission state repo factory was not registered for $permission")
@@ -93,10 +93,10 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
  */
 class Permissions(private val builder: PermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main) {
 
-    private val permissionStateRepos: IsoMutableMap<Permission, PermissionStateRepo<*>> = IsoMutableMap()
+    private val permissionStateRepos: IsoMutableMap<Permission, BasePermissionStateRepo<*>> = IsoMutableMap()
 
     private fun <P : Permission> permissionStateRepo(permission: P) =
-        (permissionStateRepos[permission] ?: builder.createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }) as PermissionStateRepo<P>
+        (permissionStateRepos[permission] ?: builder.createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }) as BasePermissionStateRepo<P>
 
     /**
      * Gets a [Flow] of [PermissionState] for a given [Permission]

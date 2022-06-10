@@ -17,31 +17,36 @@
 
 package com.splendo.kaluga.permissions.calendar
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [CalendarPermission]
  */
-expect class CalendarPermissionManager : PermissionManager<CalendarPermission> {
-    /**
-     * The [CalendarPermission] managed by this manager
-     */
-    val calendarPermission: CalendarPermission
-}
+typealias CalendarPermissionManager = PermissionManager<CalendarPermission>
+expect class DefaultCalendarPermissionManager : BasePermissionManager<CalendarPermission>
 
 interface BaseCalendarPermissionManagerBuilder : BasePermissionsBuilder<CalendarPermission> {
 
     /**
      * Creates a [CalendarPermissionManager]
-     * @param repo The [CalendarPermissionStateRepo] associated with the [CalendarPermission]
+     * @param calendarPermission The [CalendarPermission] for the PermissionManager to be created
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission>
+    fun create(
+        calendarPermission: CalendarPermission,
+        settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+        coroutineScope: CoroutineScope
+    ): CalendarPermissionManager
 }
 
 /**
@@ -57,6 +62,7 @@ expect class CalendarPermissionManagerBuilder(context: PermissionContext = defau
 class CalendarPermissionStateRepo(
     calendarPermission: CalendarPermission,
     builder: BaseCalendarPermissionManagerBuilder,
-    monitoringInterval: Long = defaultMonitoringInterval,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : PermissionStateRepo<CalendarPermission>(monitoringInterval, coroutineContext, { builder.create(calendarPermission, it) })
+) : PermissionStateRepo<CalendarPermission>(monitoringInterval, { builder.create(calendarPermission, settings, it) }, coroutineContext)

@@ -20,10 +20,8 @@ import com.splendo.kaluga.permissions.base.av.AVType
 import platform.AVFoundation.AVMediaTypeVideo
 
 const val NSCameraUsageDescription = "NSCameraUsageDescription"
-const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
 
-class AVTypeCamera(override val permissionManager: CameraPermissionManager) : AVType<CameraPermission>() {
-
+class AVTypeCamera : AVType() {
     override val avMediaType = AVMediaTypeVideo
     override val declarationName = NSCameraUsageDescription
 }

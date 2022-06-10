@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Notifications.
@@ -31,10 +33,11 @@ data class NotificationsPermission(val options: NotificationOptions? = null) : P
 
 fun PermissionsBuilder.registerNotificationsPermission(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
+        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerNotificationsPermission(

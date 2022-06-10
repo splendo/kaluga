@@ -17,31 +17,36 @@
 
 package com.splendo.kaluga.permissions.location
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [LocationPermission]
  */
-expect class LocationPermissionManager : PermissionManager<LocationPermission> {
-    /**
-     * The [LocationPermission] managed by this manager.
-     */
-    val locationPermission: LocationPermission
-}
+typealias LocationPermissionManager = PermissionManager<LocationPermission>
+expect class DefaultLocationPermissionManager : BasePermissionManager<LocationPermission>
 
 interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder<LocationPermission> {
 
     /**
      * Creates a [LocationPermissionManager]
-     * @param repo The [LocationPermissionStateRepo] associated with the [LocationPermission]
+     * @param locationPermission The [LocationPermission] for the PermissionManager to be created
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission>
+    fun create(
+        locationPermission: LocationPermission,
+        settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+        coroutineScope: CoroutineScope
+    ): LocationPermissionManager
 }
 
 /**
@@ -57,6 +62,7 @@ expect class LocationPermissionManagerBuilder(context: PermissionContext = defau
 class LocationPermissionStateRepo(
     locationPermission: LocationPermission,
     builder: BaseLocationPermissionManagerBuilder,
-    monitoringInterval: Long = defaultMonitoringInterval,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : PermissionStateRepo<LocationPermission>(monitoringInterval, coroutineContext, { builder.create(locationPermission, it) })
+) : PermissionStateRepo<LocationPermission>(monitoringInterval, { builder.create(locationPermission, settings, it) }, coroutineContext)

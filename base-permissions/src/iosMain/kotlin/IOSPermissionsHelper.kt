@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus
 import platform.Foundation.NSBundle
 
 /**
@@ -64,18 +65,18 @@ class IOSPermissionsHelper {
                 null
             }
         }
+    }
+}
 
-        /**
-         * Updates a [PermissionManager] with the [PermissionState] associated with a given [AuthorizationStatus]
-         * @param authorizationStatus The [AuthorizationStatus] to update to
-         * @param permissionManager The [PermissionManager] to update to the proper state.
-         */
-        fun <P : Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
-            when (authorizationStatus) {
-                AuthorizationStatus.NotDetermined -> permissionManager.revokePermission(false)
-                AuthorizationStatus.Authorized -> permissionManager.grantPermission()
-                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> permissionManager.revokePermission(true)
-            }
-        }
+/**
+ * Updates a [PermissionManager] with the [PermissionState] associated with a given [AuthorizationStatus]
+ * @param authorizationStatus The [AuthorizationStatus] to update to
+ * @param permissionManager The [PermissionManager] to update to the proper state.
+ */
+fun <P : Permission> BasePermissionManager<P>.handleAuthorizationStatus(authorizationStatus: AuthorizationStatus) {
+    when (authorizationStatus) {
+        AuthorizationStatus.NotDetermined -> revokePermission(false)
+        AuthorizationStatus.Authorized -> grantPermission()
+        AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> revokePermission(true)
     }
 }

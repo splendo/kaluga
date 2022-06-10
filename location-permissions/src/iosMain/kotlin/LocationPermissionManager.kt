@@ -18,25 +18,28 @@
 package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
+import kotlin.time.Duration
 
 const val NSLocationWhenInUseUsageDescription = "NSLocationWhenInUseUsageDescription"
 const val NSLocationAlwaysAndWhenInUseUsageDescription = "NSLocationAlwaysAndWhenInUseUsageDescription"
 const val NSLocationAlwaysUsageDescription = "NSLocationAlwaysUsageDescription"
 
-actual class LocationPermissionManager(
+actual class DefaultLocationPermissionManager(
     private val bundle: NSBundle,
-    actual val locationPermission: LocationPermission,
-    stateRepo: PermissionStateRepo<LocationPermission>
-) : PermissionManager<LocationPermission>(stateRepo) {
+    locationPermission: LocationPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
     private val locationManager = CLLocationManager()
     private val authorizationStatus = {
@@ -46,18 +49,18 @@ actual class LocationPermissionManager(
     private val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
         override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus /* = kotlin.Int */) {
-            val locationPermissionManager = this@LocationPermissionManager
-            IOSPermissionsHelper.handleAuthorizationStatus(didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin().toAuthorizationStatus(locationPermissionManager.locationPermission.background), locationPermissionManager)
+            handleAuthorizationStatus(didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin().toAuthorizationStatus(permission.background))
         }
     }
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         val locationDeclarations = mutableListOf(NSLocationWhenInUseUsageDescription)
-        if (locationPermission.background) {
+        if (permission.background) {
             locationDeclarations.addAll(listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription))
         }
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
-            if (locationPermission.background)
+            if (permission.background)
                 locationManager.requestAlwaysAuthorization()
             else
                 locationManager.requestWhenInUseAuthorization()
@@ -66,19 +69,21 @@ actual class LocationPermissionManager(
         }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         locationManager.delegate = delegate
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         locationManager.delegate = null
     }
 }
 
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> {
-        return LocationPermissionManager(context, locationPermission, repo)
+    override fun create(locationPermission: LocationPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): LocationPermissionManager {
+        return DefaultLocationPermissionManager(context, locationPermission, settings, coroutineScope)
     }
 }
 

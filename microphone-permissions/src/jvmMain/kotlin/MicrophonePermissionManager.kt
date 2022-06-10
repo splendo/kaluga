@@ -17,28 +17,16 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
-actual class MicrophonePermissionManager(repo: PermissionStateRepo<MicrophonePermission>) : PermissionManager<MicrophonePermission>(repo) {
-
-    override suspend fun requestPermission() {
-        TODO("not implemented")
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
-    }
-}
+actual class DefaultMicrophonePermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope)
 
 actual class MicrophonePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> {
-        return MicrophonePermissionManager(repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<MicrophonePermission> {
+        return DefaultMicrophonePermissionManager(settings, coroutineScope)
     }
 }

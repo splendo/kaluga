@@ -17,35 +17,41 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
+import kotlin.time.Duration
 
-actual class CameraPermissionManager(
-    private val bundle: NSBundle,
-    stateRepo: PermissionStateRepo<CameraPermission>
-) : PermissionManager<CameraPermission>(stateRepo) {
+actual class DefaultCameraPermissionManager(
+    bundle: NSBundle,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(this))
+    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), ::handleAuthorizationStatus, coroutineScope)
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         avPermissionHelper.requestPermission()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         avPermissionHelper.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         avPermissionHelper.stopMonitoring()
     }
 }
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> {
-        return CameraPermissionManager(context, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
+        return DefaultCameraPermissionManager(context, settings, coroutineScope)
     }
 }

@@ -37,6 +37,7 @@ import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
@@ -63,7 +64,7 @@ interface Scanner {
     }
 
     val isSupported: Boolean
-    val events: Flow<Event>
+    val events: SharedFlow<Event>
     fun startMonitoringPermissions()
     fun stopMonitoringPermissions()
     suspend fun scanForDevices(filter: Set<UUID>)
@@ -111,7 +112,7 @@ abstract class BaseScanner constructor(
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
     protected val sharedEvents = SequentialMutableSharedFlow<Scanner.Event>(0, settings.eventBufferSize, coroutineScope)
-    override val events: Flow<Scanner.Event> = sharedEvents.asSharedFlow()
+    override val events: SharedFlow<Scanner.Event> = sharedEvents.asSharedFlow()
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
@@ -139,7 +140,7 @@ abstract class BaseScanner constructor(
         }
     }
 
-    private suspend fun handlePermissionState(states: List<PermissionState<*>>) {
+    private fun handlePermissionState(states: List<PermissionState<*>>) {
         if (autoRequestPermission) {
             states.forEach { state ->
                 when (state) {

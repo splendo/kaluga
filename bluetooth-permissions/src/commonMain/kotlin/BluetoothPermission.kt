@@ -18,25 +18,30 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.bluetooth
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [BluetoothPermission]
  */
-expect class BluetoothPermissionManager : PermissionManager<BluetoothPermission>
+typealias BluetoothPermissionManager = PermissionManager<BluetoothPermission>
+expect class DefaultBluetoothPermissionManager : BasePermissionManager<BluetoothPermission>
 
 interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<BluetoothPermission> {
     /**
      * Creates a [BluetoothPermissionManager]
-     * @param repo The [BluetoothPermissionStateRepo] associated with the [BluetoothPermission]
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission>
+    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): BluetoothPermissionManager
 }
 
 /**
@@ -51,6 +56,7 @@ expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defa
  */
 class BluetoothPermissionStateRepo(
     builder: BaseBluetoothPermissionManagerBuilder,
-    monitoringInterval: Long = defaultMonitoringInterval,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, coroutineContext, { builder.create(it) })
+) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

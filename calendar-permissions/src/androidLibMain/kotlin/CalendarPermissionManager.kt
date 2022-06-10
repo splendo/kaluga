@@ -20,34 +20,47 @@ package com.splendo.kaluga.permissions.calendar
 import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class CalendarPermissionManager(
+actual class DefaultCalendarPermissionManager(
     context: Context,
-    actual val calendarPermission: CalendarPermission,
-    stateRepo: PermissionStateRepo<CalendarPermission>
-) : PermissionManager<CalendarPermission>(stateRepo) {
+    calendarPermission: CalendarPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, if (calendarPermission.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR))
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        if (permission.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR),
+        coroutineScope,
+        ::logDebug,
+        ::logError,
+        ::handleAndroidPermissionState
+    )
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         permissionsManager.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         permissionsManager.stopMonitoring()
     }
 }
 
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendarPermission: CalendarPermission, repo: PermissionStateRepo<CalendarPermission>): PermissionManager<CalendarPermission> {
-        return CalendarPermissionManager(context.context, calendarPermission, repo)
+    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
+        return DefaultCalendarPermissionManager(context.context, calendarPermission, settings, coroutineScope)
     }
 }

@@ -24,13 +24,16 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.permissions.DummyPermission
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.eq
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import kotlin.test.AfterTest
@@ -50,9 +53,10 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @Mock
     lateinit var packageInfo: PackageInfo
 
-    @Mock
-    lateinit var permissionsManager: PermissionManager<DummyPermission>
-    private lateinit var androidPermissionsManager: AndroidPermissionsManager<DummyPermission>
+    private lateinit var androidPermissionsManager: AndroidPermissionsManager
+
+    val callback: (AndroidPermissionState) -> Unit = {}
+    val permissionsChangedMock = callback.mock()
 
     @BeforeTest
     override fun beforeTest() {
@@ -61,8 +65,9 @@ class AndroidPermissionsManagerTest : BaseTest() {
 
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(context.packageName).thenReturn(packageName)
-        `when`(packageManager.getPackageInfo(eq(packageName), eq(PackageManager.GET_PERMISSIONS))).thenReturn(packageInfo)
+        `when`(packageManager.getPackageInfo(Mockito.eq(packageName), Mockito.eq(PackageManager.GET_PERMISSIONS))).thenReturn(packageInfo)
         AndroidPermissionsManager.permissionsStates.clear()
+        permissionsChangedMock.resetCalls()
     }
 
     @AfterTest
@@ -72,16 +77,16 @@ class AndroidPermissionsManagerTest : BaseTest() {
 
     @Test
     fun testMissingDeclaration() = runBlockingTest {
-        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = permissionsChangedMock::call)
         packageInfo.requestedPermissions = emptyArray()
         androidPermissionsManager.requestPermissions()
 
-        verify(permissionsManager).revokePermission(eq(true))
+        permissionsChangedMock.verify(eq(AndroidPermissionState.DENIED_DO_NOT_ASK))
     }
 
     @Test
     fun testRequestPermissions() = runBlockingTest {
-        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = permissionsChangedMock::call)
         packageInfo.requestedPermissions = permissions
         androidPermissionsManager.requestPermissions()
         verify(context).startActivity(ArgumentMatchers.any(Intent::class.java))
@@ -89,38 +94,38 @@ class AndroidPermissionsManagerTest : BaseTest() {
 
     @Test
     fun test_monitor_permissionsGranted() = runBlocking {
-        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = permissionsChangedMock::call)
         permissions.forEach {
-            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
+            `when`(context.checkPermission(Mockito.eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
         }
 
         androidPermissionsManager.monitor()
 
-        verify(permissionsManager).grantPermission()
+        permissionsChangedMock.verify(eq(AndroidPermissionState.GRANTED))
     }
 
     @Test
     fun test_monitor_permissionsDenied() = runBlocking {
-        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = permissionsChangedMock::call)
         permissions.forEach {
-            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
+            `when`(context.checkPermission(Mockito.eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
         }
 
         androidPermissionsManager.monitor()
 
-        verify(permissionsManager).revokePermission(false)
+        permissionsChangedMock.verify(eq(AndroidPermissionState.DENIED))
     }
 
     @Test
     fun test_monitor_permissionsDeniedDoNotAsk() = runBlocking {
-        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = permissionsChangedMock::call)
         permissions.forEach {
             AndroidPermissionsManager.permissionsStates[it] = AndroidPermissionState.DENIED_DO_NOT_ASK
-            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
+            `when`(context.checkPermission(Mockito.eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
         }
 
         androidPermissionsManager.monitor()
 
-        verify(permissionsManager).revokePermission(true)
+        permissionsChangedMock.verify(eq(AndroidPermissionState.DENIED_DO_NOT_ASK))
     }
 }
