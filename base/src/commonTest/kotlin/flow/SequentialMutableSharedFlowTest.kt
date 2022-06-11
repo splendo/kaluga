@@ -67,5 +67,4 @@ class SequentialMutableSharedFlowTest : BaseTest() {
             sequentialFlow.cancel()
         }.join()
     }
-
 }

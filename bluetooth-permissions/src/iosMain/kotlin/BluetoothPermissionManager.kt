@@ -42,7 +42,6 @@ import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusNotDetermine
 import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusRestricted
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
-import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_queue_create
 import kotlin.time.Duration
 

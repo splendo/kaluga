@@ -19,7 +19,6 @@ package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.base.singleThreadDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

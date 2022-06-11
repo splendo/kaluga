@@ -18,7 +18,6 @@
 package com.splendo.kaluga.permissions.contacts
 
 import co.touchlab.stately.freeze
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
@@ -73,7 +72,7 @@ actual class DefaultContactsPermissionManager(
                         grantPermission()
                     else
                         revokePermission(true)
-                } catch (t : Throwable) {
+                } catch (t: Throwable) {
                     revokePermission(true)
                 } finally {
                     timerHelper.isWaiting.value = false

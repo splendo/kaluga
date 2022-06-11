@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.beacons
 import com.splendo.kaluga.base.utils.bytesOf
 import com.splendo.kaluga.base.utils.decodeHex
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceImpl

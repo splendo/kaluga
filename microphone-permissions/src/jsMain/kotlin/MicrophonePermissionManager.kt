@@ -20,7 +20,6 @@ package com.splendo.kaluga.permissions.microphone
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import kotlinx.coroutines.CoroutineScope
 
 actual class DefaultMicrophonePermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope)

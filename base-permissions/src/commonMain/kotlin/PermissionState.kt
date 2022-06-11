@@ -71,7 +71,7 @@ sealed class PermissionStateImpl<P : Permission> {
     data class Deinitialized<P : Permission>(
         val monitoringInterval: Duration,
         val permissionManager: PermissionManager<P>
-        ) : Inactive<P>(), PermissionState.Deinitialized<P> {
+    ) : Inactive<P>(), PermissionState.Deinitialized<P> {
         override val reinitialize: suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
     }
 
@@ -99,7 +99,7 @@ sealed class PermissionStateImpl<P : Permission> {
     data class Initializing<P : Permission>(
         override val monitoringInterval: Duration,
         override val permissionManager: PermissionManager<P>
-        ) : Active<P>(), PermissionState.Initializing<P> {
+    ) : Active<P>(), PermissionState.Initializing<P> {
         override fun initialize(allowed: Boolean, locked: Boolean): suspend() -> PermissionState.Initialized<P> = {
             when {
                 !allowed && locked -> Denied.Locked(monitoringInterval, permissionManager)
@@ -115,7 +115,7 @@ sealed class PermissionStateImpl<P : Permission> {
     data class Allowed<P : Permission>(
         override val monitoringInterval: Duration,
         override val permissionManager: PermissionManager<P>
-        ) : Active<P>(), PermissionState.Allowed<P> {
+    ) : Active<P>(), PermissionState.Allowed<P> {
 
         override fun deny(locked: Boolean): suspend () -> PermissionState.Denied<P> = {
             if (locked) Denied.Locked(monitoringInterval, permissionManager) else Denied.Requestable(monitoringInterval, permissionManager)
@@ -137,7 +137,7 @@ sealed class PermissionStateImpl<P : Permission> {
         data class Locked<P : Permission>(
             override val monitoringInterval: Duration,
             override val permissionManager: PermissionManager<P>
-            ) : Denied<P>(), PermissionState.Denied.Locked<P> {
+        ) : Denied<P>(), PermissionState.Denied.Locked<P> {
 
             override val unlock: suspend () -> Requestable<P> = {
                 Requestable(monitoringInterval, permissionManager)
@@ -150,7 +150,7 @@ sealed class PermissionStateImpl<P : Permission> {
         data class Requestable<P : Permission>(
             override val monitoringInterval: Duration,
             override val permissionManager: PermissionManager<P>
-            ) : Denied<P>(), PermissionState.Denied.Requestable<P> {
+        ) : Denied<P>(), PermissionState.Denied.Requestable<P> {
 
             override fun request() {
                 permissionManager.requestPermission()

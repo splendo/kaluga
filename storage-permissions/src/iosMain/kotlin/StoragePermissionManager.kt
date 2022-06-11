@@ -18,7 +18,6 @@
 package com.splendo.kaluga.permissions.storage
 
 import co.touchlab.stately.freeze
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper

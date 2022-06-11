@@ -23,9 +23,7 @@ import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import platform.CoreLocation.CLAccuracyAuthorization
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
@@ -52,15 +50,12 @@ actual class DefaultLocationPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
-    private val locationManager by lazy {
-        CLLocationManager().apply {
-            desiredAccuracy =
-                if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
-        }
+    private val locationManager = MainCLLocationManagerAccessor {
+        desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }
     private val authorizationStatus = suspend {
-        updateLocationManager {
-            if (IOSVerion.systemVersion > IOSVersion(13)) {
+        locationManager.updateLocationManager {
+            if (IOSVersion.systemVersion > IOSVersion(13)) {
                 authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
             } else {
                 CLLocationManager.authorizationStatus() to true
@@ -90,7 +85,7 @@ actual class DefaultLocationPermissionManager(
         }
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             launch {
-                updateLocationManager {
+                locationManager.updateLocationManager {
                     if (permission.background)
                         requestAlwaysAuthorization()
                     else
@@ -105,7 +100,7 @@ actual class DefaultLocationPermissionManager(
     override fun startMonitoring(interval: Duration) {
         super.startMonitoring(interval)
         launch {
-            updateLocationManager {
+            locationManager.updateLocationManager {
                 delegate = authorizationDelegate
             }
             handleAuthorizationStatus(authorizationStatus())
@@ -115,16 +110,9 @@ actual class DefaultLocationPermissionManager(
     override fun stopMonitoring() {
         super.stopMonitoring()
         launch {
-            updateLocationManager {
+            locationManager.updateLocationManager {
                 delegate = null
             }
-        }
-    }
-
-    private suspend fun <T> updateLocationManager(update: CLLocationManager.() -> T): T {
-        // As per the documentation, CLLocationManager must be created and maintained via the main thread
-        return withContext(Dispatchers.Main) {
-            locationManager.update()
         }
     }
 }

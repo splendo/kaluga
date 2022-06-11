@@ -79,7 +79,7 @@ actual class DefaultNotificationsPermissionManager(
 
             try {
                 if (deferred.await()) grantPermission() else revokePermission(true)
-            } catch (t : Throwable) {
+            } catch (t: Throwable) {
                 revokePermission(true)
             } finally {
                 timerHelper.isWaiting.value = false

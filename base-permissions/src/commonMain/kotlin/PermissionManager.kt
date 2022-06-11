@@ -82,7 +82,6 @@ abstract class BasePermissionManager<P : Permission>(
     private val sharedEvents = SequentialMutableSharedFlow<PermissionManager.Event>(0, settings.eventBufferSize, coroutineScope)
     override val events: SharedFlow<PermissionManager.Event> = sharedEvents.asSharedFlow()
 
-
     override fun requestPermission() {
         logInfo { "Request Permission" }
     }
@@ -101,7 +100,7 @@ abstract class BasePermissionManager<P : Permission>(
     }
 
     open fun revokePermission(locked: Boolean) {
-        logInfo { if (locked) {"Permission Locked" } else { "Permission Revoked" } }
+        logInfo { if (locked) { "Permission Locked" } else { "Permission Revoked" } }
         emitSharedEvent(PermissionManager.Event.PermissionDenied(locked))
     }
 

@@ -56,5 +56,4 @@ class SequentialMutableSharedFlow<T>(replay: Int = 0, extraBufferCapacity: Int =
     }
 
     override fun resetReplayCache() = internal.resetReplayCache()
-
 }

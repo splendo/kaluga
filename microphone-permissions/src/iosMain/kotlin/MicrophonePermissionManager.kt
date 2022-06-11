@@ -19,8 +19,8 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
+import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 import kotlin.time.Duration

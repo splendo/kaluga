@@ -47,7 +47,7 @@ class MockBasePermissionStateRepo<P : Permission>(
         val mockState = state as MockPermissionState<P>
         (this as MockBasePermissionStateRepo<P>).didDeinitialize(mockState)
         mockState.deinitialize
-   },
+    },
     coroutineContext
 ) {
 
