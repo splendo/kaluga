@@ -32,6 +32,7 @@ expect interface DeviceWrapper {
 
 interface DeviceInfo {
     val name: String?
+    val identifier: Identifier
     val rssi: Int
     val advertisementData: BaseAdvertisementData
     val updatedAt: KalugaDate
@@ -40,10 +41,12 @@ interface DeviceInfo {
 
 data class DeviceInfoImpl(
     override val name: String?,
+    override val identifier: Identifier,
     override val rssi: Int,
     override val advertisementData: BaseAdvertisementData
 ) : DeviceInfo {
 
+    constructor(wrapper: DeviceWrapper, rssi: Int, advertisementData: BaseAdvertisementData) : this(wrapper.name, wrapper.identifier, rssi, advertisementData)
     override val updatedAt = DefaultKalugaDate.now()
 
     override fun distance(environmentalFactor: Double): Double {

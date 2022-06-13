@@ -188,7 +188,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ): Device {
             return DeviceImpl(
                 deviceWrapper.identifier,
-                DeviceInfoImpl(deviceWrapper.name, rssi, advertisementData),
+                DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
                 connectionSettings,
                 deviceConnectionManagerBuilder,
                 coroutineScope,
