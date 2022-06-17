@@ -50,7 +50,7 @@ interface Device {
     suspend fun disconnect()
     suspend fun handleDisconnected()
     fun rssiDidUpdate(rssi: Int)
-    fun advertisementDataAndRssiDidUpdate(advertisementData: BaseAdvertisementData, rssi: Int)
+    fun advertisementDataDidUpdate(advertisementData: BaseAdvertisementData)
 }
 
 class DeviceImpl(
@@ -149,11 +149,10 @@ class DeviceImpl(
         sharedInfo.value = sharedInfo.value.copy(rssi = rssi)
     }
 
-    override fun advertisementDataAndRssiDidUpdate(
-        advertisementData: BaseAdvertisementData,
-        rssi: Int
+    override fun advertisementDataDidUpdate(
+        advertisementData: BaseAdvertisementData
     ) {
-        sharedInfo.value = sharedInfo.value.copy(rssi = rssi, advertisementData = advertisementData)
+        sharedInfo.value = sharedInfo.value.copy(advertisementData = advertisementData)
     }
 
     private fun createConnectionManagerIfNotCreated(): DeviceConnectionManager = if (connectionManager.isCompleted) {

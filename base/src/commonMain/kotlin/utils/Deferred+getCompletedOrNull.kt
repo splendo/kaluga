@@ -18,6 +18,9 @@ package com.splendo.kaluga.base.utils
 
 import kotlinx.coroutines.Deferred
 
+/**
+ * Gets the [Deferred.getCompleted] value if [Deferred.isCompleted] or null otherwise.
+ */
 fun <T> Deferred<T>.getCompletedOrNull(): T? = try {
     getCompleted()
 } catch (e : IllegalStateException) {
