@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
-import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
@@ -31,7 +31,8 @@ actual class DefaultCameraPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), ::handleAuthorizationStatus, coroutineScope)
+    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), permissionHandler, coroutineScope)
 
     override fun requestPermission() {
         super.requestPermission()

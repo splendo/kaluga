@@ -20,11 +20,13 @@ package com.splendo.kaluga.permissions.camera
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import com.splendo.kaluga.permissions.base.AndroidPermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 actual class DefaultCameraPermissionManager(
@@ -33,13 +35,14 @@ actual class DefaultCameraPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
+    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         arrayOf(Manifest.permission.CAMERA),
         coroutineScope,
-        ::logDebug,
-        ::logError,
-        ::handleAndroidPermissionState
+        logTag,
+        logger,
+        permissionHandler
     )
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
@@ -48,15 +51,19 @@ actual class DefaultCameraPermissionManager(
         if (supported)
             permissionsManager.requestPermissions()
         else
-            logError { "Camera not Supported" }
+            logger.error(logTag) { "Camera not Supported" }
     }
 
     override fun startMonitoring(interval: Duration) {
         super.startMonitoring(interval)
         if (supported)
             permissionsManager.startMonitoring(interval)
-        else
-            revokePermission(true)
+        else {
+            val handler = permissionHandler
+            launch {
+                handler.emit(AndroidPermissionState.DENIED_DO_NOT_ASK)
+            }
+        }
     }
 
     override fun stopMonitoring() {

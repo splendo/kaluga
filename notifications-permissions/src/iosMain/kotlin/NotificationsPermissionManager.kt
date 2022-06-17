@@ -19,11 +19,13 @@ package com.splendo.kaluga.permissions.notifications
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -47,26 +49,32 @@ actual class DefaultNotificationsPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
-    private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
-        val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
-        launch {
-            val deferred = CompletableDeferred<UNNotificationSettings?>()
-            val callback = { setting: UNNotificationSettings? ->
-                deferred.complete(setting)
-                Unit
-            }.freeze()
-            notificationCenter.getNotificationSettingsWithCompletionHandler(callback)
-            authorizationStatus.complete(deferred.await()?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+    class Provider(val notificationCenter: UNUserNotificationCenter, val coroutineScope: CoroutineScope) : AuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
+            val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
+            val notificationCenter = notificationCenter
+            coroutineScope.launch {
+                val deferred = CompletableDeferred<UNNotificationSettings?>()
+                val callback = { setting: UNNotificationSettings? ->
+                    deferred.complete(setting)
+                    Unit
+                }.freeze()
+                notificationCenter.getNotificationSettingsWithCompletionHandler(callback)
+                authorizationStatus.complete(deferred.await()?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+            }
+            return authorizationStatus.await()
         }
-        authorizationStatus.await()
     }
-    private val timerHelper = PermissionRefreshScheduler(authorization, ::handleAuthorizationStatus, coroutineScope)
+
+    private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
+    private val provider = Provider(notificationCenter, coroutineScope)
+
+    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermission() {
         super.requestPermission()
-        launch {
-            timerHelper.isWaiting.value = true
+        permissionHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
             val deferred = CompletableDeferred<Boolean>()
             val callback = { authorization: Boolean, error: NSError? ->
                 error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }
@@ -78,11 +86,12 @@ actual class DefaultNotificationsPermissionManager(
             )
 
             try {
-                if (deferred.await()) grantPermission() else revokePermission(true)
+                if (deferred.await())
+                    IOSPermissionsHelper.AuthorizationStatus.Authorized
+                else
+                    IOSPermissionsHelper.AuthorizationStatus.Restricted
             } catch (t: Throwable) {
-                revokePermission(true)
-            } finally {
-                timerHelper.isWaiting.value = false
+                IOSPermissionsHelper.AuthorizationStatus.Restricted
             }
         }
     }

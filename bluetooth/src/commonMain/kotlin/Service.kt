@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.RestrictedLogger
 
 class Service(
     service: ServiceWrapper,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logLevel: ConnectionSettings.LogLevel
+    logger: RestrictedLogger
 ) {
     val uuid = service.uuid
     val characteristics = service.characteristics.map {
@@ -32,7 +32,7 @@ class Service(
             it,
             emitNewAction = emitNewAction,
             parentLogTag = "$parentLogTag Service ${uuid.uuidString}",
-            logLevel = logLevel
+            logger = logger
         )
     }
 }

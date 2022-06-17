@@ -19,14 +19,15 @@ package com.splendo.kaluga.permissions.storage
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized
@@ -45,16 +46,19 @@ actual class DefaultStoragePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    private val authorizationStatus = suspend {
-        PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
+    private class Provider : AuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
-    private var timerHelper = PermissionRefreshScheduler(authorizationStatus, ::handleAuthorizationStatus, coroutineScope)
+
+    private val provider = Provider()
+
+    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermission() {
         super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
-            launch {
-                timerHelper.isWaiting.value = true
+            permissionHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
                 val callback = { status: PHAuthorizationStatus ->
                     deferred.complete(status)
@@ -62,12 +66,13 @@ actual class DefaultStoragePermissionManager(
                 }.freeze()
                 PHPhotoLibrary.requestAuthorization(callback)
 
-                val status = deferred.await()
-                timerHelper.isWaiting.value = false
-                handleAuthorizationStatus(status.toAuthorizationStatus())
+                deferred.await().toAuthorizationStatus()
             }
         } else {
-            revokePermission(true)
+            val permissionHandler = permissionHandler
+            launch {
+                permissionHandler.emit(IOSPermissionsHelper.AuthorizationStatus.Restricted)
+            }
         }
     }
 

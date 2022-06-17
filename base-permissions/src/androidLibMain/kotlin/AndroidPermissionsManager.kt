@@ -25,7 +25,10 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
+import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.concurrent.ConcurrentHashMap
@@ -80,9 +83,9 @@ class AndroidPermissionsManager constructor(
     private val context: Context = ApplicationHolder.applicationContext,
     private val permissions: Array<String> = emptyArray(),
     coroutineScope: CoroutineScope,
-    private val onLogDebug: (() -> String) -> Unit = {},
-    private val onLogError: (() -> String) -> Unit = {},
-    private val onPermissionChanged: (AndroidPermissionState) -> Unit
+    private val logTag: String,
+    private val logger: RestrictedLogger,
+    private val onPermissionChangedFlow: FlowCollector<AndroidPermissionState>
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {
@@ -106,7 +109,10 @@ class AndroidPermissionsManager constructor(
                 context.startActivity(intent)
             }
         } else {
-            onPermissionChanged(AndroidPermissionState.DENIED_DO_NOT_ASK)
+            val onPermissionChangedFlow = onPermissionChangedFlow
+            launch {
+                onPermissionChangedFlow.emit(AndroidPermissionState.DENIED_DO_NOT_ASK)
+            }
         }
     }
 
@@ -127,15 +133,15 @@ class AndroidPermissionsManager constructor(
             if (declaredPermissions.isNotEmpty()) {
                 missingPermissions.toList().forEach { requestedPermissionName ->
                     if (declaredPermissions.contains(requestedPermissionName)) {
-                        onLogDebug { "Permission $requestedPermissionName was declared in manifest" }
+                        logger.debug(logTag) { "Permission $requestedPermissionName was declared in manifest" }
                         missingPermissions.remove(requestedPermissionName)
                     } else {
-                        onLogError { "Permission $requestedPermissionName was not declared in manifest" }
+                        logger.error(logTag) { "Permission $requestedPermissionName was not declared in manifest" }
                     }
                 }
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            onLogError { e.message.orEmpty() }
+            logger.error(logTag) { e.message.orEmpty() }
         }
 
         return missingPermissions
@@ -158,13 +164,17 @@ class AndroidPermissionsManager constructor(
 
     internal fun monitor() {
         updatePermissionsStates()
-        if (hasPermissions) {
-            onPermissionChanged(AndroidPermissionState.GRANTED)
+        val state = if (hasPermissions) {
+            AndroidPermissionState.GRANTED
         } else {
             val locked = filteredPermissionsStates.any {
                 it.value == AndroidPermissionState.DENIED_DO_NOT_ASK
             }
-            onPermissionChanged(if (locked) AndroidPermissionState.DENIED_DO_NOT_ASK else AndroidPermissionState.DENIED)
+            if (locked) AndroidPermissionState.DENIED_DO_NOT_ASK else AndroidPermissionState.DENIED
+        }
+        val onPermissionChangedFlow = onPermissionChangedFlow
+        launch {
+            onPermissionChangedFlow.emit(state)
         }
     }
 
@@ -203,8 +213,27 @@ class AndroidPermissionsManager constructor(
     }
 }
 
-fun <P : Permission> BasePermissionManager<P>.handleAndroidPermissionState(state: AndroidPermissionState) = when (state) {
-    AndroidPermissionState.GRANTED -> grantPermission()
-    AndroidPermissionState.DENIED -> revokePermission(false)
-    AndroidPermissionState.DENIED_DO_NOT_ASK -> revokePermission(true)
+class AndroidPermissionStateHandler(private val sharedEventFlow: SequentialMutableSharedFlow<PermissionManager.Event>, private val logTag: String, private val logger: RestrictedLogger) : FlowCollector<AndroidPermissionState> {
+    override suspend fun emit(value: AndroidPermissionState) {
+        when (value) {
+            AndroidPermissionState.DENIED -> {
+                logger.info(logTag) { "Permission Revoked" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionDenied(false))
+            }
+            AndroidPermissionState.GRANTED -> {
+                logger.info(logTag) { "Permission Granted" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionGranted)
+            }
+            AndroidPermissionState.DENIED_DO_NOT_ASK -> {
+                logger.info(logTag) { "Permission Locked" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionDenied(true))
+            }
+        }
+    }
+
+    private fun tryAndEmitEvent(event: PermissionManager.Event) {
+        if (!sharedEventFlow.tryEmitOrLaunchAndEmit(event)) {
+            logger.error(logTag) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
+        }
+    }
 }

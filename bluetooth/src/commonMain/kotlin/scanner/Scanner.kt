@@ -29,6 +29,8 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.description
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -77,7 +79,7 @@ interface Scanner {
 }
 
 abstract class BaseScanner constructor(
-    private val settings: Settings,
+    settings: Settings,
     private val coroutineScope: CoroutineScope
 ) : Scanner, CoroutineScope by coroutineScope {
 
@@ -91,14 +93,8 @@ abstract class BaseScanner constructor(
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
         val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
-        val logLevel: LogLevel = LogLevel.NONE
+        val logLevel: RestrictedLogLevel = RestrictedLogLevel.None
     )
-
-    enum class LogLevel {
-        NONE,
-        INFO,
-        VERBOSE
-    }
 
     interface Builder {
         fun create(
@@ -107,6 +103,8 @@ abstract class BaseScanner constructor(
         ): BaseScanner
     }
 
+    private val logger = RestrictedLogger(settings.logLevel)
+    
     internal val permissions: Permissions = settings.permissions
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
@@ -131,7 +129,7 @@ abstract class BaseScanner constructor(
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
 
     override fun startMonitoringPermissions() {
-        logDebug { "Start monitoring permissions" }
+        logger.debug(LOG_TAG) { "Start monitoring permissions" }
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch(coroutineContext) {
             permissionsFlow.collect { state ->
@@ -145,7 +143,7 @@ abstract class BaseScanner constructor(
             states.forEach { state ->
                 when (state) {
                     is PermissionState.Denied.Requestable -> {
-                        logInfo { "Request permission" }
+                        logger.info(LOG_TAG) { "Request permission" }
                         state.request()
                     }
                     else -> {}
@@ -153,7 +151,7 @@ abstract class BaseScanner constructor(
             }
         }
         val hasPermission = states.all { it is PermissionState.Allowed }
-        logInfo { "Permission now ${if (hasPermission) "Granted" else "Denied"}" }
+        logger.info(LOG_TAG) { "Permission now ${if (hasPermission) "Granted" else "Denied"}" }
         emitSharedEvent(Scanner.Event.PermissionChanged(hasPermission))
     }
 
@@ -164,13 +162,13 @@ abstract class BaseScanner constructor(
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
         if (filter.isEmpty()) {
-            logInfo { "Start Scanning" }
+            logger.info(LOG_TAG) { "Start Scanning" }
         } else {
-            logInfo { "Start scanning with filter [${filter.joinToString(", ") { it.uuidString }}]" }
+            logger.info(LOG_TAG) { "Start scanning with filter [${filter.joinToString(", ") { it.uuidString }}]" }
         }
     }
 
-    override suspend fun stopScanning() = logInfo { "Stop scanning" }
+    override suspend fun stopScanning() = logger.info(LOG_TAG) { "Stop scanning" }
 
     override fun startMonitoringHardwareEnabled() {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
@@ -195,11 +193,11 @@ abstract class BaseScanner constructor(
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {
             val isEnabled = isHardwareEnabled()
-            logDebug { "Request Enable Hardware: ${if (isEnabled) "Enabled" else "Disabled"}" }
+            logger.debug(LOG_TAG) { "Request Enable Hardware: ${if (isEnabled) "Enabled" else "Disabled"}" }
             emitSharedEvent(if (isEnabled) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
         } else if (
             flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
-                logDebug { "Request Enable Hardware awaiting action" }
+                logger.debug(LOG_TAG) { "Request Enable Hardware awaiting action" }
                 acc && action()
             }
         ) {
@@ -213,30 +211,30 @@ abstract class BaseScanner constructor(
         advertisementData: AdvertisementData,
         deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
     ) {
-        logInfo { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
-        logDebug { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
+        logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
+        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
         emitSharedEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {
-        logDebug { "Device ${identifier.stringValue} connected" }
+        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} connected" }
         emitSharedEvent(Scanner.Event.DeviceConnected(identifier))
     }
 
     internal fun handleDeviceDisconnected(identifier: Identifier) {
-        logDebug { "Device ${identifier.stringValue} disconnected" }
+        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected" }
         emitSharedEvent(Scanner.Event.DeviceDisconnected(identifier))
     }
 
     internal open suspend fun checkHardwareEnabledChanged() {
         val isEnabled = isHardwareEnabled()
-        logInfo { "Bluetooth hardware now ${if (isEnabled) "enabled" else "disabled"}" }
+        logger.info(LOG_TAG) { "Bluetooth hardware now ${if (isEnabled) "enabled" else "disabled"}" }
         if (isEnabled)
             emitSharedEvent(Scanner.Event.BluetoothEnabled)
         else {
             emitSharedEvent(Scanner.Event.BluetoothDisabled)
             if (autoEnableSensors) {
-                logInfo { "Bluetooth disabled. Attempt to automatically enable" }
+                logger.info(LOG_TAG) { "Bluetooth disabled. Attempt to automatically enable" }
                 requestEnableHardware()
             }
         }
@@ -244,25 +242,7 @@ abstract class BaseScanner constructor(
 
     private fun emitSharedEvent(event: Scanner.Event) {
         if (!sharedEvents.tryEmitOrLaunchAndEmit(event)) {
-            logError { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
-    }
-
-    protected fun logInfo(message: () -> String) {
-        if (settings.logLevel != LogLevel.NONE) {
-            info(LOG_TAG, message)
-        }
-    }
-
-    protected fun logDebug(message: () -> String) {
-        if (settings.logLevel == LogLevel.VERBOSE) {
-            debug(LOG_TAG, message)
-        }
-    }
-
-    protected fun logError(message: () -> String) {
-        if (settings.logLevel == LogLevel.VERBOSE) {
-            com.splendo.kaluga.logging.error(LOG_TAG, message)
+            logger.error(LOG_TAG) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
         }
     }
 }

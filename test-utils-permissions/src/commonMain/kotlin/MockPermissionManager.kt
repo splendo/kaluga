@@ -102,10 +102,11 @@ class MockPermissionManager<P : Permission>(
         if (setupMocks) {
             startMonitoringMock.on().doExecute {
                 debug("Initial State $initialState")
+                emitSharedEvent(
                 when (initialState) {
-                    MockPermissionState.ActiveState.ALLOWED -> grantPermission()
-                    MockPermissionState.ActiveState.REQUESTABLE -> revokePermission(false)
-                    MockPermissionState.ActiveState.LOCKED -> revokePermission(true)
+                    MockPermissionState.ActiveState.ALLOWED -> PermissionManager.Event.PermissionGranted
+                    MockPermissionState.ActiveState.REQUESTABLE -> PermissionManager.Event.PermissionDenied(false)
+                    MockPermissionState.ActiveState.LOCKED -> PermissionManager.Event.PermissionDenied(true)
                 }
             }
         }

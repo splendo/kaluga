@@ -27,8 +27,7 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -95,6 +94,7 @@ abstract class BaseDeviceConnectionManager(
     }
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
+    private val logger = RestrictedLogger(settings.logLevel)
 
     private val _currentAction = AtomicReference<DeviceAction?>(null)
     protected var currentAction: DeviceAction?
@@ -109,44 +109,44 @@ abstract class BaseDeviceConnectionManager(
     override val rssi = sharedRssi.asSharedFlow()
 
     override suspend fun readRssi() {
-        logDebug { "Request Read RSSI" }
+        logger.debug(logTag) { "Request Read RSSI" }
     }
 
     fun handleNewRssi(rssi: Int) {
-        logDebug { "Updated Rssi $rssi" }
+        logger.debug(logTag) { "Updated Rssi $rssi" }
         sharedRssi.tryEmit(rssi)
     }
 
     fun handleNewMtu(mtu: Int) {
-        logDebug { "Updated Mtu $mtu" }
+        logger.debug(logTag) { "Updated Mtu $mtu" }
         emitSharedEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }
 
     override fun startConnecting() {
-        logInfo { "Start Connecting" }
+        logger.info(logTag) { "Start Connecting" }
         emitSharedEvent(DeviceConnectionManager.Event.Connecting)
     }
 
     override fun cancelConnecting() {
-        logInfo { "Cancel Connecting" }
+        logger.info(logTag) { "Cancel Connecting" }
         emitSharedEvent(DeviceConnectionManager.Event.CancelledConnecting)
     }
 
     override fun handleConnect() {
-        logInfo { "Did Connect" }
+        logger.info(logTag) { "Did Connect" }
         emitSharedEvent(DeviceConnectionManager.Event.Connected)
     }
 
     override fun startDisconnecting() {
-        logInfo { "Start Disconnecting" }
+        logger.info(logTag) { "Start Disconnecting" }
         emitSharedEvent(DeviceConnectionManager.Event.Disconnecting)
     }
 
     override suspend fun performAction(action: DeviceAction) {
-        logInfo { "Perform action $action" }
+        logger.info(logTag) { "Perform action $action" }
     }
 
-    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitSharedEvent, logTag, settings.logLevel)
+    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitSharedEvent, logTag, logger)
 
     override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = _currentAction
@@ -157,12 +157,12 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
             Unit
         }
-        logInfo { "Did Disconnect" }
+        logger.info(logTag) { "Did Disconnect" }
         emitSharedEvent(DeviceConnectionManager.Event.Disconnected(clean))
     }
 
     override fun startDiscovering() {
-        logInfo { "Start Discovering Services" }
+        logger.info(logTag) { "Start Discovering Services" }
         emitSharedEvent(DeviceConnectionManager.Event.Discovering)
     }
 
@@ -170,7 +170,7 @@ abstract class BaseDeviceConnectionManager(
     fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     fun handleDiscoverCompleted(services: List<Service>) {
-        logInfo { "Discovered services: ${services.map { it.uuid.uuidString }}" }
+        logger.info(logTag) { "Discovered services: ${services.map { it.uuid.uuidString }}" }
         emitSharedEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
@@ -179,9 +179,9 @@ abstract class BaseDeviceConnectionManager(
         _currentAction.value = null
         if (currentAction != null) {
             if (succeeded)
-                logInfo { "Completed $currentAction successfully" }
+                logger.info(logTag) { "Completed $currentAction successfully" }
             else
-                logError { "Failed to complete $currentAction" }
+                logger.error(logTag) { "Failed to complete $currentAction" }
         }
         emitSharedEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }
@@ -239,25 +239,7 @@ abstract class BaseDeviceConnectionManager(
 
     private fun emitSharedEvent(event: DeviceConnectionManager.Event) {
         if (!sharedEvents.tryEmitOrLaunchAndEmit(event)) {
-            logError { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
-    }
-
-    protected fun logInfo(message: () -> String) {
-        if (settings.logLevel != ConnectionSettings.LogLevel.NONE) {
-            info(logTag, message)
-        }
-    }
-
-    protected fun logDebug(message: () -> String) {
-        if (settings.logLevel == ConnectionSettings.LogLevel.VERBOSE) {
-            debug(logTag, message)
-        }
-    }
-
-    protected fun logError(message: () -> String) {
-        if (settings.logLevel == ConnectionSettings.LogLevel.VERBOSE) {
-            com.splendo.kaluga.logging.error(logTag, message)
+            logger.error(logTag) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
         }
     }
 }

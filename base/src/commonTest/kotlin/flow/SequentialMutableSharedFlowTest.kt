@@ -63,7 +63,7 @@ class SequentialMutableSharedFlowTest : BaseTest() {
             assertEquals(8, collectionResult[1].await())
             assertEquals(42, collectionResult[2].await())
             assertEquals(4, collectionResult[3].await())
-            sequentialFlow.cancel()
+            cancel()
         }.join()
     }
 }

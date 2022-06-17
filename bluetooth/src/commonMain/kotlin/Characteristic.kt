@@ -18,9 +18,9 @@
 package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.concurrency.AtomicBoolean
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
@@ -29,12 +29,12 @@ open class Characteristic(
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logLevel: ConnectionSettings.LogLevel
+    logger: RestrictedLogger
 ) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
     initialValue,
     emitNewAction,
     "$parentLogTag Characteristic",
-    logLevel
+    logger
 ) {
 
     private val isBusy = MutableStateFlow(false)
@@ -103,7 +103,7 @@ open class Characteristic(
 
     override val uuid = wrapper.uuid
 
-    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logLevel = logLevel) }
+    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logger = logger) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)

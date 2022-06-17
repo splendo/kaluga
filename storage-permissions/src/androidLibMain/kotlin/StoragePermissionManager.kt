@@ -19,10 +19,10 @@ package com.splendo.kaluga.permissions.storage
 
 import android.Manifest
 import android.content.Context
+import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -33,6 +33,7 @@ actual class DefaultStoragePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
+    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (storagePermission.allowWrite)
@@ -40,9 +41,9 @@ actual class DefaultStoragePermissionManager(
         else
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
         coroutineScope,
-        ::logDebug,
-        ::logError,
-        ::handleAndroidPermissionState
+        logTag,
+        logger,
+        permissionHandler
     )
 
     override fun requestPermission() {

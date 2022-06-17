@@ -19,6 +19,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +62,7 @@ interface PermissionManager<P : Permission> {
 abstract class BasePermissionManager<P : Permission>(
     override val permission: P,
     private val settings: Settings,
-    private val coroutineScope: CoroutineScope
+    protected val coroutineScope: CoroutineScope
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
     companion object {
@@ -69,62 +71,29 @@ abstract class BasePermissionManager<P : Permission>(
 
     data class Settings(
         val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
-        val logLevel: LogLevel = LogLevel.NONE
+        val logLevel: RestrictedLogLevel = RestrictedLogLevel.None
     )
 
-    enum class LogLevel {
-        NONE,
-        INFO,
-        VERBOSE
-    }
-
-    private val logTag = "PermissionManager $permission"
-    private val sharedEvents = SequentialMutableSharedFlow<PermissionManager.Event>(0, settings.eventBufferSize, coroutineScope)
+    protected val logTag = "PermissionManager $permission"
+    protected val logger = RestrictedLogger(settings.logLevel)
+    protected val sharedEvents = SequentialMutableSharedFlow<PermissionManager.Event>(0, settings.eventBufferSize, coroutineScope)
     override val events: SharedFlow<PermissionManager.Event> = sharedEvents.asSharedFlow()
 
     override fun requestPermission() {
-        logInfo { "Request Permission" }
+        logger.info(logTag) { "Request Permission" }
     }
 
     override fun startMonitoring(interval: Duration) {
-        logDebug { "Start monitoring with interval $interval" }
+        logger.debug(logTag) { "Start monitoring with interval $interval" }
     }
 
     override fun stopMonitoring() {
-        logDebug { "Stop monitoring with interval" }
+        logger.debug(logTag) { "Stop monitoring with interval" }
     }
 
-    open fun grantPermission() {
-        logInfo { "Permission Granted" }
-        emitSharedEvent(PermissionManager.Event.PermissionGranted)
-    }
-
-    open fun revokePermission(locked: Boolean) {
-        logInfo { if (locked) { "Permission Locked" } else { "Permission Revoked" } }
-        emitSharedEvent(PermissionManager.Event.PermissionDenied(locked))
-    }
-
-    private fun emitSharedEvent(event: PermissionManager.Event) {
+    protected fun emitSharedEvent(event: PermissionManager.Event) {
         if (!sharedEvents.tryEmitOrLaunchAndEmit(event)) {
-            logError { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
-    }
-
-    protected fun logInfo(message: () -> String) {
-        if (settings.logLevel != LogLevel.NONE) {
-            info(logTag, message)
-        }
-    }
-
-    protected fun logDebug(message: () -> String) {
-        if (settings.logLevel == LogLevel.VERBOSE) {
-            debug(logTag, message)
-        }
-    }
-
-    protected fun logError(message: () -> String) {
-        if (settings.logLevel == LogLevel.VERBOSE) {
-            com.splendo.kaluga.logging.error(logTag, message)
+            logger.error(logTag) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
         }
     }
 }

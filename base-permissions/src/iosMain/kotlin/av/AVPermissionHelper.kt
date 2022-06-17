@@ -19,10 +19,13 @@ package com.splendo.kaluga.permissions.base.av
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import platform.AVFoundation.AVAuthorizationStatus
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
@@ -44,45 +47,48 @@ abstract class AVType {
 class AVPermissionHelper(
     private val bundle: NSBundle,
     private val type: AVType,
-    private val onPermissionChanged: (IOSPermissionsHelper.AuthorizationStatus) -> Unit,
-    coroutineScope: CoroutineScope
+    private val onPermissionChangedFlow: FlowCollector<IOSPermissionsHelper.AuthorizationStatus>,
+    private val coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
-    private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
-        AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
+    private class Provider(private val type: AVMediaType) : AuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(type).toAuthorizationStatus()
     }
-    private val timerHelper = PermissionRefreshScheduler(authorizationStatus, onPermissionChanged, coroutineScope)
+
+    private val provider = Provider(type.avMediaType)
+    private val timerHelper = PermissionRefreshScheduler(provider, onPermissionChangedFlow, coroutineScope)
 
     fun requestPermission() {
+        val onPermissionChangedFlow = onPermissionChangedFlow
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
-            launch {
-                timerHelper.isWaiting.value = true
+            val mediaType = type.avMediaType
+            onPermissionChangedFlow.requestAuthorizationStatus(timerHelper, coroutineScope) {
                 val deferred = CompletableDeferred<Boolean>()
                 val callback = { allowed: Boolean ->
                     deferred.complete(allowed)
                     Unit
                 }.freeze()
                 AVCaptureDevice.requestAccessForMediaType(
-                    type.avMediaType,
+                    mediaType,
                     callback
                 )
-
-                val allowed = deferred.await()
-                timerHelper.isWaiting.value = false
-                if (allowed) {
-                    onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Authorized)
-                } else {
-                    onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Denied)
-                }
+                if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Denied
             }
         } else {
-            onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Denied)
+            launch {
+                onPermissionChangedFlow.emit(IOSPermissionsHelper.AuthorizationStatus.Denied)
+            }
         }
     }
 
     fun startMonitoring(interval: Duration) {
         when {
-            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Denied)
+            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> {
+                val onPermissionChangedFlow = onPermissionChangedFlow
+                launch {
+                    onPermissionChangedFlow.emit(IOSPermissionsHelper.AuthorizationStatus.Denied)
+                }
+            }
             else -> timerHelper.startMonitoring(interval)
         }
     }

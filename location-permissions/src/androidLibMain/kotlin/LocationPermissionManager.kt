@@ -19,10 +19,10 @@ package com.splendo.kaluga.permissions.location
 
 import android.Manifest
 import android.content.Context
+import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -42,7 +42,8 @@ actual class DefaultLocationPermissionManager(
         return result.toTypedArray()
     }
 
-    private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, ::logDebug, ::logError, ::handleAndroidPermissionState)
+    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, logTag, logger, permissionHandler)
 
     override fun requestPermission() {
         super.requestPermission()

@@ -19,10 +19,10 @@ package com.splendo.kaluga.permissions.contacts
 
 import android.Manifest
 import android.content.Context
+import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -33,6 +33,7 @@ actual class DefaultContactsPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
+    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (contactsPermission.allowWrite)
@@ -40,9 +41,9 @@ actual class DefaultContactsPermissionManager(
         else
             arrayOf(Manifest.permission.READ_CONTACTS),
         coroutineScope,
-        ::logDebug,
-        ::logError,
-        ::handleAndroidPermissionState
+        logTag,
+        logger,
+        permissionHandler
     )
 
     override fun requestPermission() {

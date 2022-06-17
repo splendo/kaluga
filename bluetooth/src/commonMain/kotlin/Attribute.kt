@@ -17,11 +17,9 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -31,10 +29,10 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val parentLogTag: String,
-    private val logLevel: ConnectionSettings.LogLevel
+    private val logger: RestrictedLogger
 ) : Flow<ByteArray?> {
 
-    val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
+    protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
 
     abstract val uuid: UUID
 
@@ -62,17 +60,14 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
 
     open fun updateValue() {
         val nextValue = getUpdatedValue()
-        if (logLevel == ConnectionSettings.LogLevel.VERBOSE) {
-            debug(logTag, "Updated value to $nextValue")
-        }
+        logger.debug(logTag) { "Updated value to $nextValue" }
         sharedFlow.tryEmit(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected fun addAction(action: DeviceAction) {
-        if (logLevel != ConnectionSettings.LogLevel.NONE)
-            info(logTag, "Add action $action")
+        logger.info(logTag) { "Add action $action" }
         emitNewAction(DeviceConnectionManager.Event.AddAction(action))
     }
 }
