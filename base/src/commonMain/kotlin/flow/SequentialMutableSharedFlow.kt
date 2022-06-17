@@ -27,11 +27,38 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SequentialMutableSharedFlow<T>(replay: Int = 0, extraBufferCapacity: Int = 0, coroutineScope: CoroutineScope) : MutableSharedFlow<T>, CoroutineScope by coroutineScope {
+/**
+ * A [MutableSharedFlow] that can be forced to emit in a thread-safe sequential way
+ */
+interface SequentialMutableSharedFlow<T> : MutableSharedFlow<T> {
 
+    /**
+     * Tries to call [tryEmit] but if this fails will launch and [emit]
+     * The call order of this method is preserved in a thread-safe fashion
+     * @return `true` if [tryEmit] succeeded, false otherwise
+     */
+    fun tryEmitOrLaunchAndEmit(value: T): Boolean
+}
+
+/**
+ * Creates a new [SequentialMutableSharedFlow]
+ * @param replay the number of values replayed to new subscriber (cannot be negative, defaults to zero).
+ * @param extraBufferCapacity the number of values buffered in addition to replay.
+ * [SequentialMutableSharedFlow.emit] or [SequentialMutableSharedFlow.tryEmitOrLaunchAndEmit] does not suspend while there is a buffer space remaining
+ * (optional, cannot be negative. defaults to zero).
+ * @param coroutineScope The [coroutineScope] responsible for emitting when [SequentialMutableSharedFlow.tryEmitOrLaunchAndEmit] returns `false`.
+ */
+fun <T> SequentialMutableSharedFlow(replay: Int = 0, extraBufferCapacity: Int = 0, coroutineScope: CoroutineScope): SequentialMutableSharedFlow<T> = SequentialMutableSharedFlowImpl(replay, extraBufferCapacity, coroutineScope)
+
+private class SequentialMutableSharedFlowImpl<T>(replay: Int = 0, extraBufferCapacity: Int = 0, coroutineScope: CoroutineScope) : SequentialMutableSharedFlow<T>, CoroutineScope by coroutineScope {
+
+    // Internal MutableSharedFlow to maintain data. Suspends when capacity is reached
     private val internal = MutableSharedFlow<T>(replay, extraBufferCapacity, BufferOverflow.SUSPEND)
+    // This channel ensures jobs added in tryEmitOrLaunchAndEmit are executed in the order at which they were added
     private val bufferOverflowChannel = Channel<Job>(capacity = Channel.UNLIMITED).apply {
         launch {
+            // When a job is received, call join to wait for it to complete.
+            // Since CoroutineStart.LAZY is passed, this will launch the job and call emit
             consumeEach { it.join() }
         }
     }
@@ -45,8 +72,12 @@ class SequentialMutableSharedFlow<T>(replay: Int = 0, extraBufferCapacity: Int =
 
     override suspend fun emit(value: T) = internal.emit(value)
     override fun tryEmit(value: T): Boolean = internal.tryEmit(value)
-    fun tryEmitOrLaunchAndEmit(value: T): Boolean = tryEmit(value).also { didEmit ->
+    override fun tryEmitOrLaunchAndEmit(value: T): Boolean = tryEmit(value).also { didEmit ->
+        // If tryEmit succeeded, no need to do anything
         if (!didEmit) {
+            // Add a job that will call emit to the channel.
+            // Since the channel waits for the previously received job to finish this will be executed in a sequential order
+            // Passing CoroutineStart.LAZY ensures that the job is only executed once started (such as via the join called by the channel)
             bufferOverflowChannel.trySend(
                 launch(start = CoroutineStart.LAZY) {
                     emit(value)

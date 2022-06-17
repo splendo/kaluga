@@ -14,9 +14,8 @@
  *     limitations under the License.
  */
 
-package flow
+package com.splendo.kaluga.base.flow
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete

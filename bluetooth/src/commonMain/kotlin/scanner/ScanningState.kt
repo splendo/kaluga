@@ -270,10 +270,8 @@ sealed class ScanningStateImpl {
 
                 return discovered.devices.find { it.identifier == identifier }
                     ?.let { knownDevice ->
-                        knownDevice.advertisementDataAndRssiDidUpdate(advertisementData, rssi)
-                        // TODO our contents have technically changed yet we remain()
-                        // not storing Devices as repos, but rather storing their _state_
-                        // would be better.
+                        knownDevice.rssiDidUpdate(rssi)
+                        knownDevice.advertisementDataDidUpdate(advertisementData)
                         remain()
                     } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), scanner) }
             }
