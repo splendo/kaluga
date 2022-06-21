@@ -62,15 +62,15 @@ object BeaconMock {
         serviceData: ServiceData = emptyMap(),
         coroutineScope: CoroutineScope
     ) = DeviceImpl(
-        deviceWrapper.identifier,
-        makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
-        settings,
-        MockDeviceConnectionManager(
+        identifier = deviceWrapper.identifier,
+        initialDeviceInfo = makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
+        connectionSettings = settings,
+        connectionManagerBuilder = { MockDeviceConnectionManager(
             deviceWrapper = deviceWrapper,
             bufferCapacity = 1,
             coroutineScope = coroutineScope
-        ),
-        coroutineScope
+        ) },
+        coroutineScope = coroutineScope
     )
 
     private val settings = ConnectionSettings(
