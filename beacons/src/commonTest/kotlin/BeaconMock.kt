@@ -64,7 +64,7 @@ object BeaconMock {
         settings,
         makeDeviceInfo(name, serviceData),
         manager,
-        coroutineScope
+        coroutineScope.coroutineContext
     )
 
     private val settings = ConnectionSettings(
