@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,13 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.device
+package com.splendo.kaluga.base.utils
 
-import platform.Foundation.NSUUID
-
-actual typealias Identifier = NSUUID
-
-actual fun randomIdentifier() = Identifier.UUID()
-
-actual val Identifier.stringValue: String
-    get() = UUIDString
+/** Returns `true` if contains at least one element from `elements` */
+fun <T> Iterable<T>.containsAny(elements: Iterable<T>) = any { it in elements }

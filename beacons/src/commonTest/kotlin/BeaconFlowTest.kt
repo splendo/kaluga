@@ -32,5 +32,5 @@ open class BeaconFlowTest(
 
     fun start(coroutineScope: CoroutineScope) = beacons.startMonitoring(coroutineScope)
     fun stop() = beacons.stopMonitoring()
-    suspend fun discoverDevices(vararg devices: Device) = bluetooth.devices.emit(devices.toList())
+    suspend fun discoverDevices(vararg devices: Device) = bluetooth.discoveredDevices.emit(devices.toList())
 }
