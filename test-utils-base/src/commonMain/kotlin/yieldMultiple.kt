@@ -17,25 +17,40 @@
 
 package com.splendo.kaluga.test.base
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
+const val DEFAULT_MULTIPLE_TIMES_YIELDS = 10
 
 /**
  * Calls yield for a number of times
- * @param times the number of times to call yield.
+ * @param times the number of times to call yield. [DEFAULT_MULTIPLE_TIMES_YIELDS] by default
  */
-suspend fun yieldMultiple(times: Int) = repeat(times) {
+suspend fun yieldMultiple(times: Int = DEFAULT_MULTIPLE_TIMES_YIELDS) = repeat(times) {
     yield()
 }
 
 /**
- * Calls yield until a constraint is met
+ * Calls yield until a constraint is met. After yielding a number of times there is a delay to prevent maxing out the CPU.
  * @param timeout The duration after which to stop
+ * @param timesPerTurn The number of times to call yield before enacting a delay. [DEFAULT_MULTIPLE_TIMES_YIELDS] by default.
+ * @param delayPerTurn The delay enacted after yielding a number of times as defined by [timesPerTurn].
  * @param constraint The constraint to check for.
  */
-suspend fun yieldUntil(timeout: Duration = Duration.INFINITE, constraint: () -> Boolean) = withTimeout(timeout) {
+suspend fun yieldUntil(
+    timeout: Duration = Duration.INFINITE,
+    timesPerTurn: Int = DEFAULT_MULTIPLE_TIMES_YIELDS,
+    delayPerTurn: Duration = 10.milliseconds,
+    constraint: () -> Boolean
+) = withTimeout(timeout) {
     while (!constraint()) {
-        yield()
+        yieldMultiple(times = timesPerTurn)
+        if (!constraint())
+            delay(delayPerTurn)
+        else
+            return@withTimeout // fast exit to avoid extra constraint check
     }
 }
