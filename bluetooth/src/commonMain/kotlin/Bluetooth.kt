@@ -101,7 +101,8 @@ class Bluetooth internal constructor(
     override suspend fun pairedDevices(filter: Set<UUID>): List<Identifier> = scanningStateRepo
         .transformLatest { state ->
             if (state is ScanningState.Enabled)
-                emit(state.pairedDevices(filter))        }
+                emit(state.pairedDevices(filter))
+        }
         .first()
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo.filterOnlyImportant(), scanMode) { scanState, scanMode ->

@@ -23,7 +23,6 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.testBlockingAndCancelScope
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
@@ -45,7 +44,7 @@ class PairingUtilsTests : BaseTest() {
         private val manager = object : BaseDeviceConnectionManager.Builder {
             override fun create(
                 deviceWrapper: DeviceWrapper,
-                bufferCapacity:Int,
+                bufferCapacity: Int,
                 coroutineScope: CoroutineScope
             ) = MockDeviceConnectionManager(
                 true,
