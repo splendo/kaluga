@@ -172,7 +172,7 @@ afterEvaluate {
 }
 
 ktlint {
-    disabledRules=["no-wildcard-imports","filename"]
+    disabledRules=["no-wildcard-imports","filename","import-ordering"]
 }
 
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"

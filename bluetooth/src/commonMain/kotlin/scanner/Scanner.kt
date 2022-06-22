@@ -180,6 +180,11 @@ abstract class BaseScanner constructor(
         advertisementData: AdvertisementData,
         deviceCreator: (CoroutineContext) -> Device
     ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    abstract fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+
+    fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
+        it.enable
+    }
 
     internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceConnected(identifier))
     internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceDisconnected(identifier))

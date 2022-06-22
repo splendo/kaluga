@@ -232,6 +232,8 @@ sealed class ScanningStateImpl {
             NoBluetooth.Disabled(scanner)
         }
 
+        fun pairedDevices(filter: Set<UUID>) = scanner.pairedDevices(filter)
+
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
         override suspend fun afterNewStateIsSet(newState: ScanningState) {
