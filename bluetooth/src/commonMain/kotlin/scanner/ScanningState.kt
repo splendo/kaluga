@@ -162,6 +162,8 @@ sealed class ScanningState : KalugaState {
             NoBluetooth.Disabled(scanner)
         }
 
+        fun pairedDevices(filter: Set<UUID>) = scanner.pairedDevices(filter)
+
         override val revokePermission: suspend () -> NoBluetooth.MissingPermissions = permittedHandler.revokePermission
 
         override suspend fun afterNewStateIsSet(newState: ScanningState) {

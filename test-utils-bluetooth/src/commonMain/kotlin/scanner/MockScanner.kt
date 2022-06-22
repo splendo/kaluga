@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.bluetooth.scanner
 import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
@@ -135,6 +136,11 @@ class MockScanner(
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
+     */
+    val pairedDevicesMock = ::pairedDevices.mock()
+
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
         startMonitoringPermissionsMock.call()
@@ -160,4 +166,6 @@ class MockScanner(
     override suspend fun stopScanning(): Unit = stopScanningMock.call()
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
+
+    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = pairedDevicesMock.call(withServices)
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.device
-
-import platform.Foundation.NSUUID
-
-actual typealias Identifier = NSUUID
-
-actual fun randomIdentifier() = Identifier.UUID()
-
-actual val Identifier.stringValue: String
-    get() = UUIDString
+/** Copies all subprojects reports into single directory */
+tasks.register<Copy>("copyReports") {
+    group = "publishing"
+    into(layout.buildDirectory.dir("allReports"))
+    subprojects.forEach { module ->
+        from(module.buildDir) {
+            include("reports/**")
+            into(module.name)
+        }
+    }
+}

@@ -161,6 +161,10 @@ actual class Scanner internal constructor(
         )
     }
 
+    override fun pairedDevices(withServices: Set<UUID>) = CBCentralManager(null, dispatch_get_main_queue())
+        .retrieveConnectedPeripheralsWithServices(withServices.toList())
+        .mapNotNull { (it as? CBPeripheral)?.identifier }
+
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         central.delegate?.let {
             activeDelegates.add(it)

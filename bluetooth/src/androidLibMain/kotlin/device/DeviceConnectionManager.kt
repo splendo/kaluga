@@ -138,7 +138,6 @@ internal actual class DeviceConnectionManager(
     @SuppressLint("MissingPermission")
     override suspend fun connect() {
         if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
-            unpair()
             if (gatt.isCompleted) {
                 if (!gatt.getCompleted().connect()) {
                     launch(mainDispatcher) {
@@ -209,6 +208,18 @@ internal actual class DeviceConnectionManager(
         }
     }
 
+    override fun unpair() {
+        if (device.bondState != BluetoothDevice.BOND_NONE) {
+            deviceWrapper.removeBond()
+        }
+    }
+
+    override fun pair() {
+        if (device.bondState == BluetoothDevice.BOND_NONE) {
+            deviceWrapper.createBond()
+        }
+    }
+
     private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray?): Boolean {
         characteristic.wrapper.updateValue(value)
         return gatt.await().writeCharacteristic(characteristic.wrapper)
@@ -270,14 +281,6 @@ internal actual class DeviceConnectionManager(
             handleUpdatedDescriptor(descriptor.uuid, succeeded) {
                 it.wrapper.updateValue(descriptor.value)
             }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun unpair() {
-        // unpair to prevent connection problems
-        if (device.bondState != BluetoothDevice.BOND_NONE) {
-            deviceWrapper.removeBond()
         }
     }
 }

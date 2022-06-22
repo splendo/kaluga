@@ -158,6 +158,8 @@ sealed class DeviceState(
             return connectionManager.requestMtu(mtu)
         }
 
+        internal fun pair() = connectionManager.pair()
+
         override suspend fun finalState() {
             super.finalState()
 
@@ -264,6 +266,8 @@ sealed class DeviceState(
     fun advertisementDataAndRssiDidUpdate(advertisementData: BaseAdvertisementData, rssi: Int): suspend () -> DeviceState {
         return updateDeviceInfo(deviceInfo.copy(rssi = rssi, advertisementData = advertisementData))
     }
+
+    internal fun unpair() = connectionManager.unpair()
 
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
         return {
