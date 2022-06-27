@@ -33,7 +33,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceState.Reconnecting
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.bluetooth.scanner.ScanningStateImpl
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineName
