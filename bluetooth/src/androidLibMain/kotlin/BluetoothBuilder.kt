@@ -29,9 +29,10 @@ actual class BluetoothBuilder(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
         coroutineContext: CoroutineContext,
         contextCreator: CoroutineContext.(String) -> CoroutineContext
-    ): Bluetooth = Bluetooth({ scannerContext ->
-        scannerSettingsBuilder(permissionsBuilder(scannerContext))
-    },
+    ): Bluetooth = Bluetooth(
+        { scannerContext ->
+            scannerSettingsBuilder(permissionsBuilder(scannerContext))
+        },
         scannerBuilder,
         coroutineContext,
         contextCreator

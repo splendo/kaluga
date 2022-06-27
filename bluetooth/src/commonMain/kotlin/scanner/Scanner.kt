@@ -65,6 +65,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
+    fun pairedDevices(withServices:Set<UUID>): List<Identifier>
 }
 
 abstract class BaseScanner constructor(
@@ -180,11 +181,7 @@ abstract class BaseScanner constructor(
         advertisementData: AdvertisementData,
         deviceCreator: (CoroutineContext) -> Device
     ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
-    abstract fun pairedDevices(withServices: Set<UUID>): List<Identifier>
-
-    fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
-        it.enable
-    }
+    abstract override fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 
     internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceConnected(identifier))
     internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceDisconnected(identifier))

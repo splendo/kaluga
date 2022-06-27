@@ -21,7 +21,6 @@ import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl

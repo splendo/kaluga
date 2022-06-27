@@ -64,7 +64,7 @@ class PairingUtilsTests : BaseTest() {
                 MockAdvertisementData(NAME)
             ),
             manager,
-            coroutineScope
+            coroutineScope.coroutineContext
         )
     }
 

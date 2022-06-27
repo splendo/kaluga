@@ -74,13 +74,17 @@ sealed interface ScanningState : KalugaState {
         val deinitialize: suspend () -> Deinitialized
     }
 
-    interface Initializing: Active, SpecialFlowValue.NotImportant {
+    interface Initializing : Active, SpecialFlowValue.NotImportant {
         fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
     }
     sealed interface Initialized : Active
 
     sealed interface Enabled : Initialized, Permitted {
+
+        fun pairedDevices(filter: Set<UUID>):List<Identifier>
+
         val disable: suspend () -> NoBluetooth.Disabled
+
 
         interface Idle : Enabled {
 
@@ -89,7 +93,8 @@ sealed interface ScanningState : KalugaState {
             fun refresh(filter: Set<UUID> = discovered.filter): suspend () -> Idle
         }
 
-        interface Scanning : Enabled,
+        interface Scanning :
+            Enabled,
             HandleAfterOldStateIsRemoved<ScanningState>,
             HandleAfterCreating<ScanningState> {
 
@@ -272,8 +277,7 @@ sealed class ScanningStateImpl {
             override val discovered: ScanningState.Discovered,
             override val scanner: Scanner
         ) : Enabled(),
-            ScanningState.Enabled.Scanning
-        {
+            ScanningState.Enabled.Scanning {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(scanner)
 

@@ -19,20 +19,15 @@ package com.splendo.kaluga.test.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Scanner
-import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -67,6 +62,9 @@ class MockScanner(
 
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
+
+    val pairedDevicesMock = ::pairedDevices.mock()
+    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = pairedDevicesMock.call(withServices)
 }
 
 /**
