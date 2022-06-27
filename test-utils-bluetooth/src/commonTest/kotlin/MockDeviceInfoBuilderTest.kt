@@ -28,7 +28,7 @@ import kotlin.test.assertEquals
 class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context>() {
 
     class Context(coroutineScope: CoroutineScope) : TestContext {
-        val device = createMockDevice(coroutineScope) {
+        val device = createMockDevice(coroutineScope.coroutineContext) {
             deviceName = "foo"
             rssi = -43
             manufacturerId = 0x1234
