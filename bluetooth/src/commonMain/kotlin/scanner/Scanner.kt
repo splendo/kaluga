@@ -65,7 +65,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
-    fun pairedDevices(withServices:Set<UUID>): List<Identifier>
+    fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 }
 
 abstract class BaseScanner constructor(
