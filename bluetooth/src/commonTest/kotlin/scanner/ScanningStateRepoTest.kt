@@ -23,7 +23,6 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.MissingPermissions
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.NotInitialized
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
@@ -33,7 +32,6 @@ import com.splendo.kaluga.test.permissions.MockPermissionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,7 +44,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     override val flowFromTestContext: suspend DeviceContext.() -> Flow<ScanningState> = { bluetooth.scanningStateRepo.filterOnlyImportant() }
 
     override val filter: (Flow<ScanningState>) -> Flow<ScanningState> = {
-        it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new }).filterNot { state -> state is NotInitialized }
+        it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new }).filterOnlyImportant()
     }
 
     @Test
@@ -180,6 +178,9 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         mainAction {
             scanner.stopMonitoringPermissionsMock.verify()
             scanner.stopMonitoringHardwareEnabledMock.verify()
+
+            // here to debug this test potentially being unstable
+            println("peek current state: ${bluetooth.scanningStateRepo.stateFlow.value}")
         }
 
         test {
