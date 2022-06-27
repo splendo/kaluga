@@ -19,28 +19,21 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.bluetooth.device.Identifier
+import kotlinx.coroutines.CoroutineScope
 
-actual class DefaultScanner(
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableSensors: Boolean,
-    stateRepo: ScanningStateFlowRepo
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
+actual class DefaultScanner internal constructor(
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BaseScanner(settings, coroutineScope) {
 
     class Builder : BaseScanner.Builder {
 
         override fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            scanningStateRepo: ScanningStateFlowRepo,
+            settings: Settings,
+            coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
+            return DefaultScanner(settings, coroutineScope)
         }
     }
 
@@ -50,10 +43,6 @@ actual class DefaultScanner(
     override suspend fun scanForDevices(filter: Set<UUID>) {}
 
     override suspend fun stopScanning() {}
-
-    override fun startMonitoringSensors() {}
-
-    override fun stopMonitoringSensors() {}
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 
