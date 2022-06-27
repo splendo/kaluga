@@ -20,8 +20,8 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.permissions.Permissions
 
 actual class Scanner(
     permissions: Permissions,

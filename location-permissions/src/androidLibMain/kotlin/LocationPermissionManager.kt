@@ -19,22 +19,22 @@ package com.splendo.kaluga.permissions.location
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 
 actual class LocationPermissionManager(
     context: Context,
-    actual val location: LocationPermission,
-    stateRepo: LocationPermissionStateRepo
+    actual val locationPermission: LocationPermission,
+    stateRepo: PermissionStateRepo<LocationPermission>
 ) : PermissionManager<LocationPermission>(stateRepo) {
 
     private val permissions: Array<String> get() {
         val result = mutableListOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (location.precise)
+        if (locationPermission.precise)
             result.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (location.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
+        if (locationPermission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
             result.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         return result.toTypedArray()
     }
@@ -43,13 +43,6 @@ actual class LocationPermissionManager(
 
     override suspend fun requestPermission() {
         permissionsManager.requestPermissions()
-    }
-
-    override suspend fun initializeState(): PermissionState<LocationPermission> {
-        return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
     }
 
     override suspend fun startMonitoring(interval: Long) {
@@ -63,7 +56,7 @@ actual class LocationPermissionManager(
 
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-        return LocationPermissionManager(context.context, location, repo)
+    override fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> {
+        return LocationPermissionManager(context.context, locationPermission, repo)
     }
 }

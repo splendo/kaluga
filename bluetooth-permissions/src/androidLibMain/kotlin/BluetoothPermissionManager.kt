@@ -20,15 +20,15 @@ package com.splendo.kaluga.permissions.bluetooth
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 
 actual class BluetoothPermissionManager(
     context: Context,
     bluetoothAdapter: BluetoothAdapter?,
-    stateRepo: BluetoothPermissionStateRepo
+    stateRepo: PermissionStateRepo<BluetoothPermission>
 ) : PermissionManager<BluetoothPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION))
@@ -39,17 +39,11 @@ actual class BluetoothPermissionManager(
             permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<BluetoothPermission> {
-        return when {
-            !supported -> PermissionState.Denied.Locked()
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         if (supported)
             permissionsManager.startMonitoring(interval)
+        else
+            revokePermission(true)
     }
 
     override suspend fun stopMonitoring() {
@@ -65,7 +59,7 @@ actual class BluetoothPermissionManagerBuilder(
 
     actual constructor(context: PermissionContext) : this(context, BluetoothAdapter.getDefaultAdapter())
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
+    override fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> {
         return BluetoothPermissionManager(context.context, bluetoothAdapter, repo)
     }
 }

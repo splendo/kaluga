@@ -19,11 +19,11 @@ package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import platform.Foundation.NSBundle
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized
@@ -36,8 +36,8 @@ const val NSPhotoLibraryUsageDescription = "NSPhotoLibraryUsageDescription"
 
 actual class StoragePermissionManager(
     private val bundle: NSBundle,
-    actual val storage: StoragePermission,
-    stateRepo: StoragePermissionStateRepo
+    actual val storagePermission: StoragePermission,
+    stateRepo: PermissionStateRepo<StoragePermission>
 ) : PermissionManager<StoragePermission>(stateRepo) {
 
     private val authorizationStatus = suspend {
@@ -59,10 +59,6 @@ actual class StoragePermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }
@@ -74,8 +70,8 @@ actual class StoragePermissionManager(
 
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(context, storage, repo)
+    override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> {
+        return StoragePermissionManager(context, storagePermission, repo)
     }
 }
 

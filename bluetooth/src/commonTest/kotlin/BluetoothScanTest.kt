@@ -17,43 +17,50 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class BluetoothScanTest : BluetoothFlowTest<Boolean>() {
+class BluetoothScanTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, Boolean>() {
 
-    override val flow = suspend {
-        runBlocking {
-            setup(Setup.BLUETOOTH)
-            bluetooth.isScanning()
-        }
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.Bluetooth, scope: CoroutineScope) -> BluetoothContext = { configuration, scope ->
+        BluetoothContext(configuration, scope)
     }
 
+    override val flowFromTestContext: suspend BluetoothContext.() -> Flow<Boolean> = { bluetooth.isScanning() }
+
     @Test
-    fun testIsScanning() = testWithFlow {
-        val bluetooth = bluetooth
-        val devicesJob = launch {
-            bluetooth.devices().collect { }
+    fun testIsScanning() = testWithFlowAndTestContext(
+        Configuration.Bluetooth()
+    ) {
+        val devicesJob = CompletableDeferred<Job>()
+        mainAction {
+            devicesJob.complete(
+                coroutineScope.launch {
+                    bluetooth.devices().collect {}
+                }
+            )
         }
         test {
             assertFalse(it)
         }
-        action {
+        mainAction {
             bluetooth.startScanning()
         }
         test {
             assertTrue(it)
         }
-        action {
+        mainAction {
             bluetooth.stopScanning()
         }
         test {
             assertFalse(it)
         }
-        devicesJob.cancel()
+        devicesJob.getCompleted().cancel()
     }
 }

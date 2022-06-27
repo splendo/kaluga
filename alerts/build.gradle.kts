@@ -22,10 +22,6 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         getByName("commonMain") {
             dependencies {
@@ -37,7 +33,7 @@ kotlin {
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

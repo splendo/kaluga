@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
@@ -62,19 +62,6 @@ class IOSPermissionsHelper {
             } catch (error: Exception) {
                 error(TAG, error)
                 null
-            }
-        }
-
-        /**
-         * Maps an [AuthorizationStatus] to a [PermissionState]
-         * @param authorizationStatus The [AuthorizationStatus] to map
-         * @param permissionManager The [PermissionManager] associated with the [PermissionState]
-         */
-        fun <P : Permission> getPermissionState(authorizationStatus: AuthorizationStatus): PermissionState<P> {
-            return when (authorizationStatus) {
-                AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable()
-                AuthorizationStatus.Authorized -> PermissionState.Allowed()
-                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.Locked()
             }
         }
 

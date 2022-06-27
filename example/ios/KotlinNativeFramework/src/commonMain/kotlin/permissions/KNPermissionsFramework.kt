@@ -1,7 +1,7 @@
 package permissions
 
-import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
 import com.splendo.kaluga.permissions.calendar.registerCalendarPermission
 import com.splendo.kaluga.permissions.camera.registerCameraPermission

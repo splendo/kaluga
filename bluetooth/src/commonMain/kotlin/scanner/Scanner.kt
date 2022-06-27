@@ -25,28 +25,26 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled
+import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 typealias EnableSensorAction = suspend () -> Boolean
 
 abstract class BaseScanner constructor(
     internal val permissions: Permissions,
-    private val connectionSettings: ConnectionSettings,
+    protected val connectionSettings: ConnectionSettings,
     protected val autoRequestPermission: Boolean,
     internal val autoEnableSensors: Boolean,
     internal val stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
@@ -63,8 +61,11 @@ abstract class BaseScanner constructor(
     }
 
     abstract val isSupported: Boolean
-    private val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
+    protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
+
+    protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
+    protected open val enabledFlow: Flow<List<Boolean>> get() = (bluetoothEnabledMonitor?.isEnabled ?: flowOf(false)).map { listOf(it) }
 
     private val _monitoringPermissionsJob = AtomicReference<Job?>(null)
     private var monitoringPermissionsJob: Job?
@@ -79,26 +80,34 @@ abstract class BaseScanner constructor(
     open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch(stateRepo.coroutineContext) {
-            bluetoothPermissionRepo.collect { state ->
-                handlePermissionState(state, BluetoothPermission)
+            permissionsFlow.collect { state ->
+                handlePermissionState(state)
             }
         }
     }
 
-    protected suspend fun <P : Permission> handlePermissionState(state: PermissionState<P>, permission: P) {
-        when (state) {
-            is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(permission))
-            else -> {}
+    private suspend fun handlePermissionState(states: List<PermissionState<*>>) {
+        if (autoRequestPermission) {
+            states.forEach { state ->
+                when (state) {
+                    is PermissionState.Denied.Requestable -> state.request()
+                    else -> {}
+                }
+            }
         }
+        val hasPermission = states.all { it is PermissionState.Allowed }
         stateRepo.takeAndChangeState { scanState ->
             when (scanState) {
+                is ScanningState.Initializing -> {
+                    scanState.initialized(hasPermission, areSensorsEnabled())
+                }
                 is Disabled, is Enabled -> {
-                    if (isPermitted())
+                    if (hasPermission)
                         scanState.remain()
                     else
-                        (scanState as? Initialized)?.revokePermission ?: scanState.remain()
+                        (scanState as? ScanningState.Permitted)?.revokePermission ?: scanState.remain()
                 }
-                is Initialized.NoBluetooth.MissingPermissions -> if (isPermitted()) scanState.permit(areSensorsEnabled()) else scanState.remain()
+                is ScanningState.NoBluetooth.MissingPermissions -> if (hasPermission) scanState.permit(areSensorsEnabled()) else scanState.remain()
                 else -> { scanState.remain() }
             }
         }
@@ -109,10 +118,6 @@ abstract class BaseScanner constructor(
         monitoringPermissionsJob = null
     }
 
-    internal open suspend fun isPermitted(): Boolean {
-        return bluetoothPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
-    }
-
     abstract suspend fun scanForDevices(filter: Set<UUID>)
     abstract suspend fun stopScanning()
     open fun startMonitoringSensors() {
@@ -120,7 +125,7 @@ abstract class BaseScanner constructor(
         bluetoothEnabledMonitor.startMonitoring()
         if (monitoringBluetoothEnabledJob != null) return
         monitoringBluetoothEnabledJob = launch {
-            bluetoothEnabledMonitor.isEnabled.collect {
+            enabledFlow.collect {
                 checkSensorsEnabledChanged()
             }
         }
@@ -131,6 +136,7 @@ abstract class BaseScanner constructor(
         monitoringBluetoothEnabledJob?.cancel()
         monitoringBluetoothEnabledJob = null
     }
+
     open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
     suspend fun requestSensorsEnable() {
         val actions = generateEnableSensorsActions()

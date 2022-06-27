@@ -17,24 +17,31 @@
 
 package com.splendo.kaluga.permissions.camera
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the users Camera
  */
 object CameraPermission : Permission()
 
-fun PermissionsBuilder.registerCameraPermission() =
-    registerCameraPermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(CameraPermission::class) { _, coroutineContext ->
-            CameraPermissionStateRepo(builder as BaseCameraPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerCameraPermission(
+    cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerCameraPermission(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
+        CameraPermissionStateRepo(builder, monitoringInterval, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerCameraPermissionBuilder(context: PermissionContext = defaultPermissionContext) = register(
-    builder = CameraPermissionManagerBuilder(context),
-    permission = CameraPermission::class
-)
+fun PermissionsBuilder.registerCameraPermission(
+    cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
+    cameraPermissionStateRepoBuilder: (BaseCameraPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CameraPermission>
+) = cameraPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<CameraPermission> { _, coroutineContext ->
+        cameraPermissionStateRepoBuilder(it, coroutineContext)
+    }
+}

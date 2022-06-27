@@ -18,49 +18,50 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class BluetoothDeviceTest : BluetoothFlowTest<Device?>() {
+class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Device?>() {
 
-    override val flow = suspend {
-        setup(Setup.DEVICE)
-        bluetooth.devices()[device.identifier]
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
+        DeviceContext(configuration, scope)
     }
 
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Device?> = { bluetooth.devices()[device.identifier] }
+
     @Test
-    fun testGetDevice() = testWithFlow {
+    fun testGetDevice() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService()
+    ) {
 
         test {
             assertNull(it)
         }
-        scanDevice()
+        mainAction {
+            bluetooth.startScanning()
+            yield()
+            scanner.scanForDevicesMock.verify(eq(emptySet()))
+            scanDevice()
+        }
 
-        bluetooth.startScanning()
-        val device = device
         test {
             assertEquals(device, it)
         }
 
-        action { bluetooth.stopScanning() }
-
-        mockBaseScanner().stopScanningCompleted.get().await()
+        mainAction {
+            bluetooth.stopScanning()
+            yield()
+            scanner.stopScanningMock.verify()
+        }
 
         test {
             assertNull(it)
         }
-    }
-
-    @Test
-    fun testConnectDevice() = testWithFlow {
-        scanDevice()
-        bluetooth.startScanning()
-
-        connectDevice(device)
-        disconnectDevice(device)
-
-        resetFlow()
-        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
     }
 }

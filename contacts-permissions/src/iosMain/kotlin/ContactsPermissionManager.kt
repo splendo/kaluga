@@ -20,11 +20,11 @@ package com.splendo.kaluga.permissions.contacts
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import platform.Contacts.CNAuthorizationStatus
 import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
@@ -38,8 +38,8 @@ const val NSContactsUsageDescription = "NSContactsUsageDescription"
 
 actual class ContactsPermissionManager(
     private val bundle: NSBundle,
-    actual val contacts: ContactsPermission,
-    stateRepo: ContactsPermissionStateRepo
+    actual val contactsPermission: ContactsPermission,
+    stateRepo: PermissionStateRepo<ContactsPermission>
 ) : PermissionManager<ContactsPermission>(stateRepo) {
 
     private val contactStore = CNContactStore()
@@ -68,10 +68,6 @@ actual class ContactsPermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<ContactsPermission> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }
@@ -83,8 +79,8 @@ actual class ContactsPermissionManager(
 
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
-        return ContactsPermissionManager(context, contacts, repo)
+    override fun create(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> {
+        return ContactsPermissionManager(context, contactsPermission, repo)
     }
 }
 

@@ -17,15 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: DeviceStateFlowRepo) : Flow<ByteArray?> {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>) : Flow<ByteArray?> {
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =
@@ -58,24 +57,6 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected suspend fun addAction(action: DeviceAction) {
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Connected.Idle -> {
-                    state.handleAction(action)
-                }
-                is DeviceState.Connected.HandlingAction -> {
-                    state.addAction(action)
-                }
-                is DeviceState.Connected.NoServices,
-                is DeviceState.Connected.Discovering,
-                is DeviceState.Connecting,
-                is DeviceState.Reconnecting,
-                is DeviceState.Disconnected,
-                is DeviceState.Disconnecting,
-                -> {
-                    state.remain() // TODO consider an optional buffer
-                }
-            }
-        }
+        newActionFlow.emit(BaseDeviceConnectionManager.Event.AddAction(action))
     }
 }

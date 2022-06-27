@@ -17,17 +17,13 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 
-actual class StoragePermissionManager(actual val storage: StoragePermission, repo: StoragePermissionStateRepo) : PermissionManager<StoragePermission>(repo) {
+actual class StoragePermissionManager(actual val storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>) : PermissionManager<StoragePermission>(repo) {
 
     override suspend fun requestPermission() {
-        TODO("not implemented")
-    }
-
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
         TODO("not implemented")
     }
 
@@ -42,7 +38,7 @@ actual class StoragePermissionManager(actual val storage: StoragePermission, rep
 
 actual class StoragePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(storage, repo)
+    override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> {
+        return StoragePermissionManager(storagePermission, repo)
     }
 }

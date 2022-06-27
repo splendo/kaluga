@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 
 expect interface LocationMonitor : ServiceMonitor {
     class Builder {

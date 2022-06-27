@@ -29,7 +29,7 @@ data class HSLColor(
     val alpha: Double = 1.0
 )
 
-val Color.hsl: HSLColor get() {
+val KalugaColor.hsl: HSLColor get() {
     val max = max(red, max(green, blue))
     val min = min(red, min(green, blue))
     val lightness = (max + min) / 2.0
@@ -56,7 +56,7 @@ val Color.hsl: HSLColor get() {
     }
 }
 
-val HSLColor.color: Color get() {
+val HSLColor.color: KalugaColor get() {
     return if (saturation == 0.0) {
         colorFrom(lightness, lightness, lightness)
     } else {
@@ -85,10 +85,10 @@ val HSLColor.color: Color get() {
     }
 }
 
-fun Color.lightenBy(value: Double): Color = hsl.let {
+fun KalugaColor.lightenBy(value: Double): KalugaColor = hsl.let {
     return it.copy(lightness = ((1.0 - it.lightness) * value) + it.lightness).color
 }
 
-fun Color.darkenBy(value: Double): Color = hsl.let {
+fun KalugaColor.darkenBy(value: Double): KalugaColor = hsl.let {
     return it.copy(lightness = (it.lightness - (it.lightness) * value)).color
 }

@@ -21,7 +21,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.ParcelUuid
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.containsAny
@@ -35,14 +34,16 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
@@ -107,7 +108,7 @@ actual class Scanner internal constructor(
                 if (error.second) {
                     stateRepo.takeAndChangeState { state ->
                         when (state) {
-                            is ScanningState.Initialized.Enabled.Scanning -> state.stopScanning
+                            is ScanningState.Enabled.Scanning -> state.stopScanning
                             else -> state.remain()
                         }
                     }
@@ -132,7 +133,7 @@ actual class Scanner internal constructor(
 
             handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
                 val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, stateRepo.coroutineContext)
+                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, CoroutineScope(stateRepo.coroutineContext))
             }
         }
     }
@@ -144,8 +145,12 @@ actual class Scanner internal constructor(
     override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
-    private val monitoringLocationPermissionsJob = AtomicReference<Job?>(null)
-    private val monitoringLocationEnabledJob = AtomicReference<Job?>(null)
+    override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(bluetoothPermissionRepo.filterOnlyImportant(), locationPermissionRepo.filterOnlyImportant()) { bluetoothPermission, locationPermission ->
+        listOf(bluetoothPermission, locationPermission)
+    }
+    override val enabledFlow: Flow<List<Boolean>> get() = combine(bluetoothEnabledMonitor?.isEnabled ?: flowOf(false), locationEnabledMonitor.isEnabled) { bluetoothEnabled, locationEnabled ->
+        listOf(bluetoothEnabled, locationEnabled)
+    }
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
         bluetoothScanner.startScan(
@@ -161,57 +166,14 @@ actual class Scanner internal constructor(
         bluetoothScanner.stopScan(callback)
     }
 
-    override fun startMonitoringPermissions() {
-        super.startMonitoringPermissions()
-        if (monitoringLocationPermissionsJob.get() != null) return // optimization to skip making a job
-
-        val job = Job(this.coroutineContext[Job])
-
-        if (monitoringLocationPermissionsJob.compareAndSet(null, job)) {
-            launch(job) {
-                locationPermissionRepo.collect { state ->
-                    handlePermissionState(state, locationPermission)
-                }
-            }
-        }
-    }
-
-    override fun stopMonitoringPermissions() {
-        super.stopMonitoringPermissions()
-        monitoringLocationPermissionsJob.get()?.let {
-            if (monitoringLocationPermissionsJob.compareAndSet(it, null)) {
-                it.cancel()
-            }
-        }
-    }
-
     override fun startMonitoringSensors() {
+        locationEnabledMonitor.startMonitoring()
         super.startMonitoringSensors()
-        if (monitoringLocationEnabledJob.get() != null) return // optimization to skip making a job
-
-        val job = Job(this.coroutineContext[Job])
-
-        if (monitoringLocationEnabledJob.compareAndSet(null, job)) {
-            locationEnabledMonitor.startMonitoring()
-            launch(job) {
-                locationEnabledMonitor.isEnabled.collect {
-                    checkSensorsEnabledChanged()
-                }
-            }
-        }
     }
 
     override fun stopMonitoringSensors() {
+        locationEnabledMonitor.stopMonitoring()
         super.stopMonitoringSensors()
-        monitoringLocationEnabledJob.get()?.let {
-            locationEnabledMonitor.stopMonitoring()
-            if (monitoringLocationEnabledJob.compareAndSet(it, null))
-                it.cancel()
-        }
-    }
-
-    override suspend fun isPermitted(): Boolean {
-        return super.isPermitted() && locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
     override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.isServiceEnabled

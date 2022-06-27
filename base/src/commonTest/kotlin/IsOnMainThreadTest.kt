@@ -1,6 +1,6 @@
 import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.Dispatchers
 import kotlin.test.Test
 import kotlin.test.assertFalse

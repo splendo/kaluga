@@ -17,21 +17,23 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.testBlockingAndCancelScope
+import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
-import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.milliseconds
 
 class PairingUtilsTests : BaseTest() {
 
@@ -41,17 +43,18 @@ class PairingUtilsTests : BaseTest() {
 
         private val manager = object : BaseDeviceConnectionManager.Builder {
             override fun create(
-                connectionSettings: ConnectionSettings,
                 deviceWrapper: DeviceWrapper,
-                stateRepo: DeviceStateFlowRepo
+                bufferCapacity: Int,
+                coroutineScope: CoroutineScope
             ) = MockDeviceConnectionManager(
-                connectionSettings,
+                true,
                 deviceWrapper,
-                stateRepo
+                bufferCapacity,
+                coroutineScope
             )
         }
 
-        fun device(coroutineContext: CoroutineContext) = Device(
+        fun device(coroutineScope: CoroutineScope) = Device(
             ConnectionSettings(
                 ConnectionSettings.ReconnectionSettings.Never
             ),
@@ -61,7 +64,7 @@ class PairingUtilsTests : BaseTest() {
                 MockAdvertisementData(NAME)
             ),
             manager,
-            coroutineContext
+            coroutineScope
         )
     }
 
@@ -69,27 +72,28 @@ class PairingUtilsTests : BaseTest() {
         get() = peekState().connectionManager as MockDeviceConnectionManager
 
     @Test
-    fun unpairTest(): Unit = runBlocking {
-        val device = Mocks.device(coroutineContext)
+    fun unpairTest(): Unit = testBlockingAndCancelScope {
+        val device = Mocks.device(this)
         val flow = flowOf(device)
         flow.unpair()
-        assert(device.mockManager.unpairCompleted.get().isCompleted)
+        device.mockManager.unpairMock.verify()
     }
 
     @Test
-    fun pairTest(): Unit = runBlocking {
-        val device = Mocks.device(coroutineContext)
+    fun pairTest(): Unit = testBlockingAndCancelScope {
+        val device = Mocks.device(this)
         device.mockManager.reset()
         val flow = flowOf(device)
 
         val connectingJob = async {
             flow.connect()
         }
-        device.mockManager.connectCompleted.get().await()
+
+        delay(100.milliseconds) // TODO wait for correct state instead
         device.mockManager.handleConnect()
         connectingJob.await()
 
         flow.pair()
-        assert(device.mockManager.pairCompleted.get().isCompleted)
+        device.mockManager.pairMock.verify()
     }
 }

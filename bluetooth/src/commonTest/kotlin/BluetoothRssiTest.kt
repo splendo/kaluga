@@ -17,42 +17,46 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothRssiTest : BluetoothFlowTest<Int>() {
+class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int>() {
 
-    override val flow = suspend {
-        setup(Setup.DEVICE)
-        bluetooth.devices()[device.identifier].rssi()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
+        DeviceContext(configuration, scope)
     }
 
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetooth.devices()[device.identifier].rssi() }
+
     @Test
-    fun testRssi() = testWithFlow {
+    fun testRssi() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService()
+    ) {
         val newRssi = -42
-        scanDevice()
-        bluetooth.startScanning()
-        val rssi = rssi
-        test {
-            assertEquals(rssi, it)
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
         }
-        action {
-            connectDevice(device)
+        test {
+            assertEquals(configuration.rssi, it)
+        }
+        mainAction {
+            connectDevice()
+            connectionManager.readRssiMock.on().doExecuteSuspended {
+                coroutineScope.launch {
+                    connectionManager.handleNewRssi(newRssi)
+                }
+            }
             bluetooth.devices()[device.identifier].updateRssi()
-            connectionManager.readRssiCompleted.get().await()
-            device.filter { it is DeviceState.Connected }.first()
-            connectionManager.handleNewRssi(newRssi)
+            connectionManager.readRssiMock.verify()
         }
         test {
             assertEquals(newRssi, it)
         }
-
-        resetFlow()
-
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
     }
 }

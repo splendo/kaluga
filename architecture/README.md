@@ -406,3 +406,6 @@ val bundle = SingleValueNavigationAction(SomeClass(), type)?.bundle ?: return
 val androidBundle = bundle.toBundle()
 androidBundle.toTypedProperty(type) // returns SomeClass
 ```
+
+## Testing
+Use the [`test-utils-archictecture` module](../test-utils-architecture) to test `ViewModel`s.

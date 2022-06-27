@@ -36,4 +36,7 @@ locationStateRepo.flow().location().collect { location ->
 ```
 
 ### Android Specific Usage
-Android handles fetching the location differently depending on how `Permission.Location.background` is set. If `false`, the location service is optimised for use in the foreground, but may not work when called from a `Service` class. If set to `true` however, the request is optimised for usage in a `Service`. Like with any Location service on Android, the `Service` should call `startForeground()` to function properly. 
+Android handles fetching the location differently depending on how `Permission.Location.background` is set. If `false`, the location service is optimised for use in the foreground, but may not work when called from a `Service` class. If set to `true` however, the request is optimised for usage in a `Service`. Like with any Location service on Android, the `Service` should call `startForeground()` to function properly.
+
+## Testing
+Use the [`test-utils-location` module](../test-utils-location) to get a mockable `LocationManager`, `LocationMonitor`, or `LocationStateRepo`.

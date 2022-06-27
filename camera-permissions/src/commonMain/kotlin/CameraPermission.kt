@@ -17,11 +17,12 @@
 
 package com.splendo.kaluga.permissions.camera
 
-import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -29,13 +30,13 @@ import kotlin.coroutines.CoroutineContext
  */
 expect class CameraPermissionManager : PermissionManager<CameraPermission>
 
-interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder {
+interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder<CameraPermission> {
 
     /**
      * Creates a [CameraPermissionManager]
      * @param repo The [CameraPermissionStateRepo] associated with the [CameraPermission]
      */
-    fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission>
+    fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission>
 }
 
 /**
@@ -48,7 +49,8 @@ expect class CameraPermissionManagerBuilder(context: PermissionContext = default
  * @param builder The [CameraPermissionManagerBuilder] for creating the [CameraPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class CameraPermissionStateRepo(builder: BaseCameraPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<CameraPermission>(coroutineContext = coroutineContext) {
-
-    override val permissionManager: PermissionManager<CameraPermission> = builder.create(this)
-}
+class CameraPermissionStateRepo(
+    builder: BaseCameraPermissionManagerBuilder,
+    monitoringInterval: Long = defaultMonitoringInterval,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+) : PermissionStateRepo<CameraPermission>(monitoringInterval, coroutineContext, { builder.create(it) })

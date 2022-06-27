@@ -22,9 +22,9 @@ import com.splendo.kaluga.architecture.observable.UninitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
@@ -38,7 +38,9 @@ class PermissionViewModel(private val permissions: Permissions, private val perm
                 is PermissionState.Allowed -> "permission_allowed".localized()
                 is PermissionState.Denied.Requestable -> "permission_requestable".localized()
                 is PermissionState.Denied.Locked -> "permission_denied".localized()
-                is PermissionState.Unknown -> "permission_unknown".localized()
+                is PermissionState.Initializing,
+                is PermissionState.Deinitialized,
+                is PermissionState.Uninitialized -> "permission_unknown".localized()
             }
         }
         .toUninitializedObservable(coroutineScope)

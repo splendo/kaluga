@@ -17,10 +17,11 @@
 
 package com.splendo.kaluga.permissions.notifications
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the users Notifications.
@@ -28,11 +29,20 @@ import com.splendo.kaluga.permissions.defaultPermissionContext
  */
 data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
 
-fun PermissionsBuilder.registerNotificationsPermission() =
-    registerNotificationsPermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(NotificationsPermission::class) { permission, coroutineContext ->
-            NotificationsPermissionStateRepo(permission as NotificationsPermission, builder as BaseNotificationsPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerNotificationsPermission(
+    notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerNotificationsPermissionBuilder(context: PermissionContext = defaultPermissionContext): NotificationsPermissionManagerBuilder = register(builder = NotificationsPermissionManagerBuilder(context), permission = NotificationsPermission::class)
+fun PermissionsBuilder.registerNotificationsPermission(
+    notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
+    notificationsPermissionStateRepoBuilder: (NotificationsPermission, BaseNotificationsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<NotificationsPermission>
+) = notificationsPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<NotificationsPermission> { permission, coroutineContext ->
+        notificationsPermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

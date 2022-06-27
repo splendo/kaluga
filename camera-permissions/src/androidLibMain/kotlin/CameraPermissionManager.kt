@@ -20,14 +20,14 @@ package com.splendo.kaluga.permissions.camera
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
 
 actual class CameraPermissionManager(
     context: Context,
-    stateRepo: CameraPermissionStateRepo
+    stateRepo: PermissionStateRepo<CameraPermission>
 ) : PermissionManager<CameraPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
@@ -38,17 +38,11 @@ actual class CameraPermissionManager(
             permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<CameraPermission> {
-        return when {
-            !supported -> PermissionState.Denied.Locked()
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
-    }
-
     override suspend fun startMonitoring(interval: Long) {
         if (supported)
             permissionsManager.startMonitoring(interval)
+        else
+            revokePermission(true)
     }
 
     override suspend fun stopMonitoring() {
@@ -59,7 +53,7 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
+    override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> {
         return CameraPermissionManager(context.context, repo)
     }
 }

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.KalugaState
@@ -58,7 +59,7 @@ typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceSt
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
     open val connectionManager: BaseDeviceConnectionManager
-) : KalugaState, DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
+) : KalugaState, DeviceInfo by deviceInfo {
 
     sealed class Connected(
         deviceInfo: DeviceInfoImpl,
@@ -71,14 +72,7 @@ sealed class DeviceState(
         ) : Connected(deviceInfo, connectionManager) {
 
             fun startDiscovering() {
-                launch(coroutineContext) {
-                    connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                        if (deviceState is NoServices)
-                            discoverServices
-                        else
-                            deviceState.remain()
-                    }
-                }
+                connectionManager.startDiscovering()
             }
 
             val discoverServices = suspend {
@@ -149,10 +143,7 @@ sealed class DeviceState(
             }
         }
 
-        fun startDisconnected() =
-            connectionManager.stateRepo.launchTakeAndChangeState(remainIfStateNot = Connected::class) {
-                disconnecting
-            }
+        fun startDisconnected() = connectionManager.startDisconnecting()
 
         val reconnect = suspend {
             // All services, characteristics and descriptors become invalidated after it disconnects
@@ -182,17 +173,7 @@ sealed class DeviceState(
 
         val cancelConnection = disconnecting
 
-        fun handleCancel() {
-            launch(coroutineContext) {
-                connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    if (deviceState is Connecting) {
-                        cancelConnection
-                    } else {
-                        deviceState.remain()
-                    }
-                }
-            }
-        }
+        fun handleCancel() = connectionManager.cancelConnecting()
 
         internal val didConnect = suspend {
             Connected.NoServices(deviceInfo, connectionManager)
@@ -218,13 +199,13 @@ sealed class DeviceState(
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
 
-        fun retry(): suspend () -> DeviceState {
-            return when (val reconnectionSetting = connectionManager.connectionSettings.reconnectionSettings) {
+        fun retry(reconnectionSettings: ConnectionSettings.ReconnectionSettings): suspend () -> DeviceState {
+            return when (reconnectionSettings) {
                 is ConnectionSettings.ReconnectionSettings.Always -> remain()
                 is ConnectionSettings.ReconnectionSettings.Never -> didDisconnect
                 is ConnectionSettings.ReconnectionSettings.Limited -> {
                     val nextAttempt = attempt + 1
-                    if (nextAttempt < reconnectionSetting.attempts) {
+                    if (nextAttempt < reconnectionSettings.attempts) {
                         suspend { copy(attempt = nextAttempt) }
                     } else {
                         didDisconnect
@@ -233,18 +214,9 @@ sealed class DeviceState(
             }
         }
 
-        fun handleCancel() {
-            launch(coroutineContext) {
-                connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    if (deviceState is Reconnecting)
-                        cancelConnection
-                    else
-                        deviceState.remain()
-                }
-            }
-        }
+        fun handleCancel() = connectionManager.cancelConnecting()
 
-        private val cancelConnection = disconnecting
+        val cancelConnection = disconnecting
 
         internal val didConnect = suspend {
             services?.let { Connected.Idle(services, deviceInfo, connectionManager) } ?: Connected.NoServices(deviceInfo, connectionManager)
@@ -263,12 +235,7 @@ sealed class DeviceState(
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager) {
 
-        fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
-            coroutineContext,
-            remainIfStateNot = Disconnected::class
-        ) { deviceState ->
-            connect(deviceState)
-        }
+        fun startConnecting() = connectionManager.startConnecting()
 
         fun connect(deviceState: DeviceState): suspend () -> DeviceState =
             if (deviceInfo.advertisementData.isConnectible)
@@ -327,17 +294,146 @@ sealed class DeviceState(
 }
 
 class Device constructor(
-    connectionSettings: ConnectionSettings,
+    private val connectionSettings: ConnectionSettings,
+    private val connectionManager: BaseDeviceConnectionManager,
     private val initialDeviceInfo: DeviceInfoImpl,
-    connectionBuilder: BaseDeviceConnectionManager.Builder,
     coroutineContext: CoroutineContext
 ) : HotStateFlowRepo<DeviceState>(
     coroutineContext = coroutineContext,
     initialState = {
-        val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceWrapper, it)
-        DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
+        DeviceState.Disconnected(initialDeviceInfo, connectionManager)
     }
 ) {
+
+    private companion object {
+        const val TAG = "Device"
+    }
+
+    constructor(
+        connectionSettings: ConnectionSettings,
+        initialDeviceInfo: DeviceInfoImpl,
+        connectionManagerBuilder: BaseDeviceConnectionManager.Builder,
+        coroutineScope: CoroutineScope
+    ) : this(
+        connectionSettings,
+        connectionManagerBuilder.create(initialDeviceInfo.deviceWrapper, coroutineScope = coroutineScope),
+        initialDeviceInfo,
+        coroutineScope.coroutineContext
+    )
+
     val identifier: Identifier
         get() = initialDeviceInfo.identifier
+
+    init {
+        launch {
+            connectionManager.events.collect { event ->
+                event.handle()
+            }
+        }
+    }
+
+    private suspend fun BaseDeviceConnectionManager.Event.handle() = takeAndChangeState {
+        stateTransition(it)
+    }
+
+    private suspend fun BaseDeviceConnectionManager.Event.stateTransition(state: DeviceState): suspend () -> DeviceState = when (this) {
+        is BaseDeviceConnectionManager.Event.RssiUpdate -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Connecting -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.CancelledConnecting -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Connected -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Disconnecting -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Disconnected -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.Discovering -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.AddAction -> stateTransition(state)
+        is BaseDeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
+    }
+
+    private fun BaseDeviceConnectionManager.Event.RssiUpdate.stateTransition(state: DeviceState) = state.rssiDidUpdate(rrsi)
+
+    private fun BaseDeviceConnectionManager.Event.Connecting.stateTransition(state: DeviceState) = if (state is DeviceState.Disconnected)
+        state.connect(state)
+    else
+        state.remain()
+
+    private fun BaseDeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Connecting -> state.cancelConnection
+        is DeviceState.Reconnecting -> state.cancelConnection
+        else -> state.remain()
+    }
+
+    private suspend fun BaseDeviceConnectionManager.Event.Connected.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Connecting -> state.didConnect
+        is DeviceState.Reconnecting -> state.didConnect
+        is DeviceState.Connected -> state.remain()
+        else -> {
+            connectionManager.reset()
+            state.remain()
+        }
+    }
+
+    private fun BaseDeviceConnectionManager.Event.Disconnecting.stateTransition(state: DeviceState) = if (state is DeviceState.Connected)
+        state.disconnecting
+    else
+        state.remain()
+
+    private suspend fun BaseDeviceConnectionManager.Event.Disconnected.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Reconnecting -> {
+            state.retry(connectionSettings.reconnectionSettings).also {
+                if (it == state.didDisconnect) {
+                    onDisconnect()
+                }
+            }
+        }
+        is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+            is ConnectionSettings.ReconnectionSettings.Always,
+            is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
+            is ConnectionSettings.ReconnectionSettings.Never -> {
+                onDisconnect()
+                state.didDisconnect
+            }
+        }
+        is DeviceState.Disconnected -> state.remain()
+        is DeviceState.Connecting,
+        is DeviceState.Disconnecting -> {
+            onDisconnect()
+            state.didDisconnect
+        }
+    }
+
+    private fun BaseDeviceConnectionManager.Event.Discovering.stateTransition(state: DeviceState) = if (state is DeviceState.Connected.NoServices)
+        state.discoverServices
+    else
+        state.remain()
+
+    private fun BaseDeviceConnectionManager.Event.DiscoveredServices.stateTransition(state: DeviceState) = if (state is DeviceState.Connected.Discovering)
+        state.didDiscoverServices(services)
+    else
+        state.remain()
+
+    private fun BaseDeviceConnectionManager.Event.AddAction.stateTransition(state: DeviceState) = when (state) {
+        is DeviceState.Connected.Idle -> {
+            state.handleAction(action)
+        }
+        is DeviceState.Connected.HandlingAction -> {
+            state.addAction(action)
+        }
+        is DeviceState.Connected.NoServices,
+        is DeviceState.Connected.Discovering,
+        is DeviceState.Connecting,
+        is DeviceState.Reconnecting,
+        is DeviceState.Disconnected,
+        is DeviceState.Disconnecting,
+        -> {
+            state.remain() // TODO consider an optional buffer
+        }
+    }
+
+    private fun BaseDeviceConnectionManager.Event.CompletedAction.stateTransition(state: DeviceState) = if (state is DeviceState.Connected.HandlingAction && state.action === action) {
+        state.action.completedSuccessfully.complete(succeeded)
+        debug(TAG) { "Action $action has been succeeded: $succeeded" }
+        state.actionCompleted
+    } else {
+        state.remain()
+    }
 }

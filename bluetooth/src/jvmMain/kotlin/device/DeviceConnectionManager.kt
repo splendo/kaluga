@@ -17,12 +17,22 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-internal actual class DeviceConnectionManager(connectionSettings: ConnectionSettings, deviceWrapper: DeviceWrapper, stateRepo: DeviceStateFlowRepo) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
+import kotlinx.coroutines.CoroutineScope
 
-    class Builder : BaseDeviceConnectionManager.Builder {
+internal actual class DeviceConnectionManager(
+    deviceWrapper: DeviceWrapper,
+    bufferCapacity: Int = BUFFER_CAPACITY,
+    coroutineScope: CoroutineScope
+) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
-        override fun create(connectionSettings: ConnectionSettings, deviceWrapper: DeviceWrapper, stateRepo: DeviceStateFlowRepo): DeviceConnectionManager {
-            return DeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo)
+    class Builder() : BaseDeviceConnectionManager.Builder {
+
+        override fun create(
+            deviceWrapper: DeviceWrapper,
+            bufferCapacity: Int,
+            coroutineScope: CoroutineScope
+        ): DeviceConnectionManager {
+            return DeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope)
         }
     }
 

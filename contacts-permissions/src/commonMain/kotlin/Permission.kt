@@ -17,10 +17,11 @@
 
 package com.splendo.kaluga.permissions.contacts
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permission to access the users Contacts
@@ -28,14 +29,20 @@ import com.splendo.kaluga.permissions.defaultPermissionContext
  */
 data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 
-fun PermissionsBuilder.registerContactsPermission() =
-    registerContactsPermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(ContactsPermission::class) { permission, coroutineContext ->
-            ContactsPermissionStateRepo(permission as ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerContactsPermission(
+    contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
+    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+) =
+    registerContactsPermission(contactsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+        ContactsPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerContactsPermissionBuilder(context: PermissionContext = defaultPermissionContext): ContactsPermissionManagerBuilder = register(
-    builder = ContactsPermissionManagerBuilder(context),
-    permission = ContactsPermission::class
-)
+fun PermissionsBuilder.registerContactsPermission(
+    contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
+    contactsPermissionStateRepoBuilder: (ContactsPermission, BaseContactsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<ContactsPermission>
+) = contactsPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<ContactsPermission> { permission, coroutineContext ->
+        contactsPermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

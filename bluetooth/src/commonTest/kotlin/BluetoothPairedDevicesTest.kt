@@ -17,44 +17,43 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.ensureNeverFrozen
+import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.DeviceContext
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.test.base.mock.on
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-class BluetoothPairedDevicesTest : BluetoothFlowTest<ScanningState>() {
-
-    init {
-        ensureNeverFrozen()
-    }
-
-    override val flow = suspend {
-        setup(Setup.BLUETOOTH)
-        bluetooth.scanningStateRepo.stateFlow
-    }
+class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, DeviceContext, ScanningState>() {
 
     @Test
-    fun testPairedDevices() = testWithFlow {
-        ensureNeverFrozen()
+    fun testPairedDevices() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
 
-        test {
-            assertIs<ScanningState.NotInitialized>(it)
-        }
-
-        action {
-            // Trigger initialization
+        mainAction {
             assertTrue(bluetooth.pairedDevices().isEmpty())
         }
 
         val list = listOf(randomIdentifier())
-        mockBaseScanner().pairedDevices.value = list
+
+        mainAction {
+            scanner.pairedDevicesMock.on().doReturn(list)
+        }
 
         test {
-            assertIs<ScanningState.Initialized.Enabled>(it)
+            assertIs<ScanningState.Enabled>(it)
             assertContentEquals(list, it.pairedDevices(emptySet()))
         }
+    }
+
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<ScanningState> =
+        { bluetooth.scanningStateRepo.stateFlow.filterOnlyImportant() }
+
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
+        DeviceContext(configuration, scope)
     }
 }

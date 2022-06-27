@@ -21,9 +21,9 @@ import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
-import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
@@ -40,23 +40,23 @@ import platform.darwin.NSObject
 internal actual class DeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
-    connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
-    stateRepo: DeviceStateFlowRepo,
-) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
+    bufferCapacity: Int = BUFFER_CAPACITY,
+    coroutineScope: CoroutineScope,
+) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(
-            connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo
+            bufferCapacity: Int,
+            coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
             return DeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
-                connectionSettings,
                 deviceWrapper,
-                stateRepo
+                bufferCapacity,
+                coroutineScope
             )
         }
     }
@@ -229,8 +229,8 @@ internal actual class DeviceConnectionManager(
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             launch {
-                val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), stateRepo) } ?: emptyList()
-                handleScanCompleted(services)
+                val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
+                handleDiscoverCompleted(services)
             }
         }
     }

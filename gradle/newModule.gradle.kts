@@ -84,7 +84,7 @@ abstract class NewModule : DefaultTask() {
     private fun replaceVariable(template: File, value: String) {
         val content = template
             .readText()
-            .replace("%MODULE%", value)
+            .replace("%PACKAGE%", value)
             .replace("%YEAR%", "${Calendar.getInstance().get(Calendar.YEAR)}")
         template.writeText(content)
     }

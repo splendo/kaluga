@@ -17,44 +17,54 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
-import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
+import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.darwin.NSObject
 
 actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder(
-        private val centralManager: CBCentralManager = CBCentralManager()
+        private val centralManagerBuilder: () -> CBCentralManager = { CBCentralManager() }
     ) {
-        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(centralManager = centralManager)
+        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(centralManagerBuilder = centralManagerBuilder)
     }
 }
 
 class DefaultBluetoothMonitor internal constructor(
-    private val centralManager: CBCentralManager
+    private val centralManagerBuilder: () -> CBCentralManager
 ) : DefaultServiceMonitor(), BluetoothMonitor {
 
     internal class CentralManagerDelegate(
         private val updateEnabledState: () -> Unit
     ) : NSObject(), CBCentralManagerDelegateProtocol {
+
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             updateEnabledState()
         }
     }
 
+    private val centralManager = AtomicReference<CBCentralManager?>(null)
+
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
-        get() = centralManager.state == CBCentralManagerStatePoweredOn
+        get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
+
+    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = centralManager.value ?: centralManagerBuilder().apply {
+        centralManager.set(this)
+    }
 
     override fun startMonitoring() {
         super.startMonitoring()
-        centralManager.delegate = centralManagerDelegate
+        initializeCentralManagerIfNotInitialized().delegate = centralManagerDelegate
+        updateState()
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
-        centralManager.delegate = null
+        centralManager.value?.delegate = null
     }
 }

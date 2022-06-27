@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
@@ -65,7 +65,6 @@ class PermissionRefreshScheduler<P : Permission>(
      * @param interval The interval in milliseconds between checking for changes to the permission.
      */
     suspend fun startMonitoring(interval: Long) {
-        updateLastPermission()
         launchTimerJob(interval)
     }
 

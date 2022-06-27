@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGatt.GATT_SUCCESS
@@ -31,7 +32,6 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
-import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
@@ -45,29 +45,28 @@ import kotlin.coroutines.CoroutineContext
 
 internal actual class DeviceConnectionManager(
     private val context: Context,
-    connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
-    stateRepo: DeviceStateFlowRepo,
-    val mainDispatcher: CoroutineContext = Dispatchers.Main.immediate // can be replaced for testing
-) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo), CoroutineScope by stateRepo {
+    bufferCapacity: Int = BUFFER_CAPACITY,
+    val mainDispatcher: CoroutineContext = Dispatchers.Main.immediate, // can be replaced for testing,
+    coroutineScope: CoroutineScope
+) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
 
     private companion object {
         const val TAG = "Android Bluetooth DeviceConnectionManager"
         val CLIENT_CONFIGURATION: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = stateRepo.coroutineContext
-
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
         override fun create(
-            connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo,
+            bufferCapacity: Int,
+            coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(context, connectionSettings, deviceWrapper, stateRepo)
+            return DeviceConnectionManager(context, deviceWrapper, bufferCapacity, coroutineScope = coroutineScope)
         }
     }
+
+    override val coroutineContext: CoroutineContext = coroutineScope.coroutineContext
 
     private val device: BluetoothDevice = deviceWrapper.device
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
@@ -98,8 +97,8 @@ internal actual class DeviceConnectionManager(
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             launch(mainDispatcher) {
-                val services = gatt?.services?.map { Service(DefaultGattServiceWrapper(it), stateRepo) } ?: emptyList()
-                handleScanCompleted(services)
+                val services = gatt?.services?.map { DefaultGattServiceWrapper(it) } ?: emptyList()
+                handleDiscoverCompleted(services)
             }
         }
 
@@ -136,6 +135,7 @@ internal actual class DeviceConnectionManager(
     }
     private var lastKnownState = BluetoothProfile.STATE_DISCONNECTED
 
+    @SuppressLint("MissingPermission")
     override suspend fun connect() {
         if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
             if (gatt.isCompleted) {

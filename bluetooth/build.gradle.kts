@@ -20,10 +20,6 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         commonMain {
             dependencies {
@@ -36,7 +32,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils-bluetooth", ""))
             }
         }
     }

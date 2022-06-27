@@ -27,8 +27,8 @@ Sample code to instantiate and operate a timer:
 ```kotlin
 // creates a timer which lasts for 1 minute with a tick every second
 val timer = RecurringTimer(
-    duration = Duration.minutes(1),
-    interval = Duration.seconds(1)
+    duration = 1.minutes,
+    interval = 1.seconds
 )
 // the timer is created in a paused state. starting the timer..
 timer.start()

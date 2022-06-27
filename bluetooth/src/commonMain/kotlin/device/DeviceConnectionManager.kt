@@ -18,33 +18,51 @@
 package com.splendo.kaluga.bluetooth.device
 
 import co.touchlab.stately.collections.sharedMutableMapOf
-import co.touchlab.stately.concurrency.AtomicInt
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlin.jvm.JvmName
 
 abstract class BaseDeviceConnectionManager(
-    val connectionSettings: ConnectionSettings = ConnectionSettings(),
     val deviceWrapper: DeviceWrapper,
-    val stateRepo: DeviceStateFlowRepo
-) : CoroutineScope by stateRepo {
+    bufferCapacity: Int = BUFFER_CAPACITY,
+    coroutineScope: CoroutineScope
+) : CoroutineScope by coroutineScope {
 
-    private companion object {
-        const val TAG = "DeviceConnectionManager"
+    internal companion object {
+        const val BUFFER_CAPACITY = 256
     }
 
     interface Builder {
         fun create(
-            connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            stateRepo: DeviceStateFlowRepo
+            bufferCapacity: Int = BUFFER_CAPACITY,
+            coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager
+    }
+
+    sealed class Event {
+        data class RssiUpdate(val rrsi: Int) : Event()
+        object Connecting : Event()
+        object CancelledConnecting : Event()
+        object Connected : Event()
+        object Disconnecting : Event()
+        data class Disconnected(val onDisconnect: suspend () -> Unit) : Event()
+        object Discovering : Event()
+        data class DiscoveredServices(val services: List<Service>) : Event()
+        data class AddAction(val action: DeviceAction) : Event()
+        data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
     }
 
     private val _currentAction = AtomicReference<DeviceAction?>(null)
@@ -53,8 +71,12 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val _mtu = AtomicInt(-1)
-    val mtu get() = _mtu.value
+    private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.DROP_OLDEST)
+    val events = sharedEvents.asSharedFlow()
+
+    private val _mtu = MutableStateFlow(-1)
+    val mtuFlow: Flow<Int> = _mtu
+    val mtu: Int get() = _mtu.value
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -65,83 +87,59 @@ abstract class BaseDeviceConnectionManager(
     abstract fun unpair()
     abstract fun pair()
 
-    suspend fun handleNewRssi(rssi: Int) {
-        stateRepo.takeAndChangeState {
-            it.rssiDidUpdate(rssi)
-        }
+    fun handleNewRssi(rssi: Int) {
+        sharedEvents.tryEmit(Event.RssiUpdate(rssi))
     }
 
-    fun handleNewMtu(mtu: Int) = _mtu.set(mtu)
-
-    suspend fun handleConnect() {
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Connecting -> state.didConnect
-                is DeviceState.Reconnecting -> state.didConnect
-                is DeviceState.Connected -> state.remain()
-                else -> {
-                    currentAction = null
-                    notifyingCharacteristics.clear()
-                    disconnect()
-                    state.remain()
-                }
-            }
-        }
+    fun handleNewMtu(mtu: Int) {
+        _mtu.value = mtu
     }
+
+    fun startConnecting() {
+        sharedEvents.tryEmit(Event.Connecting)
+    }
+
+    fun cancelConnecting() {
+        sharedEvents.tryEmit(Event.CancelledConnecting)
+    }
+
+    fun handleConnect() {
+        sharedEvents.tryEmit(Event.Connected)
+    }
+
+    fun startDisconnecting() {
+        sharedEvents.tryEmit(Event.Disconnecting)
+    }
+
+    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, sharedEvents)
 
     suspend fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null) {
+        val currentAction = _currentAction
+        val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
-            currentAction = null
+            currentAction.value = null
             notifyingCharacteristics.clear()
             onDisconnect?.invoke()
+            Unit
         }
-
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Reconnecting -> {
-                    state.retry().also {
-                        if (it == state.didDisconnect) {
-                            clean()
-                        }
-                    }
-                }
-                is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
-                    is ConnectionSettings.ReconnectionSettings.Always,
-                    is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
-                    is ConnectionSettings.ReconnectionSettings.Never -> {
-                        clean()
-                        state.didDisconnect
-                    }
-                }
-                is DeviceState.Disconnected -> state.remain()
-                is DeviceState.Connecting,
-                is DeviceState.Disconnecting -> {
-                    clean()
-                    state.didDisconnect
-                }
-            }
-        }
+        sharedEvents.tryEmit(Event.Disconnected(clean))
     }
 
-    suspend fun handleScanCompleted(services: List<Service>) {
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
-                else -> state.remain()
-            }
-        }
+    fun startDiscovering() {
+        sharedEvents.tryEmit(Event.Discovering)
     }
 
-    open suspend fun handleCurrentActionCompleted(succeeded: Boolean) = stateRepo.takeAndChangeState { state ->
-        (
-            if (state is DeviceState.Connected.HandlingAction && state.action == currentAction) {
-                state.action.completedSuccessfully.complete(succeeded)
-                debug(TAG) { "Action $currentAction has been succeeded: $succeeded" }
-                state.actionCompleted
-            } else {
-                state.remain()
-            }
-            ).also { currentAction = null }
+    @JvmName("handleDiscoverWrappersCompleted")
+    fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
+
+    fun handleDiscoverCompleted(services: List<Service>) {
+        sharedEvents.tryEmit(Event.DiscoveredServices(services))
+    }
+
+    open fun handleCurrentActionCompleted(succeeded: Boolean) {
+        val currentAction = this.currentAction
+        _currentAction.value = null
+        sharedEvents.tryEmit(Event.CompletedAction(currentAction, succeeded))
     }
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
@@ -187,6 +185,12 @@ abstract class BaseDeviceConnectionManager(
             it.updateValue()
             handleCurrentActionCompleted(succeeded)
         }
+    }
+
+    suspend fun reset() {
+        currentAction = null
+        notifyingCharacteristics.clear()
+        disconnect()
     }
 }
 

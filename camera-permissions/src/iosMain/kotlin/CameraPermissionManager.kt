@@ -17,26 +17,21 @@
 
 package com.splendo.kaluga.permissions.camera
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.av.AVPermissionHelper
-import com.splendo.kaluga.permissions.av.AVTypeCamera
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
 import platform.Foundation.NSBundle
 
 actual class CameraPermissionManager(
     private val bundle: NSBundle,
-    stateRepo: CameraPermissionStateRepo
+    stateRepo: PermissionStateRepo<CameraPermission>
 ) : PermissionManager<CameraPermission>(stateRepo) {
 
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(this))
 
     override suspend fun requestPermission() {
         avPermissionHelper.requestPermission()
-    }
-
-    override suspend fun initializeState(): PermissionState<CameraPermission> {
-        return avPermissionHelper.initializeState()
     }
 
     override suspend fun startMonitoring(interval: Long) {
@@ -50,7 +45,7 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
+    override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> {
         return CameraPermissionManager(context, repo)
     }
 }

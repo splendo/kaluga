@@ -19,13 +19,11 @@ package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.PermissionState
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 abstract class BaseLocationManager(
@@ -42,26 +40,27 @@ abstract class BaseLocationManager(
 
     private val locationPermissionRepo get() = permissions[locationPermission]
     abstract val locationMonitor: LocationMonitor
-    private var monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
+    private val monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
     private val _monitoringLocationEnabledJob: AtomicReference<Job?> = AtomicReference(null)
     private var monitoringLocationEnabledJob: Job?
         get() = _monitoringLocationEnabledJob.get()
         set(value) { _monitoringLocationEnabledJob.set(value) }
 
-    internal open fun startMonitoringPermissions() {
+    open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob.get() != null) return // optimization to skip making a job
 
         val job = Job(this.coroutineContext[Job])
 
         if (monitoringPermissionsJob.compareAndSet(null, job))
             launch(job) {
-                locationPermissionRepo.collect { state ->
+                locationPermissionRepo.filterOnlyImportant().collect { state ->
                     if (state is PermissionState.Denied.Requestable && autoRequestPermission)
-                        state.request(permissions.getManager(locationPermission))
+                        state.request()
                     val hasPermission = state is PermissionState.Allowed
 
-                    locationStateRepo.takeAndChangeState { locationState ->
+                    locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { locationState ->
                         when (locationState) {
+                            is LocationState.Initializing -> locationState.initialize(hasPermission, isLocationEnabled())
                             is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
                             is LocationState.Disabled.NotPermitted -> if (hasPermission) locationState.permit(isLocationEnabled()) else locationState.remain()
                         }
@@ -71,18 +70,14 @@ abstract class BaseLocationManager(
         // else job.cancel() <-- not needed since the job is just garbage collected and never started anything.
     }
 
-    internal open fun stopMonitoringPermissions() {
+    open fun stopMonitoringPermissions() {
         monitoringPermissionsJob.get()?.let {
             if (monitoringPermissionsJob.compareAndSet(it, null))
                 it.cancel()
         }
     }
 
-    internal suspend fun isPermitted(): Boolean {
-        return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
-    }
-
-    internal open suspend fun startMonitoringLocationEnabled() {
+    open suspend fun startMonitoringLocationEnabled() {
         locationMonitor.startMonitoring()
         if (monitoringLocationEnabledJob != null)
             return
@@ -92,17 +87,18 @@ abstract class BaseLocationManager(
             }
         }
     }
-    internal open fun stopMonitoringLocationEnabled() {
+    open fun stopMonitoringLocationEnabled() {
         locationMonitor.stopMonitoring()
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null
     }
     internal fun isLocationEnabled(): Boolean = locationMonitor.isServiceEnabled
-    internal abstract suspend fun requestLocationEnable()
+    abstract suspend fun requestLocationEnable()
 
     private suspend fun handleLocationEnabledChanged() {
-        locationStateRepo.takeAndChangeState { state ->
+        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { state ->
             when (state) {
+                is LocationState.Initializing -> state.remain()
                 is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
                 is LocationState.Disabled.NotPermitted -> state.remain()
                 is LocationState.Enabled -> if (isLocationEnabled()) state.remain() else state.disable
@@ -110,10 +106,10 @@ abstract class BaseLocationManager(
         }
     }
 
-    internal abstract suspend fun startMonitoringLocation()
-    internal abstract suspend fun stopMonitoringLocation()
+    abstract suspend fun startMonitoringLocation()
+    abstract suspend fun stopMonitoringLocation()
 
-    internal fun handleLocationChanged(locations: List<Location>) {
+    fun handleLocationChanged(locations: List<Location>) {
         launch {
             locations.forEach { location ->
                 handleLocationChanged(location)
@@ -121,9 +117,12 @@ abstract class BaseLocationManager(
         }
     }
 
-    internal suspend fun handleLocationChanged(location: Location) {
-        locationStateRepo.takeAndChangeState { state ->
+    suspend fun handleLocationChanged(location: Location) {
+        locationStateRepo.takeAndChangeState(remainIfStateNot = LocationState.Active::class) { state ->
             when (state) {
+                is LocationState.Initializing -> {
+                    { state.copy(location = location) }
+                }
                 is LocationState.Disabled.NoGPS -> {
                     { state.copy(location = location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)) }
                 }

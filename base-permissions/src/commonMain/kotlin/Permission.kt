@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.collections.IsoMutableMap
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
 
 /**
@@ -36,13 +37,15 @@ abstract class Permission
  *  Base type for all permissions builders. Each permission component implements a concrete permissions builder
  *  and declares helper methods for registering this builder in the [PermissionsBuilder].
  */
-interface BasePermissionsBuilder
+interface BasePermissionsBuilder<P : Permission>
 
 /**
  * Closure that takes permission and coroutine contexts and creates [PermissionStateRepo].
  * Each platform registers [PermissionStateRepoBuilder] in the register permission helper method.
  */
-typealias PermissionStateRepoBuilder = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
+private interface PermissionStateRepoBuilder<P : Permission> {
+    fun create(permission: P, coroutineContext: CoroutineContext): PermissionStateRepo<P>
+}
 
 expect class PermissionContext
 expect val defaultPermissionContext: PermissionContext
@@ -53,23 +56,34 @@ expect val defaultPermissionContext: PermissionContext
  */
 open class PermissionsBuilder(val context: PermissionContext = defaultPermissionContext) {
 
-    private val builders = IsoMutableMap<KClassifier, BasePermissionsBuilder>()
-    private val repoBuilders = IsoMutableMap<KClassifier, PermissionStateRepoBuilder>()
+    private val builders = IsoMutableMap<KClassifier, BasePermissionsBuilder<*>>()
+    private val repoBuilders = IsoMutableMap<KClassifier, PermissionStateRepoBuilder<*>>()
 
-    fun <T : BasePermissionsBuilder> register(builder: T, permission: KClassifier): T {
+    inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> register(builder: B): B = register(P::class, builder)
+    fun <P : Permission, B : BasePermissionsBuilder<P>> register(permission: KClass<P>, builder: B): B {
         builders[permission] = builder
         return builder
     }
 
-    operator fun get(permission: Permission): BasePermissionsBuilder =
-        builders[permission::class] ?: throw Error("The Builder for $permission was not registered")
+    operator fun <P : Permission> get(permission: P): BasePermissionsBuilder<P> =
+        builders[permission::class] as? BasePermissionsBuilder<P> ?: throw Error("The Builder for $permission was not registered")
 
-    fun registerPermissionStateRepoBuilder(permission: KClassifier, permissionStateRepoBuilder: PermissionStateRepoBuilder) {
-        repoBuilders[permission] = permissionStateRepoBuilder
+    inline fun <reified P : Permission> registerPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> PermissionStateRepo<P>) = registerPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+    fun <P : Permission> registerPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> PermissionStateRepo<P>) {
+        repoBuilders[permission] = object : PermissionStateRepoBuilder<P> {
+            override fun create(
+                permission: P,
+                coroutineContext: CoroutineContext
+            ): PermissionStateRepo<P> {
+                return permissionStateRepoBuilder(permission, coroutineContext)
+            }
+        }
     }
 
-    fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext): PermissionStateRepo<*> =
-        repoBuilders[permission::class]?.let { it(permission, coroutineContext) } ?: throw Error("Permission state repo factory was not registered for $permission")
+    fun <P : Permission> createPermissionStateRepo(permission: P, coroutineContext: CoroutineContext): PermissionStateRepo<*> =
+        (repoBuilders[permission::class] as? PermissionStateRepoBuilder<P>)?.let {
+            it.create(permission, coroutineContext)
+        } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
 
 /**
@@ -94,20 +108,11 @@ class Permissions(private val builder: PermissionsBuilder, private val coroutine
     }
 
     /**
-     * Gets a the of [PermissionManager] for a given [Permission]
-     * @param permission The [Permission] for which the [PermissionManager] should be returned
-     * @return The [PermissionManager] for the given [Permission]
-     */
-    fun <P : Permission> getManager(permission: P): PermissionManager<P> {
-        return permissionStateRepo(permission).permissionManager
-    }
-
-    /**
      * Requests a [Permission]
      * @return `true` if the permission was granted, `false` otherwise.
      */
     suspend fun <P : Permission> request(p: P): Boolean {
-        return get(p).request(getManager(p))
+        return get(p).request()
     }
 
     fun clean() {
@@ -120,13 +125,13 @@ class Permissions(private val builder: PermissionsBuilder, private val coroutine
  * Requests a [Permission] on a [Flow] of [PermissionState]
  * @return `true` if the permission was granted, `false` otherwise.
  */
-suspend fun <P : Permission> Flow<PermissionState<out P>>.request(permissionManager: PermissionManager<out P>): Boolean {
+suspend fun <P : Permission> Flow<PermissionState<out P>>.request(): Boolean {
     return this.transformLatest { state ->
         when (state) {
             is PermissionState.Allowed -> emit(true)
-            is PermissionState.Denied.Requestable -> state.request(permissionManager)
+            is PermissionState.Denied.Requestable -> state.request()
             is PermissionState.Denied.Locked -> emit(false)
-            is PermissionState.Unknown -> {}
+            is PermissionState.Inactive -> {}
         }
     }.first()
 }

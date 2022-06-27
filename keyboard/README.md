@@ -116,4 +116,6 @@ val customBuilder = KeyboardManagerBuilder(application)
 val keyboardHostingView = UITextField()
 ```
 
+## Testing
+Use the [`test-utils-keyboard` module](../test-utils-keyboard) to get a mockable `KeyboardManager`.
 
