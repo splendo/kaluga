@@ -108,7 +108,6 @@ kotlin {
 
         sourceSets.all {
             languageSettings {
-                optIn 'kotlinx.serialization.ExperimentalSerializationApi'
                 optIn 'kotlinx.coroutines.DelicateCoroutinesApi'
                 optIn 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 optIn 'kotlinx.coroutines.ObsoleteCoroutinesApi'

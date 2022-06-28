@@ -58,7 +58,6 @@ kotlin {
     sourceSets.all {
         languageSettings {
             optIn 'kotlin.ExperimentalStdlibApi'
-            optIn 'kotlinx.serialization.ExperimentalSerializationApi'
         }
     }
 }
