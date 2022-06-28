@@ -23,7 +23,6 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import kotlinx.coroutines.MainScope
 import permissions.KNPermissionsFramework
 
-
 class KNBluetoothFramework {
     val mainScope = MainScope()
     val bluetooth = BluetoothBuilder().create(

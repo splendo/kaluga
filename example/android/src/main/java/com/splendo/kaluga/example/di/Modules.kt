@@ -97,7 +97,6 @@ import com.splendo.kaluga.permissions.registerAllPermissions
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
-import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.net.URL
@@ -112,7 +111,7 @@ val utilitiesModule = module {
     }
     single { LocationStateRepoBuilder() }
     single {
-        BluetoothBuilder().create( { BaseScanner.Settings(get()) })
+        BluetoothBuilder().create({ BaseScanner.Settings(get()) })
     }
     single { Beacons(get<Bluetooth>(), timeoutMs = 60_000) }
 }
