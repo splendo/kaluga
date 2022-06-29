@@ -221,14 +221,24 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
 
     private val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
 
+    /**
+     *  set the value of this Observable from a suspended context.
+     */
+    suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> =
+        // this avoids unneeded freezing that sometimes occurs in the runtime anyway
+        if (isOnMainThread) {
+            setValueUnconfined(value)
+        } else withContext(Dispatchers.Main) {
+            setValueUnconfined(value)
+        }
+
     @Suppress("UNUSED_VALUE", "UNCHECKED_CAST") // should always downcast as R extends T
     /**
-     * Normally you set a value assigning [observedValue],
-     * however if you are sure you are in [Dispatchers.Main] this method can be called directly
+     * Used internally to set the [observedValue]. Make sure you are in [Dispatchers.Main] or the main thread
      *
      * @param value the new value that will be observed
      */
-    fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
+    private fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
         val v = value.asResult(defaultValue)
         val before = backingAtomicReference.get() ?: backingInternalValue
 
@@ -561,8 +571,8 @@ class SimpleInitializedSubject<T>(
         initialValue: Value<T>
     ) : this(ObservationInitialized(initialValue))
 
-    override suspend fun set(newValue: T): Unit = withContext(Dispatchers.Main.immediate) {
-        observation.setValueUnconfined(Value(newValue))
+    override suspend fun set(newValue: T) {
+        observation.setValue(Value(newValue))
     }
 
     override fun post(newValue: T) {
@@ -583,8 +593,8 @@ class SimpleDefaultSubject<R : T?, T>(
         observation.observedValue = Value(newValue)
     }
 
-    override suspend fun set(newValue: T?) = withContext<Unit>(Dispatchers.Main.immediate) {
-        observation.setValueUnconfined(Value(newValue))
+    override suspend fun set(newValue: T?) {
+        observation.setValue(Value(newValue))
     }
 }
 
