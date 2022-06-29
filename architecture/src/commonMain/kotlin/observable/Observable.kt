@@ -515,7 +515,7 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
 abstract class AbstractBaseInitializedSubject<T>(override val observation: ObservationInitialized<T>) :
     BaseSubject<T, T, Value<T>>(
         observation,
-        {
+        suspend {
             // switch context to Main since value observations for observable also happen on that thread
             withContext(Dispatchers.Main.immediate) {
                 observation.stateFlow
