@@ -26,10 +26,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -57,7 +55,7 @@ private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): Mutab
 
 fun <T> LiveData<T>.observeOnCoroutine(
     coroutineScope: CoroutineScope,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    coroutineContext: CoroutineContext = coroutineScope.coroutineContext,
     observer: Observer<T>
 ) {
     coroutineScope.launch(coroutineContext) {

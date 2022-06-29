@@ -20,7 +20,6 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.*
 import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +49,7 @@ class DefaultFlowObservable<R : T?, T>(
     defaultValue: R,
     initialValue: T? = defaultValue,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     flow: Flow<T?>,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, Value(initialValue)),
 ) : BaseDefaultObservable<R, T?>(observation) {
@@ -61,7 +60,7 @@ class DefaultFlowObservable<R : T?, T>(
 
 class FlowObservable<T>(
     val coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     val flow: Flow<T>,
     observation: ObservationUninitialized<T> = ObservationUninitialized()
 ) : BaseUninitializedObservable<T>(observation) {
@@ -73,7 +72,7 @@ class FlowObservable<T>(
 class FlowInitializedObservable<T>(
     initialValue: T,
     val coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     val flow: Flow<T>,
     observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
 ) : BaseInitializedObservable<T>(observation) {
@@ -102,7 +101,7 @@ class MutableFlowSubjectHelper<R : T, T, OO : ObservableOptional<R>>(
 class HotFlowableDefaultSubject<R : T?, T>(
     defaultValue: R,
     val coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     hotFlowable: HotFlowable<T?>,
     autoBind: Boolean = true,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, Value(hotFlowable.initialValue))
@@ -121,7 +120,7 @@ class HotFlowableDefaultSubject<R : T?, T>(
 
 class HotFlowableInitializedSubject<T>(
     val coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     hotFlowable: HotFlowable<T>,
     autoBind: Boolean = true,
     observation: ObservationInitialized<T> = ObservationInitialized(Value(hotFlowable.initialValue))
@@ -140,7 +139,7 @@ class HotFlowableInitializedSubject<T>(
 
 open class StateFlowSubject<T>(
     val coroutineScope: CoroutineScope,
-    val context: CoroutineContext = Dispatchers.Main.immediate,
+    val context: CoroutineContext = coroutineScope.coroutineContext,
     private val observedStateFlow: MutableStateFlow<T>,
     autoBind: Boolean = true,
     observation: ObservationInitialized<T> = ObservationInitialized(Value(observedStateFlow.value)),
@@ -161,7 +160,7 @@ open class StateFlowSubject<T>(
 open class StateFlowDefaultSubject<R : T?, T>(
     defaultValue: R,
     val coroutineScope: CoroutineScope,
-    val context: CoroutineContext = Dispatchers.Main.immediate,
+    val context: CoroutineContext = coroutineScope.coroutineContext,
     private val observedStateFlow: MutableStateFlow<T?>,
     autoBind: Boolean = true,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, Value(observedStateFlow.value)),
@@ -186,7 +185,7 @@ open class StateFlowDefaultSubject<R : T?, T>(
  */
 open class StateFlowInitializedSubject<T>(
     val coroutineScope: CoroutineScope,
-    val context: CoroutineContext = Dispatchers.Main.immediate,
+    val context: CoroutineContext = coroutineScope.coroutineContext,
     private val observedStateFlow: MutableStateFlow<T>,
     autoBind: Boolean = true,
     observation: ObservationInitialized<T> = ObservationInitialized(Value(observedStateFlow.value)),
@@ -208,7 +207,7 @@ open class SharedFlowDefaultSubject<R : T?, T>(
     defaultValue: R,
     initialValue: T? = defaultValue,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     sharedFlow: MutableSharedFlow<T?>,
     autoBind: Boolean = true,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, Value(initialValue)),
@@ -229,7 +228,7 @@ open class SharedFlowDefaultSubject<R : T?, T>(
 
 open class SharedFlowSubject<T>(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     sharedFlow: MutableSharedFlow<T>,
     autoBind: Boolean = true,
     observation: ObservationUninitialized<T> = ObservationUninitialized()
@@ -251,7 +250,7 @@ open class SharedFlowSubject<T>(
 open class SharedFlowInitializedSubject<T>(
     initialValue: T,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate,
+    context: CoroutineContext = coroutineScope.coroutineContext,
     sharedFlow: MutableSharedFlow<T>,
     autoBind: Boolean = true,
     observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
@@ -359,8 +358,8 @@ class ReadWritePropertyInitializedSubject<T>(
             v
         }
     ),
-    context: CoroutineContext,
-    scope: CoroutineScope?,
+    coroutineScope: CoroutineScope?,
+    context: CoroutineContext? = coroutineScope?.coroutineContext,
     observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
 ) :
     BaseInitializedSubject<T>(
@@ -368,7 +367,7 @@ class ReadWritePropertyInitializedSubject<T>(
     ),
     SuspendableSetter<T> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
     init {
-        scope?.let { bind(it, context) }
+        coroutineScope?.let { bind(it, context ?: coroutineScope.coroutineContext) }
     }
 }
 
@@ -381,8 +380,8 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
             v
         }
     ),
-    context: CoroutineContext,
-    scope: CoroutineScope?,
+    coroutineScope: CoroutineScope?,
+    context: CoroutineContext? = coroutineScope?.coroutineContext,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, initialValue)
 ) :
     BaseDefaultSubject<R, T>(
@@ -390,8 +389,8 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
     ),
     SuspendableSetter<T?> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
     init {
-        scope?.let {
-            bind(scope, context)
+        coroutineScope?.let {
+            bind(coroutineScope, context ?: coroutineScope.coroutineContext)
         }
     }
 }
@@ -402,60 +401,72 @@ fun <R : T, T> ReadOnlyProperty<Any?, T?>.toDefaultObservable(defaultValue: R) =
 fun <T> ReadOnlyProperty<Any?, T>.toInitializedObservable() =
     ReadOnlyPropertyInitializedObservable(this)
 
-fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(context: CoroutineContext = Dispatchers.Main.immediate, scope: CoroutineScope? = null) =
-    ReadWritePropertyInitializedSubject(this, context = context, scope = scope)
+fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(
+    coroutineScope: CoroutineScope? = null,
+    context: CoroutineContext? = coroutineScope?.coroutineContext
+) =
+    ReadWritePropertyInitializedSubject(this, context = context, coroutineScope = coroutineScope)
 
-fun <R : T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(defaultValue: R, context: CoroutineContext = Dispatchers.Main.immediate, scope: CoroutineScope? = null): ReadWritePropertyDefaultSubject<R, T?> =
-    ReadWritePropertyDefaultSubject(defaultValue, this, context = context, scope = scope)
+fun <R : T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(
+    defaultValue: R,
+    coroutineScope: CoroutineScope? = null,
+    context: CoroutineContext? = coroutineScope?.coroutineContext
+): ReadWritePropertyDefaultSubject<R, T?> =
+    ReadWritePropertyDefaultSubject(
+        defaultValue = defaultValue,
+        readWriteProperty = this,
+        coroutineScope = coroutineScope,
+        context = context,
+    )
 
 fun <T> Flow<T>.toUninitializedObservable(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = FlowObservable(coroutineScope, context, this)
 
 fun <T> MutableStateFlow<T>.toInitializedObservable(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = FlowInitializedObservable(this.value, coroutineScope, context, this)
 
 fun <T> Flow<T>.toInitializedObservable(
     initialValue: T,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = FlowInitializedObservable(initialValue, coroutineScope, context, this)
 
 fun <R : T, T> Flow<T?>.toDefaultObservable(
     defaultValue: R,
     initialValue: T? = defaultValue,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = DefaultFlowObservable(defaultValue, initialValue, coroutineScope, context, this)
 
 fun <R : T?, T> HotFlowable<T?>.toDefaultSubject(
     defaultValue: R,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = HotFlowableDefaultSubject(defaultValue, coroutineScope, context, this)
 
 fun <T> HotFlowable<T>.toInitializedSubject(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = HotFlowableInitializedSubject(coroutineScope, context, this)
 
 fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(
     defaultValue: R,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = StateFlowDefaultSubject(defaultValue, coroutineScope, context, this)
 
 fun <T> MutableStateFlow<T>.toInitializedSubject(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = StateFlowInitializedSubject(coroutineScope, context, this)
 
 fun <T> MutableSharedFlow<T>.toUninitializedSubject(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = SharedFlowSubject(
     coroutineScope,
     context,
@@ -465,7 +476,7 @@ fun <T> MutableSharedFlow<T>.toUninitializedSubject(
 fun <T> MutableSharedFlow<T>.toInitializedSubject(
     initialValue: T,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = SharedFlowInitializedSubject(
     initialValue,
     coroutineScope,
@@ -477,7 +488,7 @@ fun <R : T?, T> MutableSharedFlow<T?>.toDefaultSubject(
     defaultValue: R,
     initialValue: T? = defaultValue,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = SharedFlowDefaultSubject(
     defaultValue,
     initialValue,
