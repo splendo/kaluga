@@ -26,6 +26,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
@@ -55,10 +56,11 @@ private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): Mutab
 
 fun <T> LiveData<T>.observeOnCoroutine(
     coroutineScope: CoroutineScope,
-    coroutineContext: CoroutineContext = coroutineScope.coroutineContext,
     observer: Observer<T>
 ) {
-    coroutineScope.launch(coroutineContext) {
+    // Live Data mutations should only ever be done from the main thread, so we don't (any longer) allow passing a context
+    coroutineScope.launch(Dispatchers.Main.immediate) {
+        if (value != null) observer.onChanged(value) // due to slight delay in launch we could miss value changes
         observeForever(observer)
         awaitCancellation()
     }.invokeOnCompletion {
@@ -68,7 +70,7 @@ fun <T> LiveData<T>.observeOnCoroutine(
 
 actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>
 ) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     private var coroutineScope: CoroutineScope? = null

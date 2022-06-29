@@ -408,6 +408,15 @@ interface DefaultSubject<R : T?, T> :
     MutableDefaultInitialized<R, T?>
 
 expect interface WithState<T> {
+    /**
+     * Stateflow that expresses the content from the observable.
+     *
+     * This can be initialized lazily.
+     *
+     * Accessing this from property outside the main thread might cause a race condition,
+     * since observing the initial value needed for the stateflow has to happen on the main thread.
+     *
+     */
     val stateFlow: StateFlow<T>
     val valueDelegate: ReadOnlyProperty<Any?, T>
 }
@@ -482,12 +491,12 @@ abstract class BaseDefaultObservable<R : T?, T>(
  */
 abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
-    private val stateFlowToBind: () -> StateFlow<R?>
+    private val stateFlowToBind: suspend () -> StateFlow<R?>
 ) :
     BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
     final override fun bind(coroutineScope: CoroutineScope) =
-        bind(coroutineScope, Dispatchers.Main.immediate)
+        bind(coroutineScope, coroutineScope.coroutineContext)
 
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
@@ -498,7 +507,7 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
 
 expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>
 ) :
     AbstractBaseSubject<R, T, OO>
 
@@ -506,7 +515,12 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
 abstract class AbstractBaseInitializedSubject<T>(override val observation: ObservationInitialized<T>) :
     BaseSubject<T, T, Value<T>>(
         observation,
-        { observation.stateFlow }
+        {
+            // switch context to Main since value observations for observable also happen on that thread
+            withContext(Dispatchers.Main.immediate) {
+                observation.stateFlow
+            }
+        }
     ),
     InitializedSubject<T>,
     MutableInitialized<T, T> by observation {
