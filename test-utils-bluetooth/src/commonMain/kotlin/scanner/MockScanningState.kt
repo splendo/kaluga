@@ -130,7 +130,7 @@ sealed class MockScanningState {
 
                 return discovered.devices.find { it.identifier == identifier }
                     ?.let { knownDevice ->
-                        knownDevice.advertisementDataAndRssiDidUpdate(advertisementData, rssi)
+                        knownDevice.advertisementDataDidUpdate(advertisementData)
                         remain()
                     } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator())) }
             }
