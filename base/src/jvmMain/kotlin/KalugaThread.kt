@@ -16,9 +16,7 @@
 
 package com.splendo.kaluga.base
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import javax.swing.SwingUtilities
 
 actual data class KalugaThread(val thread: Thread) {
 
