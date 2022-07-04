@@ -28,7 +28,7 @@ actual interface WithState<T> {
 
 actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>
 ) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {

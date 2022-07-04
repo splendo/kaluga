@@ -29,10 +29,10 @@ import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.testBlockingAndCancelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -45,7 +45,7 @@ class ObservationLiveDataTest : BaseTest() {
     fun testLiveData() = testBlockingAndCancelScope {
 
         val flow = MutableStateFlow("initial")
-        val subject = flow.toInitializedSubject(this)
+        val subject = flow.toInitializedSubject(this, Dispatchers.Main.immediate)
         val channel = Channel<String>(4)
 
         launch(Dispatchers.Main) {
@@ -57,6 +57,7 @@ class ObservationLiveDataTest : BaseTest() {
         assertEquals("initial", channel.receive())
 
         flow.value = "value"
+        yield()
         assertEquals("value", channel.receive())
     }
 
@@ -107,7 +108,7 @@ class ObservationLiveDataTest : BaseTest() {
     @Test
     fun testLiveDataObserver() = testBlockingAndCancelScope {
         val flow = MutableStateFlow("initial")
-        val subject = flow.toInitializedSubject(this)
+        val subject = flow.toInitializedSubject(this, Dispatchers.Main.immediate)
 
         val liveData = MutableLiveData("value")
 
@@ -127,7 +128,7 @@ class ObservationLiveDataTest : BaseTest() {
         withContext(Dispatchers.Main) {
             val liveData = subject.mutableLiveData
             liveData.value = "value"
-            assertEquals("value", flow.value)
+            assertEquals("value", flow.value, "value should be updated")
         }
     }
 
@@ -142,14 +143,16 @@ class ObservationLiveDataTest : BaseTest() {
                 observer = {
                 }
             )
-            assertTrue(liveData.hasObservers())
+            assertTrue(liveData.hasObservers(), "LiveData has observers (inside launch)")
             completedObserving.complete()
         }
         completedObserving.await()
-        assertTrue(liveData.hasObservers())
+        assertTrue(liveData.hasObservers(), "LiveData has observers (outer test)")
         job.cancel()
-        // Wait for a fraction since Invoke on completion needs to be called
-        delay(100)
+        // yield on the main thread so we know the observer can be removed
+        withContext(Dispatchers.Main) {
+            yield()
+        }
         assertFalse(liveData.hasObservers())
     }
 }
