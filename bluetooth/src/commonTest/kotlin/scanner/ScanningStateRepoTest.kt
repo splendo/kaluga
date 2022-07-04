@@ -30,6 +30,7 @@ import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -181,6 +182,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
 
             // here to debug this test potentially being unstable
             println("peek current state: ${bluetooth.scanningStateRepo.stateFlow.value}")
+            delay(100)
+            println("peek current state after delay: ${bluetooth.scanningStateRepo.stateFlow.value}")
         }
 
         test {
