@@ -19,20 +19,16 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
-import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
@@ -45,27 +41,21 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
-import platform.darwin.dispatch_get_main_queue
+import platform.darwin.dispatch_queue_create
 
-actual class Scanner internal constructor(
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
+actual class DefaultScanner internal constructor(
+    settings: BaseScanner.Settings,
     private val scanSettings: ScanSettings,
-    autoRequestPermission: Boolean,
-    autoEnableSensors: Boolean,
-    stateRepo: ScanningStateFlowRepo,
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
+    coroutineScope: CoroutineScope
+) : BaseScanner(settings, coroutineScope) {
 
     class Builder(private val scanSettings: ScanSettings = defaultScanOptions) : BaseScanner.Builder {
 
         override fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            scanningStateRepo: ScanningStateFlowRepo,
+            settings: Settings,
+            coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo,)
+            return DefaultScanner(settings, scanSettings, coroutineScope)
         }
     }
 
@@ -75,50 +65,42 @@ actual class Scanner internal constructor(
     }
 
     @Suppress("CONFLICTING_OVERLOADS")
-    private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
+    private class PoweredOnCBCentralManagerDelegate(private val scanner: DefaultScanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
-        override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
+        override fun centralManagerDidUpdateState(central: CBCentralManager) {
             if (central.state == CBCentralManagerStatePoweredOn) {
                 isEnabledCompleted.complete()
             }
-        }.invoke()
+        }
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
-        fun handlePeripheral(didConnectPeripheral: CBPeripheral, block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
-            scanner.stateRepo.launchUseState { scannerState ->
-                if (scannerState is ScanningState.Enabled)
-                    scannerState.discovered.devices.find { it.identifier == didConnectPeripheral.identifier }
-                        ?.let { device ->
-                            val connectionManager = device.first().connectionManager
-                            block(connectionManager)
-                        }
-            }
-        }.invoke()
-
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            handlePeripheral(didConnectPeripheral) { handleConnect() }
+            scanner.handleDeviceConnected(didConnectPeripheral.identifier)
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
+            scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier)
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
+            scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier)
         }
     }
 
+    private val enabledQueue = dispatch_queue_create("ScannerMonitorEnabled", null)
+    private val scanQueue = dispatch_queue_create("ScannerScanning", null)
+    private val pairedDevicesQueue = dispatch_queue_create("ScannerPairedDevices", null)
     override val isSupported: Boolean = true
     private val centralManagers = sharedMutableListOf<CBCentralManager>()
     private val discoveringDelegates = sharedMutableListOf<CBCentralManagerDelegateProtocol>()
     private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
-    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder { CBCentralManager(null, dispatch_get_main_queue(), emptyMap<Any?, Any>()) }.create()
+    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder { CBCentralManager(null, enabledQueue, emptyMap<Any?, Any>()) }.create()
 
     private suspend fun scan(filter: UUID? = null) {
-        val centralManager = CBCentralManager(null, dispatch_get_main_queue())
+        val centralManager = CBCentralManager(null, scanQueue)
         centralManagers.add(centralManager)
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
@@ -154,14 +136,14 @@ actual class Scanner internal constructor(
                 suspend {
                     val options =
                         mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
-                    CBCentralManager(null, dispatch_get_main_queue(), options)
+                    CBCentralManager(null, enabledQueue, options)
                     bluetoothEnabledMonitor.isEnabled.first { it }
                 }
             } else null
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = CBCentralManager(null, dispatch_get_main_queue())
+    override fun pairedDevices(withServices: Set<UUID>) = CBCentralManager(null, pairedDevicesQueue)
         .retrieveConnectedPeripheralsWithServices(withServices.toList())
         .mapNotNull { (it as? CBPeripheral)?.identifier }
 
@@ -172,13 +154,13 @@ actual class Scanner internal constructor(
 
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
+        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
             val deviceInfo = DeviceInfoImpl(deviceWrapper, rssi, advertisementData)
             Device(
                 connectionSettings,
                 deviceInfo,
                 DeviceConnectionManager.Builder(central, peripheral),
-                CoroutineScope(coroutineContext)
+                coroutineContext
             )
         }
     }

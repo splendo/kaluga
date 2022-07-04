@@ -19,8 +19,8 @@ package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
@@ -35,8 +35,8 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +50,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 
 interface BluetoothService {
@@ -62,20 +63,17 @@ interface BluetoothService {
 }
 
 class Bluetooth internal constructor(
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableBluetooth: Boolean,
+    scannerSettingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     scannerBuilder: BaseScanner.Builder,
-    coroutineScope: CoroutineScope
-) : BluetoothService, CoroutineScope by coroutineScope {
+    coroutineContext: CoroutineContext,
+    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
+) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
     interface Builder {
         fun create(
-            connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
-            autoRequestPermission: Boolean = true,
-            autoEnableBluetooth: Boolean = true,
-            coroutineScope: CoroutineScope = MainScope()
+            scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
+            coroutineContext: CoroutineContext = singleThreadDispatcher("Bluetooth"),
+            contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
         ): Bluetooth
     }
 
@@ -84,11 +82,9 @@ class Bluetooth internal constructor(
     }
 
     internal val scanningStateRepo = ScanningStateRepo(
-        permissions,
-        connectionSettings,
-        autoRequestPermission,
-        autoEnableBluetooth,
-        scannerBuilder
+        scannerSettingsBuilder,
+        scannerBuilder,
+        coroutineContext.contextCreator("Scanner")
     )
 
     sealed class ScanMode {

@@ -25,42 +25,81 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 typealias EnableSensorAction = suspend () -> Boolean
 
+interface Scanner {
+
+    sealed class Event {
+        data class PermissionChanged(val hasPermission: Boolean) : Event()
+        object BluetoothEnabled : Event()
+        object BluetoothDisabled : Event()
+        object FailedScanning : Event()
+        data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: AdvertisementData, val deviceCreator: (CoroutineContext) -> Device) : Event()
+        data class DeviceConnected(val identifier: Identifier) : Event()
+        data class DeviceDisconnected(val identifier: Identifier) : Event()
+    }
+
+    val isSupported: Boolean
+    val events: Flow<Event>
+    fun startMonitoringPermissions()
+    fun stopMonitoringPermissions()
+    suspend fun scanForDevices(filter: Set<UUID>)
+    suspend fun stopScanning()
+    fun startMonitoringHardwareEnabled()
+    fun stopMonitoringHardwareEnabled()
+    suspend fun isHardwareEnabled(): Boolean
+    suspend fun requestEnableHardware()
+    fun generateEnableSensorsActions(): List<EnableSensorAction>
+    fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+}
+
 abstract class BaseScanner constructor(
-    internal val permissions: Permissions,
-    protected val connectionSettings: ConnectionSettings,
-    protected val autoRequestPermission: Boolean,
-    internal val autoEnableSensors: Boolean,
-    internal val stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
-) : CoroutineScope by stateRepo {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : Scanner, CoroutineScope by coroutineScope {
+
+    companion object {
+        const val DEFAULT_EVENT_BUFFER_SIZE = 256
+    }
+
+    data class Settings(
+        val permissions: Permissions,
+        val connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
+        val autoRequestPermission: Boolean = true,
+        val autoEnableSensors: Boolean = true,
+        val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
+    )
 
     interface Builder {
         fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            scanningStateRepo: ScanningStateFlowRepo
+            settings: Settings,
+            coroutineScope: CoroutineScope
         ): BaseScanner
     }
 
-    abstract val isSupported: Boolean
+    internal val permissions: Permissions = settings.permissions
+    protected val connectionSettings: ConnectionSettings = settings.connectionSettings
+    protected val autoRequestPermission: Boolean = settings.autoRequestPermission
+    internal val autoEnableSensors: Boolean = settings.autoEnableSensors
+
+    protected val sharedEvents = MutableSharedFlow<Scanner.Event>(0, settings.eventBufferSize, BufferOverflow.DROP_OLDEST)
+    override val events: Flow<Scanner.Event> = sharedEvents.asSharedFlow()
+
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
 
@@ -77,9 +116,9 @@ abstract class BaseScanner constructor(
         get() = _monitoringBluetoothEnabledJob.get()
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
 
-    open fun startMonitoringPermissions() {
+    override fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
-        monitoringPermissionsJob = launch(stateRepo.coroutineContext) {
+        monitoringPermissionsJob = launch(coroutineContext) {
             permissionsFlow.collect { state ->
                 handlePermissionState(state)
             }
@@ -96,91 +135,67 @@ abstract class BaseScanner constructor(
             }
         }
         val hasPermission = states.all { it is PermissionState.Allowed }
-        stateRepo.takeAndChangeState { scanState ->
-            when (scanState) {
-                is ScanningState.Initializing -> {
-                    scanState.initialized(hasPermission, areSensorsEnabled())
-                }
-                is Disabled, is Enabled -> {
-                    if (hasPermission)
-                        scanState.remain()
-                    else
-                        (scanState as? ScanningState.Permitted)?.revokePermission ?: scanState.remain()
-                }
-                is ScanningState.NoBluetooth.MissingPermissions -> if (hasPermission) scanState.permit(areSensorsEnabled()) else scanState.remain()
-                else -> { scanState.remain() }
-            }
-        }
+        sharedEvents.emit(Scanner.Event.PermissionChanged(hasPermission))
     }
 
-    open fun stopMonitoringPermissions() {
+    override fun stopMonitoringPermissions() {
         monitoringPermissionsJob?.cancel()
         monitoringPermissionsJob = null
     }
 
-    abstract suspend fun scanForDevices(filter: Set<UUID>)
-    abstract suspend fun stopScanning()
-    open fun startMonitoringSensors() {
+    override fun startMonitoringHardwareEnabled() {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.startMonitoring()
         if (monitoringBluetoothEnabledJob != null) return
         monitoringBluetoothEnabledJob = launch {
             enabledFlow.collect {
-                checkSensorsEnabledChanged()
+                checkHardwareEnabledChanged()
             }
         }
     }
-    open fun stopMonitoringSensors() {
+
+    override fun stopMonitoringHardwareEnabled() {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.stopMonitoring()
         monitoringBluetoothEnabledJob?.cancel()
         monitoringBluetoothEnabledJob = null
     }
 
-    open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
-    suspend fun requestSensorsEnable() {
+    override suspend fun isHardwareEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
+    override suspend fun requestEnableHardware() {
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {
-            checkSensorsEnabledChanged()
+            sharedEvents.tryEmit(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
         } else if (
             flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
                 acc && action()
             }
         ) {
-            requestSensorsEnable()
+            requestEnableHardware()
         }
     }
-    abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    abstract fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+    internal fun handleDeviceDiscovered(
+        identifier: Identifier,
+        rssi: Int,
+        advertisementData: AdvertisementData,
+        deviceCreator: (CoroutineContext) -> Device
+    ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    abstract override fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 
-    fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
-        it.enable
-    }
+    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceConnected(identifier))
+    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceDisconnected(identifier))
 
-    fun bluetoothDisabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Enabled::class) {
-        it.disable
-    }
-
-    internal fun handleDeviceDiscovered(identifier: Identifier, rssi: Int, advertisementData: AdvertisementData, deviceCreator: () -> Device) =
-        stateRepo.launchTakeAndChangeState { state ->
-            when (state) {
-                is Enabled.Scanning -> {
-                    state.discoverDevice(identifier, rssi, advertisementData, deviceCreator)
-                }
-                else -> {
-                    state.logError(Error("Discovered Device while not scanning"))
-                    state.remain()
-                }
+    internal open suspend fun checkHardwareEnabledChanged() {
+        if (isHardwareEnabled())
+            sharedEvents.tryEmit(Scanner.Event.BluetoothEnabled)
+        else {
+            sharedEvents.tryEmit(Scanner.Event.BluetoothDisabled)
+            if (autoEnableSensors) {
+                requestEnableHardware()
             }
-        }
-
-    internal open suspend fun checkSensorsEnabledChanged() {
-        when {
-            areSensorsEnabled() -> bluetoothEnabled()
-            else -> bluetoothDisabled()
         }
     }
 }
 
-expect class Scanner : BaseScanner
+expect class DefaultScanner : BaseScanner

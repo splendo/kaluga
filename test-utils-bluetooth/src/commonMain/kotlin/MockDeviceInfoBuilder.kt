@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
-import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 @MockBuilderDsl
 typealias ServiceUUIDsList = ArrayList<UUID>
@@ -61,7 +61,7 @@ class MockDeviceInfoBuilder {
 }
 
 fun createMockDevice(
-    coroutineScope: CoroutineScope,
+    coroutineContext: CoroutineContext,
     connectionSettings: ConnectionSettings = ConnectionSettings(
         ConnectionSettings.ReconnectionSettings.Never
     ),
@@ -69,7 +69,7 @@ fun createMockDevice(
     builder: MockDeviceInfoBuilder.() -> Unit
 ) = Device(
     connectionSettings = connectionSettings,
-    connectionManagerBuilder = connectionBuilder,
     initialDeviceInfo = MockDeviceInfoBuilder().apply(builder).build(),
-    coroutineScope = coroutineScope
+    connectionManagerBuilder = connectionBuilder,
+    coroutineContext = coroutineContext
 )

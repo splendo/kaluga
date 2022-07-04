@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -35,7 +36,7 @@ import com.splendo.kaluga.test.bluetooth.createServiceWrapper
 import com.splendo.kaluga.test.bluetooth.descriptor
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
-import com.splendo.kaluga.test.bluetooth.scanner.MockScanner
+import com.splendo.kaluga.test.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -147,20 +148,30 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ).apply {
             registerAllPermissionsBuilders()
         }
-        val permissions = Permissions(
-            permissionsBuilder,
-            coroutineContext = coroutineScope.coroutineContext
-        ).apply {
-            // Make sure permissionState has been created as it may break the tests otherwise
-            get(BluetoothPermission)
-        }
 
         val permissionManager get() = permissionsBuilder.createdBluetoothPermissionManagers.first()
 
-        private val scannerBuilder = MockScanner.Builder(configuration.isEnabled)
+        private val scannerBuilder = MockBaseScanner.Builder(configuration.isEnabled)
         val scanner get() = scannerBuilder.createdScanners.first()
 
-        val bluetooth = Bluetooth(permissions, ConnectionSettings(), configuration.autoRequestPermission, configuration.autoEnableBluetooth, scannerBuilder, coroutineScope)
+        val bluetooth = Bluetooth(
+            { scannerContext ->
+                BaseScanner.Settings(
+                    Permissions(
+                        permissionsBuilder,
+                        coroutineContext = scannerContext
+                    ).apply {
+                        // Make sure permissionState has been created as it may break the tests otherwise
+                        get(BluetoothPermission)
+                    },
+                    ConnectionSettings(),
+                    configuration.autoRequestPermission,
+                    configuration.autoEnableBluetooth
+                )
+            },
+            scannerBuilder,
+            coroutineScope.coroutineContext
+        )
         val scanningStateRepo = bluetooth.scanningStateRepo
 
         val serviceWrapper = createServiceWrapper(configuration.serviceWrapperBuilder)
@@ -176,7 +187,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                 connectionSettings,
                 DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
                 deviceConnectionManagerBuilder,
-                coroutineScope
+                coroutineScope.coroutineContext
             )
         }
 

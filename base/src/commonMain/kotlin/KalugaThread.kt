@@ -16,6 +16,15 @@
 
 package com.splendo.kaluga.base
 
-import javax.swing.SwingUtilities
+val isOnMainThread: Boolean
+    get() = KalugaThread.currentThread.isMainThread
 
-actual val isOnMainThread: Boolean get() = SwingUtilities.isEventDispatchThread()
+expect class KalugaThread {
+
+    companion object {
+        val currentThread: KalugaThread
+    }
+
+    val name: String
+    val isMainThread: Boolean
+}

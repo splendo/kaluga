@@ -31,7 +31,7 @@ kotlin {
     }
 
     jvm()
-    js {
+    js(IR) {
         // Disable JS browser tests for now
         // See https://github.com/splendo/kaluga/issues/97
         // browser()
@@ -108,7 +108,7 @@ kotlin {
 
         sourceSets.all {
             languageSettings {
-                optIn 'kotlinx.serialization.ExperimentalSerializationApi'
+                optIn 'kotlinx.coroutines.DelicateCoroutinesApi'
                 optIn 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 optIn 'kotlinx.coroutines.ObsoleteCoroutinesApi'
                 optIn 'kotlinx.coroutines.InternalCoroutinesApi'

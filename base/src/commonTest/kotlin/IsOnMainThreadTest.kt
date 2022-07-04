@@ -1,7 +1,8 @@
-import com.splendo.kaluga.base.isOnMainThread
+import com.splendo.kaluga.base.KalugaThread
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -26,11 +27,27 @@ class IsOnMainThreadTest : BaseTest() {
 
     @Test
     fun testIsOnMainThread() = runBlocking(Dispatchers.Main) {
-        assertTrue(isOnMainThread)
+        assertTrue(KalugaThread.currentThread.isMainThread)
     }
 
     @Test
     fun testIsNotOnMainThread() = runBlocking(Dispatchers.Default) {
-        assertFalse(isOnMainThread)
+        assertFalse(KalugaThread.currentThread.isMainThread)
+    }
+
+    @Test
+    fun testIsMainThreadFromBackground() = runBlocking(Dispatchers.Main) {
+        val capturedThread = KalugaThread.currentThread
+        withContext(Dispatchers.Default) {
+            assertTrue(capturedThread.isMainThread)
+        }
+    }
+
+    @Test
+    fun testIsNotMainThreadFromMainThread() = runBlocking(Dispatchers.Default) {
+        val capturedThread = KalugaThread.currentThread
+        withContext(Dispatchers.Main) {
+            assertFalse(capturedThread.isMainThread)
+        }
     }
 }

@@ -17,14 +17,20 @@
 
 package com.splendo.kaluga.example.ios.beacons
 
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.Beacons
+import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import kotlinx.coroutines.MainScope
+import permissions.KNPermissionsFramework
 
 class KNBeaconsFramework {
     private val mainScope = MainScope()
     val service = Beacons(
-        BluetoothBuilder().create(coroutineScope = mainScope),
+        BluetoothBuilder().create(
+            { BaseScanner.Settings(KNPermissionsFramework().getPermissions()) },
+            singleThreadDispatcher("Bluetooth")
+        ),
         timeoutMs = 60_000
     )
 }

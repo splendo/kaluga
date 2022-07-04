@@ -27,7 +27,6 @@ import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
@@ -35,33 +34,26 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.permissions.base.PermissionState
-import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
-actual class Scanner internal constructor(
+actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
     private val bluetoothScanner: BluetoothLeScannerCompat,
     private val bluetoothAdapter: BluetoothAdapter?,
     private val scanSettings: ScanSettings,
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableSensors: Boolean,
-    stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BaseScanner(settings, coroutineScope) {
 
     class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
@@ -71,13 +63,10 @@ actual class Scanner internal constructor(
     ) : BaseScanner.Builder {
 
         override fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            scanningStateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
+            settings: Settings,
+            coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return Scanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
+            return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope)
         }
     }
 
@@ -103,16 +92,9 @@ actual class Scanner internal constructor(
                 else -> Pair("Reason Unknown", true)
             }
 
-            launch(stateRepo.coroutineContext) {
-                stateRepo.peekState().logError(Error(error.first))
-                if (error.second) {
-                    stateRepo.takeAndChangeState { state ->
-                        when (state) {
-                            is ScanningState.Enabled.Scanning -> state.stopScanning
-                            else -> state.remain()
-                        }
-                    }
-                }
+            com.splendo.kaluga.logging.error("ScanningStateImplRepo", error.first)
+            if (error.second) {
+                sharedEvents.tryEmit(Scanner.Event.FailedScanning)
             }
         }
 
@@ -131,9 +113,9 @@ actual class Scanner internal constructor(
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
-            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
+            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) { coroutineContext ->
                 val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, CoroutineScope(stateRepo.coroutineContext))
+                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, coroutineContext)
             }
         }
     }
@@ -166,17 +148,17 @@ actual class Scanner internal constructor(
         bluetoothScanner.stopScan(callback)
     }
 
-    override fun startMonitoringSensors() {
+    override fun startMonitoringHardwareEnabled() {
         locationEnabledMonitor.startMonitoring()
-        super.startMonitoringSensors()
+        super.startMonitoringHardwareEnabled()
     }
 
-    override fun stopMonitoringSensors() {
+    override fun stopMonitoringHardwareEnabled() {
         locationEnabledMonitor.stopMonitoring()
-        super.stopMonitoringSensors()
+        super.stopMonitoringHardwareEnabled()
     }
 
-    override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.isServiceEnabled
+    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
