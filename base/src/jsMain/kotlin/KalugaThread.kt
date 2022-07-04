@@ -16,6 +16,9 @@
 
 package com.splendo.kaluga.base
 
+/**
+ * On JS there is only one thread, so everything is the main thread
+ */
 actual class KalugaThread {
 
     actual companion object {
