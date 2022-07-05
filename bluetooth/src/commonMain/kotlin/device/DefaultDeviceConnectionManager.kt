@@ -86,10 +86,6 @@ abstract class BaseDeviceConnectionManager(
     private val coroutineScope: CoroutineScope
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
 
-    internal companion object {
-        const val BUFFER_CAPACITY = 256
-    }
-
     interface Builder {
         fun create(
             deviceWrapper: DeviceWrapper,
