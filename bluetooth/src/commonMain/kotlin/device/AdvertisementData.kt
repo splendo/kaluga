@@ -26,7 +26,7 @@ interface BaseAdvertisementData {
     val serviceUUIDs: List<UUID>
     val serviceData: Map<UUID, ByteArray?>
     val txPowerLevel: Int
-    val isConnectible: Boolean
+    val isConnectable: Boolean
 }
 
 expect class AdvertisementData : BaseAdvertisementData

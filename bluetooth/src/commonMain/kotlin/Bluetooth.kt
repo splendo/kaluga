@@ -21,16 +21,16 @@ import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceState
+import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateImplRepo
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
+import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceState.Connected
-import com.splendo.kaluga.bluetooth.device.DeviceState.Connecting
-import com.splendo.kaluga.bluetooth.device.DeviceState.Disconnected
-import com.splendo.kaluga.bluetooth.device.DeviceState.Disconnecting
-import com.splendo.kaluga.bluetooth.device.DeviceState.Reconnecting
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
@@ -64,6 +64,7 @@ interface BluetoothService {
 
 class Bluetooth internal constructor(
     scannerSettingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
+    connectionSettings: ConnectionSettings,
     scannerBuilder: BaseScanner.Builder,
     coroutineContext: CoroutineContext,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
@@ -72,6 +73,7 @@ class Bluetooth internal constructor(
     interface Builder {
         fun create(
             scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
+            connectionSettings: ConnectionSettings,
             coroutineContext: CoroutineContext = singleThreadDispatcher("Bluetooth"),
             contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
         ): Bluetooth
@@ -84,7 +86,20 @@ class Bluetooth internal constructor(
     internal val scanningStateRepo = ScanningStateRepo(
         scannerSettingsBuilder,
         scannerBuilder,
-        coroutineContext.contextCreator("Scanner")
+        { identifier, deviceInfo, deviceWrapper, connectionManagerBuilder ->
+            DeviceImpl(
+                identifier,
+                deviceInfo,
+                connectionSettings,
+                { connectionManagerBuilder.create(deviceWrapper, connectionSettings.eventBufferSize, CoroutineScope(coroutineContext.contextCreator("ConnectionManager ${identifier.stringValue}"))) },
+                CoroutineScope(coroutineContext.contextCreator("Device ${identifier.stringValue}"))
+            ) { connectionManager, coroutineContext ->
+                ConnectibleDeviceStateImplRepo(
+                    connectionManager,
+                    coroutineContext
+                )
+            }
+        }
     )
 
     sealed class ScanMode {
@@ -164,7 +179,7 @@ operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
 
 fun Flow<Device?>.state(): Flow<DeviceState> {
     return this.flatMapLatest { device ->
-        device ?: emptyFlow()
+        device?.state ?: emptyFlow()
     }
 }
 
@@ -172,14 +187,14 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
     return state().transformLatest { deviceState ->
         emit(
             when (deviceState) {
-                is Connected -> {
+                is ConnectibleDeviceState.Connected -> {
                     when (deviceState) {
-                        is Connected.NoServices -> {
+                        is ConnectibleDeviceState.Connected.NoServices -> {
                             deviceState.startDiscovering()
                             emptyList()
                         }
-                        is Connected.Idle -> deviceState.services
-                        is Connected.HandlingAction -> deviceState.services
+                        is ConnectibleDeviceState.Connected.Idle -> deviceState.services
+                        is ConnectibleDeviceState.Connected.HandlingAction -> deviceState.services
                         else -> emptyList()
                     }
                 }
@@ -190,42 +205,37 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 }
 
 suspend fun Flow<Device?>.connect() {
-    state().transformLatest { deviceState ->
-        when (deviceState) {
-            is Disconnected -> deviceState.startConnecting()
-            is Connected -> emit(Unit)
-            is Connecting, is Reconnecting, is Disconnecting -> { }
+    transformLatest { device ->
+        device?.let {
+            emit(it.connect())
         }
     }.first()
 }
 
 suspend fun Flow<Device?>.disconnect() {
-    state().transformLatest { deviceState ->
-        when (deviceState) {
-            is Connected -> deviceState.startDisconnected()
-            is Connecting -> deviceState.handleCancel()
-            is Reconnecting -> deviceState.handleCancel()
-            is Disconnected -> emit(Unit)
-            is Disconnecting -> {} // just wait
+    transformLatest { device ->
+        device?.let {
+            it.disconnect()
+            emit(Unit)
         }
     }.first()
 }
 
-fun Flow<Device?>.info(): Flow<DeviceInfoImpl> {
-    return state().transformLatest { deviceState ->
-        emit(deviceState.deviceInfo)
+fun Flow<Device?>.info(): Flow<DeviceInfo> = flatMapLatest { device ->
+    device?.info ?: emptyFlow()
+}
+
+fun Flow<Device?>.advertisement(): Flow<BaseAdvertisementData> = info().map { it.advertisementData }.distinctUntilChanged()
+
+fun Flow<Device?>.rssi(): Flow<Int> = info().map { it.rssi }.distinctUntilChanged()
+
+fun Flow<Device?>.mtu() = state().map { state ->
+    if (state is ConnectibleDeviceState.Connected) {
+        state.mtu
+    } else {
+        null
     }
-}
-
-fun Flow<Device?>.advertisement(): Flow<BaseAdvertisementData> {
-    return this.info().map { it.advertisementData }.distinctUntilChanged()
-}
-
-fun Flow<Device?>.rssi(): Flow<Int> {
-    return this.info().map { it.rssi }.distinctUntilChanged()
-}
-
-fun Flow<Device?>.mtu() = state().flatMapLatest { it.connectionManager.mtuFlow }.distinctUntilChanged()
+}.distinctUntilChanged()
 
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
     val lastNResults = sharedMutableListOf<Double>()
@@ -246,7 +256,7 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
 suspend fun Flow<Device?>.updateRssi() {
     state().transformLatest { deviceState ->
         when (deviceState) {
-            is Connected -> {
+            is ConnectibleDeviceState.Connected -> {
                 deviceState.readRssi()
                 emit(Unit)
             }
@@ -258,7 +268,7 @@ suspend fun Flow<Device?>.updateRssi() {
 suspend fun Flow<Device?>.requestMtu(mtu: Int): Boolean {
     return state().transformLatest { deviceState ->
         when (deviceState) {
-            is Connected -> {
+            is ConnectibleDeviceState.Connected -> {
                 emit(deviceState.requestMtu(mtu))
             }
             else -> {}

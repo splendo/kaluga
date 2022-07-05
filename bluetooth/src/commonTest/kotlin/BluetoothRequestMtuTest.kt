@@ -23,14 +23,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int>() {
+class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int?>() {
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
         DeviceContext(configuration, scope)
     }
 
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int> = { bluetooth.devices()[device.identifier].mtu() }
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int?> = { bluetooth.devices()[device.identifier].mtu() }
 
     @Test
     fun testRequestMtu() = testWithFlowAndTestContext(
@@ -44,7 +45,7 @@ class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
             scanDevice()
         }
         test {
-            assertEquals(-1, it)
+            assertNull(it)
         }
         mainAction {
             connectDevice()

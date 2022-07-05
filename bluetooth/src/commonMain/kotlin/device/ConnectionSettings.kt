@@ -17,7 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-data class ConnectionSettings(val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always) {
+data class ConnectionSettings(
+    val eventBufferSize: Int = BaseDeviceConnectionManager.BUFFER_CAPACITY,
+    val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always
+) {
 
     sealed class ReconnectionSettings {
         object Always : ReconnectionSettings()

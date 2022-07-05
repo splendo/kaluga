@@ -54,7 +54,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     val isTxPowerVisible = deviceStateObservable { it.advertisementData.txPowerLevel != Int.MIN_VALUE }
     val txPower = deviceStateObservable { if (it.advertisementData.txPowerLevel != Int.MIN_VALUE) "txPower".localized().format(it.advertisementData.txPowerLevel) else "" }
 
-    val isConnectButtonVisible = deviceStateObservable { it.deviceInfo.advertisementData.isConnectible }
+    val isConnectButtonVisible = deviceStateObservable { it.deviceInfo.advertisementData.isConnectable }
     val connectButtonState = deviceStateObservable {
         when (it) {
             is DeviceState.Disconnected, is DeviceState.Disconnecting -> ConnectButtonState.Connect

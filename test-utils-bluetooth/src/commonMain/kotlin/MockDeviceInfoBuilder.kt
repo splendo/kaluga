@@ -19,12 +19,17 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateFlowRepo
+import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 @MockBuilderDsl
@@ -47,7 +52,7 @@ class MockDeviceInfoBuilder {
     fun services(builder: ServiceUUIDsList.() -> Unit) = builder(_serviceUUIDs)
 
     fun build() = DeviceInfoImpl(
-        createDeviceWrapper(deviceName),
+        deviceName,
         rssi,
         MockAdvertisementData(
             deviceName,
@@ -61,15 +66,30 @@ class MockDeviceInfoBuilder {
 }
 
 fun createMockDevice(
-    coroutineContext: CoroutineContext,
+    identifier: Identifier,
     connectionSettings: ConnectionSettings = ConnectionSettings(
-        ConnectionSettings.ReconnectionSettings.Never
+        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
     ),
-    connectionBuilder: BaseDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),
-    builder: MockDeviceInfoBuilder.() -> Unit
-) = Device(
-    connectionSettings = connectionSettings,
+    connectionManagerBuilder: () -> BaseDeviceConnectionManager,
+    builder: MockDeviceInfoBuilder.() -> Unit,
+    createDeviceStateFlow: (BaseDeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = { manager, coroutineContext -> ConnectibleDeviceStateImplRepo(manager, coroutineContext) },
+    coroutineScope: CoroutineScope
+) = DeviceImpl(
+    identifier = identifier,
     initialDeviceInfo = MockDeviceInfoBuilder().apply(builder).build(),
-    connectionManagerBuilder = connectionBuilder,
-    coroutineContext = coroutineContext
+    connectionSettings = connectionSettings,
+    connectionManagerBuilder = connectionManagerBuilder,
+    coroutineScope = coroutineScope,
+    createDeviceStateFlow = createDeviceStateFlow
 )
+
+fun createMockDevice(
+    wrapper: DeviceWrapper,
+    coroutineScope: CoroutineScope,
+    connectionSettings: ConnectionSettings = ConnectionSettings(
+        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
+    ),
+    connectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),
+    createDeviceStateFlow: (BaseDeviceConnectionManager, CoroutineContext) -> ConnectibleDeviceStateFlowRepo = { manager, coroutineContext -> ConnectibleDeviceStateImplRepo(manager, coroutineContext) },
+    builder: MockDeviceInfoBuilder.() -> Unit,
+) = createMockDevice(wrapper.identifier, connectionSettings, { connectionManagerBuilder.create(wrapper, 1, coroutineScope) }, builder, createDeviceStateFlow, coroutineScope)

@@ -227,7 +227,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
 
         test {
             assertIs<Scanning>(it)
-            assertEquals(configuration.advertisementData, it.discovered.devices[0].first().advertisementData)
+            assertEquals(configuration.advertisementData, it.discovered.devices[0].info.first().advertisementData)
         }
 
         mainAction {
@@ -250,9 +250,9 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
                         assertEquals(listOf(device), scanningState.discovered.devices)
                         assertEquals(
                             newAdvertisementData,
-                            scanningState.discovered.devices[0].first().advertisementData
+                            scanningState.discovered.devices[0].info.first().advertisementData
                         )
-                        assertEquals(newRssi, scanningState.discovered.devices[0].first().rssi)
+                        assertEquals(newRssi, scanningState.discovered.devices[0].info.first().rssi)
                         newState
                     }
                     else -> fail("unexpected state")

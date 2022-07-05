@@ -51,6 +51,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
         }
 
         test {
+            deviceConnectionManagerBuilder.createMock.verify()
             assertEquals(device, it)
         }
 

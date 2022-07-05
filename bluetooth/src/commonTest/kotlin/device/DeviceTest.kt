@@ -18,25 +18,24 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
-import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.HandlingAction
-import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
-import kotlin.test.assertTrue
-import kotlin.test.fail
 
 class DeviceTest :
     BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, DeviceState>() {
 
-    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<DeviceState> = { device }
+    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<DeviceState> = { device.state }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext =
         { configuration, scope -> DescriptorContext(configuration, scope) }
@@ -44,8 +43,18 @@ class DeviceTest :
     @Test
     fun testInitialState() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
         test {
-            assertIs<DeviceState.Disconnected>(it)
-            assertEquals(configuration.rssi, it.deviceInfo.rssi)
+            deviceConnectionManagerBuilder.createMock.verify()
+            assertIs<ConnectibleDeviceState.Disconnected>(it)
+            assertEquals(configuration.rssi, device.info.first().rssi)
+        }
+    }
+
+    @Test
+    fun testNotConnectableState() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor(advertisementData = MockAdvertisementData(isConnectable = false))) {
+        test {
+            deviceConnectionManagerBuilder.createMock.verify(rule = never())
+            assertIs<NotConnectableDeviceState>(it)
+            assertEquals(configuration.rssi, device.info.first().rssi)
         }
     }
 
@@ -61,36 +70,10 @@ class DeviceTest :
         getDisconnectedState()
         connecting()
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connecting -> deviceState.cancelConnection
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.cancelConnecting()
         }
         disconnecting()
         disconnect()
-    }
-
-    @Test
-    fun testConnectNotConnectible() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor(
-            advertisementData = MockAdvertisementData(isConnectible = false)
-        )
-    ) {
-        getDisconnectedState()
-        mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Disconnected -> {
-                        deviceState.connect(deviceState).also {
-                            assertEquals(deviceState.remain(), it)
-                        }
-                    }
-                    else -> deviceState.remain()
-                }
-            }
-        }
     }
 
     @Test
@@ -106,7 +89,7 @@ class DeviceTest :
     fun testReconnect() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
-                ConnectionSettings.ReconnectionSettings.Limited(
+                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(
                     attempts = 2
                 )
             )
@@ -117,23 +100,18 @@ class DeviceTest :
         connect()
 
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected -> deviceState.reconnect
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.handleDisconnect()
         }
         test {
             connectionManager.connectMock.verify(times = 2)
-            assertIs<DeviceState.Reconnecting>(it)
+            assertIs<ConnectibleDeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         mainAction {
             connectionManager.handleConnect()
         }
         test {
-            assertIs<DeviceState.Connected>(it)
+            assertIs<ConnectibleDeviceState.Connected>(it)
         }
     }
 
@@ -141,7 +119,7 @@ class DeviceTest :
     fun testReconnectFailed() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
-                ConnectionSettings.ReconnectionSettings.Limited(
+                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(
                     attempts = 2
                 )
             )
@@ -158,7 +136,7 @@ class DeviceTest :
 
         test {
             connectionManager.connectMock.verify(times = 2)
-            assertIs<DeviceState.Reconnecting>(it)
+            assertIs<ConnectibleDeviceState.Reconnecting>(it)
             assertEquals(0, it.attempt)
         }
         mainAction {
@@ -167,7 +145,7 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 3)
-            assertIs<DeviceState.Reconnecting>(it)
+            assertIs<ConnectibleDeviceState.Reconnecting>(it)
             assertEquals(1, it.attempt)
         }
         mainAction {
@@ -176,79 +154,28 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 3)
-            assertIs<DeviceState.Disconnected>(it)
+            assertIs<ConnectibleDeviceState.Disconnected>(it)
         }
     }
 
     @Test
-    fun testReadRssi() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
-        getDisconnectedState()
-        connecting()
-        connect()
-
-        mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected -> {
-                        deviceState.readRssi()
-                        deviceState.rssiDidUpdate(-20)
-                    }
-                    else -> deviceState.remain()
-                }
-            }
-        }
-
-        test {
-            connectionManager.readRssiMock.verify()
-            assertIs<DeviceState.Connected>(it)
-            assertEquals(-20, it.deviceInfo.rssi)
-        }
-    }
-
-    @Test
-    fun testRequestMtu() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
-        getDisconnectedState()
-        connecting()
-        connect()
-
-        mainAction {
-            device.useState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected -> {
-                        assertTrue(deviceState.requestMtu(23))
-                    }
-                    else -> {}
-                }
-            }
-
-            connectionManager.requestMtuMock.verify(eq(23))
-            assertEquals(23, connectionManager.mtu)
-        }
-    }
-
-    @Test
-    fun testDiscoverDevices() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
+    fun testDiscoverServices() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
         getDisconnectedState()
         connecting()
         connect()
         mainAction {
-            device.useState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.NoServices -> deviceState.startDiscovering()
-                    else -> {}
-                }
-            }
+            connectionManager.startDiscovering()
             yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()
-            assertIs<DeviceState.Connected.Discovering>(it)
+            assertIs<ConnectibleDeviceState.Connected.Discovering>(it)
         }
         mainAction {
             discoverService()
         }
         test {
-            assertIs<Idle>(it)
+            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
             assertEquals(listOf(service), it.services)
         }
     }
@@ -259,65 +186,41 @@ class DeviceTest :
         connecting()
         connect()
         mainAction {
-            device.useState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.NoServices -> deviceState.startDiscovering()
-                    else -> {}
-                }
-            }
+            connectionManager.startDiscovering()
             yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()
-            assertIs<DeviceState.Connected.Discovering>(it)
+            assertIs<ConnectibleDeviceState.Connected.Discovering>(it)
         }
         mainAction {
             discoverService()
         }
         test {
-            assertIs<Idle>(it)
+            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
             assertEquals(listOf(service), it.services)
         }
 
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is Idle -> deviceState.handleAction(
-                        DeviceAction.Read.Characteristic(
-                            characteristic
-                        )
-                    )
-                    else -> fail("unexpected state")
-                }
-            }
+            characteristic.readValue()
         }
 
         test {
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Read.Characteristic>(captor.lastCaptured)
-            assertIs<HandlingAction>(it)
+            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Read.Characteristic>(it.action)
             assertEquals(0, it.nextActions.size)
         }
 
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is HandlingAction -> deviceState.addAction(
-                        DeviceAction.Write.Descriptor(
-                            null,
-                            descriptor
-                        )
-                    )
-                    else -> fail("unexpected device state $deviceState")
-                }
-            }
+            descriptor.writeValue(null)
         }
 
         test {
             connectionManager.performActionMock.verify()
-            assertIs<HandlingAction>(it)
+            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Read.Characteristic>(it.action)
             assertEquals(1, it.nextActions.size)
         }
@@ -334,7 +237,7 @@ class DeviceTest :
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.performActionMock.verify(captor, 2)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
-            assertIs<HandlingAction>(it)
+            assertIs<ConnectibleDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Write.Descriptor>(it.action)
             assertEquals(0, it.nextActions.size)
         }
@@ -347,35 +250,31 @@ class DeviceTest :
         }
 
         test {
-            assertIs<Idle>(it)
+            assertIs<ConnectibleDeviceState.Connected.Idle>(it)
         }
     }
 
     private suspend fun getDisconnectedState() {
         test {
-            assertIs<DeviceState.Disconnected>(it)
+            assertIs<ConnectibleDeviceState.Disconnected>(it)
         }
     }
 
     private suspend fun getDisconnectingState() {
         test {
             connectionManager.disconnectMock.verify()
-            assertIs<DeviceState.Disconnecting>(it)
+            assertIs<ConnectibleDeviceState.Disconnecting>(it)
         }
     }
 
     private suspend fun connecting() {
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Disconnected -> deviceState.connect(deviceState)
-                    else -> fail("$deviceState is not expected")
-                }
-            }
+            connectionManager.startConnecting()
+            yield()
         }
         test {
             connectionManager.connectMock.verify()
-            assertIs<DeviceState.Connecting>(it)
+            assertIs<ConnectibleDeviceState.Connecting>(it)
         }
     }
 
@@ -384,19 +283,14 @@ class DeviceTest :
             connectionManager.handleConnect()
         }
         test {
-            assertEquals(configuration.rssi, it.rssi)
-            assertIs<DeviceState.Connected.NoServices>(it)
+            assertEquals(configuration.rssi, device.info.first().rssi)
+            assertIs<ConnectibleDeviceState.Connected.NoServices>(it)
         }
     }
 
     private suspend fun disconnecting() {
         mainAction {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected -> deviceState.disconnecting
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.startDisconnecting()
         }
         getDisconnectingState()
     }

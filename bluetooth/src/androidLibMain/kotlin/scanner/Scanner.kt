@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
@@ -28,9 +29,7 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -94,7 +93,7 @@ actual class DefaultScanner internal constructor(
 
             com.splendo.kaluga.logging.error("ScanningStateImplRepo", error.first)
             if (error.second) {
-                sharedEvents.tryEmit(Scanner.Event.FailedScanning)
+                sharedEvents.trySend(Scanner.Event.FailedScanning)
             }
         }
 
@@ -113,9 +112,8 @@ actual class DefaultScanner internal constructor(
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
-            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) { coroutineContext ->
-                val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, coroutineContext)
+            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
+                deviceWrapper to deviceConnectionManagerBuilder
             }
         }
     }
@@ -160,6 +158,7 @@ actual class DefaultScanner internal constructor(
 
     override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
 
+    @SuppressLint("MissingPermission") // Lint complains even with permissions
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
         return listOfNotNull(

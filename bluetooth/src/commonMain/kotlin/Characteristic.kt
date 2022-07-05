@@ -20,11 +20,11 @@ package com.splendo.kaluga.bluetooth
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
-open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, newActionFlow) {
+open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, newActionChannel: SendChannel<BaseDeviceConnectionManager.Event.AddAction>) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, newActionChannel) {
 
     private val isBusy = MutableStateFlow(false)
     private val _isNotifying = AtomicBoolean(false)
@@ -92,7 +92,7 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
 
     override val uuid = wrapper.uuid
 
-    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, newActionFlow = newActionFlow) }
+    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, newActionChannel = newActionChannel) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)

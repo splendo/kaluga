@@ -94,6 +94,11 @@ class MockDeviceConnectionManager(
         set(value) { _willActionSucceed.value = value }
 
     /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [getCurrentState]
+     */
+    val getCurrentStateMock = ::getCurrentState.mock()
+
+    /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [connect]
      */
     val connectMock = ::connect.mock()
@@ -140,6 +145,7 @@ class MockDeviceConnectionManager(
 
     init {
         if (setupMocks) {
+            getCurrentStateMock.on().doReturn(State.DISCONNECTED)
             requestMtuMock.on().doExecuteSuspended { (mtu) ->
                 handleNewMtu(mtu)
                 true
@@ -151,6 +157,8 @@ class MockDeviceConnectionManager(
         }
     }
 
+    override fun getCurrentState(): State = getCurrentStateMock.call()
+
     override suspend fun connect(): Unit = connectMock.call()
 
     override suspend fun discoverServices(): Unit = discoverServicesMock.call()
@@ -161,9 +169,9 @@ class MockDeviceConnectionManager(
 
     override suspend fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
 
-    override fun pair(): Unit = pairMock.call()
+    override suspend fun pair(): Unit = pairMock.call()
 
-    override fun unpair(): Unit = unpairMock.call()
+    override suspend fun unpair(): Unit = unpairMock.call()
 
     override suspend fun performAction(action: DeviceAction): Unit = performActionMock.call(action)
 

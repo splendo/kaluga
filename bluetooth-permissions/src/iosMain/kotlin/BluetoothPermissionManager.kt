@@ -27,6 +27,7 @@ import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
+import platform.CoreBluetooth.CBManager
 import platform.CoreBluetooth.CBManagerAuthorization
 import platform.CoreBluetooth.CBManagerAuthorizationAllowedAlways
 import platform.CoreBluetooth.CBManagerAuthorizationDenied
@@ -83,7 +84,7 @@ actual class BluetoothPermissionManager(
     private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
         val version = IOSVersion.systemVersion
         return when {
-            version >= IOSVersion(13) -> CBCentralManager().authorization.toAuthorizationStatus()
+            version >= IOSVersion(13) -> CBManager.authorization.toAuthorizationStatus()
             else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
         }
     }

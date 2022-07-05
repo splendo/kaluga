@@ -28,16 +28,18 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.jvm.JvmName
 
 abstract class BaseDeviceConnectionManager(
     val deviceWrapper: DeviceWrapper,
     bufferCapacity: Int = BUFFER_CAPACITY,
-    coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {
@@ -52,8 +54,14 @@ abstract class BaseDeviceConnectionManager(
         ): BaseDeviceConnectionManager
     }
 
+    enum class State {
+        DISCONNECTED,
+        DISCONNECTING,
+        CONNECTED,
+        CONNECTING
+    }
+
     sealed class Event {
-        data class RssiUpdate(val rrsi: Int) : Event()
         object Connecting : Event()
         object CancelledConnecting : Event()
         object Connected : Event()
@@ -63,6 +71,7 @@ abstract class BaseDeviceConnectionManager(
         data class DiscoveredServices(val services: List<Service>) : Event()
         data class AddAction(val action: DeviceAction) : Event()
         data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
+        data class MtuUpdated(val newMtu: Int) : Event()
     }
 
     private val _currentAction = AtomicReference<DeviceAction?>(null)
@@ -71,12 +80,13 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = MutableSharedFlow<Event>(0, bufferCapacity, BufferOverflow.DROP_OLDEST)
-    val events = sharedEvents.asSharedFlow()
+    private val sharedEvents = Channel<Event>(UNLIMITED)
+    val events: Flow<Event> = sharedEvents.receiveAsFlow()
 
-    private val _mtu = MutableStateFlow(-1)
-    val mtuFlow: Flow<Int> = _mtu
-    val mtu: Int get() = _mtu.value
+    private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
+    val rssi = sharedRssi.asSharedFlow()
+
+    abstract fun getCurrentState(): State
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -84,31 +94,31 @@ abstract class BaseDeviceConnectionManager(
     abstract suspend fun readRssi()
     abstract suspend fun requestMtu(mtu: Int): Boolean
     abstract suspend fun performAction(action: DeviceAction)
-    abstract fun unpair()
-    abstract fun pair()
+    abstract suspend fun unpair()
+    abstract suspend fun pair()
 
     fun handleNewRssi(rssi: Int) {
-        sharedEvents.tryEmit(Event.RssiUpdate(rssi))
+        sharedRssi.tryEmit(rssi)
     }
 
     fun handleNewMtu(mtu: Int) {
-        _mtu.value = mtu
+        sharedEvents.trySend(Event.MtuUpdated(mtu))
     }
 
     fun startConnecting() {
-        sharedEvents.tryEmit(Event.Connecting)
+        sharedEvents.trySend(Event.Connecting)
     }
 
     fun cancelConnecting() {
-        sharedEvents.tryEmit(Event.CancelledConnecting)
+        sharedEvents.trySend(Event.CancelledConnecting)
     }
 
     fun handleConnect() {
-        sharedEvents.tryEmit(Event.Connected)
+        sharedEvents.trySend(Event.Connected)
     }
 
     fun startDisconnecting() {
-        sharedEvents.tryEmit(Event.Disconnecting)
+        sharedEvents.trySend(Event.Disconnecting)
     }
 
     fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, sharedEvents)
@@ -122,24 +132,24 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
             Unit
         }
-        sharedEvents.tryEmit(Event.Disconnected(clean))
+        sharedEvents.trySend(Event.Disconnected(clean))
     }
 
     fun startDiscovering() {
-        sharedEvents.tryEmit(Event.Discovering)
+        sharedEvents.trySend(Event.Discovering)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
     fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     fun handleDiscoverCompleted(services: List<Service>) {
-        sharedEvents.tryEmit(Event.DiscoveredServices(services))
+        sharedEvents.trySend(Event.DiscoveredServices(services))
     }
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
         val currentAction = this.currentAction
         _currentAction.value = null
-        sharedEvents.tryEmit(Event.CompletedAction(currentAction, succeeded))
+        sharedEvents.trySend(Event.CompletedAction(currentAction, succeeded))
     }
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {

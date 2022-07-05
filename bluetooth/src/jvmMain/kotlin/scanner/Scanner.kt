@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineScope
 
-actual class DefaultScanner internal constructor(
+actual class DefaultScanner constructor(
     settings: Settings,
     coroutineScope: CoroutineScope
 ) : BaseScanner(settings, coroutineScope) {

@@ -22,23 +22,22 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 typealias EnableSensorAction = suspend () -> Boolean
 
@@ -49,7 +48,12 @@ interface Scanner {
         object BluetoothEnabled : Event()
         object BluetoothDisabled : Event()
         object FailedScanning : Event()
-        data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: AdvertisementData, val deviceCreator: (CoroutineContext) -> Device) : Event()
+        data class DeviceDiscovered(
+            val identifier: Identifier,
+            val rssi: Int,
+            val advertisementData: AdvertisementData,
+            val deviceCreator: () -> (Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>)
+        ) : Event()
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
     }
@@ -70,7 +74,7 @@ interface Scanner {
 
 abstract class BaseScanner constructor(
     settings: Settings,
-    coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope
 ) : Scanner, CoroutineScope by coroutineScope {
 
     companion object {
@@ -79,7 +83,6 @@ abstract class BaseScanner constructor(
 
     data class Settings(
         val permissions: Permissions,
-        val connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
         val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
@@ -93,12 +96,11 @@ abstract class BaseScanner constructor(
     }
 
     internal val permissions: Permissions = settings.permissions
-    protected val connectionSettings: ConnectionSettings = settings.connectionSettings
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
-    protected val sharedEvents = MutableSharedFlow<Scanner.Event>(0, settings.eventBufferSize, BufferOverflow.DROP_OLDEST)
-    override val events: Flow<Scanner.Event> = sharedEvents.asSharedFlow()
+    protected val sharedEvents = Channel<Scanner.Event>(UNLIMITED)
+    override val events: Flow<Scanner.Event> = sharedEvents.receiveAsFlow()
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
@@ -135,7 +137,7 @@ abstract class BaseScanner constructor(
             }
         }
         val hasPermission = states.all { it is PermissionState.Allowed }
-        sharedEvents.emit(Scanner.Event.PermissionChanged(hasPermission))
+        sharedEvents.trySend(Scanner.Event.PermissionChanged(hasPermission))
     }
 
     override fun stopMonitoringPermissions() {
@@ -165,7 +167,7 @@ abstract class BaseScanner constructor(
     override suspend fun requestEnableHardware() {
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {
-            sharedEvents.tryEmit(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
+            sharedEvents.trySend(if (isHardwareEnabled()) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
         } else if (
             flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
                 acc && action()
@@ -179,18 +181,18 @@ abstract class BaseScanner constructor(
         identifier: Identifier,
         rssi: Int,
         advertisementData: AdvertisementData,
-        deviceCreator: (CoroutineContext) -> Device
-    ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+        deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
+    ) = sharedEvents.trySend(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     abstract override fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 
-    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceConnected(identifier))
-    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmit(Scanner.Event.DeviceDisconnected(identifier))
+    internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.trySend(Scanner.Event.DeviceConnected(identifier))
+    internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.trySend(Scanner.Event.DeviceDisconnected(identifier))
 
     internal open suspend fun checkHardwareEnabledChanged() {
         if (isHardwareEnabled())
-            sharedEvents.tryEmit(Scanner.Event.BluetoothEnabled)
+            sharedEvents.trySend(Scanner.Event.BluetoothEnabled)
         else {
-            sharedEvents.tryEmit(Scanner.Event.BluetoothDisabled)
+            sharedEvents.trySend(Scanner.Event.BluetoothDisabled)
             if (autoEnableSensors) {
                 requestEnableHardware()
             }

@@ -31,6 +31,10 @@ import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBPeripheralDelegateProtocol
+import platform.CoreBluetooth.CBPeripheralStateConnected
+import platform.CoreBluetooth.CBPeripheralStateConnecting
+import platform.CoreBluetooth.CBPeripheralStateDisconnected
+import platform.CoreBluetooth.CBPeripheralStateDisconnecting
 import platform.CoreBluetooth.CBService
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSError
@@ -122,6 +126,14 @@ internal actual class DeviceConnectionManager(
         peripheral.delegate = peripheralDelegate
     }
 
+    override fun getCurrentState(): State = when (peripheral.state) {
+        CBPeripheralStateConnected -> State.CONNECTED
+        CBPeripheralStateConnecting -> State.CONNECTING
+        CBPeripheralStateDisconnected -> State.DISCONNECTED
+        CBPeripheralStateDisconnecting -> State.DISCONNECTING
+        else -> State.DISCONNECTED
+    }
+
     override suspend fun connect() {
         cbCentralManager.connectPeripheral(peripheral, null)
     }
@@ -179,11 +191,11 @@ internal actual class DeviceConnectionManager(
         }
     }
 
-    override fun unpair() {
+    override suspend fun unpair() {
         // There is no iOS API to unpair peripheral
     }
 
-    override fun pair() {
+    override suspend fun pair() {
         // There is no iOS API to pair peripheral
     }
 

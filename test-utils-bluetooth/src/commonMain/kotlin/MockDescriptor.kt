@@ -22,12 +22,12 @@ import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.channels.SendChannel
 
 /**
  * Mock implementation of [Descriptor]
  */
-class MockDescriptor(descriptorWrapper: DescriptorWrapper, newActionFlow: FlowCollector<BaseDeviceConnectionManager.Event.AddAction>) : Descriptor(descriptorWrapper, newActionFlow = newActionFlow) {
+class MockDescriptor(descriptorWrapper: DescriptorWrapper, newActionChannel: SendChannel<BaseDeviceConnectionManager.Event.AddAction>) : Descriptor(descriptorWrapper, newActionChannel = newActionChannel) {
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]

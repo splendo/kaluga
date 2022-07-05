@@ -33,6 +33,6 @@ actual class AdvertisementData : BaseAdvertisementData {
         get() = emptyMap()
     override val txPowerLevel: Int
         get() = Int.MIN_VALUE
-    override val isConnectible: Boolean
+    override val isConnectable: Boolean
         get() = false
 }
