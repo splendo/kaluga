@@ -24,6 +24,7 @@ import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.beacons.Beacons
+import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
@@ -109,7 +110,9 @@ val utilitiesModule = module {
         )
     }
     single { LocationStateRepoBuilder() }
-    single { BluetoothBuilder().create() }
+    single {
+        BluetoothBuilder().create({ BaseScanner.Settings(get()) })
+    }
     single { Beacons(get<Bluetooth>(), timeoutMs = 60_000) }
 }
 

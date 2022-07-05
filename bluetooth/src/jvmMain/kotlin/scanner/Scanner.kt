@@ -27,7 +27,10 @@ actual class DefaultScanner(
 
     class Builder : BaseScanner.Builder {
 
-        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseScanner {
+        override fun create(
+            settings: Settings,
+            coroutineScope: CoroutineScope,
+        ): BaseScanner {
             return DefaultScanner(settings, coroutineScope)
         }
     }
@@ -36,4 +39,6 @@ actual class DefaultScanner(
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
+
+    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = emptyList()
 }

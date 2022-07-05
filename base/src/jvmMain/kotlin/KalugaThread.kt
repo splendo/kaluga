@@ -16,8 +16,7 @@
 
 package com.splendo.kaluga.base
 
-import kotlinx.coroutines.CompletableDeferred
-import javax.swing.SwingUtilities
+import kotlinx.coroutines.Dispatchers
 
 actual data class KalugaThread(val thread: Thread) {
 
@@ -26,15 +25,8 @@ actual data class KalugaThread(val thread: Thread) {
     }
 
     actual val name: String get() = thread.name
-    actual val isMainThread: Boolean get() = if (thread == currentThread.thread) {
-        SwingUtilities.isEventDispatchThread()
-    } else {
-        runBlocking {
-            val isMainThreadDeferred = CompletableDeferred<Boolean>()
-            thread.run {
-                isMainThreadDeferred.complete(SwingUtilities.isEventDispatchThread())
-            }
-            isMainThreadDeferred.await()
-        }
+
+    actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) { // safest way also for synthetic main threads
+        thread == Thread.currentThread()
     }
 }
