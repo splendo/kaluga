@@ -95,6 +95,8 @@ sealed class MockScanningState {
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
+        fun pairedDevices(filter: Set<UUID>): List<Identifier> = emptyList()
+
         class Idle(
             override val discovered: ScanningState.Discovered
         ) : Enabled(), ScanningState.Enabled.Idle {
@@ -112,9 +114,6 @@ sealed class MockScanningState {
                     discovered.discoveredForFilter(filter)
                 )
             }
-
-            override fun pairedDevices(filter: Set<UUID>): List<Identifier> =
-                emptyList()
         }
 
         class Scanning(
@@ -140,9 +139,6 @@ sealed class MockScanningState {
             }
 
             override val stopScanning = suspend { Idle(discovered) }
-
-            override fun pairedDevices(filter: Set<UUID>): List<Identifier> =
-                emptyList()
 
         }
     }

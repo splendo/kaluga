@@ -94,8 +94,8 @@ abstract class BaseDeviceConnectionManager(
     abstract suspend fun readRssi()
     abstract suspend fun requestMtu(mtu: Int): Boolean
     abstract suspend fun performAction(action: DeviceAction)
-    abstract fun unpair()
-    abstract fun pair()
+    abstract suspend fun unpair()
+    abstract suspend fun pair()
 
     fun handleNewRssi(rssi: Int) {
         sharedRssi.tryEmit(rssi)

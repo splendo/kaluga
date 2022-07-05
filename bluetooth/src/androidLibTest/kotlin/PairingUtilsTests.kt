@@ -19,15 +19,16 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.testBlockingAndCancelScope
-import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.MockDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -37,52 +38,60 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class PairingUtilsTests : BaseTest() {
 
-    private object Mocks {
+    private class Mocks {
 
-        const val NAME = "MockDevice"
+        companion object {
+            const val NAME = "MockDevice"
+        }
+
+        val mockConnectionManager = CompletableDeferred<MockDeviceConnectionManager>()
 
         private val manager = object : BaseDeviceConnectionManager.Builder {
             override fun create(
                 deviceWrapper: DeviceWrapper,
                 bufferCapacity: Int,
                 coroutineScope: CoroutineScope
-            ) = MockDeviceConnectionManager(
-                true,
-                deviceWrapper,
-                bufferCapacity,
-                coroutineScope
-            )
+            ): BaseDeviceConnectionManager {
+                val connectionManager = MockDeviceConnectionManager(
+                    true,
+                    deviceWrapper,
+                    bufferCapacity,
+                    coroutineScope
+                )
+                mockConnectionManager.complete(connectionManager)
+                return connectionManager
+            }
         }
 
-        fun device(coroutineScope: CoroutineScope) = Device(
-            ConnectionSettings(
-                ConnectionSettings.ReconnectionSettings.Never
-            ),
+        fun device(coroutineScope: CoroutineScope) = DeviceImpl(
+            NAME,
             DeviceInfoImpl(
-                createDeviceWrapper(NAME),
+                NAME,
                 rssi = -78,
                 MockAdvertisementData(NAME)
             ),
-            manager,
-            coroutineScope.coroutineContext
+            ConnectionSettings(),
+            { manager.create(MockDeviceWrapper(NAME, NAME, 0, true), 10, coroutineScope) },
+            coroutineScope
         )
     }
 
-    private val Device.mockManager
-        get() = peekState().connectionManager as MockDeviceConnectionManager
+    private val mocks = Mocks()
 
     @Test
     fun unpairTest(): Unit = testBlockingAndCancelScope {
-        val device = Mocks.device(this)
+
+        val device = mocks.device(this)
         val flow = flowOf(device)
         flow.unpair()
-        device.mockManager.unpairMock.verify()
+        mocks.mockConnectionManager.await().unpairMock.verify()
     }
 
     @Test
     fun pairTest(): Unit = testBlockingAndCancelScope {
-        val device = Mocks.device(this)
-        device.mockManager.reset()
+        val device = mocks.device(this)
+        val mockConnectionManager = mocks.mockConnectionManager.await()
+        mockConnectionManager.reset()
         val flow = flowOf(device)
 
         val connectingJob = async {
@@ -90,10 +99,10 @@ class PairingUtilsTests : BaseTest() {
         }
 
         delay(100.milliseconds) // TODO wait for correct state instead
-        device.mockManager.handleConnect()
+        mockConnectionManager.handleConnect()
         connectingJob.await()
 
         flow.pair()
-        device.mockManager.pairMock.verify()
+        mockConnectionManager.pairMock.verify()
     }
 }

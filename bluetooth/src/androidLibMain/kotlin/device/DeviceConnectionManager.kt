@@ -216,13 +216,13 @@ internal actual class DeviceConnectionManager(
         }
     }
 
-    override fun unpair() {
+    override suspend fun unpair() {
         if (device.bondState != BluetoothDevice.BOND_NONE) {
             deviceWrapper.removeBond()
         }
     }
 
-    override fun pair() {
+    override suspend fun pair() {
         if (device.bondState == BluetoothDevice.BOND_NONE) {
             deviceWrapper.createBond()
         }

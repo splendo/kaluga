@@ -191,11 +191,11 @@ internal actual class DeviceConnectionManager(
         }
     }
 
-    override fun unpair() {
+    override suspend fun unpair() {
         // There is no iOS API to unpair peripheral
     }
 
-    override fun pair() {
+    override suspend fun pair() {
         // There is no iOS API to pair peripheral
     }
 
