@@ -90,6 +90,7 @@ actual class DefaultScanner internal constructor(
 
     private val enabledQueue = dispatch_queue_create("ScannerMonitorEnabled", null)
     private val scanQueue = dispatch_queue_create("ScannerScanning", null)
+    private val pairedDevicesQueue = dispatch_queue_create("ScannerPairedDevices", null)
     override val isSupported: Boolean = true
     private val centralManagers = sharedMutableListOf<CBCentralManager>()
     private val discoveringDelegates = sharedMutableListOf<CBCentralManagerDelegateProtocol>()
@@ -139,6 +140,10 @@ actual class DefaultScanner internal constructor(
             } else null
         )
     }
+
+    override fun pairedDevices(withServices: Set<UUID>) = CBCentralManager(null, pairedDevicesQueue)
+        .retrieveConnectedPeripheralsWithServices(withServices.toList())
+        .mapNotNull { (it as? CBPeripheral)?.identifier }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         central.delegate?.let {

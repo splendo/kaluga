@@ -191,6 +191,14 @@ internal actual class DeviceConnectionManager(
         }
     }
 
+    override fun unpair() {
+        // There is no iOS API to unpair peripheral
+    }
+
+    override fun pair() {
+        // There is no iOS API to pair peripheral
+    }
+
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
         launch {
             handleUpdatedCharacteristic(characteristic.UUID, succeeded = error == null)

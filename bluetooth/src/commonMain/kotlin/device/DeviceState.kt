@@ -230,6 +230,9 @@ sealed class ConnectibleDeviceStateImpl {
         suspend fun requestMtu(mtu: Int): Boolean {
             return deviceConnectionManager.requestMtu(mtu)
         }
+
+        internal fun pair() = connectionManager.pair()
+
     }
     data class Connecting constructor(
         override val deviceConnectionManager: BaseDeviceConnectionManager

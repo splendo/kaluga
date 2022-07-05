@@ -125,6 +125,16 @@ class MockDeviceConnectionManager(
     val requestMtuMock = ::requestMtu.mock()
 
     /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pair]
+     */
+    val pairMock = ::pair.mock()
+
+    /**
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [unpair]
+     */
+    val unpairMock = ::unpair.mock()
+
+    /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [performAction]
      */
     val performActionMock = ::performAction.mock()
@@ -159,6 +169,10 @@ class MockDeviceConnectionManager(
     override suspend fun readRssi(): Unit = readRssiMock.call()
 
     override suspend fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
+
+    override fun pair(): Unit = pairMock.call()
+
+    override fun unpair(): Unit = unpairMock.call()
 
     override suspend fun performAction(action: DeviceAction): Unit = performActionMock.call(action)
 

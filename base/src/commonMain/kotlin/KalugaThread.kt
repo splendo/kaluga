@@ -16,6 +16,9 @@
 
 package com.splendo.kaluga.base
 
+val isOnMainThread: Boolean
+    get() = KalugaThread.currentThread.isMainThread
+
 expect class KalugaThread {
 
     companion object {

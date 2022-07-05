@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -68,6 +67,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
+    fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 }
 
 abstract class BaseScanner constructor(
@@ -180,7 +180,8 @@ abstract class BaseScanner constructor(
         rssi: Int,
         advertisementData: AdvertisementData,
         deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
-    ) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    ) = sharedEvents.tryEmit(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    abstract override fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 
     internal fun handleDeviceConnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceConnected(identifier))
     internal fun handleDeviceDisconnected(identifier: Identifier) = sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.DeviceDisconnected(identifier))

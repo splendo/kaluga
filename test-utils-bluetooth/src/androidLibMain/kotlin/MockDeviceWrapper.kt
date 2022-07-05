@@ -38,6 +38,7 @@ class MockDeviceWrapper(
     val gattWrappers = sharedMutableListOf<MockBluetoothGattWrapper>()
     val connectGattMock = ::connectGatt.mock()
     val removeBondMock = ::removeBond.mock()
+    val createBondMock = ::createBond.mock()
 
     init {
         if (setupMocks) {
@@ -52,6 +53,7 @@ class MockDeviceWrapper(
     override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper = connectGattMock.call(context, autoConnect, callback)
 
     override fun removeBond(): Unit = removeBondMock.call()
+    override fun createBond(): Unit = createBondMock.call()
 
     override val device: BluetoothDevice
         get() = error("This is a mock device")
