@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.beacons
 import com.splendo.kaluga.base.utils.bytesOf
 import com.splendo.kaluga.base.utils.decodeHex
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
@@ -65,11 +64,13 @@ object BeaconMock {
         identifier = deviceWrapper.identifier,
         initialDeviceInfo = makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
         connectionSettings = settings,
-        connectionManagerBuilder = { MockDeviceConnectionManager(
-            deviceWrapper = deviceWrapper,
-            bufferCapacity = 1,
-            coroutineScope = coroutineScope
-        ) },
+        connectionManagerBuilder = {
+            MockDeviceConnectionManager(
+                deviceWrapper = deviceWrapper,
+                bufferCapacity = 1,
+                coroutineScope = coroutineScope
+            )
+        },
         coroutineScope = coroutineScope
     )
 

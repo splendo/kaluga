@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.transformLatest
  * Unpairs Device by calling `removeBond`
  * if bond state != BluetoothDevice.BOND_NONE
  */
-suspend fun Flow<Device?>.pair(): Unit {
+suspend fun Flow<Device?>.pair() {
     return state().transformLatest { deviceState ->
         when (deviceState) {
             is ConnectibleDeviceState.Connected -> {
@@ -44,7 +44,7 @@ suspend fun Flow<Device?>.pair(): Unit {
  * Pairs Device by calling `createBond`
  * if bond state == BluetoothDevice.BOND_NONE
  */
-suspend fun Flow<Device?>.unpair(): Unit {
+suspend fun Flow<Device?>.unpair() {
     return state().transformLatest { deviceState ->
         when (deviceState) {
             is ConnectibleDeviceState -> {

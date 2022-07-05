@@ -25,6 +25,6 @@ import kotlinx.coroutines.Deferred
  */
 fun <T> Deferred<T>.getCompletedOrNull(): T? = try {
     getCompleted()
-} catch (e : IllegalStateException) {
+} catch (e: IllegalStateException) {
     null
 }

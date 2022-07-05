@@ -139,7 +139,6 @@ sealed class MockScanningState {
             }
 
             override val stopScanning = suspend { Idle(discovered) }
-
         }
     }
 
