@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformLatest
@@ -69,9 +70,18 @@ class DeviceImpl(
     private val connectionManager = CompletableDeferred<DeviceConnectionManager>()
     private val sharedInfo = MutableStateFlow(initialDeviceInfo)
     private val deviceStateRepo = MutableStateFlow<ConnectableDeviceStateFlowRepo?>(null)
+    private val isConnectable = flow {
+        val isConnectable = initialDeviceInfo.advertisementData.isConnectable
+        sharedInfo
+            .map { it.advertisementData.isConnectable }
+            .collect { value ->
+                // Once device is connectable we keep that state
+                emit(isConnectable.or(value))
+            }
+    }
     override val info: Flow<DeviceInfo> = sharedInfo.asStateFlow()
     override val state: Flow<DeviceState> = combine(
-        sharedInfo.map { it.advertisementData.isConnectable },
+        isConnectable,
         deviceStateRepo
     ) { isConnectable, repo ->
         when {
@@ -85,12 +95,14 @@ class DeviceImpl(
 
     init {
         launch {
-            sharedInfo.map { it.advertisementData.isConnectable }.first { it }
+            isConnectable.first { it }
             createConnectionManagerIfNotCreated()
         }
         launch {
-            sharedInfo.map { it.advertisementData.isConnectable }.distinctUntilChanged()
-                .filterNot { it }.collect {
+            isConnectable
+                .distinctUntilChanged()
+                .filterNot { it }
+                .collect {
                     connectionManager.getCompletedOrNull()?.disconnect()
                     deviceStateRepo.value = null
                 }
