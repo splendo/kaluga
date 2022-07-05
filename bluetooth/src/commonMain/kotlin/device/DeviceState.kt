@@ -231,7 +231,7 @@ sealed class ConnectibleDeviceStateImpl {
             return deviceConnectionManager.requestMtu(mtu)
         }
 
-        internal fun pair() = connectionManager.pair()
+        internal fun pair() = deviceConnectionManager.pair()
 
     }
     data class Connecting constructor(
