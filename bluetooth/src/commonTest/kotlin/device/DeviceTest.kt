@@ -59,6 +59,23 @@ class DeviceTest :
     }
 
     @Test
+    fun testNotConnectableToDisconnectedStateTransition() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor(advertisementData = MockAdvertisementData(isConnectable = false))) {
+        test {
+            deviceConnectionManagerBuilder.createMock.verify(rule = never())
+            assertIs<NotConnectableDeviceState>(it)
+            assertEquals(configuration.rssi, device.info.first().rssi)
+        }
+        mainAction {
+            device.advertisementDataDidUpdate(
+                MockAdvertisementData(isConnectable = true)
+            )
+        }
+        test {
+            assertIs<ConnectableDeviceState.Disconnected>(it)
+        }
+    }
+
+    @Test
     fun testConnected() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
         getDisconnectedState()
         connecting()
