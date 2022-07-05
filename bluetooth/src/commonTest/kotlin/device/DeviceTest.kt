@@ -25,12 +25,14 @@ import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.fail
 
 class DeviceTest :
     BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, DeviceState>() {
@@ -59,21 +61,61 @@ class DeviceTest :
     }
 
     @Test
-    fun testNotConnectableToDisconnectedStateTransition() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor(advertisementData = MockAdvertisementData(isConnectable = false))) {
-        test {
-            deviceConnectionManagerBuilder.createMock.verify(rule = never())
-            assertIs<NotConnectableDeviceState>(it)
-            assertEquals(configuration.rssi, device.info.first().rssi)
+    fun testNotConnectableToDisconnectedStateTransition() = try {
+        // Is not connectable initially
+        val configuration = Configuration.DeviceWithDescriptor(
+            advertisementData = MockAdvertisementData(isConnectable = false)
+        )
+        testWithFlowAndTestContext(configuration) {
+            test {
+                deviceConnectionManagerBuilder.createMock.verify(rule = never())
+                assertIs<NotConnectableDeviceState>(it)
+                assertEquals(configuration.rssi, device.info.first().rssi)
+            }
+            // 'Advertise' as connectable
+            mainAction {
+                device.advertisementDataDidUpdate(
+                    MockAdvertisementData(isConnectable = true)
+                )
+            }
+            test {
+                assertIs<ConnectableDeviceState.Disconnected>(it)
+            }
+            // 'Advertise' as not connectable
+            mainAction {
+                device.advertisementDataDidUpdate(
+                    MockAdvertisementData(isConnectable = false)
+                )
+            }
+            // State should stays [ConnectableDeviceState.Disconnected]
+            test {
+                fail("State transition shouldn't be called")
+            }
         }
-        mainAction {
-            device.advertisementDataDidUpdate(
-                MockAdvertisementData(isConnectable = true)
-            )
+    } catch (_: TimeoutCancellationException) { }
+
+    @Test
+    fun testDisconnectedStateNeverTransitionToNonConnectable() = try {
+        // Connectable initially
+        val configuration = Configuration.DeviceWithDescriptor(
+            advertisementData = MockAdvertisementData(isConnectable = true)
+        )
+        testWithFlowAndTestContext(configuration) {
+            test {
+                assertIs<ConnectableDeviceState.Disconnected>(it)
+            }
+            // 'Advertise' as not connectable anymore
+            mainAction {
+                device.advertisementDataDidUpdate(
+                    MockAdvertisementData(isConnectable = false)
+                )
+            }
+            // State should stays [ConnectableDeviceState.Disconnected]
+            test {
+                fail("State transition shouldn't be called")
+            }
         }
-        test {
-            assertIs<ConnectableDeviceState.Disconnected>(it)
-        }
-    }
+    } catch (_: TimeoutCancellationException) { }
 
     @Test
     fun testConnected() = testWithFlowAndTestContext(Configuration.DeviceWithDescriptor()) {
