@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceAction
+import kotlinx.coroutines.channels.SendChannel
 
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
-    newActionFlow: SequentialMutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>
-) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, newActionFlow) {
+    newActionChannel: SendChannel<BaseDeviceConnectionManager.Event.AddAction>
+) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, newActionChannel) {
 
     override val uuid = wrapper.uuid
 

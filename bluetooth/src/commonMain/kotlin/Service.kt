@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import kotlinx.coroutines.channels.SendChannel
 
 class Service(
     service: ServiceWrapper,
-    private val newActionFlow: SequentialMutableSharedFlow<in BaseDeviceConnectionManager.Event.AddAction>
+    private val newActionChannel: SendChannel<BaseDeviceConnectionManager.Event.AddAction>
 ) {
     val uuid = service.uuid
-    val characteristics = service.characteristics.map { Characteristic(it, newActionFlow = newActionFlow) }
+    val characteristics = service.characteristics.map { Characteristic(it, newActionChannel = newActionChannel) }
 }
 
 expect interface ServiceWrapper {
