@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.device
 
 data class ConnectionSettings(
-    val eventBufferSize: Int = BaseDeviceConnectionManager.BUFFER_CAPACITY,
     val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always,
     val logLevel: LogLevel = LogLevel.NONE
 ) {

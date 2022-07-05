@@ -68,7 +68,6 @@ class MockDeviceInfoBuilder {
 fun createMockDevice(
     identifier: Identifier,
     connectionSettings: ConnectionSettings = ConnectionSettings(
-        eventBufferSize = 1,
         reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
     ),
     connectionManagerBuilder: (ConnectionSettings) -> DeviceConnectionManager,
@@ -88,7 +87,6 @@ fun createMockDevice(
     wrapper: DeviceWrapper,
     coroutineScope: CoroutineScope,
     connectionSettings: ConnectionSettings = ConnectionSettings(
-        eventBufferSize = 1,
         reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
     ),
     connectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),

@@ -244,9 +244,8 @@ abstract class BaseScanner constructor(
     }
 
     private fun emitSharedEvent(event: Scanner.Event) {
-        if (!sharedEvents.trySend(event)) {
-            logError { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
+        // Channel has unlimited buffer so this will never fail due to capacity
+        sharedEvents.trySend(event)
     }
 
     protected fun logInfo(message: () -> String) {

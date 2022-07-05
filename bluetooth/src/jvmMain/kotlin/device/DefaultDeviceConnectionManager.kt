@@ -50,7 +50,7 @@ internal actual class DefaultDeviceConnectionManager(
 
     override suspend fun performAction(action: DeviceAction) {}
 
-    override fun unpair() {}
+    override suspend fun unpair() {}
 
-    override fun pair() {}
+    override suspend fun pair() {}
 }

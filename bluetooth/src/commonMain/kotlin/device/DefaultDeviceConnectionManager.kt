@@ -107,7 +107,7 @@ abstract class BaseDeviceConnectionManager(
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
     private val sharedEvents = Channel<DeviceConnectionManager.Event>(UNLIMITED)
-    override val events: Flow<Event> = sharedEvents.receiveAsFlow()
+    override val events: Flow<DeviceConnectionManager.Event> = sharedEvents.receiveAsFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     override val rssi = sharedRssi.asSharedFlow()
@@ -246,7 +246,7 @@ abstract class BaseDeviceConnectionManager(
     }
 
     private fun emitSharedEvent(event: DeviceConnectionManager.Event) {
-        // Channel has unlimited buffer so this will never fail
+        // Channel has unlimited buffer so this will never fail due to capacity
         sharedEvents.trySend(event)
     }
 

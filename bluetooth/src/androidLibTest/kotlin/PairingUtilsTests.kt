@@ -49,13 +49,13 @@ class PairingUtilsTests : BaseTest() {
         private val manager = object : BaseDeviceConnectionManager.Builder {
             override fun create(
                 deviceWrapper: DeviceWrapper,
-                bufferCapacity: Int,
+                settings: ConnectionSettings,
                 coroutineScope: CoroutineScope
             ): BaseDeviceConnectionManager {
                 val connectionManager = MockDeviceConnectionManager(
                     true,
                     deviceWrapper,
-                    bufferCapacity,
+                    settings,
                     coroutineScope
                 )
                 mockConnectionManager.complete(connectionManager)
@@ -71,7 +71,7 @@ class PairingUtilsTests : BaseTest() {
                 MockAdvertisementData(NAME)
             ),
             ConnectionSettings(),
-            { manager.create(MockDeviceWrapper(NAME, NAME, 0, true), 10, coroutineScope) },
+            { manager.create(MockDeviceWrapper(NAME, NAME, 0, true), ConnectionSettings(), coroutineScope) },
             coroutineScope
         )
     }

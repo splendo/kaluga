@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceState
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.Device
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.transformLatest
 suspend fun Flow<Device?>.pair() {
     return state().transformLatest { deviceState ->
         when (deviceState) {
-            is ConnectibleDeviceState.Connected -> {
+            is ConnectableDeviceState.Connected -> {
                 emit(deviceState.pair())
             }
             else -> {}
@@ -47,7 +47,7 @@ suspend fun Flow<Device?>.pair() {
 suspend fun Flow<Device?>.unpair() {
     return state().transformLatest { deviceState ->
         when (deviceState) {
-            is ConnectibleDeviceState -> {
+            is ConnectableDeviceState -> {
                 emit(deviceState.unpair())
             }
             else -> {}
