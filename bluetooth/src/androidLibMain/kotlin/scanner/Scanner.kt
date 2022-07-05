@@ -92,7 +92,7 @@ actual class DefaultScanner internal constructor(
 
             com.splendo.kaluga.logging.error("ScanningStateImplRepo", error.first)
             if (error.second) {
-                sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.FailedScanning)
+                sharedEvents.trySend(Scanner.Event.FailedScanning)
             }
         }
 
