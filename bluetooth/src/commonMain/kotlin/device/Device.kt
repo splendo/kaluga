@@ -72,10 +72,10 @@ class DeviceImpl(
     private val deviceStateRepo = MutableStateFlow<ConnectableDeviceStateFlowRepo?>(null)
     private val isConnectable = sharedInfo
         .map { it.advertisementData.isConnectable }
-        .runningFold(initial = initialDeviceInfo.advertisementData.isConnectable) { acc, value ->
-            // Once device is connectable we keep that state
-            acc.or(value)
-        }
+        .runningFold(
+            initial = initialDeviceInfo.advertisementData.isConnectable,
+            operation = Boolean::or // Once device is connectable we keep that state
+        )
     override val info: Flow<DeviceInfo> = sharedInfo.asStateFlow()
     override val state: Flow<DeviceState> = combine(
         isConnectable,
