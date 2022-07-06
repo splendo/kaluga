@@ -1,6 +1,7 @@
 package com.splendo.kaluga.architecture.compose.viewModel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -32,6 +33,16 @@ fun <ViewModel : BaseViewModel> ViewModelComposable(
  */
 @Composable fun <VM : BaseViewModel> store(provider: @Composable () -> VM): VM =
     provider().also { handleLocalViewModelStore(it) }
+
+/**
+ * Stores and remembers a view model in the local [ViewModelStore].
+ * Use if the view model was created manually and is not located in Activity/Fragment [ViewModelStore].
+ * provider will only be evaluated during the composition. Recomposition will always return the value produced by provider.
+ */
+@Composable
+fun <VM : BaseViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> VM): VM = store {
+    remember(provider)
+}
 
 @Composable
 private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {
