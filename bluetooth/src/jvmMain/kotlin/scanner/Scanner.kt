@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineScope
 
-actual class DefaultScanner constructor(
+actual class DefaultScanner(
     settings: Settings,
     coroutineScope: CoroutineScope
 ) : BaseScanner(settings, coroutineScope) {
@@ -39,10 +39,6 @@ actual class DefaultScanner constructor(
 
     override val isSupported: Boolean = false
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
-
-    override suspend fun scanForDevices(filter: Set<UUID>) {}
-
-    override suspend fun stopScanning() {}
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 

@@ -26,34 +26,19 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.jvm.JvmName
 
-abstract class BaseDeviceConnectionManager(
-    val deviceWrapper: DeviceWrapper,
-    bufferCapacity: Int = BUFFER_CAPACITY,
-    private val coroutineScope: CoroutineScope
-) : CoroutineScope by coroutineScope {
-
-    internal companion object {
-        const val BUFFER_CAPACITY = 256
-    }
-
-    interface Builder {
-        fun create(
-            deviceWrapper: DeviceWrapper,
-            bufferCapacity: Int = BUFFER_CAPACITY,
-            coroutineScope: CoroutineScope
-        ): BaseDeviceConnectionManager
-    }
-
+interface DeviceConnectionManager {
     enum class State {
         DISCONNECTED,
         DISCONNECTING,
@@ -74,56 +59,100 @@ abstract class BaseDeviceConnectionManager(
         data class MtuUpdated(val newMtu: Int) : Event()
     }
 
+    val events: Flow<Event>
+    val rssi: Flow<Int>
+
+    fun getCurrentState(): State
+    suspend fun connect()
+    suspend fun discoverServices()
+    suspend fun disconnect()
+    suspend fun readRssi()
+    suspend fun requestMtu(mtu: Int): Boolean
+    suspend fun performAction(action: DeviceAction)
+    fun startConnecting()
+    fun cancelConnecting()
+    fun handleConnect()
+    fun startDiscovering()
+    fun startDisconnecting()
+    fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null)
+    suspend fun reset()
+    suspend fun unpair()
+    suspend fun pair()
+}
+
+abstract class BaseDeviceConnectionManager(
+    val deviceWrapper: DeviceWrapper,
+    private val settings: ConnectionSettings,
+    private val coroutineScope: CoroutineScope
+) : DeviceConnectionManager, CoroutineScope by coroutineScope {
+
+    interface Builder {
+        fun create(
+            deviceWrapper: DeviceWrapper,
+            settings: ConnectionSettings,
+            coroutineScope: CoroutineScope
+        ): BaseDeviceConnectionManager
+    }
+
+    private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
+
     private val _currentAction = AtomicReference<DeviceAction?>(null)
     protected var currentAction: DeviceAction?
         get() = _currentAction.get()
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = Channel<Event>(UNLIMITED)
-    val events: Flow<Event> = sharedEvents.receiveAsFlow()
+    private val sharedEvents = Channel<DeviceConnectionManager.Event>(UNLIMITED)
+    override val events: Flow<DeviceConnectionManager.Event> = sharedEvents.receiveAsFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
-    val rssi = sharedRssi.asSharedFlow()
+    override val rssi = sharedRssi.asSharedFlow()
 
-    abstract fun getCurrentState(): State
-
-    abstract suspend fun connect()
-    abstract suspend fun discoverServices()
-    abstract suspend fun disconnect()
-    abstract suspend fun readRssi()
-    abstract suspend fun requestMtu(mtu: Int): Boolean
-    abstract suspend fun performAction(action: DeviceAction)
-    abstract suspend fun unpair()
-    abstract suspend fun pair()
+    override suspend fun readRssi() {
+        logDebug { "Request Read RSSI" }
+        // TODO call into abstract function?
+    }
 
     fun handleNewRssi(rssi: Int) {
+        logDebug { "Updated Rssi $rssi" }
         sharedRssi.tryEmit(rssi)
     }
 
     fun handleNewMtu(mtu: Int) {
-        sharedEvents.trySend(Event.MtuUpdated(mtu))
+        logDebug { "Updated Mtu $mtu" }
+        emitSharedEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }
 
-    fun startConnecting() {
-        sharedEvents.trySend(Event.Connecting)
+    override fun startConnecting() {
+        logInfo { "Start Connecting" }
+        emitSharedEvent(DeviceConnectionManager.Event.Connecting)
     }
 
-    fun cancelConnecting() {
-        sharedEvents.trySend(Event.CancelledConnecting)
+    override fun cancelConnecting() {
+        logInfo { "Cancel Connecting" }
+        emitSharedEvent(DeviceConnectionManager.Event.CancelledConnecting)
     }
 
-    fun handleConnect() {
-        sharedEvents.trySend(Event.Connected)
+    override fun handleConnect() {
+        logInfo { "Did Connect" }
+        emitSharedEvent(DeviceConnectionManager.Event.Connected)
     }
 
-    fun startDisconnecting() {
-        sharedEvents.trySend(Event.Disconnecting)
+    override fun startDisconnecting() {
+        logInfo { "Start Disconnecting" }
+        emitSharedEvent(DeviceConnectionManager.Event.Disconnecting)
     }
 
-    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, sharedEvents)
+    override suspend fun performAction(action: DeviceAction) {
+        logInfo { "Perform action $action" }
+        // TODO call into abstract function?
+    }
 
-    suspend fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null) {
+    // TODO add logging for pairing
+
+    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitSharedEvent, logTag, settings.logLevel)
+
+    override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = _currentAction
         val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
@@ -132,27 +161,36 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
             Unit
         }
-        sharedEvents.trySend(Event.Disconnected(clean))
+        logInfo { "Did Disconnect" }
+        emitSharedEvent(DeviceConnectionManager.Event.Disconnected(clean))
     }
 
-    fun startDiscovering() {
-        sharedEvents.trySend(Event.Discovering)
+    override fun startDiscovering() {
+        logInfo { "Start Discovering Services" }
+        emitSharedEvent(DeviceConnectionManager.Event.Discovering)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
     fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     fun handleDiscoverCompleted(services: List<Service>) {
-        sharedEvents.trySend(Event.DiscoveredServices(services))
+        logInfo { "Discovered services: ${services.map { it.uuid.uuidString }}" }
+        emitSharedEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
         val currentAction = this.currentAction
         _currentAction.value = null
-        sharedEvents.trySend(Event.CompletedAction(currentAction, succeeded))
+        if (currentAction != null) {
+            if (succeeded)
+                logInfo { "Completed $currentAction successfully" }
+            else
+                logError { "Failed to complete $currentAction" }
+        }
+        emitSharedEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }
 
-    suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
+    fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
         notifyingCharacteristics[uuid.uuidString]?.updateValue()
         val characteristicToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Characteristic -> {
@@ -175,7 +213,7 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    suspend fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((Descriptor) -> Unit)? = null) {
+    fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((Descriptor) -> Unit)? = null) {
         val descriptorToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
@@ -197,11 +235,34 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    suspend fun reset() {
+    override suspend fun reset() {
         currentAction = null
         notifyingCharacteristics.clear()
         disconnect()
     }
+
+    private fun emitSharedEvent(event: DeviceConnectionManager.Event) {
+        // Channel has unlimited buffer so this will never fail due to capacity
+        sharedEvents.trySend(event)
+    }
+
+    protected fun logInfo(message: () -> String) {
+        if (settings.logLevel != ConnectionSettings.LogLevel.NONE) {
+            info(logTag, message)
+        }
+    }
+
+    protected fun logDebug(message: () -> String) {
+        if (settings.logLevel == ConnectionSettings.LogLevel.VERBOSE) {
+            debug(logTag, message)
+        }
+    }
+
+    protected fun logError(message: () -> String) {
+        if (settings.logLevel == ConnectionSettings.LogLevel.VERBOSE) {
+            com.splendo.kaluga.logging.error(logTag, message)
+        }
+    }
 }
 
-internal expect class DeviceConnectionManager : BaseDeviceConnectionManager
+internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager

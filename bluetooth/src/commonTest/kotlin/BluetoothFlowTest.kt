@@ -19,8 +19,8 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceState
-import com.splendo.kaluga.bluetooth.device.ConnectibleDeviceStateImplRepo
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
@@ -184,7 +184,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             deviceWrapper: DeviceWrapper,
             rssi: Int,
             advertisementData: BaseAdvertisementData,
-            deviceConnectionManagerBuilder: () -> BaseDeviceConnectionManager
+            deviceConnectionManagerBuilder: (ConnectionSettings) -> BaseDeviceConnectionManager
         ): Device {
             return DeviceImpl(
                 deviceWrapper.identifier,
@@ -192,7 +192,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                 connectionSettings,
                 deviceConnectionManagerBuilder,
                 coroutineScope,
-                ::ConnectibleDeviceStateImplRepo
+                ::ConnectableDeviceStateImplRepo
             )
         }
 
@@ -244,7 +244,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         }
 
         suspend fun discoverService(service: Service, device: Device, connectionManager: MockDeviceConnectionManager) {
-            device.state.filter { it is ConnectibleDeviceState.Connected.Discovering }.first()
+            device.state.filter { it is ConnectableDeviceState.Connected.Discovering }.first()
             connectionManager.handleDiscoverCompleted(listOf(service))
         }
     }
@@ -259,7 +259,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun createDevice(
             deviceWrapper: DeviceWrapper = this.deviceWrapper,
             deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder
-        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, 1, coroutineScope) }
+        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, ConnectionSettings(), coroutineScope) }
 
         fun scanDevice(
             rssi: Int = configuration.rssi,

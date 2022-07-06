@@ -67,7 +67,7 @@ object BeaconMock {
         connectionManagerBuilder = {
             MockDeviceConnectionManager(
                 deviceWrapper = deviceWrapper,
-                bufferCapacity = 1,
+                connectionSettings = ConnectionSettings(),
                 coroutineScope = coroutineScope
             )
         },

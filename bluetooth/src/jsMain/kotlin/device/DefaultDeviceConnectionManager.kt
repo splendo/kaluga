@@ -19,24 +19,24 @@ package com.splendo.kaluga.bluetooth.device
 
 import kotlinx.coroutines.CoroutineScope
 
-internal actual class DeviceConnectionManager(
+internal actual class DefaultDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
-    bufferCapacity: Int = BUFFER_CAPACITY,
+    settings: ConnectionSettings,
     coroutineScope: CoroutineScope
-) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
+) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
     class Builder() : BaseDeviceConnectionManager.Builder {
 
         override fun create(
             deviceWrapper: DeviceWrapper,
-            bufferCapacity: Int,
+            settings: ConnectionSettings,
             coroutineScope: CoroutineScope
-        ): DeviceConnectionManager {
-            return DeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope)
+        ): DefaultDeviceConnectionManager {
+            return DefaultDeviceConnectionManager(deviceWrapper, settings, coroutineScope)
         }
     }
 
-    override fun getCurrentState(): State = State.DISCONNECTED
+    override fun getCurrentState(): DeviceConnectionManager.State = DeviceConnectionManager.State.DISCONNECTED
 
     override suspend fun connect() {}
 
@@ -50,7 +50,7 @@ internal actual class DeviceConnectionManager(
 
     override suspend fun performAction(action: DeviceAction) {}
 
-    override fun unpair() {}
+    override suspend fun unpair() {}
 
-    override fun pair() {}
+    override suspend fun pair() {}
 }

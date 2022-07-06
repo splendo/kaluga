@@ -19,19 +19,22 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import kotlinx.coroutines.channels.SendChannel
 
 /**
  * Mock implementation of [Characteristic]
  */
-class MockCharacteristic(characteristic: CharacteristicWrapper, newActionChannel: SendChannel<BaseDeviceConnectionManager.Event.AddAction>) : Characteristic(characteristic, newActionChannel = newActionChannel) {
+class MockCharacteristic(
+    characteristic: CharacteristicWrapper,
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit
+) : Characteristic(characteristic, emitNewAction = emitNewAction, parentLogTag = "", logLevel = ConnectionSettings.LogLevel.NONE) {
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]
      */
     val updateMock = ::updateValue.mock()
-    override suspend fun updateValue(): Unit = updateMock.call()
+    override fun updateValue(): Unit = updateMock.call()
 }

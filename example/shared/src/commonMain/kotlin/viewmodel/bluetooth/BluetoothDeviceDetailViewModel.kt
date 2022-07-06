@@ -25,7 +25,8 @@ import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
+import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.distance
@@ -63,12 +64,13 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
     val distance = device.distance().map { "distance".localized().format(it) }.toUninitializedObservable(coroutineScope)
     val state = device.state().map { deviceState ->
         when (deviceState) {
-            is DeviceState.Disconnecting -> "bluetooth_disconneting"
-            is DeviceState.Disconnected -> "bluetooth_disconnected"
-            is DeviceState.Connected.Discovering -> "bluetooth_discovering"
-            is DeviceState.Connected -> "bluetooth_connected"
-            is DeviceState.Connecting -> "bluetooth_connecting"
-            is DeviceState.Reconnecting -> "bluetooth_reconnecting"
+            is NotConnectableDeviceState -> ""
+            is ConnectableDeviceState.Disconnecting -> "bluetooth_disconneting"
+            is ConnectableDeviceState.Disconnected -> "bluetooth_disconnected"
+            is ConnectableDeviceState.Connected.Discovering -> "bluetooth_discovering"
+            is ConnectableDeviceState.Connected -> "bluetooth_connected"
+            is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
+            is ConnectableDeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
     }.toUninitializedObservable(coroutineScope)
     private val _services = MutableStateFlow(

@@ -22,7 +22,9 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.base.mock.call
@@ -43,10 +45,10 @@ import kotlinx.coroutines.CoroutineScope
 class MockDeviceConnectionManager(
     initialWillActionSucceed: Boolean = true,
     deviceWrapper: DeviceWrapper,
-    bufferCapacity: Int,
+    connectionSettings: ConnectionSettings,
     coroutineScope: CoroutineScope,
     setupMocks: Boolean = true
-) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
+) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
 
     /**
      * Mock implementation of [BaseDeviceConnectionManager.Builder]
@@ -67,8 +69,8 @@ class MockDeviceConnectionManager(
 
         init {
             if (setupMocks) {
-                createMock.on().doExecute { (deviceWrapper, bufferCapacity, coroutineScope) ->
-                    MockDeviceConnectionManager(initialWillActionSucceed, deviceWrapper, bufferCapacity, coroutineScope, setupMocks).also {
+                createMock.on().doExecute { (deviceWrapper, settings, coroutineScope) ->
+                    MockDeviceConnectionManager(initialWillActionSucceed, deviceWrapper, settings, coroutineScope, setupMocks).also {
                         createdDeviceConnectionManager.add(it)
                     }
                 }
@@ -77,10 +79,10 @@ class MockDeviceConnectionManager(
 
         override fun create(
             deviceWrapper: DeviceWrapper,
-            bufferCapacity: Int,
+            settings: ConnectionSettings,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
-            return createMock.call(deviceWrapper, bufferCapacity, coroutineScope)
+            return createMock.call(deviceWrapper, settings, coroutineScope)
         }
     }
 
@@ -145,7 +147,7 @@ class MockDeviceConnectionManager(
 
     init {
         if (setupMocks) {
-            getCurrentStateMock.on().doReturn(State.DISCONNECTED)
+            getCurrentStateMock.on().doReturn(DeviceConnectionManager.State.DISCONNECTED)
             requestMtuMock.on().doExecuteSuspended { (mtu) ->
                 handleNewMtu(mtu)
                 true
@@ -157,7 +159,7 @@ class MockDeviceConnectionManager(
         }
     }
 
-    override fun getCurrentState(): State = getCurrentStateMock.call()
+    override fun getCurrentState(): DeviceConnectionManager.State = getCurrentStateMock.call()
 
     override suspend fun connect(): Unit = connectMock.call()
 

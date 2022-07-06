@@ -17,15 +17,24 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import kotlinx.coroutines.channels.SendChannel
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 
 class Service(
     service: ServiceWrapper,
-    private val newActionChannel: SendChannel<BaseDeviceConnectionManager.Event.AddAction>
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    parentLogTag: String,
+    logLevel: ConnectionSettings.LogLevel
 ) {
     val uuid = service.uuid
-    val characteristics = service.characteristics.map { Characteristic(it, newActionChannel = newActionChannel) }
+    val characteristics = service.characteristics.map {
+        Characteristic(
+            it,
+            emitNewAction = emitNewAction,
+            parentLogTag = "$parentLogTag Service ${uuid.uuidString}",
+            logLevel = logLevel
+        )
+    }
 }
 
 expect interface ServiceWrapper {

@@ -41,25 +41,25 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(
+internal actual class DefaultDeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
     deviceWrapper: DeviceWrapper,
-    bufferCapacity: Int = BUFFER_CAPACITY,
+    settings: ConnectionSettings,
     coroutineScope: CoroutineScope,
-) : BaseDeviceConnectionManager(deviceWrapper, bufferCapacity, coroutineScope) {
+) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
-            bufferCapacity: Int,
+            settings: ConnectionSettings,
             coroutineScope: CoroutineScope
         ): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(
+            return DefaultDeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
                 deviceWrapper,
-                bufferCapacity,
+                settings,
                 coroutineScope
             )
         }
@@ -126,12 +126,12 @@ internal actual class DeviceConnectionManager(
         peripheral.delegate = peripheralDelegate
     }
 
-    override fun getCurrentState(): State = when (peripheral.state) {
-        CBPeripheralStateConnected -> State.CONNECTED
-        CBPeripheralStateConnecting -> State.CONNECTING
-        CBPeripheralStateDisconnected -> State.DISCONNECTED
-        CBPeripheralStateDisconnecting -> State.DISCONNECTING
-        else -> State.DISCONNECTED
+    override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
+        CBPeripheralStateConnected -> DeviceConnectionManager.State.CONNECTED
+        CBPeripheralStateConnecting -> DeviceConnectionManager.State.CONNECTING
+        CBPeripheralStateDisconnected -> DeviceConnectionManager.State.DISCONNECTED
+        CBPeripheralStateDisconnecting -> DeviceConnectionManager.State.DISCONNECTING
+        else -> DeviceConnectionManager.State.DISCONNECTED
     }
 
     override suspend fun connect() {
@@ -200,15 +200,11 @@ internal actual class DeviceConnectionManager(
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
-        launch {
-            handleUpdatedCharacteristic(characteristic.UUID, succeeded = error == null)
-        }
+        handleUpdatedCharacteristic(characteristic.UUID, succeeded = error == null)
     }
 
     private fun updateDescriptor(descriptor: CBDescriptor, error: NSError?) {
-        launch {
-            handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
-        }
+        handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
     }
 
     private fun didDiscoverServices() {
@@ -240,10 +236,8 @@ internal actual class DeviceConnectionManager(
 
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
-            launch {
-                val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
-                handleDiscoverCompleted(services)
-            }
+            val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
+            handleDiscoverCompleted(services)
         }
     }
 }
