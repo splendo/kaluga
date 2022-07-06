@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.device
 import co.touchlab.stately.collections.sharedMutableMapOf
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -32,8 +31,11 @@ import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.jvm.JvmName
 
 interface DeviceConnectionManager {
@@ -74,6 +76,8 @@ interface DeviceConnectionManager {
     fun startDisconnecting()
     fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null)
     suspend fun reset()
+    suspend fun unpair()
+    suspend fun pair()
 }
 
 abstract class BaseDeviceConnectionManager(
@@ -81,10 +85,6 @@ abstract class BaseDeviceConnectionManager(
     private val settings: ConnectionSettings,
     private val coroutineScope: CoroutineScope
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
-
-    internal companion object {
-        const val BUFFER_CAPACITY = 256
-    }
 
     interface Builder {
         fun create(
@@ -102,14 +102,15 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = SequentialMutableSharedFlow<DeviceConnectionManager.Event>(0, settings.eventBufferSize, coroutineScope)
-    override val events = sharedEvents.asSharedFlow()
+    private val sharedEvents = Channel<DeviceConnectionManager.Event>(UNLIMITED)
+    override val events: Flow<DeviceConnectionManager.Event> = sharedEvents.receiveAsFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     override val rssi = sharedRssi.asSharedFlow()
 
     override suspend fun readRssi() {
         logDebug { "Request Read RSSI" }
+        // TODO call into abstract function?
     }
 
     fun handleNewRssi(rssi: Int) {
@@ -144,7 +145,10 @@ abstract class BaseDeviceConnectionManager(
 
     override suspend fun performAction(action: DeviceAction) {
         logInfo { "Perform action $action" }
+        // TODO call into abstract function?
     }
+
+    // TODO add logging for pairing
 
     fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitSharedEvent, logTag, settings.logLevel)
 
@@ -238,9 +242,8 @@ abstract class BaseDeviceConnectionManager(
     }
 
     private fun emitSharedEvent(event: DeviceConnectionManager.Event) {
-        if (!sharedEvents.tryEmitOrLaunchAndEmit(event)) {
-            logError { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
+        // Channel has unlimited buffer so this will never fail due to capacity
+        sharedEvents.trySend(event)
     }
 
     protected fun logInfo(message: () -> String) {

@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -91,7 +93,7 @@ actual class DefaultScanner internal constructor(
 
             logError { error.first }
             if (error.second) {
-                sharedEvents.tryEmitOrLaunchAndEmit(Scanner.Event.FailedScanning)
+                sharedEvents.trySend(Scanner.Event.FailedScanning)
             }
         }
 
@@ -158,6 +160,7 @@ actual class DefaultScanner internal constructor(
 
     override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
 
+    @SuppressLint("MissingPermission") // Lint complains even with permissions
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
         return listOfNotNull(
@@ -170,4 +173,14 @@ actual class DefaultScanner internal constructor(
             } else null
         )
     }
+
+    override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
+        ?.bondedDevices
+        ?.filter {
+            // If no uuids available return this device
+            // Otherwise check if it constains any of given service uuid
+            it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+        }
+        ?.map { it.address }
+        ?: emptyList()
 }

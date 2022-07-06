@@ -86,6 +86,7 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
 
         suspend fun readRssi()
         suspend fun requestMtu(mtu: Int): Boolean
+        suspend fun pair()
     }
 
     interface Connecting : ConnectableDeviceState {
@@ -126,6 +127,8 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
 
     val didDisconnect: suspend () -> Disconnected
     val disconnecting: suspend () -> Disconnecting
+
+    suspend fun unpair()
 }
 
 object NotConnectableDeviceStateImpl : NotConnectableDeviceState
@@ -230,7 +233,10 @@ sealed class ConnectableDeviceStateImpl {
         suspend fun requestMtu(mtu: Int): Boolean {
             return deviceConnectionManager.requestMtu(mtu)
         }
+
+        suspend fun pair() = deviceConnectionManager.pair()
     }
+
     data class Connecting constructor(
         override val deviceConnectionManager: DeviceConnectionManager
     ) : ConnectableDeviceStateImpl(), ConnectableDeviceState.Connecting, HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
@@ -307,4 +313,6 @@ sealed class ConnectableDeviceStateImpl {
     val disconnecting = suspend {
         Disconnecting(deviceConnectionManager)
     }
+
+    suspend fun unpair() = deviceConnectionManager.unpair()
 }

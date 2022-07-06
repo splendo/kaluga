@@ -19,9 +19,16 @@ package com.splendo.kaluga.example.ios.bluetooth
 
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import kotlinx.coroutines.MainScope
+import permissions.KNPermissionsFramework
 
 class KNBluetoothFramework {
     val mainScope = MainScope()
-    val bluetooth = BluetoothBuilder().create(coroutineContext = singleThreadDispatcher("Bluetooth"))
+    val bluetooth = BluetoothBuilder().create(
+        { BaseScanner.Settings(KNPermissionsFramework().getPermissions()) },
+        ConnectionSettings(),
+        singleThreadDispatcher("Bluetooth")
+    )
 }
