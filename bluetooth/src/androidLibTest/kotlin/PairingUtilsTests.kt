@@ -26,6 +26,7 @@ import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.testBlockingAndCancelScope
 import com.splendo.kaluga.test.bluetooth.MockDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CompletableDeferred
@@ -66,7 +67,7 @@ class PairingUtilsTests : BaseTest() {
         fun device(coroutineScope: CoroutineScope) = DeviceImpl(
             NAME,
             DeviceInfoImpl(
-                NAME,
+                createDeviceWrapper(NAME),
                 rssi = -78,
                 MockAdvertisementData(NAME)
             ),

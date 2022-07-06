@@ -17,8 +17,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
@@ -32,7 +30,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -89,9 +86,8 @@ open class ScanningStateImplRepo(
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private suspend fun startMonitoringScanner(scanner: Scanner) {
-        val hasStarted = EmptyCompletableDeferred()
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            scanner.events.onSubscription { hasStarted.complete() }.collect { event ->
+            scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
@@ -103,7 +99,6 @@ open class ScanningStateImplRepo(
                 }
             }
         }
-        hasStarted.await()
     }
 
     private suspend fun handlePermissionChangedEvent(event: Scanner.Event.PermissionChanged, scanner: Scanner) = takeAndChangeState { state ->

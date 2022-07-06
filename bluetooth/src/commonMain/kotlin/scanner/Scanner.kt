@@ -64,7 +64,7 @@ interface Scanner {
     }
 
     val isSupported: Boolean
-    val events: SharedFlow<Event>
+    val events: Flow<Event>
     fun startMonitoringPermissions()
     fun stopMonitoringPermissions()
     suspend fun scanForDevices(filter: Set<UUID>)

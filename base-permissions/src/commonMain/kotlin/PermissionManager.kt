@@ -18,12 +18,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.time.Duration
 
 interface PermissionManager<P : Permission> {
@@ -34,7 +35,7 @@ interface PermissionManager<P : Permission> {
     }
 
     val permission: P
-    val events: SharedFlow<Event>
+    val events: Flow<Event>
 
     /**
      * Starts to request the permission
@@ -63,12 +64,7 @@ abstract class BasePermissionManager<P : Permission>(
     private val coroutineScope: CoroutineScope
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
-    companion object {
-        const val DEFAULT_EVENT_BUFFER_SIZE = 256
-    }
-
     data class Settings(
-        val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
         val logLevel: LogLevel = LogLevel.NONE
     )
 
@@ -79,8 +75,8 @@ abstract class BasePermissionManager<P : Permission>(
     }
 
     private val logTag = "PermissionManager $permission"
-    private val sharedEvents = SequentialMutableSharedFlow<PermissionManager.Event>(0, settings.eventBufferSize, coroutineScope)
-    override val events: SharedFlow<PermissionManager.Event> = sharedEvents.asSharedFlow()
+    private val sharedEvents = Channel<PermissionManager.Event>(UNLIMITED)
+    override val events: Flow<PermissionManager.Event> = sharedEvents.receiveAsFlow()
 
     override fun requestPermission() {
         logInfo { "Request Permission" }
@@ -105,9 +101,7 @@ abstract class BasePermissionManager<P : Permission>(
     }
 
     private fun emitSharedEvent(event: PermissionManager.Event) {
-        if (!sharedEvents.tryEmitOrLaunchAndEmit(event)) {
-            logError { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
+        sharedEvents.trySend(event)
     }
 
     protected fun logInfo(message: () -> String) {

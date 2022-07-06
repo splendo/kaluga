@@ -23,9 +23,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.MissingPermissions
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.NotInitialized
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
