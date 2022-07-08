@@ -20,6 +20,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":base"))
+                implementation(project(":logging", ""))
                 api(project(":base-permissions"))
                 api(project(":bluetooth-permissions"))
                 api(project(":calendar-permissions"))
