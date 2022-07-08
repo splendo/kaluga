@@ -17,13 +17,16 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Options for configuring a [NotificationsPermission]
@@ -33,19 +36,17 @@ expect class NotificationOptions
 /**
  * A [PermissionManager] for managing [NotificationsPermission]
  */
-expect class NotificationsPermissionManager : PermissionManager<NotificationsPermission> {
-    /**
-     * The [NotificationsPermission] managed by this manager.
-     */
-    val notificationsPermission: NotificationsPermission
-}
+typealias NotificationsPermissionManager = PermissionManager<NotificationsPermission>
+expect class DefaultNotificationsPermissionManager : BasePermissionManager<NotificationsPermission>
 
 interface BaseNotificationsPermissionManagerBuilder : BasePermissionsBuilder<NotificationsPermission> {
     /**
      * Creates a [NotificationsPermissionManager]
-     * @param repo The [NotificationsPermissionStateRepo] associated with the [NotificationsPermission]
+     * @param notificationsPermission The [NotificationsPermission] for the PermissionManager to be created
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission>
+    fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): NotificationsPermissionManager
 }
 
 /**
@@ -61,6 +62,7 @@ expect class NotificationsPermissionManagerBuilder(context: PermissionContext = 
 class NotificationsPermissionStateRepo(
     notificationsPermission: NotificationsPermission,
     builder: BaseNotificationsPermissionManagerBuilder,
-    monitoringInterval: Long = defaultMonitoringInterval,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : PermissionStateRepo<NotificationsPermission>(monitoringInterval, coroutineContext, { builder.create(notificationsPermission, it) })
+) : PermissionStateRepo<NotificationsPermission>(monitoringInterval, { builder.create(notificationsPermission, settings, it) }, coroutineContext)

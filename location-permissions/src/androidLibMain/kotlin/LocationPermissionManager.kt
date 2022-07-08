@@ -20,43 +20,53 @@ package com.splendo.kaluga.permissions.location
 import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class LocationPermissionManager(
+actual class DefaultLocationPermissionManager(
     context: Context,
-    actual val locationPermission: LocationPermission,
-    stateRepo: PermissionStateRepo<LocationPermission>
-) : PermissionManager<LocationPermission>(stateRepo) {
+    locationPermission: LocationPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
     private val permissions: Array<String> get() {
         val result = mutableListOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (locationPermission.precise)
+        if (permission.precise)
             result.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (locationPermission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
+        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
             result.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         return result.toTypedArray()
     }
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, permissions)
+    private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, ::logDebug, ::logError, ::handleAndroidPermissionState)
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         permissionsManager.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         permissionsManager.stopMonitoring()
     }
 }
 
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(locationPermission: LocationPermission, repo: PermissionStateRepo<LocationPermission>): PermissionManager<LocationPermission> {
-        return LocationPermissionManager(context.context, locationPermission, repo)
+    override fun create(
+        locationPermission: LocationPermission,
+        settings: BasePermissionManager.Settings,
+        coroutineScope: CoroutineScope
+    ): LocationPermissionManager {
+        return DefaultLocationPermissionManager(context.context, locationPermission, settings, coroutineScope)
     }
 }

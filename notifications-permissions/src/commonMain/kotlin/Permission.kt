@@ -17,24 +17,29 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Notifications.
  * @param options The [NotificationOptions] determining the type of notifications that can be accessed
  */
-data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
+data class NotificationsPermission(val options: NotificationOptions? = null) : Permission() {
+    override val name: String = "Notifications - ${options?.toString().orEmpty().ifEmpty { "Without Options" }}"
+}
 
 fun PermissionsBuilder.registerNotificationsPermission(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
+        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerNotificationsPermission(

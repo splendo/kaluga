@@ -16,6 +16,7 @@
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
@@ -26,17 +27,19 @@ import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
+import kotlin.time.Duration
 
 fun PermissionsBuilder.registerAllPermissions(
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) {
-    registerBluetoothPermission(monitoringInterval = monitoringInterval)
-    registerCalendarPermission(monitoringInterval = monitoringInterval)
-    registerCameraPermission(monitoringInterval = monitoringInterval)
-    registerContactsPermission(monitoringInterval = monitoringInterval)
-    registerLocationPermission(monitoringInterval = monitoringInterval)
-    registerMicrophonePermission(monitoringInterval = monitoringInterval)
-    registerNotificationsPermission(monitoringInterval = monitoringInterval)
-    registerMicrophonePermission(monitoringInterval = monitoringInterval)
-    registerStoragePermission(monitoringInterval = monitoringInterval)
+    registerBluetoothPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerCalendarPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerCameraPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerContactsPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerLocationPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
+    registerStoragePermission(monitoringInterval = monitoringInterval, settings = settings)
 }

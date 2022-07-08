@@ -19,34 +19,51 @@ package com.splendo.kaluga.permissions.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class BluetoothPermissionManager(
+actual class DefaultBluetoothPermissionManager(
     context: Context,
     bluetoothAdapter: BluetoothAdapter?,
-    stateRepo: PermissionStateRepo<BluetoothPermission>
-) : PermissionManager<BluetoothPermission>(stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION))
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION),
+        coroutineScope,
+        ::logDebug,
+        ::logError,
+        ::handleAndroidPermissionState
+    )
+
     private val supported: Boolean = bluetoothAdapter != null
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         if (supported)
             permissionsManager.requestPermissions()
+        else
+            logError { "Bluetooth Not Supported" }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         if (supported)
             permissionsManager.startMonitoring(interval)
         else
             revokePermission(true)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         if (supported)
             permissionsManager.stopMonitoring()
     }
@@ -54,12 +71,12 @@ actual class BluetoothPermissionManager(
 
 actual class BluetoothPermissionManagerBuilder(
     private val context: PermissionContext,
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private val bluetoothAdapter: BluetoothAdapter?
 ) : BaseBluetoothPermissionManagerBuilder {
 
-    actual constructor(context: PermissionContext) : this(context, BluetoothAdapter.getDefaultAdapter())
+    actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
-    override fun create(repo: PermissionStateRepo<BluetoothPermission>): PermissionManager<BluetoothPermission> {
-        return BluetoothPermissionManager(context.context, bluetoothAdapter, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
+        return DefaultBluetoothPermissionManager(context.context, bluetoothAdapter, settings, coroutineScope)
     }
 }

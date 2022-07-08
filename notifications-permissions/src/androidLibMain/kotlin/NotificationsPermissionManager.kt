@@ -17,32 +17,33 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
 actual class NotificationOptions
 
-actual class NotificationsPermissionManager(
-    actual val notificationsPermission: NotificationsPermission,
-    stateRepo: PermissionStateRepo<NotificationsPermission>
-) : PermissionManager<NotificationsPermission>(stateRepo) {
+actual class DefaultNotificationsPermissionManager(
+    notificationsPermission: NotificationsPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         grantPermission()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         grantPermission()
-    }
-
-    override suspend fun stopMonitoring() {
     }
 }
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> {
-        return NotificationsPermissionManager(notificationsPermission, repo)
+    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
+        return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }

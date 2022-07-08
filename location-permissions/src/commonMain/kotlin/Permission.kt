@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.permissions.location
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Location
@@ -29,14 +31,17 @@ import kotlin.coroutines.CoroutineContext
  * @param precise If `true` precise location scanning is permitted
  */
 data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) :
-    Permission()
+    Permission() {
+    override val name: String = listOfNotNull(if (background) "Background" else null, "Location", "-", if (precise) "Precise" else "Coarse").joinToString(" ")
+}
 
 fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerLocationPermission(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        LocationPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
+        LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerLocationPermission(

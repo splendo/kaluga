@@ -17,13 +17,16 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import com.splendo.kaluga.base.mainContinuation
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized
@@ -31,47 +34,58 @@ import platform.Photos.PHAuthorizationStatusDenied
 import platform.Photos.PHAuthorizationStatusNotDetermined
 import platform.Photos.PHAuthorizationStatusRestricted
 import platform.Photos.PHPhotoLibrary
+import kotlin.time.Duration
 
 const val NSPhotoLibraryUsageDescription = "NSPhotoLibraryUsageDescription"
 
-actual class StoragePermissionManager(
+actual class DefaultStoragePermissionManager(
     private val bundle: NSBundle,
-    actual val storagePermission: StoragePermission,
-    stateRepo: PermissionStateRepo<StoragePermission>
-) : PermissionManager<StoragePermission>(stateRepo) {
+    storagePermission: StoragePermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
     private val authorizationStatus = suspend {
         PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
-    private var timerHelper: PermissionRefreshScheduler<StoragePermission> = PermissionRefreshScheduler(this, authorizationStatus)
+    private var timerHelper = PermissionRefreshScheduler(authorizationStatus, ::handleAuthorizationStatus, coroutineScope)
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            PHPhotoLibrary.requestAuthorization(
-                mainContinuation { status ->
-                    timerHelper.isWaiting.value = false
-                    IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
-                }
-            )
+            launch {
+                timerHelper.isWaiting.value = true
+                val deferred = CompletableDeferred<PHAuthorizationStatus>()
+                val callback = { status: PHAuthorizationStatus ->
+                    deferred.complete(status)
+                    Unit
+                }.freeze()
+                PHPhotoLibrary.requestAuthorization(callback)
+
+                val status = deferred.await()
+                timerHelper.isWaiting.value = false
+                handleAuthorizationStatus(status.toAuthorizationStatus())
+            }
         } else {
             revokePermission(true)
         }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         timerHelper.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         timerHelper.stopMonitoring()
     }
 }
 
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, repo: PermissionStateRepo<StoragePermission>): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(context, storagePermission, repo)
+    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
+        return DefaultStoragePermissionManager(context, storagePermission, settings, coroutineScope)
     }
 }
 

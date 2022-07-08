@@ -40,7 +40,7 @@ import com.splendo.kaluga.test.bluetooth.descriptor
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.test.bluetooth.scanner.MockBaseScanner
-import com.splendo.kaluga.test.permissions.MockPermissionManager
+import com.splendo.kaluga.test.permissions.MockPermissionState
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -69,14 +69,14 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         abstract val autoRequestPermission: Boolean
         abstract val autoEnableBluetooth: Boolean
         abstract val isEnabled: Boolean
-        abstract val initialPermissionState: MockPermissionManager.MockPermissionState
+        abstract val initialPermissionState: MockPermissionState.ActiveState
         abstract val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit
 
         data class Bluetooth(
             override val autoRequestPermission: Boolean = true,
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
-            override val initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.ALLOWED,
+            override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
         ) : Configuration()
 
@@ -96,7 +96,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoRequestPermission: Boolean = true,
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
-            override val initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.ALLOWED,
+            override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: Int = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
@@ -108,7 +108,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoRequestPermission: Boolean = true,
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
-            override val initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.ALLOWED,
+            override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: Int = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
@@ -120,7 +120,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoRequestPermission: Boolean = true,
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
-            override val initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.ALLOWED,
+            override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: Int = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
@@ -132,7 +132,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoRequestPermission: Boolean = true,
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
-            override val initialPermissionState: MockPermissionManager.MockPermissionState = MockPermissionManager.MockPermissionState.ALLOWED,
+            override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: Int = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
@@ -147,12 +147,12 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         val deviceFilter = setOf(randomUUID())
 
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
-            initialPermissionState = configuration.initialPermissionState
+            initialActiveState = configuration.initialPermissionState
         ).apply {
             registerAllPermissionsBuilders()
         }
 
-        val permissionManager get() = permissionsBuilder.createdBluetoothPermissionManagers.first()
+        val permissionStateRepo get() = permissionsBuilder.buildBluetoothStateRepos.first()
 
         private val scannerBuilder = MockBaseScanner.Builder(configuration.isEnabled)
         val scanner get() = scannerBuilder.createdScanners.first()
@@ -188,7 +188,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ): Device {
             return DeviceImpl(
                 deviceWrapper.identifier,
-                DeviceInfoImpl(deviceWrapper.name, rssi, advertisementData),
+                DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
                 connectionSettings,
                 deviceConnectionManagerBuilder,
                 coroutineScope,

@@ -19,6 +19,9 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
+
+expect fun randomIdentifier(): Identifier
 
 expect fun createDeviceWrapper(deviceName: String? = null): DeviceWrapper
 

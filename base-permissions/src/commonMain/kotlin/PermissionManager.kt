@@ -18,65 +18,107 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.permissions.base.PermissionState.Allowed
-import com.splendo.kaluga.permissions.base.PermissionState.Denied
-import com.splendo.kaluga.permissions.base.PermissionState.Inactive
-import com.splendo.kaluga.permissions.base.PermissionState.Initializing
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlin.time.Duration
+
+interface PermissionManager<P : Permission> {
+
+    sealed class Event {
+        object PermissionGranted : Event()
+        data class PermissionDenied(val locked: Boolean) : Event()
+    }
+
+    val permission: P
+    val events: Flow<Event>
+
+    /**
+     * Starts to request the permission
+     */
+    fun requestPermission()
+
+    /**
+     * Starts monitoring for changes to the permission.
+     * @param interval The [Duration] in between checking for changes to the permission state
+     */
+    fun startMonitoring(interval: Duration)
+
+    /**
+     * Stops monitoring for changes to the permission.
+     */
+    fun stopMonitoring()
+}
 
 /**
  * Manager for maintaining the [PermissionState] of a given [Permission]
  * @param stateRepo The [PermissionStateRepo] managed by this manager.
  */
-abstract class PermissionManager<P : Permission> constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
+abstract class BasePermissionManager<P : Permission>(
+    override val permission: P,
+    private val settings: Settings,
+    private val coroutineScope: CoroutineScope
+) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
-    /**
-     * Requests the permission
-     */
-    abstract suspend fun requestPermission()
-    /**
-     * Starts monitoring for changes to the permission.
-     * @param interval The interval in milliseconds between checking for changes to the permission state
-     */
-    abstract suspend fun startMonitoring(interval: Long)
+    data class Settings(
+        val logLevel: LogLevel = LogLevel.NONE
+    )
 
-    /**
-     * Stops monitoring for chabges to the permission.
-     */
-    abstract suspend fun stopMonitoring()
+    enum class LogLevel {
+        NONE,
+        INFO,
+        VERBOSE
+    }
 
-    /**
-     * Grants the permission
-     * This will bring the [PermissionStateRepo] to [PermissionState.Allowed]
-     */
+    private val logTag = "PermissionManager $permission"
+    private val sharedEvents = Channel<PermissionManager.Event>(UNLIMITED)
+    override val events: Flow<PermissionManager.Event> = sharedEvents.receiveAsFlow()
+
+    override fun requestPermission() {
+        logInfo { "Request Permission" }
+    }
+
+    override fun startMonitoring(interval: Duration) {
+        logDebug { "Start monitoring with interval $interval" }
+    }
+
+    override fun stopMonitoring() {
+        logDebug { "Stop monitoring with interval" }
+    }
+
     open fun grantPermission() {
-        stateRepo.launchTakeAndChangeState { state ->
-            when (state) {
-                is Initializing -> state.initialize(allowed = true, locked = false)
-                is Denied -> state.allow
-                is Allowed, is Inactive -> state.remain()
-            }
+        logInfo { "Permission Granted" }
+        emitSharedEvent(PermissionManager.Event.PermissionGranted)
+    }
+
+    open fun revokePermission(locked: Boolean) {
+        logInfo { if (locked) { "Permission Locked" } else { "Permission Revoked" } }
+        emitSharedEvent(PermissionManager.Event.PermissionDenied(locked))
+    }
+
+    private fun emitSharedEvent(event: PermissionManager.Event) {
+        sharedEvents.trySend(event)
+    }
+
+    protected fun logInfo(message: () -> String) {
+        if (settings.logLevel != LogLevel.NONE) {
+            info(logTag, message)
         }
     }
 
-    /**
-     * Revokes the permission
-     * This will bring the [PermissionStateRepo] to [PermissionState.Denied]
-     * @param locked `true` if the permission can no longer be requested after this. This corresponds to [PermissionState.Denied.Locked] when `true` and [PermissionState.Denied.Requestable] otherwise.
-     */
-    open fun revokePermission(locked: Boolean) {
-        stateRepo.launchTakeAndChangeState { state ->
-            when (state) {
-                is Initializing -> state.initialize(false, locked)
-                is Allowed -> suspend { state.deny(locked) }
-                is Denied.Requestable -> {
-                    if (locked) state.lock else state.remain()
-                }
-                is Denied.Locked -> {
-                    if (locked) state.remain() else state.unlock
-                }
-                is Inactive -> state.remain()
-            }
+    protected fun logDebug(message: () -> String) {
+        if (settings.logLevel == LogLevel.VERBOSE) {
+            debug(logTag, message)
+        }
+    }
+
+    protected fun logError(message: () -> String) {
+        if (settings.logLevel == LogLevel.VERBOSE) {
+            com.splendo.kaluga.logging.error(logTag, message)
         }
     }
 }

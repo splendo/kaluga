@@ -17,25 +17,31 @@
 
 package com.splendo.kaluga.permissions.bluetooth
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the Bluetooth scanner
  */
-object BluetoothPermission : Permission()
+object BluetoothPermission : Permission() {
+    override val name: String = "Bluetooth"
+}
 
 fun PermissionsBuilder.registerBluetoothPermission(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
         BluetoothPermissionStateRepo(
             baseBluetoothPermissionManagerBuilder,
             monitoringInterval,
+            settings,
             coroutineContext
         )
     }

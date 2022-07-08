@@ -17,28 +17,16 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
-actual class CameraPermissionManager(repo: PermissionStateRepo<CameraPermission>) : PermissionManager<CameraPermission>(repo) {
-
-    override suspend fun requestPermission() {
-        TODO("not implemented")
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
-    }
-}
+actual class DefaultCameraPermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope)
 
 actual class CameraPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> {
-        return CameraPermissionManager(repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<CameraPermission> {
+        return DefaultCameraPermissionManager(settings, coroutineScope)
     }
 }

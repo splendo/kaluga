@@ -20,34 +20,50 @@ package com.splendo.kaluga.permissions.contacts
 import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class ContactsPermissionManager(
+actual class DefaultContactsPermissionManager(
     context: Context,
-    actual val contactsPermission: ContactsPermission,
-    stateRepo: PermissionStateRepo<ContactsPermission>
-) : PermissionManager<ContactsPermission>(stateRepo) {
+    contactsPermission: ContactsPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, if (contactsPermission.allowWrite) arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS) else arrayOf(Manifest.permission.READ_CONTACTS))
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        if (contactsPermission.allowWrite)
+            arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
+        else
+            arrayOf(Manifest.permission.READ_CONTACTS),
+        coroutineScope,
+        ::logDebug,
+        ::logError,
+        ::handleAndroidPermissionState
+    )
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         permissionsManager.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         permissionsManager.stopMonitoring()
     }
 }
 
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> {
-        return ContactsPermissionManager(context.context, contactsPermission, repo)
+    override fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
+        return DefaultContactsPermissionManager(context.context, contactsPermission, settings, coroutineScope)
     }
 }

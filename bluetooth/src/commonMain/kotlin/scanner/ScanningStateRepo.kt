@@ -37,8 +37,8 @@ typealias ScanningStateFlowRepo = StateRepo<ScanningState, MutableStateFlow<Scan
 
 abstract class BaseScanningStateRepo(
     createNotInitializedState: () -> ScanningState.NotInitialized,
-    createInitializingState: ColdStateFlowRepo<ScanningState>.(ScanningState.Inactive) -> suspend () -> ScanningState,
-    createDeinitializingState: ColdStateFlowRepo<ScanningState>.(ScanningState.Active) -> suspend () -> ScanningState.Deinitialized,
+    createInitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Inactive) -> suspend () -> ScanningState,
+    createDeinitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Active) -> suspend () -> ScanningState.Deinitialized,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineContext,
@@ -80,12 +80,12 @@ open class ScanningStateImplRepo(
     },
     createDeinitializingState = { state ->
         (this as ScanningStateImplRepo).superVisorJob.cancelChildren()
-        (state as ScanningStateImpl.Active).deinitialize
+        state.deinitialize
     }
 ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
-    private fun startMonitoringScanner(scanner: Scanner) {
+    private suspend fun startMonitoringScanner(scanner: Scanner) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
             scanner.events.collect { event ->
                 when (event) {
@@ -120,7 +120,7 @@ open class ScanningStateImplRepo(
     private suspend fun handleDeviceDiscovered(event: Scanner.Event.DeviceDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
         state.discoverDevice(event.identifier, event.rssi, event.advertisementData) {
             val (deviceWrapper, connectionManagerBuilder) = event.deviceCreator()
-            createDevice(event.identifier, DeviceInfoImpl(deviceWrapper.name, event.rssi, event.advertisementData), deviceWrapper, connectionManagerBuilder)
+            createDevice(event.identifier, DeviceInfoImpl(deviceWrapper, event.rssi, event.advertisementData), deviceWrapper, connectionManagerBuilder)
         }
     }
 

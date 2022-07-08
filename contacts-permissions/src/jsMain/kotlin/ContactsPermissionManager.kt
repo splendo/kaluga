@@ -17,28 +17,16 @@
 
 package com.splendo.kaluga.permissions.contacts
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
-actual class ContactsPermissionManager(actual val contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>) : PermissionManager<ContactsPermission>(repo) {
-
-    override suspend fun requestPermission() {
-        TODO("not implemented")
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
-    }
-}
+actual class DefaultContactsPermissionManager(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope)
 
 actual class ContactsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, repo: PermissionStateRepo<ContactsPermission>): PermissionManager<ContactsPermission> {
-        return ContactsPermissionManager(contactsPermission, repo)
+    override fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<ContactsPermission> {
+        return DefaultContactsPermissionManager(contactsPermission, settings, coroutineScope)
     }
 }

@@ -23,12 +23,12 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.MissingPermissions
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.permissions.MockPermissionManager
+import com.splendo.kaluga.test.permissions.MockPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +51,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     @Test
     fun testStartWithBluetoothEnabled() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
         test {
-            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
             scanner.startMonitoringPermissionsMock.verify()
             scanner.startMonitoringHardwareEnabledMock.verify()
             assertIs<Idle>(it)
@@ -61,16 +60,17 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     }
 
     @Test
-    fun testStartWithoutPermissions() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(initialPermissionState = MockPermissionManager.MockPermissionState.DENIED)) {
+    fun testStartWithoutPermissions() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(initialPermissionState = MockPermissionState.ActiveState.REQUESTABLE)) {
         test {
-            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
-            permissionManager.requestPermissionMock.verify()
+            permissionStateRepo.currentMockState.requestMock.verify()
             scanner.startMonitoringPermissionsMock.verify()
             scanner.startMonitoringHardwareEnabledMock.verify(rule = never())
             assertIs<MissingPermissions>(it)
         }
         mainAction {
-            permissionManager.setPermissionAllowed()
+            permissionStateRepo.takeAndChangeState { state ->
+                (state as MockPermissionState<BluetoothPermission>).allow
+            }
         }
         test {
             assertIs<Idle>(it)
@@ -83,12 +83,11 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     fun testStartWithoutPermissionNoAutoRequest() = testWithFlowAndTestContext(
         Configuration.DeviceWithoutService(
             autoRequestPermission = false,
-            initialPermissionState = MockPermissionManager.MockPermissionState.DENIED
+            initialPermissionState = MockPermissionState.ActiveState.LOCKED
         )
     ) {
         test {
-            permissionManager.startMonitoringMock.verify(eq(PermissionStateRepo.defaultMonitoringInterval))
-            permissionManager.requestPermissionMock.verify(rule = never())
+            permissionStateRepo.currentMockState.requestMock.verify(rule = never())
             scanner.startMonitoringPermissionsMock.verify()
             scanner.startMonitoringHardwareEnabledMock.verify(rule = never())
             assertIs<MissingPermissions>(it)
@@ -267,7 +266,9 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Idle>(it)
         }
         mainAction {
-            permissionManager.setPermissionDenied()
+            permissionStateRepo.takeAndChangeState { state ->
+                (state as MockPermissionState<BluetoothPermission>).lock
+            }
         }
         test {
             assertIs<MissingPermissions>(it)
@@ -305,7 +306,9 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Scanning>(it)
         }
         mainAction {
-            permissionManager.setPermissionDenied()
+            permissionStateRepo.takeAndChangeState { state ->
+                (state as MockPermissionState<BluetoothPermission>).lock
+            }
         }
         test {
             scanner.stopScanningMock.verify()

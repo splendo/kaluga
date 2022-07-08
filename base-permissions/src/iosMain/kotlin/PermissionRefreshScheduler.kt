@@ -25,25 +25,26 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.time.Duration
 
 /**
  * Convenience class for scheduling checks to changes in permission state.
- * @param permissionManager The [PermissionManager] to monitor changes for.
  * @param authorizationStatus Method for requesting a the current [IOSPermissionsHelper.AuthorizationStatus] for the permission associated with the [PermissionManager]
+ * @param onPermissionChanged Method for notifying changes to a permission.
  * @param coroutineScope The [CoroutineScope] on which to run the checks.
  */
-class PermissionRefreshScheduler<P : Permission>(
-    private val permissionManager: PermissionManager<P>,
+class PermissionRefreshScheduler(
     private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus,
-    coroutineScope: CoroutineScope = permissionManager
+    private val onPermissionChanged: (IOSPermissionsHelper.AuthorizationStatus) -> Unit,
+    coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
     private sealed class TimerJobState {
         object TimerNotRunning : TimerJobState() {
-            fun startTimer(interval: Long, coroutineScope: CoroutineScope, block: suspend () -> Unit): TimerJobState = TimerRunning(interval, block, coroutineScope)
+            fun startTimer(interval: Duration, coroutineScope: CoroutineScope, block: suspend () -> Unit): TimerJobState = TimerRunning(interval, block, coroutineScope)
         }
 
-        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState() {
+        class TimerRunning(val interval: Duration, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState() {
             private val timerLoop = coroutineScope.launch {
                 while (isActive) {
                     delay(interval)
@@ -64,11 +65,13 @@ class PermissionRefreshScheduler<P : Permission>(
      * Starts monitoring for changes to the permission
      * @param interval The interval in milliseconds between checking for changes to the permission.
      */
-    suspend fun startMonitoring(interval: Long) {
-        launchTimerJob(interval)
+    fun startMonitoring(interval: Duration) {
+        launch {
+            launchTimerJob(interval)
+        }
     }
 
-    private suspend fun launchTimerJob(interval: Long) {
+    private suspend fun launchTimerJob(interval: Duration) {
         timerLock.withLock {
             val timerJobState = timerState.get()
             if (timerJobState is TimerJobState.TimerNotRunning) {
@@ -77,10 +80,7 @@ class PermissionRefreshScheduler<P : Permission>(
                         val status = authorizationStatus()
                         if (!isWaiting.value && lastPermission.get() != status) {
                             updateLastPermission()
-                            IOSPermissionsHelper.handleAuthorizationStatus(
-                                status,
-                                permissionManager
-                            )
+                            onPermissionChanged(status)
                         }
                     }
                 )
@@ -91,13 +91,16 @@ class PermissionRefreshScheduler<P : Permission>(
     /**
      * Stops monitoring for changes to the permission.
      */
-    suspend fun stopMonitoring() {
-        timerLock.withLock {
-            val timerJobState = timerState.get()
-            if (timerJobState is TimerJobState.TimerRunning) {
-                this.timerState.set(timerJobState.stopTimer())
+    fun stopMonitoring() {
+        launch {
+            timerLock.withLock {
+                val timerJobState = timerState.get()
+                if (timerJobState is TimerJobState.TimerRunning) {
+                    this@PermissionRefreshScheduler.timerState.set(timerJobState.stopTimer())
+                }
             }
         }
+        lastPermission.set(null)
     }
 
     private suspend fun updateLastPermission() {

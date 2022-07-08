@@ -17,28 +17,34 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users device storage.
  * On iOS this corresponds to the Photos permission
  * @param allowWrite If `true` writing to the storage is permitted
  */
-data class StoragePermission(val allowWrite: Boolean = false) : Permission()
+data class StoragePermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Storage - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
 fun PermissionsBuilder.registerStoragePermission(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerStoragePermission(storagePermissionManagerBuilderBuilder) { storagePermission, baseStoragePermissionManagerBuilder, coroutineContext ->
         StoragePermissionStateRepo(
             storagePermission,
             baseStoragePermissionManagerBuilder,
             monitoringInterval,
+            settings,
             coroutineContext
         )
     }

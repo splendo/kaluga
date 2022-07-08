@@ -17,30 +17,18 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
 actual class NotificationOptions
 
-actual class NotificationsPermissionManager(actual val notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>) : PermissionManager<NotificationsPermission>(repo) {
-
-    override suspend fun requestPermission() {
-        TODO("not implemented")
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
-    }
-}
+actual class DefaultNotificationsPermissionManager(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope)
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, repo: PermissionStateRepo<NotificationsPermission>): PermissionManager<NotificationsPermission> {
-        return NotificationsPermissionManager(notificationsPermission, repo)
+    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<NotificationsPermission> {
+        return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }

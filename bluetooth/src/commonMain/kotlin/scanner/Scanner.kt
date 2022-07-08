@@ -141,7 +141,7 @@ abstract class BaseScanner constructor(
         }
     }
 
-    private suspend fun handlePermissionState(states: List<PermissionState<*>>) {
+    private fun handlePermissionState(states: List<PermissionState<*>>) {
         if (autoRequestPermission) {
             states.forEach { state ->
                 when (state) {

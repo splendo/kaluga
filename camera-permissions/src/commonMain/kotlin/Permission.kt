@@ -17,23 +17,28 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Camera
  */
-object CameraPermission : Permission()
+object CameraPermission : Permission() {
+    override val name: String = "Camera"
+}
 
 fun PermissionsBuilder.registerCameraPermission(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerCameraPermission(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
-        CameraPermissionStateRepo(builder, monitoringInterval, coroutineContext)
+        CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerCameraPermission(

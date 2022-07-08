@@ -21,31 +21,46 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class CameraPermissionManager(
+actual class DefaultCameraPermissionManager(
     context: Context,
-    stateRepo: PermissionStateRepo<CameraPermission>
-) : PermissionManager<CameraPermission>(stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        arrayOf(Manifest.permission.CAMERA),
+        coroutineScope,
+        ::logDebug,
+        ::logError,
+        ::handleAndroidPermissionState
+    )
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         if (supported)
             permissionsManager.requestPermissions()
+        else
+            logError { "Camera not Supported" }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         if (supported)
             permissionsManager.startMonitoring(interval)
         else
             revokePermission(true)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         if (supported)
             permissionsManager.stopMonitoring()
     }
@@ -53,7 +68,7 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: PermissionStateRepo<CameraPermission>): PermissionManager<CameraPermission> {
-        return CameraPermissionManager(context.context, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
+        return DefaultCameraPermissionManager(context.context, settings, coroutineScope)
     }
 }

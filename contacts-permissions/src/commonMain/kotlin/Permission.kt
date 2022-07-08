@@ -17,24 +17,29 @@
 
 package com.splendo.kaluga.permissions.contacts
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Contacts
  * @param allowWrite If `true` writing to the contacts is permitted
  */
-data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
+data class ContactsPermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Contacts - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
 fun PermissionsBuilder.registerContactsPermission(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerContactsPermission(contactsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        ContactsPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
+        ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerContactsPermission(

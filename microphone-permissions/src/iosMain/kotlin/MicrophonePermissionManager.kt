@@ -17,35 +17,41 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
+import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
+import kotlin.time.Duration
 
-actual class MicrophonePermissionManager(
-    private val bundle: NSBundle,
-    stateRepo: PermissionStateRepo<MicrophonePermission>
-) : PermissionManager<MicrophonePermission>(stateRepo) {
+actual class DefaultMicrophonePermissionManager(
+    bundle: NSBundle,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeMicrophone(this))
+    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeMicrophone(), ::handleAuthorizationStatus, coroutineScope)
 
-    override suspend fun requestPermission() {
+    override fun requestPermission() {
+        super.requestPermission()
         avPermissionHelper.requestPermission()
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun startMonitoring(interval: Duration) {
+        super.startMonitoring(interval)
         avPermissionHelper.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         avPermissionHelper.stopMonitoring()
     }
 }
 
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission> {
-        return MicrophonePermissionManager(context, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
+        return DefaultMicrophonePermissionManager(context, settings, coroutineScope)
     }
 }

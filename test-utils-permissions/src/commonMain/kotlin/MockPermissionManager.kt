@@ -18,17 +18,16 @@
 package com.splendo.kaluga.test.permissions
 
 import co.touchlab.stately.collections.sharedMutableListOf
-import co.touchlab.stately.concurrency.AtomicBoolean
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionManager
-import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import com.splendo.kaluga.test.permissions.MockPermissionManager.MockPermissionState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
 /**
  * Mock implementation of [PermissionManager]
@@ -37,10 +36,13 @@ import kotlinx.coroutines.launch
  * @param monitoringInterval The interval between checking whether permissions have changed
  */
 class MockPermissionManager<P : Permission>(
-    private val permissionRepo: PermissionStateRepo<P>,
-    initialState: MockPermissionState = MockPermissionState.DENIED,
-    val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
-) : PermissionManager<P>(permissionRepo) {
+    permission: P,
+    val monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    private val initialState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.REQUESTABLE,
+    settings: Settings,
+    setupMocks: Boolean = true,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<P>(permission, settings, coroutineScope) {
 
     /**
      * Builder class for creating a [MockPermissionManager]
@@ -48,8 +50,10 @@ class MockPermissionManager<P : Permission>(
      * @param monitoringInterval The interval between checking whether permissions have changes
      */
     class Builder<P : Permission>(
-        val initialState: MockPermissionState = MockPermissionState.DENIED,
-        val monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval,
+        val permission: P,
+        val monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+        val initialState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.REQUESTABLE,
+        setupMocks: Boolean = true
     ) {
         /**
          * List of built [MockPermissionManager]
@@ -62,66 +66,21 @@ class MockPermissionManager<P : Permission>(
         val createMock = ::create.mock()
 
         init {
-            createMock.on().doExecute { (repo) ->
-                MockPermissionManager(repo, initialState, monitoringInterval).also { createdManagers.add(it) }
-            }
-        }
-
-        fun create(repo: PermissionStateRepo<P>): MockPermissionManager<P> = createMock.call(repo)
-    }
-
-    /**
-     * Mocked permission state
-     */
-    enum class MockPermissionState {
-        /**
-         * Permission is granted
-         */
-        ALLOWED,
-
-        /**
-         * Permission is denied but requestable
-         */
-        DENIED,
-
-        /**
-         * Permission is denied and locked.
-         */
-        LOCKED
-    }
-
-    /**
-     * Current [PermissionState]
-     */
-    val currentState = MutableStateFlow(initialState.toPermissionState())
-    private val isMonitoring = AtomicBoolean(false)
-
-    /**
-     * Sets the permission to be granted
-     */
-    suspend fun setPermissionAllowed() = changePermission(MockPermissionState.ALLOWED)
-
-    /**
-     * Sets the permission to be denied
-     */
-    suspend fun setPermissionDenied() = changePermission(MockPermissionState.DENIED)
-
-    /**
-     * Sets the permission to be locked
-     */
-    suspend fun setPermissionLocked() = changePermission(MockPermissionState.LOCKED)
-
-    private suspend fun changePermission(desiredState: MockPermissionState) = changePermission(desiredState.toPermissionState())
-    private suspend fun changePermission(desiredState: PermissionState.Active<P>) {
-        if (isMonitoring.value) {
-            permissionRepo.takeAndChangeState { state ->
-                when (state) {
-                    is PermissionState.Uninitialized -> state.remain()
-                    else -> suspend { desiredState }
+            if (setupMocks) {
+                createMock.on().doExecute { (settings, coroutineScope) ->
+                    MockPermissionManager(
+                        permission,
+                        monitoringInterval,
+                        initialState,
+                        settings,
+                        setupMocks,
+                        coroutineScope
+                    ).also { createdManagers.add(it) }
                 }
             }
         }
-        currentState.value = desiredState
+
+        fun create(settings: Settings, coroutineScope: CoroutineScope): MockPermissionManager<P> = createMock.call(settings, coroutineScope)
     }
 
     /**
@@ -139,44 +98,22 @@ class MockPermissionManager<P : Permission>(
      */
     val stopMonitoringMock = ::stopMonitoring.mock()
 
-    /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [grantPermission]
-     */
-    val grandPermissionMock = ::grantPermission.mock()
-
-    /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [revokePermission]
-     */
-    val revokePermissionMock = ::revokePermission.mock()
-
-    override suspend fun requestPermission(): Unit = requestPermissionMock.call()
-
-    override suspend fun startMonitoring(interval: Long) {
-        isMonitoring.value = true
-        launch {
-            changePermission(currentState.value)
+    init {
+        if (setupMocks) {
+            startMonitoringMock.on().doExecute {
+                debug("Initial State $initialState")
+                when (initialState) {
+                    MockPermissionState.ActiveState.ALLOWED -> grantPermission()
+                    MockPermissionState.ActiveState.REQUESTABLE -> revokePermission(false)
+                    MockPermissionState.ActiveState.LOCKED -> revokePermission(true)
+                }
+            }
         }
-        startMonitoringMock.call(interval)
     }
 
-    override suspend fun stopMonitoring() {
-        isMonitoring.value = false
-        stopMonitoringMock.call()
-    }
+    override fun requestPermission(): Unit = requestPermissionMock.call()
 
-    override fun grantPermission() {
-        grandPermissionMock.call()
-        super.grantPermission()
-    }
+    override fun startMonitoring(interval: Duration): Unit = startMonitoringMock.call(interval)
 
-    override fun revokePermission(locked: Boolean) {
-        revokePermissionMock.call(locked)
-        super.revokePermission(locked)
-    }
-
-    private fun MockPermissionState.toPermissionState(): PermissionState.Active<P> = when (this) {
-        MockPermissionState.ALLOWED -> PermissionState.Allowed(monitoringInterval, this@MockPermissionManager)
-        MockPermissionState.DENIED -> PermissionState.Denied.Requestable(monitoringInterval, this@MockPermissionManager)
-        MockPermissionState.LOCKED -> PermissionState.Denied.Locked(monitoringInterval, this@MockPermissionManager)
-    }
+    override fun stopMonitoring(): Unit = stopMonitoringMock.call()
 }

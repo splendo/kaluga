@@ -41,6 +41,7 @@ fun ServiceUUIDsList.uuid(uuidString: String) = add(uuidFrom(uuidString))
 class MockDeviceInfoBuilder {
 
     var deviceName: String? = null
+    var identifier: Identifier = randomIdentifier()
     var rssi: Int = 0
     var manufacturerId: Int? = null
     var manufacturerData: ByteArray? = null
@@ -53,6 +54,7 @@ class MockDeviceInfoBuilder {
 
     fun build() = DeviceInfoImpl(
         deviceName,
+        identifier,
         rssi,
         MockAdvertisementData(
             deviceName,

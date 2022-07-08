@@ -17,26 +17,31 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [MicrophonePermission]
  */
-expect class MicrophonePermissionManager : PermissionManager<MicrophonePermission>
+typealias MicrophonePermissionManager = PermissionManager<MicrophonePermission>
+expect class DefaultMicrophonePermissionManager : BasePermissionManager<MicrophonePermission>
 
 interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder<MicrophonePermission> {
 
     /**
      * Creates a [MicrophonePermissionManager]
-     * @param repo The [MicrophonePermissionStateRepo] associated with the [MicrophonePermission]
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(repo: PermissionStateRepo<MicrophonePermission>): PermissionManager<MicrophonePermission>
+    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): MicrophonePermissionManager
 }
 
 /**
@@ -51,6 +56,7 @@ expect class MicrophonePermissionManagerBuilder(context: PermissionContext = def
  */
 class MicrophonePermissionStateRepo(
     builder: BaseMicrophonePermissionManagerBuilder,
-    monitoringInterval: Long = defaultMonitoringInterval,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : PermissionStateRepo<MicrophonePermission>(monitoringInterval, coroutineContext, { builder.create(it) })
+) : PermissionStateRepo<MicrophonePermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

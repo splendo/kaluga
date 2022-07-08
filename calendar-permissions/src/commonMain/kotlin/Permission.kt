@@ -17,24 +17,29 @@
 
 package com.splendo.kaluga.permissions.calendar
 
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Calendar
  * @param allowWrite If `true` writing to the calendar is permitted
  */
-data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
+data class CalendarPermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Calendar - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
 fun PermissionsBuilder.registerCalendarPermission(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
-    monitoringInterval: Long = PermissionStateRepo.defaultMonitoringInterval
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) =
     registerCalendarPermission(calendarPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        CalendarPermissionStateRepo(permission, builder, monitoringInterval, coroutineContext)
+        CalendarPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
 fun PermissionsBuilder.registerCalendarPermission(

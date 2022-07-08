@@ -22,6 +22,7 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
@@ -89,6 +90,7 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
@@ -105,8 +107,9 @@ val utilitiesModule = module {
     single {
         Permissions(
             PermissionsBuilder().apply {
-                registerAllPermissions()
-            }
+                registerAllPermissions(settings = BasePermissionManager.Settings(logLevel = BasePermissionManager.LogLevel.VERBOSE))
+            },
+            coroutineContext = singleThreadDispatcher("Permissions")
         )
     }
     single { LocationStateRepoBuilder() }

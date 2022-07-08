@@ -17,12 +17,13 @@
 
 package com.splendo.kaluga.permissions.base.av
 
-import com.splendo.kaluga.base.mainContinuation
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.base.Permission
-import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.AVFoundation.AVAuthorizationStatus
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied
@@ -33,48 +34,60 @@ import platform.AVFoundation.AVMediaType
 import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.requestAccessForMediaType
 import platform.Foundation.NSBundle
+import kotlin.time.Duration
 
-abstract class AVType<P : Permission> {
-
-    abstract val permissionManager: PermissionManager<P>
+abstract class AVType {
     abstract val avMediaType: AVMediaType
     abstract val declarationName: String
 }
 
-class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, private val type: AVType<P>) {
+class AVPermissionHelper(
+    private val bundle: NSBundle,
+    private val type: AVType,
+    private val onPermissionChanged: (IOSPermissionsHelper.AuthorizationStatus) -> Unit,
+    coroutineScope: CoroutineScope
+) : CoroutineScope by coroutineScope {
 
     private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
     }
-    private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
+    private val timerHelper = PermissionRefreshScheduler(authorizationStatus, onPermissionChanged, coroutineScope)
 
     fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            AVCaptureDevice.requestAccessForMediaType(
-                type.avMediaType,
-                mainContinuation { allowed ->
-                    timerHelper.isWaiting.value = false
-                    if (allowed) {
-                        type.permissionManager.grantPermission()
-                    } else {
-                        type.permissionManager.revokePermission(true)
-                    }
+            launch {
+                timerHelper.isWaiting.value = true
+                val deferred = CompletableDeferred<Boolean>()
+                val callback = { allowed: Boolean ->
+                    deferred.complete(allowed)
+                    Unit
+                }.freeze()
+                AVCaptureDevice.requestAccessForMediaType(
+                    type.avMediaType,
+                    callback
+                )
+
+                val allowed = deferred.await()
+                timerHelper.isWaiting.value = false
+                if (allowed) {
+                    onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Authorized)
+                } else {
+                    onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Denied)
                 }
-            )
+            }
         } else {
-            type.permissionManager.revokePermission(true)
+            onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Denied)
         }
     }
 
-    suspend fun startMonitoring(interval: Long) {
+    fun startMonitoring(interval: Duration) {
         when {
-            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> type.permissionManager.revokePermission(true)
+            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> onPermissionChanged(IOSPermissionsHelper.AuthorizationStatus.Denied)
             else -> timerHelper.startMonitoring(interval)
         }
     }
 
-    suspend fun stopMonitoring() {
+    fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
 }
