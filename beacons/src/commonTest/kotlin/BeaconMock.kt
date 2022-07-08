@@ -80,8 +80,7 @@ object BeaconMock {
     )
 
     private fun makeDeviceInfo(name: String, serviceData: ServiceData) = DeviceInfoImpl(
-        name,
-        randomIdentifier(),
+        createDeviceWrapper(name),
         rssi = -78,
         MockAdvertisementData(name, serviceData = serviceData)
     )

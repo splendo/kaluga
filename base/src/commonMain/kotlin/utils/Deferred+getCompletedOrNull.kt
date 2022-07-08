@@ -20,6 +20,8 @@ import kotlinx.coroutines.Deferred
 
 /**
  * Gets the [Deferred.getCompleted] value if [Deferred.isCompleted] or null otherwise.
+ *
+ * It will still throw an exception is the Deferred was completed exceptionally, unless this was with an [IllegalStateException]
  */
 fun <T> Deferred<T>.getCompletedOrNull(): T? = try {
     getCompleted()

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -31,19 +30,18 @@ import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
-import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 typealias EnableSensorAction = suspend () -> Boolean
@@ -66,7 +64,7 @@ interface Scanner {
     }
 
     val isSupported: Boolean
-    val events: SharedFlow<Event>
+    val events: Flow<Event>
     fun startMonitoringPermissions()
     fun stopMonitoringPermissions()
     suspend fun scanForDevices(filter: Set<UUID>)
@@ -76,6 +74,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
+    fun pairedDevices(withServices: Set<UUID>): List<Identifier>
 }
 
 abstract class BaseScanner constructor(
@@ -104,13 +103,13 @@ abstract class BaseScanner constructor(
     }
 
     private val logger = RestrictedLogger(settings.logLevel)
-    
+
     internal val permissions: Permissions = settings.permissions
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
-    protected val sharedEvents = SequentialMutableSharedFlow<Scanner.Event>(0, settings.eventBufferSize, coroutineScope)
-    override val events: SharedFlow<Scanner.Event> = sharedEvents.asSharedFlow()
+    protected val sharedEvents = Channel<Scanner.Event>(UNLIMITED)
+    override val events: Flow<Scanner.Event> = sharedEvents.receiveAsFlow()
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
@@ -241,9 +240,8 @@ abstract class BaseScanner constructor(
     }
 
     private fun emitSharedEvent(event: Scanner.Event) {
-        if (!sharedEvents.tryEmitOrLaunchAndEmit(event)) {
-            logger.error(LOG_TAG) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
+        // Channel has unlimited buffer so this will never fail due to capacity
+        sharedEvents.trySend(event)
     }
 }
 

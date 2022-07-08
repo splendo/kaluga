@@ -62,7 +62,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             val advertisementData = MockAdvertisementData()
             val deviceWrapper = createDeviceWrapper()
             val device = createDevice(ConnectionSettings(), deviceWrapper, rssi, advertisementData) {
-                MockDeviceConnectionManager(true, deviceWrapper, ConnectionSettings(eventBufferSize = 1), coroutineScope)
+                MockDeviceConnectionManager(true, deviceWrapper, ConnectionSettings(), coroutineScope)
             }
             deferredDevice.complete(device)
             scanDevice(device, deviceWrapper, rssi, advertisementData)

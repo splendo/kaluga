@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,18 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.device
+package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.logging.RestrictedLogLevel
-
-data class ConnectionSettings(
-    val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always,
-    val logLevel: RestrictedLogLevel = RestrictedLogLevel.None
-) {
-
-    sealed class ReconnectionSettings {
-        object Always : ReconnectionSettings()
-        object Never : ReconnectionSettings()
-        data class Limited(val attempts: Int) : ReconnectionSettings()
-    }
-}
+/** Returns `true` if contains at least one element from `elements` */
+fun <T> Iterable<T>.containsAny(elements: Iterable<T>) = any { it in elements }
