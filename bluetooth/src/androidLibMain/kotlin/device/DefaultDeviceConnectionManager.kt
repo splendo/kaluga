@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.e
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -247,7 +248,7 @@ internal actual class DefaultDeviceConnectionManager(
                 gatt.await().writeDescriptor(descriptor.wrapper)
             } ?: false
         } else {
-            logError {
+            e {
                 "(${characteristic.uuid.uuidString}) Failed attempt to perform set notification action. " +
                     "neither NOTIFICATION nor INDICATION is supported. " +
                     "Supported properties: ${characteristic.wrapper.properties}"

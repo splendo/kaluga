@@ -32,6 +32,7 @@ import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
+import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
@@ -91,7 +92,7 @@ actual class DefaultScanner internal constructor(
                 else -> Pair("Reason Unknown", true)
             }
 
-            logError { error.first }
+            e { error.first }
             if (error.second) {
                 sharedEvents.trySend(Scanner.Event.FailedScanning)
             }
