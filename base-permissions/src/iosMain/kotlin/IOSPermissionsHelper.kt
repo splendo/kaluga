@@ -18,12 +18,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
@@ -82,7 +82,11 @@ fun FlowCollector<AuthorizationStatus>.requestAuthorizationStatus(timerHelper: P
     }
 }
 
-class AuthorizationStatusHandler(private val sharedEventFlow: SequentialMutableSharedFlow<PermissionManager.Event>, private val logTag: String, private val logger: RestrictedLogger) : FlowCollector<AuthorizationStatus> {
+class AuthorizationStatusHandler(
+    private val eventChannel: SendChannel<PermissionManager.Event>,
+    private val logTag: String,
+    private val logger: RestrictedLogger
+) : FlowCollector<AuthorizationStatus> {
 
     override suspend fun emit(value: AuthorizationStatus) {
         when (value) {
@@ -102,8 +106,6 @@ class AuthorizationStatusHandler(private val sharedEventFlow: SequentialMutableS
     }
 
     private fun tryAndEmitEvent(event: PermissionManager.Event) {
-        if (!sharedEventFlow.tryEmitOrLaunchAndEmit(event)) {
-            logger.error(logTag) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
+        eventChannel.trySend(event)
     }
 }

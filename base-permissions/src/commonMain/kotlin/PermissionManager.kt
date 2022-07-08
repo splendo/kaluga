@@ -24,7 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.time.Duration
 
@@ -87,7 +86,7 @@ abstract class BasePermissionManager<P : Permission>(
         logger.debug(logTag) { "Stop monitoring with interval" }
     }
 
-    private fun emitSharedEvent(event: PermissionManager.Event) {
+    protected fun emitSharedEvent(event: PermissionManager.Event) {
         sharedEvents.trySend(event)
     }
 }

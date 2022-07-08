@@ -40,7 +40,7 @@ sealed class MockPermissionState<P : Permission> {
     val unlock: suspend () -> PermissionState.Denied.Requestable<P> = suspend { Requestable() }
     val lock: suspend () -> PermissionState.Denied.Locked<P> = suspend { Locked() }
 
-    fun request(): Unit = requestMock.call()
+    suspend fun request(): Unit = requestMock.call()
 
     fun initialize(allowed: Boolean, locked: Boolean): suspend () -> PermissionState.Initialized<P> = suspend {
         when {

@@ -56,7 +56,7 @@ sealed interface PermissionState<P : Permission> : KalugaState {
         interface Requestable<P : Permission> : Denied<P> {
             val lock: suspend () -> Locked<P>
 
-            fun request()
+            suspend fun request()
         }
     }
 }
@@ -152,7 +152,7 @@ sealed class PermissionStateImpl<P : Permission> {
             override val permissionManager: PermissionManager<P>
         ) : Denied<P>(), PermissionState.Denied.Requestable<P> {
 
-            override fun request() {
+            override suspend fun request() {
                 permissionManager.requestPermission()
             }
 
