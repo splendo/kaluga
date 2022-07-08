@@ -25,9 +25,9 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.flow.SequentialMutableSharedFlow
 import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import java.util.Timer
@@ -213,7 +213,7 @@ class AndroidPermissionsManager constructor(
     }
 }
 
-class AndroidPermissionStateHandler(private val sharedEventFlow: SequentialMutableSharedFlow<PermissionManager.Event>, private val logTag: String, private val logger: RestrictedLogger) : FlowCollector<AndroidPermissionState> {
+class AndroidPermissionStateHandler(private val sharedEventFlow: SendChannel<PermissionManager.Event>, private val logTag: String, private val logger: RestrictedLogger) : FlowCollector<AndroidPermissionState> {
     override suspend fun emit(value: AndroidPermissionState) {
         when (value) {
             AndroidPermissionState.DENIED -> {
@@ -232,8 +232,6 @@ class AndroidPermissionStateHandler(private val sharedEventFlow: SequentialMutab
     }
 
     private fun tryAndEmitEvent(event: PermissionManager.Event) {
-        if (!sharedEventFlow.tryEmitOrLaunchAndEmit(event)) {
-            logger.error(logTag) { "Failed to Emit $event instantly. This may indicate that your event buffer is full. Increase the buffer size or reduce the number of events on this thread" }
-        }
+        sharedEventFlow.trySend(event)
     }
 }
