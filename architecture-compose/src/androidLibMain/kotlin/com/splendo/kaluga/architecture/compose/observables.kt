@@ -34,7 +34,7 @@ inline fun <R> WithState<R>.state(): State<R> =
 fun <R> WithMutableState<R>.mutableState(): MutableState<R> {
     val readState = state()
 
-    return remember {
+    return remember(this) {
         object : MutableState<R> {
             override var value: R
                 get() = readState.value

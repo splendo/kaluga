@@ -44,6 +44,16 @@ fun <VM : BaseViewModel> storeAndRemember(provider: @DisallowComposableCalls () 
     remember(provider)
 }
 
+/**
+ * Stores and remembers a view model in the local [ViewModelStore].
+ * Use if the view model was created manually and is not located in Activity/Fragment [ViewModelStore].
+ * provider will only be evaluated during the composition. Recomposition will always return the value produced by provider.
+ */
+@Composable
+fun <VM : BaseViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> VM): VM = store {
+    remember(key, provider)
+}
+
 @Composable
 private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {
     // we delegate VM cleanup to the ViewModelStore, which lives in scope of the current @Composable
