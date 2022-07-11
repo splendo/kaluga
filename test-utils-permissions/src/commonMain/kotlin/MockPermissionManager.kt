@@ -117,4 +117,12 @@ class MockPermissionManager<P : Permission>(
     override fun startMonitoring(interval: Duration): Unit = startMonitoringMock.call(interval)
 
     override fun stopMonitoring(): Unit = stopMonitoringMock.call()
+
+    fun grantPermission() {
+        emitSharedEvent(PermissionManager.Event.PermissionGranted)
+    }
+
+    fun revokePermission(locked: Boolean) {
+        emitSharedEvent(PermissionManager.Event.PermissionDenied(locked))
+    }
 }
