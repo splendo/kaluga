@@ -160,8 +160,8 @@ class Bluetooth internal constructor(
         when (scanMode) {
             is ScanMode.Scan -> scanningStateRepo.map { scanState -> scanState is ScanningState.Enabled.Scanning }
             is ScanMode.Stopped -> flowOf(false)
-        }.distinctUntilChanged()
-    }
+        }
+    }.distinctUntilChanged()
 
     override val isEnabled = scanningStateRepo
         .mapLatest { it is ScanningState.Enabled }
