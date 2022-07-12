@@ -26,7 +26,6 @@ import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -114,7 +113,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
         }
         mainAction {
             connectionManager.startConnecting()
-            yield()
+            yieldMultiple(2)
         }
         test {
             connectionManager.connectMock.verify()
@@ -131,6 +130,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
     private suspend fun discover() {
         mainAction {
             connectionManager.startDiscovering()
+            yieldMultiple(2)
         }
         test {
             connectionManager.discoverServicesMock.verify()

@@ -27,7 +27,6 @@ import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -294,7 +293,7 @@ class DeviceTest :
     private suspend fun connecting() {
         mainAction {
             connectionManager.startConnecting()
-            yield()
+            yieldMultiple(2)
         }
         test {
             connectionManager.connectMock.verify()
@@ -315,6 +314,7 @@ class DeviceTest :
     private suspend fun disconnecting() {
         mainAction {
             connectionManager.startDisconnecting()
+            yieldMultiple(2)
         }
         getDisconnectingState()
     }
