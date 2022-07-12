@@ -98,8 +98,8 @@ class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadView
 
     @Test
     fun testCustomUIThreadViewModelTest() = testOnUIThread {
-        val observableDisposable = viewModel.testObservable.observe {  }
-        val subjectDisposable = viewModel.testSubject.observe {  }
+        val observableDisposable = viewModel.testObservable.observe { }
+        val subjectDisposable = viewModel.testSubject.observe { }
         yieldMultiple(2)
 
         assertEquals("1", viewModel.testObservable.current)

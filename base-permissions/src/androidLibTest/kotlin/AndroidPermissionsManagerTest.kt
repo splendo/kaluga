@@ -26,7 +26,6 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.test.base.BaseTest
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.yield
