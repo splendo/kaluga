@@ -23,8 +23,6 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.logging.RestrictedLogLevel
-import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runBlockingTest
@@ -75,7 +73,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @Test
     fun testMissingDeclaration() = runBlockingTest {
         val onPermissionChangedFlow = MutableStateFlow<AndroidPermissionState?>(null)
-        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, "", RestrictedLogger(RestrictedLogLevel.Verbose), onPermissionChangedFlow = onPermissionChangedFlow)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChangedFlow = onPermissionChangedFlow)
         packageInfo.requestedPermissions = emptyArray()
         androidPermissionsManager.requestPermissions()
 
@@ -85,7 +83,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @Test
     fun testRequestPermissions() = runBlockingTest {
         val onPermissionChangedFlow = MutableStateFlow<AndroidPermissionState?>(null)
-        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, "", RestrictedLogger(RestrictedLogLevel.Verbose), onPermissionChangedFlow = onPermissionChangedFlow)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChangedFlow = onPermissionChangedFlow)
         packageInfo.requestedPermissions = permissions
         androidPermissionsManager.requestPermissions()
         verify(context).startActivity(ArgumentMatchers.any(Intent::class.java))
@@ -94,7 +92,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @Test
     fun test_monitor_permissionsGranted() = runBlocking {
         val onPermissionChangedFlow = MutableStateFlow<AndroidPermissionState?>(null)
-        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, "", RestrictedLogger(RestrictedLogLevel.Verbose), onPermissionChangedFlow = onPermissionChangedFlow)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChangedFlow = onPermissionChangedFlow)
         permissions.forEach {
             `when`(context.checkPermission(Mockito.eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
         }
@@ -108,7 +106,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @Test
     fun test_monitor_permissionsDenied() = runBlocking {
         val onPermissionChangedFlow = MutableStateFlow<AndroidPermissionState?>(null)
-        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, "", RestrictedLogger(RestrictedLogLevel.Verbose), onPermissionChangedFlow = onPermissionChangedFlow)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChangedFlow = onPermissionChangedFlow)
         permissions.forEach {
             `when`(context.checkPermission(Mockito.eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
         }
@@ -122,7 +120,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @Test
     fun test_monitor_permissionsDeniedDoNotAsk() = runBlocking {
         val onPermissionChangedFlow = MutableStateFlow<AndroidPermissionState?>(null)
-        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, "", RestrictedLogger(RestrictedLogLevel.Verbose), onPermissionChangedFlow = onPermissionChangedFlow)
+        androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChangedFlow = onPermissionChangedFlow)
         permissions.forEach {
             AndroidPermissionsManager.permissionsStates[it] = AndroidPermissionState.DENIED_DO_NOT_ASK
             `when`(context.checkPermission(Mockito.eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)

@@ -19,14 +19,14 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.Logger
 
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logger: RestrictedLogger
+    logger: Logger
 ) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
     initialValue,
     emitNewAction,

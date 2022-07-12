@@ -33,29 +33,16 @@ sealed class RestrictedLogLevel(val levels: Set<LogLevel>) {
 
 infix fun RestrictedLogLevel.or(other: RestrictedLogLevel): RestrictedLogLevel = RestrictedLogLevel.Custom(levels + other.levels)
 
-class RestrictedLogger(private val restrictedLogLevel: RestrictedLogLevel) {
+class RestrictedLogger(private val restrictedLogLevel: RestrictedLogLevel, private val logger: Logger = defaultLogger) : Logger {
 
-    fun info(tag: String, message: () -> String) {
-        if (restrictedLogLevel.levels.contains(LogLevel.INFO)) {
-            com.splendo.kaluga.logging.info(tag, message)
-        }
-    }
-
-    fun error(tag: String, message: () -> String) {
-        if (restrictedLogLevel.levels.contains(LogLevel.ERROR)) {
-            com.splendo.kaluga.logging.error(tag, message)
-        }
-    }
-
-    fun debug(tag: String, message: () -> String) {
-        if (restrictedLogLevel.levels.contains(LogLevel.DEBUG)) {
-            com.splendo.kaluga.logging.debug(tag, message)
-        }
-    }
-
-    fun warn(tag: String, message: () -> String) {
-        if (restrictedLogLevel.levels.contains(LogLevel.WARN)) {
-            com.splendo.kaluga.logging.warn(tag, message)
+    override fun log(
+        level: LogLevel,
+        tag: String?,
+        throwable: Throwable?,
+        message: (() -> String)?
+    ) {
+        if (restrictedLogLevel.levels.contains(level)) {
+            logger.log(level = level, tag = tag, throwable = throwable, message = message)
         }
     }
 }

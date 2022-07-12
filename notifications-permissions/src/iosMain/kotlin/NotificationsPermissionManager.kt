@@ -74,7 +74,7 @@ actual class DefaultNotificationsPermissionManager(
 
     override fun requestPermission() {
         super.requestPermission()
-        permissionHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
+        permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
             val deferred = CompletableDeferred<Boolean>()
             val callback = { authorization: Boolean, error: NSError? ->
                 error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }

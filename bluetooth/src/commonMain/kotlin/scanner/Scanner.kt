@@ -28,8 +28,11 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.description
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -92,7 +95,7 @@ abstract class BaseScanner constructor(
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
         val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
-        val logLevel: RestrictedLogLevel = RestrictedLogLevel.None
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
     interface Builder {
@@ -102,7 +105,7 @@ abstract class BaseScanner constructor(
         ): BaseScanner
     }
 
-    private val logger = RestrictedLogger(settings.logLevel)
+    private val logger = settings.logger
 
     internal val permissions: Permissions = settings.permissions
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission

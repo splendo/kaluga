@@ -61,7 +61,7 @@ actual class DefaultContactsPermissionManager(
 
     override fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
-            permissionHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
+            permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 val callback = { success: Boolean, error: NSError? ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)

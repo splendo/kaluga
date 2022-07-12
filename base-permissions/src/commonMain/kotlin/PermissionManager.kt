@@ -18,8 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
@@ -60,16 +63,16 @@ interface PermissionManager<P : Permission> {
  */
 abstract class BasePermissionManager<P : Permission>(
     override val permission: P,
-    private val settings: Settings,
-    protected val coroutineScope: CoroutineScope
+    settings: Settings,
+    coroutineScope: CoroutineScope
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
     data class Settings(
-        val logLevel: RestrictedLogLevel = RestrictedLogLevel.None
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
     protected val logTag = "PermissionManager $permission"
-    protected val logger = RestrictedLogger(settings.logLevel)
+    protected val logger = settings.logger
 
     protected val sharedEvents = Channel<PermissionManager.Event>(UNLIMITED)
     override val events: Flow<PermissionManager.Event> = sharedEvents.receiveAsFlow()

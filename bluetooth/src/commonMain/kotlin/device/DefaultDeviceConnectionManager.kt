@@ -26,7 +26,9 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +83,7 @@ interface DeviceConnectionManager {
 
 abstract class BaseDeviceConnectionManager(
     val deviceWrapper: DeviceWrapper,
-    private val settings: ConnectionSettings,
+    settings: ConnectionSettings,
     private val coroutineScope: CoroutineScope
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
 
@@ -94,7 +96,7 @@ abstract class BaseDeviceConnectionManager(
     }
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
-    private val logger = RestrictedLogger(settings.logLevel)
+    private val logger = settings.logger
 
     private val _currentAction = AtomicReference<DeviceAction?>(null)
     protected var currentAction: DeviceAction?

@@ -19,7 +19,9 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -29,7 +31,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val parentLogTag: String,
-    private val logger: RestrictedLogger
+    private val logger: Logger
 ) : Flow<ByteArray?> {
 
     protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"

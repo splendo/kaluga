@@ -18,9 +18,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.SendChannel
@@ -85,7 +86,7 @@ fun FlowCollector<AuthorizationStatus>.requestAuthorizationStatus(timerHelper: P
 class AuthorizationStatusHandler(
     private val eventChannel: SendChannel<PermissionManager.Event>,
     private val logTag: String,
-    private val logger: RestrictedLogger
+    private val logger: Logger
 ) : FlowCollector<AuthorizationStatus> {
 
     override suspend fun emit(value: AuthorizationStatus) {

@@ -62,7 +62,7 @@ actual class DefaultCalendarPermissionManager(
     override fun requestPermission() {
         super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
-            permissionHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
+            permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 val callback = { success: Boolean, error: NSError? ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)

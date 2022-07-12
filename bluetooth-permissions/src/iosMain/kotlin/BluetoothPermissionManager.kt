@@ -104,7 +104,7 @@ actual class DefaultBluetoothPermissionManager(
     override fun startMonitoring(interval: Duration) {
         super.startMonitoring(interval)
         centralManager.value.delegate = delegate
-        coroutineScope.launch {
+        launch {
             permissionHandler.emit(checkAuthorization())
         }
     }

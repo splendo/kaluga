@@ -59,7 +59,7 @@ actual class DefaultStoragePermissionManager(
     override fun requestPermission() {
         super.requestPermission()
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
-            permissionHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
+            permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
                 val callback = { status: PHAuthorizationStatus ->
                     deferred.complete(status)

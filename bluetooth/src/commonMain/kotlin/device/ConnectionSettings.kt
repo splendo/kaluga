@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 
 data class ConnectionSettings(
     val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always,
-    val logLevel: RestrictedLogLevel = RestrictedLogLevel.None
+    val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
 ) {
 
     sealed class ReconnectionSettings {

@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.camera
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
 import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
