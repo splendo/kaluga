@@ -39,7 +39,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -58,7 +57,7 @@ interface BluetoothService {
     fun stopScanning()
     suspend fun pairedDevices(filter: Set<UUID> = emptySet()): List<Identifier>
     fun devices(): Flow<List<Device>>
-    suspend fun isScanning(): StateFlow<Boolean>
+    suspend fun isScanning(): Flow<Boolean>
     val isEnabled: Flow<Boolean>
 }
 
@@ -157,9 +156,12 @@ class Bluetooth internal constructor(
         scanMode.value = ScanMode.Stopped
     }
 
-    override suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
-        scanState is ScanningState.Enabled.Scanning && scanMode is ScanMode.Scan
-    }.stateIn(this)
+    override suspend fun isScanning() = scanMode.flatMapLatest { scanMode ->
+        when (scanMode) {
+            is ScanMode.Scan -> scanningStateRepo.map { scanState -> scanState is ScanningState.Enabled.Scanning }
+            is ScanMode.Stopped -> flowOf(false)
+        }
+    }
 
     override val isEnabled = scanningStateRepo
         .mapLatest { it is ScanningState.Enabled }

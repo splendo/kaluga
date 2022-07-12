@@ -18,6 +18,8 @@
 package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -88,14 +91,16 @@ open class PermissionStateRepo<P : Permission>(
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private suspend fun startMonitoringManager(permissionManager: PermissionManager<P>) {
+        val hasStarted = EmptyCompletableDeferred()
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            permissionManager.events.collect { event ->
+            permissionManager.events.onSubscription { hasStarted.complete() }.collect { event ->
                 when (event) {
                     is PermissionManager.Event.PermissionGranted -> handlePermissionGranted()
                     is PermissionManager.Event.PermissionDenied -> handlePermissionDenied(event.locked)
                 }
             }
         }
+        hasStarted.await()
     }
 
     private suspend fun handlePermissionGranted() = takeAndChangeState { state ->

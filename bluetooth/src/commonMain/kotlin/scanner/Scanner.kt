@@ -38,10 +38,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
 typealias EnableSensorAction = suspend () -> Boolean
@@ -64,7 +67,7 @@ interface Scanner {
     }
 
     val isSupported: Boolean
-    val events: Flow<Event>
+    val events: SharedFlow<Event>
     fun startMonitoringPermissions()
     fun stopMonitoringPermissions()
     suspend fun scanForDevices(filter: Set<UUID>)
@@ -109,7 +112,7 @@ abstract class BaseScanner constructor(
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
     protected val sharedEvents = Channel<Scanner.Event>(UNLIMITED)
-    override val events: Flow<Scanner.Event> = sharedEvents.receiveAsFlow()
+    override val events: SharedFlow<Scanner.Event> = sharedEvents.receiveAsFlow().shareIn(coroutineScope, SharingStarted.Eagerly, 0)
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
