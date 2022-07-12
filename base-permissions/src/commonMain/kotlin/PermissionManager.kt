@@ -24,10 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.shareIn
 import kotlin.time.Duration
 
 interface PermissionManager<P : Permission> {
@@ -38,7 +35,7 @@ interface PermissionManager<P : Permission> {
     }
 
     val permission: P
-    val events: SharedFlow<Event>
+    val events: Flow<Event>
 
     /**
      * Starts to request the permission
@@ -75,7 +72,7 @@ abstract class BasePermissionManager<P : Permission>(
     protected val logger = RestrictedLogger(settings.logLevel)
 
     protected val sharedEvents = Channel<PermissionManager.Event>(UNLIMITED)
-    override val events: SharedFlow<PermissionManager.Event> = sharedEvents.receiveAsFlow().shareIn(coroutineScope, SharingStarted.Eagerly, 0)
+    override val events: Flow<PermissionManager.Event> = sharedEvents.receiveAsFlow()
 
     override fun requestPermission() {
         logger.info(logTag) { "Request Permission" }

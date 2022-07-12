@@ -32,7 +32,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onSubscription
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -91,7 +91,7 @@ open class ScanningStateImplRepo(
     private suspend fun startMonitoringScanner(scanner: Scanner) {
         val hasStarted = EmptyCompletableDeferred()
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            scanner.events.onSubscription { hasStarted.complete() }.collect { event ->
+            scanner.events.onStart { hasStarted.complete() }.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }

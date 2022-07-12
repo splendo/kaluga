@@ -28,7 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onSubscription
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -93,7 +93,7 @@ open class PermissionStateRepo<P : Permission>(
     private suspend fun startMonitoringManager(permissionManager: PermissionManager<P>) {
         val hasStarted = EmptyCompletableDeferred()
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            permissionManager.events.onSubscription { hasStarted.complete() }.collect { event ->
+            permissionManager.events.onStart { hasStarted.complete() }.collect { event ->
                 when (event) {
                     is PermissionManager.Event.PermissionGranted -> handlePermissionGranted()
                     is PermissionManager.Event.PermissionDenied -> handlePermissionDenied(event.locked)
