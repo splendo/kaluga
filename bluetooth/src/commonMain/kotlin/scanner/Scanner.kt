@@ -111,8 +111,8 @@ abstract class BaseScanner constructor(
     protected val autoRequestPermission: Boolean = settings.autoRequestPermission
     internal val autoEnableSensors: Boolean = settings.autoEnableSensors
 
-    protected val sharedEvents = Channel<Scanner.Event>(UNLIMITED)
-    override val events: Flow<Scanner.Event> = sharedEvents.receiveAsFlow()
+    protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
+    override val events: Flow<Scanner.Event> = eventChannel.receiveAsFlow()
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
@@ -154,7 +154,7 @@ abstract class BaseScanner constructor(
         }
         val hasPermission = states.all { it is PermissionState.Allowed }
         logger.info(LOG_TAG) { "Permission now ${if (hasPermission) "Granted" else "Denied"}" }
-        emitSharedEvent(Scanner.Event.PermissionChanged(hasPermission))
+        emitEvent(Scanner.Event.PermissionChanged(hasPermission))
     }
 
     override fun stopMonitoringPermissions() {
@@ -196,7 +196,7 @@ abstract class BaseScanner constructor(
         if (actions.isEmpty()) {
             val isEnabled = isHardwareEnabled()
             logger.debug(LOG_TAG) { "Request Enable Hardware: ${if (isEnabled) "Enabled" else "Disabled"}" }
-            emitSharedEvent(if (isEnabled) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
+            emitEvent(if (isEnabled) Scanner.Event.BluetoothEnabled else Scanner.Event.BluetoothDisabled)
         } else if (
             flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
                 logger.debug(LOG_TAG) { "Request Enable Hardware awaiting action" }
@@ -215,26 +215,26 @@ abstract class BaseScanner constructor(
     ) {
         logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
-        emitSharedEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+        emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} connected" }
-        emitSharedEvent(Scanner.Event.DeviceConnected(identifier))
+        emitEvent(Scanner.Event.DeviceConnected(identifier))
     }
 
     internal fun handleDeviceDisconnected(identifier: Identifier) {
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected" }
-        emitSharedEvent(Scanner.Event.DeviceDisconnected(identifier))
+        emitEvent(Scanner.Event.DeviceDisconnected(identifier))
     }
 
     internal open suspend fun checkHardwareEnabledChanged() {
         val isEnabled = isHardwareEnabled()
         logger.info(LOG_TAG) { "Bluetooth hardware now ${if (isEnabled) "enabled" else "disabled"}" }
         if (isEnabled)
-            emitSharedEvent(Scanner.Event.BluetoothEnabled)
+            emitEvent(Scanner.Event.BluetoothEnabled)
         else {
-            emitSharedEvent(Scanner.Event.BluetoothDisabled)
+            emitEvent(Scanner.Event.BluetoothDisabled)
             if (autoEnableSensors) {
                 logger.info(LOG_TAG) { "Bluetooth disabled. Attempt to automatically enable" }
                 requestEnableHardware()
@@ -242,9 +242,9 @@ abstract class BaseScanner constructor(
         }
     }
 
-    private fun emitSharedEvent(event: Scanner.Event) {
+    private fun emitEvent(event: Scanner.Event) {
         // Channel has unlimited buffer so this will never fail due to capacity
-        sharedEvents.trySend(event)
+        eventChannel.trySend(event)
     }
 }
 

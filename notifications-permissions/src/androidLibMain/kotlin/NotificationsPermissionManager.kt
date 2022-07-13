@@ -33,7 +33,7 @@ actual class DefaultNotificationsPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     override fun requestPermission() {
         super.requestPermission()
         val handler = permissionHandler

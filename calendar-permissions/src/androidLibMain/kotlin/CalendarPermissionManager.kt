@@ -33,7 +33,7 @@ actual class DefaultCalendarPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (permission.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR),

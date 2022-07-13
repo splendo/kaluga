@@ -36,7 +36,7 @@ actual class DefaultCameraPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         arrayOf(Manifest.permission.CAMERA),

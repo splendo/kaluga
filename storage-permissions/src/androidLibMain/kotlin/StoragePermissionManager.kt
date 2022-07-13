@@ -33,7 +33,7 @@ actual class DefaultStoragePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (storagePermission.allowWrite)

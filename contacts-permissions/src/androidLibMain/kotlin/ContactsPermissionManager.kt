@@ -33,7 +33,7 @@ actual class DefaultContactsPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (contactsPermission.allowWrite)

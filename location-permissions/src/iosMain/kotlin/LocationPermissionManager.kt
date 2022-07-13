@@ -64,7 +64,7 @@ actual class DefaultLocationPermissionManager(
         }
     }
 
-    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }

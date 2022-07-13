@@ -62,7 +62,7 @@ interface PermissionManager<P : Permission> {
  * @param stateRepo The [PermissionStateRepo] managed by this manager.
  */
 abstract class BasePermissionManager<P : Permission>(
-    override val permission: P,
+    final override val permission: P,
     settings: Settings,
     coroutineScope: CoroutineScope
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
@@ -74,8 +74,8 @@ abstract class BasePermissionManager<P : Permission>(
     protected val logTag = "PermissionManager $permission"
     protected val logger = settings.logger
 
-    protected val sharedEvents = Channel<PermissionManager.Event>(UNLIMITED)
-    override val events: Flow<PermissionManager.Event> = sharedEvents.receiveAsFlow()
+    protected val eventChannel = Channel<PermissionManager.Event>(UNLIMITED)
+    override val events: Flow<PermissionManager.Event> = eventChannel.receiveAsFlow()
 
     override fun requestPermission() {
         logger.info(logTag) { "Request Permission" }
@@ -89,7 +89,7 @@ abstract class BasePermissionManager<P : Permission>(
         logger.debug(logTag) { "Stop monitoring with interval" }
     }
 
-    protected fun emitSharedEvent(event: PermissionManager.Event) {
-        sharedEvents.trySend(event)
+    protected fun emitEvent(event: PermissionManager.Event) {
+        eventChannel.trySend(event)
     }
 }

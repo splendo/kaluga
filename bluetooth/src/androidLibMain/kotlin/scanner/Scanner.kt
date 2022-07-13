@@ -94,7 +94,7 @@ actual class DefaultScanner internal constructor(
 
             e { error.first }
             if (error.second) {
-                sharedEvents.trySend(Scanner.Event.FailedScanning)
+                eventChannel.trySend(Scanner.Event.FailedScanning)
             }
         }
 

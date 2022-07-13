@@ -83,7 +83,7 @@ actual class DefaultBluetoothPermissionManager(
         CBCentralManager(null, permissionsQueue, options)
     }
 
-    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
 
     private val delegate = Delegate(permissionHandler, coroutineScope)
 

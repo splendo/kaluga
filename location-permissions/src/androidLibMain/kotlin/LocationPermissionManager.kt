@@ -42,7 +42,7 @@ actual class DefaultLocationPermissionManager(
         return result.toTypedArray()
     }
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, logTag, logger, permissionHandler)
 
     override fun requestPermission() {

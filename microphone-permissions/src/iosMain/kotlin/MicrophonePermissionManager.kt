@@ -31,7 +31,7 @@ actual class DefaultMicrophonePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeMicrophone(), permissionHandler, coroutineScope)
 
     override fun requestPermission() {

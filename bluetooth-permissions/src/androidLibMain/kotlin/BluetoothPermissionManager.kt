@@ -38,7 +38,7 @@ actual class DefaultBluetoothPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION),

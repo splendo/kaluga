@@ -220,7 +220,7 @@ class AndroidPermissionsManager constructor(
     }
 }
 
-class AndroidPermissionStateHandler(private val sharedEventFlow: SendChannel<PermissionManager.Event>, private val logTag: String, private val logger: Logger) : FlowCollector<AndroidPermissionState> {
+class AndroidPermissionStateHandler(private val eventChannel: SendChannel<PermissionManager.Event>, private val logTag: String, private val logger: Logger) : FlowCollector<AndroidPermissionState> {
     override suspend fun emit(value: AndroidPermissionState) {
         when (value) {
             AndroidPermissionState.DENIED -> {
@@ -239,6 +239,6 @@ class AndroidPermissionStateHandler(private val sharedEventFlow: SendChannel<Per
     }
 
     private fun tryAndEmitEvent(event: PermissionManager.Event) {
-        sharedEventFlow.trySend(event)
+        eventChannel.trySend(event)
     }
 }

@@ -31,7 +31,7 @@ actual class DefaultCameraPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), permissionHandler, coroutineScope)
 
     override fun requestPermission() {

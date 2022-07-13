@@ -35,7 +35,7 @@ actual class DefaultMicrophonePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(context, arrayOf(Manifest.permission.RECORD_AUDIO), coroutineScope, logTag, logger, permissionHandler)
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 

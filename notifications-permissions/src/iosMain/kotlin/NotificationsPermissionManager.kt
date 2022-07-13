@@ -69,7 +69,7 @@ actual class DefaultNotificationsPermissionManager(
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private val provider = Provider(notificationCenter, coroutineScope)
 
-    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermission() {

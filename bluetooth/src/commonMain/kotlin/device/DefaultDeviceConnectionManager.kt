@@ -104,8 +104,8 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = Channel<DeviceConnectionManager.Event>(UNLIMITED)
-    override val events: Flow<DeviceConnectionManager.Event> = sharedEvents.receiveAsFlow()
+    private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
+    override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     override val rssi = sharedRssi.asSharedFlow()
@@ -122,27 +122,27 @@ abstract class BaseDeviceConnectionManager(
 
     fun handleNewMtu(mtu: Int) {
         logger.debug(logTag) { "Updated Mtu $mtu" }
-        emitSharedEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
+        emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }
 
     override fun startConnecting() {
         logger.info(logTag) { "Start Connecting" }
-        emitSharedEvent(DeviceConnectionManager.Event.Connecting)
+        emitEvent(DeviceConnectionManager.Event.Connecting)
     }
 
     override fun cancelConnecting() {
         logger.info(logTag) { "Cancel Connecting" }
-        emitSharedEvent(DeviceConnectionManager.Event.CancelledConnecting)
+        emitEvent(DeviceConnectionManager.Event.CancelledConnecting)
     }
 
     override fun handleConnect() {
         logger.info(logTag) { "Did Connect" }
-        emitSharedEvent(DeviceConnectionManager.Event.Connected)
+        emitEvent(DeviceConnectionManager.Event.Connected)
     }
 
     override fun startDisconnecting() {
         logger.info(logTag) { "Start Disconnecting" }
-        emitSharedEvent(DeviceConnectionManager.Event.Disconnecting)
+        emitEvent(DeviceConnectionManager.Event.Disconnecting)
     }
 
     override suspend fun performAction(action: DeviceAction) {
@@ -152,7 +152,7 @@ abstract class BaseDeviceConnectionManager(
 
     // TODO add logging for pairing
 
-    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitSharedEvent, logTag, logger)
+    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, logTag, logger)
 
     override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = _currentAction
@@ -164,12 +164,12 @@ abstract class BaseDeviceConnectionManager(
             Unit
         }
         logger.info(logTag) { "Did Disconnect" }
-        emitSharedEvent(DeviceConnectionManager.Event.Disconnected(clean))
+        emitEvent(DeviceConnectionManager.Event.Disconnected(clean))
     }
 
     override fun startDiscovering() {
         logger.info(logTag) { "Start Discovering Services" }
-        emitSharedEvent(DeviceConnectionManager.Event.Discovering)
+        emitEvent(DeviceConnectionManager.Event.Discovering)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
@@ -177,7 +177,7 @@ abstract class BaseDeviceConnectionManager(
 
     fun handleDiscoverCompleted(services: List<Service>) {
         logger.info(logTag) { "Discovered services: ${services.map { it.uuid.uuidString }}" }
-        emitSharedEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
+        emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
@@ -189,7 +189,7 @@ abstract class BaseDeviceConnectionManager(
             else
                 logger.error(logTag) { "Failed to complete $currentAction" }
         }
-        emitSharedEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
+        emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }
 
     fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
@@ -243,9 +243,9 @@ abstract class BaseDeviceConnectionManager(
         disconnect()
     }
 
-    private fun emitSharedEvent(event: DeviceConnectionManager.Event) {
+    private fun emitEvent(event: DeviceConnectionManager.Event) {
         // Channel has unlimited buffer so this will never fail due to capacity
-        sharedEvents.trySend(event)
+        eventChannel.trySend(event)
     }
 }
 

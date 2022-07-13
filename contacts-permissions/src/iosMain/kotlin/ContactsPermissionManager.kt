@@ -56,7 +56,7 @@ actual class DefaultContactsPermissionManager(
     private val contactStore = CNContactStore()
     private val provider = Provider()
 
-    private val permissionHandler = AuthorizationStatusHandler(sharedEvents, logTag, logger)
+    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermission() {

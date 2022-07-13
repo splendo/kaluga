@@ -102,7 +102,7 @@ class MockPermissionManager<P : Permission>(
         if (setupMocks) {
             startMonitoringMock.on().doExecute {
                 debug("Initial State $initialState")
-                emitSharedEvent(
+                emitEvent(
                     when (initialState) {
                         MockPermissionState.ActiveState.ALLOWED -> PermissionManager.Event.PermissionGranted
                         MockPermissionState.ActiveState.REQUESTABLE -> PermissionManager.Event.PermissionDenied(false)
@@ -120,10 +120,10 @@ class MockPermissionManager<P : Permission>(
     override fun stopMonitoring(): Unit = stopMonitoringMock.call()
 
     fun grantPermission() {
-        emitSharedEvent(PermissionManager.Event.PermissionGranted)
+        emitEvent(PermissionManager.Event.PermissionGranted)
     }
 
     fun revokePermission(locked: Boolean) {
-        emitSharedEvent(PermissionManager.Event.PermissionDenied(locked))
+        emitEvent(PermissionManager.Event.PermissionDenied(locked))
     }
 }
