@@ -97,10 +97,10 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     @Test
     fun testStartWithBluetoothDisabled() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(isEnabled = false)) {
         test {
-            scanner.generateEnableSensorsActionsMock.verify()
             assertIs<Disabled>(it)
         }
         mainAction {
+            scanner.generateEnableSensorsActionsMock.verify()
             scanner.isEnabled.value = true
         }
         test {
@@ -113,8 +113,10 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     @Test
     fun testStartWithBluetoothDisabledNoAutoEnable() = testWithFlowAndTestContext(Configuration.DeviceWithoutService(autoEnableBluetooth = false, isEnabled = false)) {
         test {
-            scanner.generateEnableSensorsActionsMock.verify(rule = never())
             assertIs<Disabled>(it)
+        }
+        mainAction {
+            scanner.generateEnableSensorsActionsMock.verify(rule = never())
         }
     }
 
