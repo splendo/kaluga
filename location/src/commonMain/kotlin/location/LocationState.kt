@@ -103,7 +103,7 @@ sealed class LocationStateImpl {
     class PermittedHandler(val location: Location, private val locationManager: LocationManager) {
 
         val revokePermission: suspend () -> Disabled.NotPermitted = {
-            Disabled.NotPermitted(location.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED), locationManager)
+            Disabled.NotPermitted(location, locationManager)
         }
 
         fun afterNewStateIsSet(newState: LocationState) {
@@ -129,9 +129,9 @@ sealed class LocationStateImpl {
 
         override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized = suspend {
             when {
-                !hasPermission -> Disabled.NotPermitted(location.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED), locationManager)
-                !enabled -> Disabled.NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
-                else -> Enabled(location, locationManager)
+                !hasPermission -> Disabled.NotPermitted(location, locationManager)
+                !enabled -> Disabled.NoGPS(location, locationManager)
+                else -> Enabled(location.known.orUnknown, locationManager)
             }
         }
     }
@@ -144,22 +144,25 @@ sealed class LocationStateImpl {
         /**
          * A [LocationState.Disabled] that was disabled due to missing permissions.
          */
-        data class NotPermitted(override val location: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NotPermitted {
+        class NotPermitted(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NotPermitted {
+
+            override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED)
 
             /**
              * Transforms this state into [LocationState] that has sufficient permissions
              * @param enabled `true` if GPS is turned on, `false` otherwise.
              */
             override fun permit(enabled: Boolean): suspend () -> LocationState.Permitted = {
-                if (enabled) Enabled(location, locationManager) else NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
+                if (enabled) Enabled(location.known.orUnknown, locationManager) else NoGPS(location, locationManager)
             }
         }
 
         /**
          * A [LocationState.Disabled] that was disabled due to GPS being turned off.
          */
-        data class NoGPS(override val location: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NoGPS {
+        class NoGPS(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NoGPS {
 
+            override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)
             private val permittedHandler = PermittedHandler(location, locationManager)
 
             /**
@@ -171,7 +174,7 @@ sealed class LocationStateImpl {
              * Transforms this state into a [LocationState.Enabled] state.
              */
             override val enable: suspend () -> Enabled = {
-                Enabled(location, locationManager)
+                Enabled(location.known.orUnknown, locationManager)
             }
 
             override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
@@ -202,7 +205,7 @@ sealed class LocationStateImpl {
          * Transforms this state into a [LocationState.Disabled.NoGPS] state.
          */
         override val disable: suspend () -> Disabled.NoGPS = {
-            Disabled.NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
+            Disabled.NoGPS(location, locationManager)
         }
 
         override fun updateWithLocation(location: Location.KnownLocation): suspend () -> LocationState.Enabled = {
@@ -236,10 +239,4 @@ fun Flow<LocationState>.location(): Flow<Location> {
     return this.filterOnlyImportant().map { it.location }
 }
 
-fun Flow<Location>.known(): Flow<Location.KnownLocation> = mapNotNull { location ->
-    when (location) {
-        is Location.KnownLocation -> location
-        is Location.UnknownLocation.WithLastLocation -> location.lastKnownLocation
-        is Location.UnknownLocation.WithoutLastLocation -> null
-    }
-}
+fun Flow<Location>.known(): Flow<Location.KnownLocation> = mapNotNull { location -> location.known }

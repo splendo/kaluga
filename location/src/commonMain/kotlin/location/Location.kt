@@ -142,10 +142,18 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
     }
 }
 
-internal fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location {
+fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location {
     return when (this) {
         is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(this, reason)
         is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(this.lastKnownLocation, reason)
         is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(reason)
     }
 }
+
+val Location.known: Location.KnownLocation? get() = when (this) {
+    is Location.KnownLocation -> this
+    is Location.UnknownLocation.WithLastLocation -> lastKnownLocation
+    is Location.UnknownLocation.WithoutLastLocation -> null
+}
+
+val Location.KnownLocation?.orUnknown: Location get() = this ?: Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
