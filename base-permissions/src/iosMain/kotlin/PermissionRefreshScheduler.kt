@@ -28,7 +28,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
 
-interface AuthorizationStatusProvider {
+interface CurrentAuthorizationStatusProvider {
     suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus
 }
 
@@ -39,7 +39,7 @@ interface AuthorizationStatusProvider {
  * @param coroutineScope The [CoroutineScope] on which to run the checks.
  */
 class PermissionRefreshScheduler(
-    private val authorizationStatusProvider: AuthorizationStatusProvider,
+    private val currentAuthorizationStatusProvider: CurrentAuthorizationStatusProvider,
     private val onPermissionChangedFlow: FlowCollector<IOSPermissionsHelper.AuthorizationStatus>,
     coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
@@ -82,7 +82,7 @@ class PermissionRefreshScheduler(
             if (timerJobState is TimerJobState.TimerNotRunning) {
                 this.timerState.set(
                     timerJobState.startTimer(interval, this) {
-                        val status = authorizationStatusProvider.provide()
+                        val status = currentAuthorizationStatusProvider.provide()
                         if (!isWaiting.value && lastPermission.get() != status) {
                             updateLastPermission()
                             onPermissionChangedFlow.emit(status)
@@ -109,6 +109,6 @@ class PermissionRefreshScheduler(
     }
 
     private suspend fun updateLastPermission() {
-        lastPermission.set(authorizationStatusProvider.provide())
+        lastPermission.set(currentAuthorizationStatusProvider.provide())
     }
 }

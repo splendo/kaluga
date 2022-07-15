@@ -46,18 +46,15 @@ actual class DefaultStoragePermissionManager(
         permissionHandler
     )
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }

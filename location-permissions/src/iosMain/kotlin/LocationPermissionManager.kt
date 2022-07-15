@@ -71,8 +71,7 @@ actual class DefaultLocationPermissionManager(
 
     private val authorizationDelegate = Delegate(permission, permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         val locationDeclarations = mutableListOf(NSLocationWhenInUseUsageDescription)
         if (permission.background) {
             locationDeclarations.addAll(listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription))
@@ -94,8 +93,7 @@ actual class DefaultLocationPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         val permission = permission
         launch {
             val status = locationManager.updateLocationManager {
@@ -106,8 +104,7 @@ actual class DefaultLocationPermissionManager(
         }
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         launch {
             locationManager.updateLocationManager {
                 delegate = null

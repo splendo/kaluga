@@ -62,16 +62,14 @@ class DefaultBluetoothMonitor internal constructor(
             bluetoothAdapter.isEnabled
         }
 
-    override fun startMonitoring() {
-        super.startMonitoring()
+    override fun monitoringDidStart() {
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
     }
 }

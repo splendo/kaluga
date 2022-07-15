@@ -22,7 +22,6 @@ import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -299,7 +298,7 @@ class DeviceImpl(
 
 abstract class BaseConnectableDeviceStateRepo(
     initialState: () -> ConnectableDeviceState,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : HotStateFlowRepo<ConnectableDeviceState>(
     coroutineContext = coroutineContext,
     initialState = { initialState() }
@@ -307,7 +306,7 @@ abstract class BaseConnectableDeviceStateRepo(
 
 class ConnectableDeviceStateImplRepo(
     connectionManager: DeviceConnectionManager,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : BaseConnectableDeviceStateRepo(
     initialState = {
         when (connectionManager.getCurrentState()) {

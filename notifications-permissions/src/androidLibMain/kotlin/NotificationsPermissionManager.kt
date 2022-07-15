@@ -34,21 +34,22 @@ actual class DefaultNotificationsPermissionManager(
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
     private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
-    override fun requestPermission() {
-        super.requestPermission()
+
+    override fun requestPermissionDidStart() {
         val handler = permissionHandler
         launch {
             handler.emit(AndroidPermissionState.GRANTED)
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         val handler = permissionHandler
         launch {
             handler.emit(AndroidPermissionState.GRANTED)
         }
     }
+
+    override fun monitoringDidStop() {}
 }
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {

@@ -47,16 +47,14 @@ actual class DefaultCameraPermissionManager(
     )
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         if (supported)
             permissionsManager.requestPermissions()
         else
             logger.error(logTag) { "Camera not Supported" }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         if (supported)
             permissionsManager.startMonitoring(interval)
         else {
@@ -67,8 +65,7 @@ actual class DefaultCameraPermissionManager(
         }
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         if (supported)
             permissionsManager.stopMonitoring()
     }

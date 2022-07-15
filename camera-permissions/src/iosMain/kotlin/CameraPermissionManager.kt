@@ -34,18 +34,15 @@ actual class DefaultCameraPermissionManager(
     private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         avPermissionHelper.requestPermission()
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         avPermissionHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         avPermissionHelper.stopMonitoring()
     }
 }

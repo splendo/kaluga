@@ -72,8 +72,7 @@ actual class DefaultNotificationsPermissionManager(
     private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
             val deferred = CompletableDeferred<Boolean>()
             val callback = { authorization: Boolean, error: NSError? ->
@@ -96,13 +95,11 @@ actual class DefaultNotificationsPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }

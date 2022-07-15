@@ -30,4 +30,12 @@ class DefaultBluetoothMonitor : DefaultServiceMonitor(), BluetoothMonitor {
 
     override val isServiceEnabled: Boolean
         get() = TODO("Not yet implemented")
+
+    override fun monitoringDidStart() {
+        TODO("Not yet implemented")
+    }
+
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
+    }
 }

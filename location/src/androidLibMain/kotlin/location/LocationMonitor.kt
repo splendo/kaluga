@@ -60,16 +60,14 @@ class DefaultLocationMonitor(
             LocationManagerCompat.isLocationEnabled(locationManager)
         }
 
-    override fun startMonitoring() {
-        super.startMonitoring()
+    override fun monitoringDidStart() {
         applicationContext.registerReceiver(
             locationAvailabilityBroadcastReceiver,
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
     }
 }

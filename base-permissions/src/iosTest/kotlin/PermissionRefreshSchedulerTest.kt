@@ -33,7 +33,7 @@ class PermissionRefreshSchedulerTest : BaseTest() {
     @Test
     fun testStartMonitoring() = runBlocking {
         val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> = AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
-        val authorizationProvider = object : AuthorizationStatusProvider {
+        val authorizationProvider = object : CurrentAuthorizationStatusProvider {
             override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
                 return authorization.value
             }

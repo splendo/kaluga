@@ -93,7 +93,9 @@ class Bluetooth internal constructor(
                     coroutineContext
                 )
             }
-        }
+        },
+        coroutineContext.contextCreator("Scanning State Repo"),
+        contextCreator
     )
 
     sealed class ScanMode {

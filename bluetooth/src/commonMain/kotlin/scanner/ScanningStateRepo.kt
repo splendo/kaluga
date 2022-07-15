@@ -17,8 +17,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
@@ -27,12 +25,10 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -42,7 +38,7 @@ abstract class BaseScanningStateRepo(
     createNotInitializedState: () -> ScanningState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Inactive) -> suspend () -> ScanningState,
     createDeinitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Active) -> suspend () -> ScanningState.Deinitialized,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -65,33 +61,34 @@ abstract class BaseScanningStateRepo(
 open class ScanningStateImplRepo(
     createScanner: () -> Scanner,
     private val createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
     createInitializingState = { state ->
-        when (val stateImpl = state as ScanningStateImpl.Inactive) {
+        when (state) {
             is ScanningStateImpl.NotInitialized -> {
                 val scanner = createScanner()
                 (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
-                stateImpl.startInitializing(scanner)
+                state.startInitializing(scanner)
             }
             is ScanningStateImpl.Deinitialized -> {
-                (this as ScanningStateImplRepo).startMonitoringScanner(stateImpl.scanner)
-                stateImpl.reinitialize
+                (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
+                state.reinitialize
             }
+            else -> state.remain()
         }
     },
     createDeinitializingState = { state ->
         (this as ScanningStateImplRepo).superVisorJob.cancelChildren()
         state.deinitialize
-    }
+    },
+    coroutineContext = coroutineContext
 ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
-    private suspend fun startMonitoringScanner(scanner: Scanner) {
-        val hasStarted = EmptyCompletableDeferred()
+    private fun startMonitoringScanner(scanner: Scanner) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            scanner.events.onStart { hasStarted.complete() }.collect { event ->
+            scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
@@ -103,7 +100,6 @@ open class ScanningStateImplRepo(
                 }
             }
         }
-        hasStarted.await()
     }
 
     private suspend fun handlePermissionChangedEvent(event: Scanner.Event.PermissionChanged, scanner: Scanner) = takeAndChangeState { state ->
@@ -145,7 +141,7 @@ class ScanningStateRepo(
     settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    coroutineContext: CoroutineContext,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : ScanningStateImplRepo(
     createScanner = {

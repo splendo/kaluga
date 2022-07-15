@@ -50,16 +50,14 @@ actual class DefaultBluetoothPermissionManager(
 
     private val supported: Boolean = bluetoothAdapter != null
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         if (supported)
             permissionsManager.requestPermissions()
         else
             logger.error(logTag) { "Bluetooth Not Supported" }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         if (supported)
             permissionsManager.startMonitoring(interval)
         else {
@@ -70,8 +68,7 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         if (supported)
             permissionsManager.stopMonitoring()
     }

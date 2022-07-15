@@ -59,8 +59,7 @@ actual class DefaultCalendarPermissionManager(
     private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
@@ -90,13 +89,11 @@ actual class DefaultCalendarPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }

@@ -19,7 +19,7 @@ package com.splendo.kaluga.permissions.base.av
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
@@ -51,7 +51,7 @@ class AVPermissionHelper(
     private val coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
-    private class Provider(private val type: AVMediaType) : AuthorizationStatusProvider {
+    private class Provider(private val type: AVMediaType) : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(type).toAuthorizationStatus()
     }
 

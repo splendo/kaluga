@@ -36,14 +36,21 @@ abstract class DefaultServiceMonitor : ServiceMonitor {
     private val _isEnabled = MutableStateFlow<Boolean?>(null)
     override val isEnabled get() = _isEnabled.filterNotNull()
 
-    override fun startMonitoring() {
+    final override fun startMonitoring() {
         debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
         updateState()
+        monitoringDidStart()
     }
-    override fun stopMonitoring() {
+
+    abstract fun monitoringDidStart()
+
+    final override fun stopMonitoring() {
         debug(TAG) { "Stop monitoring service state" }
         _isEnabled.value = null
+        monitoringDidStop()
     }
+
+    abstract fun monitoringDidStop()
 
     protected fun updateState() {
         debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }

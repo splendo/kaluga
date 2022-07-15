@@ -87,14 +87,12 @@ abstract class BaseScanner constructor(
 
     companion object {
         private const val LOG_TAG = "Bluetooth Scanner"
-        const val DEFAULT_EVENT_BUFFER_SIZE = 256
     }
 
     data class Settings(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
-        val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
@@ -108,8 +106,8 @@ abstract class BaseScanner constructor(
     private val logger = settings.logger
 
     internal val permissions: Permissions = settings.permissions
-    protected val autoRequestPermission: Boolean = settings.autoRequestPermission
-    internal val autoEnableSensors: Boolean = settings.autoEnableSensors
+    private val autoRequestPermission: Boolean = settings.autoRequestPermission
+    private val autoEnableSensors: Boolean = settings.autoEnableSensors
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
     override val events: Flow<Scanner.Event> = eventChannel.receiveAsFlow()
@@ -162,15 +160,23 @@ abstract class BaseScanner constructor(
         monitoringPermissionsJob = null
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
+    final override suspend fun scanForDevices(filter: Set<UUID>) {
         if (filter.isEmpty()) {
             logger.info(LOG_TAG) { "Start Scanning" }
         } else {
             logger.info(LOG_TAG) { "Start scanning with filter [${filter.joinToString(", ") { it.uuidString }}]" }
         }
+        didStartScanning(filter)
     }
 
-    override suspend fun stopScanning() = logger.info(LOG_TAG) { "Stop scanning" }
+    protected abstract suspend fun didStartScanning(filter: Set<UUID>)
+
+    final override suspend fun stopScanning() {
+        logger.info(LOG_TAG) { "Stop scanning" }
+        didStopScanning()
+    }
+
+    protected abstract suspend fun didStopScanning()
 
     override fun startMonitoringHardwareEnabled() {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return

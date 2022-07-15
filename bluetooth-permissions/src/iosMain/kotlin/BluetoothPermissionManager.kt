@@ -87,8 +87,7 @@ actual class DefaultBluetoothPermissionManager(
 
     private val delegate = Delegate(permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription).isEmpty()) {
             if (!centralManager.isInitialized()) {
                 centralManager.value
@@ -101,16 +100,15 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         centralManager.value.delegate = delegate
+        val permissionHandler = permissionHandler
         launch {
             permissionHandler.emit(checkAuthorization())
         }
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         centralManager.value.delegate = null
     }
 }

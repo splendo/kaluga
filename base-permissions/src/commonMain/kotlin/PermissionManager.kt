@@ -77,17 +77,26 @@ abstract class BasePermissionManager<P : Permission>(
     protected val eventChannel = Channel<PermissionManager.Event>(UNLIMITED)
     override val events: Flow<PermissionManager.Event> = eventChannel.receiveAsFlow()
 
-    override fun requestPermission() {
+    final override fun requestPermission() {
         logger.info(logTag) { "Request Permission" }
+        requestPermissionDidStart()
     }
 
-    override fun startMonitoring(interval: Duration) {
+    protected abstract fun requestPermissionDidStart()
+
+    final override fun startMonitoring(interval: Duration) {
         logger.debug(logTag) { "Start monitoring with interval $interval" }
+        monitoringDidStart(interval)
     }
 
-    override fun stopMonitoring() {
+    protected abstract fun monitoringDidStart(interval: Duration)
+
+    final override fun stopMonitoring() {
         logger.debug(logTag) { "Stop monitoring with interval" }
+        monitoringDidStop()
     }
+
+    protected abstract fun monitoringDidStop()
 
     protected fun emitEvent(event: PermissionManager.Event) {
         eventChannel.trySend(event)

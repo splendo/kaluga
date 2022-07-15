@@ -21,8 +21,22 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class DefaultBluetoothPermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope)
+actual class DefaultBluetoothPermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+
+    override fun requestPermissionDidStart() {
+        TODO("Not yet implemented")
+    }
+
+    override fun monitoringDidStart(interval: Duration) {
+        TODO("Not yet implemented")
+    }
+
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
+    }
+}
 
 actual class BluetoothPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseBluetoothPermissionManagerBuilder {
 
