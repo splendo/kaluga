@@ -46,7 +46,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
         mainAction {
             bluetooth.startScanning()
             yield()
-            scanner.scanForDevicesMock.verify(eq(emptySet()))
+            scanner.didStartScanningMock.verify(eq(emptySet()))
             scanDevice()
         }
 
@@ -58,7 +58,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
         mainAction {
             bluetooth.stopScanning()
             yield()
-            scanner.stopScanningMock.verify()
+            scanner.didStopScanningMock.verify()
         }
 
         test {

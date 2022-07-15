@@ -65,8 +65,8 @@ sealed class MockScanningState {
         val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered) }
     }
 
-    class PermittedHandler : ScanningState.Permitted {
-        override val revokePermission = suspend { NoBluetooth.MissingPermissions() }
+    class PermittedHandler {
+        val revokePermission = suspend { NoBluetooth.MissingPermissions() }
     }
 
     data class Initializing(

@@ -86,21 +86,21 @@ class MockPermissionManager<P : Permission>(
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [requestPermission]
      */
-    val requestPermissionMock = ::requestPermission.mock()
+    val requestPermissionDidStartMock = ::requestPermission.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoring]
      */
-    val startMonitoringMock = ::startMonitoring.mock()
+    val monitoringDidStartMock = ::startMonitoring.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopMonitoring]
      */
-    val stopMonitoringMock = ::stopMonitoring.mock()
+    val monitoringDidStopMock = ::stopMonitoring.mock()
 
     init {
         if (setupMocks) {
-            startMonitoringMock.on().doExecute {
+            monitoringDidStartMock.on().doExecute {
                 debug("Initial State $initialState")
                 emitEvent(
                     when (initialState) {
@@ -113,11 +113,11 @@ class MockPermissionManager<P : Permission>(
         }
     }
 
-    override fun requestPermission(): Unit = requestPermissionMock.call()
+    override fun requestPermissionDidStart(): Unit = requestPermissionDidStartMock.call()
 
-    override fun startMonitoring(interval: Duration): Unit = startMonitoringMock.call(interval)
+    override fun monitoringDidStart(interval: Duration): Unit = monitoringDidStartMock.call(interval)
 
-    override fun stopMonitoring(): Unit = stopMonitoringMock.call()
+    override fun monitoringDidStop(): Unit = monitoringDidStopMock.call()
 
     fun grantPermission() {
         emitEvent(PermissionManager.Event.PermissionGranted)

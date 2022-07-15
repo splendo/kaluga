@@ -146,12 +146,12 @@ class MockBaseScanner(
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [scanForDevices]
      */
-    val scanForDevicesMock = ::scanForDevices.mock()
+    val didStartScanningMock = ::scanForDevices.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopScanning]
      */
-    val stopScanningMock = ::stopScanning.mock()
+    val didStopScanningMock = ::stopScanning.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [generateEnableSensorsActions]
@@ -183,9 +183,9 @@ class MockBaseScanner(
         stopMonitoringHardwareEnabledMock.call()
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>): Unit = scanForDevicesMock.call(filter)
+    override suspend fun didStartScanning(filter: Set<UUID>): Unit = didStartScanningMock.call(filter)
 
-    override suspend fun stopScanning(): Unit = stopScanningMock.call()
+    override suspend fun didStopScanning(): Unit = didStopScanningMock.call()
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 

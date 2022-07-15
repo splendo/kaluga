@@ -54,7 +54,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         mainAction {
             bluetooth.startScanning()
             yield()
-            scanner.scanForDevicesMock.verify(eq(emptySet()))
+            scanner.didStartScanningMock.verify(eq(emptySet()))
 
             yield()
             bluetooth.startScanning(filter)
@@ -68,8 +68,8 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             scanDevice(device, deviceWrapper, rssi, advertisementData)
         }
         test {
-            scanner.stopScanningMock.verify()
-            scanner.scanForDevicesMock.verify(eq(filter))
+            scanner.didStopScanningMock.verify()
+            scanner.didStartScanningMock.verify(eq(filter))
             assertEquals(listOf(deferredDevice.getCompleted()), it)
         }
         mainAction {
@@ -77,7 +77,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         test {
-            scanner.stopScanningMock.verify(times = 2)
+            scanner.didStopScanningMock.verify(times = 2)
             assertEquals(emptyList(), it)
         }
     }

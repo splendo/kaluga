@@ -140,8 +140,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Scanning>(it)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
-            scanner.scanForDevicesMock.verify(eq(deviceFilter))
-            scanner.stopScanningMock.verify(rule = never())
+            scanner.didStartScanningMock.verify(eq(deviceFilter))
+            scanner.didStopScanningMock.verify(rule = never())
         }
         mainAction {
             val device = device
@@ -156,7 +156,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Scanning>(it)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(listOf(device), it.discovered.devices)
-            scanner.stopScanningMock.verify(rule = never())
+            scanner.didStopScanningMock.verify(rule = never())
         }
         mainAction {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -169,7 +169,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         test {
             assertIs<Idle>(it)
             assertEquals(deviceFilter, it.discovered.filter)
-            scanner.stopScanningMock.verify()
+            scanner.didStopScanningMock.verify()
             assertEquals(listOf(device), it.discovered.devices)
         }
 
@@ -214,8 +214,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Scanning>(it)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
-            scanner.scanForDevicesMock.verify(eq(deviceFilter))
-            scanner.stopScanningMock.verify(rule = never())
+            scanner.didStartScanningMock.verify(eq(deviceFilter))
+            scanner.didStopScanningMock.verify(rule = never())
         }
         mainAction {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -313,7 +313,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             }
         }
         test {
-            scanner.stopScanningMock.verify()
+            scanner.didStopScanningMock.verify()
             assertIs<MissingPermissions>(it)
         }
     }
@@ -338,7 +338,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             scanner.isEnabled.value = false
         }
         test {
-            scanner.stopScanningMock.verify()
+            scanner.didStopScanningMock.verify()
             assertIs<Disabled>(it)
         }
     }
