@@ -24,7 +24,7 @@ import com.splendo.kaluga.test.base.BaseFlowTest
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
-import com.splendo.kaluga.test.location.MockLocationManager
+import com.splendo.kaluga.test.location.MockBaseLocationManager
 import com.splendo.kaluga.test.location.MockLocationStateRepoBuilder
 import com.splendo.kaluga.test.permissions.MockPermissionState
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
@@ -84,14 +84,17 @@ class LocationStateTest :
         }
         val locationStateRepoBuilder = MockLocationStateRepoBuilder(
             permissions,
-            MockLocationManager.Builder(configuration.locationEnabled)
+            MockBaseLocationManager.Builder(configuration.locationEnabled)
         )
+
+        private fun settingsBuilder(autoRequestPermission: Boolean, autoEnableLocations: Boolean): (LocationPermission, Permissions) -> BaseLocationManager.Settings = { locationPermission, permissions ->
+            BaseLocationManager.Settings(locationPermission, permissions, autoRequestPermission = autoRequestPermission, autoEnableLocations = autoEnableLocations)
+        }
 
         val locationStateRepo = locationStateRepoBuilder.create(
             configuration.locationPermission,
-            configuration.autoRequestPermission,
-            configuration.autoEnableLocations,
-            coroutineScope.coroutineContext
+            settingsBuilder(configuration.autoRequestPermission, configuration.autoEnableLocations),
+            coroutineContext = coroutineScope.coroutineContext
         )
         val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
         val permissionStateRepo get() = permissionsBuilder.buildLocationStateRepos.first()
@@ -478,7 +481,7 @@ class LocationStateTest :
             yieldMultiple(2)
         }
         test {
-            locationManager.requestLocationEnableMock.verify()
+            locationManager.requestEnableLocationMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
             assertIs<LocationState.Disabled.NoGPS>(it)
             assertEquals(

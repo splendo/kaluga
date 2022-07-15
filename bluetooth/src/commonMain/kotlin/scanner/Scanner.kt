@@ -87,14 +87,12 @@ abstract class BaseScanner constructor(
 
     companion object {
         private const val LOG_TAG = "Bluetooth Scanner"
-        const val DEFAULT_EVENT_BUFFER_SIZE = 256
     }
 
     data class Settings(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
-        val eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
@@ -108,8 +106,8 @@ abstract class BaseScanner constructor(
     private val logger = settings.logger
 
     internal val permissions: Permissions = settings.permissions
-    protected val autoRequestPermission: Boolean = settings.autoRequestPermission
-    internal val autoEnableSensors: Boolean = settings.autoEnableSensors
+    private val autoRequestPermission: Boolean = settings.autoRequestPermission
+    private val autoEnableSensors: Boolean = settings.autoEnableSensors
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
     override val events: Flow<Scanner.Event> = eventChannel.receiveAsFlow()

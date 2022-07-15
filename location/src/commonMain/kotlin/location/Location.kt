@@ -141,3 +141,11 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
         return "$degrees°${minutes}\'${seconds}\" ${windDirection.name}"
     }
 }
+
+internal fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location {
+    return when (this) {
+        is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(this, reason)
+        is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(this.lastKnownLocation, reason)
+        is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(reason)
+    }
+}

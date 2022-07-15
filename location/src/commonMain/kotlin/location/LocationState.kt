@@ -19,96 +19,115 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.permissions.base.Permission
-import com.splendo.kaluga.permissions.base.Permissions
-import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.KalugaState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.mapNotNull
 
 /**
  * State of a [LocationStateRepo]
- * @param location The [Location] associated with the state.
- * @param locationManager The [BaseLocationManager] managing the location state
  */
-sealed class LocationState : KalugaState {
+sealed interface LocationState : KalugaState {
+    val location: Location
+
+    sealed interface Inactive : LocationState, SpecialFlowValue.NotImportant
+    interface NotInitialized : Inactive
+    interface Deinitialized : Inactive {
+        val reinitialize: suspend () -> Initializing
+    }
+
+    sealed interface Active : LocationState {
+        val deinitialized: suspend () -> Deinitialized
+    }
+
+    interface Initializing : Active, SpecialFlowValue.NotImportant {
+        fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
+    }
+    sealed interface Initialized : Active
+    sealed interface Permitted : Initialized {
+        val revokePermission: suspend () -> Disabled.NotPermitted
+    }
+    sealed interface Disabled : Initialized {
+        interface NoGPS : Disabled, Permitted {
+            val enable: suspend () -> Enabled
+        }
+        interface NotPermitted : Disabled {
+            fun permit(enabled: Boolean): suspend () -> Permitted
+        }
+    }
+    interface Enabled : Permitted {
+        val disable: suspend () -> Disabled.NoGPS
+        fun updateWithLocation(location: Location.KnownLocation): suspend () -> Enabled
+    }
+}
+
+sealed class LocationStateImpl {
 
     abstract val location: Location
 
-    sealed class Inactive : LocationState(), SpecialFlowValue.NotImportant
-
-    data class Uninitialized(
-        override val location: Location
-    ) : Inactive() {
-        fun startInitializing(locationManager: BaseLocationManager): suspend () -> LocationState = { Initializing(location, locationManager) }
+    object NotInitialized : LocationStateImpl(), LocationState.NotInitialized {
+        override val location: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
+        fun startInitializing(locationManager: LocationManager): suspend () -> LocationState.Initializing = { Initializing(location, locationManager) }
     }
 
     data class Deinitialized(
         override val location: Location,
-        private val locationManager: BaseLocationManager
-    ) : Inactive() {
-        val reinitialize: suspend () -> LocationState = { Initializing(location, locationManager) }
+        internal val locationManager: LocationManager
+    ) : LocationStateImpl(), LocationState.Deinitialized {
+        override val reinitialize: suspend () -> LocationState.Initializing = { Initializing(location, locationManager) }
     }
 
-    sealed class Active : LocationState(), HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
+    sealed class Active : LocationStateImpl(), HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
 
-        protected abstract val locationManager: BaseLocationManager
+        protected abstract val locationManager: LocationManager
 
-        val deinitialize: suspend () -> LocationState = { Deinitialized(location, locationManager) }
+        val deinitialized: suspend () -> LocationState.Deinitialized = { Deinitialized(location, locationManager) }
 
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
-                is Inactive -> locationManager.startMonitoringPermissions()
-                is Active -> {}
+                is LocationState.Inactive -> locationManager.startMonitoringPermissions()
+                is LocationState.Active -> {}
             }
         }
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
-                is Inactive -> locationManager.stopMonitoringPermissions()
-                is Active -> {}
+                is LocationState.Inactive -> locationManager.stopMonitoringPermissions()
+                is LocationState.Active -> {}
             }
         }
     }
 
-    interface Permitted : HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
-        val revokePermission: suspend () -> Disabled.NotPermitted
-    }
+    class PermittedHandler(val location: Location, private val locationManager: LocationManager) {
 
-    class PermittedHandler(val location: Location, private val locationManager: BaseLocationManager) : Permitted {
-
-        override val revokePermission: suspend () -> Disabled.NotPermitted = {
+        val revokePermission: suspend () -> Disabled.NotPermitted = {
             Disabled.NotPermitted(location.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED), locationManager)
         }
 
-        override suspend fun afterNewStateIsSet(newState: LocationState) {
+        fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
-                is Inactive,
-                is Initializing,
-                is Disabled.NotPermitted -> locationManager.stopMonitoringLocationEnabled()
+                is LocationState.Inactive,
+                is LocationState.Initializing,
+                is LocationState.Disabled.NotPermitted -> locationManager.stopMonitoringLocationEnabled()
                 else -> {}
             }
         }
 
-        override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
+        suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
-                is Inactive,
-                is Initializing,
-                is Disabled.NotPermitted -> locationManager.startMonitoringLocationEnabled()
+                is LocationState.Inactive,
+                is LocationState.Initializing,
+                is LocationState.Disabled.NotPermitted -> locationManager.startMonitoringLocationEnabled()
                 else -> {}
             }
         }
     }
 
-    data class Initializing(override val location: Location, override val locationManager: BaseLocationManager) : Active(), SpecialFlowValue.NotImportant {
+    data class Initializing(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Initializing {
 
-        fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState = suspend {
+        override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized = suspend {
             when {
                 !hasPermission -> Disabled.NotPermitted(location.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED), locationManager)
                 !enabled -> Disabled.NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
@@ -125,13 +144,13 @@ sealed class LocationState : KalugaState {
         /**
          * A [LocationState.Disabled] that was disabled due to missing permissions.
          */
-        data class NotPermitted(override val location: Location, override val locationManager: BaseLocationManager) : Disabled() {
+        data class NotPermitted(override val location: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NotPermitted {
 
             /**
              * Transforms this state into [LocationState] that has sufficient permissions
              * @param enabled `true` if GPS is turned on, `false` otherwise.
              */
-            fun permit(enabled: Boolean): suspend () -> LocationState = {
+            override fun permit(enabled: Boolean): suspend () -> LocationState.Permitted = {
                 if (enabled) Enabled(location, locationManager) else NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
             }
         }
@@ -139,7 +158,7 @@ sealed class LocationState : KalugaState {
         /**
          * A [LocationState.Disabled] that was disabled due to GPS being turned off.
          */
-        data class NoGPS(override val location: Location, override val locationManager: BaseLocationManager) : Disabled(), Permitted {
+        data class NoGPS(override val location: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NoGPS {
 
             private val permittedHandler = PermittedHandler(location, locationManager)
 
@@ -151,17 +170,13 @@ sealed class LocationState : KalugaState {
             /**
              * Transforms this state into a [LocationState.Enabled] state.
              */
-            val enable: suspend () -> Enabled = {
+            override val enable: suspend () -> Enabled = {
                 Enabled(location, locationManager)
             }
 
             override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
                 super.beforeOldStateIsRemoved(oldState)
                 permittedHandler.beforeOldStateIsRemoved(oldState)
-                when (oldState) {
-                    !is NoGPS -> if (locationManager.autoEnableLocations) locationManager.requestLocationEnable()
-                    else -> {}
-                }
             }
 
             override suspend fun afterNewStateIsSet(newState: LocationState) {
@@ -174,7 +189,7 @@ sealed class LocationState : KalugaState {
     /**
      * A [LocationState] that is actively updating its [Location].
      */
-    data class Enabled(override val location: Location, override val locationManager: BaseLocationManager) : Active(), Permitted {
+    data class Enabled(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Enabled {
 
         private val permittedHandler = PermittedHandler(location, locationManager)
 
@@ -186,8 +201,12 @@ sealed class LocationState : KalugaState {
         /**
          * Transforms this state into a [LocationState.Disabled.NoGPS] state.
          */
-        val disable: suspend () -> Disabled.NoGPS = {
+        override val disable: suspend () -> Disabled.NoGPS = {
             Disabled.NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS), locationManager)
+        }
+
+        override fun updateWithLocation(location: Location.KnownLocation): suspend () -> LocationState.Enabled = {
+            copy(location = location)
         }
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
@@ -211,75 +230,16 @@ sealed class LocationState : KalugaState {
 }
 
 /**
- * A [ColdStateRepo] that tracks the [LocationState] of the user.
- * Since this is a coldStateRepo location changes will only be requested when there is at least one observer.
- * @param locationPermission The [Permission.Location] to define the type of location state to track.
- * @param autoRequestPermission If 'true` the user will automatically receive a request to provide permissions when missing. Set this to `false` if manual permission requests are required.
- * @param autoEnableLocations If `true` the user will automatically receive a request to enable GPS if it is disabled. Set this to `false` if manual gps enabling is required.
- * @param locationManagerBuilder The [BaseLocationManager.Builder] to create the [LocationManager] managing the location state.
- */
-class LocationStateRepo(
-    locationPermission: LocationPermission,
-    permissions: Permissions,
-    autoRequestPermission: Boolean,
-    autoEnableLocations: Boolean,
-    locationManagerBuilder: BaseLocationManager.Builder,
-    coroutineContext: CoroutineContext
-) : ColdStateFlowRepo<LocationState>(
-    coroutineContext = coroutineContext,
-    initChangeStateWithRepo = { locationState, repo ->
-        when (locationState) {
-            is LocationState.Uninitialized -> {
-                val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, (repo as LocationStateRepo))
-                locationState.startInitializing(locationManager)
-            }
-            is LocationState.Deinitialized -> locationState.reinitialize
-            is LocationState.Active -> locationState.remain()
-        }
-    },
-    deinitChangeStateWithRepo = { locationState, _ ->
-        when (locationState) {
-            is LocationState.Active -> locationState.deinitialize
-            else -> locationState.remain()
-        }
-    },
-    firstState = { LocationState.Uninitialized(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)) }
-) {
-
-    /**
-     * Builder for creating a [LocationStateRepo]
-     */
-    interface Builder {
-
-        /**
-         * Creates a [LocationStateRepo]
-         * @param locationPermission The [Permission.Location] to define the type of location state to track.
-         * @param autoRequestPermission If 'true` the user will automatically receive a request to provide permissions when missing. Set this to `false` if manual permission requests are required. Defaults to `true`.
-         * @param autoEnableLocations If `true` the user will automatically receive a request to enable GPS if it is disabled. Set this to `false` if manual gps enabling is required. Defaults to `true`.
-         * @return The created [LocationStateRepo]
-         */
-        fun create(
-            locationPermission: LocationPermission,
-            autoRequestPermission: Boolean = true,
-            autoEnableLocations: Boolean = true,
-            coroutineContext: CoroutineContext = Dispatchers.Main
-        ): LocationStateRepo
-    }
-}
-
-expect class LocationStateRepoBuilder : LocationStateRepo.Builder
-
-internal fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location {
-    return when (this) {
-        is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(this, reason)
-        is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(this.lastKnownLocation, reason)
-        is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(reason)
-    }
-}
-
-/**
  * Transforms a [Flow] of [LocationState] into a flow of its associated [Location]
  */
 fun Flow<LocationState>.location(): Flow<Location> {
     return this.filterOnlyImportant().map { it.location }
+}
+
+fun Flow<Location>.known(): Flow<Location.KnownLocation> = mapNotNull { location ->
+    when (location) {
+        is Location.KnownLocation -> location
+        is Location.UnknownLocation.WithLastLocation -> location.lastKnownLocation
+        is Location.UnknownLocation.WithoutLastLocation -> null
+    }
 }

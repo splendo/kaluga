@@ -65,20 +65,21 @@ abstract class BaseScanningStateRepo(
 open class ScanningStateImplRepo(
     createScanner: () -> Scanner,
     private val createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
     createInitializingState = { state ->
-        when (val stateImpl = state as ScanningStateImpl.Inactive) {
+        when (state) {
             is ScanningStateImpl.NotInitialized -> {
                 val scanner = createScanner()
                 (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
-                stateImpl.startInitializing(scanner)
+                state.startInitializing(scanner)
             }
             is ScanningStateImpl.Deinitialized -> {
-                (this as ScanningStateImplRepo).startMonitoringScanner(stateImpl.scanner)
-                stateImpl.reinitialize
+                (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
+                state.reinitialize
             }
+            else -> state.remain()
         }
     },
     createDeinitializingState = { state ->
@@ -145,7 +146,7 @@ class ScanningStateRepo(
     settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    coroutineContext: CoroutineContext,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : ScanningStateImplRepo(
     createScanner = {
