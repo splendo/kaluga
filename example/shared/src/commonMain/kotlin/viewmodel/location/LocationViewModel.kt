@@ -38,7 +38,7 @@ class LocationViewModel(permission: LocationPermission, repoBuilder: LocationSta
 
     override fun onResume(scope: CoroutineScope) {
         scope.launch {
-            locationStateRepo.flow().location().map { location ->
+            locationStateRepo.location().map { location ->
                 when (location) {
                     is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
                     is Location.UnknownLocation -> {

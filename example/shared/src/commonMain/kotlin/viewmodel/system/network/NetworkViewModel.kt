@@ -40,7 +40,7 @@ class NetworkViewModel(
         super.onResume(scope)
 
         scope.launch {
-            networkRepo.flow().network().collect {
+            networkRepo.network().collect {
                 when (it) {
                     is Network.Unknown.WithoutLastNetwork ->
                         _networkState.value =
