@@ -22,7 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 class TestBlockingAndCancelScopeTest {
 

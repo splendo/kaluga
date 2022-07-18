@@ -28,7 +28,7 @@ import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 class SimpleUIThreadTestTest : SimpleUIThreadTest() {
 

@@ -20,8 +20,8 @@ package com.splendo.kaluga.permissions.calendar
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
@@ -49,7 +49,7 @@ actual class DefaultCalendarPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    private class Provider : AuthorizationStatusProvider {
+    private class Provider : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
     }
 
