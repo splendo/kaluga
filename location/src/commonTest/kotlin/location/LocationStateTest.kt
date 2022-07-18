@@ -194,7 +194,7 @@ class LocationStateTest :
             locationManager.startMonitoringLocationMock.verify()
             assertIs<LocationState.Enabled>(it)
             assertEquals(
-                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
                 it.location
             )
         }
@@ -305,7 +305,7 @@ class LocationStateTest :
             locationManager.startMonitoringLocationMock.verify()
             assertIs<LocationState.Enabled>(it)
             assertEquals(
-                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
+                Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
                 it.location
             )
         }
