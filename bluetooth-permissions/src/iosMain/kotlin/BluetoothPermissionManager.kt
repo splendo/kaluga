@@ -79,9 +79,14 @@ actual class DefaultBluetoothPermissionManager(
         CBCentralManager(null, permissionsQueue, options)
     }
 
-    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val permissionHandler:DefaultAuthorizationStatusHandler
+    private val delegate:Delegate
 
-    private val delegate = Delegate(permissionHandler, coroutineScope)
+    init {
+        val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
+        delegate = Delegate(permissionHandler, coroutineScope)
+        this.permissionHandler = permissionHandler
+    }
 
     override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription).isEmpty()) {
