@@ -19,9 +19,9 @@ package com.splendo.kaluga.permissions.calendar
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
@@ -33,7 +33,7 @@ actual class DefaultCalendarPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (permission.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR),

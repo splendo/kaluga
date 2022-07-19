@@ -21,12 +21,11 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
-import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 actual class DefaultMicrophonePermissionManager(
@@ -35,7 +34,7 @@ actual class DefaultMicrophonePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(context, arrayOf(Manifest.permission.RECORD_AUDIO), coroutineScope, logTag, logger, permissionHandler)
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 
@@ -43,10 +42,7 @@ actual class DefaultMicrophonePermissionManager(
         if (supported)
             permissionsManager.requestPermissions()
         else {
-            val handler = permissionHandler
-            launch {
-                handler.emit(AndroidPermissionState.DENIED_DO_NOT_ASK)
-            }
+            permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
@@ -54,10 +50,7 @@ actual class DefaultMicrophonePermissionManager(
         if (supported)
             permissionsManager.startMonitoring(interval)
         else {
-            val handler = permissionHandler
-            launch {
-                handler.emit(AndroidPermissionState.DENIED_DO_NOT_ASK)
-            }
+            permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 

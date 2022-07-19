@@ -23,12 +23,11 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
-import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 actual class DefaultBluetoothPermissionManager(
@@ -38,7 +37,7 @@ actual class DefaultBluetoothPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION),
@@ -61,10 +60,7 @@ actual class DefaultBluetoothPermissionManager(
         if (supported)
             permissionsManager.startMonitoring(interval)
         else {
-            val handler = permissionHandler
-            launch {
-                handler.emit(AndroidPermissionState.DENIED_DO_NOT_ASK)
-            }
+            permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
