@@ -19,7 +19,7 @@ package com.splendo.kaluga.permissions.notifications
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
@@ -69,7 +69,7 @@ actual class DefaultNotificationsPermissionManager(
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private val provider = Provider(notificationCenter, coroutineScope)
 
-    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermissionDidStart() {

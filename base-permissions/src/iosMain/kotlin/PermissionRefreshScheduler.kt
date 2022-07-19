@@ -21,7 +21,6 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -35,12 +34,12 @@ interface CurrentAuthorizationStatusProvider {
 /**
  * Convenience class for scheduling checks to changes in permission state.
  * @param authorizationStatus Method for requesting a the current [IOSPermissionsHelper.AuthorizationStatus] for the permission associated with the [PermissionManager]
- * @param onPermissionChangedFlow [FlowCollector] that is notified when changes to a permission occurs.
+ * @param onPermissionChangedFlow [AuthorizationStatusHandler] that is notified when changes to a permission occurs.
  * @param coroutineScope The [CoroutineScope] on which to run the checks.
  */
 class PermissionRefreshScheduler(
     private val currentAuthorizationStatusProvider: CurrentAuthorizationStatusProvider,
-    private val onPermissionChangedFlow: FlowCollector<IOSPermissionsHelper.AuthorizationStatus>,
+    private val onPermissionChangedFlow: AuthorizationStatusHandler,
     coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
@@ -85,7 +84,7 @@ class PermissionRefreshScheduler(
                         val status = currentAuthorizationStatusProvider.provide()
                         if (!isWaiting.value && lastPermission.get() != status) {
                             updateLastPermission()
-                            onPermissionChangedFlow.emit(status)
+                            onPermissionChangedFlow.status(status)
                         }
                     }
                 )

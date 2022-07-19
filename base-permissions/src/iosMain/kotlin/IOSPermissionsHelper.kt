@@ -25,7 +25,6 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
 
@@ -74,23 +73,27 @@ class IOSPermissionsHelper {
     }
 }
 
-fun FlowCollector<AuthorizationStatus>.requestAuthorizationStatus(timerHelper: PermissionRefreshScheduler? = null, coroutineScope: CoroutineScope, request: suspend () -> AuthorizationStatus) {
+fun AuthorizationStatusHandler.requestAuthorizationStatus(timerHelper: PermissionRefreshScheduler? = null, coroutineScope: CoroutineScope, request: suspend () -> AuthorizationStatus) {
     coroutineScope.launch {
         timerHelper?.isWaiting?.value = true
         val newStatus = request()
         timerHelper?.isWaiting?.value = false
-        emit(newStatus)
+        status(newStatus)
     }
 }
 
-class AuthorizationStatusHandler(
+interface AuthorizationStatusHandler {
+    fun status(status: AuthorizationStatus)
+}
+
+class DefaultAuthorizationStatusHandler(
     private val eventChannel: SendChannel<PermissionManager.Event>,
     private val logTag: String,
     private val logger: Logger
-) : FlowCollector<AuthorizationStatus> {
+) : AuthorizationStatusHandler {
 
-    override suspend fun emit(value: AuthorizationStatus) {
-        when (value) {
+    override fun status(status: AuthorizationStatus) {
+        when (status) {
             AuthorizationStatus.NotDetermined -> {
                 logger.info(logTag) { "Permission Revoked" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionDenied(false))

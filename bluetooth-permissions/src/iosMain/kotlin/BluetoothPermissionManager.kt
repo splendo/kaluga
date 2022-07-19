@@ -20,13 +20,12 @@ package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -67,14 +66,11 @@ actual class DefaultBluetoothPermissionManager(
     }
 
     private class Delegate(
-        val authorizationStatusFlow: FlowCollector<IOSPermissionsHelper.AuthorizationStatus>,
+        val authorizationStatusFlow: AuthorizationStatusHandler,
         private val coroutineScope: CoroutineScope
     ) : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            val authorizationStatusFlow = authorizationStatusFlow
-            coroutineScope.launch {
-                authorizationStatusFlow.emit(checkAuthorization())
-            }
+            authorizationStatusFlow.status(checkAuthorization())
         }
     }
     private val permissionsQueue = dispatch_queue_create("BluetoothPermissionsMonitor", null)
@@ -83,7 +79,7 @@ actual class DefaultBluetoothPermissionManager(
         CBCentralManager(null, permissionsQueue, options)
     }
 
-    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
 
     private val delegate = Delegate(permissionHandler, coroutineScope)
 
@@ -94,18 +90,14 @@ actual class DefaultBluetoothPermissionManager(
             }
         } else {
             val permissionHandler = permissionHandler
-            launch {
-                permissionHandler.emit(IOSPermissionsHelper.AuthorizationStatus.Restricted)
-            }
+            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
     override fun monitoringDidStart(interval: Duration) {
         centralManager.value.delegate = delegate
         val permissionHandler = permissionHandler
-        launch {
-            permissionHandler.emit(checkAuthorization())
-        }
+        permissionHandler.status(checkAuthorization())
     }
 
     override fun monitoringDidStop() {

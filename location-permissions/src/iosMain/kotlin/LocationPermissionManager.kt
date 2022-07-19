@@ -19,11 +19,11 @@ package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLAccuracyAuthorization
 import platform.CoreLocation.CLAuthorizationStatus
@@ -51,20 +51,16 @@ actual class DefaultLocationPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
-    private class Delegate(private val locationPermission: LocationPermission, private val onPermissionChanged: FlowCollector<IOSPermissionsHelper.AuthorizationStatus>, private val coroutineScope: CoroutineScope) : NSObject(), CLLocationManagerDelegateProtocol {
+    private class Delegate(private val locationPermission: LocationPermission, private val onPermissionChanged: AuthorizationStatusHandler, private val coroutineScope: CoroutineScope) : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
-            coroutineScope.launch {
-                onPermissionChanged.emit(manager.authorizationStatus(locationPermission))
-            }
+            onPermissionChanged.status(manager.authorizationStatus(locationPermission))
         }
         override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus /* = kotlin.Int */) {
-            coroutineScope.launch {
-                onPermissionChanged.emit(manager.authorizationStatus(locationPermission))
-            }
+            onPermissionChanged.status(manager.authorizationStatus(locationPermission))
         }
     }
 
-    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }
@@ -86,10 +82,7 @@ actual class DefaultLocationPermissionManager(
                 }
             }
         } else {
-            val permissionHandler = permissionHandler
-            launch {
-                permissionHandler.emit(IOSPermissionsHelper.AuthorizationStatus.Restricted)
-            }
+            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
@@ -100,7 +93,7 @@ actual class DefaultLocationPermissionManager(
                 delegate = authorizationDelegate
                 authorizationStatus(permission)
             }
-            permissionHandler.emit(status)
+            permissionHandler.status(status)
         }
     }
 
@@ -134,7 +127,7 @@ private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permissio
     }
 }
 
-suspend fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
+fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
     authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
 } else {
     CLLocationManager.authorizationStatus() to true
