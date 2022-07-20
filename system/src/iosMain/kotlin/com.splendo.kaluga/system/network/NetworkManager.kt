@@ -112,7 +112,7 @@ actual sealed class NetworkManager : BaseNetworkManager {
             get() = _reachability.get()
             set(value) = _reachability.set(value)
 
-        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { ref: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
+        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { _: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
             if (info == null) {
                 return@staticCFunction
             }

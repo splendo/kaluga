@@ -19,9 +19,9 @@ package com.splendo.kaluga.permissions.storage
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
@@ -33,7 +33,7 @@ actual class DefaultStoragePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
         if (storagePermission.allowWrite)
@@ -46,18 +46,15 @@ actual class DefaultStoragePermissionManager(
         permissionHandler
     )
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }

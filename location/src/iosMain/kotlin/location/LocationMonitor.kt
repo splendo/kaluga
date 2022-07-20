@@ -46,13 +46,11 @@ class DefaultLocationMonitor(private val locationManager: CLLocationManager) : D
     override val isServiceEnabled: Boolean
         get() = locationManager.locationServicesEnabled()
 
-    override fun startMonitoring() {
-        super.startMonitoring()
+    override fun monitoringDidStart() {
         locationManager.delegate = LocationManagerDelegate(::updateState)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         locationManager.delegate = null
     }
 }

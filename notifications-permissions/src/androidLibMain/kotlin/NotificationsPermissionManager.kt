@@ -18,11 +18,10 @@
 package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
-import com.splendo.kaluga.permissions.base.AndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 actual class NotificationOptions
@@ -33,22 +32,17 @@ actual class DefaultNotificationsPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    private val permissionHandler = AndroidPermissionStateHandler(eventChannel, logTag, logger)
-    override fun requestPermission() {
-        super.requestPermission()
-        val handler = permissionHandler
-        launch {
-            handler.emit(AndroidPermissionState.GRANTED)
-        }
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+
+    override fun requestPermissionDidStart() {
+        permissionHandler.status(AndroidPermissionState.GRANTED)
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
-        val handler = permissionHandler
-        launch {
-            handler.emit(AndroidPermissionState.GRANTED)
-        }
+    override fun monitoringDidStart(interval: Duration) {
+        permissionHandler.status(AndroidPermissionState.GRANTED)
     }
+
+    override fun monitoringDidStop() {}
 }
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {

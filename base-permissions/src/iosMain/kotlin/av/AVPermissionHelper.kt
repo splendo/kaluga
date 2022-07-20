@@ -19,14 +19,13 @@ package com.splendo.kaluga.permissions.base.av
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.launch
 import platform.AVFoundation.AVAuthorizationStatus
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied
@@ -47,11 +46,11 @@ abstract class AVType {
 class AVPermissionHelper(
     private val bundle: NSBundle,
     private val type: AVType,
-    private val onPermissionChangedFlow: FlowCollector<IOSPermissionsHelper.AuthorizationStatus>,
+    private val onPermissionChangedFlow: AuthorizationStatusHandler,
     private val coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
-    private class Provider(private val type: AVMediaType) : AuthorizationStatusProvider {
+    private class Provider(private val type: AVMediaType) : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(type).toAuthorizationStatus()
     }
 
@@ -75,19 +74,14 @@ class AVPermissionHelper(
                 if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Denied
             }
         } else {
-            launch {
-                onPermissionChangedFlow.emit(IOSPermissionsHelper.AuthorizationStatus.Denied)
-            }
+            onPermissionChangedFlow.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
         }
     }
 
     fun startMonitoring(interval: Duration) {
         when {
             AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> {
-                val onPermissionChangedFlow = onPermissionChangedFlow
-                launch {
-                    onPermissionChangedFlow.emit(IOSPermissionsHelper.AuthorizationStatus.Denied)
-                }
+                onPermissionChangedFlow.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
             }
             else -> timerHelper.startMonitoring(interval)
         }

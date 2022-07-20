@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.permissions.microphone
 
-import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
@@ -31,21 +31,18 @@ actual class DefaultMicrophonePermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeMicrophone(), permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         avPermissionHelper.requestPermission()
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         avPermissionHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         avPermissionHelper.stopMonitoring()
     }
 }

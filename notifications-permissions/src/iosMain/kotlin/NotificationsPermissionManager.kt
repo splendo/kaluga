@@ -19,9 +19,9 @@ package com.splendo.kaluga.permissions.notifications
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.AuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
@@ -49,7 +49,7 @@ actual class DefaultNotificationsPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    class Provider(val notificationCenter: UNUserNotificationCenter, val coroutineScope: CoroutineScope) : AuthorizationStatusProvider {
+    class Provider(val notificationCenter: UNUserNotificationCenter, val coroutineScope: CoroutineScope) : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
             val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
             val notificationCenter = notificationCenter
@@ -69,11 +69,10 @@ actual class DefaultNotificationsPermissionManager(
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private val provider = Provider(notificationCenter, coroutineScope)
 
-    private val permissionHandler = AuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
             val deferred = CompletableDeferred<Boolean>()
             val callback = { authorization: Boolean, error: NSError? ->
@@ -96,13 +95,11 @@ actual class DefaultNotificationsPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }

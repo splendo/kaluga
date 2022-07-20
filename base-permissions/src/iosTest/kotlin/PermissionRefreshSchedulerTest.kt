@@ -32,14 +32,24 @@ class PermissionRefreshSchedulerTest : BaseTest() {
 
     @Test
     fun testStartMonitoring() = runBlocking {
-        val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> = AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
-        val authorizationProvider = object : AuthorizationStatusProvider {
+        val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> =
+            AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+        val authorizationProvider = object : CurrentAuthorizationStatusProvider {
             override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
                 return authorization.value
             }
         }
+
         val onPermissionChangedFlow = MutableStateFlow<IOSPermissionsHelper.AuthorizationStatus?>(null)
-        val timerHelper = PermissionRefreshScheduler(authorizationProvider, onPermissionChangedFlow, this)
+        val timerHelper = PermissionRefreshScheduler(
+            currentAuthorizationStatusProvider = authorizationProvider,
+            onPermissionChangedFlow = object : AuthorizationStatusHandler {
+                override fun status(status: IOSPermissionsHelper.AuthorizationStatus) {
+                    onPermissionChangedFlow.value = status
+                }
+            },
+            coroutineScope = this
+        )
 
         timerHelper.startMonitoring(50.milliseconds)
         delay(50)
@@ -47,7 +57,10 @@ class PermissionRefreshSchedulerTest : BaseTest() {
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
         delay(60)
-        assertEquals(IOSPermissionsHelper.AuthorizationStatus.Authorized, onPermissionChangedFlow.value)
+        assertEquals(
+            IOSPermissionsHelper.AuthorizationStatus.Authorized,
+            onPermissionChangedFlow.value
+        )
 
         timerHelper.isWaiting.value = true
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Denied)
@@ -64,6 +77,5 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         timerHelper.stopMonitoring()
         delay(50)
         assertNull(onPermissionChangedFlow.value)
-        Unit
     }
 }

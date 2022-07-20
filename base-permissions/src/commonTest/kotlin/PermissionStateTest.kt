@@ -56,7 +56,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         MockPermissionManager.Builder(DummyPermission)
     ) {
         test {
-            permissionManager.startMonitoringMock.verify(eq(permissionManager.monitoringInterval))
+            permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
             assertIs<Requestable<DummyPermission>>(it)
         }
         action {
@@ -64,7 +64,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         }
         mainAction {
             yieldMultiple(10)
-            permissionManager.stopMonitoringMock.verify()
+            permissionManager.monitoringDidStopMock.verify()
         }
     }
 
@@ -73,11 +73,11 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         MockPermissionManager.Builder(DummyPermission)
     ) {
         test {
-            permissionManager.startMonitoringMock.verify(eq(permissionManager.monitoringInterval))
+            permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
             assertIs<Requestable<DummyPermission>>(it)
         }
         mainAction {
-            permissionManager.requestPermissionMock.on().doExecute { permissionManager.grantPermission() }
+            permissionManager.requestPermissionDidStartMock.on().doExecute { permissionManager.grantPermission() }
             permissionStateRepo.request()
         }
         test {
@@ -88,7 +88,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         }
         mainAction {
             yieldMultiple(10)
-            permissionManager.stopMonitoringMock.verify()
+            permissionManager.monitoringDidStopMock.verify()
         }
     }
 
@@ -100,7 +100,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
             assertIs<Requestable<DummyPermission>>(it)
         }
         mainAction {
-            permissionManager.requestPermissionMock.on().doExecute { permissionManager.revokePermission(true) }
+            permissionManager.requestPermissionDidStartMock.on().doExecute { permissionManager.revokePermission(true) }
             permissionStateRepo.request()
         }
         test {
@@ -111,7 +111,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         }
         mainAction {
             yieldMultiple(10)
-            permissionManager.stopMonitoringMock.verify()
+            permissionManager.monitoringDidStopMock.verify()
         }
     }
 
@@ -120,7 +120,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         MockPermissionManager.Builder(DummyPermission)
     ) {
         test {
-            permissionManager.startMonitoringMock.verify(eq(permissionManager.monitoringInterval))
+            permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
             assertIs<Requestable<DummyPermission>>(it)
         }
         mainAction {
@@ -140,7 +140,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         }
         mainAction {
             yieldMultiple(10)
-            permissionManager.stopMonitoringMock.verify()
+            permissionManager.monitoringDidStopMock.verify()
         }
     }
 }

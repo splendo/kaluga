@@ -40,6 +40,14 @@ actual class DefaultScanner(
     override val isSupported: Boolean = false
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
 
+    override suspend fun didStartScanning(filter: Set<UUID>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun didStopScanning() {
+        TODO("Not yet implemented")
+    }
+
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 
     override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = emptyList()

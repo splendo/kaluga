@@ -133,8 +133,7 @@ actual class DefaultScanner internal constructor(
         listOf(bluetoothEnabled, locationEnabled)
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
-        super.scanForDevices(filter)
+    override suspend fun didStartScanning(filter: Set<UUID>) {
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -144,8 +143,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun stopScanning() {
-        super.stopScanning()
+    override suspend fun didStopScanning() {
         bluetoothScanner.stopScan(callback)
     }
 

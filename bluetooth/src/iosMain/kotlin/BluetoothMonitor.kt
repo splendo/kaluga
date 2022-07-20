@@ -57,14 +57,12 @@ class DefaultBluetoothMonitor internal constructor(
         centralManager.set(this)
     }
 
-    override fun startMonitoring() {
-        super.startMonitoring()
+    override fun monitoringDidStart() {
         initializeCentralManagerIfNotInitialized().delegate = centralManagerDelegate
         updateState()
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         centralManager.value?.delegate = null
     }
 }

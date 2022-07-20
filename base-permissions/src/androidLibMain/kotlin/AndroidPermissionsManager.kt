@@ -33,7 +33,6 @@ import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.concurrent.ConcurrentHashMap
@@ -84,7 +83,7 @@ enum class AndroidPermissionState {
  * @param permissions List of permissions to request. Should correspond to [Manifest.permission].
  * @param logTag The tag used for logging
  * @param logger The [Logger] used for logging
- * @param onPermissionChangedFlow A [FlowCollector] that will be notified of changes to [AndroidPermissionState]
+ * @param onPermissionChanged A [AndroidPermissionStateHandler] that will be notified of changes to [AndroidPermissionState]
  */
 class AndroidPermissionsManager constructor(
     private val context: Context = ApplicationHolder.applicationContext,
@@ -92,7 +91,7 @@ class AndroidPermissionsManager constructor(
     coroutineScope: CoroutineScope,
     private val logTag: String = "AndroidPermissionManager",
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-    private val onPermissionChangedFlow: FlowCollector<AndroidPermissionState>
+    private val onPermissionChanged: AndroidPermissionStateHandler /* what */
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {
@@ -116,10 +115,7 @@ class AndroidPermissionsManager constructor(
                 context.startActivity(intent)
             }
         } else {
-            val onPermissionChangedFlow = onPermissionChangedFlow
-            launch {
-                onPermissionChangedFlow.emit(AndroidPermissionState.DENIED_DO_NOT_ASK)
-            }
+            onPermissionChanged.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
@@ -179,10 +175,7 @@ class AndroidPermissionsManager constructor(
             }
             if (locked) AndroidPermissionState.DENIED_DO_NOT_ASK else AndroidPermissionState.DENIED
         }
-        val onPermissionChangedFlow = onPermissionChangedFlow
-        launch {
-            onPermissionChangedFlow.emit(state)
-        }
+        onPermissionChanged.status(state)
     }
 
     /**
@@ -220,9 +213,18 @@ class AndroidPermissionsManager constructor(
     }
 }
 
-class AndroidPermissionStateHandler(private val eventChannel: SendChannel<PermissionManager.Event>, private val logTag: String, private val logger: Logger) : FlowCollector<AndroidPermissionState> {
-    override suspend fun emit(value: AndroidPermissionState) {
-        when (value) {
+interface AndroidPermissionStateHandler {
+    fun status(state: AndroidPermissionState)
+}
+
+class DefaultAndroidPermissionStateHandler(
+    private val eventChannel: SendChannel<PermissionManager.Event>,
+    private val logTag: String,
+    private val logger: Logger
+) : AndroidPermissionStateHandler {
+
+    override fun status(state: AndroidPermissionState) {
+        when (state) {
             AndroidPermissionState.DENIED -> {
                 logger.info(logTag) { "Permission Revoked" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionDenied(locked = false))

@@ -31,6 +31,11 @@ class DefaultLocationMonitor : DefaultServiceMonitor(), LocationMonitor {
     override val isServiceEnabled: Boolean
         get() = TODO("Not yet implemented")
 
-    override fun startMonitoring() = TODO("Not yet implemented")
-    override fun stopMonitoring() = TODO("Not yet implemented")
+    override fun monitoringDidStart() {
+        TODO("Not yet implemented")
+    }
+
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
+    }
 }

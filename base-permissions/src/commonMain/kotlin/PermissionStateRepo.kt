@@ -18,17 +18,13 @@
 package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -40,7 +36,7 @@ abstract class BasePermissionStateRepo<P : Permission>(
     createUninitializedState: () -> PermissionState.Uninitialized<P>,
     createInitializingState: suspend ColdStateFlowRepo<PermissionState<P>>.(PermissionState.Inactive<P>) -> suspend () -> PermissionState.Initializing<P>,
     createDeinitializedState: suspend ColdStateFlowRepo<PermissionState<P>>.(PermissionState.Active<P>) -> suspend () -> PermissionState.Deinitialized<P> = { it.deinitialize },
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : ColdStateFlowRepo<PermissionState<P>>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -61,7 +57,7 @@ abstract class BasePermissionStateRepo<P : Permission>(
 open class PermissionStateRepo<P : Permission>(
     protected val monitoringInterval: Duration = defaultMonitoringInterval,
     createPermissionManager: (CoroutineScope) -> PermissionManager<P>,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    coroutineContext: CoroutineContext,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) }
 ) : BasePermissionStateRepo<P>(
     createUninitializedState = { PermissionStateImpl.Uninitialized() },
@@ -90,17 +86,15 @@ open class PermissionStateRepo<P : Permission>(
     }
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
-    private suspend fun startMonitoringManager(permissionManager: PermissionManager<P>) {
-        val hasStarted = EmptyCompletableDeferred()
+    private fun startMonitoringManager(permissionManager: PermissionManager<P>) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            permissionManager.events.onStart { hasStarted.complete() }.collect { event ->
+            permissionManager.events.collect { event ->
                 when (event) {
                     is PermissionManager.Event.PermissionGranted -> handlePermissionGranted()
                     is PermissionManager.Event.PermissionDenied -> handlePermissionDenied(event.locked)
                 }
             }
         }
-        hasStarted.await()
     }
 
     private suspend fun handlePermissionGranted() = takeAndChangeState { state ->
