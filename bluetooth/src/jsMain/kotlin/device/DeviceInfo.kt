@@ -18,8 +18,11 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.randomUUIDString
 
 actual typealias Identifier = UUID
+
+actual fun randomIdentifier() = Identifier(randomUUIDString())
 
 actual val Identifier.stringValue: String
     get() = uuidString

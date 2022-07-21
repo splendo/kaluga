@@ -26,6 +26,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -229,4 +230,14 @@ actual class Scanner internal constructor(
             } else null
         )
     }
+
+    override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
+        ?.bondedDevices
+        ?.filter {
+            // If no uuids available return this device
+            // Otherwise check if it constains any of given service uuid
+            it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+        }
+        ?.map { it.address }
+        ?: emptyList()
 }

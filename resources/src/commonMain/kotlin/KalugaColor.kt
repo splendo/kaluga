@@ -91,7 +91,7 @@ expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1
  * @param alpha The alpha color value ranging between `0` and `255`. Defaults to `255`
  * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
  */
-expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): Color
+expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): KalugaColor
 
 /**
  * Attempts to parse a given [String] into a [Color].
@@ -99,7 +99,7 @@ expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 2
  * @param hexString The [String] to parse as a [Color]
  * @return The [Color] associated with [hexString] or `null` if improperly formatted.
  */
-fun colorFrom(hexString: String): Color? {
+fun colorFrom(hexString: String): KalugaColor? {
     return if (hexString.startsWith('#')) {
         val hexColor = hexString.substring(1).toLong(16)
         when (hexString.length) {
@@ -123,8 +123,8 @@ fun colorFrom(hexString: String): Color? {
     }
 }
 
-val Color.inverted: Color get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
-val Color.hexString: String
+val KalugaColor.inverted: KalugaColor get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
+val KalugaColor.hexString: String
     get() {
         return "#${alphaInt.toHex(2)}${redInt.toHex(2)}${greenInt.toHex(2)}${blueInt.toHex(2)}"
     }

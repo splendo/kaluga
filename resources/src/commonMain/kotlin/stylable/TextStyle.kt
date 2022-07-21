@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.resources.stylable
 
-import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.Font
+import com.splendo.kaluga.resources.KalugaColor
 
 data class TextStyle(
     val font: Font,
-    val color: Color,
+    val color: KalugaColor,
     val size: Float,
     val alignment: TextAlignment = TextAlignment.START
 )

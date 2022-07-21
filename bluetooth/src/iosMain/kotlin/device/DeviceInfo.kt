@@ -21,5 +21,7 @@ import platform.Foundation.NSUUID
 
 actual typealias Identifier = NSUUID
 
+actual fun randomIdentifier() = Identifier.UUID()
+
 actual val Identifier.stringValue: String
     get() = UUIDString
