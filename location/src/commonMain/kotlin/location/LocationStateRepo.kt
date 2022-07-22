@@ -18,8 +18,6 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.ColdStateFlowRepo
@@ -31,7 +29,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -88,9 +85,8 @@ open class LocationStateImplRepo(
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private suspend fun startMonitoringLocationManager(locationManager: LocationManager) {
-        val hasStarted = EmptyCompletableDeferred()
         CoroutineScope(coroutineContext + superVisorJob).launch {
-            locationManager.events.onStart { hasStarted.complete() }.collect { event ->
+            locationManager.events.collect { event ->
                 when (event) {
                     is LocationManager.Event.PermissionChanged -> handlePermissionChangedEvent(event, locationManager)
                     is LocationManager.Event.LocationDisabled -> takeAndChangeState(remainIfStateNot = LocationState.Enabled::class) { it.disable }
@@ -105,7 +101,6 @@ open class LocationStateImplRepo(
                 }
             }
         }
-        hasStarted.await()
     }
 
     private suspend fun handlePermissionChangedEvent(event: LocationManager.Event.PermissionChanged, locationManager: LocationManager) = takeAndChangeState { state ->
