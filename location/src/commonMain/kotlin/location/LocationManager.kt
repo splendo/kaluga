@@ -179,11 +179,9 @@ abstract class BaseLocationManager(
 
     fun handleLocationChanged(location: Location.KnownLocation) = handleLocationChanged(listOf(location))
     fun handleLocationChanged(locations: List<Location.KnownLocation>) {
-        launch {
-            locations.forEach { location ->
-                logger.info(LOG_TAG) { "Location changed to $location" }
-                sharedLocations.tryEmit(location)
-            }
+        locations.forEach { location ->
+            logger.info(LOG_TAG) { "Location changed to $location" }
+            sharedLocations.tryEmit(location) // buffer is DROP_OLDEST so this will always return `true`
         }
     }
 
