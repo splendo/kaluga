@@ -48,7 +48,16 @@ data class DeviceInfoImpl(
     override val advertisementData: BaseAdvertisementData
 ) : DeviceInfo {
 
-    constructor(wrapper: DeviceWrapper, rssi: Int, advertisementData: BaseAdvertisementData) : this(wrapper.name, wrapper.identifier, rssi, advertisementData)
+    constructor(
+        wrapper: DeviceWrapper,
+        rssi: Int,
+        advertisementData: BaseAdvertisementData
+    ) : this(
+        name = wrapper.name,
+        identifier = wrapper.identifier,
+        rssi = rssi,
+        advertisementData = advertisementData,
+    )
     override val updatedAt = DefaultKalugaDate.now()
 
     override fun distance(environmentalFactor: Double): Double {

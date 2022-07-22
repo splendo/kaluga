@@ -18,6 +18,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
@@ -59,66 +62,43 @@ interface PermissionManager<P : Permission> {
  * @param stateRepo The [PermissionStateRepo] managed by this manager.
  */
 abstract class BasePermissionManager<P : Permission>(
-    override val permission: P,
-    private val settings: Settings,
-    private val coroutineScope: CoroutineScope
+    final override val permission: P,
+    settings: Settings,
+    coroutineScope: CoroutineScope
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
     data class Settings(
-        val logLevel: LogLevel = LogLevel.NONE
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
-    enum class LogLevel {
-        NONE,
-        INFO,
-        VERBOSE
+    protected val logTag = "PermissionManager $permission"
+    protected val logger = settings.logger
+
+    protected val eventChannel = Channel<PermissionManager.Event>(UNLIMITED)
+    override val events: Flow<PermissionManager.Event> = eventChannel.receiveAsFlow()
+
+    final override fun requestPermission() {
+        logger.info(logTag) { "Request Permission" }
+        requestPermissionDidStart()
     }
 
-    private val logTag = "PermissionManager $permission"
-    private val sharedEvents = Channel<PermissionManager.Event>(UNLIMITED)
-    override val events: Flow<PermissionManager.Event> = sharedEvents.receiveAsFlow()
+    protected abstract fun requestPermissionDidStart()
 
-    override fun requestPermission() {
-        logInfo { "Request Permission" }
+    final override fun startMonitoring(interval: Duration) {
+        logger.debug(logTag) { "Start monitoring with interval $interval" }
+        monitoringDidStart(interval)
     }
 
-    override fun startMonitoring(interval: Duration) {
-        logDebug { "Start monitoring with interval $interval" }
+    protected abstract fun monitoringDidStart(interval: Duration)
+
+    final override fun stopMonitoring() {
+        logger.debug(logTag) { "Stop monitoring with interval" }
+        monitoringDidStop()
     }
 
-    override fun stopMonitoring() {
-        logDebug { "Stop monitoring with interval" }
-    }
+    protected abstract fun monitoringDidStop()
 
-    open fun grantPermission() {
-        logInfo { "Permission Granted" }
-        emitSharedEvent(PermissionManager.Event.PermissionGranted)
-    }
-
-    open fun revokePermission(locked: Boolean) {
-        logInfo { if (locked) { "Permission Locked" } else { "Permission Revoked" } }
-        emitSharedEvent(PermissionManager.Event.PermissionDenied(locked))
-    }
-
-    private fun emitSharedEvent(event: PermissionManager.Event) {
-        sharedEvents.trySend(event)
-    }
-
-    protected fun logInfo(message: () -> String) {
-        if (settings.logLevel != LogLevel.NONE) {
-            info(logTag, message)
-        }
-    }
-
-    protected fun logDebug(message: () -> String) {
-        if (settings.logLevel == LogLevel.VERBOSE) {
-            debug(logTag, message)
-        }
-    }
-
-    protected fun logError(message: () -> String) {
-        if (settings.logLevel == LogLevel.VERBOSE) {
-            com.splendo.kaluga.logging.error(logTag, message)
-        }
+    protected fun emitEvent(event: PermissionManager.Event) {
+        eventChannel.trySend(event)
     }
 }

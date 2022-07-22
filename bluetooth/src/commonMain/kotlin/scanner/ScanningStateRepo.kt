@@ -25,7 +25,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -39,7 +38,7 @@ abstract class BaseScanningStateRepo(
     createNotInitializedState: () -> ScanningState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Inactive) -> suspend () -> ScanningState,
     createDeinitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Active) -> suspend () -> ScanningState.Deinitialized,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -62,30 +61,32 @@ abstract class BaseScanningStateRepo(
 open class ScanningStateImplRepo(
     createScanner: () -> Scanner,
     private val createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
     createInitializingState = { state ->
-        when (val stateImpl = state as ScanningStateImpl.Inactive) {
+        when (state) {
             is ScanningStateImpl.NotInitialized -> {
                 val scanner = createScanner()
                 (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
-                stateImpl.startInitializing(scanner)
+                state.startInitializing(scanner)
             }
             is ScanningStateImpl.Deinitialized -> {
-                (this as ScanningStateImplRepo).startMonitoringScanner(stateImpl.scanner)
-                stateImpl.reinitialize
+                (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
+                state.reinitialize
             }
+            else -> state.remain()
         }
     },
     createDeinitializingState = { state ->
         (this as ScanningStateImplRepo).superVisorJob.cancelChildren()
         state.deinitialize
-    }
+    },
+    coroutineContext = coroutineContext
 ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
-    private suspend fun startMonitoringScanner(scanner: Scanner) {
+    private fun startMonitoringScanner(scanner: Scanner) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
             scanner.events.collect { event ->
                 when (event) {
@@ -140,7 +141,7 @@ class ScanningStateRepo(
     settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    coroutineContext: CoroutineContext,
     contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : ScanningStateImplRepo(
     createScanner = {

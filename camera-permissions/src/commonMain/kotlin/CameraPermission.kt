@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.base.PermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.defaultPermissionContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -58,5 +57,5 @@ class CameraPermissionStateRepo(
     builder: BaseCameraPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : PermissionStateRepo<CameraPermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

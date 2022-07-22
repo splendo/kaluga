@@ -27,15 +27,19 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
 
+interface CurrentAuthorizationStatusProvider {
+    suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus
+}
+
 /**
  * Convenience class for scheduling checks to changes in permission state.
  * @param authorizationStatus Method for requesting a the current [IOSPermissionsHelper.AuthorizationStatus] for the permission associated with the [PermissionManager]
- * @param onPermissionChanged Method for notifying changes to a permission.
+ * @param onPermissionChangedFlow [AuthorizationStatusHandler] that is notified when changes to a permission occurs.
  * @param coroutineScope The [CoroutineScope] on which to run the checks.
  */
 class PermissionRefreshScheduler(
-    private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus,
-    private val onPermissionChanged: (IOSPermissionsHelper.AuthorizationStatus) -> Unit,
+    private val currentAuthorizationStatusProvider: CurrentAuthorizationStatusProvider,
+    private val onPermissionChangedFlow: AuthorizationStatusHandler,
     coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
@@ -77,10 +81,10 @@ class PermissionRefreshScheduler(
             if (timerJobState is TimerJobState.TimerNotRunning) {
                 this.timerState.set(
                     timerJobState.startTimer(interval, this) {
-                        val status = authorizationStatus()
+                        val status = currentAuthorizationStatusProvider.provide()
                         if (!isWaiting.value && lastPermission.get() != status) {
                             updateLastPermission()
-                            onPermissionChanged(status)
+                            onPermissionChangedFlow.status(status)
                         }
                     }
                 )
@@ -104,6 +108,6 @@ class PermissionRefreshScheduler(
     }
 
     private suspend fun updateLastPermission() {
-        lastPermission.set(authorizationStatus())
+        lastPermission.set(currentAuthorizationStatusProvider.provide())
     }
 }

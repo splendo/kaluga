@@ -27,6 +27,10 @@ class BluetoothViewController : UICollectionViewController {
     private var devices: [BluetoothListDeviceViewModel] = []
     private var lifecycleManager: LifecycleManager!
 
+    deinit {
+        lifecycleManager.unbind()
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         

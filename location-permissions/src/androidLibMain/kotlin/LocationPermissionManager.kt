@@ -21,8 +21,8 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAndroidPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -42,20 +42,18 @@ actual class DefaultLocationPermissionManager(
         return result.toTypedArray()
     }
 
-    private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, ::logDebug, ::logError, ::handleAndroidPermissionState)
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, logTag, logger, permissionHandler)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }

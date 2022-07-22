@@ -19,14 +19,15 @@ package com.splendo.kaluga.permissions.calendar
 
 import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import platform.EventKit.EKAuthorizationStatus
 import platform.EventKit.EKAuthorizationStatusAuthorized
 import platform.EventKit.EKAuthorizationStatusDenied
@@ -47,17 +48,19 @@ actual class DefaultCalendarPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    private val eventStore = EKEventStore()
-    private val authorizationStatus = suspend {
-        EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
+    private class Provider : CurrentAuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
     }
-    private var timerHelper = PermissionRefreshScheduler(authorizationStatus, ::handleAuthorizationStatus, coroutineScope)
 
-    override fun requestPermission() {
-        super.requestPermission()
+    private val eventStore = EKEventStore()
+    private val provider = Provider()
+
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
+    private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
+
+    override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
-            launch {
-                timerHelper.isWaiting.value = true
+            permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 val callback = { success: Boolean, error: NSError? ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
@@ -70,27 +73,24 @@ actual class DefaultCalendarPermissionManager(
 
                 try {
                     if (deferred.await())
-                        grantPermission()
+                        IOSPermissionsHelper.AuthorizationStatus.Authorized
                     else
-                        revokePermission(true)
+                        IOSPermissionsHelper.AuthorizationStatus.Restricted
                 } catch (t: Throwable) {
-                    revokePermission(true)
-                } finally {
-                    timerHelper.isWaiting.value = false
+                    IOSPermissionsHelper.AuthorizationStatus.Restricted
                 }
             }
         } else {
-            revokePermission(true)
+            val permissionHandler = permissionHandler
+            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }

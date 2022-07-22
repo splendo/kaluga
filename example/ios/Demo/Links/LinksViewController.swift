@@ -29,6 +29,10 @@ class LinksViewController : UIViewController {
         return knArchitectureFramework.createLinksViewModel(parent: self, animated: true, completion: nil)
     }()
     private var lifecycleManager: LifecycleManager!
+
+    deinit {
+        lifecycleManager.unbind()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

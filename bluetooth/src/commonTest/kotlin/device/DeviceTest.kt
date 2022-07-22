@@ -27,7 +27,6 @@ import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -75,6 +74,7 @@ class DeviceTest :
                 device.advertisementDataDidUpdate(
                     MockAdvertisementData(isConnectable = true)
                 )
+                yieldMultiple(2)
             }
             test {
                 assertIs<ConnectableDeviceState.Disconnected>(it)
@@ -95,6 +95,7 @@ class DeviceTest :
         connecting()
         mainAction {
             connectionManager.cancelConnecting()
+            yieldMultiple(2)
         }
         disconnecting()
         disconnect()
@@ -125,6 +126,7 @@ class DeviceTest :
 
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
         test {
             connectionManager.connectMock.verify(times = 2)
@@ -133,6 +135,7 @@ class DeviceTest :
         }
         mainAction {
             connectionManager.handleConnect()
+            yieldMultiple(2)
         }
         test {
             assertIs<ConnectableDeviceState.Connected>(it)
@@ -197,6 +200,7 @@ class DeviceTest :
         }
         mainAction {
             discoverService()
+            yieldMultiple(2)
         }
         test {
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
@@ -219,6 +223,7 @@ class DeviceTest :
         }
         mainAction {
             discoverService()
+            yieldMultiple(2)
         }
         test {
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
@@ -227,6 +232,7 @@ class DeviceTest :
 
         mainAction {
             characteristic.readValue()
+            yieldMultiple(2)
         }
 
         test {
@@ -240,6 +246,7 @@ class DeviceTest :
 
         mainAction {
             descriptor.writeValue(null)
+            yieldMultiple(2)
         }
 
         test {
@@ -268,6 +275,7 @@ class DeviceTest :
 
         mainAction {
             connectionManager.handleCurrentAction()
+            yieldMultiple(2)
             val captor = AnyOrNullCaptor<DeviceAction>()
             connectionManager.handleCurrentActionCompletedMock.verify(eq(true), captor, 2)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
@@ -294,7 +302,7 @@ class DeviceTest :
     private suspend fun connecting() {
         mainAction {
             connectionManager.startConnecting()
-            yield()
+            yieldMultiple(2)
         }
         test {
             connectionManager.connectMock.verify()
@@ -305,6 +313,7 @@ class DeviceTest :
     private suspend fun connect() {
         mainAction {
             connectionManager.handleConnect()
+            yieldMultiple(2)
         }
         test {
             assertEquals(configuration.rssi, device.info.first().rssi)
@@ -315,6 +324,7 @@ class DeviceTest :
     private suspend fun disconnecting() {
         mainAction {
             connectionManager.startDisconnecting()
+            yieldMultiple(2)
         }
         getDisconnectingState()
     }
@@ -322,6 +332,7 @@ class DeviceTest :
     private suspend fun disconnect() {
         mainAction {
             connectionManager.handleDisconnect()
+            yieldMultiple(2)
         }
         getDisconnectedState()
     }

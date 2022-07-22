@@ -18,9 +18,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.base
 
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
 
 /**
@@ -68,15 +73,43 @@ class IOSPermissionsHelper {
     }
 }
 
-/**
- * Updates a [PermissionManager] with the [PermissionState] associated with a given [AuthorizationStatus]
- * @param authorizationStatus The [AuthorizationStatus] to update to
- * @param permissionManager The [PermissionManager] to update to the proper state.
- */
-fun <P : Permission> BasePermissionManager<P>.handleAuthorizationStatus(authorizationStatus: AuthorizationStatus) {
-    when (authorizationStatus) {
-        AuthorizationStatus.NotDetermined -> revokePermission(false)
-        AuthorizationStatus.Authorized -> grantPermission()
-        AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> revokePermission(true)
+fun AuthorizationStatusHandler.requestAuthorizationStatus(timerHelper: PermissionRefreshScheduler? = null, coroutineScope: CoroutineScope, request: suspend () -> AuthorizationStatus) {
+    coroutineScope.launch {
+        timerHelper?.isWaiting?.value = true
+        val newStatus = request()
+        timerHelper?.isWaiting?.value = false
+        status(newStatus)
+    }
+}
+
+interface AuthorizationStatusHandler {
+    fun status(status: AuthorizationStatus)
+}
+
+class DefaultAuthorizationStatusHandler(
+    private val eventChannel: SendChannel<PermissionManager.Event>,
+    private val logTag: String,
+    private val logger: Logger
+) : AuthorizationStatusHandler {
+
+    override fun status(status: AuthorizationStatus) {
+        when (status) {
+            AuthorizationStatus.NotDetermined -> {
+                logger.info(logTag) { "Permission Revoked" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionDenied(false))
+            }
+            AuthorizationStatus.Authorized -> {
+                logger.info(logTag) { "Permission Granted" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionGranted)
+            }
+            AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> {
+                logger.info(logTag) { "Permission Locked" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionDenied(true))
+            }
+        }
+    }
+
+    private fun tryAndEmitEvent(event: PermissionManager.Event) {
+        eventChannel.trySend(event)
     }
 }

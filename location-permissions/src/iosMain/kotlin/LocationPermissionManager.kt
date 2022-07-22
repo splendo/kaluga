@@ -18,10 +18,11 @@
 package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.IOSVersion
+import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
-import com.splendo.kaluga.permissions.base.handleAuthorizationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLAccuracyAuthorization
@@ -50,35 +51,23 @@ actual class DefaultLocationPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
+    private class Delegate(private val locationPermission: LocationPermission, private val onPermissionChanged: AuthorizationStatusHandler, private val coroutineScope: CoroutineScope) : NSObject(), CLLocationManagerDelegateProtocol {
+        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
+            onPermissionChanged.status(manager.authorizationStatus(locationPermission))
+        }
+        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus /* = kotlin.Int */) {
+            onPermissionChanged.status(manager.authorizationStatus(locationPermission))
+        }
+    }
+
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }
-    private val authorizationStatus = suspend {
-        locationManager.updateLocationManager {
-            if (IOSVersion.systemVersion > IOSVersion(13)) {
-                authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
-            } else {
-                CLLocationManager.authorizationStatus() to true
-            }
-        }.toAuthorizationStatus(permission)
-    }
 
-    private val authorizationDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+    private val authorizationDelegate = Delegate(permission, permissionHandler, coroutineScope)
 
-        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
-            launch {
-                handleAuthorizationStatus(authorizationStatus())
-            }
-        }
-        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus /* = kotlin.Int */) {
-            launch {
-                handleAuthorizationStatus(authorizationStatus())
-            }
-        }
-    }
-
-    override fun requestPermission() {
-        super.requestPermission()
+    override fun requestPermissionDidStart() {
         val locationDeclarations = mutableListOf(NSLocationWhenInUseUsageDescription)
         if (permission.background) {
             locationDeclarations.addAll(listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription))
@@ -93,22 +82,22 @@ actual class DefaultLocationPermissionManager(
                 }
             }
         } else {
-            revokePermission(true)
+            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
-    override fun startMonitoring(interval: Duration) {
-        super.startMonitoring(interval)
+    override fun monitoringDidStart(interval: Duration) {
+        val permission = permission
         launch {
-            locationManager.updateLocationManager {
+            val status = locationManager.updateLocationManager {
                 delegate = authorizationDelegate
+                authorizationStatus(permission)
             }
-            handleAuthorizationStatus(authorizationStatus())
+            permissionHandler.status(status)
         }
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         launch {
             locationManager.updateLocationManager {
                 delegate = null
@@ -137,3 +126,9 @@ private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permissio
         }
     }
 }
+
+fun CLLocationManager.authorizationStatus(locationPermission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = if (IOSVersion.systemVersion > IOSVersion(13)) {
+    authorizationStatus to (accuracyAuthorization == CLAccuracyAuthorization.CLAccuracyAuthorizationFullAccuracy)
+} else {
+    CLLocationManager.authorizationStatus() to true
+}.toAuthorizationStatus(locationPermission)

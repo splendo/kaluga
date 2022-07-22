@@ -21,6 +21,7 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -97,13 +98,22 @@ class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadView
 
     @Test
     fun testCustomUIThreadViewModelTest() = testOnUIThread {
+        val observableDisposable = viewModel.testObservable.observe { }
+        val subjectDisposable = viewModel.testSubject.observe { }
+        yieldMultiple(2)
+
         assertEquals("1", viewModel.testObservable.current)
         assertEquals(1, viewModel.testSubject.current)
         viewModel.testSubject.stateFlow.value = 2
+        yieldMultiple(2)
         assertEquals("2", viewModel.testObservable.current)
         assertEquals(2, viewModel.testSubject.current)
         mockFlow.value = 3
+        yieldMultiple(2)
         assertEquals("3", viewModel.testObservable.current)
         assertEquals(3, viewModel.testSubject.current)
+
+        observableDisposable.dispose()
+        subjectDisposable.dispose()
     }
 }

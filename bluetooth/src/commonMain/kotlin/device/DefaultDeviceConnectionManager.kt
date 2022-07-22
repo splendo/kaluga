@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
@@ -82,7 +83,7 @@ interface DeviceConnectionManager {
 
 abstract class BaseDeviceConnectionManager(
     val deviceWrapper: DeviceWrapper,
-    private val settings: ConnectionSettings,
+    settings: ConnectionSettings,
     private val coroutineScope: CoroutineScope
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
 
@@ -95,6 +96,7 @@ abstract class BaseDeviceConnectionManager(
     }
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
+    private val logger = settings.logger
 
     private val _currentAction = AtomicReference<DeviceAction?>(null)
     protected var currentAction: DeviceAction?
@@ -102,55 +104,55 @@ abstract class BaseDeviceConnectionManager(
         set(value) { _currentAction.set(value) }
     protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
-    private val sharedEvents = Channel<DeviceConnectionManager.Event>(UNLIMITED)
-    override val events: Flow<DeviceConnectionManager.Event> = sharedEvents.receiveAsFlow()
+    private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
+    override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
 
     private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
     override val rssi = sharedRssi.asSharedFlow()
 
     override suspend fun readRssi() {
-        logDebug { "Request Read RSSI" }
+        logger.debug(logTag) { "Request Read RSSI" }
         // TODO call into abstract function?
     }
 
     fun handleNewRssi(rssi: Int) {
-        logDebug { "Updated Rssi $rssi" }
+        logger.debug(logTag) { "Updated Rssi $rssi" }
         sharedRssi.tryEmit(rssi)
     }
 
     fun handleNewMtu(mtu: Int) {
-        logDebug { "Updated Mtu $mtu" }
-        emitSharedEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
+        logger.debug(logTag) { "Updated Mtu $mtu" }
+        emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }
 
     override fun startConnecting() {
-        logInfo { "Start Connecting" }
-        emitSharedEvent(DeviceConnectionManager.Event.Connecting)
+        logger.info(logTag) { "Start Connecting" }
+        emitEvent(DeviceConnectionManager.Event.Connecting)
     }
 
     override fun cancelConnecting() {
-        logInfo { "Cancel Connecting" }
-        emitSharedEvent(DeviceConnectionManager.Event.CancelledConnecting)
+        logger.info(logTag) { "Cancel Connecting" }
+        emitEvent(DeviceConnectionManager.Event.CancelledConnecting)
     }
 
     override fun handleConnect() {
-        logInfo { "Did Connect" }
-        emitSharedEvent(DeviceConnectionManager.Event.Connected)
+        logger.info(logTag) { "Did Connect" }
+        emitEvent(DeviceConnectionManager.Event.Connected)
     }
 
     override fun startDisconnecting() {
-        logInfo { "Start Disconnecting" }
-        emitSharedEvent(DeviceConnectionManager.Event.Disconnecting)
+        logger.info(logTag) { "Start Disconnecting" }
+        emitEvent(DeviceConnectionManager.Event.Disconnecting)
     }
 
     override suspend fun performAction(action: DeviceAction) {
-        logInfo { "Perform action $action" }
+        logger.info(logTag) { "Perform action $action" }
         // TODO call into abstract function?
     }
 
     // TODO add logging for pairing
 
-    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitSharedEvent, logTag, settings.logLevel)
+    fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, logTag, logger)
 
     override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = _currentAction
@@ -161,21 +163,21 @@ abstract class BaseDeviceConnectionManager(
             onDisconnect?.invoke()
             Unit
         }
-        logInfo { "Did Disconnect" }
-        emitSharedEvent(DeviceConnectionManager.Event.Disconnected(clean))
+        logger.info(logTag) { "Did Disconnect" }
+        emitEvent(DeviceConnectionManager.Event.Disconnected(clean))
     }
 
     override fun startDiscovering() {
-        logInfo { "Start Discovering Services" }
-        emitSharedEvent(DeviceConnectionManager.Event.Discovering)
+        logger.info(logTag) { "Start Discovering Services" }
+        emitEvent(DeviceConnectionManager.Event.Discovering)
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
     fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     fun handleDiscoverCompleted(services: List<Service>) {
-        logInfo { "Discovered services: ${services.map { it.uuid.uuidString }}" }
-        emitSharedEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
+        logger.info(logTag) { "Discovered services: ${services.map { it.uuid.uuidString }}" }
+        emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
@@ -183,11 +185,11 @@ abstract class BaseDeviceConnectionManager(
         _currentAction.value = null
         if (currentAction != null) {
             if (succeeded)
-                logInfo { "Completed $currentAction successfully" }
+                logger.info(logTag) { "Completed $currentAction successfully" }
             else
-                logError { "Failed to complete $currentAction" }
+                logger.error(logTag) { "Failed to complete $currentAction" }
         }
-        emitSharedEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
+        emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }
 
     fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
@@ -241,27 +243,9 @@ abstract class BaseDeviceConnectionManager(
         disconnect()
     }
 
-    private fun emitSharedEvent(event: DeviceConnectionManager.Event) {
+    private fun emitEvent(event: DeviceConnectionManager.Event) {
         // Channel has unlimited buffer so this will never fail due to capacity
-        sharedEvents.trySend(event)
-    }
-
-    protected fun logInfo(message: () -> String) {
-        if (settings.logLevel != ConnectionSettings.LogLevel.NONE) {
-            info(logTag, message)
-        }
-    }
-
-    protected fun logDebug(message: () -> String) {
-        if (settings.logLevel == ConnectionSettings.LogLevel.VERBOSE) {
-            debug(logTag, message)
-        }
-    }
-
-    protected fun logError(message: () -> String) {
-        if (settings.logLevel == ConnectionSettings.LogLevel.VERBOSE) {
-            com.splendo.kaluga.logging.error(logTag, message)
-        }
+        eventChannel.trySend(event)
     }
 }
 

@@ -32,6 +32,7 @@ import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
+import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
@@ -91,9 +92,9 @@ actual class DefaultScanner internal constructor(
                 else -> Pair("Reason Unknown", true)
             }
 
-            logError { error.first }
+            e { error.first }
             if (error.second) {
-                sharedEvents.trySend(Scanner.Event.FailedScanning)
+                eventChannel.trySend(Scanner.Event.FailedScanning)
             }
         }
 
@@ -132,8 +133,7 @@ actual class DefaultScanner internal constructor(
         listOf(bluetoothEnabled, locationEnabled)
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
-        super.scanForDevices(filter)
+    override suspend fun didStartScanning(filter: Set<UUID>) {
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -143,8 +143,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun stopScanning() {
-        super.stopScanning()
+    override suspend fun didStopScanning() {
         bluetoothScanner.stopScan(callback)
     }
 

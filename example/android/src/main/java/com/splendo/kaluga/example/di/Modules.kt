@@ -90,6 +90,8 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.Permissions
@@ -107,7 +109,11 @@ val utilitiesModule = module {
     single {
         Permissions(
             PermissionsBuilder().apply {
-                registerAllPermissions(settings = BasePermissionManager.Settings(logLevel = BasePermissionManager.LogLevel.VERBOSE))
+                registerAllPermissions(
+                    settings = BasePermissionManager.Settings(
+                        logger = RestrictedLogger(RestrictedLogLevel.Verbose)
+                    )
+                )
             },
             coroutineContext = singleThreadDispatcher("Permissions")
         )

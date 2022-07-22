@@ -110,8 +110,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
-        super.scanForDevices(filter)
+    override suspend fun didStartScanning(filter: Set<UUID>) {
         if (filter.isEmpty()) {
             scan()
         } else {
@@ -119,8 +118,7 @@ actual class DefaultScanner internal constructor(
         }
     }
 
-    override suspend fun stopScanning() {
-        super.stopScanning()
+    override suspend fun didStopScanning() {
         centralManagers.forEach { centralManager ->
             if (centralManager.state == CBCentralManagerStatePoweredOn) {
                 centralManager.stopScan()

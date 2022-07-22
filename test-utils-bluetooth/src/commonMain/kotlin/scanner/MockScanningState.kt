@@ -65,8 +65,8 @@ sealed class MockScanningState {
         val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered) }
     }
 
-    class PermittedHandler : ScanningState.Permitted {
-        override val revokePermission = suspend { NoBluetooth.MissingPermissions() }
+    class PermittedHandler {
+        val revokePermission = suspend { NoBluetooth.MissingPermissions() }
     }
 
     data class Initializing(
@@ -132,8 +132,8 @@ sealed class MockScanningState {
 
                 return discovered.devices.find { it.identifier == identifier }
                     ?.let { knownDevice ->
-                        knownDevice.advertisementDataDidUpdate(advertisementData)
                         knownDevice.rssiDidUpdate(rssi)
+                        knownDevice.advertisementDataDidUpdate(advertisementData)
                         remain()
                     } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator())) }
             }

@@ -32,10 +32,6 @@ typealias Filter = Set<UUID>
 
 sealed interface ScanningState : KalugaState {
 
-    interface Permitted {
-        val revokePermission: suspend () -> NoBluetooth.MissingPermissions
-    }
-
     interface Discovered {
         val devices: List<Device>
         val filter: Filter
@@ -62,6 +58,9 @@ sealed interface ScanningState : KalugaState {
         fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
     }
     sealed interface Initialized : Active
+    sealed interface Permitted : Initialized {
+        val revokePermission: suspend () -> NoBluetooth.MissingPermissions
+    }
 
     sealed interface Enabled : Initialized, Permitted {
 
@@ -125,8 +124,7 @@ sealed class ScanningStateImpl {
                 Discovered(filter)
     }
 
-    sealed class Inactive : ScanningStateImpl()
-    object NotInitialized : Inactive(), ScanningState.NotInitialized {
+    object NotInitialized : ScanningStateImpl(), ScanningState.NotInitialized {
 
         fun startInitializing(
             scanner: Scanner
@@ -140,7 +138,7 @@ sealed class ScanningStateImpl {
     }
 
     data class Deinitialized(override val previouslyDiscovered: ScanningState.Discovered, val scanner: Scanner) :
-        Inactive(), ScanningState.Deinitialized {
+        ScanningStateImpl(), ScanningState.Deinitialized {
         override val reinitialize = suspend { Initializing(previouslyDiscovered, scanner) }
     }
 
@@ -170,9 +168,9 @@ sealed class ScanningStateImpl {
         val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, scanner) }
     }
 
-    class PermittedHandler(val scanner: Scanner) : ScanningState.Permitted {
+    class PermittedHandler(val scanner: Scanner) {
 
-        override val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
+        val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
 
         fun afterNewStateIsSet(newState: ScanningState) {
             when (newState) {
@@ -209,8 +207,6 @@ sealed class ScanningStateImpl {
                 }
             }
     }
-
-    sealed class Initialized : ScanningStateImpl()
 
     sealed class Enabled : Active() {
 

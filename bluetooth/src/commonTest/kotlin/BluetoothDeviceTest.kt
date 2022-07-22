@@ -20,9 +20,9 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -45,8 +45,8 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
         }
         mainAction {
             bluetooth.startScanning()
-            yield()
-            scanner.scanForDevicesMock.verify(eq(emptySet()))
+            yieldMultiple(2)
+            scanner.didStartScanningMock.verify(eq(emptySet()))
             scanDevice()
         }
 
@@ -57,8 +57,8 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
 
         mainAction {
             bluetooth.stopScanning()
-            yield()
-            scanner.stopScanningMock.verify()
+            yieldMultiple(2)
+            scanner.didStopScanningMock.verify()
         }
 
         test {
