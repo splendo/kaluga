@@ -25,7 +25,6 @@ import com.splendo.kaluga.permissions.location.MainCLLocationManagerAccessor
 import com.splendo.kaluga.permissions.location.registerLocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocation
@@ -55,8 +54,7 @@ actual class DefaultLocationManager(
     }
 
     private class Delegate(
-        private val onLocationsChanged: FlowCollector<List<Location.KnownLocation>>,
-        private val coroutineScope: CoroutineScope
+        private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>,
     ) : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
             val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
@@ -72,9 +70,10 @@ actual class DefaultLocationManager(
         override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
         }
 
-        private fun handleLocationChanged(locations: List<Location.KnownLocation>) {
-            coroutineScope.launch { onLocationsChanged.emit(locations) }
-        }
+        private fun handleLocationChanged(locations: List<Location.KnownLocation>) =
+            locations.forEach {
+                onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
+            }
     }
 
     override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
@@ -82,8 +81,11 @@ actual class DefaultLocationManager(
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }
 
-    private val onLocationChanges = MutableSharedFlow<List<Location.KnownLocation>>()
-    private val locationUpdateDelegate = Delegate(onLocationChanges, coroutineScope)
+    private val locationUpdateDelegate: Delegate
+    init {
+        val sharedLocations = sharedLocations
+        locationUpdateDelegate = Delegate(sharedLocations)
+    }
 
     private var _isMonitoringLocationJob = AtomicReference<Job?>(null)
     var isMonitoringLocationJob: Job?
@@ -96,13 +98,7 @@ actual class DefaultLocationManager(
     }
 
     override suspend fun startMonitoringLocation() {
-        isMonitoringLocationJob?.cancel()
         val locationUpdateDelegate = locationUpdateDelegate
-        isMonitoringLocationJob = launch(coroutineContext) {
-            onLocationChanges.collect {
-                handleLocationChanged(it)
-            }
-        }
         locationManager.updateLocationManager {
             delegate = locationUpdateDelegate
             startUpdatingLocation()

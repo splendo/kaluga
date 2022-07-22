@@ -95,7 +95,7 @@ abstract class BaseLocationManager(
 
     private val eventChannel = Channel<LocationManager.Event>(UNLIMITED)
     override val events: Flow<LocationManager.Event> = eventChannel.receiveAsFlow()
-    private val sharedLocations = MutableSharedFlow<Location.KnownLocation>(replay = 0, extraBufferCapacity = settings.locationBufferCapacity, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    protected val sharedLocations = MutableSharedFlow<Location.KnownLocation>(replay = 0, extraBufferCapacity = settings.locationBufferCapacity, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     override val locations: Flow<Location.KnownLocation> = sharedLocations.asSharedFlow()
 
     abstract val locationMonitor: LocationMonitor
