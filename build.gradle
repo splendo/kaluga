@@ -52,6 +52,7 @@ apiValidation {
 
         ignoredClasses += ["com.splendo.kaluga.${name}.BuildConfig".toString()]
         ignoredClasses += ["com.splendo.kaluga.${name.replaceAll('-', ".")}.BuildConfig".toString()]
+        ignoredClasses += ["com.splendo.kaluga.${name.replaceAll('-', "")}.BuildConfig".toString()]
         ignoredClasses += ["com.splendo.kaluga.permissions.${name.replaceAll("-permissions", "")}.BuildConfig".toString()]
     }
 
