@@ -20,13 +20,6 @@ public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresen
 	public final fun setSelectedDate (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder;
 }
 
-public final class com/splendo/kaluga/datetimepicker/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public final class com/splendo/kaluga/datetimepicker/DateTimePicker {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/Locale;Lcom/splendo/kaluga/base/utils/KalugaDate;)V
 	public final fun component1 ()Ljava/lang/String;
