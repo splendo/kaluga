@@ -17,116 +17,125 @@
 
 package com.splendo.kaluga.location
 
-import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.location.MainCLLocationManagerAccessor
 import com.splendo.kaluga.permissions.location.registerLocationPermission
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.CoreLocation.kCLLocationAccuracyBest
+import platform.CoreLocation.kCLLocationAccuracyReduced
 import platform.Foundation.NSBundle
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
 
-actual class LocationManager(
-    private val locationManager: CLLocationManager,
-    locationPermission: LocationPermission,
-    permissions: Permissions,
-    autoRequestPermission: Boolean,
-    autoEnableLocations: Boolean,
-    locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+actual class DefaultLocationManager(
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BaseLocationManager(settings, coroutineScope) {
 
-    class Builder(private val locationManager: CLLocationManager = CLLocationManager()) : BaseLocationManager.Builder {
+    class Builder : BaseLocationManager.Builder {
 
         override fun create(
-            locationPermission: LocationPermission,
-            permissions: Permissions,
-            autoRequestPermission: Boolean,
-            autoEnableLocations: Boolean,
-            locationStateRepo: LocationStateRepo
-        ): BaseLocationManager = LocationManager(
-            locationManager,
-            locationPermission,
-            permissions,
-            autoRequestPermission,
-            autoEnableLocations,
-            locationStateRepo
+            settings: Settings,
+            coroutineScope: CoroutineScope
+        ): BaseLocationManager = DefaultLocationManager(
+            settings,
+            coroutineScope
         )
     }
 
-    private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
-
+    private class Delegate(
+        private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>,
+    ) : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
-            if (isMonitoringLocationUpdate) {
-                val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
-                if (locations.isNotEmpty()) {
-                    handleLocationChanged(locations)
-                }
+            val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
+            if (locations.isNotEmpty()) {
+                handleLocationChanged(locations)
             }
         }
 
         override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) {
-            if (isMonitoringLocationUpdate) {
-                handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
-            }
+            handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
         }
 
         override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
         }
+
+        private fun handleLocationChanged(locations: List<Location.KnownLocation>) =
+            locations.forEach {
+                onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
+            }
     }
 
     override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
+    private val locationManager = MainCLLocationManagerAccessor {
+        desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
+    }
 
-    private var _isMonitoringLocationUpdate = AtomicBoolean(false)
-    var isMonitoringLocationUpdate
-        get() = _isMonitoringLocationUpdate.value
-        set(value) { _isMonitoringLocationUpdate.value = value }
+    private val locationUpdateDelegate: Delegate
+    init {
+        val sharedLocations = sharedLocations
+        locationUpdateDelegate = Delegate(sharedLocations)
+    }
 
-    override suspend fun requestLocationEnable() {
+    private var _isMonitoringLocationJob = AtomicReference<Job?>(null)
+    var isMonitoringLocationJob: Job?
+        get() = _isMonitoringLocationJob.get()
+        set(value) { _isMonitoringLocationJob.set(value) }
+
+    override suspend fun requestEnableLocation() {
         // No access to UIApplication.openSettingsURLString
         // We have to fallback to alert then?
     }
 
     override suspend fun startMonitoringLocation() {
-        isMonitoringLocationUpdate = true
-        locationManager.delegate = locationManagerDelegate
-        locationManager.startUpdatingLocation()
+        val locationUpdateDelegate = locationUpdateDelegate
+        locationManager.updateLocationManager {
+            delegate = locationUpdateDelegate
+            startUpdatingLocation()
+        }
     }
 
     override suspend fun stopMonitoringLocation() {
-        locationManager.stopUpdatingLocation()
-        isMonitoringLocationUpdate = false
+        isMonitoringLocationJob?.cancel()
+        isMonitoringLocationJob = null
+
+        launch {
+            locationManager.updateLocationManager {
+                stopUpdatingLocation()
+                delegate = null
+            }
+        }
     }
 }
 
 actual class LocationStateRepoBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
-    private val locationManager: CLLocationManager = CLLocationManager(),
-    private val permissions: Permissions = Permissions(
-        PermissionsBuilder(bundle).apply {
-            registerLocationPermission()
-        },
-        Dispatchers.Main
-    )
+    private val permissionsBuilder: (CoroutineContext) -> Permissions = { context ->
+        Permissions(
+            PermissionsBuilder(bundle).apply {
+                registerLocationPermission()
+            },
+            context
+        )
+    }
 ) : LocationStateRepo.Builder {
 
     override fun create(
         locationPermission: LocationPermission,
-        autoRequestPermission: Boolean,
-        autoEnableLocations: Boolean,
-        coroutineContext: CoroutineContext
+        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
+        coroutineContext: CoroutineContext,
+        contextCreator: CoroutineContext.(String) -> CoroutineContext
     ): LocationStateRepo {
-        return LocationStateRepo(
-            locationPermission,
-            permissions,
-            autoRequestPermission,
-            autoEnableLocations,
-            LocationManager.Builder(locationManager),
-            coroutineContext
-        )
+        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext, contextCreator)
     }
 }

@@ -21,7 +21,7 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
 
 interface LocationProvider {
-    fun location(permission: LocationPermission): Flow<List<Location>>
+    fun location(permission: LocationPermission): Flow<List<Location.KnownLocation>>
     fun startMonitoringLocation(permission: LocationPermission)
     fun stopMonitoringLocation(permissions: LocationPermission)
 }

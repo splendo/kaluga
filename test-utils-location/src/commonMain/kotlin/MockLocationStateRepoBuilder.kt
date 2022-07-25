@@ -33,8 +33,11 @@ import kotlin.coroutines.CoroutineContext
  * @param locationManagerBuilder The [BaseLocationManager.Builder] for building the location manager
  * @param setupMocks If `true` sets up [createMock] to automatically create a [LocationStateRepo]
  */
-class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(private val permissions: Permissions, val locationManagerBuilder: LMB, setupMocks: Boolean = true) :
-    LocationStateRepo.Builder {
+class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
+    private val permissions: Permissions,
+    val locationManagerBuilder: LMB,
+    setupMocks: Boolean = true
+) : LocationStateRepo.Builder {
 
     /**
      * List of build [LocationStateRepo]
@@ -49,14 +52,12 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(private va
     init {
         if (setupMocks) {
             createMock.on()
-                .doExecute { (locationPermission, autoRequestPermission, autoEnableLocations, coroutineContext) ->
+                .doExecute { (locationPermission, settingsBuilder, coroutineContext, contextCreator) ->
                     LocationStateRepo(
-                        locationPermission,
-                        permissions,
-                        autoRequestPermission,
-                        autoEnableLocations,
+                        { settingsBuilder(locationPermission, permissions) },
                         locationManagerBuilder,
-                        coroutineContext
+                        coroutineContext,
+                        contextCreator
                     ).also {
                         builtLocationStateRepo.add(it)
                     }
@@ -66,8 +67,8 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(private va
 
     override fun create(
         locationPermission: LocationPermission,
-        autoRequestPermission: Boolean,
-        autoEnableLocations: Boolean,
-        coroutineContext: CoroutineContext
-    ): LocationStateRepo = createMock.call(locationPermission, autoRequestPermission, autoEnableLocations, coroutineContext)
+        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
+        coroutineContext: CoroutineContext,
+        contextCreator: CoroutineContext.(String) -> CoroutineContext
+    ): LocationStateRepo = createMock.call(locationPermission, settingsBuilder, coroutineContext, contextCreator)
 }
