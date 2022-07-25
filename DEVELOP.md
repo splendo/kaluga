@@ -60,6 +60,18 @@ We use with the following branches:
 
 When making a pull request fill in the template.
 
+## API compatibility
+
+The [binary-compatibility-validator](https://github.com/Kotlin/binary-compatibility-validator) gradle plugin is used to keep track of our public API.
+
+This means if you change the public API you need to run the `dumpApi` task, and then commit and changes to the `.api` files or CI will fail.
+
+Please study these changes carefully both when commiting and reviewing pull requests to ensure there are:
+- no needless breaking changes to the public API
+- no classes or methods added that could be `private` or `internal`
+
+Currently this tool only supports JVM based targets, so iOS/js only API changes are not tracked yet.
+
 ## Publishing
 
 ### Publishing process
