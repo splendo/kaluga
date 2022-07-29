@@ -1,0 +1,42 @@
+public abstract interface class com/splendo/kaluga/permissions/contacts/BaseContactsPermissionManagerBuilder : com/splendo/kaluga/permissions/BasePermissionsBuilder {
+	public abstract fun create (Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;Lcom/splendo/kaluga/permissions/contacts/ContactsPermissionStateRepo;)Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/contacts/ContactsPermission : com/splendo/kaluga/permissions/Permission {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;ZILjava/lang/Object;)Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAllowWrite ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/permissions/contacts/ContactsPermissionManager : com/splendo/kaluga/permissions/PermissionManager {
+	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;Lcom/splendo/kaluga/permissions/contacts/ContactsPermissionStateRepo;)V
+	public final fun getContacts ()Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;
+	public fun initializeState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun requestPermission (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoring (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/permissions/contacts/ContactsPermissionManagerBuilder : com/splendo/kaluga/permissions/contacts/BaseContactsPermissionManagerBuilder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;Lcom/splendo/kaluga/permissions/contacts/ContactsPermissionStateRepo;)Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/contacts/ContactsPermissionStateRepo : com/splendo/kaluga/permissions/PermissionStateRepo {
+	public fun <init> (Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;Lcom/splendo/kaluga/permissions/contacts/BaseContactsPermissionManagerBuilder;Lkotlin/coroutines/CoroutineContext;)V
+	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/contacts/PermissionKt {
+	public static final fun registerContactsPermission (Lcom/splendo/kaluga/permissions/PermissionsBuilder;)Lcom/splendo/kaluga/permissions/contacts/ContactsPermissionManagerBuilder;
+}
+

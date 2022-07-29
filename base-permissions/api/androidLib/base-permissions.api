@@ -1,0 +1,118 @@
+public final class com/splendo/kaluga/permissions/AndroidPermissionsManager : kotlinx/coroutines/CoroutineScope {
+	public static final field TAG Ljava/lang/String;
+	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/PermissionManager;[Ljava/lang/String;Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/PermissionManager;[Ljava/lang/String;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getHasPermissions ()Z
+	public final fun requestPermissions ()V
+	public final fun startMonitoring (J)V
+	public final fun stopMonitoring ()V
+}
+
+public abstract interface class com/splendo/kaluga/permissions/BasePermissionsBuilder {
+}
+
+public abstract class com/splendo/kaluga/permissions/Permission {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/permissions/PermissionContext {
+	public fun <init> (Landroid/content/Context;)V
+	public final fun component1 ()Landroid/content/Context;
+	public final fun copy (Landroid/content/Context;)Lcom/splendo/kaluga/permissions/PermissionContext;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/permissions/PermissionContext;Landroid/content/Context;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/PermissionContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContext ()Landroid/content/Context;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/permissions/PermissionContextKt {
+	public static final fun getDefaultPermissionContext ()Lcom/splendo/kaluga/permissions/PermissionContext;
+}
+
+public final class com/splendo/kaluga/permissions/PermissionKt {
+	public static final fun request (Lkotlinx/coroutines/flow/Flow;Lcom/splendo/kaluga/permissions/PermissionManager;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/permissions/PermissionManager : kotlinx/coroutines/CoroutineScope {
+	public fun <init> (Lcom/splendo/kaluga/permissions/PermissionStateRepo;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun grantPermission ()V
+	public abstract fun initializeState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun requestPermission (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun revokePermission (Z)V
+	public abstract fun startMonitoring (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/permissions/PermissionState : com/splendo/kaluga/state/KalugaState {
+	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/permissions/PermissionState$Allowed : com/splendo/kaluga/permissions/PermissionState {
+	public fun <init> ()V
+}
+
+public abstract class com/splendo/kaluga/permissions/PermissionState$Denied : com/splendo/kaluga/permissions/PermissionState {
+}
+
+public final class com/splendo/kaluga/permissions/PermissionState$Denied$Locked : com/splendo/kaluga/permissions/PermissionState$Denied {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/permissions/PermissionState$Denied$Requestable : com/splendo/kaluga/permissions/PermissionState$Denied {
+	public fun <init> ()V
+	public final fun request (Lcom/splendo/kaluga/permissions/PermissionManager;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/permissions/PermissionState$Unknown : com/splendo/kaluga/permissions/PermissionState, com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant {
+	public fun <init> ()V
+}
+
+public abstract class com/splendo/kaluga/permissions/PermissionStateRepo : com/splendo/kaluga/state/ColdStateFlowRepo {
+	public static final field Companion Lcom/splendo/kaluga/permissions/PermissionStateRepo$Companion;
+	public static final field defaultMonitoringInterval J
+	public fun <init> ()V
+	public fun <init> (JLkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (JLkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getPermissionManager ()Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/PermissionStateRepo$Companion {
+}
+
+public final class com/splendo/kaluga/permissions/Permissions {
+	public fun <init> (Lcom/splendo/kaluga/permissions/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun clean ()V
+	public final fun get (Lcom/splendo/kaluga/permissions/Permission;)Lkotlinx/coroutines/flow/Flow;
+	public final fun getManager (Lcom/splendo/kaluga/permissions/Permission;)Lcom/splendo/kaluga/permissions/PermissionManager;
+	public final fun request (Lcom/splendo/kaluga/permissions/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/permissions/PermissionsActivity : androidx/appcompat/app/AppCompatActivity {
+	public static final field Companion Lcom/splendo/kaluga/permissions/PermissionsActivity$Companion;
+	public static final field TAG Ljava/lang/String;
+	public fun <init> ()V
+	public fun onRequestPermissionsResult (I[Ljava/lang/String;[I)V
+}
+
+public final class com/splendo/kaluga/permissions/PermissionsActivity$Companion {
+	public final fun getRequestedPermissions (Landroid/content/Intent;)[Ljava/lang/String;
+	public final fun intent (Landroid/content/Context;[Ljava/lang/String;)Landroid/content/Intent;
+}
+
+public class com/splendo/kaluga/permissions/PermissionsBuilder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun createPermissionStateRepo (Lcom/splendo/kaluga/permissions/Permission;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/permissions/PermissionStateRepo;
+	public final fun get (Lcom/splendo/kaluga/permissions/Permission;)Lcom/splendo/kaluga/permissions/BasePermissionsBuilder;
+	public final fun getContext ()Lcom/splendo/kaluga/permissions/PermissionContext;
+	public final fun register (Lcom/splendo/kaluga/permissions/BasePermissionsBuilder;Lkotlin/reflect/KClassifier;)Lcom/splendo/kaluga/permissions/BasePermissionsBuilder;
+	public final fun registerPermissionStateRepoBuilder (Lkotlin/reflect/KClassifier;Lkotlin/jvm/functions/Function2;)V
+}
+

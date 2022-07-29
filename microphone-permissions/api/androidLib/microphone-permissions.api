@@ -1,0 +1,32 @@
+public abstract interface class com/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder : com/splendo/kaluga/permissions/BasePermissionsBuilder {
+	public abstract fun create (Lcom/splendo/kaluga/permissions/microphone/MicrophonePermissionStateRepo;)Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/microphone/MicrophonePermission : com/splendo/kaluga/permissions/Permission {
+	public static final field INSTANCE Lcom/splendo/kaluga/permissions/microphone/MicrophonePermission;
+}
+
+public final class com/splendo/kaluga/permissions/microphone/MicrophonePermissionManager : com/splendo/kaluga/permissions/PermissionManager {
+	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/microphone/MicrophonePermissionStateRepo;)V
+	public fun initializeState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun requestPermission (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoring (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/permissions/microphone/MicrophonePermissionManagerBuilder : com/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/permissions/microphone/MicrophonePermissionStateRepo;)Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/microphone/MicrophonePermissionStateRepo : com/splendo/kaluga/permissions/PermissionStateRepo {
+	public fun <init> (Lcom/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder;Lkotlin/coroutines/CoroutineContext;)V
+	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/microphone/PermissionKt {
+	public static final fun registerMicrophonePermission (Lcom/splendo/kaluga/permissions/PermissionsBuilder;)Lcom/splendo/kaluga/permissions/microphone/MicrophonePermissionManagerBuilder;
+}
+
