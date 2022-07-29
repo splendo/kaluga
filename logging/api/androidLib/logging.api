@@ -100,6 +100,81 @@ public final class com/splendo/kaluga/logging/Logger$DefaultImpls {
 	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
+public final class com/splendo/kaluga/logging/LoggerKt {
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun d$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun d$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun debug (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun debug$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun debug$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun e (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun e$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun e$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun error (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun error$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun error$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun i (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun i$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun i$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun info (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun info$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun info$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun w (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun w$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun w$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/Throwable;)V
+	public static final fun warn (Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun warn$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public static synthetic fun warn$default (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
 public final class com/splendo/kaluga/logging/NapierLogger : com/splendo/kaluga/logging/Logger {
 	public fun <init> (Lio/github/aakira/napier/Antilog;)V
 	public final fun getLogger ()Lio/github/aakira/napier/Antilog;
@@ -109,6 +184,43 @@ public final class com/splendo/kaluga/logging/NapierLogger : com/splendo/kaluga/
 public final class com/splendo/kaluga/logging/NapierLoggerKt {
 	public static final fun getLogLevel ()[Lio/github/aakira/napier/LogLevel;
 	public static final fun logLevel (Lcom/splendo/kaluga/logging/LogLevel;)Lio/github/aakira/napier/LogLevel;
+}
+
+public abstract class com/splendo/kaluga/logging/RestrictedLogLevel {
+	public static final field Companion Lcom/splendo/kaluga/logging/RestrictedLogLevel$Companion;
+	public synthetic fun <init> (Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getLevels ()Ljava/util/Set;
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLogLevel$Companion {
+	public final fun getNone ()Lcom/splendo/kaluga/logging/RestrictedLogLevel;
+	public final fun getVerbose ()Lcom/splendo/kaluga/logging/RestrictedLogLevel;
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLogLevel$Debug : com/splendo/kaluga/logging/RestrictedLogLevel {
+	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Debug;
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLogLevel$Error : com/splendo/kaluga/logging/RestrictedLogLevel {
+	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Error;
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLogLevel$Info : com/splendo/kaluga/logging/RestrictedLogLevel {
+	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Info;
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLogLevel$Warn : com/splendo/kaluga/logging/RestrictedLogLevel {
+	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Warn;
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLogger : com/splendo/kaluga/logging/Logger {
+	public fun <init> (Lcom/splendo/kaluga/logging/RestrictedLogLevel;Lcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/logging/RestrictedLogLevel;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun log (Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class com/splendo/kaluga/logging/RestrictedLoggerKt {
+	public static final fun or (Lcom/splendo/kaluga/logging/RestrictedLogLevel;Lcom/splendo/kaluga/logging/RestrictedLogLevel;)Lcom/splendo/kaluga/logging/RestrictedLogLevel;
 }
 
 public class com/splendo/kaluga/logging/TransformLogger : com/splendo/kaluga/logging/Logger {

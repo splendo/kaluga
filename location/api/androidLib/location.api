@@ -1,12 +1,53 @@
-public abstract class com/splendo/kaluga/location/BaseLocationManager : kotlinx/coroutines/CoroutineScope {
-	public fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/Permissions;ZZLcom/splendo/kaluga/location/LocationStateRepo;)V
+public abstract class com/splendo/kaluga/location/BaseLocationManager : com/splendo/kaluga/location/LocationManager, kotlinx/coroutines/CoroutineScope {
+	public static final field Companion Lcom/splendo/kaluga/location/BaseLocationManager$Companion;
+	public fun <init> (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getLocationMonitor ()Lcom/splendo/kaluga/location/LocationMonitor;
-	protected final fun getLocationPermission ()Lcom/splendo/kaluga/permissions/location/LocationPermission;
+	public fun getLocationPermission ()Lcom/splendo/kaluga/permissions/location/LocationPermission;
+	public fun getLocations ()Lkotlinx/coroutines/flow/Flow;
+	protected final fun getSharedLocations ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public final fun handleLocationChanged (Lcom/splendo/kaluga/location/Location$KnownLocation;)V
+	public final fun handleLocationChanged (Ljava/util/List;)V
+	public fun isLocationEnabled ()Z
+	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringPermissions ()V
+	public fun stopMonitoringLocationEnabled ()V
+	public fun stopMonitoringPermissions ()V
 }
 
 public abstract interface class com/splendo/kaluga/location/BaseLocationManager$Builder {
-	public abstract fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/Permissions;ZZLcom/splendo/kaluga/location/LocationStateRepo;)Lcom/splendo/kaluga/location/BaseLocationManager;
+	public abstract fun create (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/location/BaseLocationManager;
+}
+
+public final class com/splendo/kaluga/location/BaseLocationManager$Companion {
+}
+
+public final class com/splendo/kaluga/location/BaseLocationManager$Settings {
+	public fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/Permissions;ZZILcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/Permissions;ZZILcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/permissions/location/LocationPermission;
+	public final fun component2 ()Lcom/splendo/kaluga/permissions/base/Permissions;
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun component5 ()I
+	public final fun component6 ()Lcom/splendo/kaluga/logging/Logger;
+	public final fun copy (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/Permissions;ZZILcom/splendo/kaluga/logging/Logger;)Lcom/splendo/kaluga/location/BaseLocationManager$Settings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/Permissions;ZZILcom/splendo/kaluga/logging/Logger;ILjava/lang/Object;)Lcom/splendo/kaluga/location/BaseLocationManager$Settings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAutoEnableLocations ()Z
+	public final fun getAutoRequestPermission ()Z
+	public final fun getLocationBufferCapacity ()I
+	public final fun getLocationPermission ()Lcom/splendo/kaluga/permissions/location/LocationPermission;
+	public final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
+	public final fun getPermissions ()Lcom/splendo/kaluga/permissions/base/Permissions;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/location/BaseLocationStateRepo : com/splendo/kaluga/state/ColdStateFlowRepo {
+	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/splendo/kaluga/location/DMSCoordinate {
@@ -42,11 +83,26 @@ public final class com/splendo/kaluga/location/DMSCoordinate$WindDirection : jav
 	public static fun values ()[Lcom/splendo/kaluga/location/DMSCoordinate$WindDirection;
 }
 
-public final class com/splendo/kaluga/location/DefaultLocationMonitor : com/splendo/kaluga/base/DefaultServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
+public final class com/splendo/kaluga/location/DefaultLocationManager : com/splendo/kaluga/location/BaseLocationManager {
+	public fun <init> (Landroid/content/Context;Landroid/location/LocationManager;Lcom/splendo/kaluga/location/LocationProvider;Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
+	public fun getLocationMonitor ()Lcom/splendo/kaluga/location/LocationMonitor;
+	public fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/location/DefaultLocationManager$Builder : com/splendo/kaluga/location/BaseLocationManager$Builder {
+	public fun <init> ()V
+	public fun <init> (Landroid/content/Context;Landroid/location/LocationManager;Lcom/splendo/kaluga/location/LocationProvider;)V
+	public synthetic fun <init> (Landroid/content/Context;Landroid/location/LocationManager;Lcom/splendo/kaluga/location/LocationProvider;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/location/BaseLocationManager;
+}
+
+public final class com/splendo/kaluga/location/DefaultLocationMonitor : com/splendo/kaluga/base/monitor/DefaultServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
 	public fun <init> (Landroid/content/Context;Landroid/location/LocationManager;)V
 	public fun isServiceEnabled ()Z
-	public fun startMonitoring ()V
-	public fun stopMonitoring ()V
+	public fun monitoringDidStart ()V
+	public fun monitoringDidStop ()V
 }
 
 public final class com/splendo/kaluga/location/EnableLocationActivity : androidx/appcompat/app/AppCompatActivity {
@@ -204,21 +260,49 @@ public final class com/splendo/kaluga/location/LocationExtensionsKt {
 	public static final fun toKnownLocations (Lcom/google/android/gms/location/LocationResult;)Ljava/util/List;
 }
 
-public final class com/splendo/kaluga/location/LocationManager : com/splendo/kaluga/location/BaseLocationManager {
-	public fun <init> (Landroid/content/Context;Landroid/location/LocationManager;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/Permissions;Lcom/splendo/kaluga/location/LocationProvider;ZZLcom/splendo/kaluga/location/LocationStateRepo;)V
-	public fun getLocationMonitor ()Lcom/splendo/kaluga/location/LocationMonitor;
-	public fun requestLocationEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun requestLocationEnable$location_release (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class com/splendo/kaluga/location/LocationKt {
+	public static final fun getKnown (Lcom/splendo/kaluga/location/Location;)Lcom/splendo/kaluga/location/Location$KnownLocation;
+	public static final fun getOrUnknown (Lcom/splendo/kaluga/location/Location$KnownLocation;)Lcom/splendo/kaluga/location/Location;
+	public static final fun unknownLocationOf (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;)Lcom/splendo/kaluga/location/Location;
 }
 
-public final class com/splendo/kaluga/location/LocationManager$Builder : com/splendo/kaluga/location/BaseLocationManager$Builder {
-	public fun <init> ()V
-	public fun <init> (Landroid/content/Context;Landroid/location/LocationManager;Lcom/splendo/kaluga/location/LocationProvider;)V
-	public synthetic fun <init> (Landroid/content/Context;Landroid/location/LocationManager;Lcom/splendo/kaluga/location/LocationProvider;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/Permissions;ZZLcom/splendo/kaluga/location/LocationStateRepo;)Lcom/splendo/kaluga/location/BaseLocationManager;
+public abstract interface class com/splendo/kaluga/location/LocationManager {
+	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getLocationPermission ()Lcom/splendo/kaluga/permissions/location/LocationPermission;
+	public abstract fun getLocations ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun isLocationEnabled ()Z
+	public abstract fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun startMonitoringPermissions ()V
+	public abstract fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoringLocationEnabled ()V
+	public abstract fun stopMonitoringPermissions ()V
 }
 
-public abstract interface class com/splendo/kaluga/location/LocationMonitor : com/splendo/kaluga/base/ServiceMonitor {
+public abstract class com/splendo/kaluga/location/LocationManager$Event {
+}
+
+public final class com/splendo/kaluga/location/LocationManager$Event$LocationDisabled : com/splendo/kaluga/location/LocationManager$Event {
+	public static final field INSTANCE Lcom/splendo/kaluga/location/LocationManager$Event$LocationDisabled;
+}
+
+public final class com/splendo/kaluga/location/LocationManager$Event$LocationEnabled : com/splendo/kaluga/location/LocationManager$Event {
+	public static final field INSTANCE Lcom/splendo/kaluga/location/LocationManager$Event$LocationEnabled;
+}
+
+public final class com/splendo/kaluga/location/LocationManager$Event$PermissionChanged : com/splendo/kaluga/location/LocationManager$Event {
+	public fun <init> (Z)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lcom/splendo/kaluga/location/LocationManager$Event$PermissionChanged;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationManager$Event$PermissionChanged;ZILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationManager$Event$PermissionChanged;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHasPermission ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
 }
 
 public final class com/splendo/kaluga/location/LocationMonitor$Builder {
@@ -234,110 +318,257 @@ public abstract interface class com/splendo/kaluga/location/LocationProvider {
 	public abstract fun stopMonitoringLocation (Lcom/splendo/kaluga/permissions/location/LocationPermission;)V
 }
 
-public abstract class com/splendo/kaluga/location/LocationState : com/splendo/kaluga/state/KalugaState {
-	public synthetic fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public abstract interface class com/splendo/kaluga/location/LocationState : com/splendo/kaluga/state/KalugaState {
+	public abstract fun getLocation ()Lcom/splendo/kaluga/location/Location;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Active : com/splendo/kaluga/location/LocationState {
+	public abstract fun getDeinitialized ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Active$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Active;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Active;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Active;)Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Deinitialized : com/splendo/kaluga/location/LocationState$Inactive {
+	public abstract fun getReinitialize ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Deinitialized$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Deinitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Deinitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Deinitialized;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Disabled : com/splendo/kaluga/location/LocationState$Initialized {
+}
+
+public final class com/splendo/kaluga/location/LocationState$Disabled$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Disabled;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Disabled;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Disabled;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Disabled$NoGPS : com/splendo/kaluga/location/LocationState$Disabled, com/splendo/kaluga/location/LocationState$Permitted {
+	public abstract fun getEnable ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Disabled$NoGPS$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Disabled$NotPermitted : com/splendo/kaluga/location/LocationState$Disabled {
+	public abstract fun permit (Z)Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Disabled$NotPermitted$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Enabled : com/splendo/kaluga/location/LocationState$Permitted {
+	public abstract fun getDisable ()Lkotlin/jvm/functions/Function1;
+	public abstract fun updateWithLocation (Lcom/splendo/kaluga/location/Location$KnownLocation;)Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Enabled$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Enabled;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Enabled;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Enabled;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Inactive : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/location/LocationState {
+}
+
+public final class com/splendo/kaluga/location/LocationState$Inactive$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Inactive;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Inactive;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Inactive;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Initialized : com/splendo/kaluga/location/LocationState$Active {
+}
+
+public final class com/splendo/kaluga/location/LocationState$Initialized$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Initialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Initialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Initialized;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Initializing : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/location/LocationState$Active {
+	public abstract fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Initializing$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Initializing;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Initializing;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Initializing;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$NotInitialized : com/splendo/kaluga/location/LocationState$Inactive {
+}
+
+public final class com/splendo/kaluga/location/LocationState$NotInitialized$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$NotInitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$NotInitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$NotInitialized;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/location/LocationState$Permitted : com/splendo/kaluga/location/LocationState$Initialized {
+	public abstract fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/location/LocationState$Permitted$DefaultImpls {
+	public static fun finalState (Lcom/splendo/kaluga/location/LocationState$Permitted;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun initialState (Lcom/splendo/kaluga/location/LocationState$Permitted;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Permitted;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract class com/splendo/kaluga/location/LocationStateImpl {
+	public abstract fun getLocation ()Lcom/splendo/kaluga/location/Location;
+}
+
+public abstract class com/splendo/kaluga/location/LocationStateImpl$Active : com/splendo/kaluga/location/LocationStateImpl, com/splendo/kaluga/state/HandleAfterNewStateIsSet, com/splendo/kaluga/state/HandleBeforeOldStateIsRemoved {
+	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getDeinitialized ()Lkotlin/jvm/functions/Function1;
+	protected abstract fun getLocationManager ()Lcom/splendo/kaluga/location/LocationManager;
+}
+
+public final class com/splendo/kaluga/location/LocationStateImpl$Deinitialized : com/splendo/kaluga/location/LocationStateImpl, com/splendo/kaluga/location/LocationState$Deinitialized {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
+	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
+	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)Lcom/splendo/kaluga/location/LocationStateImpl$Deinitialized;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationStateImpl$Deinitialized;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateImpl$Deinitialized;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/location/LocationStateImpl$Disabled : com/splendo/kaluga/location/LocationStateImpl$Active {
+}
+
+public final class com/splendo/kaluga/location/LocationStateImpl$Disabled$NoGPS : com/splendo/kaluga/location/LocationStateImpl$Disabled, com/splendo/kaluga/location/LocationState$Disabled$NoGPS {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
+	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getEnable ()Lkotlin/jvm/functions/Function1;
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
-public abstract class com/splendo/kaluga/location/LocationState$Disabled : com/splendo/kaluga/location/LocationState {
-	public synthetic fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/splendo/kaluga/location/LocationStateImpl$Disabled$NotPermitted : com/splendo/kaluga/location/LocationStateImpl$Disabled, com/splendo/kaluga/location/LocationState$Disabled$NotPermitted {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
+	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun permit (Z)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Disabled$NoGPS : com/splendo/kaluga/location/LocationState$Disabled, com/splendo/kaluga/location/LocationState$Permitted {
-	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)V
+public final class com/splendo/kaluga/location/LocationStateImpl$Enabled : com/splendo/kaluga/location/LocationStateImpl$Active, com/splendo/kaluga/location/LocationState$Enabled {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
 	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
-	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;
+	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)Lcom/splendo/kaluga/location/LocationStateImpl$Enabled;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationStateImpl$Enabled;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateImpl$Enabled;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getEnable ()Lkotlin/jvm/functions/Function1;
+	public fun getDisable ()Lkotlin/jvm/functions/Function1;
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
+	public fun updateWithLocation (Lcom/splendo/kaluga/location/Location$KnownLocation;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Disabled$NotPermitted : com/splendo/kaluga/location/LocationState$Disabled {
-	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)V
+public final class com/splendo/kaluga/location/LocationStateImpl$Initializing : com/splendo/kaluga/location/LocationStateImpl$Active, com/splendo/kaluga/location/LocationState$Initializing {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
 	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
-	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
-	public fun hashCode ()I
-	public final fun permit (Z)Lkotlin/jvm/functions/Function1;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/location/LocationState$Enabled : com/splendo/kaluga/location/LocationState, com/splendo/kaluga/location/LocationState$Permitted {
-	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)V
-	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
-	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)Lcom/splendo/kaluga/location/LocationState$Enabled;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationState$Enabled;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationState$Enabled;
+	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)Lcom/splendo/kaluga/location/LocationStateImpl$Initializing;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationStateImpl$Initializing;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateImpl$Initializing;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getDisable ()Lkotlin/jvm/functions/Function1;
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
-	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/location/LocationState$Permitted : com/splendo/kaluga/state/HandleAfterNewStateIsSet, com/splendo/kaluga/state/HandleBeforeOldStateIsRemoved {
-	public abstract fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-	public abstract fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class com/splendo/kaluga/location/LocationStateImpl$NotInitialized : com/splendo/kaluga/location/LocationStateImpl, com/splendo/kaluga/location/LocationState$NotInitialized {
+	public static final field INSTANCE Lcom/splendo/kaluga/location/LocationStateImpl$NotInitialized;
+	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public final fun startInitializing (Lcom/splendo/kaluga/location/LocationManager;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$PermittedHandler : com/splendo/kaluga/location/LocationState$Permitted {
-	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/BaseLocationManager;)V
-	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class com/splendo/kaluga/location/LocationStateImpl$PermittedHandler {
+	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
+	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;)V
+	public final fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getLocation ()Lcom/splendo/kaluga/location/Location;
-	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
+}
+
+public class com/splendo/kaluga/location/LocationStateImplRepo : com/splendo/kaluga/location/BaseLocationStateRepo {
+	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/splendo/kaluga/location/LocationStateKt {
+	public static final fun known (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun location (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
-	public static final fun unknownLocationOf (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;)Lcom/splendo/kaluga/location/Location;
 }
 
-public final class com/splendo/kaluga/location/LocationStateRepo : com/splendo/kaluga/state/ColdStateRepo {
-	public fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/Permissions;ZZLcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
-	public fun deinitialize (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun deinitialize (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialValue (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class com/splendo/kaluga/location/LocationStateRepo : com/splendo/kaluga/location/LocationStateImplRepo {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationStateRepo$Builder {
-	public abstract fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;ZZLkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
+	public abstract fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 
 public final class com/splendo/kaluga/location/LocationStateRepo$Builder$DefaultImpls {
-	public static synthetic fun create$default (Lcom/splendo/kaluga/location/LocationStateRepo$Builder;Lcom/splendo/kaluga/permissions/location/LocationPermission;ZZLkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateRepo;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/location/LocationStateRepo$Builder;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 
 public final class com/splendo/kaluga/location/LocationStateRepoBuilder : com/splendo/kaluga/location/LocationStateRepo$Builder {
 	public fun <init> ()V
-	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/Permissions;)V
-	public synthetic fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/Permissions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;ZZLkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
+	public fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 

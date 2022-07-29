@@ -1,0 +1,28 @@
+public final class com/splendo/kaluga/test/hud/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/test/hud/MockHUD : com/splendo/kaluga/hud/BaseHUD {
+	public fun <init> (Lcom/splendo/kaluga/hud/HudConfig;ZLkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/hud/HudConfig;ZLkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun dismiss (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getDismissMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun getHudConfig ()Lcom/splendo/kaluga/hud/HudConfig;
+	public final fun getPresentMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun isVisible ()Z
+	public fun present (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/test/hud/MockHUD$Builder : com/splendo/kaluga/hud/BaseHUD$Builder {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/hud/BaseHUD;
+	public fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/hud/MockHUD;
+	public final fun getBuiltHUDs ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+}
+

@@ -1,0 +1,69 @@
+public abstract class com/splendo/kaluga/test/koin/BaseKoinFlowTest : com/splendo/kaluga/test/base/BaseFlowTest {
+	public fun <init> ()V
+}
+
+public abstract class com/splendo/kaluga/test/koin/BaseKoinUIThreadTest : com/splendo/kaluga/test/base/BaseUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public class com/splendo/kaluga/test/koin/BaseKoinUIThreadTest$KoinTestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext, org/koin/core/component/KoinComponent {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
+	public fun <init> ([Lorg/koin/core/module/Module;)V
+	public fun dispose ()V
+	public fun getKoin ()Lorg/koin/core/Koin;
+}
+
+public abstract class com/splendo/kaluga/test/koin/BaseKoinUIThreadViewModelTest : com/splendo/kaluga/test/koin/BaseKoinUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract class com/splendo/kaluga/test/koin/BaseKoinUIThreadViewModelTest$KoinViewModelTestContext : com/splendo/kaluga/test/koin/BaseKoinUIThreadTest$KoinTestContext, com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$ViewModelTestContext {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
+	public fun <init> ([Lorg/koin/core/module/Module;)V
+}
+
+public abstract class com/splendo/kaluga/test/koin/KoinFlowTest : com/splendo/kaluga/test/koin/BaseKoinFlowTest {
+	public fun <init> ()V
+	public abstract fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+	public fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
+}
+
+public abstract class com/splendo/kaluga/test/koin/KoinUIThreadTest : com/splendo/kaluga/test/koin/BaseKoinUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+	public fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public final fun testOnUIThread (ZLkotlin/jvm/functions/Function2;)V
+	public static synthetic fun testOnUIThread$default (Lcom/splendo/kaluga/test/koin/KoinUIThreadTest;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public class com/splendo/kaluga/test/koin/KoinUIThreadTest$KoinTestContext : com/splendo/kaluga/test/koin/BaseKoinUIThreadTest$KoinTestContext {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
+	public fun <init> ([Lorg/koin/core/module/Module;)V
+}
+
+public abstract class com/splendo/kaluga/test/koin/KoinUIThreadViewModelTest : com/splendo/kaluga/test/koin/KoinUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract class com/splendo/kaluga/test/koin/KoinUIThreadViewModelTest$KoinViewModelTestContext : com/splendo/kaluga/test/koin/KoinUIThreadTest$KoinTestContext, com/splendo/kaluga/test/architecture/UIThreadViewModelTest$ViewModelTestContext {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
+	public fun <init> ([Lorg/koin/core/module/Module;)V
+}
+
