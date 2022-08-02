@@ -89,6 +89,21 @@ private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: su
 @SharedImmutable
 private val cookieTin = AtomicLong(0L)
 
+abstract class NoConfigurationBaseFlowTest<TC : TestContext, T, F : Flow<T>>(scope: CoroutineScope = MainScope()) :
+    BaseFlowTest<Unit, TC, T, F>(scope) {
+
+    fun testWithFlowAndTestContext(
+        createFlowInMainScope: Boolean = true,
+        retainContextAfterTest: Boolean = false,
+        blockWithContext: FlowTestBlockWithContext<Unit, TC, T, F>
+    ) = testWithFlowAndTestContext(
+        Unit,
+        createFlowInMainScope,
+        retainContextAfterTest,
+        blockWithContext
+    )
+}
+
 abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
 
     // used for thread local map access to store the testContext
@@ -261,7 +276,9 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         val configuration = lateConfiguration!!
         withContext(Dispatchers.Main.immediate) {
             debug("in main scope for mainAction")
+            yield()
             action(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })
+            yield()
         }
         debug("did mainAction")
     }

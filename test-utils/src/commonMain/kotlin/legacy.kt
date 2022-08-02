@@ -52,14 +52,8 @@ typealias FlowTestBlockWithContext<TC, T, F> = com.splendo.kaluga.test.base.Flow
 typealias FlowableTest<T> = com.splendo.kaluga.test.base.FlowableTest<T>
 @Deprecated("Moved to test-utils-base", ReplaceWith("FlowTest", "com.splendo.kaluga.test.base.FlowTest"))
 typealias FlowTest<T, F> = com.splendo.kaluga.test.base.FlowTest<T, F>
-@Deprecated("Moved to test-utils-base", ReplaceWith("BaseFlowTest", "com.splendo.kaluga.test.base.BaseFlowTest"))
-abstract class BaseFlowTest<TC : UIThreadTest.TestContext, T, F : Flow<T>> : com.splendo.kaluga.test.base.BaseFlowTest<Unit, TC, T, F>() {
-    fun testWithFlowAndTestContext(
-        createFlowInMainScope: Boolean = true,
-        retainContextAfterTest: Boolean = false,
-        blockWithContext: FlowTestBlockWithContext<TC, T, F>
-    ) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope, retainContextAfterTest, blockWithContext)
-}
+@Deprecated("Moved to test-utils-base", ReplaceWith("NoConfigurationBaseFlowTest", "com.splendo.kaluga.test.base.NoConfigurationBaseFlowTest"))
+abstract class BaseFlowTest<TC : UIThreadTest.TestContext, T, F : Flow<T>> : com.splendo.kaluga.test.base.NoConfigurationBaseFlowTest<TC, T, F>()
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadTest", "com.splendo.kaluga.test.koin.KoinUIThreadTest"))
 abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : com.splendo.kaluga.test.koin.KoinUIThreadTest<TC>(allowFreezing) {
