@@ -1,7 +1,5 @@
-public abstract class com/splendo/kaluga/test/BaseFlowTest : com/splendo/kaluga/test/base/BaseFlowTest {
+public abstract class com/splendo/kaluga/test/BaseFlowTest : com/splendo/kaluga/test/base/NoConfigurationBaseFlowTest {
 	public fun <init> ()V
-	public final fun testWithFlowAndTestContext (ZZLkotlin/jvm/functions/Function3;)V
-	public static synthetic fun testWithFlowAndTestContext$default (Lcom/splendo/kaluga/test/BaseFlowTest;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
 }
 
 public abstract class com/splendo/kaluga/test/KoinFlowTest : com/splendo/kaluga/test/koin/BaseKoinFlowTest {

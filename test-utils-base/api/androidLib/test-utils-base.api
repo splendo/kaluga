@@ -101,6 +101,14 @@ public abstract class com/splendo/kaluga/test/base/FlowableTest : com/splendo/ka
 	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
 }
 
+public abstract class com/splendo/kaluga/test/base/NoConfigurationBaseFlowTest : com/splendo/kaluga/test/base/BaseFlowTest {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun testWithFlowAndTestContext (ZZLkotlin/jvm/functions/Function3;)V
+	public static synthetic fun testWithFlowAndTestContext$default (Lcom/splendo/kaluga/test/base/NoConfigurationBaseFlowTest;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+}
+
 public abstract class com/splendo/kaluga/test/base/SimpleFlowTest : com/splendo/kaluga/test/base/FlowTest {
 	public fun <init> ()V
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
