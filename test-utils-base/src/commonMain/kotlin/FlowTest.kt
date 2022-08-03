@@ -239,7 +239,9 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                     val test = testChannel.receive()
                     debug("received test block $test")
                     try {
+                        yield()
                         test.first(testContext, value)
+                        yield()
                         debug("ran test block $test")
                         test.second.complete(Unit)
                         debug("completed $test")
@@ -286,13 +288,16 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     suspend fun action(action: ActionBlock) {
         debug("start action")
         awaitTestBlocks()
+        yield()
         action()
+        yield()
         debug("did action")
     }
 
     var firstTestBlock = true
 
     suspend fun test(skip: Int = 0, test: TestBlock<TC, T>) {
+        yield()
         test.freeze()
         if (firstTestBlock) {
             firstTestBlock = false
@@ -307,7 +312,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
         debug("${tests.size} in collection (including this one), offering")
-        testChannel.trySend(Pair(test, completable)).isSuccess
+        testChannel.trySend(Pair(test, completable)).isSuccess.also { yield() }
     }
 
     private suspend fun disposeContext(cookie: Long) {
