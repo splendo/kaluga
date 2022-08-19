@@ -18,8 +18,7 @@
 package com.splendo.kaluga.test.mock.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.UUID
@@ -32,7 +31,6 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MockBaseScanner(

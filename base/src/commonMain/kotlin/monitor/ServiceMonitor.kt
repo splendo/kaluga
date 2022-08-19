@@ -15,12 +15,11 @@
 
  */
 
-package com.splendo.kaluga.base
+package com.splendo.kaluga.base.monitor
 
-import com.splendo.kaluga.base.monitor.ServiceMonitorState
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.ColdStateFlowRepo
+import com.splendo.kaluga.state.KalugaState
 import kotlin.coroutines.CoroutineContext
 
 interface ServiceMonitor {
@@ -30,7 +29,7 @@ interface ServiceMonitor {
 
 abstract class DefaultServiceMonitor(
     coroutineContext: CoroutineContext
-) : ColdStateFlowRepo<ServiceMonitorStateImpl>(
+) : ColdStateFlowRepo<ServiceMonitorState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
         debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
@@ -55,12 +54,23 @@ abstract class DefaultServiceMonitor(
             }
             is ServiceMonitorState.NotInitialized,
             is ServiceMonitorState.NotSupported -> state.remain()
-            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null")
         }
     },
     firstState = { ServiceMonitorStateImpl.NotInitialized }
 ),
     ServiceMonitor {
+
+    sealed class ServiceMonitorStateImpl : KalugaState {
+        sealed class Initialized : ServiceMonitorStateImpl(), ServiceMonitorState.Initialized {
+            object Enabled : Initialized(), ServiceMonitorState.Initialized.Enabled
+            object Disabled : Initialized(), ServiceMonitorState.Initialized.Disabled
+            object Unauthorized : Initialized(), ServiceMonitorState.Initialized.Unauthorized
+        }
+
+        object NotInitialized : ServiceMonitorStateImpl(), ServiceMonitorState.NotInitialized
+
+        object NotSupported : ServiceMonitorStateImpl(), ServiceMonitorState.NotSupported
+    }
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 

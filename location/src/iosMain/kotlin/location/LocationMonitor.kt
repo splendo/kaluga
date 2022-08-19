@@ -17,11 +17,10 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusDenied
 import platform.CoreLocation.kCLAuthorizationStatusRestricted

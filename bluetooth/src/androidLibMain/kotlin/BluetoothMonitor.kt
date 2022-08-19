@@ -28,10 +28,9 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.CoroutineContext
 

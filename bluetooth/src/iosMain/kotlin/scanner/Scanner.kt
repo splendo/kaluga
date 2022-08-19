@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.base.typedMap

@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOff

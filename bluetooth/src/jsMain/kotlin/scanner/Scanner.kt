@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings

@@ -23,7 +23,7 @@ import android.content.Context
 import android.os.ParcelUuid
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.base.utils.containsAny
@@ -43,7 +43,6 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat

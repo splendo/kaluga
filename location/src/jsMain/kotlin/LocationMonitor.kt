@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {

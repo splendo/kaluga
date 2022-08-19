@@ -18,7 +18,6 @@
 package com.splendo.kaluga.base.monitor
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.state.State
 
 /**
  * State for [DefaultServiceMonitor].
@@ -50,16 +49,4 @@ sealed interface ServiceMonitorState {
      * an example is when [BluetoothMonitor] runs on simulators.
      */
     interface NotSupported : ServiceMonitorState
-}
-
-sealed class ServiceMonitorStateImpl : State(), ServiceMonitorState {
-    sealed class Initialized : ServiceMonitorStateImpl(), ServiceMonitorState.Initialized {
-        object Enabled : Initialized(), ServiceMonitorState.Initialized.Enabled
-        object Disabled : Initialized(), ServiceMonitorState.Initialized.Disabled
-        object Unauthorized : Initialized(), ServiceMonitorState.Initialized.Unauthorized
-    }
-
-    object NotInitialized : ServiceMonitorStateImpl(), ServiceMonitorState.NotInitialized
-
-    object NotSupported : ServiceMonitorStateImpl(), ServiceMonitorState.NotSupported
 }

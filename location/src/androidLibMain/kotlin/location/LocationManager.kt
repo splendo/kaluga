@@ -20,7 +20,7 @@ package com.splendo.kaluga.location
 import android.content.Context
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -28,7 +28,6 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 

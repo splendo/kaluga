@@ -18,7 +18,7 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicBoolean
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission

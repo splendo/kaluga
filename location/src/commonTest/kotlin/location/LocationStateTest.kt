@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.PermissionState
@@ -35,7 +34,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest

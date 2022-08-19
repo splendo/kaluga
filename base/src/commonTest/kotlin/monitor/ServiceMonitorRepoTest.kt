@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.monitor
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred

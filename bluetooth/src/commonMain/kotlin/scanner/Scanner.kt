@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.bluetooth.UUID
@@ -37,7 +37,6 @@ import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold

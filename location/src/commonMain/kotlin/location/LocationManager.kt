@@ -18,7 +18,7 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.permissions.PermissionState
@@ -26,7 +26,6 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
