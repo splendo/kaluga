@@ -16,7 +16,21 @@
 
 package com.splendo.kaluga.base
 
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Runnable
+import kotlin.coroutines.CoroutineContext
 
-actual fun singleThreadDispatcher(name: String): CoroutineDispatcher = Dispatchers.Default
+actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher =
+    CoroutineDispatcherWrapper(Dispatchers.Default)
+
+private class CoroutineDispatcherWrapper(
+    private val base: CoroutineDispatcher
+): CloseableCoroutineDispatcher() {
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        base.dispatch(context, block)
+    }
+    override fun close() {
+    }
+}

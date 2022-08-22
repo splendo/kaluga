@@ -23,8 +23,12 @@ expect class KalugaThread {
 
     companion object {
         val currentThread: KalugaThread
+        val MIN_PRIORITY: Int
+        val MAX_PRIORITY: Int
     }
 
-    val name: String
+    var name: String
+    var priority: Int
     val isMainThread: Boolean
+    val isAlive: Boolean
 }

@@ -23,9 +23,11 @@ actual data class KalugaThread(val thread: NSThread) {
     actual companion object {
         actual val currentThread: KalugaThread get() = KalugaThread(NSThread.currentThread)
         private val threadDescriptionRegex = "^.*\\{(.*)}\$".toRegex()
+        actual val MIN_PRIORITY: Int = 1
+        actual val MAX_PRIORITY: Int = 10
     }
 
-    actual val name: String get() = thread.name.orEmpty().ifEmpty {
+    actual var name: String get() = thread.name.orEmpty().ifEmpty {
         // On iOS the Thread name is not actually always accessible via name (only if set via custom setter)
         // To still grab the name, we should parse the thread description
         val descriptionBody = threadDescriptionRegex.matchEntire(thread.description.orEmpty())?.let { result ->
@@ -39,5 +41,13 @@ actual data class KalugaThread(val thread: NSThread) {
             "Thread ${(threadDescription["number"] ?: threadDescription["num"]).orEmpty().ifEmpty { "Unknown" }}"
         }
     }
+    set(value) { thread.name = value }
+    actual var priority: Int
+        get() = (thread.threadPriority * MAX_PRIORITY + MIN_PRIORITY).toInt()
+        set(value) {
+            require(value in MIN_PRIORITY..MAX_PRIORITY)
+            thread.setThreadPriority((value - MIN_PRIORITY).toDouble() / MAX_PRIORITY)
+        }
     actual val isMainThread: Boolean get() = thread.isMainThread
+    actual val isAlive: Boolean get() = thread.isExecuting()
 }

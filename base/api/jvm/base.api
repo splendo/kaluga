@@ -14,14 +14,21 @@ public final class com/splendo/kaluga/base/KalugaThread {
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/KalugaThread;Ljava/lang/Thread;ILjava/lang/Object;)Lcom/splendo/kaluga/base/KalugaThread;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getName ()Ljava/lang/String;
+	public final fun getPriority ()I
+	public static fun getPriority$delegate (Lcom/splendo/kaluga/base/KalugaThread;)Ljava/lang/Object;
 	public final fun getThread ()Ljava/lang/Thread;
 	public fun hashCode ()I
+	public final fun isAlive ()Z
 	public final fun isMainThread ()Z
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setPriority (I)V
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/KalugaThread$Companion {
 	public final fun getCurrentThread ()Lcom/splendo/kaluga/base/KalugaThread;
+	public final fun getMAX_PRIORITY ()I
+	public final fun getMIN_PRIORITY ()I
 }
 
 public final class com/splendo/kaluga/base/KalugaThreadKt {
@@ -46,7 +53,7 @@ public final class com/splendo/kaluga/base/RunOnMainKt {
 }
 
 public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
-	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/CoroutineDispatcher;
+	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
 public final class com/splendo/kaluga/base/flow/ColdFlowable : com/splendo/kaluga/flow/BaseFlowable {

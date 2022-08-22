@@ -16,7 +16,7 @@
 
 package com.splendo.kaluga.base
 
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
 
-actual fun singleThreadDispatcher(name: String): CoroutineDispatcher = newSingleThreadContext(name)
+actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher = newSingleThreadContext(name)

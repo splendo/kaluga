@@ -23,9 +23,12 @@ actual data class KalugaThread(val thread: Thread) {
 
     actual companion object {
         actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
+        actual val MIN_PRIORITY: Int = 1
+        actual val MAX_PRIORITY: Int = 10
     }
 
-    actual val name: String get() = thread.name
+    actual var name: String by thread::name
+    actual var priority: Int by thread::priority
     actual val isMainThread: Boolean get() {
         val mainThread = Looper.getMainLooper()?.thread ?: run {
             // Fallback when no MainLooper is present. This should only occur in tests
@@ -33,4 +36,5 @@ actual data class KalugaThread(val thread: Thread) {
         }
         return thread == mainThread
     }
+    actual val isAlive: Boolean get() = thread.isAlive
 }
