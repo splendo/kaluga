@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -57,14 +57,13 @@ abstract class BasePermissionStateRepo<P : Permission>(
 open class PermissionStateRepo<P : Permission>(
     protected val monitoringInterval: Duration = defaultMonitoringInterval,
     createPermissionManager: (CoroutineScope) -> PermissionManager<P>,
-    coroutineContext: CoroutineContext,
-    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) }
+    coroutineContext: CoroutineContext
 ) : BasePermissionStateRepo<P>(
     createUninitializedState = { PermissionStateImpl.Uninitialized() },
     createInitializingState = { state ->
         when (val stateImpl = state as PermissionStateImpl.Inactive<P>) {
             is PermissionStateImpl.Uninitialized -> {
-                val permissionManager = createPermissionManager(CoroutineScope(coroutineContext.contextCreator("PermissionManager")))
+                val permissionManager = createPermissionManager(CoroutineScope(coroutineContext + CoroutineName("PermissionManager")))
                 (this as PermissionStateRepo<P>).startMonitoringManager(permissionManager)
                 stateImpl.initialize(monitoringInterval, permissionManager)
             }

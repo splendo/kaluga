@@ -51,6 +51,10 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 
+private val defaultBluetoothDispatcher by lazy {
+    singleThreadDispatcher("Bluetooth")
+}
+
 interface BluetoothService {
     fun startScanning(filter: Set<UUID> = emptySet())
     fun stopScanning()
@@ -65,15 +69,13 @@ class Bluetooth internal constructor(
     connectionSettings: ConnectionSettings,
     scannerBuilder: BaseScanner.Builder,
     coroutineContext: CoroutineContext,
-    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
     interface Builder {
         fun create(
             scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
             connectionSettings: ConnectionSettings = ConnectionSettings(),
-            coroutineContext: CoroutineContext = singleThreadDispatcher("Bluetooth"),
-            contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
+            coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
         ): Bluetooth
     }
 
@@ -85,8 +87,8 @@ class Bluetooth internal constructor(
                 identifier,
                 deviceInfo,
                 connectionSettings,
-                { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext.contextCreator("ConnectionManager ${identifier.stringValue}"))) },
-                CoroutineScope(coroutineContext.contextCreator("Device ${identifier.stringValue}"))
+                { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${identifier.stringValue}"))) },
+                CoroutineScope(coroutineContext + CoroutineName("Device ${identifier.stringValue}"))
             ) { connectionManager, coroutineContext ->
                 ConnectableDeviceStateImplRepo(
                     connectionManager,
@@ -94,8 +96,7 @@ class Bluetooth internal constructor(
                 )
             }
         },
-        coroutineContext.contextCreator("Scanning State Repo"),
-        contextCreator
+        coroutineContext + CoroutineName("Scanning State Repo")
     )
 
     sealed class ScanMode {
