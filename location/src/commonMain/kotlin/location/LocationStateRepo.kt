@@ -39,7 +39,6 @@ private val defaultLocationDispatcher by lazy {
     singleThreadDispatcher("Location")
 }
 
-
 abstract class BaseLocationStateRepo(
     createNotInitializedState: () -> LocationState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<LocationState>.(LocationState.Inactive) -> suspend () -> LocationState,

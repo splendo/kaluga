@@ -27,7 +27,7 @@ actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher =
 
 private class CoroutineDispatcherWrapper(
     private val base: CoroutineDispatcher
-): CloseableCoroutineDispatcher() {
+) : CloseableCoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         base.dispatch(context, block)
     }

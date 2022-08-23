@@ -41,7 +41,7 @@ actual data class KalugaThread(val thread: NSThread) {
             "Thread ${(threadDescription["number"] ?: threadDescription["num"]).orEmpty().ifEmpty { "Unknown" }}"
         }
     }
-    set(value) { thread.name = value }
+        set(value) { thread.name = value }
     actual var priority: Int
         get() = (thread.threadPriority * MAX_PRIORITY + MIN_PRIORITY).toInt()
         set(value) {
