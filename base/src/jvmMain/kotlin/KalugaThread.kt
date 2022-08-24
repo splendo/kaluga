@@ -25,13 +25,7 @@ actual data class KalugaThread(val thread: Thread) {
     }
 
     actual var name: String by thread::name
-    actual var priority: Int get() = thread.priority
-        set(value) {
-            require(value in MIN_PRIORITY..MAX_PRIORITY)
-            thread.priority = value
-        }
     actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) { // safest way also for synthetic main threads
         thread == Thread.currentThread()
     }
-    actual val isAlive: Boolean get() = thread.isAlive
 }

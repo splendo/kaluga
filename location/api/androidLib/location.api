@@ -554,7 +554,6 @@ public final class com/splendo/kaluga/location/LocationStateKt {
 
 public final class com/splendo/kaluga/location/LocationStateRepo : com/splendo/kaluga/location/LocationStateImplRepo {
 	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationStateRepo$Builder {

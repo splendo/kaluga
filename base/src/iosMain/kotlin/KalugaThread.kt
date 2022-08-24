@@ -40,12 +40,5 @@ actual data class KalugaThread(val thread: NSThread) {
         }
     }
         set(value) { thread.name = value }
-    actual var priority: Int
-        get() = (thread.threadPriority * MAX_PRIORITY + MIN_PRIORITY).toInt()
-        set(value) {
-            require(value in MIN_PRIORITY..MAX_PRIORITY)
-            thread.setThreadPriority((value - MIN_PRIORITY).toDouble() / MAX_PRIORITY)
-        }
     actual val isMainThread: Boolean get() = thread.isMainThread
-    actual val isAlive: Boolean get() = thread.isExecuting()
 }

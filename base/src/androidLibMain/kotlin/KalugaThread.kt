@@ -26,11 +26,6 @@ actual data class KalugaThread(val thread: Thread) {
     }
 
     actual var name: String by thread::name
-    actual var priority: Int get() = thread.priority
-        set(value) {
-            require(value in MIN_PRIORITY..MAX_PRIORITY)
-            thread.priority = value
-        }
     actual val isMainThread: Boolean get() {
         val mainThread = Looper.getMainLooper()?.thread ?: run {
             // Fallback when no MainLooper is present. This should only occur in tests
@@ -38,5 +33,4 @@ actual data class KalugaThread(val thread: Thread) {
         }
         return thread == mainThread
     }
-    actual val isAlive: Boolean get() = thread.isAlive
 }

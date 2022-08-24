@@ -27,12 +27,7 @@ actual class KalugaThread {
 
     actual var name: String = "Main Thread"
         set(value) = Unit
-    actual var priority: Int = 10
-        set(value) {
-            require(value in MIN_PRIORITY..MAX_PRIORITY)
-        }
     actual val isMainThread: Boolean = true
-    actual val isAlive: Boolean = true
 
     override fun equals(other: Any?): Boolean {
         return other is KalugaThread

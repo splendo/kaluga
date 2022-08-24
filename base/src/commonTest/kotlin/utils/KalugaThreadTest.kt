@@ -18,11 +18,7 @@
 package utils
 
 import com.splendo.kaluga.base.KalugaThread
-import com.splendo.kaluga.base.MAX_PRIORITY
-import com.splendo.kaluga.base.MIN_PRIORITY
 import kotlin.test.Test
-import kotlin.test.assertFails
-import kotlin.test.assertTrue
 
 class KalugaThreadTest {
     @Test
@@ -32,13 +28,7 @@ class KalugaThreadTest {
     }
 
     @Test
-    fun getPrioritySetPriority() {
-        assertTrue { KalugaThread.currentThread.priority in KalugaThread.MIN_PRIORITY..KalugaThread.MAX_PRIORITY }
-        assertFails {
-            KalugaThread.currentThread.priority = KalugaThread.MIN_PRIORITY - 1
-        }
-        assertFails {
-            KalugaThread.currentThread.priority = KalugaThread.MIN_PRIORITY + 1
-        }
+    fun getMainThread() {
+        KalugaThread.currentThread.isMainThread
     }
 }
