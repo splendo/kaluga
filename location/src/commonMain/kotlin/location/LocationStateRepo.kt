@@ -137,7 +137,7 @@ open class LocationStateImplRepo(
 class LocationStateRepo(
     settingsBuilder: (CoroutineContext) -> BaseLocationManager.Settings,
     builder: BaseLocationManager.Builder,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate, // singleThreadDispatcher(it)
+    coroutineContext: CoroutineContext
 ) : LocationStateImplRepo(
     createLocationManager = {
         builder.create(
