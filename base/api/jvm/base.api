@@ -27,11 +27,11 @@ public final class com/splendo/kaluga/base/KalugaThread {
 
 public final class com/splendo/kaluga/base/KalugaThread$Companion {
 	public final fun getCurrentThread ()Lcom/splendo/kaluga/base/KalugaThread;
-	public final fun getMAX_PRIORITY ()I
-	public final fun getMIN_PRIORITY ()I
 }
 
 public final class com/splendo/kaluga/base/KalugaThreadKt {
+	public static final fun getMAX_PRIORITY (Lcom/splendo/kaluga/base/KalugaThread$Companion;)I
+	public static final fun getMIN_PRIORITY (Lcom/splendo/kaluga/base/KalugaThread$Companion;)I
 	public static final fun isOnMainThread ()Z
 }
 

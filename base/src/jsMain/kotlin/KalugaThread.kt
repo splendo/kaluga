@@ -23,14 +23,14 @@ actual class KalugaThread {
 
     actual companion object {
         actual val currentThread: KalugaThread get() = KalugaThread()
-        actual val MIN_PRIORITY: Int = 1
-        actual val MAX_PRIORITY: Int = 10
     }
 
     actual var name: String = "Main Thread"
         set(value) = Unit
     actual var priority: Int = 10
-        set(value) = Unit
+        set(value) {
+            require(value in MIN_PRIORITY..MAX_PRIORITY)
+        }
     actual val isMainThread: Boolean = true
     actual val isAlive: Boolean = true
 

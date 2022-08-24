@@ -19,12 +19,13 @@ package com.splendo.kaluga.base
 val isOnMainThread: Boolean
     get() = KalugaThread.currentThread.isMainThread
 
+val KalugaThread.Companion.MIN_PRIORITY get() = 1
+val KalugaThread.Companion.MAX_PRIORITY get() = 10
+
 expect class KalugaThread {
 
     companion object {
         val currentThread: KalugaThread
-        val MIN_PRIORITY: Int
-        val MAX_PRIORITY: Int
     }
 
     var name: String

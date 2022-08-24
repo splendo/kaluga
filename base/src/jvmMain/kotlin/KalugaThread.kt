@@ -22,12 +22,14 @@ actual data class KalugaThread(val thread: Thread) {
 
     actual companion object {
         actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
-        actual val MIN_PRIORITY: Int = 1
-        actual val MAX_PRIORITY: Int = 10
     }
 
     actual var name: String by thread::name
-    actual var priority: Int by thread::priority
+    actual var priority: Int get() = thread.priority
+        set(value) {
+            require(value in MIN_PRIORITY..MAX_PRIORITY)
+            thread.priority = value
+        }
     actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) { // safest way also for synthetic main threads
         thread == Thread.currentThread()
     }

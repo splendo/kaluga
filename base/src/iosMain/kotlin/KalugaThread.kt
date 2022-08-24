@@ -23,8 +23,6 @@ actual data class KalugaThread(val thread: NSThread) {
     actual companion object {
         actual val currentThread: KalugaThread get() = KalugaThread(NSThread.currentThread)
         private val threadDescriptionRegex = "^.*\\{(.*)}\$".toRegex()
-        actual val MIN_PRIORITY: Int = 1
-        actual val MAX_PRIORITY: Int = 10
     }
 
     actual var name: String get() = thread.name.orEmpty().ifEmpty {
