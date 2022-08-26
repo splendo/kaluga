@@ -302,8 +302,8 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Unini
 
 public class com/splendo/kaluga/permissions/base/PermissionStateRepo : com/splendo/kaluga/permissions/base/BasePermissionStateRepo {
 	public static final field Companion Lcom/splendo/kaluga/permissions/base/PermissionStateRepo$Companion;
-	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected final fun getMonitoringInterval-UwyO8pc ()J
 }
 
@@ -312,8 +312,8 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateRepo$Compa
 }
 
 public final class com/splendo/kaluga/permissions/base/Permissions {
-	public fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun clean ()V
 	public final fun get (Lcom/splendo/kaluga/permissions/base/Permission;)Lcom/splendo/kaluga/state/StateRepo;
 	public final fun request (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

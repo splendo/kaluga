@@ -28,6 +28,7 @@ public final class com/splendo/kaluga/base/KalugaThread {
 	public final fun getThread ()Ljava/lang/Thread;
 	public fun hashCode ()I
 	public final fun isMainThread ()Z
+	public final fun setName (Ljava/lang/String;)V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -59,7 +60,7 @@ public final class com/splendo/kaluga/base/RunOnMainKt {
 }
 
 public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
-	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/CoroutineDispatcher;
+	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
 public final class com/splendo/kaluga/base/flow/ColdFlowable : com/splendo/kaluga/flow/BaseFlowable {

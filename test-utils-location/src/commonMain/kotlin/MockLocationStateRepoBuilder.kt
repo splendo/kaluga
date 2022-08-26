@@ -52,12 +52,11 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     init {
         if (setupMocks) {
             createMock.on()
-                .doExecute { (locationPermission, settingsBuilder, coroutineContext, contextCreator) ->
+                .doExecute { (locationPermission, settingsBuilder, coroutineContext) ->
                     LocationStateRepo(
                         { settingsBuilder(locationPermission, permissions) },
                         locationManagerBuilder,
-                        coroutineContext,
-                        contextCreator
+                        coroutineContext
                     ).also {
                         builtLocationStateRepo.add(it)
                     }
@@ -68,7 +67,6 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext,
-        contextCreator: CoroutineContext.(String) -> CoroutineContext
-    ): LocationStateRepo = createMock.call(locationPermission, settingsBuilder, coroutineContext, contextCreator)
+        coroutineContext: CoroutineContext
+    ): LocationStateRepo = createMock.call(locationPermission, settingsBuilder, coroutineContext)
 }

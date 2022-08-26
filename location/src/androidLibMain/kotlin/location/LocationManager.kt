@@ -97,9 +97,8 @@ actual class LocationStateRepoBuilder(
     override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext,
-        contextCreator: CoroutineContext.(String) -> CoroutineContext
+        coroutineContext: CoroutineContext
     ): LocationStateRepo {
-        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(context), coroutineContext, contextCreator)
+        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(context), coroutineContext)
     }
 }

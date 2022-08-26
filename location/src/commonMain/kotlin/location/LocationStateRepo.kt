@@ -23,6 +23,7 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,8 +32,14 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.native.concurrent.SharedImmutable
 
 typealias LocationStateFlowRepo = StateRepo<LocationState, MutableStateFlow<LocationState>>
+
+@SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
+private val defaultLocationDispatcher by lazy {
+    singleThreadDispatcher("Location")
+}
 
 abstract class BaseLocationStateRepo(
     createNotInitializedState: () -> LocationState.NotInitialized,
@@ -132,13 +139,12 @@ open class LocationStateImplRepo(
 class LocationStateRepo(
     settingsBuilder: (CoroutineContext) -> BaseLocationManager.Settings,
     builder: BaseLocationManager.Builder,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
+    coroutineContext: CoroutineContext
 ) : LocationStateImplRepo(
     createLocationManager = {
         builder.create(
-            settingsBuilder(coroutineContext.contextCreator("LocationPermissions")),
-            CoroutineScope(coroutineContext.contextCreator("LocationManager"))
+            settingsBuilder(coroutineContext + CoroutineName("LocationPermissions")),
+            CoroutineScope(coroutineContext + CoroutineName("LocationManager"))
         )
     },
     coroutineContext = coroutineContext,
@@ -147,8 +153,7 @@ class LocationStateRepo(
         fun create(
             locationPermission: LocationPermission,
             settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings = { permission, permissions -> BaseLocationManager.Settings(permission, permissions) },
-            coroutineContext: CoroutineContext = singleThreadDispatcher("Location"),
-            contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
+            coroutineContext: CoroutineContext = defaultLocationDispatcher
         ): LocationStateRepo
     }
 }

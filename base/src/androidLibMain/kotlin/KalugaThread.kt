@@ -25,7 +25,7 @@ actual data class KalugaThread(val thread: Thread) {
         actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
     }
 
-    actual val name: String get() = thread.name
+    actual var name: String by thread::name
     actual val isMainThread: Boolean get() {
         val mainThread = Looper.getMainLooper()?.thread ?: run {
             // Fallback when no MainLooper is present. This should only occur in tests
