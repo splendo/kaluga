@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
 
@@ -90,6 +91,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
 
+@SharedImmutable //NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultPermissionDispatcher by lazy {
     singleThreadDispatcher("Permissions")
 }
