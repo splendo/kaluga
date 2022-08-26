@@ -36,7 +36,7 @@ import kotlin.native.concurrent.SharedImmutable
 
 typealias LocationStateFlowRepo = StateRepo<LocationState, MutableStateFlow<LocationState>>
 
-@SharedImmutable //NOTE: replace with a limited parallelism dispatcher view when available
+@SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultLocationDispatcher by lazy {
     singleThreadDispatcher("Location")
 }

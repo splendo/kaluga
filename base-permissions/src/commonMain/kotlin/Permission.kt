@@ -91,7 +91,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
 
-@SharedImmutable //NOTE: replace with a limited parallelism dispatcher view when available
+@SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultPermissionDispatcher by lazy {
     singleThreadDispatcher("Permissions")
 }

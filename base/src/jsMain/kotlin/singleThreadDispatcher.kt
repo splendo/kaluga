@@ -31,6 +31,5 @@ private class CoroutineDispatcherWrapper(
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         base.dispatch(context, block)
     }
-    override fun close() {
-    }
+    override fun close() = Unit
 }

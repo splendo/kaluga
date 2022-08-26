@@ -52,7 +52,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.native.concurrent.SharedImmutable
 
-@SharedImmutable //NOTE: replace with a limited parallelism dispatcher view when available
+@SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultBluetoothDispatcher by lazy {
     singleThreadDispatcher("Bluetooth")
 }
