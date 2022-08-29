@@ -124,8 +124,7 @@ fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Char).mock() = mockWithDefault
 @JvmName("mockCharArray")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> CharArray).mock() = mockWithDefaultValue(charArrayOf())
 @JvmName("mockCharRange")
-fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> CharRange).mock() = mockWithDefaultValue(
-    CharRange.EMPTY)
+fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> CharRange).mock() = mockWithDefaultValue(CharRange.EMPTY)
 @JvmName("mockDouble")
 fun <T0, T1, T2, T3, T4> ((T0, T1, T2, T3, T4) -> Double).mock() = mockWithDefaultValue(0.0)
 @JvmName("mockDoubleArray")
