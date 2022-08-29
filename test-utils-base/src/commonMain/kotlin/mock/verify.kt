@@ -33,7 +33,7 @@ fun <
     Answer,
     Stub
     >.verify(times: Int = 1) {
-    verify(VoidParameters.MatchersOrCaptor, times)
+    verifyWithParameters(VoidParameters.MatchersOrCaptor, times)
 }
 
 /**
@@ -58,7 +58,7 @@ fun <
     Answer,
     Stub
     >.verify(rule: VerificationRule) {
-    verify(VoidParameters.MatchersOrCaptor, rule)
+    verifyWithParameters(VoidParameters.MatchersOrCaptor, rule)
 }
 
 /**
@@ -85,7 +85,7 @@ fun <
     Answer,
     Stub
     >.verify(value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(), times: Int = 1) {
-    verify(SingleParameters.MatchersOrCaptor(value), times)
+    verifyWithParameters(SingleParameters.MatchersOrCaptor(value), times)
 }
 
 /**
@@ -115,7 +115,7 @@ fun <
     value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(),
     rule: VerificationRule
 ) {
-    verify(SingleParameters.MatchersOrCaptor(value), rule)
+    verifyWithParameters(SingleParameters.MatchersOrCaptor(value), rule)
 }
 
 /**
@@ -148,7 +148,7 @@ fun <
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     times: Int = 1
 ) {
-    verify(PairParameters.MatchersOrCaptor(first, second), times)
+    verifyWithParameters(PairParameters.MatchersOrCaptor(first, second), times)
 }
 
 /**
@@ -181,7 +181,7 @@ fun <
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     rule: VerificationRule
 ) {
-    verify(PairParameters.MatchersOrCaptor(first, second), rule)
+    verifyWithParameters(PairParameters.MatchersOrCaptor(first, second), rule)
 }
 
 /**
@@ -217,7 +217,7 @@ fun <
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
     times: Int = 1
 ) {
-    verify(TripleParameters.MatchersOrCaptor(first, second, third), times)
+    verifyWithParameters(TripleParameters.MatchersOrCaptor(first, second, third), times)
 }
 
 /**
@@ -253,7 +253,7 @@ fun <
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
     rule: VerificationRule
 ) {
-    verify(TripleParameters.MatchersOrCaptor(first, second, third), rule)
+    verifyWithParameters(TripleParameters.MatchersOrCaptor(first, second, third), rule)
 }
 
 /**
@@ -292,7 +292,7 @@ fun <
     fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
     times: Int = 1
 ) {
-    verify(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), times)
+    verifyWithParameters(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), times)
 }
 
 /**
@@ -331,7 +331,7 @@ fun <
     fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
     rule: VerificationRule
 ) {
-    verify(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), rule)
+    verifyWithParameters(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), rule)
 }
 
 /**
@@ -373,7 +373,7 @@ fun <
     fifth: ParameterMatcherOrCaptor<T4> = ParameterMatcher.any(),
     times: Int = 1
 ) {
-    verify(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), times)
+    verifyWithParameters(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), times)
 }
 
 /**
@@ -415,5 +415,5 @@ fun <
     fifth: ParameterMatcherOrCaptor<T4> = ParameterMatcher.any(),
     rule: VerificationRule
 ) {
-    verify(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), rule)
+    verifyWithParameters(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), rule)
 }

@@ -23,6 +23,7 @@ import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.cancel

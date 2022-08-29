@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.base.monitor
 import com.splendo.kaluga.base.monitor.ServiceMonitor
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 import kotlinx.coroutines.flow.StateFlow
 
 /**

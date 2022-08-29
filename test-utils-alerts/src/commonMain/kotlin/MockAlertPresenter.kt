@@ -24,6 +24,7 @@ import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 import kotlinx.coroutines.CoroutineScope
 
 /**

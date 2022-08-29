@@ -35,6 +35,7 @@ import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 import kotlin.coroutines.CoroutineContext
 
 expect val mockPermissionContext: PermissionContext

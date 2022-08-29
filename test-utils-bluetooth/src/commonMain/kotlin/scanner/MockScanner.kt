@@ -26,6 +26,7 @@ import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
+import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
