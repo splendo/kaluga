@@ -505,10 +505,6 @@ public final class com/splendo/kaluga/test/base/mock/parameters/PairParameters$V
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/PairParametersKt {
-	public static final fun mock (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function3;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -583,6 +579,10 @@ public final class com/splendo/kaluga/test/base/mock/parameters/PairParametersKt
 	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function3;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 }
 
 public abstract interface class com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
@@ -664,10 +664,6 @@ public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParamet
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParametersKt {
-	public static final fun mock (Lkotlin/jvm/functions/Function4;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function4;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function5;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function5;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -742,6 +738,10 @@ public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParamet
 	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function4;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function5;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function4;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function5;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
@@ -813,10 +813,6 @@ public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParamet
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParametersKt {
-	public static final fun mock (Lkotlin/jvm/functions/Function5;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function5;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function6;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function6;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -891,6 +887,10 @@ public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParamet
 	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function5;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function6;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function5;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function6;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
@@ -938,10 +938,6 @@ public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/SingleParametersKt {
-	public static final fun mock (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function1;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -1016,6 +1012,10 @@ public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters
 	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function1;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
@@ -1075,10 +1075,6 @@ public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/TripleParametersKt {
-	public static final fun mock (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function3;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function4;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function4;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -1153,6 +1149,10 @@ public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters
 	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function4;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function3;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function4;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/VoidParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
@@ -1179,10 +1179,6 @@ public final class com/splendo/kaluga/test/base/mock/parameters/VoidParameters$V
 }
 
 public final class com/splendo/kaluga/test/base/mock/parameters/VoidParametersKt {
-	public static final fun mock (Lkotlin/jvm/functions/Function0;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function0;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public static final fun mock (Lkotlin/jvm/functions/Function1;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockBoolean (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -1257,6 +1253,10 @@ public final class com/splendo/kaluga/test/base/mock/parameters/VoidParametersKt
 	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public static final fun mockUnit (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function0;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function0;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function1;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 }
 
 public abstract interface class com/splendo/kaluga/test/base/mock/verification/VerificationRule {
