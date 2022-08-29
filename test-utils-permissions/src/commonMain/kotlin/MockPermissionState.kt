@@ -21,7 +21,6 @@ import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 
 sealed class MockPermissionState<P : Permission> {
 

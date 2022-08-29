@@ -21,7 +21,6 @@ import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import com.splendo.kaluga.test.base.mock.parameters.mockWithDefaultValue
 
 /**
  * Mock implementation of [Navigator]
