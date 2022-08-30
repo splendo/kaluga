@@ -95,7 +95,7 @@ sealed class BaseMethodMock<
 
     protected abstract fun createStub(matcher: M): S
 
-    internal fun on(matcher: M): S =
+    internal fun onMatcher(matcher: M): S =
         createStub(matcher).also {
             stubs[matcher] = it
         }
@@ -154,11 +154,11 @@ sealed class BaseMethodMock<
         resetStubs()
     }
 
-    internal fun verify(parameters: C, times: Int = 1) {
-        verify(parameters, VerificationRule.times(times))
+    internal fun verifyWithParameters(parameters: C, times: Int = 1) {
+        verifyWithParameters(parameters, VerificationRule.times(times))
     }
 
-    internal fun verify(parameters: C, verificationRule: VerificationRule) = ParametersSpec.apply {
+    internal fun verifyWithParameters(parameters: C, verificationRule: VerificationRule) = ParametersSpec.apply {
         val matchers = parameters.asMatchers()
         val matchedCalls = callParameters.filter {
             matchers.matches(it)
@@ -191,7 +191,7 @@ class MethodMock<M : ParametersSpec.Matchers,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
     R>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
-    internal fun call(arguments: V): R = getStubFor(arguments).call(arguments)
+    internal fun callWithValues(values: V): R = getStubFor(values).call(values)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
 
@@ -203,16 +203,16 @@ class MethodMock<M : ParametersSpec.Matchers,
         V : ParametersSpec.Values,
         R>(override val matchers: M) : BaseMethodMock.Stub<M, V, R, Answer<V, R>>() {
         override fun createAnswer(result: (V) -> R): Answer<V, R> = object : Answer<V, R> {
-            override fun call(arguments: V): R = result(arguments)
+            override fun call(values: V): R = result(values)
         }
 
         /**
-         * Calls this stub with a given set of arguments
-         * @param arguments the arguments with which to call the stub.
+         * Calls this stub with a given set of values
+         * @param values the values with which to call the stub.
          */
-        fun call(arguments: V): R {
+        fun call(values: V): R {
             val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
-            return answer.call(arguments)
+            return answer.call(values)
         }
     }
 }
@@ -227,7 +227,7 @@ class SuspendMethodMock<
     W : ParametersSpec<M, C, V>,
     R>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
 
-    internal suspend fun call(arguments: V): R = getStubFor(arguments).call(arguments)
+    internal suspend fun callWithValues(values: V): R = getStubFor(values).call(values)
 
     override fun createStub(matcher: M): Stub<M, V, R> =
         Stub(matcher)
@@ -241,16 +241,16 @@ class SuspendMethodMock<
         R
         >(override val matchers: M) : BaseMethodMock.Stub<M, V, R, SuspendedAnswer<V, R>>() {
         override fun createAnswer(result: (V) -> R): SuspendedAnswer<V, R> = object : SuspendedAnswer<V, R> {
-            override suspend fun call(arguments: V): R = result(arguments)
+            override suspend fun call(values: V): R = result(values)
         }
 
         /**
-         * Calls this stub with a given set of arguments
-         * @param arguments the arguments with which to call the stub.
+         * Calls this stub with a given set of values
+         * @param values the values with which to call the stub.
          */
-        suspend fun call(arguments: V): R {
+        suspend fun call(values: V): R {
             val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
-            return answer.call(arguments)
+            return answer.call(values)
         }
 
         /**
@@ -259,7 +259,7 @@ class SuspendMethodMock<
          */
         fun doExecuteSuspended(action: suspend (V) -> R) = doAnswer(
             object : SuspendedAnswer<V, R> {
-                override suspend fun call(arguments: V): R = action(arguments)
+                override suspend fun call(values: V): R = action(values)
             }
         )
 

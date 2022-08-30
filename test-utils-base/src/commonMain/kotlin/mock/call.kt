@@ -36,7 +36,7 @@ fun <
     VoidParameters,
     Result
     >.call(): Result {
-    return call(VoidParameters.Values)
+    return callWithValues(VoidParameters.Values)
 }
 
 /**
@@ -51,7 +51,7 @@ suspend fun <
     VoidParameters,
     Result
     >.call(): Result {
-    return call(VoidParameters.Values)
+    return callWithValues(VoidParameters.Values)
 }
 
 /**
@@ -68,7 +68,7 @@ fun <
     SingleParameters<Value>,
     Result
     >.call(value: Value): Result {
-    return call(SingleParameters.Values(value))
+    return callWithValues(SingleParameters.Values(value))
 }
 
 /**
@@ -85,7 +85,7 @@ suspend fun <
     SingleParameters<Value>,
     Result
     >.call(value: Value): Result {
-    return call(SingleParameters.Values(value))
+    return callWithValues(SingleParameters.Values(value))
 }
 
 /**
@@ -104,7 +104,7 @@ fun <
     PairParameters<T0, T1>,
     Result
     >.call(first: T0, second: T1): Result {
-    return call(PairParameters.Values(first, second))
+    return callWithValues(PairParameters.Values(first, second))
 }
 
 /**
@@ -123,7 +123,7 @@ suspend fun <
     PairParameters<T0, T1>,
     Result
     >.call(first: T0, second: T1): Result {
-    return call(PairParameters.Values(first, second))
+    return callWithValues(PairParameters.Values(first, second))
 }
 
 /**
@@ -144,7 +144,7 @@ fun <
     TripleParameters<T0, T1, T2>,
     Result
     >.call(first: T0, second: T1, third: T2): Result {
-    return call(TripleParameters.Values(first, second, third))
+    return callWithValues(TripleParameters.Values(first, second, third))
 }
 
 /**
@@ -165,7 +165,7 @@ suspend fun <
     TripleParameters<T0, T1, T2>,
     Result
     >.call(first: T0, second: T1, third: T2): Result {
-    return call(TripleParameters.Values(first, second, third))
+    return callWithValues(TripleParameters.Values(first, second, third))
 }
 
 /**
@@ -188,7 +188,7 @@ fun <
     QuadrupleParameters<T0, T1, T2, T3>,
     Result
     >.call(first: T0, second: T1, third: T2, fourth: T3): Result {
-    return call(QuadrupleParameters.Values(first, second, third, fourth))
+    return callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
 }
 
 /**
@@ -211,7 +211,7 @@ suspend fun <
     QuadrupleParameters<T0, T1, T2, T3>,
     Result
     >.call(first: T0, second: T1, third: T2, fourth: T3): Result {
-    return call(QuadrupleParameters.Values(first, second, third, fourth))
+    return callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
 }
 
 /**
@@ -236,7 +236,7 @@ fun <
     QuintupleParameters<T0, T1, T2, T3, T4>,
     Result
     >.call(first: T0, second: T1, third: T2, fourth: T3, fifth: T4): Result {
-    return call(QuintupleParameters.Values(first, second, third, fourth, fifth))
+    return callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
 }
 
 /**
@@ -261,5 +261,5 @@ suspend fun <
     QuintupleParameters<T0, T1, T2, T3, T4>,
     Result
     >.call(first: T0, second: T1, third: T2, fourth: T3, fifth: T4): Result {
-    return call(QuintupleParameters.Values(first, second, third, fourth, fifth))
+    return callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
 }
