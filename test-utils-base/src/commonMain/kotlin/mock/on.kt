@@ -31,7 +31,7 @@ fun <
     Answer,
     Stub
     >.on(): Stub {
-    return on(VoidParameters.Matchers)
+    return onMatcher(VoidParameters.Matchers)
 }
 
 /**
@@ -58,7 +58,7 @@ fun <
     Answer,
     Stub
     >.on(value: ParameterMatcher<Value> = ParameterMatcher.any()): Stub {
-    return on(SingleParameters.Matchers(value))
+    return onMatcher(SingleParameters.Matchers(value))
 }
 
 /**
@@ -90,7 +90,7 @@ fun <
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
     second: ParameterMatcher<T1> = ParameterMatcher.any()
 ): Stub {
-    return on(PairParameters.Matchers(first, second))
+    return onMatcher(PairParameters.Matchers(first, second))
 }
 
 /**
@@ -125,7 +125,7 @@ fun <
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
     third: ParameterMatcher<T2> = ParameterMatcher.any()
 ): Stub {
-    return on(TripleParameters.Matchers(first, second, third))
+    return onMatcher(TripleParameters.Matchers(first, second, third))
 }
 
 /**
@@ -163,7 +163,7 @@ fun <
     third: ParameterMatcher<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcher<T3> = ParameterMatcher.any()
 ): Stub {
-    return on(QuadrupleParameters.Matchers(first, second, third, fourth))
+    return onMatcher(QuadrupleParameters.Matchers(first, second, third, fourth))
 }
 
 /**
@@ -204,5 +204,5 @@ fun <
     fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
     fifth: ParameterMatcher<T4> = ParameterMatcher.any()
 ): Stub {
-    return on(QuintupleParameters.Matchers(first, second, third, fourth, fifth))
+    return onMatcher(QuintupleParameters.Matchers(first, second, third, fourth, fifth))
 }

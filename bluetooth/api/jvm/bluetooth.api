@@ -21,11 +21,11 @@ public final class com/splendo/kaluga/bluetooth/Bluetooth : com/splendo/kaluga/b
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/Bluetooth$Builder {
-	public abstract fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
+	public abstract fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
 public final class com/splendo/kaluga/bluetooth/Bluetooth$Builder$DefaultImpls {
-	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/Bluetooth$Builder;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/Bluetooth$Builder;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
 public abstract class com/splendo/kaluga/bluetooth/Bluetooth$ScanMode {
@@ -44,7 +44,7 @@ public final class com/splendo/kaluga/bluetooth/BluetoothBuilder : com/splendo/k
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
+	public fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
 public final class com/splendo/kaluga/bluetooth/BluetoothKt {
@@ -1319,7 +1319,6 @@ public class com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo : com/sp
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateRepo : com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
 }
 

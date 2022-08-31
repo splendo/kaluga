@@ -157,7 +157,7 @@ public final class com/splendo/kaluga/test/location/MockLocationState$PermittedH
 public final class com/splendo/kaluga/test/location/MockLocationStateRepoBuilder : com/splendo/kaluga/location/LocationStateRepo$Builder {
 	public fun <init> (Lcom/splendo/kaluga/permissions/base/Permissions;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permissions;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/location/LocationStateRepo;
+	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
 	public final fun getBuiltLocationStateRepo ()Lco/touchlab/stately/collections/IsoMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getLocationManagerBuilder ()Lcom/splendo/kaluga/location/BaseLocationManager$Builder;

@@ -25,7 +25,7 @@ actual data class KalugaThread(val thread: NSThread) {
         private val threadDescriptionRegex = "^.*\\{(.*)}\$".toRegex()
     }
 
-    actual val name: String get() = thread.name.orEmpty().ifEmpty {
+    actual var name: String get() = thread.name.orEmpty().ifEmpty {
         // On iOS the Thread name is not actually always accessible via name (only if set via custom setter)
         // To still grab the name, we should parse the thread description
         val descriptionBody = threadDescriptionRegex.matchEntire(thread.description.orEmpty())?.let { result ->
@@ -39,5 +39,6 @@ actual data class KalugaThread(val thread: NSThread) {
             "Thread ${(threadDescription["number"] ?: threadDescription["num"]).orEmpty().ifEmpty { "Unknown" }}"
         }
     }
+        set(value) { thread.name = value }
     actual val isMainThread: Boolean get() = thread.isMainThread
 }

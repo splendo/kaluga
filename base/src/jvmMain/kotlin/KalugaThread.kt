@@ -24,8 +24,7 @@ actual data class KalugaThread(val thread: Thread) {
         actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
     }
 
-    actual val name: String get() = thread.name
-
+    actual var name: String by thread::name
     actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) { // safest way also for synthetic main threads
         thread == Thread.currentThread()
     }

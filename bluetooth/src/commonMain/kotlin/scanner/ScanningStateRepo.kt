@@ -16,7 +16,6 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
@@ -24,6 +23,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -142,12 +142,11 @@ class ScanningStateRepo(
     builder: BaseScanner.Builder,
     createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
     coroutineContext: CoroutineContext,
-    contextCreator: CoroutineContext.(String) -> CoroutineContext = { this + singleThreadDispatcher(it) },
 ) : ScanningStateImplRepo(
     createScanner = {
         builder.create(
-            settingsBuilder(coroutineContext.contextCreator("BluetoothPermissions")),
-            CoroutineScope(coroutineContext.contextCreator("BluetoothScanner"))
+            settingsBuilder(coroutineContext + CoroutineName("BluetoothPermissions")),
+            CoroutineScope(coroutineContext + CoroutineName("BluetoothScanner"))
         )
     },
     createDevice = createDevice,

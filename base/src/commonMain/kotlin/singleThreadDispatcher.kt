@@ -16,6 +16,12 @@
 
 package com.splendo.kaluga.base
 
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 
-expect fun singleThreadDispatcher(name: String): CoroutineDispatcher
+/**
+ * Creates a coroutine execution context using a single thread.
+ *
+ * **NOTE: The resulting [CloseableCoroutineDispatcher] owns native resources (its thread).
+ * Resources are reclaimed by [CloseableCoroutineDispatcher.close].**
+ */
+expect fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher

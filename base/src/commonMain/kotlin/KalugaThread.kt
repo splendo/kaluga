@@ -25,6 +25,6 @@ expect class KalugaThread {
         val currentThread: KalugaThread
     }
 
-    val name: String
+    var name: String
     val isMainThread: Boolean
 }

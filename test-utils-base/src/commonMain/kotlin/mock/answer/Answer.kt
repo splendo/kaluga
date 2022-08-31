@@ -30,11 +30,11 @@ sealed interface BaseAnswer<V : ParametersSpec.Values, R>
 interface Answer<V : ParametersSpec.Values, R> : BaseAnswer<V, R> {
 
     /**
-     * Answers with a result for a set of arguments
-     * @param arguments The [V] arguments received
-     * @return The [R] result based on [arguments]
+     * Answers with a result for a set of values
+     * @param values The [V] values received
+     * @return The [R] result based on [values]
      */
-    fun call(arguments: V): R
+    fun call(values: V): R
 }
 
 /**
@@ -43,9 +43,9 @@ interface Answer<V : ParametersSpec.Values, R> : BaseAnswer<V, R> {
 interface SuspendedAnswer<V : ParametersSpec.Values, R> : BaseAnswer<V, R> {
 
     /**
-     * Answers suspended with a result for a set of arguments
-     * @param arguments The [V] arguments received
-     * @return The [R] result based on [arguments]
+     * Answers suspended with a result for a set of values
+     * @param values The [V] values received
+     * @return The [R] result based on [values]
      */
-    suspend fun call(arguments: V): R
+    suspend fun call(values: V): R
 }
