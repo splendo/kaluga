@@ -43,30 +43,8 @@ class AndroidMockCharacteristicWrapper(
         get() = 0
     override var writeType = 0
 
-    override fun setValue(newValue: String): Boolean {
-        value = newValue.encodeToByteArray()
-        return true
-    }
-
-    override fun setValue(newValue: ByteArray?): Boolean {
-        value = newValue
-        return true
-    }
-
-    override fun setValue(mantissa: Int, exponent: Int, formatType: Int, offset: Int): Boolean {
-        return true
-    }
-
     override fun getDescriptor(uuid: UUID): DescriptorWrapper? {
         return descriptors.firstOrNull { it.uuid == uuid }
-    }
-
-    override fun floatValue(formatType: Int, offset: Int): Float {
-        return 0.0f
-    }
-
-    override fun intValue(formatType: Int, offset: Int): Int {
-        return 0
     }
 
     override fun updateMockValue(value: ByteArray?) = updateValue(value)

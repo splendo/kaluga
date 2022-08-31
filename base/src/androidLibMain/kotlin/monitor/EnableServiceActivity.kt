@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,32 +15,42 @@
 
  */
 
-package com.splendo.kaluga.location
+package com.splendo.kaluga.base.monitor
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CompletableDeferred
 
-class EnableLocationActivity : AppCompatActivity() {
+class EnableServiceActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_CALLBACK_ID = "EXTRA_CALLBACK_ID"
-        val enablingHandlers: MutableMap<String, CompletableDeferred<Boolean>> = mutableMapOf()
+        private const val EXTRA_SETTING_ID = "EXTRA_CALLBACK_ID"
+        val enablingHandlers: MutableMap<Pair<String, String>, CompletableDeferred<Boolean>> = mutableMapOf()
 
-        fun showEnableLocationActivity(context: Context, identifier: String): CompletableDeferred<Boolean> {
-            val intent = Intent(context, EnableLocationActivity::class.java).apply {
+        fun showEnableServiceActivity(context: Context, identifier: String, settingsIntent: Intent): CompletableDeferred<Boolean> {
+            val settingKey = settingsIntent.action.orEmpty()
+            val intent = Intent(context, EnableServiceActivity::class.java).apply {
                 putExtra(EXTRA_CALLBACK_ID, identifier)
+                putExtra(EXTRA_SETTING_ID, settingsIntent)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
-            val completableDeferred = enablingHandlers.getOrPut(identifier) { CompletableDeferred() }
+            val completableDeferred = enablingHandlers.getOrPut(identifier to settingKey) { CompletableDeferred() }
             context.startActivity(intent)
             return completableDeferred
         }
+    }
+
+    private val settingsIntent: Intent? get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        intent.getParcelableExtra(EXTRA_SETTING_ID, android.content.Intent::class.java)
+    } else {
+        intent.getParcelableExtra(EXTRA_SETTING_ID)
     }
 
     private val enableResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -53,13 +63,16 @@ class EnableLocationActivity : AppCompatActivity() {
         supportActionBar?.hide() // windowActionBar=false
         supportActionBar?.elevation = 0F // windowContentOverlay=@null
 
-        enableResult.launch(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        settingsIntent?.let {
+            enableResult.launch(it)
+        }
     }
 
     private fun complete(success: Boolean) {
+        val actionKey = settingsIntent?.action.orEmpty()
         intent.getStringExtra(EXTRA_CALLBACK_ID)?.let {
-            enablingHandlers[it]?.complete(success)
-            enablingHandlers.remove(it)
+            enablingHandlers[it to actionKey]?.complete(success)
+            enablingHandlers.remove(it to actionKey)
         }
         finish()
     }

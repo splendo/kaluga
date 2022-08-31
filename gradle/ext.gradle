@@ -33,9 +33,9 @@ gradle.ext {
     library_version_base = '0.5.0'
     library_version = libraryVersionLocalProperties ?: "$library_version_base${System.properties.kaluga_branch_postfix}"
     android_min_sdk_version = 21
-    android_compile_sdk_version = 31
-    android_target_sdk_version = 31
-    android_build_tools_version = "31.0.0"
+    android_compile_sdk_version = 33
+    android_target_sdk_version = 33
+    android_build_tools_version = "33.0.0"
 
     play_services_version = "17.1.0"
     play_core_version = "1.10.0"

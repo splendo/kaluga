@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
@@ -28,6 +29,8 @@ import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
@@ -78,18 +81,37 @@ internal actual class DefaultDeviceConnectionManager(
             }
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            updateCharacteristic(characteristic, status)
+            updateCharacteristic(characteristic, characteristic.value, status)
         }
+
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray,
+            status: Int
+        ) = updateCharacteristic(characteristic, value, status)
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            updateCharacteristic(characteristic, status)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED &&
+                        status == GATT_SUCCESS
+                ) {
+                    gatt?.readCharacteristic(characteristic)
+                }
+            } else {
+                updateCharacteristic(characteristic, characteristic.value, status)
+            }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            launch() {
+            launch {
                 val services = gatt?.services?.map { DefaultGattServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
@@ -97,18 +119,44 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            updateDescriptor(descriptor, status)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED &&
+                    status == GATT_SUCCESS
+                ) {
+                    gatt?.readDescriptor(descriptor)
+                }
+            } else {
+                updateDescriptor(descriptor, descriptor.value, status)
+            }
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             characteristic ?: return
-            updateCharacteristic(characteristic, status = GATT_SUCCESS)
+            updateCharacteristic(characteristic, characteristic.value, status = GATT_SUCCESS)
         }
 
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray
+        ) = updateCharacteristic(characteristic, value, status = GATT_SUCCESS)
+
+        @Deprecated("Deprecated in Java")
         override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            updateDescriptor(descriptor, status)
+            updateDescriptor(descriptor, descriptor.value, status)
         }
+
+        override fun onDescriptorRead(
+            gatt: BluetoothGatt,
+            descriptor: BluetoothGattDescriptor,
+            status: Int,
+            value: ByteArray
+        ) = updateDescriptor(descriptor, value, status)
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             lastKnownState = newState
@@ -188,8 +236,8 @@ internal actual class DefaultDeviceConnectionManager(
         val succeeded = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
             is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.wrapper)
-            is DeviceAction.Write.Characteristic -> writeCharacteristic(action.characteristic, action.newValue)
-            is DeviceAction.Write.Descriptor -> writeDescriptor(action.descriptor, action.newValue)
+            is DeviceAction.Write.Characteristic -> writeCharacteristic(action.characteristic, action.newValue ?: ByteArray(0))
+            is DeviceAction.Write.Descriptor -> writeDescriptor(action.descriptor, action.newValue ?: ByteArray(0))
             is DeviceAction.Notification.Enable -> setNotification(action.characteristic, true)
             is DeviceAction.Notification.Disable -> setNotification(action.characteristic, false)
         }
@@ -200,26 +248,27 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
+    @SuppressLint("MissingPermission")
     override suspend fun unpair() {
         if (device.bondState != BluetoothDevice.BOND_NONE) {
             deviceWrapper.removeBond()
         }
     }
 
+    @SuppressLint("MissingPermission")
     override suspend fun pair() {
         if (device.bondState == BluetoothDevice.BOND_NONE) {
             deviceWrapper.createBond()
         }
     }
 
-    private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray?): Boolean {
-        characteristic.wrapper.updateValue(value)
-        return gatt.await().writeCharacteristic(characteristic.wrapper)
+    private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray): Boolean {
+        return gatt.await().writeCharacteristic(characteristic.wrapper, value)
     }
 
-    private suspend fun writeDescriptor(descriptor: Descriptor, value: ByteArray?): Boolean {
+    private suspend fun writeDescriptor(descriptor: Descriptor, value: ByteArray): Boolean {
         descriptor.wrapper.updateValue(value)
-        return gatt.await().writeDescriptor(descriptor.wrapper)
+        return gatt.await().writeDescriptor(descriptor.wrapper, value)
     }
 
     private suspend fun setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
@@ -245,7 +294,7 @@ internal actual class DefaultDeviceConnectionManager(
         return if (writeValue != null) {
             characteristic.descriptors.firstOrNull { it.uuid == CLIENT_CONFIGURATION }?.let { descriptor ->
                 descriptor.wrapper.updateValue(writeValue)
-                gatt.await().writeDescriptor(descriptor.wrapper)
+                gatt.await().writeDescriptor(descriptor.wrapper, writeValue)
             } ?: false
         } else {
             e {
@@ -257,20 +306,20 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic, status: Int) {
+    private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
         handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS) {
-            it.wrapper.updateValue(characteristic.value)
+            it.wrapper.updateValue(value)
         }
     }
 
-    private fun updateDescriptor(descriptor: BluetoothGattDescriptor, status: Int) {
+    private fun updateDescriptor(descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
         val succeeded = status == GATT_SUCCESS
         // Notification enable/disable done by client configuration descriptor write
         if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
             handleCurrentActionCompleted(succeeded)
         }
         handleUpdatedDescriptor(descriptor.uuid, succeeded) {
-            it.wrapper.updateValue(descriptor.value)
+            it.wrapper.updateValue(value)
         }
     }
 }
