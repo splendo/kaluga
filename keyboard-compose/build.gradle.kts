@@ -1,20 +1,3 @@
-/*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
- */
-
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -39,10 +22,8 @@ ext["component_type"] = ext["component_type_default"]
 
 dependencies {
     implementation(project(":base"))
-    api(project(":resources"))
+    api(project(":keyboard"))
     val ext = (gradle as ExtensionAware).extra
-    implementation("androidx.compose.foundation:foundation:" + ext["androidx_compose_version"])
-    implementation("androidx.compose.material:material:" + ext["androidx_compose_version"])
     implementation("androidx.compose.ui:ui:" + ext["androidx_compose_version"])
     implementation("androidx.compose.ui:ui-tooling:" + ext["androidx_compose_version"])
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${ext["kotlinx_coroutines_version"]}!!")

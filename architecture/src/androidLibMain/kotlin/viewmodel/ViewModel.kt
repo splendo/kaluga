@@ -44,7 +44,7 @@ fun <VM : BaseViewModel> VM.bind(activity: AppCompatActivity) {
  * @return `true` if the ViewModel could be bound to the [Fragment].
  */
 fun <VM : BaseViewModel> VM.bind(fragment: Fragment): Boolean {
-    val fragmentManager = fragment.fragmentManager ?: return false
+    val fragmentManager = if (fragment.isAdded) fragment.parentFragmentManager else return false
     fragment.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, fragment.activity, fragment.viewLifecycleOwner, fragmentManager))
     return true
 }

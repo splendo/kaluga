@@ -19,10 +19,9 @@ package com.splendo.kaluga.architecture.viewmodel
 
 import android.app.Activity
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.subscribe
@@ -44,7 +43,7 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
     private val activity: Activity?,
     private val lifecycleOwner: LifecycleOwner,
     private val fragmentManager: FragmentManager
-) : LifecycleObserver {
+) : DefaultLifecycleObserver {
 
     private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
         viewModel::class.memberProperties
@@ -57,23 +56,19 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
             .mapNotNull { it.getter(viewModel) as? LifecycleSubscribable }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
         lifecycleSubscribables.forEach { it.subscribe(activity, lifecycleOwner, fragmentManager) }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         lifecycleSubscribables.forEach { it.unsubscribe() }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    override fun onResume(owner: LifecycleOwner) {
         viewModel.didResume()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
+    override fun onPause(owner: LifecycleOwner) {
         viewModel.didPause()
     }
 }

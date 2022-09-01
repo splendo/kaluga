@@ -84,6 +84,7 @@ internal actual class DefaultDeviceConnectionManager(
         @Deprecated("Deprecated in Java")
         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
+            @Suppress("DEPRECATION")
             updateCharacteristic(characteristic, characteristic.value, status)
         }
 
@@ -106,6 +107,7 @@ internal actual class DefaultDeviceConnectionManager(
                     gatt?.readCharacteristic(characteristic)
                 }
             } else {
+                @Suppress("DEPRECATION")
                 updateCharacteristic(characteristic, characteristic.value, status)
             }
         }
@@ -129,6 +131,7 @@ internal actual class DefaultDeviceConnectionManager(
                     gatt?.readDescriptor(descriptor)
                 }
             } else {
+                @Suppress("DEPRECATION")
                 updateDescriptor(descriptor, descriptor.value, status)
             }
         }
@@ -136,6 +139,7 @@ internal actual class DefaultDeviceConnectionManager(
         @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             characteristic ?: return
+            @Suppress("DEPRECATION")
             updateCharacteristic(characteristic, characteristic.value, status = GATT_SUCCESS)
         }
 
@@ -148,6 +152,7 @@ internal actual class DefaultDeviceConnectionManager(
         @Deprecated("Deprecated in Java")
         override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
+            @Suppress("DEPRECATION")
             updateDescriptor(descriptor, descriptor.value, status)
         }
 

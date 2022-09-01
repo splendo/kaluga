@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,21 +18,13 @@
 package com.splendo.kaluga.keyboard
 
 import android.app.Activity
-import android.view.View
-import androidx.annotation.IdRes
 
-actual interface FocusHandler {
-    fun requestFocus(activity: Activity?)
+interface ClearFocusHandler {
+    fun clearFocus(activity: Activity)
 }
 
-class ViewFocusHandler(
-    @IdRes private val id: Int
-) : FocusHandler {
-    override fun requestFocus(activity: Activity?) {
-        val view = activity?.findViewById<View>(id)
-        view?.requestFocus()
+class ViewClearFocusHandler : ClearFocusHandler {
+    override fun clearFocus(activity: Activity) {
+        activity.currentFocus?.clearFocus()
     }
 }
-
-@Deprecated("Renamed to ViewFocusHandler", replaceWith = ReplaceWith("ViewFocusHandler"))
-typealias AndroidFocusHandler = ViewFocusHandler

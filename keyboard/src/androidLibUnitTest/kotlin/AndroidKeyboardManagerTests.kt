@@ -35,7 +35,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
     }
 
     inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
-        override val focusHandler get() = AndroidFocusHandler(viewId)
+        override val focusHandler get() = ViewFocusHandler(viewId)
         override lateinit var builder: KeyboardManager.Builder
 
         val mockActivity: Activity = mock(Activity::class.java)

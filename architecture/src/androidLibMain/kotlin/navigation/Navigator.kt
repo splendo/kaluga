@@ -98,12 +98,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
         assert(manager?.fragmentManager != null)
         val fragmentManager = manager?.fragmentManager ?: return
-        val transaction = fragmentManager.beginTransaction()
-
-        when (val backtrackSettings = fragmentSpec.backStackSettings) {
-            is NavigationSpec.Fragment.BackStackSettings.Add -> transaction.addToBackStack(
-                backtrackSettings.name
-            )
+        val transaction = fragmentManager.beginTransaction().let {
+            when (val backtrackSettings = fragmentSpec.backStackSettings) {
+                is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
+                    backtrackSettings.name
+                )
+                else -> it
+            }
         }
 
         fragmentSpec.animationSettings?.let { animationSettings ->

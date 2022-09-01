@@ -27,13 +27,5 @@ kotlin {
                 api(project(":test-utils-base", ""))
             }
         }
-        getByName("androidLibMain") {
-            dependencies {
-                val ext = (gradle as ExtensionAware).extra
-                implementation(
-                    "androidx.compose.ui:ui:${ext["androidx_compose_version"]}"
-                )
-            }
-        }
     }
 }

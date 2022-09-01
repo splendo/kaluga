@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.resources.compose
+package com.splendo.kaluga.com.splendo.kaluga.keyboard.compose
 
-import androidx.compose.ui.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
 
-val com.splendo.kaluga.resources.KalugaColor.composable get() = Color(this)
+class TestActivity : AppCompatActivity()

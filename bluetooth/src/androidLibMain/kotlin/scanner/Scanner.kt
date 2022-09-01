@@ -175,6 +175,7 @@ actual class DefaultScanner internal constructor(
                     EnableServiceActivity.showEnableServiceActivity(applicationContext, hashCode().toString(), Intent(
                         ACTION_BLUETOOTH_SETTINGS)).await()
                 } else {
+                    @Suppress("DEPRECATION")
                     bluetoothAdapter?.enable()
                 }
                 bluetoothEnabledMonitor!!.isEnabled.first { it }
