@@ -596,7 +596,7 @@ public final class com/splendo/kaluga/base/utils/DecimalJVM {
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
 	public static synthetic fun div$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
-	public static final fun getJava (Lcom/splendo/kaluga/base/utils/RoundingMode;)I
+	public static final fun getJava (Lcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/RoundingMode;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;

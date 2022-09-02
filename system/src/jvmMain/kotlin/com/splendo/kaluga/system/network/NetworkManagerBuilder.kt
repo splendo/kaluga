@@ -23,4 +23,4 @@ actual class NetworkManagerBuilder : BaseNetworkManager.Builder {
     }
 }
 
-actual sealed class NetworkManager
+actual class NetworkManager

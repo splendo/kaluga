@@ -19,7 +19,6 @@ dependencies {
 
     implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
     androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
-
 }
 
 kotlin {

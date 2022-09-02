@@ -50,6 +50,7 @@ class EnableServiceActivity : AppCompatActivity() {
     private val settingsIntent: Intent? get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         intent.getParcelableExtra(EXTRA_SETTING_ID, android.content.Intent::class.java)
     } else {
+        @Suppress("DEPRECATION")
         intent.getParcelableExtra(EXTRA_SETTING_ID)
     }
 

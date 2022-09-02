@@ -83,7 +83,9 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             gatt.writeCharacteristic(characteristic, value, characteristic.writeType) == BluetoothStatusCodes.SUCCESS
         } else {
+            @Suppress("DEPRECATION")
             characteristic.value = value
+            @Suppress("DEPRECATION")
             gatt.writeCharacteristic(characteristic)
         }
     }
@@ -93,7 +95,9 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             gatt.writeDescriptor(descriptor, value) == BluetoothStatusCodes.SUCCESS
         } else {
+            @Suppress("DEPRECATION")
             descriptor.value = value
+            @Suppress("DEPRECATION")
             gatt.writeDescriptor(descriptor)
         }
     }

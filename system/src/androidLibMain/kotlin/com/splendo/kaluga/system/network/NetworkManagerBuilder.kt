@@ -18,7 +18,6 @@
 package com.splendo.kaluga.system.network
 
 import android.content.Context
-import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
 
 actual class NetworkManagerBuilder(
@@ -26,10 +25,6 @@ actual class NetworkManagerBuilder(
 ) : BaseNetworkManager.Builder {
 
     override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NetworkManager.AndroidConnectivityCallbackManager(onNetworkStateChange, context)
-        } else {
-            NetworkManager.AndroidConnectivityReceiverManager(onNetworkStateChange, context)
-        }
+        return NetworkManager(context, onNetworkStateChange)
     }
 }

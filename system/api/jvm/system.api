@@ -67,7 +67,8 @@ public final class com/splendo/kaluga/system/network/Network$Unknown$WithoutLast
 	public fun getReason ()Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
 }
 
-public abstract class com/splendo/kaluga/system/network/NetworkManager {
+public final class com/splendo/kaluga/system/network/NetworkManager {
+	public fun <init> ()V
 }
 
 public final class com/splendo/kaluga/system/network/NetworkManagerBuilder : com/splendo/kaluga/system/network/BaseNetworkManager$Builder {

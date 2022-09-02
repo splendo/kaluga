@@ -76,9 +76,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             }
             flags = activitySpec.flags.toFlags()
         }
-        activitySpec.requestCode?.let {
-            activity.startActivityForResult(intent, it)
-        } ?: activity.startActivity(intent)
+
+        when (val requestType = activitySpec.launchType) {
+            is NavigationSpec.Activity.LaunchType.NoResult -> activity.startActivity(intent)
+            is NavigationSpec.Activity.LaunchType.ActivityResult -> activity.startActivityForResult(intent, requestType.requestCode)
+            is NavigationSpec.Activity.LaunchType.ActivityContract<*> -> requestType.tryAndGetContract(activity)
+                ?.launch(intent) ?: throw RuntimeException("Activity is not an instance of ${requestType.activityClass.simpleName}")
+        }
     }
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {

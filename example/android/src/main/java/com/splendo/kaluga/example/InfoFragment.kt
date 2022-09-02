@@ -26,13 +26,47 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
+import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
+import com.splendo.kaluga.example.shared.viewmodel.info.LinkSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.MailSpecRow
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import java.net.URL
 
 class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_info) {
 
-    override val viewModel: InfoViewModel by viewModel()
+    override val viewModel: InfoViewModel by viewModel {
+        parametersOf(
+            ActivityNavigator<InfoNavigation<*>> { action ->
+                when (action) {
+                    is InfoNavigation.Dialog -> {
+                        val title = action.bundle?.get(DialogSpecRow.TitleRow) ?: ""
+                        val message = action.bundle?.get(DialogSpecRow.MessageRow) ?: ""
+                        NavigationSpec.Dialog(
+                            createDialog = {
+                                InfoDialog(title, message)
+                            }
+                        )
+                    }
+                    is InfoNavigation.Link -> NavigationSpec.Browser(
+                        URL(action.bundle!!.get(LinkSpecRow.LinkRow)),
+                        NavigationSpec.Browser.Type.Normal
+                    )
+                    is InfoNavigation.Mail -> NavigationSpec.Email(
+                        NavigationSpec.Email.EmailSettings(
+                            to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(),
+                            subject = action.bundle?.get(MailSpecRow.SubjectRow)
+                        )
+                    )
+                }
+            }
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 

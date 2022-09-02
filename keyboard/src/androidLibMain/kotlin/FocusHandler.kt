@@ -18,7 +18,10 @@
 package com.splendo.kaluga.keyboard
 
 import android.app.Activity
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.View
+import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 
 actual interface FocusHandler {
@@ -29,8 +32,12 @@ class ViewFocusHandler(
     @IdRes private val id: Int
 ) : FocusHandler {
     override fun requestFocus(activity: Activity?) {
-        val view = activity?.findViewById<View>(id)
-        view?.requestFocus()
+        if (activity == null)
+            return
+        val view = activity.findViewById<View>(id) ?: return
+        view.requestFocus()
+        val inputManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputManager?.showSoftInput(view, SHOW_EXPLICIT)
     }
 }
 

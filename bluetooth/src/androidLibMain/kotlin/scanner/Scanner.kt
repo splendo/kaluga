@@ -37,7 +37,6 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
-import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -172,8 +171,11 @@ actual class DefaultScanner internal constructor(
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                    EnableServiceActivity.showEnableServiceActivity(applicationContext, hashCode().toString(), Intent(
-                        ACTION_BLUETOOTH_SETTINGS)).await()
+                    EnableServiceActivity.showEnableServiceActivity(
+                        applicationContext,
+                        hashCode().toString(),
+                        Intent(ACTION_BLUETOOTH_SETTINGS)
+                    ).await()
                 } else {
                     @Suppress("DEPRECATION")
                     bluetoothAdapter?.enable()
@@ -181,8 +183,11 @@ actual class DefaultScanner internal constructor(
                 bluetoothEnabledMonitor!!.isEnabled.first { it }
             } else null,
             if (!locationEnabledMonitor.isServiceEnabled) {
-                EnableServiceActivity.showEnableServiceActivity(applicationContext, hashCode().toString(), Intent(
-                    ACTION_LOCATION_SOURCE_SETTINGS))::await
+                EnableServiceActivity.showEnableServiceActivity(
+                    applicationContext,
+                    hashCode().toString(),
+                    Intent(ACTION_LOCATION_SOURCE_SETTINGS)
+                )::await
             } else null
         )
     }
@@ -193,14 +198,16 @@ actual class DefaultScanner internal constructor(
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) Manifest.permission.BLUETOOTH_CONNECT else Manifest.permission.BLUETOOTH
         )
     ) {
-        PackageManager.PERMISSION_GRANTED -> bluetoothAdapter
-            ?.bondedDevices
-            ?.filter {
-                // If no uuids available return this device
-                // Otherwise check if it constains any of given service uuid
-                it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
-            }
-            ?.map { it.address }
+        PackageManager.PERMISSION_GRANTED -> {
+            bluetoothAdapter
+                ?.bondedDevices
+                ?.filter {
+                    // If no uuids available return this device
+                    // Otherwise check if it constains any of given service uuid
+                    it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+                }
+                ?.map { it.address }
+        }
         else -> null
     } ?: emptyList()
 }

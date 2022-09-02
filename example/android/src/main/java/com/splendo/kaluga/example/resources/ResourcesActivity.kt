@@ -4,15 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityResourcesBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.resources.Resource
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class ResourcesActivity : KalugaViewModelActivity<ResourcesListViewModel>() {
-    override val viewModel: ResourcesListViewModel by viewModel()
+    override val viewModel: ResourcesListViewModel by viewModel {
+        parametersOf(
+            ActivityNavigator<ResourcesListNavigationAction> { action ->
+                when (action) {
+                    is ResourcesListNavigationAction.Label -> NavigationSpec.Activity<LabelActivity>()
+                    is ResourcesListNavigationAction.Color -> NavigationSpec.Activity<ColorActivity>()
+                    is ResourcesListNavigationAction.Button -> NavigationSpec.Activity<ButtonActivity>()
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
