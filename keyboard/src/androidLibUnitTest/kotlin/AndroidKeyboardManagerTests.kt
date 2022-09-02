@@ -16,6 +16,8 @@ import android.app.Activity
 import android.content.Context
 import android.os.IBinder
 import android.view.View
+import android.view.Window
+import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -40,12 +42,14 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
 
         val mockActivity: Activity = mock(Activity::class.java)
         var mockView: View = mock(View::class.java)
+        var mockDecorView: View = mock(View::class.java)
+        var mockWindow: Window = mock(Window::class.java)
         var mockWindowToken: IBinder = mock(IBinder::class.java)
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
 
         override fun verifyShow() {
             verify(mockView).requestFocus()
-            verify(mockInputMethodManager).toggleSoftInput(eq(InputMethodManager.SHOW_FORCED), eq(InputMethodManager.HIDE_IMPLICIT_ONLY))
+            verify(mockInputMethodManager).showSoftInput(eq(mockView), eq(SHOW_EXPLICIT))
         }
 
         override fun verifyDismiss() {
@@ -61,7 +65,9 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
             )
             `when`(mockActivity.currentFocus).thenReturn(mockView)
             `when`(mockActivity.findViewById<View>(ArgumentMatchers.eq(viewId))).thenReturn(mockView)
-            `when`(mockView.windowToken).thenReturn(mockWindowToken)
+            `when`(mockActivity.window).thenReturn(mockWindow)
+            `when`(mockWindow.decorView).thenReturn(mockDecorView)
+            `when`(mockDecorView.windowToken).thenReturn(mockWindowToken)
             `when`(mockInputMethodManager.isAcceptingText).thenReturn(true)
 
             builder = KeyboardManager.Builder()
