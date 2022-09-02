@@ -25,16 +25,12 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
-import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
-import com.splendo.kaluga.example.bluetooth.BluetoothMoreActivity
-import com.splendo.kaluga.example.resources.ButtonActivity
-import com.splendo.kaluga.example.resources.ColorActivity
-import com.splendo.kaluga.example.resources.LabelActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
@@ -67,7 +63,6 @@ import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewMo
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
-import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
@@ -86,7 +81,6 @@ import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import java.net.URL
 
 val utilitiesModule = module {
     single {
