@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.base.mock
 
-import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.IsoMutableMap
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.test.base.mock.answer.Answer
@@ -25,8 +24,15 @@ import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration
 
 private fun expect(condition: Boolean, message: () -> String) {
     if (!condition) fail(message)
@@ -90,7 +96,8 @@ sealed class BaseMethodMock<
     }
 
     private val stubs: IsoMutableMap<M, S> = IsoMutableMap()
-    private val callParameters: IsoMutableList<V> = IsoMutableList()
+    private val callParametersStateFlow = MutableStateFlow<List<V>>(listOf())
+
     protected abstract val ParametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
@@ -101,7 +108,9 @@ sealed class BaseMethodMock<
         }
 
     protected fun getStubFor(values: V): S {
-        callParameters.add(values)
+        callParametersStateFlow.getAndUpdate {
+            it.toMutableList().also { list -> list.add(values) }.toList()
+        }
         // First find all the stubs whose matchers match the values received and sort their matchers per parameter in order of strongest constraint.
         val matchingStubs = stubs.keys.mapNotNull { matchers ->
             val stub = stubs[matchers]
@@ -136,7 +145,7 @@ sealed class BaseMethodMock<
      * Resets all calls to this mock method. This means that `verify(times=0)` should succeed
      */
     fun resetCalls() {
-        callParameters.clear()
+        callParametersStateFlow.value = listOf()
     }
 
     /**
@@ -159,10 +168,51 @@ sealed class BaseMethodMock<
     }
 
     internal fun verifyWithParameters(parameters: C, verificationRule: VerificationRule) = ParametersSpec.apply {
+
+    }
+
+    internal suspend fun verifyBeforeWithParameters(timeout: Duration, parameters: C, times: Int = 1) {
+        verifyOverTime(timeout, parameters, VerificationRule.times(times), useAllTime = false)
+    }
+
+    private suspend fun verifyOverTime(timeout: Duration, parameters: C, verificationRule: VerificationRule, useAllTime:Boolean) {
+        fun match(callParameters:List<V> = callParametersStateFlow.value) = matches(callParameters, parameters).size
+
+        var matchedParametersCount = 0
+        var matches = false
+
+        try {
+            withTimeout(timeout) {
+                callParametersStateFlow
+                    .map { match(it) } // only collect parameters that match ours
+                    .collect {
+                        matchedParametersCount = it
+                        matches = verificationRule.matches(matchedParametersCount)
+                    when (verificationRule) {
+                        is VerificationRule.Exactly, is VerificationRule.Range -> if (matches && !useAllTime) cancel() // fast cancel if we match our condition
+                        is VerificationRule.Never -> if (!matches) fail { "Expected to never be invoked" } // never means never TODO make rule generate error
+                    }
+                }
+            }
+        } catch (_: CancellationException) { }
+
+        expect(matches) { " " }
+    }
+
+    private fun matches(callParameters: List<V>, parameters: C):List<V> {
         val matchers = parameters.asMatchers()
-        val matchedCalls = callParameters.filter {
-            matchers.matches(it)
+        return callParameters.filter {
+            ParametersSpec.run {
+                matchers.matches(it)
+            }
         }
+    }
+
+    internal fun verify(parameters: C, verificationRule: VerificationRule) =
+        verify(callParametersStateFlow.value, parameters, verificationRule)
+
+    internal fun verify(callParameters: List<V>, parameters: C, verificationRule: VerificationRule) = ParametersSpec.apply {
+        val matchedCalls = matches(callParameters, parameters)
         expect(verificationRule.matches(matchedCalls.size)) {
             "Expected $verificationRule but got ${matchedCalls.size} times"
         }

@@ -10,6 +10,8 @@ import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
 import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
 import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Verifies that a [BaseMethodMock] without parameters has been called
@@ -87,6 +89,50 @@ fun <
     >.verify(value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(), times: Int = 1) {
     verifyWithParameters(SingleParameters.MatchersOrCaptor(value), times)
 }
+
+suspend fun <
+    Value,
+    Result,
+    Answer : BaseAnswer<SingleParameters.Values<Value>, Result>,
+    Stub : BaseMethodMock.Stub<
+        SingleParameters.Matchers<Value>,
+        SingleParameters.Values<Value>,
+        Result,
+        Answer
+        >
+    > BaseMethodMock<
+    SingleParameters.Matchers<Value>,
+    SingleParameters.MatchersOrCaptor<Value>,
+    SingleParameters.Values<Value>,
+    SingleParameters<Value>,
+    Result,
+    Answer,
+    Stub
+    >.verifyBefore(timeout: Duration = 1.seconds, value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(), times: Int = 1) {
+    verifyBeforeWithParameters(timeout, SingleParameters.MatchersOrCaptor(value), times)
+}
+
+suspend fun <
+    Result,
+    Answer : BaseAnswer<VoidParameters.Values, Result>,
+    Stub : BaseMethodMock.Stub<
+        VoidParameters.Matchers,
+        VoidParameters.Values,
+        Result,
+        Answer
+        >
+    > BaseMethodMock<
+    VoidParameters.Matchers,
+    VoidParameters.MatchersOrCaptor,
+    VoidParameters.Values,
+    VoidParameters,
+    Result,
+    Answer,
+    Stub
+    >.verifyBefore(timeout: Duration = 1.seconds, times: Int = 1) {
+    verifyBeforeWithParameters(timeout, VoidParameters.MatchersOrCaptor, times)
+}
+
 
 /**
  * Verifies that a [BaseMethodMock] with one parameters has been called with a [ParameterMatcherOrCaptor]
