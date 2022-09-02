@@ -81,6 +81,7 @@ dependencies {
 
     def excluded = ["androidtesthelper", // this project
                     "architecture-compose",
+                    "keyboard-compose",
                     "resources-compose" // TODO, Compose in test helper not yet supported
                     ]
     rootProject.subprojects.findAll{ !excluded.contains(it.name) }.each {
