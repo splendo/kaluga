@@ -73,7 +73,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${gradle.kotlinx_coroutines_version}!!")
     implementation("androidx.fragment:fragment:$gradle.androidx_fragment_version")
-    androidTestImplementation("androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version")
+    debugImplementation("androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version")
 
     // Stately Isolite is in flux and not part of the current statelyVersion. Upgrade this when tracked properly
     androidTestImplementation("co.touchlab:stately-isolate:$gradle.stately_isolate_version")
