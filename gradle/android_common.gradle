@@ -37,12 +37,6 @@ android {
         }
     }
 
-    publishing {
-        singleVariant('debug') {
-            withSourcesJar()
-        }
-    }
-
     if (!gradle.ext.component_type.toLowerCase().contains("app")) {
         logger.lifecycle("Android sourcesets for this project module are configured as a library")
         sourceSets {
