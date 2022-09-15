@@ -46,7 +46,7 @@ typealias EnableSensorAction = suspend () -> Boolean
 
 abstract class BaseScanner constructor(
     internal val permissions: Permissions,
-    private val connectionSettings: ConnectionSettings,
+    internal val connectionSettings: ConnectionSettings,
     protected val autoRequestPermission: Boolean,
     internal val autoEnableSensors: Boolean,
     internal val stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
@@ -146,7 +146,7 @@ abstract class BaseScanner constructor(
     }
     abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    abstract fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+    abstract fun pairedDevices(withServices: Set<UUID>): List<Device>
 
     fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
         it.enable

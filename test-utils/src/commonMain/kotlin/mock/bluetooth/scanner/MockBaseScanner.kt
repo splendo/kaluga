@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
@@ -57,7 +58,7 @@ class MockBaseScanner(
     val stopMonitoringSensorsCompleted = AtomicReference(EmptyCompletableDeferred())
     val pairedDevicesCompleted = AtomicReference(CompletableDeferred<Set<UUID>?>())
 
-    val pairedDevices = MutableStateFlow<List<Identifier>>(emptyList())
+    val pairedDevices = MutableStateFlow<List<Device>>(emptyList())
     val isEnabled = MutableStateFlow(false)
 
     init {
@@ -126,7 +127,7 @@ class MockBaseScanner(
         }
     }
 
-    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> {
+    override fun pairedDevices(withServices: Set<UUID>): List<Device> {
         pairedDevicesCompleted.get().complete(withServices)
         return if (isEnabled.value) pairedDevices.value else emptyList()
     }

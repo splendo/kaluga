@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.ParcelUuid
@@ -28,6 +29,7 @@ import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectableEmptyAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Device
@@ -233,9 +235,20 @@ actual class Scanner internal constructor(
         ?.bondedDevices
         ?.filter {
             // If no uuids available return this device
-            // Otherwise check if it constains any of given service uuid
+            // Otherwise check if it contains any of given service uuid
             it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
         }
-        ?.map { it.address }
+        ?.map(::createPairedDevice)
         ?: emptyList()
+
+    private fun createPairedDevice(device: BluetoothDevice) = Device(
+        connectionSettings = connectionSettings,
+        initialDeviceInfo = DeviceInfoImpl(
+            DefaultDeviceWrapper(device),
+            rssi = Int.MIN_VALUE, // unknown
+            advertisementData = ConnectableEmptyAdvertisementData
+        ),
+        connectionBuilder = deviceConnectionManagerBuilder,
+        coroutineContext = coroutineContext
+    )
 }

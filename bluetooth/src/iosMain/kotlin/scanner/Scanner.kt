@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectableEmptyAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
@@ -49,7 +50,7 @@ import platform.darwin.dispatch_get_main_queue
 
 actual class Scanner internal constructor(
     permissions: Permissions,
-    private val connectionSettings: ConnectionSettings,
+    connectionSettings: ConnectionSettings,
     private val scanSettings: ScanSettings,
     autoRequestPermission: Boolean,
     autoEnableSensors: Boolean,
@@ -181,9 +182,12 @@ actual class Scanner internal constructor(
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = mainCentralManager
-        .retrieveConnectedPeripheralsWithServices(withServices.toList())
-        .mapNotNull { (it as? CBPeripheral)?.identifier }
+    override fun pairedDevices(withServices: Set<UUID>): List<Device> {
+        require(withServices.isNotEmpty()) { "Expected not empty set of services." }
+        return mainCentralManager
+            .retrieveConnectedPeripheralsWithServices(withServices.toList())
+            .mapNotNull { createPairedDevice(it as? CBPeripheral) }
+    }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         initMainManagersIfNeeded()
@@ -203,6 +207,19 @@ actual class Scanner internal constructor(
                 coroutineContext
             )
         }
+    }
+
+    private fun createPairedDevice(peripheral: CBPeripheral?) = peripheral?.let {
+        Device(
+            connectionSettings = connectionSettings,
+            initialDeviceInfo = DeviceInfoImpl(
+                DefaultCBPeripheralWrapper(peripheral),
+                rssi = Int.MIN_VALUE, // unknown
+                advertisementData = ConnectableEmptyAdvertisementData
+            ),
+            connectionBuilder = DeviceConnectionManager.Builder(mainCentralManager, peripheral),
+            coroutineContext = coroutineContext
+        )
     }
 
     class ScanSettings private constructor(

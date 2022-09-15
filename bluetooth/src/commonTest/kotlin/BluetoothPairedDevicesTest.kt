@@ -18,8 +18,10 @@
 package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.ensureNeverFrozen
+import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.test.mock.bluetooth.createMockDevice
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertIs
@@ -49,7 +51,10 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(bluetooth.pairedDevices().isEmpty())
         }
 
-        val list = listOf(randomIdentifier())
+        val device = createMockDevice(coroutineContext) {
+            deviceName = "foo"
+        }
+        val list = listOf(device)
         mockBaseScanner().pairedDevices.value = list
 
         test {

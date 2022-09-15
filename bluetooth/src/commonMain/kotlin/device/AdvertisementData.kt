@@ -30,3 +30,13 @@ interface BaseAdvertisementData {
 }
 
 expect class AdvertisementData : BaseAdvertisementData
+
+internal object ConnectableEmptyAdvertisementData : BaseAdvertisementData {
+    override val name: String? = null
+    override val manufacturerId: Int? = null
+    override val manufacturerData: ByteArray? = null
+    override val serviceUUIDs: List<UUID> = emptyList()
+    override val serviceData: Map<UUID, ByteArray?> = emptyMap()
+    override val txPowerLevel = Int.MIN_VALUE
+    override val isConnectible = true
+}
