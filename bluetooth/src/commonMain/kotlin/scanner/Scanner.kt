@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 typealias EnableSensorAction = suspend () -> Boolean
+typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
 
 interface Scanner {
 
@@ -60,7 +61,7 @@ interface Scanner {
             val identifier: Identifier,
             val rssi: Int,
             val advertisementData: AdvertisementData,
-            val deviceCreator: () -> (Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>)
+            val deviceCreator: DeviceCreator
         ) : Event()
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
@@ -77,7 +78,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
-    fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+    suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator>
 }
 
 abstract class BaseScanner constructor(
@@ -217,7 +218,7 @@ abstract class BaseScanner constructor(
         identifier: Identifier,
         rssi: Int,
         advertisementData: AdvertisementData,
-        deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
+        deviceCreator: DeviceCreator
     ) {
         logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }

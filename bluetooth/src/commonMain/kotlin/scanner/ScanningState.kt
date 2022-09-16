@@ -64,7 +64,7 @@ sealed interface ScanningState : KalugaState {
 
     sealed interface Enabled : Permitted {
 
-        fun pairedDevices(filter: Set<UUID>): List<Identifier>
+        suspend fun retrievePairedDevices(filter: Set<UUID>): List<DeviceCreator>
 
         val disable: suspend () -> NoBluetooth.Disabled
 
@@ -216,7 +216,7 @@ sealed class ScanningStateImpl {
             NoBluetooth.Disabled(scanner)
         }
 
-        fun pairedDevices(filter: Set<UUID>) = scanner.pairedDevices(filter)
+        suspend fun retrievePairedDevices(filter: Set<UUID>) = scanner.retrievePairedDevices(filter)
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 

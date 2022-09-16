@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.beacons
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +31,7 @@ class BluetoothMock(
     private val coroutineScope: CoroutineScope
 ) : BluetoothService {
 
-    val pairedDevices = MutableStateFlow(emptyList<Identifier>())
+    val pairedDevices = MutableStateFlow(emptyList<Device>())
     val discoveredDevices = MutableStateFlow(emptyList<Device>())
 
     override val isEnabled = flowOf(true)

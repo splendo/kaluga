@@ -173,13 +173,19 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
-        ?.bondedDevices
-        ?.filter {
-            // If no uuids available return this device
-            // Otherwise check if it constains any of given service uuid
-            it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
-        }
-        ?.map { it.address }
-        ?: emptyList()
+    @SuppressLint("MissingPermission") // Lint complains even with permissions
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator> {
+        if (!isSupported) return emptyList()
+        return bluetoothAdapter?.bondedDevices
+            ?.filter {
+                // If no uuids available return this device
+                // Otherwise check if it contains any of given service uuid
+                it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+            }
+            ?.map { device ->
+                { // device creator block
+                    DefaultDeviceWrapper(device) to deviceConnectionManagerBuilder
+                }
+            } ?: emptyList()
+    }
 }

@@ -19,8 +19,8 @@ package com.splendo.kaluga.test.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.test.base.mock.call
@@ -63,8 +63,8 @@ class MockScanner(
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    val pairedDevicesMock = ::pairedDevices.mock()
-    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = pairedDevicesMock.call(withServices)
+    val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator> = retrievePairedDevicesMock.call(withServices)
 }
 
 /**
@@ -161,7 +161,7 @@ class MockBaseScanner(
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
      */
-    val pairedDevicesMock = ::pairedDevices.mock()
+    val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
 
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
@@ -189,5 +189,5 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = pairedDevicesMock.call(withServices)
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator> = retrievePairedDevicesMock.call(withServices)
 }

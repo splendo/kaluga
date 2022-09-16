@@ -21,7 +21,7 @@ import com.splendo.kaluga.test.base.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class DataTypeUtilsTest : BaseTest() {
+class DataUtilsTest : BaseTest() {
 
     @Test
     fun testByteArrayConverter() {
@@ -29,37 +29,5 @@ class DataTypeUtilsTest : BaseTest() {
         val byteData = byteArray.toNSData()
         assertEquals(byteArray.size.toULong(), byteData.length)
         assertEquals(true, byteData.toByteArray().contentEquals(byteArray))
-    }
-
-    @Test
-    fun testTypedArray() {
-        val typedArray = listOf(1, 2, 3)
-        val untypedArray: List<*> = typedArray
-        val retypedArray: List<Int> = untypedArray.typedList()
-        assertEquals(typedArray, retypedArray)
-    }
-
-    @Test
-    fun testArrayTypedToWrongType() {
-        val array: List<*> = listOf(1, "two", 3)
-        val typedArray: List<String> = array.typedList()
-        assertEquals(1, typedArray.size)
-        assertEquals("two", typedArray[0])
-    }
-
-    @Test
-    fun testTypedMap() {
-        val typedMap = mapOf(1 to "one", 2 to "two", 3 to "three")
-        val untypedMap: Map<*, *> = typedMap
-        val retypedMap: Map<Int, String> = untypedMap.typedMap()
-        assertEquals(typedMap, retypedMap)
-    }
-
-    @Test
-    fun testMapTypedToWrongType() {
-        val map: Map<*, *> = mapOf(1 to "one", "two" to 2, "three" to "three")
-        val typedMap: Map<String, Int> = map.typedMap()
-        assertEquals(1, typedMap.size)
-        assertEquals(2, typedMap["two"])
     }
 }

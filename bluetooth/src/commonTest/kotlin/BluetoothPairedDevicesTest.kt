@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.DeviceContext
-import com.splendo.kaluga.bluetooth.device.randomIdentifier
+import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.test.base.mock.on
 import kotlinx.coroutines.CoroutineScope
@@ -38,15 +38,15 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             assertTrue(bluetooth.pairedDevices().isEmpty())
         }
 
-        val list = listOf(randomIdentifier())
+        val list = emptyList<DeviceCreator>()
 
         mainAction {
-            scanner.pairedDevicesMock.on().doReturn(list)
+            scanner.retrievePairedDevicesMock.on().doReturn(list)
         }
 
         test {
             assertIs<ScanningState.Enabled>(it)
-            assertContentEquals(list, it.pairedDevices(emptySet()))
+            assertContentEquals(list, it.retrievePairedDevices(setOf(uuidFromShort("130D"))))
         }
     }
 

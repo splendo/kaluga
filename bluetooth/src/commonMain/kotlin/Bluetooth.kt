@@ -23,15 +23,18 @@ import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
+import com.splendo.kaluga.bluetooth.device.ConnectableEmptyAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
@@ -60,7 +63,7 @@ private val defaultBluetoothDispatcher by lazy {
 interface BluetoothService {
     fun startScanning(filter: Set<UUID> = emptySet())
     fun stopScanning()
-    suspend fun pairedDevices(filter: Set<UUID> = emptySet()): List<Identifier>
+    suspend fun pairedDevices(filter: Set<UUID> = emptySet()): List<Device>
     fun devices(): Flow<List<Device>>
     suspend fun isScanning(): Flow<Boolean>
     val isEnabled: Flow<Boolean>
@@ -108,10 +111,26 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    override suspend fun pairedDevices(filter: Set<UUID>): List<Identifier> = scanningStateRepo
+    private fun createDevice(creator: DeviceCreator): Device {
+        val (wrapper, builder) = creator()
+        val deviceInfo = DeviceInfoImpl(
+            wrapper = wrapper,
+            rssi = Int.MIN_VALUE,
+            advertisementData = ConnectableEmptyAdvertisementData(name = wrapper.name)
+        )
+        return scanningStateRepo.createDevice(
+            wrapper.identifier,
+            deviceInfo,
+            wrapper,
+            builder
+        )
+    }
+
+    override suspend fun pairedDevices(filter: Set<UUID>) = scanningStateRepo
         .transformLatest { state ->
-            if (state is ScanningState.Enabled)
-                emit(state.pairedDevices(filter))
+            if (state is ScanningState.Enabled) {
+                emit(state.retrievePairedDevices(filter).map(::createDevice))
+            }
         }
         .first()
 

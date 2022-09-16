@@ -20,6 +20,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 
@@ -95,7 +96,7 @@ sealed class MockScanningState {
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
-        fun pairedDevices(filter: Set<UUID>): List<Identifier> = emptyList()
+        suspend fun retrievePairedDevices(filter: Set<UUID>): List<DeviceCreator> = emptyList()
 
         class Idle(
             override val discovered: ScanningState.Discovered
