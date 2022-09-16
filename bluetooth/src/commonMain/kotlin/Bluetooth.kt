@@ -126,7 +126,7 @@ class Bluetooth internal constructor(
         )
     }
 
-    override suspend fun pairedDevices(filter: Set<UUID>) = scanningStateRepo
+    override suspend fun pairedDevices(filter: Set<UUID>): List<Device> = scanningStateRepo
         .transformLatest { state ->
             if (state is ScanningState.Enabled) {
                 emit(state.retrievePairedDevices(filter).map(::createDevice))
