@@ -63,9 +63,9 @@ interface Scanner {
             val advertisementData: AdvertisementData,
             val deviceCreator: DeviceCreator
         ) : Event()
-        data class PairedDeviceRetrieved(
-            val identifier: Identifier,
-            val deviceCreator: DeviceCreator
+        data class PairedDevicesRetrieved(
+            val filter: Filter,
+            val deviceCreators: List<DeviceCreator>
         ) : Event()
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
@@ -229,9 +229,9 @@ abstract class BaseScanner constructor(
         emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
-    internal fun handlePairedDevice(identifier: Identifier, deviceCreator: DeviceCreator) {
-        logger.info(LOG_TAG) { "Paired Device ${identifier.stringValue} retrieved" }
-        emitEvent(Scanner.Event.PairedDeviceRetrieved(identifier, deviceCreator))
+    internal fun handlePairedDevices(filter: Filter, deviceCreators: List<DeviceCreator>) {
+        logger.info(LOG_TAG) { "Paired Devices retrieved for filter: $filter" }
+        emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, deviceCreators))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {

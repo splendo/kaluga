@@ -28,6 +28,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -213,17 +214,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             }
         }
 
-        private suspend fun awaitPairedDevice(
-            device: Device,
-            deviceWrapper: DeviceWrapper
+        private suspend fun awaitPairedDevices(
+            filter: Filter,
+            devices: List<Device>
         ) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled>()
             bluetooth.scanningStateRepo.takeAndChangeState(
                 remainIfStateNot = ScanningState.Enabled::class
             ) { state ->
-                state.pairedDevice(
-                    deviceWrapper.identifier,
-                ) { device }
+                state.pairedDevices(filter, devices.map { { it } })
             }
         }
 
@@ -238,12 +237,12 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             }
         }
 
-        fun retrievePairedDevice(
-            device: Device,
-            deviceWrapper: DeviceWrapper
+        fun retrievePairedDevices(
+            filter: Filter,
+            devices: List<Device>
         ) {
             coroutineScope.launch {
-                awaitPairedDevice(device, deviceWrapper)
+                awaitPairedDevices(filter, devices)
             }
         }
 

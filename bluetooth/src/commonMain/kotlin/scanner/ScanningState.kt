@@ -69,9 +69,9 @@ sealed interface ScanningState : KalugaState {
 
         suspend fun retrievePairedDevices(filter: Filter)
 
-        fun pairedDevice(
-            identifier: Identifier,
-            deviceCreator: () -> Device
+        fun pairedDevices(
+            filter: Filter,
+            deviceCreators: List<() -> Device>
         ): suspend () -> Enabled
 
         val disable: suspend () -> NoBluetooth.Disabled
@@ -113,7 +113,7 @@ sealed interface ScanningState : KalugaState {
 sealed class ScanningStateImpl {
 
     companion object {
-        val nothingFound = Devices(emptySet())
+        val nothingFound = Devices(filter = emptySet())
     }
 
     data class Devices(
@@ -253,21 +253,15 @@ sealed class ScanningStateImpl {
 
             override suspend fun retrievePairedDevices(filter: Filter) = scanner.retrievePairedDevices(filter)
 
-            override fun pairedDevice(
-                identifier: Identifier,
-                deviceCreator: () -> Device
-            ): suspend () -> ScanningState.Enabled {
-                return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
-                    remain()
-                } else {
-                    suspend {
-                        Idle(
-                            discovered,
-                            paired.copyAndAdd(deviceCreator()),
-                            scanner
-                        )
-                    }
-                }
+            override fun pairedDevices(
+                filter: Filter,
+                deviceCreators: List<() -> Device>
+            ): suspend () -> ScanningState.Enabled = {
+                Idle(
+                    discovered,
+                    Devices(deviceCreators.map { it.invoke() }, filter),
+                    scanner
+                )
             }
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
@@ -300,21 +294,15 @@ sealed class ScanningStateImpl {
 
             override suspend fun retrievePairedDevices(filter: Filter) = scanner.retrievePairedDevices(filter)
 
-            override fun pairedDevice(
-                identifier: Identifier,
-                deviceCreator: () -> Device
-            ): suspend () -> ScanningState.Enabled {
-                return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
-                    remain()
-                } else {
-                    suspend {
-                        Scanning(
-                            discovered,
-                            paired.copyAndAdd(deviceCreator()),
-                            scanner
-                        )
-                    }
-                }
+            override fun pairedDevices(
+                filter: Filter,
+                deviceCreators: List<() -> Device>
+            ): suspend () -> ScanningState.Enabled = {
+                Scanning(
+                    discovered,
+                    Devices(deviceCreators.map { it.invoke() }, filter),
+                    scanner
+                )
             }
 
             override suspend fun discoverDevice(

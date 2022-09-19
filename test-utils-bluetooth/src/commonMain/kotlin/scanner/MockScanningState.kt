@@ -26,7 +26,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState
 sealed class MockScanningState {
 
     companion object {
-        val nothingFound = Devices(emptySet())
+        val nothingFound = Devices(filter = emptySet())
     }
 
     data class Devices(
@@ -109,20 +109,14 @@ sealed class MockScanningState {
 
             override suspend fun retrievePairedDevices(filter: Filter) = Unit
 
-            override fun pairedDevice(
-                identifier: Identifier,
-                deviceCreator: () -> Device
-            ): suspend () -> ScanningState.Enabled {
-                return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
-                    remain()
-                } else {
-                    suspend {
-                        Idle(
-                            discovered,
-                            paired.copyAndAdd(deviceCreator())
-                        )
-                    }
-                }
+            override fun pairedDevices(
+                filter: Filter,
+                deviceCreators: List<() -> Device>
+            ): suspend () -> ScanningState.Enabled = {
+                Idle(
+                    discovered,
+                    Devices(deviceCreators.map { it.invoke() }, filter)
+                )
             }
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
@@ -150,20 +144,14 @@ sealed class MockScanningState {
 
             override suspend fun retrievePairedDevices(filter: Filter) = Unit
 
-            override fun pairedDevice(
-                identifier: Identifier,
-                deviceCreator: () -> Device
-            ): suspend () -> ScanningState.Enabled {
-                return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
-                    remain()
-                } else {
-                    suspend {
-                        Scanning(
-                            discovered,
-                            paired.copyAndAdd(deviceCreator())
-                        )
-                    }
-                }
+            override fun pairedDevices(
+                filter: Filter,
+                deviceCreators: List<() -> Device>
+            ): suspend () -> ScanningState.Enabled = {
+                Scanning(
+                    discovered,
+                    Devices(deviceCreators.map { it.invoke() }, filter)
+                )
             }
 
             override suspend fun discoverDevice(

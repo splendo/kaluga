@@ -990,15 +990,15 @@ public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$FailedScan
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$FailedScanning;
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDeviceRetrieved : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/UUID;Lkotlin/jvm/functions/Function0;)V
-	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/UUID;
-	public final fun component2 ()Lkotlin/jvm/functions/Function0;
-	public final fun copy (Lcom/splendo/kaluga/bluetooth/UUID;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDeviceRetrieved;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDeviceRetrieved;Lcom/splendo/kaluga/bluetooth/UUID;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDeviceRetrieved;
+public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
+	public fun <init> (Ljava/util/Set;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/Set;Ljava/util/List;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;Ljava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDeviceCreator ()Lkotlin/jvm/functions/Function0;
-	public final fun getIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
+	public final fun getDeviceCreators ()Ljava/util/List;
+	public final fun getFilter ()Ljava/util/Set;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -1056,7 +1056,7 @@ public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningSta
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled : com/splendo/kaluga/bluetooth/scanner/ScanningState$Permitted {
 	public abstract fun getDisable ()Lkotlin/jvm/functions/Function1;
-	public abstract fun pairedDevice (Lcom/splendo/kaluga/bluetooth/UUID;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
+	public abstract fun pairedDevices (Ljava/util/Set;Ljava/util/List;)Lkotlin/jvm/functions/Function1;
 	public abstract fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1247,7 +1247,7 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Enable
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getScanner ()Lcom/splendo/kaluga/bluetooth/scanner/Scanner;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun pairedDevice (Lcom/splendo/kaluga/bluetooth/UUID;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
+	public fun pairedDevices (Ljava/util/Set;Ljava/util/List;)Lkotlin/jvm/functions/Function1;
 	public fun refresh (Ljava/util/Set;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1266,7 +1266,7 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Enable
 	public fun getScanner ()Lcom/splendo/kaluga/bluetooth/scanner/Scanner;
 	public fun getStopScanning ()Lkotlin/jvm/functions/Function1;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun pairedDevice (Lcom/splendo/kaluga/bluetooth/UUID;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
+	public fun pairedDevices (Ljava/util/Set;Ljava/util/List;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

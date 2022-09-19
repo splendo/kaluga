@@ -35,12 +35,15 @@ import kotlin.test.assertEquals
 
 class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, List<Device>>() {
 
+    companion object {
+        private val pairedFilter = setOf(uuidFromShort("130D"))
+    }
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.Bluetooth, scope: CoroutineScope) -> BluetoothContext = { configuration, scope ->
         BluetoothContext(configuration, scope)
     }
 
     override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
-        bluetooth.pairedDevices(setOf(uuidFromShort("130D")))
+        bluetooth.pairedDevices(pairedFilter)
     }
 
     @Test
@@ -59,34 +62,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             deferredDevice.complete(device)
             // simulate paired device retrieved
-            retrievePairedDevice(device, deviceWrapper)
-        }
-
-        test {
-            assertContentEquals(listOf(deferredDevice.getCompleted()), it)
-        }
-    }
-
-    @Test
-    fun testSamePairedDevicesIgnored() = testWithFlowAndTestContext(Configuration.Bluetooth()) {
-
-        test {
-            assertEquals(emptyList(), it)
-        }
-
-        val deferredDevice = CompletableDeferred<Device>()
-        mainAction {
-            val name = "Band"
-            val deviceWrapper = createDeviceWrapper(deviceName = name)
-            val device = createMockDevice(deviceWrapper, coroutineScope) {
-                deviceName = name
-            }
-            deferredDevice.complete(device)
-            // simulate paired device retrieved
-            retrievePairedDevice(device, deviceWrapper)
-            // same device will be ignored
-            retrievePairedDevice(device, deviceWrapper)
-            retrievePairedDevice(device, deviceWrapper)
+            retrievePairedDevices(pairedFilter, listOf(device))
         }
 
         test {
@@ -125,7 +101,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             pairedDevice.complete(device)
             // simulate paired device retrieved
-            retrievePairedDevice(device, deviceWrapper)
+            retrievePairedDevices(pairedFilter, listOf(device))
         }
 
         test {
@@ -154,7 +130,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             pairedList.complete(listOf(pairedDevice.getCompleted(), device))
             // simulate paired device retrieved
-            retrievePairedDevice(device, deviceWrapper)
+            retrievePairedDevices(pairedFilter, listOf(pairedDevice.getCompleted(), device))
         }
 
         test {

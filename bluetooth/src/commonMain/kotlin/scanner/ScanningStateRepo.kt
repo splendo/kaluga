@@ -98,7 +98,7 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.DeviceDiscovered -> handleDeviceDiscovered(event)
                     is Scanner.Event.DeviceConnected -> handleDeviceConnectionChanged(event.identifier, true)
                     is Scanner.Event.DeviceDisconnected -> handleDeviceConnectionChanged(event.identifier, false)
-                    is Scanner.Event.PairedDeviceRetrieved -> handlePairedDevice(event)
+                    is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
         }
@@ -127,13 +127,21 @@ open class ScanningStateImplRepo(
         }
     }
 
-    private suspend fun handlePairedDevice(event: Scanner.Event.PairedDeviceRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
-        state.pairedDevice(event.identifier) {
-            val (deviceWrapper, connectionManagerBuilder) = event.deviceCreator()
-            val rssi = Int.MIN_VALUE
-            val advertisementData = ConnectableEmptyAdvertisementData(deviceWrapper.name)
-            createDevice(event.identifier, DeviceInfoImpl(deviceWrapper, rssi, advertisementData), deviceWrapper, connectionManagerBuilder)
+    private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
+        val creators = event.deviceCreators.map {
+            {
+                val (deviceWrapper, connectionManagerBuilder) = it()
+                val rssi = Int.MIN_VALUE
+                val advertisementData = ConnectableEmptyAdvertisementData(deviceWrapper.name)
+                createDevice(
+                    deviceWrapper.identifier,
+                    DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
+                    deviceWrapper,
+                    connectionManagerBuilder
+                )
+            }
         }
+        state.pairedDevices(event.filter, creators)
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->

@@ -149,16 +149,18 @@ actual class DefaultScanner internal constructor(
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
         val centralManager = CBCentralManager(delegate, pairedDevicesQueue)
         awaitPoweredOn.await()
-        centralManager
+        val creators = centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
-            .forEach { peripheral ->
+            .map { peripheral ->
                 activeDelegates.add(delegate)
                 val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-                handlePairedDevice(deviceWrapper.identifier) {
+                return@map {
                     deviceWrapper to DefaultDeviceConnectionManager.Builder(centralManager, peripheral)
                 }
             }
+        // We have to call even with empty list to clean up cached devices
+        handlePairedDevices(withServices, creators)
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
