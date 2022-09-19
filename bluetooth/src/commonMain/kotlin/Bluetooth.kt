@@ -111,7 +111,7 @@ class Bluetooth internal constructor(
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
     private companion object {
-        val PAIRED_DEVICES_REFRESH = 15.seconds
+        val PAIRED_DEVICES_REFRESH_RATE = 15.seconds
     }
 
     override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> = scanningStateRepo
@@ -119,7 +119,7 @@ class Bluetooth internal constructor(
             if (state is ScanningState.Enabled) {
                 state.retrievePairedDevices(filter)
                 emit(state.paired.devices)
-                delay(PAIRED_DEVICES_REFRESH)
+                delay(PAIRED_DEVICES_REFRESH_RATE)
             }
         }
         .distinctUntilChanged()
