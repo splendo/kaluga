@@ -111,12 +111,17 @@ sealed class MockScanningState {
 
             override fun pairedDevices(
                 filter: Filter,
+                identifiers: Set<Identifier>,
                 deviceCreators: List<() -> Device>
-            ): suspend () -> ScanningState.Enabled = {
-                Idle(
-                    discovered,
-                    Devices(deviceCreators.map { it.invoke() }, filter)
-                )
+            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
+                remain()
+            } else {
+                suspend {
+                    Idle(
+                        discovered,
+                        Devices(deviceCreators.map { it.invoke() }, filter)
+                    )
+                }
             }
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
@@ -146,12 +151,17 @@ sealed class MockScanningState {
 
             override fun pairedDevices(
                 filter: Filter,
+                identifiers: Set<Identifier>,
                 deviceCreators: List<() -> Device>
-            ): suspend () -> ScanningState.Enabled = {
-                Scanning(
-                    discovered,
-                    Devices(deviceCreators.map { it.invoke() }, filter)
-                )
+            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
+                remain()
+            } else {
+                suspend {
+                    Scanning(
+                        discovered,
+                        Devices(deviceCreators.map { it.invoke() }, filter)
+                    )
+                }
             }
 
             override suspend fun discoverDevice(

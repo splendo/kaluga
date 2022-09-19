@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
@@ -176,6 +177,7 @@ actual class DefaultScanner internal constructor(
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
         if (!isSupported) return
+        val identifiers: MutableSet<Identifier> = mutableSetOf()
         val creators = bluetoothAdapter?.bondedDevices
             ?.filter {
                 // If no uuids available return this device
@@ -183,11 +185,12 @@ actual class DefaultScanner internal constructor(
                 it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
             }
             ?.map { device ->
-                {
+                identifiers.add(device.address)
+                return@map {
                     DefaultDeviceWrapper(device) to deviceConnectionManagerBuilder
                 }
             } ?: emptyList()
         // We have to call even with empty list to clean up cached devices
-        handlePairedDevices(withServices, creators)
+        handlePairedDevices(withServices, identifiers, creators)
     }
 }

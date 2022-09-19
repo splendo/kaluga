@@ -222,7 +222,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             bluetooth.scanningStateRepo.takeAndChangeState(
                 remainIfStateNot = ScanningState.Enabled::class
             ) { state ->
-                state.pairedDevices(filter, devices.map { { it } })
+                state.pairedDevices(filter, devices.map { it.identifier }.toSet(), devices.map { { it } })
             }
         }
 

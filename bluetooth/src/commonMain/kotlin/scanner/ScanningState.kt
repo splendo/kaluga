@@ -39,6 +39,8 @@ sealed interface ScanningState : KalugaState {
 
         fun copyAndAdd(device: Device): Devices
         fun foundForFilter(filter: Filter): Devices
+
+        fun identifiers() = devices.map(Device::identifier).toSet()
     }
 
     sealed interface Inactive : ScanningState, SpecialFlowValue.NotImportant
@@ -71,6 +73,7 @@ sealed interface ScanningState : KalugaState {
 
         fun pairedDevices(
             filter: Filter,
+            identifiers: Set<Identifier>,
             deviceCreators: List<() -> Device>
         ): suspend () -> Enabled
 
@@ -255,13 +258,18 @@ sealed class ScanningStateImpl {
 
             override fun pairedDevices(
                 filter: Filter,
+                identifiers: Set<Identifier>,
                 deviceCreators: List<() -> Device>
-            ): suspend () -> ScanningState.Enabled = {
-                Idle(
-                    discovered,
-                    Devices(deviceCreators.map { it.invoke() }, filter),
-                    scanner
-                )
+            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
+                remain()
+            } else {
+                suspend {
+                    Idle(
+                        discovered,
+                        Devices(deviceCreators.map { it.invoke() }, filter),
+                        scanner
+                    )
+                }
             }
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
@@ -296,13 +304,18 @@ sealed class ScanningStateImpl {
 
             override fun pairedDevices(
                 filter: Filter,
+                identifiers: Set<Identifier>,
                 deviceCreators: List<() -> Device>
-            ): suspend () -> ScanningState.Enabled = {
-                Scanning(
-                    discovered,
-                    Devices(deviceCreators.map { it.invoke() }, filter),
-                    scanner
-                )
+            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
+                remain()
+            } else {
+                suspend {
+                    Scanning(
+                        discovered,
+                        Devices(deviceCreators.map { it.invoke() }, filter),
+                        scanner
+                    )
+                }
             }
 
             override suspend fun discoverDevice(

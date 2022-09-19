@@ -28,6 +28,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
@@ -149,18 +150,20 @@ actual class DefaultScanner internal constructor(
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
         val centralManager = CBCentralManager(delegate, pairedDevicesQueue)
         awaitPoweredOn.await()
+        val identifiers: MutableSet<Identifier> = mutableSetOf()
         val creators = centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
             .map { peripheral ->
                 activeDelegates.add(delegate)
                 val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
+                identifiers.add(deviceWrapper.identifier)
                 return@map {
                     deviceWrapper to DefaultDeviceConnectionManager.Builder(centralManager, peripheral)
                 }
             }
         // We have to call even with empty list to clean up cached devices
-        handlePairedDevices(withServices, creators)
+        handlePairedDevices(withServices, identifiers, creators)
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {

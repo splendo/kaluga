@@ -141,7 +141,7 @@ open class ScanningStateImplRepo(
                 )
             }
         }
-        state.pairedDevices(event.filter, creators)
+        state.pairedDevices(event.filter, event.identifiers, creators)
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
