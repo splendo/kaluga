@@ -22,7 +22,6 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.bluetooth.scanner.ScanningStateImpl
 
 sealed class MockScanningState {
 
@@ -101,30 +100,30 @@ sealed class MockScanningState {
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
-        suspend fun retrievePairedDevices(filter: Filter) = Unit
-
-        fun pairedDevice(
-            identifier: Identifier,
-            deviceCreator: () -> Device
-        ): suspend () -> ScanningState.Enabled {
-            return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
-                ScanningStateImpl.NoHardware.remain()
-            } else {
-                suspend {
-                    Idle(
-                        discovered,
-                        paired.copyAndAdd(deviceCreator())
-                    )
-                }
-            }
-        }
-
         class Idle(
             override val discovered: ScanningState.Devices,
             override val paired: ScanningState.Devices
         ) : Enabled(), ScanningState.Enabled.Idle {
 
             override val permittedHandler: PermittedHandler = PermittedHandler()
+
+            override suspend fun retrievePairedDevices(filter: Filter) = Unit
+
+            override fun pairedDevice(
+                identifier: Identifier,
+                deviceCreator: () -> Device
+            ): suspend () -> ScanningState.Enabled {
+                return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
+                    remain()
+                } else {
+                    suspend {
+                        Idle(
+                            discovered,
+                            paired.copyAndAdd(deviceCreator())
+                        )
+                    }
+                }
+            }
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
                 Scanning(
@@ -148,6 +147,24 @@ sealed class MockScanningState {
             ScanningState.Enabled.Scanning {
 
             override val permittedHandler: PermittedHandler = PermittedHandler()
+
+            override suspend fun retrievePairedDevices(filter: Filter) = Unit
+
+            override fun pairedDevice(
+                identifier: Identifier,
+                deviceCreator: () -> Device
+            ): suspend () -> ScanningState.Enabled {
+                return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
+                    remain()
+                } else {
+                    suspend {
+                        Scanning(
+                            discovered,
+                            paired.copyAndAdd(deviceCreator())
+                        )
+                    }
+                }
+            }
 
             override suspend fun discoverDevice(
                 identifier: Identifier,

@@ -26,6 +26,7 @@ import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.yield
 import kotlin.test.Test
@@ -115,20 +116,49 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             scanner.didStartScanningMock.verify(ParameterMatcher.eq(emptySet()))
         }
 
-        val deferredDevice = CompletableDeferred<Device>()
+        val pairedDevice = CompletableDeferred<Device>()
         mainAction {
             val name = "Paired Device"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
             val device = createMockDevice(deviceWrapper, coroutineScope) {
                 deviceName = name
             }
-            deferredDevice.complete(device)
+            pairedDevice.complete(device)
             // simulate paired device retrieved
             retrievePairedDevice(device, deviceWrapper)
         }
 
         test {
-            assertContentEquals(listOf(deferredDevice.getCompleted()), it)
+            assertContentEquals(listOf(pairedDevice.getCompleted()), it)
+        }
+
+        val scannedList = CompletableDeferred<List<Device>>()
+        mainAction {
+            val name = "Yet Another Discovered Device"
+            val deviceWrapper = createDeviceWrapper(deviceName = name)
+            val device = createMockDevice(deviceWrapper, coroutineScope) {
+                deviceName = name
+            }
+            scannedList.complete(listOf(scannedDevice.getCompleted(), device))
+            scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
+            val results = bluetooth.devices().drop(1).first()
+            assertContentEquals(scannedList.getCompleted(), results)
+        }
+
+        val pairedList = CompletableDeferred<List<Device>>()
+        mainAction {
+            val name = "One More Paired Device"
+            val deviceWrapper = createDeviceWrapper(deviceName = name)
+            val device = createMockDevice(deviceWrapper, coroutineScope) {
+                deviceName = name
+            }
+            pairedList.complete(listOf(pairedDevice.getCompleted(), device))
+            // simulate paired device retrieved
+            retrievePairedDevice(device, deviceWrapper)
+        }
+
+        test {
+            assertContentEquals(pairedList.getCompleted(), it)
         }
     }
 }
