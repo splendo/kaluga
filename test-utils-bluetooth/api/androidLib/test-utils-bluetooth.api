@@ -400,8 +400,6 @@ public abstract class com/splendo/kaluga/test/bluetooth/scanner/MockScanningStat
 	public final fun getDisable ()Lkotlin/jvm/functions/Function1;
 	protected abstract fun getPermittedHandler ()Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$PermittedHandler;
 	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-	public final fun pairedDevice (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
-	public final fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled$Idle : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled, com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle {
@@ -410,8 +408,10 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$E
 	public fun getDiscovered ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun pairedDevice (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
 	public fun refresh (Ljava/util/Set;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startScanning (Ljava/util/Set;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -423,7 +423,9 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$E
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getStopScanning ()Lkotlin/jvm/functions/Function1;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun pairedDevice (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Inactive : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState {

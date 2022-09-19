@@ -1298,8 +1298,6 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Act
 	public abstract fun getDiscovered ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public abstract fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public abstract fun getScanner ()Lcom/splendo/kaluga/bluetooth/scanner/Scanner;
-	public final fun pairedDevice (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
-	public final fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Companion {
@@ -1359,8 +1357,10 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Enable
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getScanner ()Lcom/splendo/kaluga/bluetooth/scanner/Scanner;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun pairedDevice (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
 	public fun refresh (Ljava/util/Set;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startScanning (Ljava/util/Set;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -1376,7 +1376,9 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Enable
 	public fun getScanner ()Lcom/splendo/kaluga/bluetooth/scanner/Scanner;
 	public fun getStopScanning ()Lkotlin/jvm/functions/Function1;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun pairedDevice (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Initializing : com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Active, com/splendo/kaluga/bluetooth/scanner/ScanningState$Initializing {
