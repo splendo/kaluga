@@ -143,19 +143,20 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator> {
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
         require(withServices.isNotEmpty()) { "Expected not empty set of services." }
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
         val centralManager = CBCentralManager(delegate, pairedDevicesQueue)
         awaitPoweredOn.await()
-        return centralManager
+        centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
-            .map { peripheral ->
+            .forEach { peripheral ->
                 activeDelegates.add(delegate)
-                return@map { // device creator block
-                    DefaultCBPeripheralWrapper(peripheral) to DefaultDeviceConnectionManager.Builder(centralManager, peripheral)
+                val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
+                handlePairedDevice(deviceWrapper.identifier) {
+                    deviceWrapper to DefaultDeviceConnectionManager.Builder(centralManager, peripheral)
                 }
             }
     }

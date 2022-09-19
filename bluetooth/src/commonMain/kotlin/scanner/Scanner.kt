@@ -63,6 +63,10 @@ interface Scanner {
             val advertisementData: AdvertisementData,
             val deviceCreator: DeviceCreator
         ) : Event()
+        data class PairedDeviceRetrieved(
+            val identifier: Identifier,
+            val deviceCreator: DeviceCreator
+        ) : Event()
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
     }
@@ -78,7 +82,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
-    suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator>
+    suspend fun retrievePairedDevices(withServices: Set<UUID>)
 }
 
 abstract class BaseScanner constructor(
@@ -223,6 +227,11 @@ abstract class BaseScanner constructor(
         logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
         emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    }
+
+    internal fun handlePairedDevice(identifier: Identifier, deviceCreator: DeviceCreator) {
+        logger.info(LOG_TAG) { "Device ${identifier.stringValue} already paired" }
+        emitEvent(Scanner.Event.PairedDeviceRetrieved(identifier, deviceCreator))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {

@@ -17,43 +17,49 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.DeviceContext
-import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
-import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.createMockDevice
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
-class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, DeviceContext, ScanningState>() {
+class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, List<Device>>() {
+
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.Bluetooth, scope: CoroutineScope) -> BluetoothContext = { configuration, scope ->
+        BluetoothContext(configuration, scope)
+    }
+
+    override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
+        bluetooth.pairedDevices(setOf(uuidFromShort("130D")))
+    }
 
     @Test
-    fun testPairedDevices() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
+    fun testPairedDevices() = testWithFlowAndTestContext(Configuration.Bluetooth()) {
 
-        mainAction {
-            assertTrue(bluetooth.pairedDevices().isEmpty())
+        test {
+            assertEquals(emptyList(), it)
         }
 
-        val list = emptyList<DeviceCreator>()
-
+        val deferredDevice = CompletableDeferred<Device>()
         mainAction {
-            scanner.retrievePairedDevicesMock.on().doReturn(list)
+            val name = "watch"
+            val deviceWrapper = createDeviceWrapper(deviceName = name)
+            val device = createMockDevice(deviceWrapper, coroutineScope) {
+                deviceName = name
+            }
+            deferredDevice.complete(device)
+            // simulate paired device retrieved
+            retrievePairedDevice(device, deviceWrapper)
+            // same device will be ignored
+            retrievePairedDevice(device, deviceWrapper)
         }
 
         test {
-            assertIs<ScanningState.Enabled>(it)
-            assertContentEquals(list, it.retrievePairedDevices(setOf(uuidFromShort("130D"))))
+            assertContentEquals(listOf(deferredDevice.getCompleted()), it)
         }
-    }
-
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<ScanningState> =
-        { bluetooth.scanningStateRepo.stateFlow.filterOnlyImportant() }
-
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
-        DeviceContext(configuration, scope)
     }
 }

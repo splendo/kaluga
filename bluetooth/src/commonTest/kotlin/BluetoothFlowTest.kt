@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -196,20 +197,32 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             )
         }
 
-        suspend fun awaitScanDevice(
+        private suspend fun awaitScanDevice(
             device: Device,
             deviceWrapper: DeviceWrapper,
             rssi: Int,
             advertisementData: BaseAdvertisementData
         ) {
-            bluetooth.scanningStateRepo.filter {
-                it is ScanningState.Enabled.Scanning
-            }.first()
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
                 state.discoverDevice(
                     deviceWrapper.identifier,
                     rssi,
                     advertisementData
+                ) { device }
+            }
+        }
+
+        private suspend fun awaitPairedDevice(
+            device: Device,
+            deviceWrapper: DeviceWrapper
+        ) {
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled>()
+            bluetooth.scanningStateRepo.takeAndChangeState(
+                remainIfStateNot = ScanningState.Enabled::class
+            ) { state ->
+                state.pairedDevice(
+                    deviceWrapper.identifier,
                 ) { device }
             }
         }
@@ -222,6 +235,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ) {
             coroutineScope.launch {
                 awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
+            }
+        }
+
+        fun retrievePairedDevice(
+            device: Device,
+            deviceWrapper: DeviceWrapper
+        ) {
+            coroutineScope.launch {
+                awaitPairedDevice(device, deviceWrapper)
             }
         }
 

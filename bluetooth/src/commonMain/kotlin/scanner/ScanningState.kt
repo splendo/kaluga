@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.scanner.ScanningStateImpl.NoHardware.remain
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
@@ -51,6 +52,7 @@ sealed interface ScanningState : KalugaState {
     sealed interface Active : ScanningState {
 
         val discovered: Discovered
+        val paired: Discovered
         val deinitialize: suspend () -> Deinitialized
     }
 
@@ -64,15 +66,20 @@ sealed interface ScanningState : KalugaState {
 
     sealed interface Enabled : Permitted {
 
-        suspend fun retrievePairedDevices(filter: Set<UUID>): List<DeviceCreator>
+        suspend fun retrievePairedDevices(filter: Filter)
+
+        fun pairedDevice(
+            identifier: Identifier,
+            deviceCreator: () -> Device
+        ): suspend () -> Enabled
 
         val disable: suspend () -> NoBluetooth.Disabled
 
         interface Idle : Enabled {
 
-            fun startScanning(filter: Set<UUID> = discovered.filter): suspend () -> Scanning
+            fun startScanning(filter: Filter = discovered.filter): suspend () -> Scanning
 
-            fun refresh(filter: Set<UUID> = discovered.filter): suspend () -> Idle
+            fun refresh(filter: Filter = discovered.filter): suspend () -> Idle
         }
 
         interface Scanning : Enabled {
@@ -132,20 +139,44 @@ sealed class ScanningStateImpl {
             return if (!scanner.isSupported) {
                 { NoHardware }
             } else {
-                { Initializing(nothingDiscovered, scanner) }
+                { Initializing(nothingDiscovered, nothingDiscovered, scanner) }
             }
         }
     }
 
-    data class Deinitialized(override val previouslyDiscovered: ScanningState.Discovered, val scanner: Scanner) :
+    data class Deinitialized(
+        override val previouslyDiscovered: ScanningState.Discovered,
+        val previouslyPaired: ScanningState.Discovered,
+        val scanner: Scanner
+    ) :
         ScanningStateImpl(), ScanningState.Deinitialized {
-        override val reinitialize = suspend { Initializing(previouslyDiscovered, scanner) }
+        override val reinitialize = suspend { Initializing(previouslyDiscovered, previouslyPaired, scanner) }
     }
 
     sealed class Active :
         ScanningStateImpl(),
         HandleBeforeOldStateIsRemoved<ScanningState>,
         HandleAfterNewStateIsSet<ScanningState> {
+
+        suspend fun retrievePairedDevices(filter: Filter) = scanner.retrievePairedDevices(filter)
+
+        fun pairedDevice(
+            identifier: Identifier,
+            deviceCreator: () -> Device
+        ): suspend () -> ScanningState.Enabled {
+            return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
+                remain()
+            } else {
+                suspend {
+                    Enabled.Idle(
+                        discovered,
+                        paired.copyAndAdd(deviceCreator()),
+                        scanner
+                    )
+                }
+            }
+        }
+
         override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
             when (oldState) {
                 is ScanningState.Inactive -> {
@@ -165,7 +196,8 @@ sealed class ScanningStateImpl {
         }
         abstract val scanner: Scanner
         abstract val discovered: ScanningState.Discovered
-        val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, scanner) }
+        abstract val paired: ScanningState.Discovered
+        val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, paired, scanner) }
     }
 
     class PermittedHandler(val scanner: Scanner) {
@@ -195,6 +227,7 @@ sealed class ScanningStateImpl {
 
     data class Initializing(
         override val discovered: ScanningState.Discovered,
+        override val paired: ScanningState.Discovered,
         override val scanner: Scanner
     ) : Active(), ScanningState.Initializing {
 
@@ -203,7 +236,7 @@ sealed class ScanningStateImpl {
                 when {
                     !hasPermission -> NoBluetooth.MissingPermissions(scanner)
                     !enabled -> NoBluetooth.Disabled(scanner)
-                    else -> Enabled.Idle(discovered, scanner)
+                    else -> Enabled.Idle(discovered, paired, scanner)
                 }
             }
     }
@@ -215,8 +248,6 @@ sealed class ScanningStateImpl {
         val disable = suspend {
             NoBluetooth.Disabled(scanner)
         }
-
-        suspend fun retrievePairedDevices(filter: Set<UUID>) = scanner.retrievePairedDevices(filter)
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
@@ -232,6 +263,7 @@ sealed class ScanningStateImpl {
 
         class Idle internal constructor(
             override val discovered: ScanningState.Discovered,
+            override val paired: ScanningState.Discovered,
             override val scanner: Scanner
         ) : Enabled(), ScanningState.Enabled.Idle {
 
@@ -240,6 +272,7 @@ sealed class ScanningStateImpl {
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
                 Scanning(
                     discovered.discoveredForFilter(filter),
+                    paired,
                     scanner
                 )
             }
@@ -247,6 +280,7 @@ sealed class ScanningStateImpl {
             override fun refresh(filter: Set<UUID>): suspend () -> Idle = {
                 Idle(
                     discovered.discoveredForFilter(filter),
+                    paired,
                     scanner
                 )
             }
@@ -254,6 +288,7 @@ sealed class ScanningStateImpl {
 
         class Scanning internal constructor(
             override val discovered: ScanningState.Discovered,
+            override val paired: ScanningState.Discovered,
             override val scanner: Scanner
         ) : Enabled(),
             HandleAfterOldStateIsRemoved<ScanningState>,
@@ -274,10 +309,10 @@ sealed class ScanningStateImpl {
                         knownDevice.rssiDidUpdate(rssi)
                         knownDevice.advertisementDataDidUpdate(advertisementData)
                         remain()
-                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), scanner) }
+                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), paired, scanner) }
             }
 
-            override val stopScanning = suspend { Idle(discovered, scanner) }
+            override val stopScanning = suspend { Idle(discovered, paired, scanner) }
 
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
                 if (oldState !is Scanning)
@@ -294,6 +329,7 @@ sealed class ScanningStateImpl {
     sealed class NoBluetooth : Active() {
 
         override val discovered: Discovered = nothingDiscovered
+        override val paired: Discovered = nothingDiscovered
 
         class Disabled internal constructor(
             override val scanner: Scanner
@@ -302,7 +338,7 @@ sealed class ScanningStateImpl {
             private val permittedHandler = PermittedHandler(scanner)
 
             override val enable: suspend () -> ScanningState.Enabled = {
-                Enabled.Idle(nothingDiscovered, scanner)
+                Enabled.Idle(nothingDiscovered, nothingDiscovered, scanner)
             }
 
             override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
@@ -323,7 +359,7 @@ sealed class ScanningStateImpl {
         ) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingDiscovered, scanner)
+                if (enabled) Enabled.Idle(nothingDiscovered, nothingDiscovered, scanner)
                 else Disabled(scanner)
             }
         }

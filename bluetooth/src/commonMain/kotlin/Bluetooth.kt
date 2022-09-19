@@ -23,23 +23,21 @@ import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
-import com.splendo.kaluga.bluetooth.device.ConnectableEmptyAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
-import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -54,6 +52,7 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.native.concurrent.SharedImmutable
+import kotlin.time.Duration.Companion.seconds
 
 @SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultBluetoothDispatcher by lazy {
@@ -63,7 +62,7 @@ private val defaultBluetoothDispatcher by lazy {
 interface BluetoothService {
     fun startScanning(filter: Set<UUID> = emptySet())
     fun stopScanning()
-    suspend fun pairedDevices(filter: Set<UUID> = emptySet()): List<Device>
+    fun pairedDevices(filter: Set<UUID>): Flow<List<Device>>
     fun devices(): Flow<List<Device>>
     suspend fun isScanning(): Flow<Boolean>
     val isEnabled: Flow<Boolean>
@@ -111,28 +110,19 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    private fun createDevice(creator: DeviceCreator): Device {
-        val (wrapper, builder) = creator()
-        val deviceInfo = DeviceInfoImpl(
-            wrapper = wrapper,
-            rssi = Int.MIN_VALUE,
-            advertisementData = ConnectableEmptyAdvertisementData(name = wrapper.name)
-        )
-        return scanningStateRepo.createDevice(
-            wrapper.identifier,
-            deviceInfo,
-            wrapper,
-            builder
-        )
+    private companion object {
+        val PAIRED_DEVICES_REFRESH = 15.seconds
     }
 
-    override suspend fun pairedDevices(filter: Set<UUID>): List<Device> = scanningStateRepo
+    override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> = scanningStateRepo
         .transformLatest { state ->
             if (state is ScanningState.Enabled) {
-                emit(state.retrievePairedDevices(filter).map(::createDevice))
+                state.retrievePairedDevices(filter)
+                emit(state.paired.devices)
+                delay(PAIRED_DEVICES_REFRESH)
             }
         }
-        .first()
+        .distinctUntilChanged()
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo.filterOnlyImportant(), scanMode) { scanState, scanMode ->
         when (scanState) {

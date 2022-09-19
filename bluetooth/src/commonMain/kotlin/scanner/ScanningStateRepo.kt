@@ -17,6 +17,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectableEmptyAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
@@ -97,6 +98,7 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.DeviceDiscovered -> handleDeviceDiscovered(event)
                     is Scanner.Event.DeviceConnected -> handleDeviceConnectionChanged(event.identifier, true)
                     is Scanner.Event.DeviceDisconnected -> handleDeviceConnectionChanged(event.identifier, false)
+                    is Scanner.Event.PairedDeviceRetrieved -> handlePairedDevice(event)
                 }
             }
         }
@@ -125,9 +127,24 @@ open class ScanningStateImplRepo(
         }
     }
 
+    private suspend fun handlePairedDevice(event: Scanner.Event.PairedDeviceRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
+        state.pairedDevice(event.identifier) {
+            val (deviceWrapper, connectionManagerBuilder) = event.deviceCreator()
+            val rssi = Int.MIN_VALUE
+            val advertisementData = ConnectableEmptyAdvertisementData(deviceWrapper.name)
+            createDevice(event.identifier, DeviceInfoImpl(deviceWrapper, rssi, advertisementData), deviceWrapper, connectionManagerBuilder)
+        }
+    }
+
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
         if (state is ScanningState.Enabled) {
             state.discovered.devices.find { it.identifier == identifier }?.let { device ->
+                if (connected)
+                    device.handleConnected()
+                else
+                    device.handleDisconnected()
+            }
+            state.paired.devices.find { it.identifier == identifier }?.let { device ->
                 if (connected)
                     device.handleConnected()
                 else

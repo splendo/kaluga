@@ -20,9 +20,9 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.bluetooth.scanner.DeviceCreator
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.bluetooth.scanner.ScanningStateImpl
 
 sealed class MockScanningState {
 
@@ -52,18 +52,22 @@ sealed class MockScanningState {
         fun startInitializing() = if (!isHardwareSupported) {
             { NoHardware }
         } else {
-            { Initializing(nothingDiscovered) }
+            { Initializing(nothingDiscovered, nothingDiscovered) }
         }
     }
 
-    data class Deinitialized(override val previouslyDiscovered: ScanningState.Discovered) :
+    data class Deinitialized(
+        override val previouslyDiscovered: ScanningState.Discovered,
+        val paired: ScanningState.Discovered
+    ) :
         Inactive(), ScanningState.Deinitialized {
-        override val reinitialize = suspend { Initializing(previouslyDiscovered) }
+        override val reinitialize = suspend { Initializing(previouslyDiscovered, paired) }
     }
 
     sealed class Active : MockScanningState() {
         abstract val discovered: ScanningState.Discovered
-        val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered) }
+        abstract val paired: ScanningState.Discovered
+        val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, paired) }
     }
 
     class PermittedHandler {
@@ -71,7 +75,8 @@ sealed class MockScanningState {
     }
 
     data class Initializing(
-        override val discovered: ScanningState.Discovered
+        override val discovered: ScanningState.Discovered,
+        override val paired: ScanningState.Discovered
     ) : Active(), ScanningState.Initializing {
 
         override fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> ScanningState.Initialized =
@@ -79,7 +84,7 @@ sealed class MockScanningState {
                 when {
                     !hasPermission -> NoBluetooth.MissingPermissions()
                     !enabled -> NoBluetooth.Disabled()
-                    else -> Enabled.Idle(discovered)
+                    else -> Enabled.Idle(discovered, paired)
                 }
             }
     }
@@ -96,29 +101,49 @@ sealed class MockScanningState {
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
-        suspend fun retrievePairedDevices(filter: Set<UUID>): List<DeviceCreator> = emptyList()
+        suspend fun retrievePairedDevices(filter: Filter) = Unit
+
+        fun pairedDevice(
+            identifier: Identifier,
+            deviceCreator: () -> Device
+        ): suspend () -> ScanningState.Enabled {
+            return if (paired.devices.indexOfFirst { it.identifier == identifier } != -1) {
+                ScanningStateImpl.NoHardware.remain()
+            } else {
+                suspend {
+                    Idle(
+                        discovered,
+                        paired.copyAndAdd(deviceCreator())
+                    )
+                }
+            }
+        }
 
         class Idle(
-            override val discovered: ScanningState.Discovered
+            override val discovered: ScanningState.Discovered,
+            override val paired: ScanningState.Discovered
         ) : Enabled(), ScanningState.Enabled.Idle {
 
             override val permittedHandler: PermittedHandler = PermittedHandler()
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
                 Scanning(
-                    discovered.discoveredForFilter(filter)
+                    discovered.discoveredForFilter(filter),
+                    paired
                 )
             }
 
             override fun refresh(filter: Set<UUID>): suspend () -> Idle = {
                 Idle(
-                    discovered.discoveredForFilter(filter)
+                    discovered.discoveredForFilter(filter),
+                    paired
                 )
             }
         }
 
         class Scanning(
-            override val discovered: ScanningState.Discovered
+            override val discovered: ScanningState.Discovered,
+            override val paired: ScanningState.Discovered
         ) : Enabled(),
             ScanningState.Enabled.Scanning {
 
@@ -136,23 +161,24 @@ sealed class MockScanningState {
                         knownDevice.rssiDidUpdate(rssi)
                         knownDevice.advertisementDataDidUpdate(advertisementData)
                         remain()
-                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator())) }
+                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), paired) }
             }
 
-            override val stopScanning = suspend { Idle(discovered) }
+            override val stopScanning = suspend { Idle(discovered, paired) }
         }
     }
 
     sealed class NoBluetooth : Active() {
 
         override val discovered: Discovered = nothingDiscovered
+        override val paired: Discovered = nothingDiscovered
 
         class Disabled : NoBluetooth(), ScanningState.NoBluetooth.Disabled {
 
             private val permittedHandler = PermittedHandler()
 
             override val enable: suspend () -> ScanningState.Enabled = {
-                Enabled.Idle(nothingDiscovered)
+                Enabled.Idle(nothingDiscovered, nothingDiscovered)
             }
 
             override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
@@ -161,7 +187,7 @@ sealed class MockScanningState {
         class MissingPermissions : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingDiscovered)
+                if (enabled) Enabled.Idle(nothingDiscovered, nothingDiscovered)
                 else Disabled()
             }
         }
