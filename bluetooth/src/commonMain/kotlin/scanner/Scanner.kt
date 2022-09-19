@@ -230,7 +230,7 @@ abstract class BaseScanner constructor(
     }
 
     internal fun handlePairedDevice(identifier: Identifier, deviceCreator: DeviceCreator) {
-        logger.info(LOG_TAG) { "Device ${identifier.stringValue} already paired" }
+        logger.info(LOG_TAG) { "Paired Device ${identifier.stringValue} retrieved" }
         emitEvent(Scanner.Event.PairedDeviceRetrieved(identifier, deviceCreator))
     }
 
