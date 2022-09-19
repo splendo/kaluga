@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -145,12 +146,11 @@ actual class DefaultScanner internal constructor(
     override suspend fun retrievePairedDevices(withServices: Set<UUID>): List<DeviceCreator> {
         require(withServices.isNotEmpty()) { "Expected not empty set of services." }
         val awaitPoweredOn = EmptyCompletableDeferred()
-        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
         val centralManager = CBCentralManager(delegate, pairedDevicesQueue)
-        val serviceUUIDs = withServices.toList()
         awaitPoweredOn.await()
         return centralManager
-            .retrieveConnectedPeripheralsWithServices(serviceUUIDs)
+            .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
             .map { peripheral ->
                 activeDelegates.add(delegate)
