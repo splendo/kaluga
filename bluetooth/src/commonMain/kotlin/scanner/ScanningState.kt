@@ -33,26 +33,28 @@ typealias Filter = Set<UUID>
 
 sealed interface ScanningState : KalugaState {
 
-    interface Discovered {
+    // Discovered or Paired devices
+    interface Devices {
         val devices: List<Device>
         val filter: Filter
 
-        fun copyAndAdd(device: Device): Discovered
-        fun discoveredForFilter(filter: Filter): Discovered
+        fun copyAndAdd(device: Device): Devices
+        fun foundForFilter(filter: Filter): Devices
     }
 
     sealed interface Inactive : ScanningState, SpecialFlowValue.NotImportant
     interface NotInitialized : Inactive
 
     interface Deinitialized : Inactive {
-        val previouslyDiscovered: Discovered
+        val previouslyDiscovered: Devices
+        val previouslyPaired: Devices
         val reinitialize: suspend () -> Initializing
     }
 
     sealed interface Active : ScanningState {
 
-        val discovered: Discovered
-        val paired: Discovered
+        val discovered: Devices
+        val paired: Devices
         val deinitialize: suspend () -> Deinitialized
     }
 
@@ -112,23 +114,23 @@ sealed interface ScanningState : KalugaState {
 sealed class ScanningStateImpl {
 
     companion object {
-        val nothingDiscovered = Discovered(emptySet())
+        val nothingFound = Devices(emptySet())
     }
 
-    data class Discovered(
+    data class Devices(
         override val devices: List<Device>,
         override val filter: Filter,
-    ) : ScanningState.Discovered {
+    ) : ScanningState.Devices {
         constructor(filter: Filter) : this(emptyList(), filter)
 
-        override fun copyAndAdd(device: Device): Discovered =
-            Discovered(listOf(*devices.toTypedArray(), device), filter)
+        override fun copyAndAdd(device: Device): Devices =
+            Devices(listOf(*devices.toTypedArray(), device), filter)
 
-        override fun discoveredForFilter(filter: Filter) =
+        override fun foundForFilter(filter: Filter) =
             if (this.filter == filter)
                 this
             else
-                Discovered(filter)
+                Devices(filter)
     }
 
     object NotInitialized : ScanningStateImpl(), ScanningState.NotInitialized {
@@ -139,14 +141,14 @@ sealed class ScanningStateImpl {
             return if (!scanner.isSupported) {
                 { NoHardware }
             } else {
-                { Initializing(nothingDiscovered, nothingDiscovered, scanner) }
+                { Initializing(nothingFound, nothingFound, scanner) }
             }
         }
     }
 
     data class Deinitialized(
-        override val previouslyDiscovered: ScanningState.Discovered,
-        val previouslyPaired: ScanningState.Discovered,
+        override val previouslyDiscovered: ScanningState.Devices,
+        override val previouslyPaired: ScanningState.Devices,
         val scanner: Scanner
     ) :
         ScanningStateImpl(), ScanningState.Deinitialized {
@@ -195,8 +197,8 @@ sealed class ScanningStateImpl {
             }
         }
         abstract val scanner: Scanner
-        abstract val discovered: ScanningState.Discovered
-        abstract val paired: ScanningState.Discovered
+        abstract val discovered: ScanningState.Devices
+        abstract val paired: ScanningState.Devices
         val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, paired, scanner) }
     }
 
@@ -226,8 +228,8 @@ sealed class ScanningStateImpl {
     }
 
     data class Initializing(
-        override val discovered: ScanningState.Discovered,
-        override val paired: ScanningState.Discovered,
+        override val discovered: ScanningState.Devices,
+        override val paired: ScanningState.Devices,
         override val scanner: Scanner
     ) : Active(), ScanningState.Initializing {
 
@@ -262,8 +264,8 @@ sealed class ScanningStateImpl {
         }
 
         class Idle internal constructor(
-            override val discovered: ScanningState.Discovered,
-            override val paired: ScanningState.Discovered,
+            override val discovered: ScanningState.Devices,
+            override val paired: ScanningState.Devices,
             override val scanner: Scanner
         ) : Enabled(), ScanningState.Enabled.Idle {
 
@@ -271,7 +273,7 @@ sealed class ScanningStateImpl {
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
                 Scanning(
-                    discovered.discoveredForFilter(filter),
+                    discovered.foundForFilter(filter),
                     paired,
                     scanner
                 )
@@ -279,7 +281,7 @@ sealed class ScanningStateImpl {
 
             override fun refresh(filter: Set<UUID>): suspend () -> Idle = {
                 Idle(
-                    discovered.discoveredForFilter(filter),
+                    discovered.foundForFilter(filter),
                     paired,
                     scanner
                 )
@@ -287,8 +289,8 @@ sealed class ScanningStateImpl {
         }
 
         class Scanning internal constructor(
-            override val discovered: ScanningState.Discovered,
-            override val paired: ScanningState.Discovered,
+            override val discovered: ScanningState.Devices,
+            override val paired: ScanningState.Devices,
             override val scanner: Scanner
         ) : Enabled(),
             HandleAfterOldStateIsRemoved<ScanningState>,
@@ -328,8 +330,8 @@ sealed class ScanningStateImpl {
 
     sealed class NoBluetooth : Active() {
 
-        override val discovered: Discovered = nothingDiscovered
-        override val paired: Discovered = nothingDiscovered
+        override val discovered: Devices = nothingFound
+        override val paired: Devices = nothingFound
 
         class Disabled internal constructor(
             override val scanner: Scanner
@@ -338,7 +340,7 @@ sealed class ScanningStateImpl {
             private val permittedHandler = PermittedHandler(scanner)
 
             override val enable: suspend () -> ScanningState.Enabled = {
-                Enabled.Idle(nothingDiscovered, nothingDiscovered, scanner)
+                Enabled.Idle(nothingFound, nothingFound, scanner)
             }
 
             override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
@@ -359,7 +361,7 @@ sealed class ScanningStateImpl {
         ) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingDiscovered, nothingDiscovered, scanner)
+                if (enabled) Enabled.Idle(nothingFound, nothingFound, scanner)
                 else Disabled(scanner)
             }
         }
