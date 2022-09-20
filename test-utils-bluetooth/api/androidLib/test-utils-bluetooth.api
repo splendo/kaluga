@@ -34,12 +34,10 @@ public final class com/splendo/kaluga/test/bluetooth/AndroidMockDescriptorWrappe
 }
 
 public final class com/splendo/kaluga/test/bluetooth/Android_mocksKt {
-	public static final field address Ljava/lang/String;
 	public static final field bondState I
-	public static final field deviceName Ljava/lang/String;
 	public static final fun build (Lcom/splendo/kaluga/test/bluetooth/ServiceWrapperBuilder;)Lcom/splendo/kaluga/bluetooth/ServiceWrapper;
-	public static final fun createDeviceWrapper (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
-	public static synthetic fun createDeviceWrapper$default (Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
+	public static final fun createDeviceWrapper (Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
+	public static synthetic fun createDeviceWrapper$default (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
 	public static final fun randomIdentifier ()Ljava/lang/String;
 }
 

@@ -4,8 +4,8 @@ public abstract interface class com/splendo/kaluga/test/bluetooth/CanUpdateMockV
 
 public final class com/splendo/kaluga/test/bluetooth/Jvm_mocksKt {
 	public static final fun build (Lcom/splendo/kaluga/test/bluetooth/ServiceWrapperBuilder;)Lcom/splendo/kaluga/bluetooth/ServiceWrapper;
-	public static final fun createDeviceWrapper (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
-	public static synthetic fun createDeviceWrapper$default (Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
+	public static final fun createDeviceWrapper (Ljava/lang/String;Lcom/splendo/kaluga/bluetooth/UUID;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
+	public static synthetic fun createDeviceWrapper$default (Ljava/lang/String;Lcom/splendo/kaluga/bluetooth/UUID;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
 	public static final fun randomIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
 }
 
