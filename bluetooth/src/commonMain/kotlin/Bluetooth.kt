@@ -50,6 +50,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.native.concurrent.SharedImmutable
@@ -116,7 +117,7 @@ class Bluetooth internal constructor(
     }
 
     private val timer get() = flow {
-        while (true) {
+        while (isActive) {
             emit(Unit) // start 'timer' instantly
             delay(PAIRED_DEVICES_REFRESH_RATE)
         }
