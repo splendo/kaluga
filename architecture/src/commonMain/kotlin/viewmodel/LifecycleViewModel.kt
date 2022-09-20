@@ -24,11 +24,17 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 
 
-@Deprecated("ViewModel was renamed as the name didn't much it's function. Use LifecycleViewModel")
+@Deprecated(
+    message = "ViewModel was renamed as the name didn't match it's function.",
+    replaceWith = ReplaceWith("LifecycleViewModel")
+)
 typealias ViewModel = LifecycleViewModel
 
 
-@Deprecated("BaseViewModel was renamed as the name didn't much it's function. Use BaseLifecycleViewModel")
+@Deprecated(
+    message = "BaseViewModel was renamed as the name didn't match it's function.",
+    replaceWith = ReplaceWith("BaseLifecycleViewModel")
+)
 typealias BaseViewModel = BaseLifecycleViewModel
 
 /**
