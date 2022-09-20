@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -114,15 +115,23 @@ class Bluetooth internal constructor(
         val PAIRED_DEVICES_REFRESH_RATE = 15.seconds
     }
 
-    override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> = scanningStateRepo
-        .transformLatest { state ->
-            if (state is ScanningState.Enabled) {
-                state.retrievePairedDevices(filter)
-                emit(state.paired.devices)
-                delay(PAIRED_DEVICES_REFRESH_RATE)
-            }
+    private val timer get() = flow {
+        while (true) {
+            emit(Unit) // start 'timer' instantly
+            delay(PAIRED_DEVICES_REFRESH_RATE)
         }
-        .distinctUntilChanged()
+    }
+
+    override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> =
+        combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
+            .transformLatest { state ->
+                if (state is ScanningState.Enabled) {
+                    // trigger retrieve paired devices list
+                    state.retrievePairedDevices(filter)
+                    emit(state.paired.devices)
+                }
+            }
+            .distinctUntilChanged()
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo.filterOnlyImportant(), scanMode) { scanState, scanMode ->
         when (scanState) {
