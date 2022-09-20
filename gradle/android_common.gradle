@@ -86,9 +86,10 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$gradle.kotlin_version!!"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
-    implementation "androidx.appcompat:appcompat:$gradle.androidx_appcompat_version"
+    implementation("androidx.appcompat:appcompat:$gradle.androidx_appcompat_version") {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+    }
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.mockito:mockito-core:$gradle.mockito_version"
