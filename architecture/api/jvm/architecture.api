@@ -1023,6 +1023,12 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : 
 	protected fun onResume (Lkotlinx/coroutines/CoroutineScope;)V
 }
 
+public final class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
 	public final fun clear ()V
@@ -1034,5 +1040,11 @@ public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
+}
+
+public final class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
