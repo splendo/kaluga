@@ -25,7 +25,8 @@ import platform.Foundation.NSUUID
 actual fun randomIdentifier(): Identifier = NSUUID()
 
 actual fun createDeviceWrapper(
-    deviceName: String?
-): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName)
+    deviceName: String?,
+    identifier: Identifier
+): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName, identifier = identifier)
 
 actual fun ServiceWrapperBuilder.build(): ServiceWrapper = MockServiceWrapper(builder = this)
