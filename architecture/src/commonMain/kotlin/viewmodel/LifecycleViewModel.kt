@@ -27,13 +27,13 @@ import kotlinx.coroutines.cancelChildren
     message = "ViewModel was renamed as the name didn't match it's function.",
     replaceWith = ReplaceWith("LifecycleViewModel")
 )
-class ViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing)
+open class ViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing)
 
 @Deprecated(
     message = "BaseViewModel was renamed as the name didn't match it's function.",
     replaceWith = ReplaceWith("BaseLifecycleViewModel")
 )
-class BaseViewModel(allowFreezing: Boolean = false) : BaseLifecycleViewModel(allowFreezing)
+open class BaseViewModel(allowFreezing: Boolean = false) : BaseLifecycleViewModel(allowFreezing)
 
 /**
  * Simple ViewModel class
