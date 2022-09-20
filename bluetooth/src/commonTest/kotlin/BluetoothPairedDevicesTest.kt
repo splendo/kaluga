@@ -26,7 +26,6 @@ import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.yield
 import kotlin.test.Test
