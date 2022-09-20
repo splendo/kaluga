@@ -117,8 +117,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             scannedList.complete(listOf(scannedDevice.getCompleted(), device))
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
-            val results = bluetooth.devices().drop(1).first()
-            assertContentEquals(scannedList.getCompleted(), results)
+            bluetooth.devices().first() // wait for scanned devices updated
         }
 
         val pairedList = CompletableDeferred<List<Device>>()
