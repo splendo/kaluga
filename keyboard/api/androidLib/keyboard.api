@@ -8,7 +8,7 @@ public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager 
 	public abstract fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
 }
 
-public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder {
+public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
 	public abstract fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
 }
 
