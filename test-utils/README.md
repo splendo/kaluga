@@ -109,15 +109,15 @@ class MyKoinUIThreadTest : KoinUIThreadTest<MyKoinUIThreadTest.MyKoinTestContext
 }
 ```
 
-### Testing a ViewModel when testing from the background
+### Testing a LifecycleViewModel when testing from the background
 
-It's also possible use the UI Thread context to create a kaluga ViewModel. 
+It's also possible use the UI Thread context to create a kaluga LifecycleViewModel. 
 This can be done by extending  `UIThreadViewModelTest`.
 
 ```kotlin
 class CustomUIThreadViewModelTest : UIThreadViewModelTest<CustomViewModelTestContext, MyViewModel>() {
 
-    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel()
 
     class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder() // creates on UI thread and can be passed to viewModel
