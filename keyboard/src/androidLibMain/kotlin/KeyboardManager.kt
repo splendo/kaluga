@@ -26,7 +26,6 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 actual class KeyboardManager(
@@ -80,7 +79,7 @@ actual class KeyboardManager(
  * Will be created if need but only one instance will exist.
  *
  * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.ViewModel],
+ * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
  * which can automatically track which Activity is active for it.
  *
  */

@@ -23,10 +23,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 
+
+@Deprecated("ViewModel was renamed as the name didn't much it's function. Use LifecycleViewModel")
+typealias ViewModel = LifecycleViewModel
+
+
+@Deprecated("BaseViewModel was renamed as the name didn't much it's function. Use BaseLifecycleViewModel")
+typealias BaseViewModel = BaseLifecycleViewModel
+
 /**
  * Simple ViewModel class
  */
-expect open class ViewModel internal constructor(allowFreezing: Boolean = false) {
+expect open class LifecycleViewModel internal constructor(allowFreezing: Boolean = false) {
     /**
      * [CoroutineScope] of the ViewModel
      */
@@ -39,9 +47,9 @@ expect open class ViewModel internal constructor(allowFreezing: Boolean = false)
 }
 
 /**
- * Default [ViewModel] implementation respecting the Lifecycle of the presenting view
+ * Default [LifecycleViewModel] implementation respecting the Lifecycle of the presenting view
  */
-open class BaseViewModel(allowFreezing: Boolean = false) : ViewModel(allowFreezing) {
+open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing) {
 
     private val resumedJobs = SupervisorJob()
 
@@ -73,7 +81,7 @@ open class BaseViewModel(allowFreezing: Boolean = false) : ViewModel(allowFreezi
 }
 
 /**
- * Default [ViewModel] allowing navigation
+ * Default [LifecycleViewModel] allowing navigation
  * @param navigator The [Navigator] handling navigation
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>, allowFreezing: Boolean = false) : BaseViewModel(allowFreezing)
+open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>, allowFreezing: Boolean = false) : BaseLifecycleViewModel(allowFreezing)

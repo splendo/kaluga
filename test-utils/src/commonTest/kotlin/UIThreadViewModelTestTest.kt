@@ -19,7 +19,7 @@ package com.splendo.kaluga.test
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.CustomUIThreadViewModelTestTest.CustomViewModelTestContext
@@ -39,7 +39,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelT
         val isDisposed = AtomicBoolean(false)
     }
 
-    class ViewModel : BaseViewModel() {
+    class ViewModel : BaseLifecycleViewModel() {
         var v: String = ""
     }
 
@@ -85,7 +85,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelT
 
 class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomViewModelTestContext, MyViewModel>() {
 
-    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel()
 
     class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder()

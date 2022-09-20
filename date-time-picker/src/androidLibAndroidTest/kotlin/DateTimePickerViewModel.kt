@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.datetimepicker
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
-class DateTimePickerViewModel : BaseViewModel() {
+class DateTimePickerViewModel : BaseLifecycleViewModel() {
     val dateTimePickerBuilder = DateTimePickerPresenter.Builder()
 }

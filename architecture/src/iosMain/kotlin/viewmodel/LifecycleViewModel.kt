@@ -23,7 +23,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlin.native.concurrent.ensureNeverFrozen
 
-actual open class ViewModel internal actual constructor(val allowFreezing: Boolean) {
+actual open class LifecycleViewModel internal actual constructor(val allowFreezing: Boolean) {
 
     init {
         if (!allowFreezing)
@@ -35,7 +35,7 @@ actual open class ViewModel internal actual constructor(val allowFreezing: Boole
     actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob)
 
     /**
-     * Call this when the [ViewModel] should be cleared to cancel all its coroutines.
+     * Call this when the [LifecycleViewModel] should be cleared to cancel all its coroutines.
      */
     fun clear() {
         onCleared()

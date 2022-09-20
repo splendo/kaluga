@@ -34,12 +34,12 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.starProjectedType
 
 /**
- * [LifecycleObserver] used to manage the lifecycle of a [BaseViewModel]
- * @param viewModel The [BaseViewModel] whose lifecycle is managed
+ * [LifecycleObserver] used to manage the lifecycle of a [BaseLifecycleViewModel]
+ * @param viewModel The [BaseLifecycleViewModel] whose lifecycle is managed
  * @param activity The [Activity] managing the lifecycle
  * @param fragmentManager The [FragmentManager] for this lifecycle
  */
-class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
+class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal constructor(
     private val viewModel: VM,
     private val activity: Activity?,
     private val lifecycleOwner: LifecycleOwner,
