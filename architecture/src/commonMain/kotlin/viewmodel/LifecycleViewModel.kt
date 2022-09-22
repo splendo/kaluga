@@ -88,4 +88,4 @@ open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleVie
  * Default [LifecycleViewModel] allowing navigation
  * @param navigator The [Navigator] handling navigation
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>, allowFreezing: Boolean = false) : BaseLifecycleViewModel(allowFreezing)
+open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>, allowFreezing: Boolean = false) : BaseViewModel(allowFreezing)
