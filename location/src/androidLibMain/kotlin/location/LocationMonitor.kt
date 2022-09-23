@@ -29,12 +29,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.CoroutineContext
 
-actual interface LocationMonitor : ServiceMonitor {
+actual interface LocationMonitor {
 
     /**
      * Builder for [LocationMonitor].

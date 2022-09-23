@@ -18,10 +18,9 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
 import kotlin.coroutines.CoroutineContext
 
-actual interface BluetoothMonitor : ServiceMonitor {
+actual interface BluetoothMonitor {
     actual class Builder {
         actual constructor()
 

@@ -19,14 +19,13 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.base.monitor.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusDenied
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import kotlin.coroutines.CoroutineContext
 
-actual interface LocationMonitor : ServiceMonitor {
+actual interface LocationMonitor {
     /**
      * Builder for [LocationMonitor].
      * @param locationManager [CLLocationManager] used to get info about locations' state.

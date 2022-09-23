@@ -18,13 +18,11 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
 import kotlin.coroutines.CoroutineContext
 
-actual interface LocationMonitor : ServiceMonitor {
+actual interface LocationMonitor {
 
-    actual class Builder {
-        actual constructor()
+    actual class Builder actual constructor() {
 
         /**
          * Builder's create method.

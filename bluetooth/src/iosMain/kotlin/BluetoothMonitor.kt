@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOff
@@ -31,7 +30,7 @@ import platform.CoreBluetooth.CBManagerState
 import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
 
-actual interface BluetoothMonitor : ServiceMonitor {
+actual interface BluetoothMonitor {
     /**
      * Builder for [BluetoothMonitor].
      * @param centralManager [CBCentralManager] used to set/unset a delegate and get info about bluetooth service status.
