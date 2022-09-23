@@ -20,32 +20,30 @@ package com.splendo.kaluga.base.monitor
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.KalugaState
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.coroutines.CoroutineContext
 
-interface ServiceMonitor {
-    fun startMonitoring()
-    fun stopMonitoring()
-}
+interface ServiceMonitor<S: ServiceMonitorState> : StateFlow<S>
 
 abstract class DefaultServiceMonitor(
     coroutineContext: CoroutineContext
-) : ColdStateFlowRepo<ServiceMonitorState>(
+) : ColdStateFlowRepo<DefaultServiceMonitor.ServiceMonitorStateImpl>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
         debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
-        (repo as ServiceMonitor).run {
+        (repo as DefaultServiceMonitor).run {
             startMonitoring()
         }
         when (state) {
             is ServiceMonitorState.Initialized,
             is ServiceMonitorState.NotInitialized,
             is ServiceMonitorState.NotSupported -> state.remain()
-            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null")
+            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null or $state")
         }
     },
     deinitChangeStateWithRepo = { state, repo ->
         debug("DefaultServiceMonitor") { "deinitChangeStateWithRepo with $state" }
-        (repo as ServiceMonitor).run {
+        (repo as DefaultServiceMonitor).run {
             stopMonitoring()
         }
         when (state) {
@@ -54,13 +52,14 @@ abstract class DefaultServiceMonitor(
             }
             is ServiceMonitorState.NotInitialized,
             is ServiceMonitorState.NotSupported -> state.remain()
+            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null or $state")
+
         }
     },
     firstState = { ServiceMonitorStateImpl.NotInitialized }
-),
-    ServiceMonitor {
+), ServiceMonitor<DefaultServiceMonitor.ServiceMonitorStateImpl> {
 
-    sealed class ServiceMonitorStateImpl : KalugaState {
+    sealed class ServiceMonitorStateImpl : KalugaState, ServiceMonitorState {
         sealed class Initialized : ServiceMonitorStateImpl(), ServiceMonitorState.Initialized {
             object Enabled : Initialized(), ServiceMonitorState.Initialized.Enabled
             object Disabled : Initialized(), ServiceMonitorState.Initialized.Disabled
@@ -74,11 +73,17 @@ abstract class DefaultServiceMonitor(
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
-    override fun startMonitoring() {
+    override val replayCache: List<ServiceMonitorStateImpl>
+        get() = stateFlow.replayCache
+
+    override val value: ServiceMonitorStateImpl
+        get() = stateFlow.value
+
+    open fun startMonitoring() {
         debug(TAG) { "Start monitoring service state (${stateFlow.value})" }
     }
 
-    override fun stopMonitoring() {
+    open fun stopMonitoring() {
         debug(TAG) { "Stop monitoring service state (${stateFlow.value})" }
     }
 }

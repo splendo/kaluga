@@ -42,11 +42,11 @@ sealed interface ServiceMonitorState {
     /**
      * First and last state when system callbacks are unregistered and repo scope is cancelled.
      */
-    interface NotInitialized : ServiceMonitorState, SpecialFlowValue.NotImportant
+    sealed interface NotInitialized : ServiceMonitorState, SpecialFlowValue.NotImportant
 
     /**
      * When the platform where the module is used is uncapable of providing this info,
      * an example is when [BluetoothMonitor] runs on simulators.
      */
-    interface NotSupported : ServiceMonitorState
+    sealed interface NotSupported : ServiceMonitorState
 }

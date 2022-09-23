@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base.monitor
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -25,6 +26,7 @@ import com.splendo.kaluga.test.SimpleFlowTest
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -49,7 +51,7 @@ class ServiceMonitorRepoTest : SimpleFlowTest<ServiceMonitorState>() {
 
     internal class StubMonitorStateRepo(
         coroutineContext: CoroutineContext
-    ) : DefaultServiceMonitor(coroutineContext), ServiceMonitor {
+    ) : DefaultServiceMonitor(coroutineContext) {
 
         val startMonitoringDeferred = EmptyCompletableDeferred()
         val stopMonitoringDeferred = EmptyCompletableDeferred()
@@ -263,6 +265,17 @@ class ServiceMonitorRepoTest : SimpleFlowTest<ServiceMonitorState>() {
 
             delay(SERVICE_MONITOR_DELAY)
             job.cancel()
+        }
+    }
+
+    @Test
+    fun test_use_state_flow_implementation() {
+        runBlocking {
+            assertEquals(ServiceMonitorStateImpl.NotInitialized, repo.value)
+            repo.takeAndChangeState {
+                { ServiceMonitorStateImpl.Initialized.Enabled }
+            }
+            assertEquals(ServiceMonitorStateImpl.Initialized.Enabled, repo.value)
         }
     }
 
