@@ -188,7 +188,10 @@ actual class DefaultScanner internal constructor(
                 val deviceCreator: DeviceCreator = {
                     deviceWrapper to deviceConnectionManagerBuilder
                 }
-                val serviceUUIDs = device.uuids.map(ParcelUuid::getUuid)
+                val serviceUUIDs = device.uuids
+                    ?.map(ParcelUuid::getUuid)
+                    ?: emptyList()
+
                 Scanner.Event.DeviceDiscovered(
                     identifier = device.address,
                     rssi = Int.MIN_VALUE,
