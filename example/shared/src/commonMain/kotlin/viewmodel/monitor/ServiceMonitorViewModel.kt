@@ -19,8 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.monitor
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.monitor.ServiceMonitorState
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateImpl
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor.ServiceMonitorStateImpl
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.resources.localized
@@ -65,15 +64,10 @@ class ServiceMonitorViewModel(
     }
 }
 
-fun ServiceMonitorState.toStringValues(): String = when (this) {
-    is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
-    is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
-    is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
-    is ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
-    is ServiceMonitorState.Initialized.Unauthorized -> "monitor_services_status_unauthorized".localized()
-    ServiceMonitorStateImpl.Initialized.Enabled -> TODO()
-    ServiceMonitorStateImpl.Initialized.Disabled -> TODO()
-    ServiceMonitorStateImpl.Initialized.Unauthorized -> TODO()
-    ServiceMonitorStateImpl.NotInitialized -> TODO()
-    ServiceMonitorStateImpl.NotSupported -> TODO()
+fun ServiceMonitorStateImpl.toStringValues(): String = when (this) {
+    is ServiceMonitorStateImpl.Initialized.Disabled -> "monitor_services_status_disabled".localized()
+    is ServiceMonitorStateImpl.Initialized.Enabled -> "monitor_services_status_enabled".localized()
+    is ServiceMonitorStateImpl.NotInitialized -> "monitor_services_status_not_initialized".localized()
+    is ServiceMonitorStateImpl.NotSupported -> "monitor_services_status_not_supported".localized()
+    is ServiceMonitorStateImpl.Initialized.Unauthorized -> "monitor_services_status_unauthorized".localized()
 }
