@@ -163,7 +163,7 @@ actual class DefaultScanner internal constructor(
                 val serviceUUIDs: List<UUID> = peripheral.services
                     ?.filterIsInstance<CBService>()
                     ?.map { it.UUID }
-                    ?: emptyList()
+                    ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
                 Scanner.Event.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,

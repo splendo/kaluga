@@ -190,10 +190,10 @@ actual class DefaultScanner internal constructor(
                 }
                 val serviceUUIDs = device.uuids
                     ?.map(ParcelUuid::getUuid)
-                    ?: emptyList()
+                    ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
                 Scanner.Event.DeviceDiscovered(
-                    identifier = device.address,
+                    identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
                     advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
                     deviceCreator = deviceCreator
