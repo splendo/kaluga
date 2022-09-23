@@ -139,7 +139,7 @@ public final class com/splendo/kaluga/test/UIThreadTest$TestContext$DefaultImpls
 
 public abstract class com/splendo/kaluga/test/architecture/SimpleUIThreadViewModelTest : com/splendo/kaluga/test/architecture/UIThreadViewModelTest {
 	public fun <init> ()V
-	public abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/ViewModel;
+	public abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
 }
 
@@ -165,14 +165,14 @@ public final class com/splendo/kaluga/test/architecture/UIThreadViewModelTest$Vi
 }
 
 public abstract class com/splendo/kaluga/test/architecture/ViewModelTest : com/splendo/kaluga/test/BaseTest {
-	public field viewModel Lcom/splendo/kaluga/architecture/viewmodel/ViewModel;
+	public field viewModel Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public fun <init> ()V
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun beforeTest ()V
-	protected abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/ViewModel;
-	public final fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/ViewModel;
-	public final fun setViewModel (Lcom/splendo/kaluga/architecture/viewmodel/ViewModel;)V
+	protected abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+	public final fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
+	public final fun setViewModel (Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;)V
 }
 
 public abstract class com/splendo/kaluga/test/architecture/koin/KoinUIThreadViewModelTest : com/splendo/kaluga/test/koin/KoinUIThreadTest {
