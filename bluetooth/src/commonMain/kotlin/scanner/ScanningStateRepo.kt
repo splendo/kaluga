@@ -17,7 +17,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.ConnectableEmptyAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
@@ -128,20 +127,18 @@ open class ScanningStateImplRepo(
     }
 
     private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
-        val creators = event.deviceCreators.map {
+        val creators = event.devices.map {
             {
-                val (deviceWrapper, connectionManagerBuilder) = it()
-                val rssi = Int.MIN_VALUE
-                val advertisementData = ConnectableEmptyAdvertisementData(deviceWrapper.name)
+                val (deviceWrapper, connectionManagerBuilder) = it.deviceCreator()
                 createDevice(
                     deviceWrapper.identifier,
-                    DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
+                    DeviceInfoImpl(deviceWrapper, it.rssi, it.advertisementData),
                     deviceWrapper,
                     connectionManagerBuilder
                 )
             }
         }
-        state.pairedDevices(event.filter, event.identifiers, creators)
+        state.pairedDevices(event.filter, event.identifiers.toSet(), creators)
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->

@@ -30,7 +30,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
-import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
@@ -177,20 +177,26 @@ actual class DefaultScanner internal constructor(
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
         if (!isSupported) return
-        val identifiers: MutableSet<Identifier> = mutableSetOf()
-        val creators = bluetoothAdapter?.bondedDevices
+        val devices = bluetoothAdapter?.bondedDevices
             ?.filter {
                 // If no uuids available return this device
                 // Otherwise check if it contains any of given service uuid
                 it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
             }
             ?.map { device ->
-                identifiers.add(device.address)
-                return@map {
-                    DefaultDeviceWrapper(device) to deviceConnectionManagerBuilder
+                val deviceWrapper = DefaultDeviceWrapper(device)
+                val deviceCreator: DeviceCreator = {
+                    deviceWrapper to deviceConnectionManagerBuilder
                 }
+                val serviceUUIDs = device.uuids.map(ParcelUuid::getUuid)
+                Scanner.Event.DeviceDiscovered(
+                    identifier = device.address,
+                    rssi = Int.MIN_VALUE,
+                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
+                    deviceCreator = deviceCreator
+                )
             } ?: emptyList()
         // We have to call even with empty list to clean up cached devices
-        handlePairedDevices(withServices, identifiers, creators)
+        handlePairedDevices(withServices, devices)
     }
 }

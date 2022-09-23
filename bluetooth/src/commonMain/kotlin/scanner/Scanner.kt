@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -60,14 +61,16 @@ interface Scanner {
         data class DeviceDiscovered(
             val identifier: Identifier,
             val rssi: Int,
-            val advertisementData: AdvertisementData,
+            val advertisementData: BaseAdvertisementData,
             val deviceCreator: DeviceCreator
         ) : Event()
         data class PairedDevicesRetrieved(
             val filter: Filter,
-            val identifiers: Set<Identifier>,
-            val deviceCreators: List<DeviceCreator>
-        ) : Event()
+            val devices: List<DeviceDiscovered>
+        ) : Event() {
+            val identifiers = devices.map(DeviceDiscovered::identifier)
+            val deviceCreators = devices.map(DeviceDiscovered::deviceCreator)
+        }
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
     }
@@ -230,9 +233,12 @@ abstract class BaseScanner constructor(
         emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
-    internal fun handlePairedDevices(filter: Filter, identifiers: Set<Identifier>, deviceCreators: List<DeviceCreator>) {
-        logger.info(LOG_TAG) { "Paired Devices retrieved: ${identifiers.joinToString(", ")} for filter: $filter" }
-        emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, identifiers, deviceCreators))
+    internal fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
+        logger.info(LOG_TAG) {
+            val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
+            "Paired Devices retrieved: $identifiers for filter: $filter"
+        }
+        emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {

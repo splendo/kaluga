@@ -970,15 +970,15 @@ public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDisc
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/AdvertisementData;Lkotlin/jvm/functions/Function0;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;Lkotlin/jvm/functions/Function0;)V
 	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/UUID;
 	public final fun component2 ()I
-	public final fun component3 ()Lcom/splendo/kaluga/bluetooth/device/AdvertisementData;
+	public final fun component3 ()Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;
 	public final fun component4 ()Lkotlin/jvm/functions/Function0;
-	public final fun copy (Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/AdvertisementData;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered;Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/AdvertisementData;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered;
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered;Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$DeviceDiscovered;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAdvertisementData ()Lcom/splendo/kaluga/bluetooth/device/AdvertisementData;
+	public final fun getAdvertisementData ()Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;
 	public final fun getDeviceCreator ()Lkotlin/jvm/functions/Function0;
 	public final fun getIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
 	public final fun getRssi ()I
@@ -991,16 +991,16 @@ public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$FailedScan
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
-	public fun <init> (Ljava/util/Set;Ljava/util/Set;Ljava/util/List;)V
+	public fun <init> (Ljava/util/Set;Ljava/util/List;)V
 	public final fun component1 ()Ljava/util/Set;
-	public final fun component2 ()Ljava/util/Set;
-	public final fun component3 ()Ljava/util/List;
-	public final fun copy (Ljava/util/Set;Ljava/util/Set;Ljava/util/List;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/Set;Ljava/util/List;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;Ljava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDeviceCreators ()Ljava/util/List;
+	public final fun getDevices ()Ljava/util/List;
 	public final fun getFilter ()Ljava/util/Set;
-	public final fun getIdentifiers ()Ljava/util/Set;
+	public final fun getIdentifiers ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

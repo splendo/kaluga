@@ -42,12 +42,12 @@ val BaseAdvertisementData.description: String get() = listOfNotNull(
     "IsConnectable: $isConnectable"
 ).joinToString("\n")
 
-internal data class ConnectableEmptyAdvertisementData(
-    override val name: String? = null
+internal data class PairedAdvertisementData(
+    override val name: String? = null,
+    override val serviceUUIDs: List<UUID> = emptyList()
 ) : BaseAdvertisementData {
     override val manufacturerId: Int? = null
     override val manufacturerData: ByteArray? = null
-    override val serviceUUIDs: List<UUID> = emptyList()
     override val serviceData: Map<UUID, ByteArray?> = emptyMap()
     override val txPowerLevel = Int.MIN_VALUE
     override val isConnectable = true
