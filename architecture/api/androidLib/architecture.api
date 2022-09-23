@@ -1782,7 +1782,7 @@ public final class com/splendo/kaluga/architecture/observable/WithState$DefaultI
 	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/WithState;)Landroidx/lifecycle/LiveData;
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/ViewModel {
+public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -1792,17 +1792,23 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splen
 	protected fun onResume (Lkotlinx/coroutines/CoroutineScope;)V
 }
 
+public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
 public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelActivity : androidx/appcompat/app/AppCompatActivity {
 	public fun <init> ()V
 	public fun <init> (I)V
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;
+	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
 	protected fun onCreate (Landroid/os/Bundle;)V
 }
 
 public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelDialogFragment : androidx/fragment/app/DialogFragment {
 	public fun <init> ()V
-	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;
+	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
 	public fun onViewCreated (Landroid/view/View;Landroid/os/Bundle;)V
 }
 
@@ -1810,7 +1816,7 @@ public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelF
 	public fun <init> ()V
 	public fun <init> (I)V
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;
+	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
 	public fun onViewCreated (Landroid/view/View;Landroid/os/Bundle;)V
 }
 
@@ -1821,20 +1827,26 @@ public final class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelLife
 	public final fun onResume ()V
 }
 
+public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel : androidx/lifecycle/ViewModel {
+	public fun <init> ()V
+	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	protected fun onCleared ()V
+}
+
+public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelKt {
+	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/appcompat/app/AppCompatActivity;)V
+	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/fragment/app/Fragment;)Z
+}
+
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseViewModel {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/ViewModel : androidx/lifecycle/ViewModel {
+public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
-	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
-	protected fun onCleared ()V
-}
-
-public final class com/splendo/kaluga/architecture/viewmodel/ViewModelKt {
-	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;Landroidx/appcompat/app/AppCompatActivity;)V
-	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;Landroidx/fragment/app/Fragment;)Z
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

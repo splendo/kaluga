@@ -16,7 +16,7 @@
  */
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.test.SimpleUIThreadViewModelTestTest.ViewModel
 import com.splendo.kaluga.test.architecture.SimpleUIThreadViewModelTest
 import kotlin.test.Test
@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 
 class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<ViewModel>() {
 
-    class ViewModel : BaseViewModel() {
+    class ViewModel : BaseLifecycleViewModel() {
         var v = ""
     }
 

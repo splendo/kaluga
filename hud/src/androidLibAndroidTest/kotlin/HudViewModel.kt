@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.hud
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
-open class HudViewModel : BaseViewModel() {
+open class HudViewModel : BaseLifecycleViewModel() {
 
     val builder = HUD.Builder()
 }
