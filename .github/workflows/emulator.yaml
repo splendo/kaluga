@@ -7,7 +7,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [22, 32]
+        api-level: [23, 32]
         module: ["base", "beacons", "bluetooth", "architecture", "architecture-compose", "alerts", "date-time", "date-time-picker", "logging", "hud", "base-permissions", "bluetooth-permissions", "calendar-permissions", "location-permissions", "storage-permissions", "notifications-permissions", "contacts-permissions", "microphone-permissions", "camera-permissions", "permissions", "location", "keyboard", "keyboard-compose", "links", "resources", "resources-compose", "review", "scientific", "system", "test-utils", "test-utils-base", "test-utils-alerts", "test-utils-architecture", "test-utils-bluetooth", "test-utils-hud", "test-utils-keyboard", "test-utils-koin", "test-utils-location", "test-utils-permissions", "test-utils-resources"]
     steps:
       - name: checkout
