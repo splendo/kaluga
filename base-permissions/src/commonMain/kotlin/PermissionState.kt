@@ -90,6 +90,8 @@ abstract class PermissionStateRepo<P : Permission>(
     coroutineContext,
     initChangeStateWithRepo = { state, repo ->
         val pm = (repo as PermissionStateRepo<P>).permissionManager
+        // TODO: Consider decoupling from initialization and let the API user decide when to monitor or not so issues like iOS asking
+        //  user to enable a service right away can be avoided (as it happens the moment a CBCentralManager instance is created
         pm.startMonitoring(monitoringInterval)
         if (state is PermissionState.Unknown<P>)
             suspend { pm.initializeState() }

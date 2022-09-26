@@ -52,8 +52,7 @@ class DefaultBluetoothPermissionStateRepo(
     builder: BaseBluetoothPermissionManagerBuilder,
     coroutineContext: CoroutineContext
 ) : BluetoothPermissionStateRepo(coroutineContext = coroutineContext) {
-    override val permissionManager: PermissionManager<BluetoothPermission> =
-        builder.create(this)
+    override val permissionManager: PermissionManager<BluetoothPermission> = builder.create(this)
 }
 
 abstract class BluetoothPermissionStateRepo(coroutineContext: CoroutineContext) : PermissionStateRepo<BluetoothPermission>(coroutineContext = coroutineContext)

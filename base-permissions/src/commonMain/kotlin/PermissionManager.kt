@@ -46,7 +46,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
     abstract suspend fun startMonitoring(interval: Long)
 
     /**
-     * Stops monitoring for chabges to the permission.
+     * Stops monitoring for changes to the permission.
      */
     abstract suspend fun stopMonitoring()
 
