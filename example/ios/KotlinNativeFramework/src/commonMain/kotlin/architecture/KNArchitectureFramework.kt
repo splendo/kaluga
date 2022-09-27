@@ -286,7 +286,7 @@ class KNArchitectureFramework {
 
     fun createColorViewModel(parent: UIViewController) = ColorViewModel(AlertPresenter.Builder(parent))
 
-    fun <VM : BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
+    fun <VM : BaseLifecycleViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
 
