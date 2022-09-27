@@ -1,6 +1,7 @@
 package com.splendo.kaluga.architecture.compose.viewModel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -10,7 +11,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
 /**
  * Composable which manages [viewModel] lifecycle and optionally adds it to local [ViewModelStore].
@@ -18,7 +19,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
  * @param content content based on [viewModel]
  */
 @Composable
-fun <ViewModel : BaseViewModel> ViewModelComposable(
+fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     viewModel: ViewModel,
     content: @Composable (ViewModel.() -> Unit)? = null
 ) {
@@ -30,11 +31,31 @@ fun <ViewModel : BaseViewModel> ViewModelComposable(
  * Stores a view model in the local [ViewModelStore]. Use if the view model
  * was created manually and is not located in Activity/Fragment [ViewModelStore].
  */
-@Composable fun <VM : BaseViewModel> store(provider: @Composable () -> VM): VM =
+@Composable fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
     provider().also { handleLocalViewModelStore(it) }
 
+/**
+ * Stores and remembers a view model in the local [ViewModelStore].
+ * Use if the view model was created manually and is not located in Activity/Fragment [ViewModelStore].
+ * provider will only be evaluated during the composition. Recomposition will always return the value produced by provider.
+ */
 @Composable
-private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {
+fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> VM): VM = store {
+    remember(provider)
+}
+
+/**
+ * Stores and remembers a view model in the local [ViewModelStore].
+ * Use if the view model was created manually and is not located in Activity/Fragment [ViewModelStore].
+ * provider will only be evaluated during the composition. Recomposition will always return the value produced by provider.
+ */
+@Composable
+fun <VM : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> VM): VM = store {
+    remember(key, provider)
+}
+
+@Composable
+private fun <VM : BaseLifecycleViewModel> handleLocalViewModelStore(viewModel: VM): VM {
     // we delegate VM cleanup to the ViewModelStore, which lives in scope of the current @Composable
     val viewModelStoreOwner = rememberComposableViewModelStoreOwner(viewModel)
 
@@ -56,7 +77,7 @@ private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {
 }
 
 @Composable
-private fun rememberComposableViewModelStoreOwner(viewModel: BaseViewModel): ViewModelStoreOwner {
+private fun rememberComposableViewModelStoreOwner(viewModel: BaseLifecycleViewModel): ViewModelStoreOwner {
     val viewModelStoreOwner = remember(viewModel) {
         val viewModelStore = ViewModelStore()
         ViewModelStoreOwner { viewModelStore }
@@ -71,7 +92,7 @@ private fun rememberComposableViewModelStoreOwner(viewModel: BaseViewModel): Vie
 }
 
 @Composable
-private fun <VM : BaseViewModel> VM.linkLifecycle(): VM {
+private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(): VM {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(Unit) {
         val observer = VmObserver(this@linkLifecycle)
@@ -86,7 +107,7 @@ private fun <VM : BaseViewModel> VM.linkLifecycle(): VM {
     return this
 }
 
-private class VmObserver<VM : BaseViewModel>(private val viewModel: VM) : LifecycleObserver {
+private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM) : LifecycleObserver {
     private var resumed = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

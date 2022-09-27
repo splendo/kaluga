@@ -18,7 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.alerts.BaseAlertPresenter
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.test.architecture.koin.KoinUIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +33,7 @@ import kotlin.test.assertTrue
 class KoinUIThreadViewModelTestTest :
     KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
 
-    class KoinViewModel : BaseViewModel(), KoinComponent {
+    class KoinViewModel : BaseLifecycleViewModel(), KoinComponent {
         val s: String by inject() // test injecting into ViewModel
     }
 

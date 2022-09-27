@@ -16,6 +16,7 @@ plugins {
     id 'org.jlleitschuh.gradle.ktlint'
     id 'org.jlleitschuh.gradle.ktlint-idea'
     id 'org.jetbrains.kotlin.multiplatform' apply false
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
 // TODO: To be removed once we will migrate to kotlin version 1.6.20
@@ -44,8 +45,27 @@ allprojects {
     }
 }
 
+apiValidation {
+
+    subprojects.forEach {
+        def name = it.name
+
+        ignoredClasses += ["com.splendo.kaluga.${name}.BuildConfig".toString()]
+        ignoredClasses += ["com.splendo.kaluga.${name.replaceAll('-', ".")}.BuildConfig".toString()]
+        ignoredClasses += ["com.splendo.kaluga.${name.replaceAll('-', "")}.BuildConfig".toString()]
+        ignoredClasses += ["com.splendo.kaluga.permissions.${name.replaceAll("-permissions", "")}.BuildConfig".toString()]
+    }
+
+    ignoredClasses += ['com.splendo.kaluga.permissions.BuildConfig']
+    ignoredClasses += ['com.splendo.kaluga.test.BuildConfig']
+    ignoredClasses += ['com.splendo.kaluga.datetime.timer.BuildConfig']
+
+    ignoredProjects += ["androidtesthelper"]
+}
+
 apply from:"gradle/ext.gradle"
 apply from:"gradle/newModule.gradle.kts"
+apply from:"gradle/copyReports.gradle.kts"
 
 group 'com.splendo.kaluga'
 version gradle.ext.library_version

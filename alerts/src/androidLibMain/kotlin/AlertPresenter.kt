@@ -34,7 +34,6 @@ import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -204,7 +203,7 @@ actual class AlertPresenter(
  * Will be created if need but only one instance will exist.
  *
  * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.ViewModel],
+ * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
  * which can automatically track which Activity is active for it.
  *
  */

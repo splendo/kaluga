@@ -27,10 +27,10 @@ import kotlin.math.sqrt
  */
 sealed class BlendMode {
 
-    abstract fun blendColor(backdrop: Color, source: Color): Color
+    abstract fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor
 
     sealed class SeparableBlendMode : BlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color = colorFrom(
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = colorFrom(
             blendColorChannel(backdrop.red, source.red),
             blendColorChannel(backdrop.green, source.green),
             blendColorChannel(backdrop.blue, source.blue)
@@ -47,7 +47,7 @@ sealed class BlendMode {
                 return UnboundColor(red + delta, green + delta, blue + delta)
             }
 
-            val clip: Color
+            val clip: KalugaColor
                 get() {
                     val lumination = this.lumination
                     val min = minOf(red, green, blue)
@@ -68,19 +68,19 @@ sealed class BlendMode {
                 }
         }
 
-        private val Color.unbounded get() = UnboundColor(red, green, blue)
-        protected val Color.lumination get() = unbounded.lumination
-        protected val Color.saturation: Double
+        private val KalugaColor.unbounded get() = UnboundColor(red, green, blue)
+        protected val KalugaColor.lumination get() = unbounded.lumination
+        protected val KalugaColor.saturation: Double
             get() = maxOf(red, green, blue) - minOf(
                 red,
                 green,
                 blue
             )
 
-        protected fun Color.setLumination(lumination: Double): Color =
+        protected fun KalugaColor.setLumination(lumination: Double): KalugaColor =
             unbounded.setLumination(lumination).clip
 
-        protected fun Color.setSaturation(saturation: Double): Color {
+        protected fun KalugaColor.setSaturation(saturation: Double): KalugaColor {
             val keyRed = "red"
             val keyGreen = "green"
             val keyBlue = "blue"
@@ -181,24 +181,24 @@ sealed class BlendMode {
     }
 
     object Hue : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color = source
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = source
             .setSaturation(backdrop.saturation)
             .setLumination(backdrop.lumination)
     }
 
     object Saturation : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color = backdrop
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = backdrop
             .setSaturation(source.saturation)
             .setLumination(backdrop.lumination)
     }
 
     object ColorBlend : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color =
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor =
             source.setLumination(backdrop.lumination)
     }
 
     object Luminosity : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: Color, source: Color): Color =
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor =
             backdrop.setLumination(source.lumination)
     }
 }
@@ -207,7 +207,7 @@ sealed class BlendMode {
  * Blends two colors according to their [BlendMode]
  * For Alpha Blending the W3 standard is applied: https://www.w3.org/TR/compositing-1/#blending
  */
-private fun Color.blend(source: Color, mode: BlendMode): Color {
+private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor {
     val alphaCompose = {
         backdropAlpha: Double,
         sourceAlpha: Double,
@@ -229,19 +229,19 @@ private fun Color.blend(source: Color, mode: BlendMode): Color {
     )
 }
 
-infix fun Color.normal(source: Color) = blend(source, BlendMode.Normal)
-infix fun Color.multiply(source: Color) = blend(source, BlendMode.Multiply)
-infix fun Color.screen(source: Color) = blend(source, BlendMode.Screen)
-infix fun Color.overlay(source: Color) = blend(source, BlendMode.Overlay)
-infix fun Color.darken(source: Color) = blend(source, BlendMode.Darken)
-infix fun Color.lighten(source: Color) = blend(source, BlendMode.Lighten)
-infix fun Color.hardLight(source: Color) = blend(source, BlendMode.HardLight)
-infix fun Color.softLight(source: Color) = blend(source, BlendMode.SoftLight)
-infix fun Color.dodge(source: Color) = blend(source, BlendMode.ColorDodge)
-infix fun Color.burn(source: Color) = blend(source, BlendMode.ColorBurn)
-infix fun Color.difference(source: Color) = blend(source, BlendMode.Difference)
-infix fun Color.exclude(source: Color) = blend(source, BlendMode.Exclusion)
-infix fun Color.hue(source: Color) = blend(source, BlendMode.Hue)
-infix fun Color.saturate(source: Color) = blend(source, BlendMode.Saturation)
-infix fun Color.luminate(source: Color) = blend(source, BlendMode.Luminosity)
-infix fun Color.colorBlend(source: Color) = blend(source, BlendMode.ColorBlend)
+infix fun KalugaColor.normal(source: KalugaColor) = blend(source, BlendMode.Normal)
+infix fun KalugaColor.multiply(source: KalugaColor) = blend(source, BlendMode.Multiply)
+infix fun KalugaColor.screen(source: KalugaColor) = blend(source, BlendMode.Screen)
+infix fun KalugaColor.overlay(source: KalugaColor) = blend(source, BlendMode.Overlay)
+infix fun KalugaColor.darken(source: KalugaColor) = blend(source, BlendMode.Darken)
+infix fun KalugaColor.lighten(source: KalugaColor) = blend(source, BlendMode.Lighten)
+infix fun KalugaColor.hardLight(source: KalugaColor) = blend(source, BlendMode.HardLight)
+infix fun KalugaColor.softLight(source: KalugaColor) = blend(source, BlendMode.SoftLight)
+infix fun KalugaColor.dodge(source: KalugaColor) = blend(source, BlendMode.ColorDodge)
+infix fun KalugaColor.burn(source: KalugaColor) = blend(source, BlendMode.ColorBurn)
+infix fun KalugaColor.difference(source: KalugaColor) = blend(source, BlendMode.Difference)
+infix fun KalugaColor.exclude(source: KalugaColor) = blend(source, BlendMode.Exclusion)
+infix fun KalugaColor.hue(source: KalugaColor) = blend(source, BlendMode.Hue)
+infix fun KalugaColor.saturate(source: KalugaColor) = blend(source, BlendMode.Saturation)
+infix fun KalugaColor.luminate(source: KalugaColor) = blend(source, BlendMode.Luminosity)
+infix fun KalugaColor.colorBlend(source: KalugaColor) = blend(source, BlendMode.ColorBlend)

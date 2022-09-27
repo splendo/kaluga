@@ -1,0 +1,32 @@
+public abstract interface class com/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder : com/splendo/kaluga/permissions/BasePermissionsBuilder {
+	public abstract fun create (Lcom/splendo/kaluga/permissions/camera/CameraPermissionStateRepo;)Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/camera/CameraPermission : com/splendo/kaluga/permissions/Permission {
+	public static final field INSTANCE Lcom/splendo/kaluga/permissions/camera/CameraPermission;
+}
+
+public final class com/splendo/kaluga/permissions/camera/CameraPermissionManager : com/splendo/kaluga/permissions/PermissionManager {
+	public fun <init> (Lcom/splendo/kaluga/permissions/camera/CameraPermissionStateRepo;)V
+	public fun initializeState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun requestPermission (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoring (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/permissions/camera/CameraPermissionManagerBuilder : com/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/PermissionContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/permissions/camera/CameraPermissionStateRepo;)Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/camera/CameraPermissionStateRepo : com/splendo/kaluga/permissions/PermissionStateRepo {
+	public fun <init> (Lcom/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder;Lkotlin/coroutines/CoroutineContext;)V
+	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/camera/PermissionKt {
+	public static final fun registerCameraPermission (Lcom/splendo/kaluga/permissions/PermissionsBuilder;)Lcom/splendo/kaluga/permissions/camera/CameraPermissionManagerBuilder;
+}
+

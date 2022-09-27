@@ -69,7 +69,7 @@ actual class ReviewManager(
  *  Will be created if need but only one instance will exist.
  *
  * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.ViewModel],
+ * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
  * which can automatically track which Activity is active for it.
  *
  */

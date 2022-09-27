@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.test.architecture.koin
 
-import com.splendo.kaluga.architecture.viewmodel.ViewModel
+import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import com.splendo.kaluga.test.koin.KoinUIThreadTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
     KoinUIThreadTest<KVMC>(allowFreezing) {
 
     abstract class KoinViewModelTestContext<VM>(

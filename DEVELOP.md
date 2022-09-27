@@ -60,6 +60,18 @@ We use with the following branches:
 
 When making a pull request fill in the template.
 
+## API compatibility
+
+The [binary-compatibility-validator](https://github.com/Kotlin/binary-compatibility-validator) gradle plugin is used to keep track of our public API.
+
+This means if you change the public API you need to run the `apiDump` task, and then commit and changes to the `.api` files or CI will fail.
+
+Please study these changes carefully both when committing and reviewing pull requests to ensure there are:
+- no needless breaking changes to the public API
+- no classes or methods added that could be `private` or `internal`
+
+Currently this tool only supports JVM based targets, so iOS/js only API changes are not tracked yet.
+
 ## Publishing
 
 ### Publishing process
@@ -78,7 +90,8 @@ For example if the version in `ext.gradle` is `1.1` and `feature/123_fix_bug` is
 
 #### Local Testing
 
-Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`oss.sonatype.org`). Test both on Android and iOS example app just adding the following code inside the `local.properties` file:
+Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`oss.sonatype.org`).
+Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/ios/Supporting\ Files`.
 ```
 kaluga.exampleEmbeddingMethod=composite
 kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/

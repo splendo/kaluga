@@ -146,6 +146,8 @@ abstract class BaseScanner constructor(
     }
     abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
+    abstract fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+
     fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
         it.enable
     }

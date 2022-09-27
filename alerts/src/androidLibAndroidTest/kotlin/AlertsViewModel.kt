@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.alerts
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
-class AlertsViewModel : BaseViewModel() {
+class AlertsViewModel : BaseLifecycleViewModel() {
     val alertBuilder = AlertPresenter.Builder()
 }

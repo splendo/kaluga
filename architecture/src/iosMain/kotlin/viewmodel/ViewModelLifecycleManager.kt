@@ -28,9 +28,9 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.willMoveToParentViewController
 
 /**
- * Holds the lifecycle of a [BaseViewModel].
+ * Holds the lifecycle of a [BaseLifecycleViewModel].
  * A single lifecycle starts at [UIViewController.viewDidAppear] and ends at [UIViewController.viewDidDisappear] of the bound [UIViewController]
- * This convenience class is the result of [BaseViewModel.addLifecycleManager].
+ * This convenience class is the result of [BaseLifecycleViewModel.addLifecycleManager].
  * Invoke [unbind] to unbind the Lifecycle from its bound [UIViewController]
  */
 class LifecycleManager internal constructor(allowFreezing: Boolean, clearViewModel: () -> Unit) {
@@ -39,7 +39,7 @@ class LifecycleManager internal constructor(allowFreezing: Boolean, clearViewMod
     private var onUnbind: (() -> Unit)? = clearViewModel
 
     /**
-     * Unbinds the [BaseViewModel]
+     * Unbinds the [BaseLifecycleViewModel]
      */
     fun unbind() {
         onUnbind?.invoke()
@@ -53,7 +53,7 @@ class LifecycleManager internal constructor(allowFreezing: Boolean, clearViewMod
  */
 typealias onLifeCycleChanged = () -> List<Disposable>
 
-internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewModel: VM, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
+internal class ViewModelLifecycleManager<VM : BaseLifecycleViewModel>(private val viewModel: VM, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
 
     internal val lifecycleManager = LifecycleManager(viewModel.allowFreezing) {
         viewModel.clear()
@@ -78,13 +78,13 @@ internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewMod
 }
 
 /**
- * Adds a manager to automatically bind the [LifecycleManager] of a [BaseViewModel] to a [UIViewController].
+ * Adds a manager to automatically bind the [LifecycleManager] of a [BaseLifecycleViewModel] to a [UIViewController].
  * This is achieved by adding an invisible child [UIViewController].
  * @param parent The containing [UIViewController]
  * @param onLifecycle This callback is invoked on each start of a new lifecycle.
- * @return The [LifecycleManager] bound to the [BaseViewModel]
+ * @return The [LifecycleManager] bound to the [BaseLifecycleViewModel]
  */
-fun <VM : BaseViewModel> VM.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
+fun <VM : BaseLifecycleViewModel> VM.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
     val lifecycleManager = ViewModelLifecycleManager(this, onLifecycle)
     parent.addChildViewController(lifecycleManager)
     parent.view.addSubview(lifecycleManager.view)
