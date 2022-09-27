@@ -101,6 +101,12 @@ if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
     }
 }
 
+def CONNECTED_CHECK_EXPANSION = System.env.containsKey("CONNECTED_CHECK_EXPANSION")
+gradle.ext.connect_check_expansion = CONNECTED_CHECK_EXPANSION | System.env.containsKey("CI")
+
+if (gradle.ext.connect_check_expansion)
+    logger.lifecycle "Adding extra dependend task to connected checks of similarly named modules (CONNECTED_CHECK_EXPANSION env present: $CONNECTED_CHECK_EXPANSION)"
+
 // based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
 def sdkName = System.getenv("SDK_NAME") ?: "unknown"
 gradle.ext.is_real_ios_device = sdkName.startsWith("iphoneos")

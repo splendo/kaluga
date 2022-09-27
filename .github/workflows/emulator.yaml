@@ -1,4 +1,4 @@
-name: CI
+name: Android Emulator tests
 on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
@@ -8,7 +8,26 @@ jobs:
     strategy:
       matrix:
         api-level: [23, 32]
-        module: ["base", "beacons", "bluetooth", "architecture", "architecture-compose", "alerts", "date-time", "date-time-picker", "logging", "hud", "base-permissions", "bluetooth-permissions", "calendar-permissions", "location-permissions", "storage-permissions", "notifications-permissions", "contacts-permissions", "microphone-permissions", "camera-permissions", "permissions", "location", "keyboard", "keyboard-compose", "links", "resources", "resources-compose", "review", "scientific", "system", "test-utils", "test-utils-base", "test-utils-alerts", "test-utils-architecture", "test-utils-bluetooth", "test-utils-hud", "test-utils-keyboard", "test-utils-koin", "test-utils-location", "test-utils-permissions", "test-utils-resources"]
+        # some custom gradle magic makes tests run grouped for `$module-*` and `*-$module` on CI so there is no need to add these to the matrix
+        module: [
+          "base",
+          "beacons",
+          "bluetooth",
+          "architecture",
+          "alerts",
+          "date-time",
+          "logging",
+          "hud",
+          "permissions",
+          "location",
+          "keyboard",
+          "links",
+          "resources",
+          "review",
+          "scientific",
+          "system",
+          "test-utils"
+        ]
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -52,4 +71,4 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
-          script: ./gradlew :${{ matrix.module }}:connectedCheck
+          script: ./gradlew :${{ matrix.module }}:connectedDebugAndroidTest
