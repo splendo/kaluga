@@ -23,7 +23,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged

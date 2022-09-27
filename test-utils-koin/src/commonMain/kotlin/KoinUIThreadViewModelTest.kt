@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.test.koin
 
-import com.splendo.kaluga.architecture.viewmodel.ViewModel
+import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.architecture.BaseUIThreadViewModelTest
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
     KoinUIThreadTest<KVMC>(allowFreezing) {
 
-    abstract class KoinViewModelTestContext<VM : ViewModel>(
+    abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
@@ -39,10 +39,10 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
     }
 }
 
-abstract class BaseKoinUIThreadViewModelTest<C, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
+abstract class BaseKoinUIThreadViewModelTest<C, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
     BaseKoinUIThreadTest<C, KVMC>(allowFreezing) {
 
-    abstract class KoinViewModelTestContext<VM : ViewModel>(
+    abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),

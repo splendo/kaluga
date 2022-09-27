@@ -22,9 +22,9 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 
 /**
- * Convenience [DialogFragment] that is bound to a [ViewModel]
+ * Convenience [DialogFragment] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelDialogFragment<VM : BaseViewModel> : DialogFragment() {
+abstract class KalugaViewModelDialogFragment<VM : BaseLifecycleViewModel> : DialogFragment() {
 
     abstract val viewModel: VM
 
