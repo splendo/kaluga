@@ -41,7 +41,7 @@ jobs:
           arch: x86_64
           script: echo "Generated AVD snapshot for caching."
 
-      - run: ./gradlew base:packageDebugAndroidTest
+      - run: ./gradlew  --parallel packageDebugAndroidTest
 
   test:
     needs: build
