@@ -3,31 +3,8 @@ on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 jobs:
-  test:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        api-level: [23, 32]
-        # some custom gradle magic makes tests run grouped for `$module-*` and `*-$module` on CI so there is no need to add these to the matrix
-        module: [
-          "base",
-          "beacons",
-          "bluetooth",
-          "architecture",
-          "alerts",
-          "date-time",
-          "logging",
-          "hud",
-          "permissions",
-          "location",
-          "keyboard",
-          "links",
-          "resources",
-          "review",
-          "scientific",
-          "system",
-          "test-utils"
-        ]
+  build:
+    runs-on: macos-12
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -63,6 +40,36 @@ jobs:
           disable-animations: true
           arch: x86_64
           script: echo "Generated AVD snapshot for caching."
+
+      - run: ./gradlew base:packageDebugAndroidTest
+
+  test:
+    needs: build
+    runs-on: macos-12
+    strategy:
+      matrix:
+        api-level: [23, 32]
+        # some custom gradle magic makes tests run grouped for `$module-*` and `*-$module` on CI so there is no need to add these to the matrix
+        module: [
+          "base",
+          "beacons",
+          "bluetooth",
+          "architecture",
+          "alerts",
+          "date-time",
+          "logging",
+          "hud",
+          "permissions",
+          "location",
+          "keyboard",
+          "links",
+          "resources",
+          "review",
+          "scientific",
+          "system",
+          "test-utils"
+        ]
+    steps:
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
