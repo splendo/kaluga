@@ -65,6 +65,8 @@ import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -317,7 +319,12 @@ class KNArchitectureFramework {
 
     fun createMonitorViewModel(): ServiceMonitorViewModel {
         return ServiceMonitorViewModel(
-            BluetoothMonitor.Builder(CBCentralManager()),
+            BluetoothMonitor.Builder(
+                permissions = Permissions(
+                    PermissionsBuilder().apply {
+                        registerBluetoothPermission()
+                    }
+                )),
             LocationMonitor.Builder(CLLocationManager())
         )
     }
