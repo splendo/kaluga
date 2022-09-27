@@ -23,8 +23,6 @@ import kotlin.coroutines.CoroutineContext
 expect interface BluetoothMonitor {
 
     class Builder {
-        constructor()
-
         fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor
     }
 }

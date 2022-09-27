@@ -35,6 +35,9 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
@@ -54,10 +57,12 @@ actual class Scanner internal constructor(
     private val scanSettings: ScanSettings,
     autoRequestPermission: Boolean,
     autoEnableSensors: Boolean,
-    stateRepo: ScanningStateFlowRepo,
+    stateRepo: ScanningStateFlowRepo
 ) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
 
-    class Builder(private val scanSettings: ScanSettings = defaultScanOptions) : BaseScanner.Builder {
+    class Builder(
+        private val scanSettings: ScanSettings = defaultScanOptions
+    ) : BaseScanner.Builder {
 
         override fun create(
             permissions: Permissions,
@@ -66,7 +71,8 @@ actual class Scanner internal constructor(
             autoEnableSensors: Boolean,
             scanningStateRepo: ScanningStateFlowRepo,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo,)
+
+            return Scanner(permissions, connectionSettings, scanSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
         }
     }
 
@@ -126,7 +132,7 @@ actual class Scanner internal constructor(
     private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
     override val bluetoothEnabledMonitor: DefaultServiceMonitor by lazy {
         initMainManagersIfNeeded()
-        BluetoothMonitor.Builder(mainCentralManager).create(coroutineContext)
+        BluetoothMonitor.Builder(permissions).create(coroutineContext)
     }
 
     private fun initMainManagersIfNeeded() {

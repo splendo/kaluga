@@ -22,8 +22,6 @@ import kotlin.coroutines.CoroutineContext
 
 actual interface BluetoothMonitor {
     actual class Builder {
-        actual constructor()
-
         /**
          * Builder's create method.
          * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.

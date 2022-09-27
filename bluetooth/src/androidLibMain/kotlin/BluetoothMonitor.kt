@@ -47,7 +47,7 @@ actual interface BluetoothMonitor {
         private val context: Context = ApplicationHolder.applicationContext,
         private val adapter: BluetoothAdapter?
     ) {
-        actual constructor() : this(
+        constructor() : this(
             ApplicationHolder.applicationContext,
             (ApplicationHolder.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter ?: throw IllegalArgumentException(
                 "BluetoothAdapter should not be null, please check your device capabilities."
