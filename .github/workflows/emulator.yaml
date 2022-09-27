@@ -26,7 +26,7 @@ jobs:
           path: ./*
           key: build-${{ github.sha }}
 
-      - run: ./gradlew --parallel packageDebugAndroidTest
+      - run: ./gradlew --parallel bundleLibRuntimeToJarDebug
 
   test:
     needs: build
