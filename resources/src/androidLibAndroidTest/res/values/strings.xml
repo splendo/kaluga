@@ -1,6 +1,3 @@
-<!--
-    ‼️ Keep in sync with values in androidtesthelper ‼️
- -->
 <resources>
 
     <plurals name="hours_value">
