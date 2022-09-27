@@ -102,7 +102,9 @@ abstract class BaseScanner constructor(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
-        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+        /** If set, will include bonded devices in discovered result list on Android */
+        val discoverBondedDevices: Boolean = true,
     )
 
     interface Builder {

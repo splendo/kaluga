@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice.BOND_NONE
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.ParcelUuid
@@ -110,7 +111,11 @@ actual class DefaultScanner internal constructor(
             }
         }
 
+        @SuppressLint("MissingPermission") // Lint complains even with permissions
         private fun handleScanResult(scanResult: ScanResult) {
+            if (!settings.discoverBondedDevices && scanResult.device.bondState != BOND_NONE)
+                return // ignore bonded devices
+
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
