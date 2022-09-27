@@ -80,6 +80,13 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}
 
+      - name: Konan cache
+        uses: actions/cache@v3
+        id: konan-cache
+        with:
+          path: ~/.konan/*
+          key: konan
+
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
