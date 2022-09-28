@@ -1,3 +1,6 @@
+#### for keeping up to date with settings.gradle.kts see instructions in `test:` job, then
+#### also update the `--dry-run connectedDebugAndroidTest` run with the same module name
+
 name: Android Emulator tests
 on: push
 env:
@@ -37,9 +40,9 @@ jobs:
           key: build-${{ github.sha }}
 
       - run: ./gradlew --no-daemon --configuration-cache --parallel bundleLibRuntimeToJarDebug
-      # fill the configuration cache for the matrix test
-      - run: ./gradlew --no-daemon --configuration-cache --parallel --dry-run connectedDebugAndroidTest
-
+      # fill the configuration cache for the matrix test, not required but will speed up builds
+      - run: ./gradlew --no-daemon --configuration-cache --parallel --dry-run connectedDebugAndroidTest :base:connectedDebugAndroidTest :beacons:connectedDebugAndroidTest :bluetooth:connectedDebugAndroidTest :architecture:connectedDebugAndroidTest :alerts:connectedDebugAndroidTest :date-time:connectedDebugAndroidTest :logging:connectedDebugAndroidTest :hud:connectedDebugAndroidTest :permissions:connectedDebugAndroidTest :location:connectedDebugAndroidTest :keyboard:connectedDebugAndroidTest :links:connectedDebugAndroidTest :resources:connectedDebugAndroidTest :review:connectedDebugAndroidTest :scientific:connectedDebugAndroidTest :system:connectedDebugAndroidTest :test-utils:connectedDebugAndroidTest
+  
   test:
     needs: build
     runs-on: macos-12
