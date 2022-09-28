@@ -117,7 +117,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options:  -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -cores 3
           disable-animations: true
           arch: x86_64
           script: echo "Generated AVD snapshot for caching."
@@ -128,7 +128,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -cores 3
           disable-animations: true
           arch: x86_64
           script: ./gradlew --no-daemon --configuration-cache --parallel :${{ matrix.module }}:connectedDebugAndroidTest
