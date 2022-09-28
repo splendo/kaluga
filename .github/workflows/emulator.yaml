@@ -22,6 +22,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: false
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            configuration-cache
 
       - name: Make cache of workspace
         uses: actions/cache@v3
@@ -64,6 +68,11 @@ jobs:
     steps:
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            configuration-cache
 
       - name: Get cache of workspace
         uses: actions/cache@v3
