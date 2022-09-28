@@ -37,6 +37,8 @@ jobs:
           key: build-${{ github.sha }}
 
       - run: ./gradlew --no-daemon --configuration-cache --parallel bundleLibRuntimeToJarDebug
+      # fill the configuration cache for the matrix test
+      - run: ./gradlew --no-daemon --configuration-cache --parallel --dry-run connectedDebugAndroidTest
 
   test:
     needs: build
