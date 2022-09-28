@@ -23,6 +23,7 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -49,7 +50,14 @@ class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Naviga
 
         scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
         scope.launch {
-            bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
+            bluetooth.devices()
+                .map { devices ->
+                    devices.filter {
+                        it.stateFlow.value.deviceInfo.advertisementData.serviceUUIDs.contains(uuidFrom("0000180d-0000-1000-8000-00805f9b34fb"))
+                    }.map {
+                        BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator)
+                    }
+                }.collect { devices ->
                 cleanDevices()
                 _devices.value = devices.sortedByDescending { it.name.currentOrNull }
             }

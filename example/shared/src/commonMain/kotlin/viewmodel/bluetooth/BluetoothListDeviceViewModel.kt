@@ -27,15 +27,23 @@ import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.bluetooth.uuidFrom
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.resources.localized
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -67,7 +75,10 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
         when (it) {
             is DeviceState.Disconnecting -> "bluetooth_disconneting"
             is DeviceState.Disconnected -> "bluetooth_disconnected"
-            is DeviceState.Connected -> "bluetooth_connected"
+            is DeviceState.Connected -> {
+                testWrite(byteArrayOf(0x0f, 0x1e))
+                return@deviceStateObservable "bluetooth_connected"
+            }
             is DeviceState.Connecting -> "bluetooth_connecting"
             is DeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
@@ -86,8 +97,18 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
         _isFoldedOut.value = !_isFoldedOut.value
     }
 
-    fun onConnectPressed() = coroutineScope.launch {
-        device.connect()
+    fun testWrite(data: ByteArray) = coroutineScope.launch {
+        device.services()[uuidFrom("0000180d-0000-1000-8000-00805f9b34fb")].characteristics().map {
+            it.firstOrNull()
+        }.first()?.let {
+            it.writeValue(data)
+        }
+    }
+
+    fun onConnectPressed() {
+        coroutineScope.launch {
+            device.connect()
+        }
     }
 
     fun onDisconnectPressed() = coroutineScope.launch {
