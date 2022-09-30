@@ -1,10 +1,9 @@
-#### for keeping up to date with settings.gradle.kts see instructions in `test:` job, then
-#### also update the `--dry-run connectedDebugAndroidTest` run with the same module name
-
+#### for keeping up to date with settings.gradle.kts see instructions in `test:` job
 name: Android Emulator tests
 on: push
 env:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx8g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8g -XX:MaxMetaspaceSize=512m\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  JAVA_OPTS: "-Xmx8g -XX:MaxMetaspaceSize=512m"
 jobs:
   build:
     runs-on: macos-12
@@ -13,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       # remove VM settings as defined for using the IDE
-      - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties
+      - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
 
       - name : set up JDK 11
         uses : actions/setup-java@v3
@@ -39,10 +38,8 @@ jobs:
             !/.gradle
           key: build-${{ github.sha }}
 
-      - run: ./gradlew --no-daemon --configuration-cache --parallel bundleLibRuntimeToJarDebug
-      # fill the configuration cache for the matrix test, not required but will speed up builds
-      - run: ./gradlew --no-daemon --configuration-cache --parallel --dry-run connectedDebugAndroidTest :base:connectedDebugAndroidTest :beacons:connectedDebugAndroidTest :bluetooth:connectedDebugAndroidTest :architecture:connectedDebugAndroidTest :alerts:connectedDebugAndroidTest :date-time:connectedDebugAndroidTest :logging:connectedDebugAndroidTest :hud:connectedDebugAndroidTest :permissions:connectedDebugAndroidTest :location:connectedDebugAndroidTest :keyboard:connectedDebugAndroidTest :links:connectedDebugAndroidTest :resources:connectedDebugAndroidTest :review:connectedDebugAndroidTest :scientific:connectedDebugAndroidTest :system:connectedDebugAndroidTest :test-utils:connectedDebugAndroidTest
-  
+      - run: ./gradlew --parallel bundleLibRuntimeToJarDebug
+
   test:
     needs: build
     runs-on: macos-12
@@ -117,7 +114,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           force-avd-creation: false
-          emulator-options:  -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -cores 3
+          emulator-options:  -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
           script: echo "Generated AVD snapshot for caching."
@@ -128,7 +125,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -cores 3
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
-          script: ./gradlew --no-daemon --configuration-cache --parallel :${{ matrix.module }}:connectedDebugAndroidTest
+          script: ./gradlew --parallel :${{ matrix.module }}:connectedDebugAndroidTest
