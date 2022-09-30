@@ -29,6 +29,13 @@ jobs:
             notifications
             configuration-cache
 
+      - name: Konan cache
+        uses: actions/cache@v3
+        id: konan-cache
+        with:
+          path: ~/.konan/*
+          key: konan
+
       - name: Make cache of workspace
         uses: actions/cache@v3
         id: restore-build
