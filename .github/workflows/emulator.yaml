@@ -105,7 +105,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ matrix.api-level }}
+          key: avd.v2-${{ matrix.api-level }}
 
       - name: Konan cache
         uses: actions/cache@v3
