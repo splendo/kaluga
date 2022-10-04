@@ -1,6 +1,6 @@
 #### for keeping up to date with settings.gradle.kts see instructions in `test:` job
 name: Android Emulator tests
-on: push
+on: pull_request
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8g -XX:MaxMetaspaceSize=512m\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8g -XX:MaxMetaspaceSize=512m"
