@@ -1,7 +1,5 @@
 package com.splendo.kaluga.review
 
-import androidx.appcompat.app.AppCompatActivity
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -19,5 +17,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity()
+
+class CorrectlySetupTest {
+    @kotlin.test.Test
+    fun testSetup() = assert(true)
+}
