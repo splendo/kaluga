@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID) : BaseViewModel() {
+class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID) : BaseLifecycleViewModel() {
 
     private val service: Flow<Service?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID]
 

@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 
-actual open class ViewModel internal actual constructor(allowFreezing: Boolean) : androidx.lifecycle.ViewModel() {
+actual open class LifecycleViewModel internal actual constructor(allowFreezing: Boolean) : androidx.lifecycle.ViewModel() {
 
     actual val coroutineScope = viewModelScope
 
@@ -31,20 +31,20 @@ actual open class ViewModel internal actual constructor(allowFreezing: Boolean) 
 }
 
 /**
- * Binds an [AppCompatActivity] to the [ViewModel] to manage the viewmodel lifecycle.
+ * Binds an [AppCompatActivity] to the [LifecycleViewModel] to manage the viewmodel lifecycle.
  * @param activity The [AppCompatActivity] to bind to.
  */
-fun <VM : BaseViewModel> VM.bind(activity: AppCompatActivity) {
+fun <VM : BaseLifecycleViewModel> VM.bind(activity: AppCompatActivity) {
     activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity, activity.supportFragmentManager))
 }
 
 /**
- * Binds a [Fragment] to the [ViewModel] to manage the viewmodel lifecycle
+ * Binds a [Fragment] to the [LifecycleViewModel] to manage the viewmodel lifecycle
  * @param fragment The [Fragment] to bind to.
  * @return `true` if the ViewModel could be bound to the [Fragment].
  */
-fun <VM : BaseViewModel> VM.bind(fragment: Fragment): Boolean {
-    val fragmentManager = if (fragment.isAdded) fragment.parentFragmentManager else return false
+fun <VM : BaseLifecycleViewModel> VM.bind(fragment: Fragment): Boolean {
+    val fragmentManager = fragment.fragmentManager ?: return false
     fragment.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, fragment.activity, fragment.viewLifecycleOwner, fragmentManager))
     return true
 }

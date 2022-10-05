@@ -236,8 +236,8 @@ internal actual class DefaultDeviceConnectionManager(
         val succeeded = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
             is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.wrapper)
-            is DeviceAction.Write.Characteristic -> writeCharacteristic(action.characteristic, action.newValue ?: ByteArray(0))
-            is DeviceAction.Write.Descriptor -> writeDescriptor(action.descriptor, action.newValue ?: ByteArray(0))
+            is DeviceAction.Write.Characteristic -> writeCharacteristic(action.characteristic, action.newValue)
+            is DeviceAction.Write.Descriptor -> writeDescriptor(action.descriptor, action.newValue)
             is DeviceAction.Notification.Enable -> setNotification(action.characteristic, true)
             is DeviceAction.Notification.Disable -> setNotification(action.characteristic, false)
         }

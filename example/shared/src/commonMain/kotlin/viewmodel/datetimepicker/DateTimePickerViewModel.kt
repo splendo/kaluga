@@ -1,7 +1,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.datetimepicker
 
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder) : BaseViewModel() {
+class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder) : BaseLifecycleViewModel() {
 
     companion object {
         private val formatter = KalugaDateFormatter.dateTimeFormat(DateFormatStyle.Long, DateFormatStyle.Long)

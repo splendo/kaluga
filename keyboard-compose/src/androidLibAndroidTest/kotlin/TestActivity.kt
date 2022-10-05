@@ -15,7 +15,7 @@
 
 */
 
-package com.splendo.kaluga.com.splendo.kaluga.keyboard.compose
+package com.splendo.kaluga.keyboard.compose
 
 import androidx.appcompat.app.AppCompatActivity
 

@@ -21,7 +21,7 @@ import com.splendo.kaluga.architecture.observable.InitializedObservable
 import com.splendo.kaluga.architecture.observable.UninitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class PermissionViewModel(private val permissions: Permissions, private val permission: Permission) : BaseViewModel() {
+class PermissionViewModel(private val permissions: Permissions, private val permission: Permission) : BaseLifecycleViewModel() {
 
     val permissionStateMessage: UninitializedObservable<String> = permissions[permission]
         .map { permissionState ->
