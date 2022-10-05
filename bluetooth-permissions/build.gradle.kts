@@ -25,8 +25,6 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-                implementation(project(":logging", ""))
-                api(project(":base", ""))
                 api(project(":base-permissions", ""))
             }
         }
