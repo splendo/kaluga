@@ -1,0 +1,12 @@
+public final class com/splendo/kaluga/keyboard/compose/ComposeClearFocusHandler : com/splendo/kaluga/keyboard/ClearFocusHandler {
+	public static final field $stable I
+	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
+	public fun clearFocus (Landroid/app/Activity;)V
+}
+
+public final class com/splendo/kaluga/keyboard/compose/ComposeFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/ui/focus/FocusRequester;)V
+	public fun requestFocus (Landroid/app/Activity;)V
+}
+

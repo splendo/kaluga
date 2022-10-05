@@ -6,9 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
@@ -48,10 +47,9 @@ fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
                 onBackButtonClickHandler
             )
 
-            val lifecycleObserver = object : LifecycleObserver {
+            val lifecycleObserver = object : DefaultLifecycleObserver {
 
-                @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-                fun onResume() {
+                override fun onResume(owner: LifecycleOwner) {
                     onBackPressedCallback.remove()
                     onBackPressedDispatcher.addCallback(onBackPressedCallback)
                 }

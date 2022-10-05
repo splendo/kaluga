@@ -25,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 
 /** A [CompositionLocal] containing the current activity. */
@@ -35,7 +35,7 @@ val LocalAppCompatActivity = staticCompositionLocalOf<AppCompatActivity?> { null
  * An implementation of [KalugaViewModelActivity] which provides a [CompositionLocal] containing
  * the current activity.
  */
-abstract class KalugaViewModelComposeActivity<VM : BaseViewModel> : KalugaViewModelActivity<VM>() {
+abstract class KalugaViewModelComposeActivity<VM : BaseLifecycleViewModel> : KalugaViewModelActivity<VM>() {
 
     @SuppressLint("MissingSuperCall") // Lint bug
     override fun onCreate(savedInstanceState: Bundle?) {

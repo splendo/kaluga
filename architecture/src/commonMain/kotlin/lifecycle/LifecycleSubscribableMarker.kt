@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.architecture.lifecycle
 
-import com.splendo.kaluga.architecture.viewmodel.ViewModel
+import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 
 /**
- * Implementing this interface as a public property of a [ViewModel] allows for automatic binding to platform specific lifecycle aware manager.
+ * Implementing this interface as a public property of a [LifecycleViewModel] allows for automatic binding to platform specific lifecycle aware manager.
  *
  * Be aware that classes implementing this interface that reside on a ViewModel as a property will have their getter invoked on instantiating the ViewModel to check if the instance is lifecycle aware (if the platform supports this).
  * This means, for example, that `lazy` delegation will have little effect.

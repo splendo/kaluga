@@ -26,25 +26,19 @@ actual interface DescriptorWrapper {
 
     val permissions: Int
     val characteristic: CharacteristicWrapper
-
-    fun setValue(newValue: ByteArray?): Boolean
 }
 
 class DefaultDescriptorWrapper(private val gattDescriptor: BluetoothGattDescriptor) : DescriptorWrapper {
 
     override val uuid: java.util.UUID
         get() = gattDescriptor.uuid
-    override val value: ByteArray?
-        get() = gattDescriptor.value
+    override var value: ByteArray? = null
+        private set
     override fun updateValue(value: ByteArray?) {
-        gattDescriptor.value = value
+        this.value = value
     }
     override val permissions: Int
         get() = gattDescriptor.permissions
     override val characteristic: CharacteristicWrapper
         get() = DefaultCharacteristicWrapper(gattDescriptor.characteristic)
-
-    override fun setValue(newValue: ByteArray?): Boolean {
-        return gattDescriptor.setValue(newValue)
-    }
 }

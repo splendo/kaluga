@@ -31,7 +31,6 @@ import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.uses24HourClock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -151,7 +150,7 @@ actual class DateTimePickerPresenter(
  * Will be created if need but only one instance will exist.
  *
  * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.ViewModel],
+ * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
  * which can automatically track which Activity is active for it.
  *
  */

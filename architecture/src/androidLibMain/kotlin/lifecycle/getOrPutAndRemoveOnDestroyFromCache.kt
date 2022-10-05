@@ -18,9 +18,8 @@
 package com.splendo.kaluga.architecture.lifecycle
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import kotlin.reflect.KClass
 
 /**
@@ -43,13 +42,12 @@ inline fun <reified T : Any> AppCompatActivity.getOrPutAndRemoveOnDestroyFromCac
     return lifecycleAwareActivityCache.getOrPut(key) {
         defaultValue().also {
             lifecycle.addObserver(
-                object : LifecycleObserver {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-                    fun onCreate() =
+                object : DefaultLifecycleObserver {
+                    override fun onCreate(owner: LifecycleOwner) {
                         onCreate(it)
+                    }
 
-                    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                    fun onDestroy() {
+                    override fun onDestroy(owner: LifecycleOwner) {
                         lifecycleAwareActivityCache.remove(key)
                         onDestroy(it)
                     }

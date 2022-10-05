@@ -19,14 +19,14 @@ package com.splendo.kaluga.example.platformspecific.compose.bottomSheet
 
 import androidx.compose.runtime.Composable
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.ui.BottomSheetParentLayout
 
-class BottomSheetActivity : KalugaViewModelComposeActivity<BaseViewModel>() {
-    override val viewModel = BaseViewModel()
+class BottomSheetActivity : KalugaViewModelComposeActivity<BaseLifecycleViewModel>() {
+    override val viewModel = BaseLifecycleViewModel()
 
     @Composable
-    override fun Layout(viewModel: BaseViewModel) {
+    override fun Layout(viewModel: BaseLifecycleViewModel) {
         BottomSheetParentLayout()
     }
 }

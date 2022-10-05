@@ -22,9 +22,9 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * Convenience [AppCompatActivity] that is bound to a [ViewModel]
+ * Convenience [AppCompatActivity] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelActivity<VM : BaseViewModel>(@LayoutRes layout: Int = 0) : AppCompatActivity(layout) {
+abstract class KalugaViewModelActivity<VM : BaseLifecycleViewModel>(@LayoutRes layout: Int = 0) : AppCompatActivity(layout) {
 
     abstract val viewModel: VM
 

@@ -37,8 +37,6 @@ android {
         }
     }
 
-    defaultPublishConfig = "debug"
-
     if (!gradle.ext.component_type.toLowerCase().contains("app")) {
         logger.lifecycle("Android sourcesets for this project module are configured as a library")
         sourceSets {
@@ -72,7 +70,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+        freeCompilerArgs += ['-XXLanguage:+InlineClasses', '-Xjvm-default=all']
     }
 
     if (gradle.component_type.contains("compose")) {
@@ -81,16 +79,17 @@ android {
             compose = true
         }
         composeOptions {
-            kotlinCompilerExtensionVersion = "$gradle.androidx_compose_version"
+            kotlinCompilerExtensionVersion = "$gradle.androidx_compose_compiler_version"
         }
     }
 
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
-    implementation "androidx.appcompat:appcompat:$gradle.androidx_appcompat_version"
+    implementation("androidx.appcompat:appcompat:$gradle.androidx_appcompat_version") {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+    }
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.mockito:mockito-core:$gradle.mockito_version"

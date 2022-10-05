@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.hud
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.hud.BaseHUD
@@ -38,7 +38,7 @@ import kotlin.test.assertTrue
 
 class MockHUDTest : UIThreadViewModelTest<MockHUDTest.TestContext, MockHUDTest.ViewModel>() {
 
-    class ViewModel(val hudBuilder: BaseHUD.Builder) : BaseViewModel() {
+    class ViewModel(val hudBuilder: BaseHUD.Builder) : BaseLifecycleViewModel() {
         fun buildAndShowHud(config: HudConfig, isFinished: Deferred<Unit>): Pair<Deferred<BaseHUD>, Deferred<Unit>> {
             val isShowing = CompletableDeferred<BaseHUD>()
             val hasFinishedShowing = CompletableDeferred<Unit>()
