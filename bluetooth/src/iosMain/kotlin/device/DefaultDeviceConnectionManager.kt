@@ -80,13 +80,10 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
-            when (val action = currentAction) {
-                is DeviceAction.Notification -> {
-                    if (action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
-                        launch {
-                            handleCurrentActionCompleted(succeeded = error == null)
-                        }
-                    }
+            val action = currentAction
+            if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
+                launch {
+                    handleCurrentActionCompleted(succeeded = error == null)
                 }
             }
         }

@@ -178,22 +178,32 @@ class MockDeviceConnectionManager(
     override suspend fun performAction(action: DeviceAction): Unit = performActionMock.call(action)
 
     suspend fun handleCurrentAction() {
-        when (val action = currentAction) {
-            is DeviceAction.Read.Characteristic -> handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
-                debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
-            }
-            is DeviceAction.Read.Descriptor -> handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
-            is DeviceAction.Write.Characteristic -> {
-                (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
-                handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
-                    debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+        currentAction?.let { action ->
+            when (action) {
+                is DeviceAction.Read.Characteristic -> handleUpdatedCharacteristic(
+                    action.characteristic.uuid,
+                    willActionSucceed
+                ) {
+                    debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
+                is DeviceAction.Read.Descriptor -> handleUpdatedDescriptor(
+                    action.descriptor.uuid,
+                    willActionSucceed
+                )
+                is DeviceAction.Write.Characteristic -> {
+                    (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(
+                        action.newValue
+                    )
+                    handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
+                        debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+                    }
+                }
+                is DeviceAction.Write.Descriptor -> {
+                    (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
+                    handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
+                }
+                is DeviceAction.Notification -> handleCurrentActionCompleted(willActionSucceed)
             }
-            is DeviceAction.Write.Descriptor -> {
-                (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
-                handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
-            }
-            is DeviceAction.Notification -> handleCurrentActionCompleted(willActionSucceed)
         }
     }
 

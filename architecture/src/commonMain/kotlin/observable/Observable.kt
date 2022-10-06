@@ -97,10 +97,11 @@ open class ObservationDefault<R : T?, T>(
 ) : Observation<R, T?, Value<R>>(initialValue),
     ReadWriteProperty<Any?, R>,
     MutableDefaultInitialized<R, T?> {
+
     constructor(
         defaultValue: R,
         initialValue: Value<T?>
-    ) : this(Value(defaultValue), initialValue)
+    ) : this(Value<R>(defaultValue), initialValue)
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): R = current
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) {

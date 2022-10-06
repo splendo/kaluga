@@ -111,7 +111,7 @@ class RecurringTimerTest {
     /** Provides mock time ticks. */
     private class PredefinedTimeSource(val ticks: List<Duration>) : TimeSource {
         override fun markNow(): TimeMark =
-            object : TimeMark() {
+            object : TimeMark {
                 var index = 0
                 override fun elapsedNow(): Duration =
                     if (index < ticks.size) {

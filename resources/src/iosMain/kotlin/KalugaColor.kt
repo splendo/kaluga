@@ -31,7 +31,7 @@ actual val KalugaColor.green: Double get() = CGColorGetComponents(uiColor.CGColo
 actual val KalugaColor.blueInt: Int get() = (blue * 255.0).toInt()
 actual val KalugaColor.blue: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(2)?.toDouble() ?: 0.0
 actual val KalugaColor.greenInt: Int get() = (green * 255.0).toInt()
-actual val KalugaColor.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor)?.toDouble()
+actual val KalugaColor.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor).toDouble()
 actual val KalugaColor.alphaInt: Int get() = (alpha * 255.0).toInt()
 
 actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor = KalugaColor(UIColor.colorWithRed(red as CGFloat, green as CGFloat, blue as CGFloat, alpha as CGFloat))
