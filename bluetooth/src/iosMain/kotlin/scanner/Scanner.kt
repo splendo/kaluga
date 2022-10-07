@@ -146,7 +146,6 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
-        require(withServices.isNotEmpty()) { "Expected not empty set of services." }
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
         val centralManager = CBCentralManager(delegate, pairedDevicesQueue)
