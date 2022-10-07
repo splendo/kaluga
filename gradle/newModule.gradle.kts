@@ -24,7 +24,7 @@ abstract class NewModule : DefaultTask() {
         const val VALID_MODULE_NAME_REGEX = "^[^\\dA-Z-][a-z]+[a-z-]*\\Z"
         const val VALID_PACKAGE_NAME = "^[a-z]+(\\.[a-z]+)*\\Z"
         const val TEMPLATE_PATH = "adding-a-new-module/template"
-        const val BUILD_GRADLE_KTS = "build.gradle.kts"
+        const val BUILD_GRADLE_KTS = "build.build.gradle.kts.kts"
         val CREATE_DIRS = listOf(
             "androidLibAndroidTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
             "androidLibMain" to listOf("AndroidManifest.xml"),

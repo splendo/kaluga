@@ -31,7 +31,7 @@ ext["component_type"] = ext["component_type_compose"]
 val path_prefix = if (file("../gradle/componentskt.gradle.kts").exists())
     ".." else "../.."
 
-apply(from = "$path_prefix/gradle/android_compose.gradle")
+apply(from = "$path_prefix/gradle/android_compose.gradle.kts")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!

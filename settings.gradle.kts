@@ -44,7 +44,7 @@ pluginManagement {
     }
 }
 
-apply("gradle/ext.gradle")
+apply("gradle/ext.gradle.kts")
 includeBuild("convention-plugins")
 
 rootProject.name = "Kaluga"

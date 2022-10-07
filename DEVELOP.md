@@ -1,6 +1,6 @@
 ## Build instructions
 
-This project uses Android Studio. You might need a canary version at times. Check [gradle/ext.gradle](gradle/ext.gradle) to see which Android gradle plugin is used, as this determines compatability with Android Studio versions. You can check the [Android Gradle plugin release notes](https://developer.android.com/studio/releases/gradle-plugin), the [Android Studio release notes](https://developer.android.com/studio/releases) and the [Android Studio Preview Release Updates](https://androidstudio.googleblog.com/) pages to see which version to use.
+This project uses Android Studio. You might need a canary version at times. Check [gradle/ext.gradle](gradle/ext.gradle.kts) to see which Android gradle plugin is used, as this determines compatability with Android Studio versions. You can check the [Android Gradle plugin release notes](https://developer.android.com/studio/releases/gradle-plugin), the [Android Studio release notes](https://developer.android.com/studio/releases) and the [Android Studio Preview Release Updates](https://androidstudio.googleblog.com/) pages to see which version to use.
 
 You can also check the Kotlin version, and if needed align this with the Kotlin plugin version for Android Studio under `Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin`.
 
@@ -133,7 +133,7 @@ Projects publishing to Sonatype's release repository need to be manually closed 
 
 #### Increase version after publishing
 
-In case this has not been done yet, bump the version at [gradle/ext.gradle](gradle/ext.gradle) in the `develop` branch to start the next development iteration.
+In case this has not been done yet, bump the version at [gradle/ext.gradle](gradle/ext.gradle.kts) in the `develop` branch to start the next development iteration.
 
 ```sh
 library_version = 'X.X.X'

@@ -16,7 +16,7 @@
  */
 
 plugins {
-    `kotlin-dsl` // Is needed to turn our build logic written in Kotlin into Gralde Plugin
+    `kotlin-dsl` // Is needed to turn our build logic written in Kotlin into Gradle Plugin
 }
 
 repositories {

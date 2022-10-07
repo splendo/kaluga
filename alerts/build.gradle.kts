@@ -6,26 +6,24 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+group = Library.group
+version = Library.version
 
 dependencies {
 
     val ext = (gradle as ExtensionAware).extra
+    val androidx_fragment_version: String by ext
 
-    implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
-    debugImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
+    implementation(Dependencies.AndroidX.Fragment.notation)
+    testImplementation(Dependencies.AndroidX.FragmentKtx.notation)
 }
+
+commonComponent()
 
 kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
-                val ext = (gradle as ExtensionAware).extra
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
                 implementation(project(":resources", ""))

@@ -1,4 +1,4 @@
-#### for keeping up to date with settings.gradle.kts see instructions in `test:` job
+#### for keeping up to date with settings.build.gradle.kts see instructions in `test:` job
 name: Android Emulator tests
 on: pull_request
 env:

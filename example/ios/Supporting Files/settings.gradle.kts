@@ -39,7 +39,7 @@ pluginManagement {
 }
 
 includeBuild("../../../convention-plugins")
-apply("../../../gradle/ext.gradle")
+apply("../../../gradle/ext.gradle.kts")
 
 val ext = (gradle as ExtensionAware).extra
 

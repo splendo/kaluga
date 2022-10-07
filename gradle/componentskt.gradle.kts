@@ -19,17 +19,17 @@
 
 import kotlin.text.*
 
-if ((gradle as ExtensionAware).extra["connect_check_expansion"] == true) {
-
-    val mymodules = project.parent?.subprojects?.filter {
-        it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
-    }
-
-    mymodules?.forEach() { module ->
-        afterEvaluate {
-            logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
-            tasks.getByPath("connectedDebugAndroidTest")
-                .dependsOn(":${module.name}:connectedDebugAndroidTest")
-        }
-    }
-}
+// if ((gradle as ExtensionAware).extra["connect_check_expansion"] == true) {
+//
+//     val mymodules = project.parent?.subprojects?.filter {
+//         it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
+//     }
+//
+//     mymodules?.forEach() { module ->
+//         afterEvaluate {
+//             logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
+//             tasks.getByPath("connectedDebugAndroidTest")
+//                 .dependsOn(":${module.name}:connectedDebugAndroidTest")
+//         }
+//     }
+// }

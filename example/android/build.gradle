@@ -64,7 +64,7 @@ kotlin {
 
 gradle.ext.component_type = gradle.ext.component_type_composeApp
 
-apply from: "../../gradle/android_compose.gradle"
+apply from: "../../gradle/android_compose.gradle.kts"
 
 gradle.ext.component_type = gradle.ext.component_type_default
 
