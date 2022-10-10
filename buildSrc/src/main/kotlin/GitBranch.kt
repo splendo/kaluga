@@ -15,10 +15,11 @@
 
  */
 
-import org.slf4j.LoggerFactory
+import org.gradle.api.Project
 
-object GitBranch {
- private val logger = LoggerFactory.getLogger(this::class.java)
+data class GitBranch(val branch: String, val kalugaBranchPostfix: String)
+
+val Project.GitBranch: GitBranch get() {
  val BITRISE_GIT_BRANCH = java.lang.System.getenv("BITRISE_GIT_BRANCH")
  val kaluga_branch = System.getProperty("kaluga_branch")
  val MAVEN_CENTRAL_RELEASE = System.getenv("MAVEN_CENTRAL_RELEASE")
@@ -49,4 +50,6 @@ object GitBranch {
 
   println("decided branch: '$branch' to postfix '$it', isRelease: $release (from: BITRISE_GIT_BRANCH env: $BITRISE_GIT_BRANCH, kaluga_branch property: $kaluga_branch , MAVEN_CENTRAL_RELEASE env: $MAVEN_CENTRAL_RELEASE , git cli: $branchFromGit)")
  }
+
+ return GitBranch(branch, kalugaBranchPostfix)
 }

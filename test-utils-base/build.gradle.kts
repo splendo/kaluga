@@ -6,17 +6,10 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle.kts")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
-
-val androidx_arch_core_testing_version = ext["androidx_arch_core_testing_version"]!!
+publishableComponent()
 
 dependencies {
-    api("androidx.arch.core:core-testing:$androidx_arch_core_testing_version")
+    expose(Dependencies.AndroidX.ArchCore)
 }
 
 kotlin {
@@ -44,11 +37,9 @@ kotlin {
         }
 
         getByName("jvmMain") {
-            val ext = (gradle as ExtensionAware).extra
-
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:" + ext["kotlinx_coroutines_version"])
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:" + ext["kotlinx_coroutines_version"])
+                expose(Dependencies.KotlinX.Coroutines.Test)
+                expose(Dependencies.KotlinX.Coroutines.Debug)
             }
         }
     }
@@ -56,8 +47,7 @@ kotlin {
 
 android {
     dependencies {
-        val ext = (gradle as ExtensionAware).extra
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:" + ext["kotlinx_coroutines_version"])
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:" + ext["kotlinx_coroutines_version"])
+        expose(Dependencies.KotlinX.Coroutines.Test)
+        expose(Dependencies.KotlinX.Coroutines.Debug)
     }
 }

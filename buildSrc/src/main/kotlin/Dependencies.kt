@@ -25,15 +25,41 @@ data class Dependency(private val group: String, private val name: String, priva
 fun KotlinDependencyHandler.expose(dependency: Dependency) = api(dependency.notation)
 fun KotlinDependencyHandler.implement(dependency: Dependency) = implementation(dependency.notation)
 
+fun DependencyHandler.expose(dependency: Dependency) {
+    add("api", dependency.notation)
+}
+fun DependencyHandler.implement(dependency: Dependency) {
+    add("implementation", dependency.notation)
+}
+fun DependencyHandler.implementForDebug(dependency: Dependency) {
+    add("debugImplementation", dependency.notation)
+}
+fun DependencyHandler.implementForTest(dependency: Dependency) {
+    add("testImplementation", dependency.notation)
+}
+fun DependencyHandler.implementForAndroidTest(dependency: Dependency) {
+    add("androidTestImplementation", dependency.notation)
+}
+
 object Dependencies {
+
+    object Kotlin {
+        private const val group = "org.jetbrains.kotlin"
+        val Test = Dependency(group, "kotlin-test")
+        val JUnit = Dependency(group, "kotlin-test-junit")
+    }
 
     object KotlinX {
         object Coroutines {
             private const val version = "1.6.3-native-mt"
             private const val group = "org.jetbrains.kotlinx"
+            val Android = Dependency(group, "kotlinx-coroutines-android", version)
             val Core = Dependency(group, "kotlinx-coroutines-core", version)
             val Swing = Dependency(group, "kotlinx-coroutines-swing", version)
             val Js = Dependency(group, "kotlinx-coroutines-js", version)
+            val PlayServices = Dependency(group, "kotlinx-coroutines-play-services", version)
+            val Test = Dependency(group, "kotlinx-coroutines-test", version)
+            val Debug = Dependency(group, "kotlinx-coroutines-debug", version)
         }
 
         object Serialization {
@@ -54,7 +80,7 @@ object Dependencies {
         object Play {
             private const val group = "$groupBase.play"
             val Core = Dependency(group, "core", "1.10.3")
-            val Ktx = Dependency(group, "core-ktx", "1.8.1")
+            val CoreKtx = Dependency(group, "core-ktx", "1.8.1")
         }
         object PlayServices {
             private const val group = "$groupBase.gms"

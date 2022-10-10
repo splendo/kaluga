@@ -6,12 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle.kts")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 kotlin {
     sourceSets {
@@ -21,17 +16,17 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
-                api("co.touchlab:stately-common:${ext["stately_version"]}")
-                api("co.touchlab:stately-isolate:${ext["stately_isolate_version"]}")
-                api("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
-                api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+                expose(Dependencies.Stately.Common)
+                expose(Dependencies.Stately.Isolate)
+                expose(Dependencies.Stately.IsoCollections)
+                expose(Dependencies.Stately.Concurrency)
             }
         }
         getByName("jsMain") {
             dependencies {
-                implementation(kotlin("stdlib-common", "${ext["kotlin_version"]}"))
+                implementation(kotlin("stdlib-common", Library.kotlinVersion))
                 // JavaScript BigDecimal lib based on native BigInt
-                implementation(npm("@splendo/bigdecimal", "${ext["js_bigdecimal_version"]}"))
+                implementation(npm("@splendo/bigdecimal", "1.0.26"))
             }
         }
         getByName("jsTest") {

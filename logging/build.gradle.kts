@@ -6,28 +6,20 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle.kts")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 kotlin {
     sourceSets {
         commonMain {
-            val ext = (gradle as ExtensionAware).extra
             dependencies {
-                implementation("io.github.aakira:napier:${ext["napier_version"]}")
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+                implement(Dependencies.Napier)
+                implement(Dependencies.Stately.Concurrency)
             }
         }
         commonTest {
             dependencies {
-                val ext = (gradle as ExtensionAware).extra
-                // Stately Isolite is in flux and not part of the current statelyVersion. Upgrade this when tracked properly
-                implementation("co.touchlab:stately-isolate:${ext["stately_isolate_version"]}")
-                implementation("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
+                implement(Dependencies.Stately.Isolate)
+                implement(Dependencies.Stately.IsoCollections)
                 api(project(":test-utils-base", ""))
             }
         }

@@ -15,29 +15,33 @@
 
  */
 
-import java.io.File
-import java.io.FileInputStream
-import java.util.*
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.extra
+import org.gradle.api.logging.Logger
+import org.jetbrains.kotlin.konan.file.File
+import org.jetbrains.kotlin.konan.properties.loadProperties
+import org.jetbrains.kotlin.konan.properties.Properties
+import java.io.IOException
 
-object Library {
+private val libraries: MutableMap<Project, Library> = mutableMapOf()
 
-    private val props = Properties()
-    private const val baseVersion = "1.0.0"
+val Project.Library get() = libraries.getOrPut(this) { Library(this) }
+
+class Library(project: Project) {
+
+    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").loadProperties()
+    private val logger = project.logger
+    private val baseVersion = "1.0.0"
+    val group = "com.splendo.kaluga"
     val version: String by lazy {
-        println("------Properties" + props.entries.joinToString(" ") { (key, value) -> "$key to $value" })
         val libraryVersionLocalProperties: String? = props["kaluga.libraryVersion"] as? String
-        (libraryVersionLocalProperties ?: "$baseVersion${GitBranch.kalugaBranchPostfix}").also {
+        (libraryVersionLocalProperties ?: "$baseVersion${project.GitBranch.kalugaBranchPostfix}").also {
             println("Library version $it")
         }
     }
-    const val group = "com.splendo.kaluga"
-
-    init {
-        val propFile = File("../local.properties")
-        if (propFile.exists()) {
-            val inputStream = FileInputStream(propFile.absolutePath)
-            props.load(inputStream)
-        }
+    val kotlinVersion = project.extra["kaluga.kotlinVersion"] as? String ?: kotlin.run {
+        logger.lifecycle("Missing kotlin version")
+        throw IOException("Provide kaluga.kotlinVersion in your gradle.properties")
     }
 
     object Android {
@@ -48,21 +52,21 @@ object Library {
         const val composeCompiler = "1.3.2"
     }
 
-    object IOS {
+    class IOSLibrary(props: Properties, logger: Logger) {
         // based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
-            println("Run on real ios device: $it from sdk: $sdkName")
+            logger.lifecycle("Run on real ios device: $it from sdk: $sdkName")
         }
 
         // Run on IntelliJ
         val ideaActive = (System.getProperty("idea.active") == "true").also {
-            println("Run on IntelliJ: $it")
+            logger.lifecycle("Run on IntelliJ: $it")
         }
 
         // Run on apple silicon
         val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
-            println("Run on apple silicon: $it")
+            logger.lifecycle("Run on apple silicon: $it")
         }
 
         val targets = when {
@@ -71,37 +75,38 @@ object Library {
             isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
             else -> setOf(IOSTarget.X64)
         }.also { targets ->
-            println("Run on ios targets: ${targets.joinToString(" ") { it.name }}")
+            logger.lifecycle("Run on ios targets: ${targets.joinToString(" ") { it.name }}")
         }
 
         val TestRunnerDeviceId by lazy {
             if (System.getenv().containsKey("IOS_TEST_RUNNER_DEVICE_ID")) {
                 System.getenv()["IOS_TEST_RUNNER_DEVICE_ID"].also {
-                    println("System env IOS_TEST_RUNNER_DEVICE_ID set to ${System.getenv()["IOS_TEST_RUNNER_DEVICE_ID"]}, using $it")
+                    logger.lifecycle("System env IOS_TEST_RUNNER_DEVICE_ID set to ${System.getenv()["IOS_TEST_RUNNER_DEVICE_ID"]}, using $it")
                 }!!
             } else {
                 // load some more from local.properties or set defaults.
                 val iosTestRunnerDeviceIdLocalProperty: String? =
                     props["kaluga.iosTestRunnerDeviceIdLocalProperty"] as? String
                 iosTestRunnerDeviceIdLocalProperty?.also {
-                    println("local.properties read (kaluga.iosTestRunnerDeviceIdLocalProperty=$iosTestRunnerDeviceIdLocalProperty, using $it)")
+                    logger.lifecycle("local.properties read (kaluga.iosTestRunnerDeviceIdLocalProperty=$iosTestRunnerDeviceIdLocalProperty, using $it)")
                 }
                     ?: "iPhone 14".also {
-                        println("local.properties not found, using default value ($it)")
+                        logger.lifecycle("local.properties not found, using default value ($it)")
                     }
             }
         }
     }
+    val IOS = IOSLibrary(props, logger)
 
     val exampleEmbeddingMethod by lazy {
         if (System.getenv().containsKey("EXAMPLE_EMBEDDING_METHOD")) {
             System.getenv()["EXAMPLE_EMBEDDING_METHOD"].also {
-                println("System env EXAMPLE_EMBEDDING_METHOD set to ${System.getenv()["EXAMPLE_EMBEDDING_METHOD"]}, using $it")
+                logger.lifecycle("System env EXAMPLE_EMBEDDING_METHOD set to ${System.getenv()["EXAMPLE_EMBEDDING_METHOD"]}, using $it")
             }!!
         } else {
             val exampleEmbeddingMethodLocalProperties = props["kaluga.exampleEmbeddingMethod"] as? String
             (exampleEmbeddingMethodLocalProperties ?: "composite").also {
-                println("local.properties read (kaluga.exampleEmbeddingMethod=$exampleEmbeddingMethodLocalProperties, using $it)")
+                logger.lifecycle("local.properties read (kaluga.exampleEmbeddingMethod=$exampleEmbeddingMethodLocalProperties, using $it)")
             }
         }
     }
@@ -109,24 +114,24 @@ object Library {
     val exampleMavenRepo by lazy {
         if (System.getenv().containsKey("EXAMPLE_MAVEN_REPO")) {
             System.getenv()["EXAMPLE_MAVEN_REPO"].also {
-                println("System env EXAMPLE_MAVEN_REPO set to ${System.getenv()["EXAMPLE_MAVEN_REPO"]}, using $it")
+                logger.lifecycle("System env EXAMPLE_MAVEN_REPO set to ${System.getenv()["EXAMPLE_MAVEN_REPO"]}, using $it")
             }!!
         } else {
             // load some more from local.properties or set defaults.
             val exampleMavenRepoLocalProperties: String? =
                 props["kaluga.exampleMavenRepo"] as? String
             exampleMavenRepoLocalProperties?.also {
-                println("local.properties read (kaluga.exampleMavenRepo=$exampleMavenRepoLocalProperties, using $it)")
+                logger.lifecycle("local.properties read (kaluga.exampleMavenRepo=$exampleMavenRepoLocalProperties, using $it)")
             }
                 ?: "local".also {
-                    println("local.properties not found, using default value ($it)")
+                    logger.lifecycle("local.properties not found, using default value ($it)")
                 }
         }
     }
 
     val connectCheckExpansion = (System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") or System.getenv().containsKey("CI")).also {
         if (it) {
-            println("Adding extra dependend task to connected checks of similarly named modules (CONNECTED_CHECK_EXPANSION env present: ${ System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") })")
+            logger.lifecycle("Adding extra dependend task to connected checks of similarly named modules (CONNECTED_CHECK_EXPANSION env present: ${ System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") })")
         }
     }
 }

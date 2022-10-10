@@ -16,30 +16,40 @@
  */
 
 import com.android.build.gradle.LibraryExtension
-import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 import org.gradle.kotlin.dsl.dependencies
 
-enum class ComponentType {
-    DEFAULT,
-    COMPOSE,
-    APP,
-    COMPOSE_APP
-}
-
-fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.DEFAULT) {
-    val action = object : Action<LibraryExtension> {
-        override fun execute(t: LibraryExtension) {
-            t.androidCommon(type)
-        }
+fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default()) {
+    android {
+        androidCommon(this@commonAndroidComponent, type)
     }
-    (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("android", action)
+
     dependencies {
+        implement(Dependencies.KotlinX.Coroutines.Android)
+        implement(Dependencies.AndroidX.AppCompat)
 
+        implementForTest(Dependencies.JUnit)
+        implementForTest(Dependencies.Mockito.Core)
+        implementForTest(Dependencies.Kotlin.Test)
+        implementForTest(Dependencies.Kotlin.JUnit)
+
+        implementForAndroidTest(Dependencies.Mockito.Android)
+        implementForAndroidTest(Dependencies.ByteBuddy.Android)
+        implementForAndroidTest(Dependencies.ByteBuddy.Agent)
+
+        implementForAndroidTest(Dependencies.AndroidX.Test.Core)
+        implementForAndroidTest(Dependencies.AndroidX.Test.CoreKtx)
+        implementForAndroidTest(Dependencies.AndroidX.Test.UIAutomator)
+        implementForAndroidTest(Dependencies.AndroidX.Test.Rules)
+        implementForAndroidTest(Dependencies.AndroidX.Test.JUnit)
+        implementForAndroidTest(Dependencies.AndroidX.Test.Runner)
+        implementForAndroidTest(Dependencies.AndroidX.Test.Espresso)
+        implementForAndroidTest(Dependencies.Kotlin.Test)
+        implementForAndroidTest(Dependencies.Kotlin.JUnit)
     }
 }
 
-fun LibraryExtension.androidCommon(componentType: ComponentType = ComponentType.DEFAULT) {
+fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default()) {
     compileSdk = Library.Android.compileSdk
     buildToolsVersion = Library.Android.buildTools
 
@@ -56,31 +66,26 @@ fun LibraryExtension.androidCommon(componentType: ComponentType = ComponentType.
         }
     }
 
-    when (componentType) {
-        ComponentType.APP,
-        ComponentType.COMPOSE_APP -> {
-            println("Android sourcesets for this project module are configured using defaults (for an app)")
-        }
-        ComponentType.COMPOSE,
-        ComponentType.DEFAULT -> {
-            println("Android sourcesets for this project module are configured as a library")
-            sourceSets {
-                getByName("main") {
-                    manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
-                    res.srcDir("src/androidLibMain/res")
-                    if (componentType == ComponentType.COMPOSE) {
-                        java.srcDir("src/androidLibMain/kotlin")
-                    }
+    if (componentType.isApp) {
+        project.logger.lifecycle("Android sourcesets for this project module are configured using defaults (for an app)")
+    } else {
+        project.logger.lifecycle("Android sourcesets for this project module are configured as a library")
+        sourceSets {
+            getByName("main") {
+                manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
+                res.srcDir("src/androidLibMain/res")
+                if (componentType is ComponentType.Compose) {
+                    java.srcDir("src/androidLibMain/kotlin")
                 }
-                getByName("androidTest") {
-                    manifest.srcFile("src/androidLibAndroidTest/AndroidManifest.xml")
-                    java.srcDir("src/androidLibAndroidTest/kotlin")
-                    res.srcDir("src/androidLibAndroidTest/res")
-                }
+            }
+            getByName("androidTest") {
+                manifest.srcFile("src/androidLibAndroidTest/AndroidManifest.xml")
+                java.srcDir("src/androidLibAndroidTest/kotlin")
+                res.srcDir("src/androidLibAndroidTest/res")
+            }
 
-                getByName("test") {
-                    java.srcDir("src/androidLibUnitTest/kotlin")
-                }
+            getByName("test") {
+                java.srcDir("src/androidLibUnitTest/kotlin")
             }
         }
     }
@@ -90,10 +95,14 @@ fun LibraryExtension.androidCommon(componentType: ComponentType = ComponentType.
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + listOf("-XXLanguage:+InlineClasses", "-Xjvm-default=all")
+    }
+
     when (componentType) {
-        ComponentType.COMPOSE,
-        ComponentType.COMPOSE_APP -> {
-            println("This project module is a Compose only module")
+        is ComponentType.Compose -> {
+            project.logger.lifecycle("This project module is a Compose only module")
             buildFeatures {
                 compose = true
             }
@@ -101,7 +110,6 @@ fun LibraryExtension.androidCommon(componentType: ComponentType = ComponentType.
                 kotlinCompilerExtensionVersion = Library.Android.composeCompiler
             }
         }
-        ComponentType.DEFAULT,
-        ComponentType.APP -> {}
+        is ComponentType.Default-> {}
     }
 }

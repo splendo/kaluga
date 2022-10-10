@@ -6,14 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle.kts")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
-
-dependencies { }
+publishableComponent()
 
 kotlin {
     sourceSets {
@@ -22,7 +15,7 @@ kotlin {
             dependencies {
                 api(project(":test-utils-base"))
                 api(project(":test-utils-architecture"))
-                api("io.insert-koin:koin-core:" + ext["koin_version"])
+                expose(Dependencies.Koin.Core)
             }
         }
         commonTest {

@@ -65,7 +65,6 @@ apiValidation {
     ignoredClasses.add("com.splendo.kaluga.datetime.timer.BuildConfig")
 }
 
-apply(from = "gradle/ext.gradle.kts")
 apply(from = "gradle/newModule.gradle.kts")
 apply(from = "gradle/copyReports.gradle.kts")
 

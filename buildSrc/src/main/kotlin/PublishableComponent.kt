@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,21 +15,9 @@
 
  */
 
-plugins {
-    id("com.android.library")
-    kotlin("android")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("convention.publication")
-    id("org.jlleitschuh.gradle.ktlint")
-}
+import org.gradle.api.Project
 
-composeAndroidComponent()
-
-dependencies {
-    api(project(":base"))
-    api(project(":architecture"))
-    implement(Dependencies.AndroidX.Compose.Material)
-    implement(Dependencies.AndroidX.Navigation.Compose)
-    implement(Dependencies.KotlinX.Coroutines.Core)
+fun Project.publishableComponent() {
+    commonComponent()
+    publish()
 }

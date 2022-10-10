@@ -15,23 +15,73 @@
 
  */
 
-import org.gradle.api.Action
+import com.android.build.gradle.LibraryExtension
+import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
+import org.jetbrains.kotlin.konan.file.File
 
-fun org.gradle.api.Project.commonComponent() {
-    val action = object : Action<KotlinMultiplatformExtension> {
-        override fun execute(t: KotlinMultiplatformExtension) {
-            t.commonMultiplatformComponent()
-        }
-    }
-    (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("kotlin", action)
+sealed class ComponentType {
+    abstract val isApp: Boolean
+
+    data class Default(override val isApp: Boolean = false) : ComponentType()
+    data class Compose(override val isApp: Boolean = false) : ComponentType()
 }
 
-fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
+fun Project.commonComponent() {
+    group = Library.group
+    version = Library.version
+    kotlinMultiplatform {
+        commonMultiplatformComponent(this@commonComponent)
+    }
+
+    commonAndroidComponent()
+    android {
+        commonMultiplatformComponentAndroid(this@commonComponent)
+    }
+
+    task("printConfigurations") {
+        doLast {
+            configurations.all { println(this) }
+        }
+    }
+
+    afterEvaluate {
+        Library.IOS.targets.forEach {
+            val targetName = it.sourceSetName
+            if (tasks.names.contains("linkDebugTest${targetName.capitalize() }")) {
+                // creating copy task for the target
+                val copyTask = tasks.create("copy${targetName.capitalize() }TestResources", Copy::class.java) {
+                    from(File("src/iosTest/resources/."))
+                    into(File("$buildDir/bin/$targetName/debugTest"))
+                }
+
+                // apply copy task to the target
+                tasks.named("linkDebugTest${targetName.capitalize()}") {
+                    dependsOn(copyTask)
+                }
+            }
+        }
+    }
+
+    ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
+
+    if (Library.connectCheckExpansion) {
+        parent?.subprojects?.filter {
+            it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
+        }?.forEach {
+            logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${name}:connectedDebugAndroidTest")
+             tasks.getByPath("connectedDebugAndroidTest")
+                 .dependsOn(":${name}:connectedDebugAndroidTest")
+        }
+    }
+}
+
+fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Project) {
     targets {
         configureEach {
             compilations.configureEach {
@@ -49,16 +99,20 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
                 }
             }
         }
-    Library.IOS.targets.forEach { iosTarget ->
+    val targets = currentProject.Library.IOS.targets
+    targets.forEach { iosTarget ->
         when (iosTarget) {
-            IOSTarget.X64 -> iosX64(target).applyTestDevice()
+            IOSTarget.X64 -> iosX64(target).applyTestDevice(currentProject)
             IOSTarget.Arm64 -> iosArm64(target)
-            IOSTarget.SimulatorArm64 -> iosSimulatorArm64(target).applyTestDevice()
+            IOSTarget.SimulatorArm64 -> iosSimulatorArm64(target).applyTestDevice(currentProject)
         }
     }
 
     jvm()
     js(KotlinJsCompilerType.IR) {
+        // Disable JS browser tests for now
+        // See https://github.com/splendo/kaluga/issues/97
+        // browser()
         nodejs()
         compilations.configureEach {
             kotlinOptions {
@@ -69,13 +123,13 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
         }
     }
 
-    val commonMain = sourceSets.maybeCreate("commonMain").apply {
+    val commonMain = sourceSets.getByName("commonMain").apply {
         dependencies {
             implement(Dependencies.KotlinX.Coroutines.Core)
         }
     }
 
-    val commonTest = sourceSets.maybeCreate("commonTest").apply {
+    val commonTest = sourceSets.getByName("commonTest").apply {
         dependencies {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
@@ -83,14 +137,14 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
         }
     }
 
-    val jvmMain = sourceSets.maybeCreate("jvmMain").apply {
+    val jvmMain = sourceSets.getByName("jvmMain").apply {
         dependencies {
             implementation(kotlin("stdlib"))
             implement(Dependencies.KotlinX.Coroutines.Swing)
         }
     }
 
-    val jvmTest = sourceSets.maybeCreate("jvmTest").apply {
+    val jvmTest = sourceSets.getByName("jvmTest").apply {
         dependsOn(commonTest)
         dependencies {
             implementation(kotlin("test"))
@@ -98,14 +152,14 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
         }
     }
 
-    val jsMain = sourceSets.maybeCreate("jsMain").apply {
+    val jsMain = sourceSets.getByName("jsMain").apply {
         dependencies {
             implementation(kotlin("stdlib-js"))
             implement(Dependencies.KotlinX.Coroutines.Js)
         }
     }
 
-    val jsTest = sourceSets.maybeCreate("jsTest").apply {
+    val jsTest = sourceSets.getByName("jsTest").apply {
         dependencies {
             implementation(kotlin("test-js"))
         }
@@ -117,6 +171,17 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
 
     val iosTest = sourceSets.maybeCreate("iosTest").apply {
         dependsOn(commonTest)
+    }
+
+    targets.forEach {
+        val sourceSetName = it.sourceSetName
+
+        sourceSets.getByName("${sourceSetName}Main").apply {
+            dependsOn(iosMain)
+        }
+        sourceSets.getByName("${sourceSetName}Test").apply {
+            dependsOn(iosTest)
+        }
     }
 
     sourceSets.all {
@@ -135,8 +200,36 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent() {
     }
 }
 
-fun KotlinNativeTargetWithSimulatorTests.applyTestDevice() {
-    testRuns.all {
-        deviceId = Library.IOS.TestRunnerDeviceId
+fun LibraryExtension.commonMultiplatformComponentAndroid(project: Project) {
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
+
+    packagingOptions {
+        resources.excludes.addAll(
+            listOf(
+                "META-INF/kotlinx-coroutines-core.kotlin_module",
+                "META-INF/shared_debug.kotlin_module",
+                "META-INF/kotlinx-serialization-runtime.kotlin_module",
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+                // bytebuddy 🤡
+                "win32-x86-64/attach_hotspot_windows.dll",
+                "win32-x86/attach_hotspot_windows.dll",
+                "META-INF/licenses/ASM"
+            )
+        )
+    }
+}
+
+fun KotlinNativeTargetWithSimulatorTests.applyTestDevice(project: Project) {
+    testRuns.all {
+        deviceId = project.Library.IOS.TestRunnerDeviceId
+    }
+}
+
+val IOSTarget.sourceSetName: String get() = when (this) {
+    IOSTarget.X64 -> "iosX64"
+    IOSTarget.Arm64 -> "iosArm64"
+    IOSTarget.SimulatorArm64 -> "iosSimulatorArm64"
 }

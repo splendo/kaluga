@@ -24,22 +24,16 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle.kts")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":architecture", ""))
-                api("org.jetbrains.kotlinx:kotlinx-serialization-core:${ext["serialization_version"]}")
+                expose(Dependencies.KotlinX.Serialization.Core)
             }
         }
         commonTest {
