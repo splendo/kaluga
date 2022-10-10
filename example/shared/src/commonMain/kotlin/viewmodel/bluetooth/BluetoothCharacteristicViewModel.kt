@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Characteristic
@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BluetoothCharacteristicViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID) : BaseViewModel() {
+class BluetoothCharacteristicViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID) : BaseLifecycleViewModel() {
 
     private val characteristic: Flow<Characteristic?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID]
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
 
  */
 
-package com.splendo.kaluga.androidtesthelper
+package com.splendo.kaluga.keyboard.compose
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import androidx.compose.ui.focus.FocusManager
+import com.splendo.kaluga.keyboard.ClearFocusHandler
+import kotlinx.coroutines.flow.StateFlow
 
-class AndroidTestHelperActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        println("This Activity is just here to have an entry point to run this app.")
-        println("This app can be installed by instrumentation testing tools that require an application, when testing a library")
+class ComposeClearFocusHandler(private val focusManager: StateFlow<FocusManager>) : ClearFocusHandler {
+    override fun clearFocus(activity: Activity) {
+        focusManager.value.clearFocus(true)
     }
 }

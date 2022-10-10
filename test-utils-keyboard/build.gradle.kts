@@ -20,6 +20,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":test-utils-base"))
+                implementation(project(":architecture"))
                 api(project(":keyboard"))
             }
         }

@@ -43,7 +43,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-const val DEFAULT_TIMEOUT = 5_000L
+const val DEFAULT_TIMEOUT = 20_000L
 
 fun UiDevice.assertTextAppears(text: String) {
     waitForIdle()

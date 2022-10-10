@@ -20,7 +20,7 @@ package com.splendo.kaluga.test.architecture
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
         val isDisposed = AtomicBoolean(false)
     }
 
-    class ViewModel : BaseViewModel() {
+    class ViewModel : BaseLifecycleViewModel() {
         var v: String = ""
     }
 
@@ -84,7 +84,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
 
 class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadViewModelTestTest.CustomViewModelTestContext, CustomUIThreadViewModelTestTest.MyViewModel>() {
 
-    class MyViewModel(testFlow: MutableStateFlow<Int>) : BaseViewModel() {
+    class MyViewModel(testFlow: MutableStateFlow<Int>) : BaseLifecycleViewModel() {
         val testObservable = testFlow.map { it.toString() }.toInitializedObservable("", coroutineScope)
         val testSubject = testFlow.toInitializedSubject(coroutineScope)
     }

@@ -22,6 +22,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PackageInfoFlags
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
@@ -125,11 +126,16 @@ class AndroidPermissionsManager constructor(
         val missingPermissions = permissions.toMutableList()
 
         try {
-            val packageInfo = pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
+            val packageInfo = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                pm.getPackageInfo(context.packageName, PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
+            }
 
             var declaredPermissions: List<String> = mutableListOf()
 
-            if (packageInfo != null && declaredPermissions.isEmpty()) {
+            if (packageInfo != null) {
                 declaredPermissions = packageInfo.requestedPermissions.toList()
             }
 

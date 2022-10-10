@@ -167,7 +167,7 @@ sealed class ScanningStateImpl {
                 is ScanningState.Inactive -> {
                     scanner.startMonitoringPermissions()
                 }
-                is Active, NoHardware -> {}
+                is Active, is NoHardware -> {}
             }
         }
 
@@ -176,7 +176,7 @@ sealed class ScanningStateImpl {
                 is ScanningState.Inactive -> {
                     scanner.stopMonitoringPermissions()
                 }
-                is Active, NoHardware -> {}
+                is Active, is NoHardware -> {}
             }
         }
         abstract val scanner: Scanner

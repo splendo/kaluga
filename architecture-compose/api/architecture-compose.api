@@ -214,7 +214,7 @@ public final class com/splendo/kaluga/architecture/compose/navigation/RouteNavig
 public abstract class com/splendo/kaluga/architecture/compose/viewModel/KalugaViewModelComposeActivity : com/splendo/kaluga/architecture/viewmodel/KalugaViewModelActivity {
 	public static final field $stable I
 	public fun <init> ()V
-	protected abstract fun Layout (Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;Landroidx/compose/runtime/Composer;I)V
+	protected abstract fun Layout (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/compose/runtime/Composer;I)V
 	protected fun onCreate (Landroid/os/Bundle;)V
 }
 
@@ -223,9 +223,9 @@ public final class com/splendo/kaluga/architecture/compose/viewModel/KalugaViewM
 }
 
 public final class com/splendo/kaluga/architecture/compose/viewModel/ViewModelComposableKt {
-	public static final fun ViewModelComposable (Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
-	public static final fun store (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;
-	public static final fun storeAndRemember (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;
-	public static final fun storeAndRemember (Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseViewModel;
+	public static final fun ViewModelComposable (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun store (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
+	public static final fun storeAndRemember (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
+	public static final fun storeAndRemember (Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
 }
 

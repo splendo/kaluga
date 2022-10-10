@@ -193,7 +193,10 @@ abstract class BaseDeviceConnectionManager(
     }
 
     fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
-        notifyingCharacteristics[uuid.uuidString]?.updateValue()
+        notifyingCharacteristics[uuid.uuidString]?.let {
+            onUpdate?.invoke(it)
+            it.updateValue()
+        }
         val characteristicToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {

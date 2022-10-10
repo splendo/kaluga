@@ -17,14 +17,21 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice.BOND_NONE
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.ParcelUuid
+import android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -32,7 +39,6 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
-import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -170,11 +176,24 @@ actual class DefaultScanner internal constructor(
         if (!isSupported) return emptyList()
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
-                bluetoothAdapter?.enable()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    EnableServiceActivity.showEnableServiceActivity(
+                        applicationContext,
+                        hashCode().toString(),
+                        Intent(ACTION_BLUETOOTH_SETTINGS)
+                    ).await()
+                } else {
+                    @Suppress("DEPRECATION")
+                    bluetoothAdapter?.enable()
+                }
                 bluetoothEnabledMonitor!!.isEnabled.first { it }
             } else null,
             if (!locationEnabledMonitor.isServiceEnabled) {
-                EnableLocationActivity.showEnableLocationActivity(applicationContext, hashCode().toString())::await
+                EnableServiceActivity.showEnableServiceActivity(
+                    applicationContext,
+                    hashCode().toString(),
+                    Intent(ACTION_LOCATION_SOURCE_SETTINGS)
+                )::await
             } else null
         )
     }
@@ -182,6 +201,15 @@ actual class DefaultScanner internal constructor(
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
         if (!isSupported) return
+        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            Manifest.permission.BLUETOOTH_CONNECT
+        else
+            Manifest.permission.BLUETOOTH
+        val result = ActivityCompat.checkSelfPermission(
+            applicationContext,
+            permission
+        )
+        if (result != PackageManager.PERMISSION_GRANTED) return
         val devices = bluetoothAdapter?.bondedDevices
             ?.filter {
                 // If no uuids available return this device

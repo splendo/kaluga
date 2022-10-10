@@ -169,14 +169,10 @@ internal actual class DefaultDeviceConnectionManager(
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
             is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
             is DeviceAction.Write.Characteristic -> {
-                action.newValue?.toNSData()?.let {
-                    action.characteristic.wrapper.writeValue(it, peripheral)
-                }
+                action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral)
             }
             is DeviceAction.Write.Descriptor -> {
-                action.newValue?.toNSData()?.let {
-                    action.descriptor.wrapper.writeValue(it, peripheral)
-                }
+                action.descriptor.wrapper.writeValue(action.newValue.toNSData(), peripheral)
             }
             is DeviceAction.Notification.Enable -> {
                 val uuid = action.characteristic.uuid.uuidString

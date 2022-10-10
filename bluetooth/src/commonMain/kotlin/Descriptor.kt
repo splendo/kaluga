@@ -40,7 +40,7 @@ open class Descriptor(
         return DeviceAction.Read.Descriptor(this)
     }
 
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Descriptor {
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Descriptor {
         return DeviceAction.Write.Descriptor(newValue, this)
     }
 

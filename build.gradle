@@ -59,8 +59,6 @@ apiValidation {
     ignoredClasses += ['com.splendo.kaluga.permissions.BuildConfig']
     ignoredClasses += ['com.splendo.kaluga.test.BuildConfig']
     ignoredClasses += ['com.splendo.kaluga.datetime.timer.BuildConfig']
-
-    ignoredProjects += ["androidtesthelper"]
 }
 
 apply from:"gradle/ext.gradle"

@@ -20,7 +20,7 @@ package com.splendo.kaluga.test.alerts
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.TestContext, MockAlertPresenterTest.ViewModel>() {
 
-    class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel()
 
     class TestContext : ViewModelTestContext<ViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder()

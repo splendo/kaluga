@@ -36,9 +36,9 @@ sealed class DeviceAction {
         class Descriptor(val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Read()
     }
 
-    sealed class Write(val newValue: ByteArray?) : DeviceAction() {
-        class Characteristic(newValue: ByteArray?, val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Write(newValue)
-        class Descriptor(newValue: ByteArray?, val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Write(newValue)
+    sealed class Write(val newValue: ByteArray) : DeviceAction() {
+        class Characteristic(newValue: ByteArray, val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Write(newValue)
+        class Descriptor(newValue: ByteArray, val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Write(newValue)
     }
 
     sealed class Notification(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : DeviceAction() {
@@ -252,10 +252,7 @@ sealed class ConnectableDeviceStateImpl {
         override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
             when (oldState) {
                 is Disconnected -> deviceConnectionManager.connect()
-                is Connected,
-                is Connecting,
-                is Reconnecting,
-                is Disconnecting -> {
+                else -> {
                     // do nothing: TODO check all these are correct, e.g. Disconnecting
                 }
             }

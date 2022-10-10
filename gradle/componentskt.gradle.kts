@@ -17,15 +17,19 @@
 
 // in preparation for a full port to kts, new functionality can go here if it's in kts
 
-val androidLibAndroidTestDebugImplementation by configurations
+import kotlin.text.*
 
-val androidTestHelperDebugImplementation by configurations.creating {
-    extendsFrom(configurations[androidLibAndroidTestDebugImplementation.name])
+if ((gradle as ExtensionAware).extra["connect_check_expansion"] == true) {
+
+    val mymodules = project.parent?.subprojects?.filter {
+        it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
+    }
+
+    mymodules?.forEach() { module ->
+        afterEvaluate {
+            logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
+            tasks.getByPath("connectedDebugAndroidTest")
+                .dependsOn(":${module.name}:connectedDebugAndroidTest")
+        }
+    }
 }
-
-val jarAndroidTest = tasks.create<Jar>("jarAndroidTest") {
-    dependsOn("assembleDebugAndroidTest")
-    from("build/tmp/kotlin-classes/debugAndroidTest")
-}
-
-artifacts.add(androidTestHelperDebugImplementation.name, jarAndroidTest)

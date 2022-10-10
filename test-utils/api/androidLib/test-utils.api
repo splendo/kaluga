@@ -51,7 +51,6 @@ public class com/splendo/kaluga/test/SimpleUIThreadTest : com/splendo/kaluga/tes
 
 public final class com/splendo/kaluga/test/SimpleUIThreadTest$SimpleTestContext : com/splendo/kaluga/test/UIThreadTest$TestContext, kotlinx/coroutines/CoroutineScope {
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
-	public fun dispose ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 }
 
@@ -62,9 +61,5 @@ public abstract class com/splendo/kaluga/test/UIThreadTest : com/splendo/kaluga/
 }
 
 public abstract interface class com/splendo/kaluga/test/UIThreadTest$TestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext {
-}
-
-public final class com/splendo/kaluga/test/UIThreadTest$TestContext$DefaultImpls {
-	public static fun dispose (Lcom/splendo/kaluga/test/UIThreadTest$TestContext;)V
 }
 

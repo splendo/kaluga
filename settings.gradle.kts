@@ -2,6 +2,8 @@
  *
  * Changes made to this file should also be reflected in the `settings.gradle` under [example/ios/Supporting Files]
  *
+ * Also any new modules should be added to the build matrix in [.git/workflows]
+ *
  ***********************************************/
 
 pluginManagement {
@@ -47,6 +49,8 @@ includeBuild("convention-plugins")
 
 rootProject.name = "Kaluga"
 
+/* REMINDER (see header), files should be kept up to date with Gradle and the [.git/workflows] */
+
 include(":base")
 include(":beacons")
 include(":bluetooth")
@@ -69,6 +73,7 @@ include(":camera-permissions")
 include(":permissions")
 include(":location")
 include(":keyboard")
+include(":keyboard-compose")
 include(":links")
 include(":resources")
 include(":resources-compose")
@@ -87,4 +92,3 @@ include(":test-utils-koin")
 include(":test-utils-location")
 include(":test-utils-permissions")
 include(":test-utils-resources")
-include(":androidtesthelper")

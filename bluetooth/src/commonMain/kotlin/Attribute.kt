@@ -52,13 +52,13 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
 
     internal abstract fun createReadAction(): R
 
-    fun writeValue(newValue: ByteArray?): DeviceAction {
+    fun writeValue(newValue: ByteArray): DeviceAction {
         val action = createWriteAction(newValue)
         addAction(action)
         return action
     }
 
-    internal abstract fun createWriteAction(newValue: ByteArray?): W
+    internal abstract fun createWriteAction(newValue: ByteArray): W
 
     open fun updateValue() {
         val nextValue = getUpdatedValue()
