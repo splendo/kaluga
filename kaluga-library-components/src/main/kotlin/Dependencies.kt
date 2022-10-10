@@ -141,7 +141,7 @@ object Dependencies {
 
             val Core = Dependency(group, "core", version)
             val CoreKtx = Dependency(group, "core-ktx", version)
-            val Espresso = Dependency("$group.espresso", "espresso-core", version)
+            val Espresso = Dependency("$group.espresso", "espresso-core", espressoVersion)
             val JUnit = Dependency("$group.ext", "junit", junitVersion)
             val Rules = Dependency(group, "rules", version)
             val Runner = Dependency(group, "runner", version)
@@ -158,7 +158,7 @@ object Dependencies {
         val Core = Dependency(group, "koin-core", version)
     }
 
-    val Napier = Dependency("io.github.aakira", "napier", "2.4.0")
+    val Napier = Dependency("io.github.aakira", "napier", "2.6.1")
 
     object Stately {
         private const val group = "co.touchlab"
@@ -174,7 +174,7 @@ object Dependencies {
 
     object Mockito {
         private const val group = "org.mockito"
-        private const val version = "3.11.2"
+        private const val version = "4.8.1"
 
         val Android = Dependency(group, "mockito-android", version)
         val Core = Dependency(group, "mockito-core", version)
@@ -182,7 +182,7 @@ object Dependencies {
 
     object ByteBuddy {
         private const val group = "net.bytebuddy"
-        private const val version = "1.11.3"
+        private const val version = "1.12.16"
 
         val Android = Dependency(group, "byte-buddy-android", version)
         val Agent = Dependency(group, "byte-buddy-agent", version)

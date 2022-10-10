@@ -14,6 +14,13 @@ repositories {
     mavenCentral()
 }
 
+gradlePlugin {
+    plugins.register("kaluga-library-components") {
+        id = "kaluga-library-components"
+        implementationClass = "LibraryComponentsPlugin"
+    }
+}
+
 dependencies {
 
     val properties = File("${rootDir.absolutePath}/../gradle.properties").loadProperties()

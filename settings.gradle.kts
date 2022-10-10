@@ -44,6 +44,7 @@ pluginManagement {
     }
 }
 
+includeBuild("kaluga-library-components")
 includeBuild("convention-plugins")
 
 rootProject.name = "Kaluga"

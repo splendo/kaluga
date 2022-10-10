@@ -16,6 +16,7 @@ buildscript {
 }
 
 plugins {
+    id("kaluga-library-components")
     id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jlleitschuh.gradle.ktlint-idea")
