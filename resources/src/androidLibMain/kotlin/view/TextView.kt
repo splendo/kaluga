@@ -11,6 +11,9 @@ fun TextView.bindLabel(label: KalugaLabel) {
         is KalugaLabel.Plain -> label.text
         is KalugaLabel.Styled -> {
             if (label.text.spannable.getSpans(0, label.text.spannable.length, URLSpan::class.java).isNotEmpty()) {
+                label.text.linkStyle?.let {
+                    setLinkTextColor(it.color)
+                }
                 movementMethod = LinkMovementMethod.getInstance()
             }
             label.text.spannable
