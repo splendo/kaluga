@@ -23,14 +23,30 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
+import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SystemActivity : KalugaViewModelActivity<SystemViewModel>(R.layout.activity_system) {
-    override val viewModel: SystemViewModel by viewModel()
+    override val viewModel: SystemViewModel by viewModel {
+        parametersOf(
+            ActivityNavigator<SystemNavigationActions<Unit>> { action ->
+                when (action) {
+                    SystemNavigationActions.Network -> NavigationSpec.Fragment(
+                        R.id.system_features_fragment,
+                        createFragment = { NetworkFragment() }
+                    )
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

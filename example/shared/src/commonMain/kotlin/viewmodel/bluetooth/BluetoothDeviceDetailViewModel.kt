@@ -22,7 +22,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -50,7 +50,7 @@ sealed class DeviceDetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>
     object UUIDRow : DeviceDetailsSpecRow<String>(NavigationBundleSpecType.StringType)
 }
 
-class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private val identifier: Identifier) : BaseViewModel() {
+class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private val identifier: Identifier) : BaseLifecycleViewModel() {
 
     companion object {
         private const val rssi_frequency = 1000L

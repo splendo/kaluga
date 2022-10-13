@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.beacons
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BeaconsListViewModel(private val service: Beacons) : BaseViewModel() {
+class BeaconsListViewModel(private val service: Beacons) : BaseLifecycleViewModel() {
 
     private val _isScanning = MutableStateFlow(false)
     val isScanning = _isScanning.toInitializedObservable(coroutineScope)

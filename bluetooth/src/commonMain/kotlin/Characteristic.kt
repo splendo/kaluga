@@ -109,7 +109,7 @@ open class Characteristic(
         return DeviceAction.Read.Characteristic(this)
     }
 
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Characteristic {
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic {
         return DeviceAction.Write.Characteristic(newValue, this)
     }
 

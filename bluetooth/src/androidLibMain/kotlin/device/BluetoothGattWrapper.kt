@@ -17,9 +17,11 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
+import android.bluetooth.BluetoothStatusCodes
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 
@@ -34,11 +36,12 @@ interface BluetoothGattWrapper {
 
     fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean
     fun readDescriptor(wrapper: DescriptorWrapper): Boolean
-    fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean
-    fun writeDescriptor(wrapper: DescriptorWrapper): Boolean
+    fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean
+    fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean
     fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean
 }
 
+@SuppressLint("MissingPermission")
 class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGattWrapper {
 
     override fun connect(): Boolean {
@@ -75,14 +78,28 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return gatt.readDescriptor(descriptor)
     }
 
-    override fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean {
+    override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
-        return gatt.writeCharacteristic(characteristic)
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            gatt.writeCharacteristic(characteristic, value, characteristic.writeType) == BluetoothStatusCodes.SUCCESS
+        } else {
+            @Suppress("DEPRECATION")
+            characteristic.value = value
+            @Suppress("DEPRECATION")
+            gatt.writeCharacteristic(characteristic)
+        }
     }
 
-    override fun writeDescriptor(wrapper: DescriptorWrapper): Boolean {
+    override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
-        return gatt.writeDescriptor(descriptor)
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            gatt.writeDescriptor(descriptor, value) == BluetoothStatusCodes.SUCCESS
+        } else {
+            @Suppress("DEPRECATION")
+            descriptor.value = value
+            @Suppress("DEPRECATION")
+            gatt.writeDescriptor(descriptor)
+        }
     }
 
     override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {

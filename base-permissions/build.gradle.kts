@@ -25,7 +25,7 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-                implementation(project(":logging", ""))
+                api(project(":logging", ""))
                 api(project(":base", ""))
             }
         }

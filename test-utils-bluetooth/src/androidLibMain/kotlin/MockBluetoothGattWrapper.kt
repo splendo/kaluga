@@ -68,9 +68,9 @@ class MockBluetoothGattWrapper(setupMocks: Boolean = true) : BluetoothGattWrappe
 
     override fun readDescriptor(wrapper: DescriptorWrapper): Boolean = readDescriptorMock.call(wrapper)
 
-    override fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean = writeCharacteristicMock.call(wrapper)
+    override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean = writeCharacteristicMock.call(wrapper, value)
 
-    override fun writeDescriptor(wrapper: DescriptorWrapper): Boolean = writeDescriptorMock.call(wrapper)
+    override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean = writeDescriptorMock.call(wrapper, value)
 
     override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean = setCharacteristicNotificationMock.call(wrapper, enable)
 }

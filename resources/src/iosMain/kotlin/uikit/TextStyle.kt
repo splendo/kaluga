@@ -20,163 +20,64 @@ package com.splendo.kaluga.resources.uikit
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.urlRanges
 import com.splendo.kaluga.resources.view.KalugaLabel
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.ObjCAction
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.readValue
-import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
-import platform.CoreGraphics.CGPointMake
-import platform.CoreGraphics.CGSizeMake
-import platform.Foundation.NSLocationInRange
-import platform.Foundation.NSMakeRange
-import platform.Foundation.NSMapTable
-import platform.Foundation.NSPointerFunctionsStrongMemory
-import platform.Foundation.NSPointerFunctionsWeakMemory
-import platform.Foundation.NSRange
-import platform.Foundation.NSURL
+import platform.Foundation.NSMutableAttributedString
+import platform.Foundation.addAttributes
 import platform.Foundation.create
-import platform.UIKit.NSLayoutManager
-import platform.UIKit.NSTextAlignmentCenter
-import platform.UIKit.NSTextAlignmentRight
-import platform.UIKit.NSTextContainer
-import platform.UIKit.NSTextStorage
-import platform.UIKit.UIApplication
+import platform.Foundation.removeAttribute
+import platform.UIKit.NSUnderlineStyleNone
+import platform.UIKit.NSUnderlineStyleSingle
 import platform.UIKit.UILabel
 import platform.UIKit.UITapGestureRecognizer
 import platform.UIKit.UITextField
-import platform.UIKit.UITextItemInteraction
 import platform.UIKit.UITextView
-import platform.UIKit.UITextViewDelegateProtocol
 import platform.UIKit.addGestureRecognizer
-import platform.darwin.NSObject
 import platform.darwin.sel_registerName
-import kotlin.math.ceil
-
-class UILinkTapGesture(private val label: UILabel) : NSObject() {
-
-    @ThreadLocal
-    object Registry {
-        val registeredGestures = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
-    }
-
-    @ObjCAction
-    fun tapLabel(gesture: UITapGestureRecognizer) {
-        label.attributedText?.urlRanges?.forEach { (range, url) ->
-            if (didTapAttributedTextInLabel(gesture, range)) {
-                UIApplication.sharedApplication.openURL(url)
-            }
-        }
-    }
-
-    private fun didTapAttributedTextInLabel(gesture: UITapGestureRecognizer, targetRange: NSRange): Boolean {
-        // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
-        val labelSize = label.bounds.useContents {
-            CGSizeMake(size.width, size.height)
-        }
-        val textContainer = NSTextContainer(labelSize).apply {
-            // Configure textContainer
-            lineFragmentPadding = 0.0 as CGFloat
-            lineBreakMode = label.lineBreakMode.convert()
-            maximumNumberOfLines = label.numberOfLines.convert()
-        }
-        val layoutManager = NSLayoutManager().apply {
-            addTextContainer(textContainer)
-        }
-
-        val attributedText = label.attributedText ?: return false
-        NSTextStorage.create(attributedText).apply {
-            addLayoutManager(layoutManager)
-        }
-
-        val alignmentOffset = when (label.textAlignment) {
-            NSTextAlignmentCenter -> 0.5
-            NSTextAlignmentRight -> 1.0
-            else -> 0.0
-        }
-
-        // Find the tapped character location and compare it to the specified range
-        val locationOfTouchInLabel = gesture.locationInView(label)
-        val textBoundingBox = layoutManager.usedRectForTextContainer(textContainer)
-        val textContainerOffset = CGPointMake(
-            (((labelSize.useContents { width } - textBoundingBox.useContents { size.width }) * alignmentOffset) - textBoundingBox.useContents { origin.x }) as CGFloat,
-            (((labelSize.useContents { height } - textBoundingBox.useContents { size.height }) * alignmentOffset) - textBoundingBox.useContents { origin.y }) as CGFloat
-        ).useContents { this }
-        val locationOfTouchInTextContainer = CGPointMake(
-            locationOfTouchInLabel.useContents { x } - textContainerOffset.x,
-            locationOfTouchInLabel.useContents { y } - textContainerOffset.y
-        )
-        val indexOfCharacter = layoutManager.characterIndexForPoint(locationOfTouchInTextContainer, textContainer, null)
-
-        val lineTapped = ceil(locationOfTouchInLabel.useContents { y } / label.font.lineHeight) - 1
-        val rightMostPointInLineTapped = CGPointMake(labelSize.useContents { width }, label.font.lineHeight * lineTapped)
-        val charsInLineTapped = layoutManager.characterIndexForPoint(rightMostPointInLineTapped, textContainer, null)
-        if (indexOfCharacter >= charsInLineTapped) {
-            return false
-        }
-
-        return NSLocationInRange(indexOfCharacter, targetRange.readValue())
-    }
-}
-
-class UILinkTextViewDelegate : NSObject(), UITextViewDelegateProtocol {
-
-    @ThreadLocal
-    object Registry {
-        val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
-    }
-
-    override fun textView(
-        textView: UITextView,
-        shouldInteractWithURL: NSURL,
-        inRange: CValue<NSRange>,
-        interaction: UITextItemInteraction
-    ): Boolean {
-        return textView.attributedText.urlRanges.let { urls ->
-            urls.firstOrNull { it.first.readValue().range == inRange.range && it.second == shouldInteractWithURL } != null
-        }
-    }
-}
-
-class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProtocol) : NSObject(), UITextViewDelegateProtocol by wrapped {
-
-    private val linkDelegate = UILinkTextViewDelegate()
-
-    override fun textView(
-        textView: UITextView,
-        shouldChangeTextInRange: CValue<NSRange>,
-        replacementText: String
-    ): Boolean {
-        return linkDelegate.textView(textView, shouldChangeTextInRange, replacementText) || wrapped.textView(textView, shouldChangeTextInRange, replacementText)
-    }
-}
 
 fun UILabel.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
         is KalugaLabel.Plain -> text = label.text
         is KalugaLabel.Styled -> {
-            attributedText = label.text.attributeString
-            if (label.text.attributeString.urlRanges.isNotEmpty()) {
-                val wrappedGesture = UILinkTapGesture(this)
+            val urlRanges = label.text.attributeString.urlRanges
+            attributedText = if (urlRanges.isNotEmpty()) {
+                val linkStyledAttributedString = NSMutableAttributedString.create(label.text.attributeString)
+                // UILabel doesnt support NSLink styling out of the box. If we want custom styling, we should just manually add color and underline styling
+                label.text.linkStyle?.let { linkStyle ->
+                    for ((range, _) in urlRanges) {
+                        linkStyledAttributedString.removeAttribute("NSLink", range)
+                        linkStyledAttributedString.addAttributes(
+                            mapOf(
+                                "NSColor" to linkStyle.color.uiColor,
+                                "NSUnderline" to if (linkStyle.isUnderlined) NSUnderlineStyleSingle else NSUnderlineStyleNone
+                            ),
+                            range
+                        )
+                    }
+                }
+                val wrappedGesture = UILinkTapGesture(this, urlRanges)
                 UILinkTapGesture.Registry.registeredGestures.setObject(wrappedGesture, this)
                 val selector = sel_registerName("tapLabel:")
                 addGestureRecognizer(UITapGestureRecognizer(wrappedGesture, selector))
                 userInteractionEnabled = true
+                linkStyledAttributedString
             } else {
                 UILinkTapGesture.Registry.registeredGestures.removeObjectForKey(this)
+                label.text.attributeString
             }
         }
     }
 }
 
 fun UITextView.bindTextView(label: KalugaLabel) {
-    applyTextStyle(label.style)
     when (label) {
         is KalugaLabel.Plain -> text = label.text
         is KalugaLabel.Styled -> {
             attributedText = label.text.attributeString
             if (label.text.attributeString.urlRanges.isNotEmpty()) {
+                label.text.linkStyle?.let {
+                    linkTextAttributes = mapOf("NSColor" to it.color.uiColor, "NSUnderline" to if (it.isUnderlined) NSUnderlineStyleSingle else NSUnderlineStyleNone)
+                }
                 val delegate = this.delegate()?.let { UILinkTextViewDelegateWrapper(it) } ?: UILinkTextViewDelegate()
                 UILinkTextViewDelegate.Registry.registeredDelegates.setObject(delegate, this)
                 setDelegate(delegate)
@@ -185,6 +86,8 @@ fun UITextView.bindTextView(label: KalugaLabel) {
             }
         }
     }
+    // Needs to happen after setting the text.
+    applyTextStyle(label.style)
 }
 
 fun UILabel.applyTextStyle(textStyle: TextStyle) {
@@ -205,6 +108,3 @@ fun UITextField.applyTextStyle(textStyle: TextStyle) {
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
-
-private val IntRange.nsRange: CValue<NSRange> get() = NSMakeRange(start.convert(), (endInclusive + 1 - start).convert())
-private val CValue<NSRange>.range: IntRange get() = useContents { IntRange(location.toInt(), (location + length).toInt() - 1) }

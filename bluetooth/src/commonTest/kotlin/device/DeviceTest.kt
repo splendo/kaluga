@@ -245,7 +245,7 @@ class DeviceTest :
         }
 
         mainAction {
-            descriptor.writeValue(null)
+            descriptor.writeValue(byteArrayOf())
             yieldMultiple(2)
         }
 

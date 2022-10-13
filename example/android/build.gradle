@@ -87,6 +87,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:$gradle.serialization_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$gradle.serialization_version"
 
-    implementation "com.google.android.material:material:$gradle.material_components_version"
+    implementation "com.google.android.material:material:$gradle.material_version"
     implementation "com.google.android.material:compose-theme-adapter:$gradle.material_components_adapter_version"
 }

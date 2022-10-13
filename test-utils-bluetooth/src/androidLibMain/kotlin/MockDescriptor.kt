@@ -27,10 +27,6 @@ class AndroidMockDescriptorWrapper(override val uuid: UUID = UUID.randomUUID(), 
     override val permissions: Int = 0
 
     override fun updateValue(value: ByteArray?) {
-        setValue(value)
-    }
-    override fun setValue(newValue: ByteArray?): Boolean {
-        value = newValue
-        return true
+        this.value = value
     }
 }

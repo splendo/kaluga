@@ -26,19 +26,35 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
 
-actual sealed class NetworkManager(
-    protected val context: Context
-) : BaseNetworkManager {
+fun NetworkManager(context: Context, onNetworkStateChange: NetworkStateChange): NetworkManager {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val androidNetworkManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        NetworkManager.AndroidConnectivityCallbackManager(
+            connectivityManager,
+            onNetworkStateChange
+        )
+    } else {
+        @Suppress("DEPRECATION")
+        NetworkManager.AndroidConnectivityReceiverManager(
+            connectivityManager,
+            onNetworkStateChange,
+            context
+        )
+    }
+    return NetworkManager(androidNetworkManager)
+}
 
-    abstract fun determineNetworkType(): Network
+actual class NetworkManager internal constructor(
+    androidNetworkManager: AndroidNetworkManager
+) : BaseNetworkManager by androidNetworkManager {
 
-    protected val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    internal interface AndroidNetworkManager : BaseNetworkManager
 
     @RequiresApi(Build.VERSION_CODES.N)
-    class AndroidConnectivityCallbackManager(
-        override val onNetworkStateChange: NetworkStateChange,
-        context: Context
-    ) : NetworkManager(context) {
+    internal class AndroidConnectivityCallbackManager(
+        private val connectivityManager: ConnectivityManager,
+        override val onNetworkStateChange: NetworkStateChange
+    ) : AndroidNetworkManager {
 
         private val networkHandler = object : ConnectivityManager.NetworkCallback() {
 
@@ -73,7 +89,7 @@ actual sealed class NetworkManager(
             connectivityManager.registerDefaultNetworkCallback(networkHandler)
         }
 
-        override fun determineNetworkType(): com.splendo.kaluga.system.network.Network {
+        private fun determineNetworkType(): Network {
             val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             val isCellularDataEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
             val isWifiEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
@@ -96,10 +112,13 @@ actual sealed class NetworkManager(
         }
     }
 
-    class AndroidConnectivityReceiverManager(
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated on Android")
+    internal class AndroidConnectivityReceiverManager(
+        private val connectivityManager: ConnectivityManager,
         override val onNetworkStateChange: NetworkStateChange,
-        context: Context
-    ) : NetworkManager(context) {
+        private val context: Context
+    ) : AndroidNetworkManager {
 
         private val networkHandler = object : BroadcastReceiver() {
             override fun onReceive(c: Context, intent: Intent) {
@@ -117,7 +136,7 @@ actual sealed class NetworkManager(
             context.registerReceiver(networkHandler, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         }
 
-        override fun determineNetworkType(): Network {
+        private fun determineNetworkType(): Network {
             val isMetered = connectivityManager.isActiveNetworkMetered
             return when {
                 (!isMetered && connectivityManager.isDefaultNetworkActive) -> Network.Known.Wifi()

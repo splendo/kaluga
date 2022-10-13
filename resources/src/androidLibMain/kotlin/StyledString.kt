@@ -26,19 +26,24 @@ import com.splendo.kaluga.resources.view.alignment
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-actual class StyledString(val spannable: Spannable, actual val defaultTextStyle: TextStyle)
+actual class StyledString(
+    val spannable: Spannable,
+    actual val defaultTextStyle: TextStyle,
+    actual val linkStyle: LinkStyle?
+)
 
 actual val StyledString.rawString: String get() = spannable.toString()
 
 actual class StyledStringBuilder constructor(
     string: String,
     private val defaultTextStyle: TextStyle,
+    private val linkStyle: LinkStyle?,
     private val context: Context
 ) {
 
     actual class Provider(private val context: Context = ApplicationHolder.applicationContext) {
-        actual fun provide(string: String, defaultTextStyle: TextStyle) =
-            StyledStringBuilder(string, defaultTextStyle, context)
+        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) =
+            StyledStringBuilder(string, defaultTextStyle, linkStyle, context)
     }
 
     private class CustomCharacterStyle(val modify: TextPaint.() -> Unit) : CharacterStyle() {
@@ -54,7 +59,7 @@ actual class StyledStringBuilder constructor(
             when (attribute) {
                 is StringStyleAttribute.CharacterStyleAttribute -> attribute.characterStyle(range)
                 is StringStyleAttribute.ParagraphStyleAttribute -> attribute.paragraphStyle
-                is StringStyleAttribute.Link -> URLSpan(attribute.url)
+                is StringStyleAttribute.Link -> CustomURLSpan(attribute.url, linkStyle)
             },
             range.first,
             range.last + 1,
@@ -193,6 +198,16 @@ actual class StyledStringBuilder constructor(
         }
 
     actual fun create(): StyledString {
-        return StyledString(builder, defaultTextStyle)
+        return StyledString(builder, defaultTextStyle, linkStyle)
+    }
+}
+
+private class CustomURLSpan(url: String, private val linkStyle: LinkStyle?) : URLSpan(url) {
+    override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        linkStyle?.let {
+            ds.color = it.color
+            ds.isUnderlineText = it.isUnderlined
+        }
     }
 }

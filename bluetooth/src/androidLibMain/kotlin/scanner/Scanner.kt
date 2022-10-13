@@ -17,20 +17,26 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.ParcelUuid
+import android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
-import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -164,22 +170,44 @@ actual class DefaultScanner internal constructor(
         if (!isSupported) return emptyList()
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
-                bluetoothAdapter?.enable()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    EnableServiceActivity.showEnableServiceActivity(
+                        applicationContext,
+                        hashCode().toString(),
+                        Intent(ACTION_BLUETOOTH_SETTINGS)
+                    ).await()
+                } else {
+                    @Suppress("DEPRECATION")
+                    bluetoothAdapter?.enable()
+                }
                 bluetoothEnabledMonitor!!.isEnabled.first { it }
             } else null,
             if (!locationEnabledMonitor.isServiceEnabled) {
-                EnableLocationActivity.showEnableLocationActivity(applicationContext, hashCode().toString())::await
+                EnableServiceActivity.showEnableServiceActivity(
+                    applicationContext,
+                    hashCode().toString(),
+                    Intent(ACTION_LOCATION_SOURCE_SETTINGS)
+                )::await
             } else null
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = bluetoothAdapter
-        ?.bondedDevices
-        ?.filter {
-            // If no uuids available return this device
-            // Otherwise check if it constains any of given service uuid
-            it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+    override fun pairedDevices(withServices: Set<UUID>) = when (
+        ActivityCompat.checkSelfPermission(
+            applicationContext,
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) Manifest.permission.BLUETOOTH_CONNECT else Manifest.permission.BLUETOOTH
+        )
+    ) {
+        PackageManager.PERMISSION_GRANTED -> {
+            bluetoothAdapter
+                ?.bondedDevices
+                ?.filter {
+                    // If no uuids available return this device
+                    // Otherwise check if it constains any of given service uuid
+                    it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+                }
+                ?.map { it.address }
         }
-        ?.map { it.address }
-        ?: emptyList()
+        else -> null
+    } ?: emptyList()
 }

@@ -104,10 +104,10 @@ The `AlertPresenter.Builder` object should be created from the platform side.
   
 ### Android  
 On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the alert.
-For `BaseViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
+For `BaseLifecycleViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
   
 ```kotlin  
-class AlertViewModel: ViewModel() {  
+class AlertViewModel: LifecycleViewModel() {  
   
     val builder = AlertPresenter.Builder()
     fun show() {

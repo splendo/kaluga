@@ -62,7 +62,7 @@ actual fun Decimal.div(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
-        NativeRoundingMode.valueOf(roundingMode.java)
+        roundingMode.java
     )
 ).setScale(scale, roundingMode.java)
 
@@ -80,14 +80,14 @@ actual fun Decimal.times(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
-        NativeRoundingMode.valueOf(roundingMode.java)
+        roundingMode.java
     )
-).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
+).setScale(scale, roundingMode.java)
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
     this.setScale(
         scale,
-        NativeRoundingMode.valueOf(roundingMode.java)
+        roundingMode.java
     )
 
 actual infix fun Decimal.pow(n: Int): Decimal = this.pow(n, MathContext.DECIMAL128)
@@ -100,9 +100,9 @@ actual fun Decimal.pow(
     n,
     MathContext(
         MathContext.DECIMAL128.precision,
-        NativeRoundingMode.valueOf(roundingMode.java)
+        roundingMode.java
     )
-).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
+).setScale(scale, roundingMode.java)
 
 actual fun Number.toDecimal() = BigDecimal(this.toString())
 actual fun String.toDecimal() = BigDecimal(this)
@@ -113,7 +113,7 @@ actual fun Decimal.toString() = this.stripTrailingZeros().toString()
 
 val RoundingMode.java
     get() = when (this) {
-        RoundDown -> NativeRoundingMode.DOWN.ordinal
-        RoundHalfEven -> NativeRoundingMode.HALF_EVEN.ordinal
-        RoundUp -> NativeRoundingMode.UP.ordinal
+        RoundDown -> NativeRoundingMode.DOWN
+        RoundHalfEven -> NativeRoundingMode.HALF_EVEN
+        RoundUp -> NativeRoundingMode.UP
     }

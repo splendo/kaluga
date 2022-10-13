@@ -67,23 +67,7 @@ public final class com/splendo/kaluga/system/network/Network$Unknown$WithoutLast
 	public fun getReason ()Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
 }
 
-public abstract class com/splendo/kaluga/system/network/NetworkManager : com/splendo/kaluga/system/network/BaseNetworkManager {
-	public synthetic fun <init> (Landroid/content/Context;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun determineNetworkType ()Lcom/splendo/kaluga/system/network/Network;
-	protected final fun getConnectivityManager ()Landroid/net/ConnectivityManager;
-	protected final fun getContext ()Landroid/content/Context;
-}
-
-public final class com/splendo/kaluga/system/network/NetworkManager$AndroidConnectivityCallbackManager : com/splendo/kaluga/system/network/NetworkManager {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Landroid/content/Context;)V
-	public fun determineNetworkType ()Lcom/splendo/kaluga/system/network/Network;
-	public fun dispose ()V
-	public fun getOnNetworkStateChange ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/system/network/NetworkManager$AndroidConnectivityReceiverManager : com/splendo/kaluga/system/network/NetworkManager {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Landroid/content/Context;)V
-	public fun determineNetworkType ()Lcom/splendo/kaluga/system/network/Network;
+public final class com/splendo/kaluga/system/network/NetworkManager : com/splendo/kaluga/system/network/BaseNetworkManager {
 	public fun dispose ()V
 	public fun getOnNetworkStateChange ()Lkotlin/jvm/functions/Function1;
 }
@@ -95,16 +79,17 @@ public final class com/splendo/kaluga/system/network/NetworkManagerBuilder : com
 	public fun create (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/system/network/BaseNetworkManager;
 }
 
+public final class com/splendo/kaluga/system/network/NetworkManagerKt {
+	public static final fun NetworkManager (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/system/network/NetworkManager;
+}
+
 public abstract interface class com/splendo/kaluga/system/network/ReachableNetworkConnection {
 	public abstract fun isExpensive ()Z
 }
 
 public abstract class com/splendo/kaluga/system/network/state/NetworkState : com/splendo/kaluga/state/KalugaState {
 	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/Network;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Available : com/splendo/kaluga/system/network/state/NetworkState {
