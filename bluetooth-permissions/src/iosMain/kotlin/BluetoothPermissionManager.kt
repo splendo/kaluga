@@ -78,7 +78,6 @@ actual class DefaultBluetoothPermissionManager(
 
     private val permissionHandler: DefaultAuthorizationStatusHandler
     private val timerHelper: PermissionRefreshScheduler
-    // private val delegate: Delegate
 
     init {
         permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
