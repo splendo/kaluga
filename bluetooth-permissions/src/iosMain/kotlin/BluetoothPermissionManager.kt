@@ -64,18 +64,9 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    private class Provider() : CurrentAuthorizationStatusProvider {
+    private class Provider : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = checkAuthorization()
     }
-
-    /*private class Delegate(
-        val authorizationStatusFlow: AuthorizationStatusHandler,
-        private val coroutineScope: CoroutineScope
-    ) : NSObject(), CBCentralManagerDelegateProtocol {
-        override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            authorizationStatusFlow.status(checkAuthorization())
-        }
-    }*/
 
     private val permissionsQueue = dispatch_queue_create("BluetoothPermissionsMonitor", null)
     private val provider = Provider()
@@ -90,10 +81,8 @@ actual class DefaultBluetoothPermissionManager(
     // private val delegate: Delegate
 
     init {
-        val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
-        // delegate = Delegate(permissionHandler, coroutineScope)
+        permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
         timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
-        this.permissionHandler = permissionHandler
     }
 
     override fun requestPermissionDidStart() {
