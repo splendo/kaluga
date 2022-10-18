@@ -4,6 +4,9 @@ on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8g -XX:MaxMetaspaceSize=512m\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8g -XX:MaxMetaspaceSize=512m"
+
+concurrency: publish-${{ github.ref_name }}
+
 jobs:
   publish:
     env:
