@@ -1,4 +1,4 @@
-name: Android Emulator tests
+name: Publish
 on: push
 
 env:
