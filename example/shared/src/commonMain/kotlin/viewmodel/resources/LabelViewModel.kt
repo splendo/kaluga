@@ -88,7 +88,7 @@ class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) 
             KalugaLabel.Styled("Kerning Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Kerning(0.08f), IntRange(0, 13)) })),
             KalugaLabel.Styled("Underline Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Underline, IntRange(0, 15)) })),
             KalugaLabel.Styled("Strikethrough Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Strikethrough, IntRange(0, 20)) })),
-            KalugaLabel.Styled("Link Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.Link("https://kaluga.splendo.com"), IntRange(0, 10)) })),
+            KalugaLabel.Styled("Link Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, DefaultColors.limeGreen, { Pair(StringStyleAttribute.Link("https://kaluga.splendo.com"), IntRange(0, 10)) })),
             KalugaLabel.Styled(loremIpsum.styled(styledStringBuilderProvider, TextStyles.defaultText, StringStyleAttribute.ParagraphStyleAttribute.LineSpacing(5.0f, 10.0f, 6.0f))),
             KalugaLabel.Styled(
                 loremIpsum.styled(
