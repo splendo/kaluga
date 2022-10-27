@@ -86,8 +86,8 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
 
     override fun compareTo(other: KalugaDate): Int {
         return when {
-            date.getTime() < other.millisecondSinceEpoch -> -1
-            date.getTime() == other.millisecondSinceEpoch -> 0
+            date.getTime().toLong() < other.millisecondSinceEpoch -> -1
+            date.getTime().toLong() == other.millisecondSinceEpoch -> 0
             else -> 1
         }
     }
