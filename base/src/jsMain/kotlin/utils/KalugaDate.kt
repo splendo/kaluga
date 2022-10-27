@@ -76,7 +76,7 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
         get() = date.getTime().toLong()
         set(value) { }
 
-    override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getMilliseconds()))
+    override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getTime()))
 
     override fun equals(other: Any?): Boolean {
         return (other as? KalugaDate)?.let {
@@ -86,8 +86,8 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
 
     override fun compareTo(other: KalugaDate): Int {
         return when {
-            date.getMilliseconds() < other.millisecond -> -1
-            date.getMilliseconds() == other.millisecond -> 0
+            date.getTime() < other.millisecondSinceEpoch -> -1
+            date.getTime() == other.millisecondSinceEpoch -> 0
             else -> 1
         }
     }
