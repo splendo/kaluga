@@ -57,7 +57,7 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
         get() = date.getUTCDay() + 1
         set(value) { }
     override var firstWeekDay: Int // TODO
-        get() = 0
+        get() = 2
         set(value) { }
 
     override var hour: Int
