@@ -58,7 +58,7 @@ actual class DefaultStoragePermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
-                PHPhotoLibrary.requestAuthorization  { status ->
+                PHPhotoLibrary.requestAuthorization { status ->
                     deferred.complete(status)
                     Unit
                 }

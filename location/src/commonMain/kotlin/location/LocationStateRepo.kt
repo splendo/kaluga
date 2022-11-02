@@ -64,7 +64,7 @@ abstract class BaseLocationStateRepo(
 )
 
 open class LocationStateImplRepo(
-    createLocationManager: () -> LocationManager,
+    createLocationManager: suspend () -> LocationManager,
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : BaseLocationStateRepo(
     createNotInitializedState = { LocationStateImpl.NotInitialized },
@@ -135,7 +135,7 @@ open class LocationStateImplRepo(
  * @param locationManagerBuilder The [BaseLocationManager.Builder] to create the [LocationManager] managing the location state.
  */
 class LocationStateRepo(
-    settingsBuilder: (CoroutineContext) -> BaseLocationManager.Settings,
+    settingsBuilder: suspend (CoroutineContext) -> BaseLocationManager.Settings,
     builder: BaseLocationManager.Builder,
     coroutineContext: CoroutineContext
 ) : LocationStateImplRepo(

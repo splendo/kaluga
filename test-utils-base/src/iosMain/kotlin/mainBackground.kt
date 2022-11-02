@@ -21,14 +21,13 @@ import com.splendo.kaluga.logging.debug
 import platform.CoreFoundation.CFRunLoopRun
 import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
-import kotlin.native.concurrent.freeze
 import kotlin.native.internal.test.testLauncherEntryPoint
 import kotlin.system.exitProcess
 
 fun mainBackground(args: Array<String>) {
     debug("using background thread for iOS tests")
     val worker = Worker.start(name = "kaluga-test-background")
-    worker.execute(TransferMode.SAFE, { args.freeze() }) {
+    worker.execute(TransferMode.SAFE, { args }) {
         val result = testLauncherEntryPoint(it)
         exitProcess(result)
     }

@@ -37,6 +37,7 @@ import kotlin.test.Ignore
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
 class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
 
@@ -55,7 +56,7 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
     override val builder get() = activity!!.viewModel.dateTimePickerBuilder
 
     companion object {
-        const val DEFAULT_TIMEOUT = 20_000L
+        val DEFAULT_TIMEOUT = 20.seconds.inWholeMilliseconds
     }
 
     @Test

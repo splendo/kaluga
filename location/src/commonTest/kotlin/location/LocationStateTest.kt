@@ -72,18 +72,19 @@ class LocationStateTest :
         TestContext {
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
             initialActiveState = configuration.initialPermissionState
-        ).apply {
-            registerAllPermissionsBuilders()
-        }
-        val permissions = Permissions(
-            permissionsBuilder,
-            coroutineContext = coroutineScope.coroutineContext
-        ).apply {
-            // Make sure permissionState has been created as it may break the tests otherwise
-            get(configuration.locationPermission)
-        }
+        )
+
         val locationStateRepoBuilder = MockLocationStateRepoBuilder(
-            permissions,
+            {
+                permissionsBuilder.registerAllPermissionsBuilders()
+                Permissions(
+                    permissionsBuilder,
+                    coroutineContext = coroutineScope.coroutineContext
+                ).apply {
+                    // Make sure permissionState has been created as it may break the tests otherwise
+                    get(configuration.locationPermission)
+                }
+            },
             MockBaseLocationManager.Builder(configuration.locationEnabled)
         )
 

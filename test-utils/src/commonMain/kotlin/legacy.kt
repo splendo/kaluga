@@ -110,9 +110,8 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
 fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>): List<T> = com.splendo.kaluga.test.base.awaitAllBlocking(*deferreds)
 @Deprecated("Moved to test-utils-base", ReplaceWith("captureFor(duration)", "com.splendo.kaluga.test.base.captureFor"))
 suspend fun <T> Flow<T>.captureFor(duration: Duration): List<T> = this.captureFor(duration)
-@Deprecated("Moved to test-utils-base", ReplaceWith("testBlockingAndCancelScope(context, freezeResult, block)", "com.splendo.kaluga.test.base.testBlockingAndCancelScope"))
+@Deprecated("Moved to test-utils-base", ReplaceWith("testBlockingAndCancelScope(context, block)", "com.splendo.kaluga.test.base.testBlockingAndCancelScope"))
 inline fun <reified T> testBlockingAndCancelScope(
     context: CoroutineContext = EmptyCoroutineContext,
-    freezeResult: Boolean = true,
     crossinline block: suspend CoroutineScope.() -> T
-) = com.splendo.kaluga.test.base.testBlockingAndCancelScope(context, freezeResult, block)
+) = com.splendo.kaluga.test.base.testBlockingAndCancelScope(context, block)

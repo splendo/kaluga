@@ -36,6 +36,7 @@ import kotlin.test.Ignore
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
 class AndroidAlertPresenterTest : AlertPresenterTests() {
 
@@ -54,7 +55,7 @@ class AndroidAlertPresenterTest : AlertPresenterTests() {
     override val builder get() = activity!!.viewModel.alertBuilder
 
     companion object {
-        const val DEFAULT_TIMEOUT = 20_000L
+        val DEFAULT_TIMEOUT = 20.seconds.inWholeMilliseconds
     }
 
     @Test

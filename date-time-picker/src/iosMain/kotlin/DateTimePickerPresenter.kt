@@ -156,8 +156,10 @@ actual class DateTimePickerPresenter(
     }
 
     actual class Builder(private val viewController: UIViewController) : BaseDateTimePickerPresenter.Builder() {
-        actual override fun create(coroutineScope: CoroutineScope) =
-            DateTimePickerPresenter(createDateTimePicker(), viewController)
+        actual override fun create(
+            dateTimePicker: DateTimePicker,
+            coroutineScope: CoroutineScope
+        ) = DateTimePickerPresenter(dateTimePicker, viewController)
     }
 
     override fun dismissDateTimePicker(animated: Boolean) {

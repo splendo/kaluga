@@ -70,4 +70,3 @@ suspend fun PermissionsBuilder.registerNotificationsPermissionIfNotRegistered(
         notificationsPermissionStateRepoBuilder(permission, it, coroutineContext)
     }
 }
-

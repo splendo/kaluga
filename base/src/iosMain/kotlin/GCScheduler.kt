@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlin.native.internal.GC
 
-
 object GCScheduler {
 
     private val collectingMutex = Mutex()

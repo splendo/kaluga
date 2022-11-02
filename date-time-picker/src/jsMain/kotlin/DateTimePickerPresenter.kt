@@ -27,8 +27,8 @@ actual class DateTimePickerPresenter(
 
     actual class Builder : BaseDateTimePickerPresenter.Builder() {
 
-        actual override fun create(coroutineScope: CoroutineScope): DateTimePickerPresenter {
-            return DateTimePickerPresenter(createDateTimePicker())
+        actual override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): DateTimePickerPresenter {
+            return DateTimePickerPresenter(dateTimePicker)
         }
     }
 

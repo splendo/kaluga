@@ -18,9 +18,9 @@
 package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
@@ -36,7 +36,6 @@ import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
 import platform.UserNotifications.UNAuthorizationStatusProvisional
-import platform.UserNotifications.UNNotificationSettings
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.time.Duration
 
@@ -71,14 +70,12 @@ actual class DefaultNotificationsPermissionManager(
     override fun requestPermissionDidStart() {
         permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
             val deferred = CompletableDeferred<Boolean>()
-            val callback = { authorization: Boolean, error: NSError? ->
+            notificationCenter.requestAuthorizationWithOptions(
+                permission.options?.options ?: UNAuthorizationOptionNone
+            ) { authorization: Boolean, error: NSError? ->
                 error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }
                 Unit
-            }.freeze()
-            notificationCenter.requestAuthorizationWithOptions(
-                permission.options?.options ?: UNAuthorizationOptionNone,
-                callback
-            )
+            }
 
             try {
                 if (deferred.await())

@@ -64,7 +64,7 @@ interface BluetoothService {
 }
 
 class Bluetooth internal constructor(
-    scannerSettingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
+    scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     connectionSettings: ConnectionSettings,
     scannerBuilder: BaseScanner.Builder,
     coroutineContext: CoroutineContext,

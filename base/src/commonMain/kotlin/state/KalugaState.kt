@@ -359,9 +359,11 @@ abstract class BaseHotStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
             val isInitialized = lazyMutableSharedFlow.isInitialized()
             val flow = lazyMutableSharedFlow.value
             launch(coroutineContext) {
-                if (lock.withLock {
+                if (
+                    lock.withLock {
                         (!isInitialized && !initialized).also { if (it) initialized = true }
-                    }) {
+                    }
+                ) {
                     initialize()
                 }
             }
@@ -393,13 +395,13 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
             val isInitialized = lazyMutableFlow.isInitialized()
             val flow = lazyMutableFlow.value
             launch(coroutineContext) {
-                if (lock.withLock {
+                if (
+                    lock.withLock {
                         (!isInitialized && !initialized).also {
                             if (it) initialized = true
                         }
                     }
-                )
-                {
+                ) {
                     flow.onCollectionEvent { event ->
                         when (event) {
                             NoMoreCollections -> noMoreCollections().also { it.finalState() }

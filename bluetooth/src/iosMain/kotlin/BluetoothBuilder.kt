@@ -5,7 +5,7 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import platform.Foundation.NSBundle
 import kotlin.coroutines.CoroutineContext
 
@@ -14,7 +14,7 @@ actual class BluetoothBuilder(
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder(bundle).apply {
-                registerBluetoothPermission()
+                registerBluetoothPermissionIfNotRegistered()
             },
             context
         )

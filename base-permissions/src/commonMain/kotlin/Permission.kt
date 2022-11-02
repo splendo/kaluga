@@ -108,7 +108,6 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         repoBuilders.getOrPut(permission) { createPermissionStateRepoBuilder(permissionStateRepoBuilder) } as PermissionStateRepoBuilder<P>
     }
 
-
     suspend fun <P : Permission> unregisterPermissionStateRepoBuilder(permission: P) {
         repoBuildersLock.withLock {
             repoBuilders.remove(permission::class)

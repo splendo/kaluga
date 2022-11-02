@@ -18,9 +18,9 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
@@ -35,7 +35,6 @@ import platform.Contacts.CNAuthorizationStatusRestricted
 import platform.Contacts.CNContactStore
 import platform.Contacts.CNEntityType
 import platform.Foundation.NSBundle
-import platform.Foundation.NSError
 import kotlin.time.Duration
 
 const val NSContactsUsageDescription = "NSContactsUsageDescription"

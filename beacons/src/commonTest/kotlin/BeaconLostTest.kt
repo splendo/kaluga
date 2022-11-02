@@ -22,8 +22,9 @@ import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
-class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
+class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
 
     @Test
     fun testLostOnTimeout() = testWithFlow {

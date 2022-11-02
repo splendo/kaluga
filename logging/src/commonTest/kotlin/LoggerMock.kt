@@ -43,7 +43,6 @@ class LoggerMock(private val coroutineScope: CoroutineScope) : Logger {
     }
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-
         coroutineScope.launch {
             mutex.withLock {
                 levelList.add(level)

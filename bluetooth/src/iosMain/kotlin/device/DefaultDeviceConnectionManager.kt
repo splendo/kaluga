@@ -204,7 +204,7 @@ internal actual class DefaultDeviceConnectionManager(
         handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
     }
 
-    private suspend fun didDiscoverServices() {
+    private fun didDiscoverServices() {
         launch {
             discoveringMutext.withLock {
                 discoveringServices.addAll(
@@ -234,7 +234,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    private suspend fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
+    private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
         launch {
             discoveringMutext.withLock {
                 discoveringCharacteristics.remove(forCharacteristic.UUID)

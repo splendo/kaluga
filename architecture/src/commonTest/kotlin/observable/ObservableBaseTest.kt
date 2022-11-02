@@ -158,9 +158,9 @@ abstract class ObservableBaseTest : BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    private val updateSemaphore = AtomicReference<Semaphore?>(null)
+    private var updateSemaphore: Semaphore? = null
     suspend fun waitForUpdate() {
-        updateSemaphore.get()?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
+        updateSemaphore?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
     }
 
     suspend fun <R : T, T, OO : ObservableOptional<R>, O : BasicObservable<R, T, OO>> testObservable(
@@ -171,8 +171,8 @@ abstract class ObservableBaseTest : BaseTest() {
         vararg updates: (O) -> ObservableOptional<R>
     ) {
         val permits = updates.size + 1 // +1 for initial state
-        val semaphore = Semaphore(permits).freeze()
-        updateSemaphore.set(semaphore)
+        val semaphore = Semaphore(permits)
+        updateSemaphore = semaphore
         repeat(permits) { semaphore.acquire() }
 
         val observableOptional by observable
@@ -206,7 +206,7 @@ abstract class ObservableBaseTest : BaseTest() {
         var disposableInitialized: Disposable? = null
         if (observable is Initialized<*, *>) {
             observedInitializedValue = unusedValue
-            disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue.set(it) }
+            disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue = it }
         }
 
         when (initialExpected) {

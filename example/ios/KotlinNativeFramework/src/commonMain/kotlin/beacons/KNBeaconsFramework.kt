@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.MainScope
 import permissions.KNPermissionsFramework
 
@@ -33,6 +34,6 @@ class KNBeaconsFramework {
             ConnectionSettings(),
             singleThreadDispatcher("Bluetooth")
         ),
-        timeoutMs = 60_000
+        timeout = 1.minutes
     )
 }

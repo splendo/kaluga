@@ -20,7 +20,7 @@ package com.splendo.kaluga.location
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.permissions.location.registerLocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -54,9 +54,9 @@ actual class DefaultLocationManager(
 }
 
 actual class LocationStateRepoBuilder(
-    private val permissionsBuilder: (CoroutineContext) -> Permissions = { context ->
+    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
-            PermissionsBuilder().apply { registerLocationPermission() },
+            PermissionsBuilder().apply { registerLocationPermissionIfNotRegistered() },
             context
         )
     }

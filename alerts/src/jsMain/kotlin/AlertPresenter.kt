@@ -26,8 +26,8 @@ actual class AlertPresenter(
 
     actual class Builder : BaseAlertPresenter.Builder() {
 
-        actual override fun create(coroutineScope: CoroutineScope): AlertPresenter {
-            return AlertPresenter(createAlert())
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter {
+            return AlertPresenter(alert)
         }
     }
 

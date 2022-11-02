@@ -34,13 +34,15 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 private typealias BeaconJob = Pair<BeaconInfo, Job>
 private typealias BeaconsMap = MutableMap<BeaconID, BeaconJob>
 
 class Beacons(
     private val bluetooth: BluetoothService,
-    private val timeoutMs: Long = 10_000,
+    private val timeout: Duration = 10.seconds,
 ) {
 
     private companion object { const val TAG = "Beacons" }
@@ -48,7 +50,7 @@ class Beacons(
     private val cache = mutableMapOf<BeaconID, BeaconJob>()
     private val cacheJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
-    private var monitoringJob: Job? by AtomicReferenceDelegate()
+    private var monitoringJob: Job? = null
 
     private val _beacons = MutableStateFlow(emptySet<BeaconInfo>())
     val beacons: StateFlow<Set<BeaconInfo>>
@@ -92,7 +94,7 @@ class Beacons(
             }
             cache[beacon.beaconID] = beacon to coroutineScope.launch {
                 debug(TAG, "[Added] $beacon")
-                delay(beacon.lastSeen.millisecondSinceEpoch + timeoutMs - DefaultKalugaDate.now().millisecondSinceEpoch)
+                delay(beacon.lastSeen.millisecondSinceEpoch + timeout.inWholeMilliseconds - DefaultKalugaDate.now().millisecondSinceEpoch)
                 debug(TAG, "[Lost] $beacon")
                 cache.remove(beacon.beaconID)
                 updateList()

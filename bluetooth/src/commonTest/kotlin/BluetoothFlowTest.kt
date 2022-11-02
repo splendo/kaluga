@@ -148,9 +148,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
             initialActiveState = configuration.initialPermissionState
-        ).apply {
-            registerAllPermissionsBuilders()
-        }
+        )
 
         val permissionStateRepo get() = permissionsBuilder.buildBluetoothStateRepos.first()
 
@@ -159,6 +157,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         val bluetooth = Bluetooth(
             { scannerContext ->
+                permissionsBuilder.registerAllPermissionsBuilders()
                 BaseScanner.Settings(
                     Permissions(
                         permissionsBuilder,

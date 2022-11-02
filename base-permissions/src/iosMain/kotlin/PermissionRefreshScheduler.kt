@@ -78,12 +78,12 @@ class PermissionRefreshScheduler(
             val timerJobState = timerState
             if (timerJobState is TimerJobState.TimerNotRunning) {
                 this.timerState = timerJobState.startTimer(interval, this) {
-                        val status = currentAuthorizationStatusProvider.provide()
-                        if (!waitingLock.isLocked && lastPermission != status) {
-                            lastPermission = currentAuthorizationStatusProvider.provide()
-                            onPermissionChangedFlow.status(status)
-                        }
+                    val status = currentAuthorizationStatusProvider.provide()
+                    if (!waitingLock.isLocked && lastPermission != status) {
+                        lastPermission = currentAuthorizationStatusProvider.provide()
+                        onPermissionChangedFlow.status(status)
                     }
+                }
             }
         }
     }

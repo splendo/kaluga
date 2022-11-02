@@ -150,6 +150,7 @@ abstract class BaseDeviceConnectionManager(
 
     override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = this.currentAction
+        currentAction?.completedSuccessfully?.cancel()
         val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
             this.currentAction = null

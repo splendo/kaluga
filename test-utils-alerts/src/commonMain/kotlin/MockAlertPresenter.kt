@@ -57,7 +57,7 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
             }
         }
 
-        override fun create(coroutineScope: CoroutineScope): BaseAlertPresenter = createAlertFromAlert(createAlert(), coroutineScope)
+        override fun create(alert: Alert, coroutineScope: CoroutineScope): BaseAlertPresenter = createAlertFromAlert(alert, coroutineScope)
         private fun createAlertFromAlert(alert: Alert, coroutineScope: CoroutineScope): MockAlertPresenter = createMock.call(alert, coroutineScope)
     }
 

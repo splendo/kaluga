@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.architecture.observable.ObservableOptional.*
+import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

@@ -45,7 +45,10 @@ actual class DateTimePickerPresenter(
         private val themeResourceId: Int = 0,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseDateTimePickerPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = DateTimePickerPresenter(createDateTimePicker(), themeResourceId, lifecycleManagerObserver, coroutineScope)
+        actual override fun create(
+            dateTimePicker: DateTimePicker,
+            coroutineScope: CoroutineScope
+        ) = DateTimePickerPresenter(dateTimePicker, themeResourceId, lifecycleManagerObserver, coroutineScope)
     }
 
     private sealed class DialogPresentation {
