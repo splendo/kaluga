@@ -39,9 +39,13 @@ public final class com/splendo/kaluga/permissions/location/LocationPermissionSta
 }
 
 public final class com/splendo/kaluga/permissions/location/PermissionKt {
-	public static final fun registerLocationPermission (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder;
-	public static synthetic fun registerLocationPermission$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder;
-	public static final fun registerLocationPermission-exY8QGI (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;)Lcom/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder;
-	public static synthetic fun registerLocationPermission-exY8QGI$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder;
+	public static final fun registerLocationPermission (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun registerLocationPermission$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun registerLocationPermission-1Y68eR8 (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun registerLocationPermission-1Y68eR8$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun registerLocationPermissionIfNotRegistered (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun registerLocationPermissionIfNotRegistered$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun registerLocationPermissionIfNotRegistered-1Y68eR8 (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun registerLocationPermissionIfNotRegistered-1Y68eR8$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 

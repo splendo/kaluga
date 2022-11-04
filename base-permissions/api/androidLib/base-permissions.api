@@ -267,6 +267,10 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateRepo$Compa
 	public final fun getDefaultMonitoringInterval-UwyO8pc ()J
 }
 
+public abstract interface class com/splendo/kaluga/permissions/base/PermissionStateRepoBuilder {
+	public abstract fun create (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/permissions/base/BasePermissionStateRepo;
+}
+
 public final class com/splendo/kaluga/permissions/base/Permissions {
 	public fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -294,7 +298,15 @@ public class com/splendo/kaluga/permissions/base/PermissionsBuilder {
 	public final fun createPermissionStateRepo (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/permissions/base/BasePermissionStateRepo;
 	public final fun get (Lcom/splendo/kaluga/permissions/base/Permission;)Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;
 	public final fun getContext ()Lcom/splendo/kaluga/permissions/base/PermissionContext;
-	public final fun register (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;)Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;
-	public final fun registerPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)V
+	public final fun register (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun registerOrGet (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun registerOrGetPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun registerPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun unregister (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun unregisterPermissionStateRepoBuilder (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/permissions/base/PermissionsBuilderError : java/lang/Error {
+	public fun <init> (Ljava/lang/String;)V
 }
 

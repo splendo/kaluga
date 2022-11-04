@@ -7,6 +7,7 @@ public final class com/splendo/kaluga/test/alerts/MockAlertPresenter : com/splen
 	public final fun getDismissMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getShowAsyncMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun isPresented ()Z
+	public final fun setPresented (Z)V
 	public fun showAsync (ZLkotlin/jvm/functions/Function0;)V
 }
 
@@ -14,8 +15,8 @@ public final class com/splendo/kaluga/test/alerts/MockAlertPresenter$Builder : c
 	public fun <init> ()V
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
-	public final fun getBuiltAlerts ()Lco/touchlab/stately/collections/IsoMutableList;
+	public fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public final fun getBuiltAlerts ()Ljava/util/List;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 

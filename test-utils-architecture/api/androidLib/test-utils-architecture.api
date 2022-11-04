@@ -1,7 +1,5 @@
 public abstract class com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest : com/splendo/kaluga/test/base/BaseUIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public class com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$LazyViewModelTestContext : com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$ViewModelTestContext, kotlinx/coroutines/CoroutineScope {
@@ -43,8 +41,6 @@ public abstract class com/splendo/kaluga/test/architecture/SimpleUIThreadViewMod
 
 public abstract class com/splendo/kaluga/test/architecture/UIThreadViewModelTest : com/splendo/kaluga/test/base/UIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public class com/splendo/kaluga/test/architecture/UIThreadViewModelTest$LazyViewModelTestContext : com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$LazyViewModelTestContext, com/splendo/kaluga/test/architecture/UIThreadViewModelTest$ViewModelTestContext {
@@ -57,8 +53,6 @@ public abstract interface class com/splendo/kaluga/test/architecture/UIThreadVie
 public abstract class com/splendo/kaluga/test/architecture/ViewModelTest : com/splendo/kaluga/test/base/BaseTest {
 	public field viewModel Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun beforeTest ()V
 	protected abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public final fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;

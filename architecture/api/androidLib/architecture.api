@@ -1360,10 +1360,9 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseObservable 
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseSimpleDisposable : com/splendo/kaluga/architecture/observable/Disposable {
 	public fun <init> (Lkotlin/jvm/functions/Function0;)V
-	public fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
+	public fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected fun afterDispose ()V
-	public fun dispose ()V
-	public final fun isDisposed ()Z
+	public fun dispose (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseSubject : com/splendo/kaluga/architecture/observable/AbstractBaseSubject {
@@ -1419,18 +1418,16 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Defau
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/Disposable {
-	public abstract fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
-	public abstract fun dispose ()V
+	public abstract fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun dispose (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/architecture/observable/DisposeBag : com/splendo/kaluga/architecture/observable/Disposable {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun add (Lcom/splendo/kaluga/architecture/observable/Disposable;)V
-	public final fun add (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
-	public fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
-	public fun dispose ()V
+	public final fun add (Lcom/splendo/kaluga/architecture/observable/Disposable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun add (Lcom/splendo/kaluga/architecture/observable/DisposeBag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun dispose (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/architecture/observable/FlowInitializedObservable : com/splendo/kaluga/architecture/observable/BaseInitializedObservable {
@@ -1760,8 +1757,6 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithS
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun didPause ()V
 	public final fun didResume ()V
 	protected fun onPause ()V
@@ -1770,8 +1765,6 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : 
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelActivity : androidx/appcompat/app/AppCompatActivity {
@@ -1804,7 +1797,6 @@ public final class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelLife
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel : androidx/lifecycle/ViewModel {
-	public fun <init> ()V
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	protected fun onCleared ()V
 }
@@ -1814,15 +1806,12 @@ public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelK
 	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/fragment/app/Fragment;)Z
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseViewModel {
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;Z)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;)V
 	public final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

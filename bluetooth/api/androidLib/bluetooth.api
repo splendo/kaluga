@@ -39,8 +39,8 @@ public final class com/splendo/kaluga/bluetooth/Bluetooth$ScanMode$Stopped : com
 
 public final class com/splendo/kaluga/bluetooth/BluetoothBuilder : com/splendo/kaluga/bluetooth/Bluetooth$Builder {
 	public fun <init> ()V
-	public fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;)V
-	public synthetic fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;)V
+	public synthetic fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
@@ -293,7 +293,7 @@ public abstract class com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionMa
 	protected final fun getCurrentAction ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction;
 	public final fun getDeviceWrapper ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
 	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
-	protected final fun getNotifyingCharacteristics ()Lco/touchlab/stately/collections/IsoMutableMap;
+	protected final fun getNotifyingCharacteristics ()Ljava/util/Map;
 	public synthetic fun getRssi ()Lkotlinx/coroutines/flow/Flow;
 	public fun getRssi ()Lkotlinx/coroutines/flow/SharedFlow;
 	public fun handleConnect ()V
@@ -1195,10 +1195,10 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$Permit
 }
 
 public class com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo : com/splendo/kaluga/bluetooth/scanner/BaseScanningStateRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateRepo : com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
 }
 

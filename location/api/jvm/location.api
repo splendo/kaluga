@@ -473,8 +473,8 @@ public final class com/splendo/kaluga/location/LocationStateImpl$PermittedHandle
 }
 
 public class com/splendo/kaluga/location/LocationStateImplRepo : com/splendo/kaluga/location/BaseLocationStateRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/CoroutineContext;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/splendo/kaluga/location/LocationStateKt {
@@ -483,7 +483,7 @@ public final class com/splendo/kaluga/location/LocationStateKt {
 }
 
 public final class com/splendo/kaluga/location/LocationStateRepo : com/splendo/kaluga/location/LocationStateImplRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationStateRepo$Builder {
@@ -496,8 +496,8 @@ public final class com/splendo/kaluga/location/LocationStateRepo$Builder$Default
 
 public final class com/splendo/kaluga/location/LocationStateRepoBuilder : com/splendo/kaluga/location/LocationStateRepo$Builder {
 	public fun <init> ()V
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 

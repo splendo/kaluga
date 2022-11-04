@@ -9,14 +9,6 @@ public final class com/splendo/kaluga/base/ApplicationHolder$Companion {
 	public final fun setApplication (Landroid/app/Application;)V
 }
 
-public final class com/splendo/kaluga/base/AtomicReferenceDelegate {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/Object;)V
-	public synthetic fun <init> (Ljava/lang/Object;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
-	public final fun setValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
-}
-
 public final class com/splendo/kaluga/base/KalugaThread {
 	public static final field Companion Lcom/splendo/kaluga/base/KalugaThread$Companion;
 	public fun <init> (Ljava/lang/Thread;)V
@@ -1001,7 +993,9 @@ public abstract class com/splendo/kaluga/state/HotStateRepo : com/splendo/kaluga
 
 public abstract interface class com/splendo/kaluga/state/KalugaState {
 	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun finalState$suspendImpl (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun initialState$suspendImpl (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 

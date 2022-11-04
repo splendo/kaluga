@@ -188,7 +188,7 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceConnection
 	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/device/BaseDeviceConnectionManager;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getCreatedDeviceConnectionManager ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreatedDeviceConnectionManager ()Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : com/splendo/kaluga/bluetooth/scanner/BaseScanner {
@@ -219,7 +219,7 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner$Bui
 	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getCreatedScanners ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreatedScanners ()Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanner : com/splendo/kaluga/bluetooth/scanner/Scanner {
