@@ -56,7 +56,7 @@ object Dependencies {
             val Android = Dependency(group, "kotlinx-coroutines-android", version)
             val Core = Dependency(group, "kotlinx-coroutines-core", version)
             val Swing = Dependency(group, "kotlinx-coroutines-swing", version)
-            val Js = Dependency(group, "kotlinx-coroutines-js", version)
+            val Js = Dependency(group, "kotlinx-coroutines-core-js", version)
             val PlayServices = Dependency(group, "kotlinx-coroutines-play-services", version)
             val Test = Dependency(group, "kotlinx-coroutines-test", version)
             val Debug = Dependency(group, "kotlinx-coroutines-debug", version)

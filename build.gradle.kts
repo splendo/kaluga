@@ -44,8 +44,8 @@ allprojects {
         testLogging.exceptionFormat = TestExceptionFormat.FULL
     }
 
-    tasks.withType<org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask>().configureEach {
-        // it.workerMaxHeapSize.set("512m")
+    tasks.withType<BaseKtLintCheckTask>().configureEach {
+        workerMaxHeapSize.set("512m")
     }
 }
 
@@ -54,7 +54,7 @@ apiValidation {
     subprojects.forEach {
         val name = it.name
 
-        ignoredClasses.add("com.splendo.kaluga.${name}.BuildConfig".toString())
+        ignoredClasses.add("com.splendo.kaluga.$name.BuildConfig".toString())
         ignoredClasses.add("com.splendo.kaluga.${name.replace("-", ".")}.BuildConfig".toString())
         ignoredClasses.add("com.splendo.kaluga.${name.replace("-", "")}.BuildConfig".toString())
         ignoredClasses.add("com.splendo.kaluga.permissions.${name.replace("-permissions", "")}.BuildConfig".toString())
@@ -68,5 +68,5 @@ apiValidation {
 apply(from = "gradle/newModule.gradle.kts")
 apply(from = "gradle/copyReports.gradle.kts")
 
-group = "com.splendo.kaluga"
+group = Library.group
 version = Library.version

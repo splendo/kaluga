@@ -56,8 +56,8 @@ fun Project.commonComponent() {
             if (tasks.names.contains("linkDebugTest${targetName.capitalize() }")) {
                 // creating copy task for the target
                 val copyTask = tasks.create("copy${targetName.capitalize() }TestResources", Copy::class.java) {
-                    from(File("src/iosTest/resources/."))
-                    into(File("$buildDir/bin/$targetName/debugTest"))
+                    from("src/iosTest/resources/.")
+                    into("$buildDir/bin/$targetName/debugTest")
                 }
 
                 // apply copy task to the target
