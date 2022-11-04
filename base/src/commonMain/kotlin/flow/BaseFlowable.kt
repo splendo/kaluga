@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.first
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
 @Deprecated("This Channel based implementation is deprecated in favor of SharedFlow or StateFlow")
+@Suppress("DEPRECATION")
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
     private var channel: BroadcastChannel<T>? = null

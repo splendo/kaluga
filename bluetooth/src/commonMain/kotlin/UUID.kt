@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("CommonUUID")
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 
 package com.splendo.kaluga.bluetooth
 

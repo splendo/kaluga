@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.conflate
 typealias FlowModifier = (Flow<*>) -> Unit
 
 @Deprecated("Flowable is deprecated")
+@Suppress("DEPRECATION")
 sealed class FlowConfig(val config: FlowModifier) {
 
     object None : FlowConfig({})

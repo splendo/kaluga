@@ -79,6 +79,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     }
 
     suspend inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(builder: B): BasePermissionsBuilder<P> = registerOrGet(P::class, builder)
+    @Suppress("UNCHECKED_CAST")
     suspend fun <P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(permission: KClass<P>, builder: B): BasePermissionsBuilder<P> = buildersLock.withLock {
         builders.getOrPut(permission::class) { builder } as BasePermissionsBuilder<P>
     }
@@ -89,6 +90,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <P : Permission> get(permission: P): BasePermissionsBuilder<P> =
         builders[permission::class] as? BasePermissionsBuilder<P> ?: throw PermissionsBuilderError("The Builder for $permission was not registered")
 
@@ -104,6 +106,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     }
 
     suspend inline fun <reified P : Permission> registerOrGetPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerOrGetPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+    @Suppress("UNCHECKED_CAST")
     suspend fun <P : Permission> registerOrGetPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = repoBuildersLock.withLock {
         repoBuilders.getOrPut(permission) { createPermissionStateRepoBuilder(permissionStateRepoBuilder) } as PermissionStateRepoBuilder<P>
     }
@@ -114,10 +117,10 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <P : Permission> createPermissionStateRepo(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<*> =
-        (repoBuilders[permission::class] as? PermissionStateRepoBuilder<P>)?.let {
-            it.create(permission, coroutineContext)
-        } ?: throw PermissionsBuilderError("Permission state repo factory was not registered for $permission")
+        (repoBuilders[permission::class] as? PermissionStateRepoBuilder<P>)?.create(permission, coroutineContext)
+            ?: throw PermissionsBuilderError("Permission state repo factory was not registered for $permission")
 
     private inline fun <P : Permission> createPermissionStateRepoBuilder(crossinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>): PermissionStateRepoBuilder<P> = object : PermissionStateRepoBuilder<P> {
         override fun create(
@@ -145,6 +148,7 @@ class Permissions(
 
     private val permissionStateRepos = mutableMapOf<Permission, BasePermissionStateRepo<*>>()
 
+    @Suppress("UNCHECKED_CAST")
     private fun <P : Permission> permissionStateRepo(permission: P): BasePermissionStateRepo<P> = permissionStateRepos.getOrPut(permission) {
         builder.createPermissionStateRepo(permission, coroutineContext + CoroutineName(permission.name))
     } as BasePermissionStateRepo<P>

@@ -55,7 +55,6 @@ import platform.UIKit.removeFromParentViewController
 import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
-import platform.darwin.NSInteger
 import platform.darwin.NSObject
 import kotlin.native.ref.WeakReference
 
@@ -165,7 +164,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
         val child = nestedSpec.nested()
 
         if (type is NavigationSpec.Nested.Type.Replace) {
-            child.view.tag = type.tag as NSInteger
+            child.view.tag = type.tag
         }
         child.view.translatesAutoresizingMaskIntoConstraints = false
         parent.addChildViewController(child)
@@ -177,7 +176,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
             NSLayoutAttributeBottom
         ).map { attribute ->
             CGFloat
-            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0 as CGFloat, 0.0 as CGFloat)
+            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0, 0.0)
         }
         constraints.forEach { nestedSpec.containerView.addConstraint(it) }
         child.didMoveToParentViewController(parent)
@@ -235,7 +234,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
         browserVc.additionalTrailingNavigationBarButtonItems = appearance.trailingNavigationBarButtonItems
         browserVc.shouldShowFileExtensions = appearance.showFileExtensions
         browserVc.customActions = appearance.customActions
-        browserVc.defaultDocumentAspectRatio = appearance.documentAspectRatio as CGFloat
+        browserVc.defaultDocumentAspectRatio = appearance.documentAspectRatio
         browserVc.localizedCreateDocumentActionTitle = appearance.createTitle
 
         browserVc.delegate = browserSpec.delegate

@@ -48,7 +48,7 @@ class RecurringTimer(
     override val duration: Duration,
     interval: Duration = 100.milliseconds,
     timeSource: TimeSource = TimeSource.Monotonic,
-    delayFunction: DelayFunction = { duration -> delay(duration) },
+    delayFunction: DelayFunction = { delayDuration -> delay(delayDuration) },
     coroutineScope: CoroutineScope = MainScope()
 ) : ControllableTimer {
     private val stateRepo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)

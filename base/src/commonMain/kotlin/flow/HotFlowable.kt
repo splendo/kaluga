@@ -15,6 +15,7 @@
 
  */
 
+@file:Suppress("DEPRECATION")
 package com.splendo.kaluga.base.flow
 
 import com.splendo.kaluga.flow.BaseFlowable

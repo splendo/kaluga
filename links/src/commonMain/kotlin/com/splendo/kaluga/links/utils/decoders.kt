@@ -36,7 +36,7 @@ class LinksDecoder(
 ) : AbstractDecoder() {
     private var elementIndex = 0
 
-    override val serializersModule: SerializersModule = EmptySerializersModule
+    override val serializersModule: SerializersModule = EmptySerializersModule()
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
         if (elementIndex == descriptor.elementsCount) return CompositeDecoder.DECODE_DONE

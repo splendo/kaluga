@@ -23,7 +23,6 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreFoundation.CFRetain
 import platform.CoreGraphics.CGColorRef
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGPathRef
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGRect
@@ -68,8 +67,8 @@ private fun pathForShape(shape: BackgroundStyle.Shape, bounds: CValue<CGRect>): 
                 }
             },
             CGSizeMake(
-                shape.cornerRadiusX.toDouble() as CGFloat,
-                shape.cornerRadiusY.toDouble() as CGFloat
+                shape.cornerRadiusX.toDouble(),
+                shape.cornerRadiusY.toDouble()
             )
         )
         is BackgroundStyle.Shape.Oval -> UIBezierPath.bezierPathWithOvalInRect(bounds)
@@ -112,36 +111,36 @@ private fun CAGradientLayer.applyGradientStyle(
         type = kCAGradientLayerAxial
         val startAndEndPoint = when (gradientStyle.orientation) {
             GradientStyle.Linear.Orientation.TOP_LEFT_BOTTOM_RIGHT -> Pair(
-                CGPointMake(0.0 as CGFloat, 0.0 as CGFloat),
-                CGPointMake(1.0 as CGFloat, 1.0 as CGFloat)
+                CGPointMake(0.0, 0.0),
+                CGPointMake(1.0, 1.0)
             )
             GradientStyle.Linear.Orientation.TOP_RIGHT_BOTTOM_LEFT -> Pair(
-                CGPointMake(1.0 as CGFloat, 0.0 as CGFloat),
-                CGPointMake(0.0 as CGFloat, 0.0 as CGFloat)
+                CGPointMake(1.0, 0.0),
+                CGPointMake(0.0, 0.0)
             )
             GradientStyle.Linear.Orientation.TOP_BOTTOM -> Pair(
-                CGPointMake(0.5 as CGFloat, 0.0 as CGFloat),
-                CGPointMake(0.5 as CGFloat, 1.0 as CGFloat)
+                CGPointMake(0.5, 0.0),
+                CGPointMake(0.5, 1.0)
             )
             GradientStyle.Linear.Orientation.LEFT_RIGHT -> Pair(
-                CGPointMake(0.0 as CGFloat, 0.5 as CGFloat),
-                CGPointMake(1.0 as CGFloat, 0.5 as CGFloat)
+                CGPointMake(0.0, 0.5),
+                CGPointMake(1.0, 0.5)
             )
             GradientStyle.Linear.Orientation.BOTTOM_LEFT_TOP_RIGHT -> Pair(
-                CGPointMake(0.0 as CGFloat, 1.0 as CGFloat),
-                CGPointMake(1.0 as CGFloat, 0.0 as CGFloat)
+                CGPointMake(0.0, 1.0),
+                CGPointMake(1.0, 0.0)
             )
             GradientStyle.Linear.Orientation.BOTTOM_RIGHT_TOP_LEFT -> Pair(
-                CGPointMake(1.0 as CGFloat, 1.0 as CGFloat),
-                CGPointMake(0.0 as CGFloat, 0.0 as CGFloat)
+                CGPointMake(1.0, 1.0),
+                CGPointMake(0.0, 0.0)
             )
             GradientStyle.Linear.Orientation.BOTTOM_TOP -> Pair(
-                CGPointMake(0.5 as CGFloat, 1.0 as CGFloat),
-                CGPointMake(0.5 as CGFloat, 0.0 as CGFloat)
+                CGPointMake(0.5, 1.0),
+                CGPointMake(0.5, 0.0)
             )
             GradientStyle.Linear.Orientation.RIGHT_LEFT -> Pair(
-                CGPointMake(1.0 as CGFloat, 0.5 as CGFloat),
-                CGPointMake(0.0 as CGFloat, 0.5 as CGFloat)
+                CGPointMake(1.0, 0.5),
+                CGPointMake(0.0, 0.5)
             )
         }
         startPoint = startAndEndPoint.first
@@ -150,18 +149,18 @@ private fun CAGradientLayer.applyGradientStyle(
     is GradientStyle.Radial -> {
         type = kCAGradientLayerRadial
         startPoint = CGPointMake(
-            gradientStyle.centerPoint.x.toDouble() as CGFloat,
-            gradientStyle.centerPoint.y.toDouble() as CGFloat
+            gradientStyle.centerPoint.x.toDouble(),
+            gradientStyle.centerPoint.y.toDouble()
         )
         endPoint = CGPointMake(
-            gradientStyle.centerPoint.x.toDouble() as CGFloat + (gradientStyle.radius / bounds.useContents { size.width }),
-            gradientStyle.centerPoint.y.toDouble() as CGFloat + (gradientStyle.radius / bounds.useContents { size.height })
+            gradientStyle.centerPoint.x.toDouble() + (gradientStyle.radius / bounds.useContents { size.width }),
+            gradientStyle.centerPoint.y.toDouble() + (gradientStyle.radius / bounds.useContents { size.height })
         )
     }
     is GradientStyle.Angular -> {
         type = kCAGradientLayerConic
-        startPoint = CGPointMake(gradientStyle.centerPoint.x.toDouble() as CGFloat, gradientStyle.centerPoint.y.toDouble() as CGFloat)
-        endPoint = CGPointMake(1.0 as CGFloat, gradientStyle.centerPoint.y.toDouble() as CGFloat)
+        startPoint = CGPointMake(gradientStyle.centerPoint.x.toDouble(), gradientStyle.centerPoint.y.toDouble())
+        endPoint = CGPointMake(1.0, gradientStyle.centerPoint.y.toDouble())
     }
 }
 
@@ -176,11 +175,11 @@ private fun CALayer.applyStroke(
             this.path = path
             when (strokeStyle) {
                 is BackgroundStyle.StrokeStyle.Stroke -> {
-                    lineWidth = strokeStyle.width.toDouble() as CGFloat
+                    lineWidth = strokeStyle.width.toDouble()
                     strokeColor = strokeStyle.color.uiColor.CGColor
                 }
                 is BackgroundStyle.StrokeStyle.None -> {
-                    lineWidth = 0.0 as CGFloat
+                    lineWidth = 0.0
                     strokeColor = UIColor.clearColor.CGColor
                 }
             }

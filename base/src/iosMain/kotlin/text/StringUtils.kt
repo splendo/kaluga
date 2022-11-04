@@ -15,6 +15,8 @@
 
  */
 
+@file:Suppress("CAST_NEVER_SUCCEEDS")
+
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.Locale

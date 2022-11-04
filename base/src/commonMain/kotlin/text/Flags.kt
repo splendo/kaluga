@@ -50,6 +50,7 @@ enum class Flag(val char: Char) {
     }
 }
 
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 fun Set<Flag>.toString(): String {
     val sb = StringBuilder()
     this.forEach {

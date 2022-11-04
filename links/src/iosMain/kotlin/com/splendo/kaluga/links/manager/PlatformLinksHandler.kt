@@ -25,14 +25,12 @@ import platform.Foundation.NSURLRequest
 
 actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean {
-        val _url = NSURL.URLWithString(url) ?: return false
-        return NSURLConnection.canHandleRequest(NSURLRequest.requestWithURL(_url))
+        val nsUrl = NSURL.URLWithString(url) ?: return false
+        return NSURLConnection.canHandleRequest(NSURLRequest.requestWithURL(nsUrl))
     }
 
     override fun extractQueryAsList(url: String): List<Any> {
-        val url = NSURLComponents(url)
-        val queryItems = url.queryItems as List<NSURLQueryItem>? ?: return emptyList()
-
-        return queryItems.mapNotNull { it.value }
+        val components = NSURLComponents(url)
+        return components.queryItems.orEmpty().mapNotNull { (it as? NSURLQueryItem)?.value }
     }
 }

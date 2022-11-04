@@ -15,6 +15,8 @@
 
  */
 
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+
 package com.splendo.kaluga.bluetooth
 
 actual data class UUID(val uuidString: String)

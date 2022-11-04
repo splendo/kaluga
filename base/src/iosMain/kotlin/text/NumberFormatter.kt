@@ -31,7 +31,6 @@ import platform.Foundation.NSNumberFormatterRoundHalfEven
 import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
 import platform.Foundation.numberWithInt
-import platform.darwin.NSUInteger
 
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
 
@@ -41,33 +40,33 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         when (style) {
             is NumberFormatStyle.Integer -> {
                 numberStyle = NSNumberFormatterDecimalStyle
-                minimumIntegerDigits = style.minDigits.toULong() as NSUInteger
-                maximumIntegerDigits = style.maxDigits.toULong() as NSUInteger
-                minimumFractionDigits = 0.toULong() as NSUInteger
-                maximumFractionDigits = 0.toULong() as NSUInteger
+                minimumIntegerDigits = style.minDigits.toULong()
+                maximumIntegerDigits = style.maxDigits.toULong()
+                minimumFractionDigits = 0.toULong()
+                maximumFractionDigits = 0.toULong()
             }
             is NumberFormatStyle.Decimal -> {
                 numberStyle = NSNumberFormatterDecimalStyle
-                minimumIntegerDigits = style.minIntegerDigits.toULong() as NSUInteger
-                maximumIntegerDigits = style.maxIntegerDigits.toULong() as NSUInteger
-                minimumFractionDigits = style.minFractionDigits.toULong() as NSUInteger
-                maximumFractionDigits = style.maxFractionDigits.toULong() as NSUInteger
+                minimumIntegerDigits = style.minIntegerDigits.toULong()
+                maximumIntegerDigits = style.maxIntegerDigits.toULong()
+                minimumFractionDigits = style.minFractionDigits.toULong()
+                maximumFractionDigits = style.maxFractionDigits.toULong()
             }
             is NumberFormatStyle.Percentage -> {
                 numberStyle = NSNumberFormatterPercentStyle
-                minimumIntegerDigits = style.minIntegerDigits.toULong() as NSUInteger
-                maximumIntegerDigits = style.maxIntegerDigits.toULong() as NSUInteger
-                minimumFractionDigits = style.minFractionDigits.toULong() as NSUInteger
-                maximumFractionDigits = style.maxFractionDigits.toULong() as NSUInteger
+                minimumIntegerDigits = style.minIntegerDigits.toULong()
+                maximumIntegerDigits = style.maxIntegerDigits.toULong()
+                minimumFractionDigits = style.minFractionDigits.toULong()
+                maximumFractionDigits = style.maxFractionDigits.toULong()
             }
             is NumberFormatStyle.Permillage -> {
                 numberStyle = NSNumberFormatterPercentStyle
                 positiveFormat = positiveFormat.replace('%', '‰')
                 negativeFormat = negativeFormat.replace('%', '‰')
-                minimumIntegerDigits = style.minIntegerDigits.toULong() as NSUInteger
-                maximumIntegerDigits = style.maxIntegerDigits.toULong() as NSUInteger
-                minimumFractionDigits = style.minFractionDigits.toULong() as NSUInteger
-                maximumFractionDigits = style.maxFractionDigits.toULong() as NSUInteger
+                minimumIntegerDigits = style.minIntegerDigits.toULong()
+                maximumIntegerDigits = style.maxIntegerDigits.toULong()
+                minimumFractionDigits = style.minFractionDigits.toULong()
+                maximumFractionDigits = style.maxFractionDigits.toULong()
             }
             is NumberFormatStyle.Scientific -> {
                 numberStyle = NSNumberFormatterScientificStyle
@@ -79,13 +78,13 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
                 style.currencyCode?.let { currencyCode ->
                     this.currencyCode = currencyCode
                 }
-                minimumIntegerDigits = style.minIntegerDigits.toULong() as NSUInteger
-                maximumIntegerDigits = style.maxIntegerDigits.toULong() as NSUInteger
+                minimumIntegerDigits = style.minIntegerDigits.toULong()
+                maximumIntegerDigits = style.maxIntegerDigits.toULong()
                 style.minFractionDigits?.let {
-                    minimumFractionDigits = it.toULong() as NSUInteger
+                    minimumFractionDigits = it.toULong()
                 }
                 style.maxFractionDigits?.let {
-                    maximumFractionDigits = it.toULong() as NSUInteger
+                    maximumFractionDigits = it.toULong()
                 }
             }
             is NumberFormatStyle.Pattern -> {
@@ -170,17 +169,19 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
     actual var groupingSize: Int
         get() = formatter.groupingSize.toInt()
         set(value) {
-            formatter.groupingSize = value.toULong() as NSUInteger
-            formatter.secondaryGroupingSize = value.toULong() as NSUInteger
+            formatter.groupingSize = value.toULong()
+            formatter.secondaryGroupingSize = value.toULong()
         }
     actual var multiplier: Int
         get() = formatter.multiplier?.intValue ?: 1
         set(value) { formatter.multiplier = NSNumber.numberWithInt(value) }
 
+    @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
     actual fun format(number: Number): String {
         return (formatter.stringFromNumber(number as NSNumber) ?: "")
     }
 
+    @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
     actual fun parse(string: String): Number? {
         return formatter.numberFromString(string) as? Number
     }

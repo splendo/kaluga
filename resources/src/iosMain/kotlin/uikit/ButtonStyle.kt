@@ -22,7 +22,6 @@ import com.splendo.kaluga.resources.stylable.ButtonStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSMapTable
 import platform.Foundation.NSPointerFunctionsStrongMemory
@@ -67,7 +66,7 @@ fun UIButton.bindButton(button: KalugaButton) {
 }
 
 fun UIButton.applyStyle(buttonStyle: ButtonStyle) {
-    setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble() as CGFloat))
+    setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble()))
     setContentHorizontalAlignment(buttonStyle.textAlignment.contentHorizontalAlignment)
     applyButtonStateStyle(buttonStyle.defaultStyle, UIControlStateNormal)
     applyButtonStateStyle(buttonStyle.pressedStyle, UIControlStateHighlighted)

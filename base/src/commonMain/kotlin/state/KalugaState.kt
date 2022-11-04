@@ -163,6 +163,7 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
                 // The mutex is already released above to let the state initialize afterwards, to avoid changeState mutex deadlocks
                 // However releasing the above mutex might have already changed the state to a new state before initialState runs.
                 // State machines that need initialization should rely on having an initialization state rather than using this method.
+                @Suppress("DEPRECATION")
                 value.initialState()
             }
         } else {
@@ -190,6 +191,7 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
         //
         // The replay cache instantiation is somewhat heavy but there is no method to get only the the last entry in the cache
         // if no or a small replayCache is used it is not so bad. Also is a StateFlow is used, this problem does not occur.
+        @Suppress("UNCHECKED_CAST")
         return (mutableFlow as? StateFlow<S>)?.value ?: mutableFlow.replayCache.lastOrNull() ?: mutableFlow.first()
     }
 
@@ -278,6 +280,7 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
         takeAndChangeState(action)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private suspend inline fun <K : S> doTakeAndChangeState(remainIfStateNot: KClass<K>?, crossinline action: suspend(K) -> suspend () -> S): S = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
         initialize()
         stateMutex.withPermit {
@@ -287,7 +290,6 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
                     val beforeState = state()
                     // There are only two methods calling this private method.
                     // either K is the same as S (no `remainIfStateNot` parameter), or we do the isInstance check
-                    @Suppress("UNCHECKED_CAST")
                     val transition = // if remainIfNot was passes, only execute action if the beforeState matches
                         when {
                             remainIfStateNot == null || remainIfStateNot.isInstance(beforeState) -> action(beforeState as K)
@@ -403,6 +405,7 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
                     }
                 ) {
                     flow.onCollectionEvent { event ->
+                        @Suppress("DEPRECATION")
                         when (event) {
                             NoMoreCollections -> noMoreCollections().also { it.finalState() }
                             FirstCollection -> firstCollection()

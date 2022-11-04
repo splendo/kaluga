@@ -46,6 +46,7 @@ class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal con
 ) : DefaultLifecycleObserver {
 
     private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
+        @Suppress("UNCHECKED_CAST")
         viewModel::class.memberProperties
             .filter { it !is KMutableProperty1 }
             .mapNotNull { it as? KProperty1<VM, Any?> }

@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("DecimalAndroid")
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.RoundingMode.RoundDown

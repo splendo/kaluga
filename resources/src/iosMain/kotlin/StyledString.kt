@@ -23,7 +23,6 @@ import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSAttributedString
 import platform.Foundation.NSAttributedStringKey
@@ -84,26 +83,26 @@ actual class StyledStringBuilder constructor(string: String, private val default
             "NSStrokeWidth" to -1.0 * width
         )
         is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> {
-            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble() as CGFloat).ascender / 2.0
+            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
             mapOf("NSBaselineOffset" to offset)
         }
         is StringStyleAttribute.CharacterStyleAttribute.SubScript -> {
-            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble() as CGFloat).ascender / 2.0
+            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
             mapOf("NSBaselineOffset" to (-1.0 * offset))
         }
         is StringStyleAttribute.CharacterStyleAttribute.Underline -> mapOf("NSUnderline" to NSUnderlineStyleSingle)
         is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> mapOf("NSStrikethrough" to NSUnderlineStyleSingle)
-        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble() as CGFloat))
+        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble()))
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> mapOf(
-            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat),
+            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
             "NSColor" to textStyle.color.uiColor
         )
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("NSKern" to kern * defaultTextStyle.size)
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> mapOf(
             "NSShadow" to NSShadow().apply {
                 shadowColor = color.uiColor
-                shadowBlurRadius = blurRadius.toDouble() as CGFloat
-                shadowOffset = CGSizeMake(xOffset.toDouble() as CGFloat, yOffset.toDouble() as CGFloat)
+                shadowBlurRadius = blurRadius.toDouble()
+                shadowOffset = CGSizeMake(xOffset.toDouble(), yOffset.toDouble())
             }
         )
     }
@@ -154,13 +153,13 @@ actual class StyledStringBuilder constructor(string: String, private val default
         rangesToUpdate.forEach { (range, paragraphStyle) ->
             when (this) {
                 is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> {
-                    paragraphStyle.setHeadIndent(indent.toDouble() as CGFloat)
-                    paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble() as CGFloat)
+                    paragraphStyle.setHeadIndent(indent.toDouble())
+                    paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble())
                 }
                 is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> {
-                    paragraphStyle.setLineSpacing(spacing.toDouble() as CGFloat)
-                    paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble() as CGFloat)
-                    paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble() as CGFloat)
+                    paragraphStyle.setLineSpacing(spacing.toDouble())
+                    paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble())
+                    paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble())
                 }
                 is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> {
                     paragraphStyle.setAlignment(alignment.nsTextAlignment)

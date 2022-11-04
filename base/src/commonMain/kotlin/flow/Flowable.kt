@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
  * @param T the type of the values emitted by the flowable.
  */
 @Deprecated("Use MutableSharedFlow or MutableStateFlow, with onCollectionEvent", replaceWith = ReplaceWith("MutableSharedFlow"))
+@Suppress("DEPRECATION")
 interface Flowable<T> {
 
     /**
