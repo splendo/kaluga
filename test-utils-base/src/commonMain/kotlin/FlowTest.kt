@@ -18,9 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test.base
 
-import co.touchlab.stately.concurrency.AtomicLong
-import co.touchlab.stately.ensureNeverFrozen
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -33,9 +30,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlin.native.concurrent.SharedImmutable
-import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.AfterTest
+import kotlin.time.Duration.Companion.seconds
 
 typealias TestBlock<TC, T> = suspend TC.(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
@@ -77,7 +73,6 @@ Context for each tests needs to be created and kept on the main thread for iOS.
 Since the class itself is created in the test thread
 */
 
-@ThreadLocal // thread local on native, global on non-native, but still accessed from only the main thread.
 val contextMap = mutableMapOf<Long, TestContext>()
 
 private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
@@ -86,17 +81,12 @@ private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: su
     return contextMap[cookie] as TC
 }
 
-@SharedImmutable
-private val cookieTin = AtomicLong(0L)
+private var cookieTin = 0L
 
 abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
 
     // used for thread local map access to store the testContext
-    private val cookie = cookieTin.incrementAndGet()
-
-    init {
-        ensureNeverFrozen()
-    }
+    private val cookie = ++cookieTin
 
     abstract val flowFromTestContext: suspend TC.() -> F
 
@@ -131,7 +121,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         testChannel = Channel(Channel.UNLIMITED)
     }
 
-    protected val waitForTestToSucceed = 6000L * 10
+    protected val waitForTestToSucceed = 60.seconds
 
     private suspend fun awaitTestBlocks() {
 
@@ -177,16 +167,13 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
                 val f =
                     if (createFlowInMainScope) {
-                        flow.freeze()
-                        scope.freeze()
                         withContext(Dispatchers.Main.immediate) {
-                            (flow(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })).freeze()
+                            (flow(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) }))
                         }
                     } else {
-                        createTestContextWithConfiguration.freeze()
                         flow(
                             withContext(Dispatchers.Main.immediate) {
-                                (testContext(cookie) { createTestContextWithConfiguration(configuration, scope) }).freeze()
+                                (testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })
                             }
                         )
                     }
@@ -205,7 +192,6 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     @Suppress("SuspendFunctionOnCoroutineScope")
     private suspend fun startFlow(configuration: C, flow: F) {
-        this.ensureNeverFrozen()
         debug("launch flow scope...")
         val testChannel = testChannel
         val started = EmptyCompletableDeferred()
@@ -213,7 +199,6 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         val scope = scope
         val createTestContextWithConfiguration = createTestContextWithConfiguration
         val cookie = cookie
-        createTestContextWithConfiguration.freeze()
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
@@ -257,7 +242,6 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         val createTestContextWithConfiguration = createTestContextWithConfiguration
         val scope = scope
         require(lateConfiguration != null) { "Only use mainAction from inside `testWith` methods" }
-        createTestContextWithConfiguration.freeze()
         val configuration = lateConfiguration!!
         withContext(Dispatchers.Main.immediate) {
             debug("in main scope for mainAction")
@@ -276,10 +260,8 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     var firstTestBlock = true
 
     suspend fun test(skip: Int = 0, test: TestBlock<TC, T>) {
-        test.freeze()
         if (firstTestBlock) {
             firstTestBlock = false
-            tests.ensureNeverFrozen()
             debug("first test offered, starting collection")
             require(lateflow != null && lateConfiguration != null) { "Only use test from inside `testWith` methods" }
             startFlow(lateConfiguration!!, lateflow!!)

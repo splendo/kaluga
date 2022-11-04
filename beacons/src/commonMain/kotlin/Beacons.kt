@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import co.touchlab.stately.collections.IsoMutableMap
-import com.splendo.kaluga.base.AtomicReferenceDelegate
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
@@ -38,7 +36,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private typealias BeaconJob = Pair<BeaconInfo, Job>
-private typealias BeaconsMap = IsoMutableMap<BeaconID, BeaconJob>
+private typealias BeaconsMap = MutableMap<BeaconID, BeaconJob>
 
 class Beacons(
     private val bluetooth: BluetoothService,
@@ -47,7 +45,7 @@ class Beacons(
 
     private companion object { const val TAG = "Beacons" }
 
-    private val cache = BeaconsMap()
+    private val cache = mutableMapOf<BeaconID, BeaconJob>()
     private val cacheJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
     private var monitoringJob: Job? by AtomicReferenceDelegate()

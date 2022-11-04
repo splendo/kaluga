@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
@@ -38,10 +37,7 @@ open class Characteristic(
 ) {
 
     private val isBusy = MutableStateFlow(false)
-    private val _isNotifying = AtomicBoolean(false)
-    var isNotifying: Boolean
-        get() = _isNotifying.value
-        set(value) { _isNotifying.value = value }
+    var isNotifying: Boolean = false
 
     /**
      * Enables notification or indication for this [Characteristic].

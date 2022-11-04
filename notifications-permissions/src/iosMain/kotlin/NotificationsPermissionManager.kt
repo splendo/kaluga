@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.permissions.notifications
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -54,13 +53,10 @@ actual class DefaultNotificationsPermissionManager(
             val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
             val notificationCenter = notificationCenter
             coroutineScope.launch {
-                val deferred = CompletableDeferred<UNNotificationSettings?>()
-                val callback = { setting: UNNotificationSettings? ->
-                    deferred.complete(setting)
+                notificationCenter.getNotificationSettingsWithCompletionHandler { setting ->
+                    authorizationStatus.complete(setting?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
                     Unit
-                }.freeze()
-                notificationCenter.getNotificationSettingsWithCompletionHandler(callback)
-                authorizationStatus.complete(deferred.await()?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+                }
             }
             return authorizationStatus.await()
         }

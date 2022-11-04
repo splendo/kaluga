@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.assertFrozen
 import com.splendo.kaluga.test.base.assertNotFrozen
@@ -35,10 +34,6 @@ class ThreadingTest {
         val s = subjectOf<Value?>(null)
         assertNotFrozen(s)
         val value = Value()
-
-        // provide early failure for debugging test
-        value.ensureNeverFrozen()
-        s.ensureNeverFrozen()
 
         assertNotFrozen(value)
         assertNotFrozen(s)

@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
@@ -201,24 +199,24 @@ abstract class ObservableBaseTest : BaseTest() {
             assertEquals(initialExpected.value, property)
         }
 
-        val observedValue = AtomicReference<R?>(unusedValue)
-        val disposable = observable.observe { observedValue.set(it) }
+        var observedValue: R? = unusedValue
+        val disposable = observable.observe { observedValue = it }
 
-        var observedInitializedValue: AtomicReference<R>? = null
+        var observedInitializedValue: R? = null
         var disposableInitialized: Disposable? = null
         if (observable is Initialized<*, *>) {
-            observedInitializedValue = AtomicReference(unusedValue)
+            observedInitializedValue = unusedValue
             disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue.set(it) }
         }
 
         when (initialExpected) {
-            is Nothing<*> -> assertEquals(null, observedValue.get())
-            is Value<*> -> assertEquals(initialExpected.value, observedValue.get())
+            is Nothing<*> -> assertEquals(null, observedValue)
+            is Value<*> -> assertEquals(initialExpected.value, observedValue)
         }
 
         if (observedInitializedValue != null) {
             assertTrue(initialExpected is Value<*>)
-            assertEquals(initialExpected.value as R, observedInitializedValue.get())
+            assertEquals(initialExpected.value as R, observedInitializedValue)
         }
 
         semaphore.release()
@@ -227,7 +225,7 @@ abstract class ObservableBaseTest : BaseTest() {
 
             val lastUpdate = count == updates.size - 1
 
-            val observedBefore = observedValue.get()
+            val observedBefore = observedValue
 
             if (lastUpdate) {
                 disposable.dispose()
@@ -247,15 +245,15 @@ abstract class ObservableBaseTest : BaseTest() {
             }
 
             if (lastUpdate || expected !is Value<*>) // TODO <-- sus
-                assertEquals(observedBefore, observedValue.get())
+                assertEquals(observedBefore, observedValue)
             else
-                assertEquals(expected.value, observedValue.get())
+                assertEquals(expected.value, observedValue)
 
             if (!lastUpdate && observedInitializedValue != null) {
                 assertTrue(expected is Value<*>)
-                assertEquals(expected.value, observedInitializedValue.get())
+                assertEquals(expected.value, observedInitializedValue)
             } else if (observedInitializedValue != null) {
-                assertEquals(observedBefore, observedInitializedValue.get())
+                assertEquals(observedBefore, observedInitializedValue)
             }
 
             semaphore.release()

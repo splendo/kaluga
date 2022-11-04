@@ -18,13 +18,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Style of the Loading Indicator
@@ -46,7 +46,7 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
      */
     abstract class Builder : LifecycleSubscribableMarker {
 
-        internal val lock = Lock()
+        internal val lock = Mutex()
 
         /** The style of the loading indicator */
         internal var style: HUDStyle = HUDStyle.SYSTEM
@@ -142,7 +142,7 @@ suspend fun <T> BaseHUD.presentDuring(animated: Boolean = true, block: suspend B
  * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
  * @param initialize Method for initializing the [HUD.Builder]
  */
-fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: BaseHUD.Builder.() -> Unit = { }): BaseHUD = lock.withLock {
+suspend fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: BaseHUD.Builder.() -> Unit = { }): BaseHUD = lock.withLock {
     clear()
     initialize()
     return create(HudConfig(style, title), coroutineScope)

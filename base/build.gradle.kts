@@ -16,10 +16,6 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
-                expose(Dependencies.Stately.Common)
-                expose(Dependencies.Stately.Isolate)
-                expose(Dependencies.Stately.IsoCollections)
-                expose(Dependencies.Stately.Concurrency)
             }
         }
         getByName("jsMain") {

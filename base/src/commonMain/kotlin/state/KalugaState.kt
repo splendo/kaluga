@@ -17,7 +17,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 package com.splendo.kaluga.state
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.FirstCollection
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
@@ -40,13 +39,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 import kotlin.coroutines.CoroutineContext
-import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 
-@SharedImmutable
 private val remain: suspend() -> KalugaState = { error("This should never be called. It's only used to indicate the state should remain the same") }
 
 /**
@@ -152,10 +151,12 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
     @Deprecated(message = "StateRepo itself is now a Flow", replaceWith = ReplaceWith("StateRepo"))
     fun flow(): Flow<S> = mutableFlow.asSharedFlow()
 
-    private val initialized = AtomicBoolean(false)
+    private val initializedMutex = Mutex()
+    private var initialized = false
 
-    internal open suspend fun initialize(initialValue: S? = null): S =
-        if (initialized.compareAndSet(false, true))
+    internal open suspend fun initialize(initialValue: S? = null): S = initializedMutex.withLock {
+        if (!initialized) {
+            initialized = true
             (initialValue ?: initialValue()).also { value ->
                 mutableFlow.emit(value)
                 stateMutex.release() // release the initial permit held
@@ -164,8 +165,10 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
                 // State machines that need initialization should rely on having an initialization state rather than using this method.
                 value.initialState()
             }
-        else
+        } else {
             state()
+        }
+    }
 
     /**
      * Gets the initial value of the repo
@@ -348,17 +351,20 @@ abstract class BaseHotStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
 
     abstract val lazyMutableSharedFlow: Lazy<F>
 
-    // guards once only initialization across threads
-    private val initialized = AtomicBoolean(false)
+    private val lock = Mutex()
+    private var initialized = false
 
     override val mutableFlow: F
         get() {
             val isInitialized = lazyMutableSharedFlow.isInitialized()
             val flow = lazyMutableSharedFlow.value
-            if (!isInitialized && initialized.compareAndSet(expected = false, new = true))
-                launch(coroutineContext) {
+            launch(coroutineContext) {
+                if (lock.withLock {
+                        (!isInitialized && !initialized).also { if (it) initialized = true }
+                    }) {
                     initialize()
                 }
+            }
             return flow
         }
 }
@@ -377,8 +383,8 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
     context: CoroutineContext = Dispatchers.Main.immediate
 ) : StateRepo<S, F>(context) {
 
-    // guards once only initialization across threads
-    private val initialized = AtomicBoolean(false)
+    private val lock = Mutex()
+    private var initialized = false
 
     abstract val lazyMutableFlow: Lazy<F>
 
@@ -386,8 +392,14 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
         get() {
             val isInitialized = lazyMutableFlow.isInitialized()
             val flow = lazyMutableFlow.value
-            if (!isInitialized && initialized.compareAndSet(expected = false, new = true)) {
-                launch(coroutineContext) {
+            launch(coroutineContext) {
+                if (lock.withLock {
+                        (!isInitialized && !initialized).also {
+                            if (it) initialized = true
+                        }
+                    }
+                )
+                {
                     flow.onCollectionEvent { event ->
                         when (event) {
                             NoMoreCollections -> noMoreCollections().also { it.finalState() }

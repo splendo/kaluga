@@ -17,9 +17,6 @@
 
 package com.splendo.kaluga.test.keyboard
 
-import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.test.base.mock.call
@@ -42,7 +39,7 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         /**
          * List of created [MockKeyboardManager]
          */
-        val builtKeyboardManagers = IsoMutableList<MockKeyboardManager>()
+        val builtKeyboardManagers = mutableListOf<MockKeyboardManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -62,14 +59,10 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         override fun create(coroutineScope: CoroutineScope): MockKeyboardManager = createMock.call(coroutineScope)
     }
 
-    val _focusHandler = AtomicReference<FocusHandler?>(null)
-
     /**
      * Gets the current [FocusHandler]
      */
-    var focusHandler: FocusHandler?
-        get() = _focusHandler.value
-        private set(value) = _focusHandler.set(value)
+    var focusHandler: FocusHandler? = null
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [show]

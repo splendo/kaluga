@@ -51,7 +51,7 @@ object Dependencies {
 
     object KotlinX {
         object Coroutines {
-            private const val version = "1.6.3-native-mt"
+            private const val version = "1.6.4"
             private const val group = "org.jetbrains.kotlinx"
             val Android = Dependency(group, "kotlinx-coroutines-android", version)
             val Core = Dependency(group, "kotlinx-coroutines-core", version)
@@ -159,16 +159,6 @@ object Dependencies {
     }
 
     val Napier = Dependency("io.github.aakira", "napier", "2.6.1")
-
-    object Stately {
-        private const val group = "co.touchlab"
-        private const val version = "1.2.3"
-        private const val isolateVersion = "1.2.3"
-        val Common = Dependency(group, "stately-common", version)
-        val Concurrency = Dependency(group, "stately-concurrency", version)
-        val Isolate = Dependency(group, "stately-isolate", isolateVersion)
-        val IsoCollections = Dependency(group, "stately-iso-collections", isolateVersion)
-    }
 
     val JUnit = Dependency("junit", "junit", "4.13.2")
 

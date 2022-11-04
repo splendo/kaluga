@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.permissions.calendar
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -62,14 +61,12 @@ actual class DefaultCalendarPermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
-                val callback = { success: Boolean, error: NSError? ->
+                eventStore.requestAccessToEntityType(
+                    EKEntityType.EKEntityTypeEvent
+                ) { success, error ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
                     Unit
-                }.freeze()
-                eventStore.requestAccessToEntityType(
-                    EKEntityType.EKEntityTypeEvent,
-                    callback
-                )
+                }
 
                 try {
                     if (deferred.await())

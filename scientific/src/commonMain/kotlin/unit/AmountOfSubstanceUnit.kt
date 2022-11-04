@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
-import kotlin.native.concurrent.ThreadLocal
 
 val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
     Mole,
@@ -70,5 +69,4 @@ object Megamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.Metr
 @Serializable
 object Gigamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Giga(Mole)
 
-@ThreadLocal
 val AvogadroConstant = 6.02214076e23.toDecimal()

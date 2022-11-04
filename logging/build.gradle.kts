@@ -13,13 +13,10 @@ kotlin {
         commonMain {
             dependencies {
                 implement(Dependencies.Napier)
-                implement(Dependencies.Stately.Concurrency)
             }
         }
         commonTest {
             dependencies {
-                implement(Dependencies.Stately.Isolate)
-                implement(Dependencies.Stately.IsoCollections)
                 api(project(":test-utils-base", ""))
             }
         }

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.permissions.contacts
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -62,14 +61,12 @@ actual class DefaultContactsPermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
-                val callback = { success: Boolean, error: NSError? ->
+                contactStore.requestAccessForEntityType(
+                    CNEntityType.CNEntityTypeContacts
+                ) { success, error ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
                     Unit
-                }.freeze()
-                contactStore.requestAccessForEntityType(
-                    CNEntityType.CNEntityTypeContacts,
-                    callback
-                )
+                }
 
                 try {
                     if (deferred.await())

@@ -17,14 +17,12 @@
 
 package com.splendo.kaluga.location
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.MainCLLocationManagerAccessor
 import com.splendo.kaluga.permissions.location.registerLocationPermission
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocation
@@ -87,11 +85,6 @@ actual class DefaultLocationManager(
         locationUpdateDelegate = Delegate(sharedLocations)
     }
 
-    private var _isMonitoringLocationJob = AtomicReference<Job?>(null)
-    var isMonitoringLocationJob: Job?
-        get() = _isMonitoringLocationJob.get()
-        set(value) { _isMonitoringLocationJob.set(value) }
-
     override suspend fun requestEnableLocation() {
         // No access to UIApplication.openSettingsURLString
         // We have to fallback to alert then?
@@ -106,9 +99,6 @@ actual class DefaultLocationManager(
     }
 
     override suspend fun stopMonitoringLocation() {
-        isMonitoringLocationJob?.cancel()
-        isMonitoringLocationJob = null
-
         launch {
             locationManager.updateLocationManager {
                 stopUpdatingLocation()

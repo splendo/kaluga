@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.location
 
-import co.touchlab.stately.collections.IsoMutableList
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
@@ -42,7 +41,7 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     /**
      * List of build [LocationStateRepo]
      */
-    val builtLocationStateRepo = IsoMutableList<LocationStateRepo>()
+    val builtLocationStateRepo = mutableListOf<LocationStateRepo>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

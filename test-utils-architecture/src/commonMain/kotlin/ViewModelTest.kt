@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.architecture
 
-import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.BaseUIThreadTest
@@ -25,11 +24,7 @@ import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 
-abstract class ViewModelTest<VM : LifecycleViewModel>(allowFreezing: Boolean = false) : BaseTest() {
-
-    init {
-        if (!allowFreezing) ensureNeverFrozen()
-    }
+abstract class ViewModelTest<VM : LifecycleViewModel> : BaseTest() {
 
     lateinit var viewModel: VM
 
@@ -43,7 +38,7 @@ abstract class ViewModelTest<VM : LifecycleViewModel>(allowFreezing: Boolean = f
 }
 
 abstract class SimpleUIThreadViewModelTest<VM : LifecycleViewModel> :
-    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
+    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>() {
 
     override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<VM> =
         { LazyViewModelTestContext(it, ::createViewModel) }
@@ -54,8 +49,8 @@ abstract class SimpleUIThreadViewModelTest<VM : LifecycleViewModel> :
 /**
  * A [UIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
-    UIThreadTest<VMC>(allowFreezing) {
+abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : LifecycleViewModel>() :
+    UIThreadTest<VMC>() {
 
     /**
      * [ViewModelTestContext] that lazily creates the view model
@@ -73,8 +68,8 @@ abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestCo
 /**
  * A [BaseUIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class BaseUIThreadViewModelTest<C, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
-    BaseUIThreadTest<C, VMC>(allowFreezing) {
+abstract class BaseUIThreadViewModelTest<C, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : LifecycleViewModel>() :
+    BaseUIThreadTest<C, VMC>() {
 
     /**
      * [ViewModelTestContext] that lazily creates the view model

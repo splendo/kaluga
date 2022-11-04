@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -118,15 +117,8 @@ abstract class BaseScanner constructor(
     protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
     protected open val enabledFlow: Flow<List<Boolean>> get() = (bluetoothEnabledMonitor?.isEnabled ?: flowOf(false)).map { listOf(it) }
 
-    private val _monitoringPermissionsJob = AtomicReference<Job?>(null)
-    private var monitoringPermissionsJob: Job?
-        get() = _monitoringPermissionsJob.get()
-        set(value) { _monitoringPermissionsJob.set(value) }
-
-    private val _monitoringBluetoothEnabledJob = AtomicReference<Job?>(null)
-    private var monitoringBluetoothEnabledJob: Job?
-        get() = _monitoringBluetoothEnabledJob.get()
-        set(value) { _monitoringBluetoothEnabledJob.set(value) }
+    private var monitoringPermissionsJob: Job? = null
+    private var monitoringBluetoothEnabledJob: Job? = null
 
     override fun startMonitoringPermissions() {
         logger.debug(LOG_TAG) { "Start monitoring permissions" }

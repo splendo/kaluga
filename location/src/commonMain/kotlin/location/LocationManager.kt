@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.location
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
@@ -100,14 +99,8 @@ abstract class BaseLocationManager(
 
     abstract val locationMonitor: LocationMonitor
 
-    private val _monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
-    private var monitoringPermissionsJob: Job?
-        get() = _monitoringPermissionsJob.get()
-        set(value) { _monitoringPermissionsJob.set(value) }
-    private val _monitoringLocationEnabledJob: AtomicReference<Job?> = AtomicReference(null)
-    private var monitoringLocationEnabledJob: Job?
-        get() = _monitoringLocationEnabledJob.get()
-        set(value) { _monitoringLocationEnabledJob.set(value) }
+    private var monitoringPermissionsJob: Job? = null
+    private var monitoringLocationEnabledJob: Job? = null
 
     override fun startMonitoringPermissions() {
         logger.debug(LOG_TAG) { "Start monitoring permission" }

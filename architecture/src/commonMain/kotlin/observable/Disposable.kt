@@ -18,10 +18,8 @@
 @file:JvmName("DisposableCommonKt")
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.collections.sharedMutableListOf
-import co.touchlab.stately.concurrency.AtomicBoolean
-import co.touchlab.stately.ensureNeverFrozen
-import co.touchlab.stately.isFrozen
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlin.jvm.JvmName
 
 typealias DisposeHandler = () -> Unit
@@ -39,12 +37,12 @@ interface Disposable {
     /**
      * Disposes the associated object
      */
-    fun dispose()
+    suspend fun dispose()
 
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    fun addTo(disposeBag: DisposeBag)
+    suspend fun addTo(disposeBag: DisposeBag)
 }
 
 expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
@@ -55,20 +53,19 @@ expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
  */
 abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
 
-    private val _isDisposed = AtomicBoolean(false)
-    val isDisposed
-        get() = _isDisposed.value
-
+    private val disposal = Semaphore(1)
     private var disposeHandler: DisposeHandler? = onDispose
 
     /**
      * Disposes the associated object
      */
-    override fun dispose() {
-        if (_isDisposed.compareAndSet(expected = false, new = true)) {
-            disposeHandler?.invoke()
-            if (!disposeHandler.isFrozen) disposeHandler = null
-            afterDispose()
+    override suspend fun dispose() {
+        disposal.withPermit {
+            disposeHandler?.let {
+                it.invoke()
+                disposeHandler = null
+                afterDispose()
+            }
         }
     }
 
@@ -77,7 +74,7 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    override fun addTo(disposeBag: DisposeBag) {
+    override suspend fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 }
@@ -85,33 +82,31 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag].
  */
-class DisposeBag(allowFreezing: Boolean = false) : Disposable {
+class DisposeBag : Disposable {
 
-    constructor() : this(false)
-
-    private val disposables: MutableList<Disposable> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
-    private val nestedBags: MutableList<DisposeBag> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
-
-    init {
-        if (!allowFreezing)
-            ensureNeverFrozen() // if our DisposeBag gets frozen we cannot dispose properly so this is generally unwanted
-    }
+    private val addingOperation = Semaphore(1)
+    private val disposables: MutableList<Disposable> = mutableListOf()
+    private val nestedBags: MutableList<DisposeBag> = mutableListOf()
 
     /**
      * Adds a nested [DisposeBag]
      */
-    fun add(disposeBag: DisposeBag) {
-        nestedBags.add(disposeBag)
+    suspend fun add(disposeBag: DisposeBag) {
+        addingOperation.withPermit {
+            nestedBags.add(disposeBag)
+        }
     }
 
     /**
      * Adds a [Disposable] to this [DisposeBag]
      */
-    fun add(disposable: Disposable) {
-        disposables.add(disposable)
+    suspend fun add(disposable: Disposable) {
+        addingOperation.withPermit {
+            disposables.add(disposable)
+        }
     }
 
-    override fun addTo(disposeBag: DisposeBag) {
+    override suspend fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 
@@ -119,10 +114,14 @@ class DisposeBag(allowFreezing: Boolean = false) : Disposable {
      * Disposes all [Disposable]s and nested [DisposeBag]s added to this [DisposeBag].
      * Added elements can only be disposed once
      */
-    override fun dispose() {
+    override suspend fun dispose() {
         disposables.forEach { it.dispose() }
-        disposables.clear()
+        addingOperation.withPermit {
+            disposables.clear()
+        }
         nestedBags.forEach { it.dispose() }
-        nestedBags.clear()
+        addingOperation.withPermit {
+            nestedBags.clear()
+        }
     }
 }

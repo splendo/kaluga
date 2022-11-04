@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.system.network
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.COpaquePointer
@@ -121,10 +120,7 @@ actual class NetworkManager internal constructor(
         override val onNetworkStateChange: NetworkStateChange
     ) : AppleNetworkManager {
 
-        private var _reachability = AtomicReference<SCNetworkReachabilityRef?>(null)
-        private var reachability: SCNetworkReachabilityRef?
-            get() = _reachability.get()
-            set(value) = _reachability.set(value)
+        private var reachability: SCNetworkReachabilityRef? = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
 
         private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { _: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
             if (info == null) {
@@ -136,8 +132,6 @@ actual class NetworkManager internal constructor(
         }
 
         init {
-            reachability = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
-
             val context = nativeHeap.alloc<SCNetworkReachabilityContext>()
             context.info = StableRef.create(this@SCNetworkManager).asCPointer()
 

@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
-import kotlin.native.concurrent.ThreadLocal
 
 val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
     Coulomb,
@@ -75,5 +74,4 @@ object Megacoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.Metr
 @Serializable
 object Gigacoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Giga(Coulomb)
 
-@ThreadLocal
 val elementaryCharge = 1.602176634e-19(Coulomb)

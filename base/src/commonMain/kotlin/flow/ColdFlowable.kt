@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.flow
 
-import co.touchlab.stately.concurrency.AtomicInt
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -41,22 +40,22 @@ import kotlinx.coroutines.sync.withLock
 class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
     private val counterMutex = Mutex()
-    private var flowingCounter = AtomicInt(0)
+    private var flowingCounter = 0
 
     override fun flow(flowConfig: FlowConfig): Flow<T> {
         return super.flow(flowConfig)
             .onStart {
                 counterMutex.withLock {
-                    val count = flowingCounter.incrementAndGet()
-                    if (count == 1) {
+                    flowingCounter++
+                    if (flowingCounter == 1) {
                         set(initialize())
                     }
                 }
             }
             .onCompletion {
                 counterMutex.withLock {
-                    val count = flowingCounter.decrementAndGet()
-                    if (count == 0) {
+                    flowingCounter--
+                    if (flowingCounter == 0) {
                         val finalValue = currentValue()
                         cancelFlows()
                         finalValue?.let {

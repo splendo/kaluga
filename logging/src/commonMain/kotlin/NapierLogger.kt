@@ -16,12 +16,10 @@
  */
 package com.splendo.kaluga.logging
 
-import kotlin.native.concurrent.SharedImmutable
 import com.splendo.kaluga.logging.LogLevel as KalugaLogLevel
 import io.github.aakira.napier.Antilog as NapierLog
 import io.github.aakira.napier.LogLevel as NapierLogLevel
 
-@SharedImmutable
 val logLevel = arrayOf(
     NapierLogLevel.VERBOSE,
     NapierLogLevel.DEBUG,

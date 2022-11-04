@@ -18,7 +18,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
-                implement(Dependencies.Stately.Concurrency)
             }
         }
         commonTest {

@@ -18,8 +18,6 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.datetimepicker
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
@@ -27,6 +25,8 @@ import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
 
 data class DateTimePicker(
@@ -108,7 +108,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         private var locale: Locale = defaultLocale
         private var selectedDate: KalugaDate = DefaultKalugaDate.epoch()
         private var type: DateTimePicker.Type = DateTimePicker.Type.TimeType
-        internal val lock = Lock()
+        internal val lock = Mutex()
 
         /**
          * Sets the [message] displayed in the DateTimePicker
@@ -221,7 +221,7 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
+suspend fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
     coroutineScope: CoroutineScope,
     earliestDate: KalugaDate? = null,
     latestDate: KalugaDate? = null,
@@ -240,7 +240,7 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseDateTimePickerPresenter.Builder.buildTimePicker(coroutineScope: CoroutineScope, initialize: BaseDateTimePickerPresenter.Builder.() -> Unit): BaseDateTimePickerPresenter = lock.withLock {
+suspend fun BaseDateTimePickerPresenter.Builder.buildTimePicker(coroutineScope: CoroutineScope, initialize: BaseDateTimePickerPresenter.Builder.() -> Unit): BaseDateTimePickerPresenter = lock.withLock {
     reset()
     setType(DateTimePicker.Type.TimeType)
     initialize()

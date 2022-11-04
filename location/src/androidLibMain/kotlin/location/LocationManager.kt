@@ -20,7 +20,6 @@ package com.splendo.kaluga.location
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.permissions.base.PermissionContext
@@ -31,6 +30,8 @@ import com.splendo.kaluga.permissions.location.registerLocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 
 actual class DefaultLocationManager(
@@ -56,18 +57,19 @@ actual class DefaultLocationManager(
     }
 
     override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
-    private val monitoringLocationJob: AtomicReference<Job?> = AtomicReference(null)
+    private val monitoringMutex = Mutex()
+    private var monitoringLocationJob: Job? = null
 
     override suspend fun requestEnableLocation() {
         EnableServiceActivity.showEnableServiceActivity(context, hashCode().toString(), Intent(ACTION_LOCATION_SOURCE_SETTINGS)).await()
     }
 
     override suspend fun startMonitoringLocation() {
-        if (monitoringLocationJob.get() != null) return // optimization to skip making a job
+        monitoringMutex.withLock {
+            if (monitoringLocationJob != null) return // optimization to skip making a job
 
-        val job = Job(this.coroutineContext[Job])
-
-        if (monitoringLocationJob.compareAndSet(null, job)) {
+            val job = Job(this.coroutineContext[Job])
+            monitoringLocationJob = job
             locationProvider.startMonitoringLocation(locationPermission)
             launch(job) {
                 locationProvider.location(locationPermission).collect {
@@ -78,8 +80,9 @@ actual class DefaultLocationManager(
     }
 
     override suspend fun stopMonitoringLocation() {
-        monitoringLocationJob.get()?.let {
-            if (monitoringLocationJob.compareAndSet(it, null)) {
+        monitoringMutex.withLock {
+            monitoringLocationJob?.let {
+                monitoringLocationJob = it
                 locationProvider.stopMonitoringLocation(locationPermission)
                 it.cancel()
             }

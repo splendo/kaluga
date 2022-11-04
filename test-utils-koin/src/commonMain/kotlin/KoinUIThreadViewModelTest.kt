@@ -23,8 +23,8 @@ import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
-    KoinUIThreadTest<KVMC>(allowFreezing) {
+abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel> :
+    KoinUIThreadTest<KVMC>() {
 
     abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
@@ -39,8 +39,8 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
     }
 }
 
-abstract class BaseKoinUIThreadViewModelTest<C, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel>(allowFreezing: Boolean = false) :
-    BaseKoinUIThreadTest<C, KVMC>(allowFreezing) {
+abstract class BaseKoinUIThreadViewModelTest<C, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel> :
+    BaseKoinUIThreadTest<C, KVMC>() {
 
     abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,

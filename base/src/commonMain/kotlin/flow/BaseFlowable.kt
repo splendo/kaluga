@@ -18,7 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.flow
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -35,9 +34,9 @@ import kotlinx.coroutines.flow.first
 @Deprecated("This Channel based implementation is deprecated in favor of SharedFlow or StateFlow")
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
-    private val channel: AtomicReference<BroadcastChannel<T>?> = AtomicReference(null)
+    private var channel: BroadcastChannel<T>? = null
     protected fun ensureChannel(): BroadcastChannel<T> {
-        return channel.get() ?: channelFactory().also { channel.set(it) }
+        return channel ?: channelFactory().also { channel = it }
     }
 
     override fun flow(flowConfig: FlowConfig): Flow<T> {
@@ -48,17 +47,17 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
     }
 
     override suspend fun set(value: T) {
-        channel.get()?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
+        channel?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
     }
 
     override fun cancelFlows() {
-        channel.get()?.let {
+        channel?.let {
             it.close()
-            channel.compareAndSet(it, null)
+            channel = null
         }
     }
 
     // Note: if the channel is buffered, this could be wrong.
     // Since Flowable is deprecated this will not be fixed
-    protected suspend fun currentValue(): T? = channel.get()?.asFlow()?.first()
+    protected suspend fun currentValue(): T? = channel?.asFlow()?.first()
 }

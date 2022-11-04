@@ -17,9 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import co.touchlab.stately.collections.sharedMutableMapOf
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -98,11 +95,8 @@ abstract class BaseDeviceConnectionManager(
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
     private val logger = settings.logger
 
-    private val _currentAction = AtomicReference<DeviceAction?>(null)
-    protected var currentAction: DeviceAction?
-        get() = _currentAction.get()
-        set(value) { _currentAction.set(value) }
-    protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
+    protected var currentAction: DeviceAction? = null
+    protected val notifyingCharacteristics = mutableMapOf<String, Characteristic>()
 
     private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
     override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
@@ -155,10 +149,10 @@ abstract class BaseDeviceConnectionManager(
     fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, logTag, logger)
 
     override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
-        val currentAction = _currentAction
+        val currentAction = this.currentAction
         val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
-            currentAction.value = null
+            this.currentAction = null
             notifyingCharacteristics.clear()
             onDisconnect?.invoke()
             Unit
@@ -182,7 +176,7 @@ abstract class BaseDeviceConnectionManager(
 
     open fun handleCurrentActionCompleted(succeeded: Boolean) {
         val currentAction = this.currentAction
-        _currentAction.value = null
+        this.currentAction = null
         if (currentAction != null) {
             if (succeeded)
                 logger.info(logTag) { "Completed $currentAction successfully" }

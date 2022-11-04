@@ -32,7 +32,6 @@ import platform.darwin.NSObject
 
 class UILinkTextViewDelegate : NSObject(), UITextViewDelegateProtocol {
 
-    @ThreadLocal
     object Registry {
         val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
     }

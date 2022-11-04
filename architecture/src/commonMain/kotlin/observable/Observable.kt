@@ -17,9 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.concurrency.AtomicBoolean
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.KalugaThread
@@ -192,14 +189,14 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     var onFirstObservation: (() -> Unit)? = null
         set(value) {
             // if an observation took place before this field was set, invoke immediately
-            if (firstObservation.value) {
+            if (firstObservation) {
                 value?.invoke()
             } else {
                 field = value
             }
         }
 
-    private val firstObservation = AtomicBoolean(false)
+    private var firstObservation = false
 
     var beforeObservedValueGet: ((OO) -> ObservableOptional<T>)? = null
 
@@ -221,8 +218,6 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
             field = value
         }
 
-    private val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
-
     /**
      *  set the value of this Observable from a suspended context.
      */
@@ -242,16 +237,10 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
      */
     private fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
         val v = value.asResult(defaultValue)
-        val before = backingAtomicReference.get() ?: backingInternalValue
+        val before = backingInternalValue
 
         if (before != v) {
-            // TODO: since our context is supposed to be single thread, we could use a @ThreadLocal similar to tracking observers
-            // This would only need to freeze the current result, or if possible a copy of it
-
-            if (!this@Observation.isFrozen) // if the parent is frozen we can no longer update this reference
-                backingInternalValue = v
-            else // if it's frozen use an atomic value
-                backingAtomicReference.set(v)
+            backingInternalValue = v
 
             val result = (v as? Value<*>)?.value as R
 
@@ -264,12 +253,13 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     }
 
     private fun getValue(): OO {
-        if (firstObservation.compareAndSet(expected = false, new = true)) {
+        if (!firstObservation) {
+            firstObservation = true
             onFirstObservation?.invoke()
         }
 
         return handleOnMain {
-            backingAtomicReference.get() ?: backingInternalValue ?: error("unexpected null")
+            backingInternalValue ?: error("unexpected null")
         } as OO
     }
 

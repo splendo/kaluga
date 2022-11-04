@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
@@ -25,6 +24,8 @@ import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
@@ -69,8 +70,9 @@ internal actual class DefaultDeviceConnectionManager(
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
     }
 
-    private val discoveringServices = sharedMutableListOf<CBUUID>()
-    private val discoveringCharacteristics = sharedMutableListOf<CBUUID>()
+    private val discoveringMutext = Mutex()
+    private val discoveringServices = mutableListOf<CBUUID>()
+    private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
     @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
@@ -136,9 +138,11 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun discoverServices() {
-        discoveringServices.clear()
-        discoveringCharacteristics.clear()
-        peripheral.discoverServices(null)
+        discoveringMutext.withLock {
+            discoveringServices.clear()
+            discoveringCharacteristics.clear()
+            peripheral.discoverServices(null)
+        }
     }
 
     override suspend fun disconnect() {
@@ -200,31 +204,43 @@ internal actual class DefaultDeviceConnectionManager(
         handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
     }
 
-    private fun didDiscoverServices() {
-        discoveringServices.addAll(
-            peripheral.services?.typedList<CBService>()?.map {
-                peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
-                it.UUID
-            } ?: emptyList()
-        )
+    private suspend fun didDiscoverServices() {
+        launch {
+            discoveringMutext.withLock {
+                discoveringServices.addAll(
+                    peripheral.services?.typedList<CBService>()?.map {
+                        peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
+                        it.UUID
+                    } ?: emptyList()
+                )
+            }
 
-        checkScanComplete()
+            checkScanComplete()
+        }
     }
 
     private fun didDiscoverCharacteristic(forService: CBService) {
-        discoveringServices.remove(forService.UUID)
-        discoveringCharacteristics.addAll(
-            forService.characteristics?.typedList<CBCharacteristic>()?.map {
-                peripheral.discoverDescriptorsForCharacteristic(it)
-                it.UUID
-            } ?: emptyList()
-        )
-        checkScanComplete()
+        launch {
+            discoveringMutext.withLock {
+                discoveringServices.remove(forService.UUID)
+                discoveringCharacteristics.addAll(
+                    forService.characteristics?.typedList<CBCharacteristic>()?.map {
+                        peripheral.discoverDescriptorsForCharacteristic(it)
+                        it.UUID
+                    } ?: emptyList()
+                )
+            }
+            checkScanComplete()
+        }
     }
 
-    private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
-        discoveringCharacteristics.remove(forCharacteristic.UUID)
-        checkScanComplete()
+    private suspend fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
+        launch {
+            discoveringMutext.withLock {
+                discoveringCharacteristics.remove(forCharacteristic.UUID)
+            }
+            checkScanComplete()
+        }
     }
 
     private fun checkScanComplete() {

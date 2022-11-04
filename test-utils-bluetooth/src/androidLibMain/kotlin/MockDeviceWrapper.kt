@@ -20,7 +20,6 @@ package com.splendo.kaluga.test.bluetooth
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
-import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -35,7 +34,7 @@ class MockDeviceWrapper(
     setupMocks: Boolean = true
 ) : DeviceWrapper {
 
-    val gattWrappers = sharedMutableListOf<MockBluetoothGattWrapper>()
+    val gattWrappers = mutableListOf<MockBluetoothGattWrapper>()
     val connectGattMock = ::connectGatt.mock()
     val removeBondMock = ::removeBond.mock()
     val createBondMock = ::createBond.mock()

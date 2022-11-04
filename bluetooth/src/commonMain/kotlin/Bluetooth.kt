@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
@@ -50,9 +49,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
-import kotlin.native.concurrent.SharedImmutable
 
-@SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultBluetoothDispatcher by lazy {
     singleThreadDispatcher("Bluetooth")
 }
@@ -240,7 +237,7 @@ fun Flow<Device?>.mtu() = state().map { state ->
 }.distinctUntilChanged()
 
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
-    val lastNResults = sharedMutableListOf<Double>()
+    val lastNResults = mutableListOf<Double>()
     return this.info().map { deviceInfo ->
         while (lastNResults.size >= averageOver) {
             lastNResults.removeAt(0)

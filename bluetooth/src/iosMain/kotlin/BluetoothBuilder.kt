@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 
 actual class BluetoothBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
-    private val permissionsBuilder: (CoroutineContext) -> Permissions = { context ->
+    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder(bundle).apply {
                 registerBluetoothPermission()

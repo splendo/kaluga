@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
@@ -47,14 +45,14 @@ class DefaultBluetoothMonitor internal constructor(
         }
     }
 
-    private val centralManager = AtomicReference<CBCentralManager?>(null)
+    private var centralManager: CBCentralManager? = null
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
         get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
 
-    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = centralManager.value ?: centralManagerBuilder().apply {
-        centralManager.set(this)
+    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = centralManager ?: centralManagerBuilder().apply {
+        centralManager = this
     }
 
     override fun monitoringDidStart() {
@@ -63,6 +61,6 @@ class DefaultBluetoothMonitor internal constructor(
     }
 
     override fun monitoringDidStop() {
-        centralManager.value?.delegate = null
+        centralManager?.delegate = null
     }
 }

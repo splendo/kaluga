@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.test.base
 
-import co.touchlab.stately.ensureNeverFrozen
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +40,7 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseUIThreadTest<Unit, TC>(allowFreezing) {
+abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseUIThreadTest<Unit, TC>() {
     interface TestContext : BaseUIThreadTest.TestContext
 
     class EmptyTestContext private constructor() : TestContext {
@@ -90,11 +88,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolea
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class BaseUIThreadTest<C, TC : BaseUIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseTest() {
-
-    init {
-        if (!allowFreezing) ensureNeverFrozen()
-    }
+abstract class BaseUIThreadTest<C, TC : BaseUIThreadTest.TestContext>() : BaseTest() {
 
     interface TestContext {
         fun dispose() {}
@@ -143,8 +137,6 @@ abstract class BaseUIThreadTest<C, TC : BaseUIThreadTest.TestContext>(allowFreez
                     testContext.dispose()
                 }
             }
-            createTestContextWithConfiguration.freeze()
-            test.freeze()
 
             if (cancelScopeAfterTest)
                 testBlockingAndCancelScope(Dispatchers.Main) { test(this) }

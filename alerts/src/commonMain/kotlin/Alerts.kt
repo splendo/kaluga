@@ -18,11 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
 
 typealias AlertActionHandler = () -> Unit
@@ -137,7 +137,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         private var actions: MutableList<Alert.Action> = mutableListOf()
         private var textInputAction: Alert.TextInputAction? = null
         private var style: Alert.Style = Alert.Style.ALERT
-        internal val lock = Lock()
+        internal val lock = Mutex()
 
         /**
          * Sets the [title] displayed in the alert
@@ -321,7 +321,7 @@ expect class AlertPresenter : BaseAlertPresenter {
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseAlertPresenter.Builder.buildAlert(
+suspend fun BaseAlertPresenter.Builder.buildAlert(
     coroutineScope: CoroutineScope,
     initialize: BaseAlertPresenter.Builder.() -> Unit
 ): BaseAlertPresenter = lock.withLock {
@@ -338,7 +338,7 @@ fun BaseAlertPresenter.Builder.buildAlert(
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseAlertPresenter.Builder.buildActionSheet(
+suspend fun BaseAlertPresenter.Builder.buildActionSheet(
     coroutineScope: CoroutineScope,
     initialize: BaseAlertPresenter.Builder.() -> Unit
 ): BaseAlertPresenter = lock.withLock {
@@ -355,7 +355,7 @@ fun BaseAlertPresenter.Builder.buildActionSheet(
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseAlertPresenter.Builder.buildAlertWithInput(
+suspend fun BaseAlertPresenter.Builder.buildAlertWithInput(
     coroutineScope: CoroutineScope,
     initialize: BaseAlertPresenter.Builder.() -> Unit
 ): BaseAlertPresenter = lock.withLock {

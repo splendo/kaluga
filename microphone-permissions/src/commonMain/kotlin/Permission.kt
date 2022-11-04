@@ -32,7 +32,7 @@ object MicrophonePermission : Permission() {
     override val name: String = "Microphone"
 }
 
-fun PermissionsBuilder.registerMicrophonePermission(
+suspend fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -41,12 +41,31 @@ fun PermissionsBuilder.registerMicrophonePermission(
         MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
     }
 
-fun PermissionsBuilder.registerMicrophonePermission(
+suspend fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
     microphonePermissionStateRepoBuilder: (BaseMicrophonePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<MicrophonePermission>
 ) = microphonePermissionManagerBuilderBuilder(context).also {
     register(it)
     registerPermissionStateRepoBuilder<MicrophonePermission> { _, coroutineContext ->
+        microphonePermissionStateRepoBuilder(it, coroutineContext)
+    }
+}
+
+suspend fun PermissionsBuilder.registerMicrophonePermissionIfNotRegistered(
+    microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerMicrophonePermissionIfNotRegistered(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
+        MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+    }
+
+suspend fun PermissionsBuilder.registerMicrophonePermissionIfNotRegistered(
+    microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
+    microphonePermissionStateRepoBuilder: (BaseMicrophonePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<MicrophonePermission>
+) = microphonePermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<MicrophonePermission> { _, coroutineContext ->
         microphonePermissionStateRepoBuilder(it, coroutineContext)
     }
 }

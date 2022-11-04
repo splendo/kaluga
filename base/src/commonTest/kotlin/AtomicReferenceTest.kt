@@ -15,7 +15,6 @@
 
  */
 
-import com.splendo.kaluga.base.AtomicReferenceDelegate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

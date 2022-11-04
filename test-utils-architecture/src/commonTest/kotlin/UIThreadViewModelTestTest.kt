@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.architecture
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
@@ -35,7 +34,7 @@ import kotlin.test.fail
 class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
-        val isDisposed = AtomicBoolean(false)
+        var isDisposed = false
     }
 
     class ViewModel : BaseLifecycleViewModel() {
@@ -46,7 +45,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
         LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
 
         override fun dispose() {
-            isDisposed.value = true
+            isDisposed = true
         }
     }
 
@@ -73,12 +72,12 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
 
     @BeforeTest
     fun resetDisposed() {
-        isDisposed.value = false
+        isDisposed = false
     }
 
     @AfterTest
     fun testDisposed() {
-        assertTrue(isDisposed.value)
+        assertTrue(isDisposed)
     }
 }
 

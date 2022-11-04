@@ -17,20 +17,18 @@
 
 package com.splendo.kaluga.test.keyboard
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.keyboard.FocusHandler
 
 open class BaseMockFocusHandler {
-    private val _isFocused = AtomicBoolean(false)
-    val isFocused: Boolean
-        get() = _isFocused.value
+    var isFocused: Boolean = false
+        private set
 
     protected fun giveFocus() {
-        _isFocused.value = true
+        isFocused = true
     }
 
     protected fun removeFocus() {
-        _isFocused.value = false
+        isFocused = false
     }
 }
 

@@ -16,9 +16,6 @@
  */
 package com.splendo.kaluga.test.alerts
 
-import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.concurrency.AtomicBoolean
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.test.base.mock.call
@@ -42,7 +39,7 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
         /**
          * The [MockAlertPresenter] created by this builder
          */
-        val builtAlerts = IsoMutableList<MockAlertPresenter>()
+        val builtAlerts = mutableListOf<MockAlertPresenter>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for the [create] function
@@ -64,19 +61,12 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
         private fun createAlertFromAlert(alert: Alert, coroutineScope: CoroutineScope): MockAlertPresenter = createMock.call(alert, coroutineScope)
     }
 
-    private var _isPresented = AtomicBoolean(false)
-
     /**
      * `true` if the [MockAlertPresenter] is currently being presented
      */
-    var isPresented
-        get() = _isPresented.value
-        private set(value) { _isPresented.value = value }
+    var isPresented = false
 
-    private var _afterHandler = AtomicReference<((Alert.Action?) -> Unit)?>(null)
-    private var afterHandler: ((Alert.Action?) -> Unit)?
-        get() = _afterHandler.get()
-        set(value) = _afterHandler.set(value)
+    private var afterHandler: ((Alert.Action?) -> Unit)? = null
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for the [showAsync] function

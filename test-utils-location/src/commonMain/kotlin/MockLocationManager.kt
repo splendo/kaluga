@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.location
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationManager
@@ -78,7 +77,7 @@ class MockBaseLocationManager(
         /**
          * Ths list of build [MockBaseLocationManager]
          */
-        val builtLocationManagers = sharedMutableListOf<MockBaseLocationManager>()
+        val builtLocationManagers = mutableListOf<MockBaseLocationManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

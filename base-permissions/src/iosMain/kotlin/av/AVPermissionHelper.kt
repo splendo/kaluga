@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.permissions.base.av
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
@@ -63,14 +62,12 @@ class AVPermissionHelper(
             val mediaType = type.avMediaType
             onPermissionChangedFlow.requestAuthorizationStatus(timerHelper, coroutineScope) {
                 val deferred = CompletableDeferred<Boolean>()
-                val callback = { allowed: Boolean ->
+                AVCaptureDevice.requestAccessForMediaType(
+                    mediaType
+                ) { allowed ->
                     deferred.complete(allowed)
                     Unit
-                }.freeze()
-                AVCaptureDevice.requestAccessForMediaType(
-                    mediaType,
-                    callback
-                )
+                }
                 if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Denied
             }
         } else {
