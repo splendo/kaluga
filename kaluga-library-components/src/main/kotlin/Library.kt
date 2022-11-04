@@ -29,7 +29,13 @@ val Project.Library get() = libraries.getOrPut(this) { Library(this) }
 
 class Library(project: Project) {
 
-    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").loadProperties()
+    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").let {
+        if (it.exists) {
+            it.loadProperties()
+        } else {
+            Properties()
+        }
+    }
     private val logger = project.logger
     private val baseVersion = "1.0.0"
     val group = "com.splendo.kaluga"
@@ -97,37 +103,6 @@ class Library(project: Project) {
         }
     }
     val IOS = IOSLibrary(props, logger)
-
-    val exampleEmbeddingMethod by lazy {
-        if (System.getenv().containsKey("EXAMPLE_EMBEDDING_METHOD")) {
-            System.getenv()["EXAMPLE_EMBEDDING_METHOD"].also {
-                logger.lifecycle("System env EXAMPLE_EMBEDDING_METHOD set to ${System.getenv()["EXAMPLE_EMBEDDING_METHOD"]}, using $it")
-            }!!
-        } else {
-            val exampleEmbeddingMethodLocalProperties = props["kaluga.exampleEmbeddingMethod"] as? String
-            (exampleEmbeddingMethodLocalProperties ?: "composite").also {
-                logger.lifecycle("local.properties read (kaluga.exampleEmbeddingMethod=$exampleEmbeddingMethodLocalProperties, using $it)")
-            }
-        }
-    }
-
-    val exampleMavenRepo by lazy {
-        if (System.getenv().containsKey("EXAMPLE_MAVEN_REPO")) {
-            System.getenv()["EXAMPLE_MAVEN_REPO"].also {
-                logger.lifecycle("System env EXAMPLE_MAVEN_REPO set to ${System.getenv()["EXAMPLE_MAVEN_REPO"]}, using $it")
-            }!!
-        } else {
-            // load some more from local.properties or set defaults.
-            val exampleMavenRepoLocalProperties: String? =
-                props["kaluga.exampleMavenRepo"] as? String
-            exampleMavenRepoLocalProperties?.also {
-                logger.lifecycle("local.properties read (kaluga.exampleMavenRepo=$exampleMavenRepoLocalProperties, using $it)")
-            }
-                ?: "local".also {
-                    logger.lifecycle("local.properties not found, using default value ($it)")
-                }
-        }
-    }
 
     val connectCheckExpansion = (System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") or System.getenv().containsKey("CI")).also {
         if (it) {

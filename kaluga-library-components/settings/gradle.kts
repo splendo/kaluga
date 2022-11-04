@@ -21,34 +21,4 @@ pluginManagement {
         gradlePluginPortal()
         google()
     }
-
-    // resolutionStrategy {
-    //     eachPlugin {
-    //
-    //         val kalugaAndroidGradlePluginVersion =
-    //             settings.extra["kaluga.androidGradlePluginVersion"]
-    //         val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
-    //         val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
-    //         val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
-    //         val kalugaBinaryCompatibilityValidatorVersion = settings.extra["kaluga.binaryCompatibilityValidatorVersion"]
-    //
-    //         when (requested.id.id) {
-    //             "org.jetbrains.kotlin.multiplatform",
-    //             "org.jetbrains.kotlin.plugin.serialization",
-    //             "org.jetbrains.kotlin.android",
-    //             "org.jetbrains.kotlin.kapt",
-    //             -> useVersion("$kalugaKotlinVersion")
-    //             "com.android.library",
-    //             "com.android.application",
-    //             -> useVersion("$kalugaAndroidGradlePluginVersion")
-    //             "org.jlleitschuh.gradle.ktlint",
-    //             "org.jlleitschuh.gradle.ktlint-idea",
-    //             -> useVersion("$kalugaKtLintGradlePluginVersion")
-    //             "com.google.gms:google-services"
-    //             -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
-    //             "org.jetbrains.kotlinx.binary-compatibility-validator"
-    //             -> useVersion("$kalugaBinaryCompatibilityValidatorVersion")
-    //         }
-    //     }
-    // }
 }
