@@ -29,7 +29,7 @@ import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetParentSubPageNavigationRouteMapper
-import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetParentSubPageViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bottomsheet.BottomSheetParentSubPageViewModel
 
 @Composable
 fun BottomSheetParentSubPageLayout(navHostController: NavHostController) {

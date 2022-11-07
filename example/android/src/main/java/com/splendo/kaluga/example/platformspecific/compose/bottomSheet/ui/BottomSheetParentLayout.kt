@@ -43,9 +43,9 @@ import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetParentNavigationRouteMapper
 import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
-import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetNavigation
-import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetParentNavigation
-import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetParentViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bottomsheet.BottomSheetNavigation
+import com.splendo.kaluga.example.shared.viewmodel.bottomsheet.BottomSheetParentNavigation
+import com.splendo.kaluga.example.shared.viewmodel.bottomsheet.BottomSheetParentViewModel
 
 @Composable
 fun BottomSheetParentLayout() {

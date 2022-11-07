@@ -25,8 +25,8 @@ import com.splendo.kaluga.architecture.compose.navigation.SetupNavHost
 import com.splendo.kaluga.architecture.compose.navigation.composable
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactListNavigationRouteMapper
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListNavigation
+import com.splendo.kaluga.example.shared.model.contacts.ContactDetails
+import com.splendo.kaluga.example.shared.viewmodel.contacts.ContactsListNavigation
 
 @Composable
 fun ContactsLayout() {

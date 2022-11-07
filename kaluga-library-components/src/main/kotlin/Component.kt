@@ -25,10 +25,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
 
 sealed class ComponentType {
-    abstract val isApp: Boolean
-
-    data class Default(override val isApp: Boolean = false) : ComponentType()
-    data class Compose(override val isApp: Boolean = false) : ComponentType()
+    object Default : ComponentType()
+    object Compose : ComponentType()
 }
 
 fun Project.commonComponent() {

@@ -40,9 +40,9 @@ import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactDetailsNavigationActivityMapper
 import com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel.contactDetailsNavigationRouteMapper
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsNavigation
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsViewModel
+import com.splendo.kaluga.example.shared.model.contacts.ContactDetails
+import com.splendo.kaluga.example.shared.viewmodel.contacts.ContactDetailsNavigation
+import com.splendo.kaluga.example.shared.viewmodel.contacts.ContactDetailsViewModel
 
 @Composable
 fun ContactDetailsLayout(contactDetails: ContactDetails, navHostController: NavHostController) {

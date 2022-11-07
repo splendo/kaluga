@@ -1,0 +1,112 @@
+<resources>
+    <string name="app_name">Kaluga Example</string>
+
+    <string name="feature_alerts">Alerts</string>
+    <string name="feature_architecture">Architecture</string>
+    <string name="feature_date_time_picker">Date Time Picker</string>
+    <string name="feature_bluetooth">Bluetooth</string>
+    <string name="feature_hud">Loading Indicator</string>
+    <string name="feature_keyboard">Keyboard</string>
+    <string name="feature_links">Links</string>
+    <string name="feature_location">Location</string>
+    <string name="feature_permissions">Permissions</string>
+    <string name="feature_system">System</string>
+    <string name="feature_beacons">Beacons</string>
+    <string name="feature_platform_specific">Platform specific features</string>
+    <string name="feature_platform_specific_compose_navigation">Compose Navigation</string>
+    <string name="feature_platform_specific_compose_bottom_sheet">Compose Bottom Sheet</string>
+    <string name="feature_resources">Resources</string>
+    <string name="feature_resources_color">Color</string>
+    <string name="feature_resources_button">Button</string>
+    <string name="feature_resources_label">Label</string>
+
+    <string name="show_alert">Show Alert</string>
+    <string name="dismissible_alert">Dismissible Alert</string>
+    <string name="alert_list">Show Alert List</string>
+    <string name="alert_input">Show Alert with input</string>
+    <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
+    <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
+
+    <string name="select_time">Select Time</string>
+    <string name="select_date">Select Date</string>
+    <string name="current_time">Current Time</string>
+    <string name="confirm_selection">Select</string>
+    <string name="cancel_selection">Cancel</string>
+
+    <string name="permissions_list">Permissions List</string>
+    <string name="permissions_bluetooth">Bluetooth Demo</string>
+    <string name="permissions_calendar">Calendar Demo</string>
+    <string name="permissions_camera">Camera Demo</string>
+    <string name="permissions_contacts">Contacts Demo</string>
+    <string name="permissions_location">Location Demo</string>
+    <string name="permissions_microphone">Microphone Demo</string>
+    <string name="permissions_notifications">Notifications Demo</string>
+    <string name="permissions_storage">Storage Demo</string>
+
+    <string name="permissions_unknown">The status of the permission is not known yet</string>
+    <string name="permission_allowed">The permission has been granted</string>
+    <string name="permission_requestable">The permission can be requested</string>
+    <string name="permission_denied">The permission has been denied</string>
+
+    <string name="permission_request">Request Permission</string>
+    <string name="permission_request_success">Permission requested successfully</string>
+    <string name="permission_request_failed">Permission request failed</string>
+
+    <string name="architecture_details">Show Details</string>
+    <string name="architecture_details_inverse">Inverse Input</string>
+    <string name="keyboard_manager">Keyboard</string>
+    <string name="show_keyboard">Show Keyboard</string>
+    <string name="hide_keyboard">Hide Keyboard</string>
+
+    <string name="location_background">Kaluga Background</string>
+    <string name="location_enable_background">Enable Background</string>
+    <string name="location_disable_background">Disable Background</string>
+
+    <string name="browser_button_text">Open browser</string>
+    <string name="links_instructions">Tapping \"Open browser\" will redirect you in a webpage.
+        There you can find a button that if tapped will bring you back to the app passing a query.
+        That query will be deserialized into a object and shown in an alert.
+    </string>
+
+    <string name="network_feature">Network</string>
+    <string name="bluetooth_start_scanning">Start Scanning</string>
+    <string name="bluetooth_stop_scanning">Stop Scanning</string>
+    <string name="bluetooth_no_name">Unnamed Bluetooth Device</string>
+
+    <string name="rssi">%d dBm</string>
+    <string name="txPower">%s dBm</string>
+    <string name="distance">%.2f m</string>
+
+    <string name="bluetooth_connect">Connect</string>
+    <string name="bluetooth_disconnect">Disconnect</string>
+
+    <string name="bluetooth_connected">Connected</string>
+    <string name="bluetooth_connecting">Connecting</string>
+    <string name="bluetooth_disconnected">Disconnected</string>
+    <string name="bluetooth_disconneting">Disconnecting</string>
+    <string name="bluetooth_reconnecting">Reconnecting</string>
+    <string name="bluetooth_discovering">Discovering</string>
+
+    <string name="bluetooth_service_uuids">Service UUIDs: %s</string>
+    <string name="bluetooth_service_data">Service Data: %s</string>
+    <string name="bluetooth_manufacturer_id">Manufacturer Id: %d</string>
+    <string name="bluetooth_manufacturer_data">Manufacturer Data: %s</string>
+
+    <string name="bluetooth_more">More</string>
+
+    <string name="bluetooth_services_header">Services</string>
+    <string name="bluetooth_service">Service</string>
+    <string name="bluetooth_characteristics">Characteristics</string>
+    <string name="bluetooth_descriptors">Descriptors</string>
+    <string name="bluetooth_permissions_read">Read</string>
+    <string name="bluetooth_permissions_write">Write</string>
+    <string name="bluetooth_permissions_read_encrypted">Read Encrypted</string>
+    <string name="bluetooth_permissions_write_encrypted">Write Encrypted</string>
+
+    <string name="bottom_sheet_show_sheet">Open Bottom Sheet</string>
+    <string name="bottom_sheet_show_sub_page">Open Sub Page</string>
+    <string name="bottom_sheet_sub_page_title">Sub Page</string>
+    <string name="bottom_sheet_sheet_content">This is a bottom sheet</string>
+    <string name="bottom_sheet_sheet_sub_page_title">Sheet Sub Page</string>
+
+</resources>

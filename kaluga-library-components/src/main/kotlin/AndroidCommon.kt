@@ -19,7 +19,7 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.kotlin.dsl.dependencies
 
-fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default()) {
+fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default) {
     androidLibrary {
         androidCommon(this@commonAndroidComponent, type)
     }
@@ -49,13 +49,13 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
     }
 }
 
-fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default()) {
-    compileSdk = Library.Android.compileSdk
-    buildToolsVersion = Library.Android.buildTools
+fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default) {
+    compileSdk = LibraryImpl.Android.compileSdk
+    buildToolsVersion = LibraryImpl.Android.buildTools
 
     defaultConfig {
-        minSdk = Library.Android.minSdk
-        targetSdk = Library.Android.targetSdk
+        minSdk = LibraryImpl.Android.minSdk
+        targetSdk = LibraryImpl.Android.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,27 +66,23 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         }
     }
 
-    if (componentType.isApp) {
-        project.logger.lifecycle("Android sourcesets for this project module are configured using defaults (for an app)")
-    } else {
-        project.logger.lifecycle("Android sourcesets for this project module are configured as a library")
-        sourceSets {
-            getByName("main") {
-                manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
-                res.srcDir("src/androidLibMain/res")
-                if (componentType is ComponentType.Compose) {
-                    java.srcDir("src/androidLibMain/kotlin")
-                }
+    project.logger.lifecycle("Android sourcesets for this project module are configured as a library")
+    sourceSets {
+        getByName("main") {
+            manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
+            res.srcDir("src/androidLibMain/res")
+            if (componentType is ComponentType.Compose) {
+                java.srcDir("src/androidLibMain/kotlin")
             }
-            getByName("androidTest") {
-                manifest.srcFile("src/androidLibAndroidTest/AndroidManifest.xml")
-                java.srcDir("src/androidLibAndroidTest/kotlin")
-                res.srcDir("src/androidLibAndroidTest/res")
-            }
+        }
+        getByName("androidTest") {
+            manifest.srcFile("src/androidLibAndroidTest/AndroidManifest.xml")
+            java.srcDir("src/androidLibAndroidTest/kotlin")
+            res.srcDir("src/androidLibAndroidTest/res")
+        }
 
-            getByName("test") {
-                java.srcDir("src/androidLibUnitTest/kotlin")
-            }
+        getByName("test") {
+            java.srcDir("src/androidLibUnitTest/kotlin")
         }
     }
 
@@ -107,7 +103,7 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
                 compose = true
             }
             composeOptions {
-                kotlinCompilerExtensionVersion = Library.Android.composeCompiler
+                kotlinCompilerExtensionVersion = LibraryImpl.Android.composeCompiler
             }
         }
         is ComponentType.Default-> {}

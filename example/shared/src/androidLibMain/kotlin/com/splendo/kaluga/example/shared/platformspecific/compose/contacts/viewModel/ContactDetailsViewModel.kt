@@ -21,7 +21,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
+import com.splendo.kaluga.example.shared.model.contacts.ContactDetails
 
 sealed class ContactDetailsNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     class SendEmail(email: String) : ContactDetailsNavigation<String>(

@@ -23,11 +23,11 @@ import org.jetbrains.kotlin.konan.properties.loadProperties
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.IOException
 
-private val libraries: MutableMap<Project, Library> = mutableMapOf()
+private val libraries: MutableMap<Project, LibraryImpl> = mutableMapOf()
 
-val Project.Library get() = libraries.getOrPut(this) { Library(this) }
+val Project.Library get() = libraries.getOrPut(this) { LibraryImpl(this) }
 
-class Library(project: Project) {
+class LibraryImpl(project: Project) {
 
     private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").let {
         if (it.exists) {

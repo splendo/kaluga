@@ -23,7 +23,7 @@ import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.FlowInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
+import com.splendo.kaluga.example.shared.model.contacts.ContactDetails
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 

@@ -18,7 +18,7 @@
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPublication
 
-fun Project.publish(componentType: ComponentType = ComponentType.Default()) {
+fun Project.publish(componentType: ComponentType = ComponentType.Default) {
     afterEvaluate {
         publishing {
             publications {

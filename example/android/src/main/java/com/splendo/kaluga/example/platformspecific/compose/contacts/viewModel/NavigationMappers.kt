@@ -20,8 +20,8 @@ package com.splendo.kaluga.example.platformspecific.compose.contacts.viewModel
 import com.splendo.kaluga.architecture.compose.navigation.Route
 import com.splendo.kaluga.architecture.compose.navigation.next
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsNavigation
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListNavigation
+import com.splendo.kaluga.example.shared.viewmodel.contacts.ContactDetailsNavigation
+import com.splendo.kaluga.example.shared.viewmodel.contacts.ContactsListNavigation
 
 /** Maps a navigation action to a route string. */
 internal fun contactListNavigationRouteMapper(action: ContactsListNavigation<*>): Route {

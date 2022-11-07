@@ -34,7 +34,7 @@ import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.viewModel.bottomSheetNavigationRouteMapper
 import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
-import com.splendo.kaluga.example.shared.platformspecific.compose.bottomSheet.BottomSheetViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bottomsheet.BottomSheetViewModel
 
 @Composable
 fun BottomSheetLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
