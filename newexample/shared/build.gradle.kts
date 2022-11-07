@@ -1,57 +1,34 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("com.android.library")
-    id("kaluga-library-components")
+    id("jacoco")
+    id("org.jlleitschuh.gradle.ktlint")
 }
+
+commonComponent()
 
 kotlin {
-    android()
-    
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "shared"
-        }
-    }
-
     sourceSets {
-        val commonMain by getting
-        val commonTest by getting {
+        getByName("commonMain") {
             dependencies {
-                implementation(kotlin("test"))
+                val libraryVersion = Library.version
+                api("com.splendo.kaluga:alerts:$libraryVersion")
+                api("com.splendo.kaluga:architecture:$libraryVersion")
+                api("com.splendo.kaluga:base:$libraryVersion")
+                api("com.splendo.kaluga:bluetooth:$libraryVersion")
+                api("com.splendo.kaluga:beacons:$libraryVersion")
+                api("com.splendo.kaluga:date-time-picker:$libraryVersion")
+                api("com.splendo.kaluga:hud:$libraryVersion")
+                api("com.splendo.kaluga:keyboard:$libraryVersion")
+                api("com.splendo.kaluga:links:$libraryVersion")
+                api("com.splendo.kaluga:location:$libraryVersion")
+                api("com.splendo.kaluga:logging:$libraryVersion")
+                api("com.splendo.kaluga:resources:$libraryVersion")
+                api("com.splendo.kaluga:review:$libraryVersion")
+                api("com.splendo.kaluga:system:$libraryVersion")
+                api("com.splendo.kaluga:permissions:$libraryVersion")
             }
         }
-        val androidMain by getting
-        val androidTest by getting
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
-        }
-    }
-}
-
-android {
-    namespace = "com.splendo.kaluga.example"
-    compileSdk = 32
-    defaultConfig {
-        minSdk = 24
-        targetSdk = 32
     }
 }

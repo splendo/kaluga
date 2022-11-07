@@ -15,13 +15,18 @@
 
  */
 
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-fun Project.android(action: LibraryExtension.() -> Unit) {
+fun Project.androidApp(action: AppExtension.() -> Unit) {
+    configureAction("android", action)
+}
+
+fun Project.androidLibrary(action: LibraryExtension.() -> Unit) {
     configureAction("android", action)
 }
 

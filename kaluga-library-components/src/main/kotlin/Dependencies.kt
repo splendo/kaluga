@@ -113,6 +113,7 @@ object Dependencies {
             val Material = Dependency("$composeGroupBase.material", "material", version)
             val UI = Dependency("$composeGroupBase.ui", "ui", version)
             val UITooling = Dependency("$composeGroupBase.ui", "ui-tooling", version)
+            val UIToolingPreview = Dependency("$composeGroupBase.ui", "ui-tooling-preview", version)
         }
         val ConstraintLayout = Dependency("$groupBase.constraintlayout", "constraintlayout", "2.1.4")
         val Core = Dependency("$groupBase.core", "core", "1.9.0")

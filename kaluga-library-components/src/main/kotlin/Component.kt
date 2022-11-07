@@ -23,7 +23,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
-import org.jetbrains.kotlin.konan.file.File
 
 sealed class ComponentType {
     abstract val isApp: Boolean
@@ -40,7 +39,7 @@ fun Project.commonComponent() {
     }
 
     commonAndroidComponent()
-    android {
+    androidLibrary {
         commonMultiplatformComponentAndroid(this@commonComponent)
     }
 

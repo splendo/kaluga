@@ -3,11 +3,8 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    //trick: for the same plugin versions in all sub-modules
-    id("com.android.application").apply(false)
-    id("com.android.library").apply(false)
-    kotlin("android").apply(false)
     kotlin("multiplatform").apply(false)
+    id("kaluga-library-components")
 }
 
 allprojects {
@@ -29,6 +26,7 @@ allprojects {
                     logger.lifecycle("local.properties not found, using default value ($it)")
                 }
         }
+        logger.lifecycle("Using repo: $exampleMavenRepo for resolving dependencies")
 
         when(exampleMavenRepo) {
             null, "", "local" -> mavenLocal()

@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.splendo.kaluga.example.android"
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.splendo.kaluga.example.android"
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
@@ -33,10 +33,10 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("androidx.compose.ui:ui:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
-    implementation("androidx.compose.foundation:foundation:1.2.1")
-    implementation("androidx.compose.material:material:1.2.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
+    implement(Dependencies.AndroidX.Compose.UI)
+    implement(Dependencies.AndroidX.Compose.UITooling)
+    implement(Dependencies.AndroidX.Compose.UIToolingPreview)
+    implement(Dependencies.AndroidX.Compose.Foundation)
+    implement(Dependencies.AndroidX.Compose.Material)
+    implement(Dependencies.AndroidX.Activity.Compose)
 }

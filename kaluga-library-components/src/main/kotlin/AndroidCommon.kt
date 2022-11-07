@@ -20,7 +20,7 @@ import org.gradle.api.JavaVersion
 import org.gradle.kotlin.dsl.dependencies
 
 fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default()) {
-    android {
+    androidLibrary {
         androidCommon(this@commonAndroidComponent, type)
     }
 
