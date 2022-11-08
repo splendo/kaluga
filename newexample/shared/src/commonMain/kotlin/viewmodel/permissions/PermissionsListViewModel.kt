@@ -25,7 +25,14 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.registerAllPermissionsNotRegistered
 import com.splendo.kaluga.resources.localized
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -45,7 +52,7 @@ class PermissionNavigationBundleSpec : NavigationBundleSpec<PermissionNavigation
 
 class PermissionsListNavigationAction(permissionView: PermissionView) : NavigationAction<PermissionNavigationBundleSpecRow>(PermissionNavigationBundleSpec().toBundle { spec -> spec.convertValue(permissionView) })
 
-class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAction>) : NavigatingViewModel<PermissionsListNavigationAction>(navigator) {
+class PermissionsListViewModel(private val permissionsBuilder: PermissionsBuilder, navigator: Navigator<PermissionsListNavigationAction>) : NavigatingViewModel<PermissionsListNavigationAction>(navigator) {
 
     val permissions = observableOf(
         listOf(
@@ -61,6 +68,13 @@ class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAct
     )
 
     fun onPermissionPressed(permissionView: PermissionView) {
-        navigator.navigate(PermissionsListNavigationAction(permissionView))
+        coroutineScope.launch {
+            permissionsBuilder.registerAllPermissionsNotRegistered(
+                settings = BasePermissionManager.Settings(
+                    logger = RestrictedLogger(RestrictedLogLevel.None)
+                )
+            )
+            navigator.navigate(PermissionsListNavigationAction(permissionView))
+        }
     }
 }

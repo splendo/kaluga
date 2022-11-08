@@ -28,6 +28,7 @@ import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.Beacons
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
@@ -68,6 +69,7 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -88,11 +90,14 @@ import org.koin.dsl.module
 import kotlin.time.Duration.Companion.minutes
 
 val utilitiesModule = module {
+    single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
     single { PermissionsBuilder() }
     single { LocationStateRepoBuilder(
         permissionsBuilder = {
             val builder = get<PermissionsBuilder>()
-            builder.registerLocationPermissionIfNotRegistered()
+            builder.registerLocationPermissionIfNotRegistered(
+                settings = BasePermissionManager.Settings(logger = get())
+            )
             Permissions(builder, it)
         }
     ) }
@@ -100,11 +105,15 @@ val utilitiesModule = module {
         BluetoothBuilder(
             permissionsBuilder = {
                 val builder = get<PermissionsBuilder>()
-                builder.registerBluetoothPermissionIfNotRegistered()
-                builder.registerLocationPermissionIfNotRegistered()
+                val settings = BasePermissionManager.Settings(logger = get())
+                builder.registerBluetoothPermissionIfNotRegistered(settings = settings)
+                builder.registerLocationPermissionIfNotRegistered(settings = settings)
                 Permissions(builder, it)
             }
-        ).create()
+        ).create(
+            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
+            connectionSettings = ConnectionSettings(logger = get())
+        )
     }
     single { Beacons(get<Bluetooth>(), timeout = 1.minutes) }
 }
@@ -131,6 +140,7 @@ val viewModelModule = module {
 
     viewModel { (navigator: Navigator<PermissionsListNavigationAction>) ->
         PermissionsListViewModel(
+            get(),
             navigator
         )
     }
