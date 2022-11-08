@@ -88,21 +88,17 @@ import kotlin.time.Duration.Companion.minutes
 val utilitiesModule = module {
     single {
         Permissions(
-            PermissionsBuilder().apply {
-                MainScope().launch {
-                    registerAllPermissions(
-                        settings = BasePermissionManager.Settings(
-                            logger = RestrictedLogger(RestrictedLogLevel.Verbose)
-                        )
-                    )
-                }
-            },
+            PermissionsBuilder(),
             coroutineContext = singleThreadDispatcher("Permissions")
         )
     }
     single { LocationStateRepoBuilder() }
     single {
-        BluetoothBuilder().create({ BaseScanner.Settings(get()) })
+        BluetoothBuilder().create({ _ ->
+            val permissions: Permissions = get()
+            permissions.registerAllPermissionsNotRegistered()
+            BaseScanner.Settings(permissions)
+        })
     }
     single { Beacons(get<Bluetooth>(), timeout = 1.minutes) }
 }
