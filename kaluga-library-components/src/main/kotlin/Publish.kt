@@ -28,14 +28,14 @@ fun Project.publish(componentType: ComponentType = ComponentType.Default()) {
                         create("release", MavenPublication::class.java) {
                             from(components.getByName("release"))
 
-                            artifactId = name
+                            artifactId = project.name
                             groupId = Library.group
                             version = Library.version
                         }
                         create("debug", MavenPublication::class.java) {
                             from(components.getByName("debug"))
 
-                            artifactId = name
+                            artifactId = project.name
                             groupId = Library.group
                             version = Library.version
                         }
@@ -43,7 +43,7 @@ fun Project.publish(componentType: ComponentType = ComponentType.Default()) {
                     is ComponentType.Default -> {
                         getByName("kotlinMultiplatform") {
                             (this as MavenPublication).let {
-                                artifactId = name
+                                artifactId = project.name
                                 groupId = Library.group
                                 version = Library.version
                             }
