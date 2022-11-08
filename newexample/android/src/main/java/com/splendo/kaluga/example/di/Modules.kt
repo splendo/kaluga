@@ -74,7 +74,9 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.registerAllPermissions
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
@@ -86,19 +88,23 @@ import org.koin.dsl.module
 import kotlin.time.Duration.Companion.minutes
 
 val utilitiesModule = module {
+    single { PermissionsBuilder() }
+    single { LocationStateRepoBuilder(
+        permissionsBuilder = {
+            val builder = get<PermissionsBuilder>()
+            builder.registerLocationPermissionIfNotRegistered()
+            Permissions(builder, it)
+        }
+    ) }
     single {
-        Permissions(
-            PermissionsBuilder(),
-            coroutineContext = singleThreadDispatcher("Permissions")
-        )
-    }
-    single { LocationStateRepoBuilder() }
-    single {
-        BluetoothBuilder().create({ _ ->
-            val permissions: Permissions = get()
-            permissions.registerAllPermissionsNotRegistered()
-            BaseScanner.Settings(permissions)
-        })
+        BluetoothBuilder(
+            permissionsBuilder = {
+                val builder = get<PermissionsBuilder>()
+                builder.registerBluetoothPermissionIfNotRegistered()
+                builder.registerLocationPermissionIfNotRegistered()
+                Permissions(builder, it)
+            }
+        ).create()
     }
     single { Beacons(get<Bluetooth>(), timeout = 1.minutes) }
 }
