@@ -94,8 +94,6 @@ dependencies {
     implement(Dependencies.Android.Material)
     implement(Dependencies.Android.MaterialComposeThemeAdapter)
 
-    implement(Dependencies.Koin.Android)
-
     implement(Dependencies.KotlinX.Serialization.Core)
     implement(Dependencies.KotlinX.Serialization.Json)
 }

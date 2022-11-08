@@ -1,0 +1,939 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017B1C42400175C00F9072A /* PermissionListViewController.swift */; };
+		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
+		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
+		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
+		2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0EF270303B3002CB856 /* ButtonViewController.swift */; };
+		2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0F127032B5B002CB856 /* ColorViewController.swift */; };
+		209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
+		209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E324C07EAD001426CD /* BluetoothViewController.swift */; };
+		209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */; };
+		209471E824C07F19001426CD /* BluetoothCharacteristicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */; };
+		209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */; };
+		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
+		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
+		20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */; };
+		20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D42469B25B00C9A63F /* InfoViewController.swift */; };
+		20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */; };
+		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
+		20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */; };
+		20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3826FF550100D14AC9 /* LabelViewController.swift */; };
+		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
+		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
+		4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */; };
+		4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */; };
+		641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */; };
+		649979D325CC638C00348419 /* SystemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649979D225CC638C00348419 /* SystemViewController.swift */; };
+		649979E725CCD37200348419 /* NetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649979E625CCD37200348419 /* NetworkViewController.swift */; };
+		7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */; };
+		74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BBBF2C57521E71982179E0 /* AppDelegate.swift */; };
+		7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74FDC8922442294AF0776058 /* LaunchScreen.storyboard */; };
+		749B42F84CA72A5D4A0F3AD9 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */; };
+		74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74C9C443CC304CB387AB324D /* Assets.xcassets */; };
+		74C9929AB26988E8CC66893D /* gradle.properties in Resources */ = {isa = PBXBuildFile; fileRef = 74F1F3223C9CF11420F72B08 /* gradle.properties */; };
+		74D656BE6B4BD50115400411 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CF99B70DA1947AA98CA3B /* DemoTests.swift */; };
+		74E6599B023623BD96737582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74F483E9C1890D693F808DDA /* Main.storyboard */; };
+		978348A7235DF586005B140B /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* PermissionViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		74798B41F78378ECDB0E4BB7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7477FD4305C126F92DB837CC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 74555136E1B2BB715E50195E;
+			remoteInfo = Demo;
+		};
+		74D5F38618D40CB8E5FC86D8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7477FD4305C126F92DB837CC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 74555136E1B2BB715E50195E;
+			remoteInfo = Demo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		74A05339C53B02B14407A5BD /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 0;
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
+		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
+		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
+		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2073D0EF270303B3002CB856 /* ButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
+		2073D0F127032B5B002CB856 /* ColorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewController.swift; sourceTree = "<group>"; };
+		209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		209471E324C07EAD001426CD /* BluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
+		209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceDetailsViewController.swift; sourceTree = "<group>"; };
+		209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothCharacteristicCell.xib; sourceTree = "<group>"; };
+		209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothDescriptorCell.xib; sourceTree = "<group>"; };
+		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
+		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
+		20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesListViewController.swift; sourceTree = "<group>"; };
+		20C7D1D42469B25B00C9A63F /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureInputViewController.swift; sourceTree = "<group>"; };
+		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
+		20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesListViewController.swift; sourceTree = "<group>"; };
+		20D8CD3826FF550100D14AC9 /* LabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
+		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
+		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
+		4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewController.swift; sourceTree = "<group>"; };
+		4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewCell.swift; sourceTree = "<group>"; };
+		641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksViewController.swift; sourceTree = "<group>"; };
+		648214DD263095A900CDAE05 /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
+		649979D225CC638C00348419 /* SystemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemViewController.swift; sourceTree = "<group>"; };
+		649979E625CCD37200348419 /* NetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewController.swift; sourceTree = "<group>"; };
+		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		741672C742FA38B5D4971C10 /* gradlew */ = {isa = PBXFileReference; lastKnownFileType = text; path = gradlew; sourceTree = "<group>"; };
+		741A9B938B05534BD1B508C6 /* settings.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = settings.gradle.kts; sourceTree = "<group>"; };
+		741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUITests.swift; sourceTree = "<group>"; };
+		741E82A1DDEE399E80A02B54 /* gradle-wrapper.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "gradle-wrapper.jar"; sourceTree = "<group>"; };
+		7428D8755D288FD7EA2E6537 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		742CCE9033CEC8C8004D624F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7433F67D6FEF093F4C827A5A /* build.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = build.gradle.kts; sourceTree = "<group>"; };
+		744CF99B70DA1947AA98CA3B /* DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTests.swift; sourceTree = "<group>"; };
+		744F12775216AF134CBAF4E9 /* build.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = build.gradle.kts; sourceTree = "<group>"; };
+		746834742E284396FD5452F4 /* DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		746E133CAEC5C7B1D516B11F /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		74A0718952D0CC604E49709B /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		74B0C3AB70AAB7878B48F6B1 /* gradle-wrapper.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = "gradle-wrapper.properties"; sourceTree = "<group>"; };
+		74BBBF2C57521E71982179E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		74BEC2BADB02749FD409313B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		74C07E8A2DB465B1CE47DC5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		74C22623993814F606777266 /* KotlinNativeFramework.kt */ = {isa = PBXFileReference; lastKnownFileType = file.kt; path = KotlinNativeFramework.kt; sourceTree = "<group>"; };
+		74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		74C9C443CC304CB387AB324D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		74E253D6EF4BB7BA4916943D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
+		74F1F3223C9CF11420F72B08 /* gradle.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = gradle.properties; sourceTree = "<group>"; };
+		978348A6235DF586005B140B /* PermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7400F8CCBEA88ECB1634EEDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		740935FBE067214171F75A8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		74B635A880CB81844D31A213 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20524A22257BEA020054B57E /* DateTimePicker */ = {
+			isa = PBXGroup;
+			children = (
+				20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */,
+			);
+			path = DateTimePicker;
+			sourceTree = "<group>";
+		};
+		205747552397C99100CDE25E /* KeyboardManager */ = {
+			isa = PBXGroup;
+			children = (
+				205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */,
+			);
+			path = KeyboardManager;
+			sourceTree = "<group>";
+		};
+		209471DF24C07DE2001426CD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		209471E224C07E61001426CD /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				209471E324C07EAD001426CD /* BluetoothViewController.swift */,
+				209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */,
+				209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */,
+				209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */,
+			);
+			path = Bluetooth;
+			sourceTree = "<group>";
+		};
+		20C7D1CD24699A5000C9A63F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		20C7D1D02469A3C100C9A63F /* FeaturesList */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */,
+			);
+			path = FeaturesList;
+			sourceTree = "<group>";
+		};
+		20C7D1D32469B24C00C9A63F /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1D42469B25B00C9A63F /* InfoViewController.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		20C7D1D6246A938A00C9A63F /* Architecture */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */,
+				20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */,
+			);
+			path = Architecture;
+			sourceTree = "<group>";
+		};
+		20D8CD3526FE8FBA00D14AC9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */,
+				20D8CD3826FF550100D14AC9 /* LabelViewController.swift */,
+				2073D0EF270303B3002CB856 /* ButtonViewController.swift */,
+				2073D0F127032B5B002CB856 /* ColorViewController.swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		4B02E502236B2206003F0B36 /* LoadingIndicator */ = {
+			isa = PBXGroup;
+			children = (
+				4B02E503236B221B003F0B36 /* LoadingViewController.swift */,
+			);
+			path = LoadingIndicator;
+			sourceTree = "<group>";
+		};
+		4B54CB1E2369DA2B00B69B2D /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		4B54CB1F2369DA4E00B69B2D /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				4B54CB202369DA6600B69B2D /* AlertsViewController.swift */,
+			);
+			path = Alerts;
+			sourceTree = "<group>";
+		};
+		4BC0CBDC269F1D25000512A9 /* Beacons */ = {
+			isa = PBXGroup;
+			children = (
+				4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */,
+				4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */,
+			);
+			path = Beacons;
+			sourceTree = "<group>";
+		};
+		641CC0D625CAC0A1001E1CD1 /* Links */ = {
+			isa = PBXGroup;
+			children = (
+				641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */,
+			);
+			path = Links;
+			sourceTree = "<group>";
+		};
+		649979D025CC636F00348419 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				649979D125CC637600348419 /* Network */,
+				649979D225CC638C00348419 /* SystemViewController.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		649979D125CC637600348419 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				649979E625CCD37200348419 /* NetworkViewController.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		743414FDF97167BD81A5293E /* wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				74B0C3AB70AAB7878B48F6B1 /* gradle-wrapper.properties */,
+				741E82A1DDEE399E80A02B54 /* gradle-wrapper.jar */,
+			);
+			path = wrapper;
+			sourceTree = "<group>";
+		};
+		743EA5EA3B99CA8E01574460 /* KotlinNativeFrameworkMain */ = {
+			isa = PBXGroup;
+			children = (
+				7470228E28317355EFB70D41 /* kotlin */,
+			);
+			path = KotlinNativeFrameworkMain;
+			sourceTree = "<group>";
+		};
+		745520950D85E4696686141D = {
+			isa = PBXGroup;
+			children = (
+				205AF6542488F017001BD99E /* Localizable.strings */,
+				747A549D9FF0D1B49E65E190 /* Products */,
+				746CAD9D15ECB24F4ED84E11 /* Demo */,
+				7492DE0914511F3DC96A30A8 /* DemoTests */,
+				74D6698E6E24A4F93E6B289A /* DemoUITests */,
+				747F646D72854D37D5686909 /* KotlinNativeFramework */,
+				74588EBE65D1E22D05BFD2A5 /* Supporting Files */,
+			);
+			sourceTree = "<group>";
+		};
+		745778F955B940F5CB818364 /* gradle */ = {
+			isa = PBXGroup;
+			children = (
+				743414FDF97167BD81A5293E /* wrapper */,
+			);
+			path = gradle;
+			sourceTree = "<group>";
+		};
+		74588EBE65D1E22D05BFD2A5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7433F67D6FEF093F4C827A5A /* build.gradle.kts */,
+				741672C742FA38B5D4971C10 /* gradlew */,
+				745778F955B940F5CB818364 /* gradle */,
+				741A9B938B05534BD1B508C6 /* settings.gradle.kts */,
+				74F1F3223C9CF11420F72B08 /* gradle.properties */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		745DD28172357B2F37C397E8 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				743EA5EA3B99CA8E01574460 /* KotlinNativeFrameworkMain */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				20D8CD3526FE8FBA00D14AC9 /* Resources */,
+				648214DD263095A900CDAE05 /* Demo.entitlements */,
+				641CC0D625CAC0A1001E1CD1 /* Links */,
+				649979D025CC636F00348419 /* System */,
+				20524A22257BEA020054B57E /* DateTimePicker */,
+				4B54CB1F2369DA4E00B69B2D /* Alerts */,
+				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
+				20C7D1D6246A938A00C9A63F /* Architecture */,
+				74C9C443CC304CB387AB324D /* Assets.xcassets */,
+				209471E224C07E61001426CD /* Bluetooth */,
+				20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */,
+				4BC0CBDC269F1D25000512A9 /* Beacons */,
+				20C7D1D02469A3C100C9A63F /* FeaturesList */,
+				20C7D1CD24699A5000C9A63F /* Helpers */,
+				20C7D1D32469B24C00C9A63F /* Info */,
+				74BEC2BADB02749FD409313B /* Info.plist */,
+				205747552397C99100CDE25E /* KeyboardManager */,
+				74FDC8922442294AF0776058 /* LaunchScreen.storyboard */,
+				4B02E502236B2206003F0B36 /* LoadingIndicator */,
+				4B54CB1E2369DA2B00B69B2D /* Location */,
+				74F483E9C1890D693F808DDA /* Main.storyboard */,
+				978348A5235DF51D005B140B /* Permissions */,
+				209471DF24C07DE2001426CD /* View */,
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
+		7470228E28317355EFB70D41 /* kotlin */ = {
+			isa = PBXGroup;
+			children = (
+				74C22623993814F606777266 /* KotlinNativeFramework.kt */,
+			);
+			path = kotlin;
+			sourceTree = "<group>";
+		};
+		747A549D9FF0D1B49E65E190 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				746E133CAEC5C7B1D516B11F /* Demo.app */,
+				746834742E284396FD5452F4 /* DemoTests.xctest */,
+				74A0718952D0CC604E49709B /* DemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		747F646D72854D37D5686909 /* KotlinNativeFramework */ = {
+			isa = PBXGroup;
+			children = (
+				74E253D6EF4BB7BA4916943D /* Info.plist */,
+				74ED9583BC95062A511A899E /* Supporting Files */,
+				745DD28172357B2F37C397E8 /* src */,
+			);
+			path = KotlinNativeFramework;
+			sourceTree = "<group>";
+		};
+		7492DE0914511F3DC96A30A8 /* DemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				7428D8755D288FD7EA2E6537 /* Info.plist */,
+				744CF99B70DA1947AA98CA3B /* DemoTests.swift */,
+			);
+			path = DemoTests;
+			sourceTree = "<group>";
+		};
+		74D6698E6E24A4F93E6B289A /* DemoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				740C363F8973304E72F429BC /* Info.plist */,
+				741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */,
+			);
+			path = DemoUITests;
+			sourceTree = "<group>";
+		};
+		74ED9583BC95062A511A899E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				744F12775216AF134CBAF4E9 /* build.gradle.kts */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		978348A5235DF51D005B140B /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				978348A6235DF586005B140B /* PermissionViewController.swift */,
+				2017B1C42400175C00F9072A /* PermissionListViewController.swift */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		74074B293DEEEE5CB9495BC2 /* DemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 740AC894114C7B2501D2F458 /* Build configuration list for PBXNativeTarget "DemoTests" */;
+			buildPhases = (
+				744899861837358C3FC4D6EC /* Sources */,
+				740935FBE067214171F75A8D /* Frameworks */,
+				746B879C3C63B46AE1237085 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				744683563AC18D9D78E89D91 /* PBXTargetDependency */,
+			);
+			name = DemoTests;
+			productName = DemoTests;
+			productReference = 746834742E284396FD5452F4 /* DemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		74555136E1B2BB715E50195E /* Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74C754F7F747073B076C3A91 /* Build configuration list for PBXNativeTarget "Demo" */;
+			buildPhases = (
+				95D0860F27D2540B00838E57 /* Compile Kotlin/Native */,
+				744156D82DB12C1F9CC3C68F /* Sources */,
+				74B635A880CB81844D31A213 /* Frameworks */,
+				746C535FD7586B544C684D34 /* Resources */,
+				74A05339C53B02B14407A5BD /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Demo;
+			productName = Demo;
+			productReference = 746E133CAEC5C7B1D516B11F /* Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		74F1ACA722488B68F78605D9 /* DemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7493E4639A804158022EC4C4 /* Build configuration list for PBXNativeTarget "DemoUITests" */;
+			buildPhases = (
+				74EE94DACA1A8475269C9E82 /* Sources */,
+				7400F8CCBEA88ECB1634EEDE /* Frameworks */,
+				7471171052DD797BF549D296 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				749B2B4D04F5064568547D5D /* PBXTargetDependency */,
+			);
+			name = DemoUITests;
+			productName = DemoUITests;
+			productReference = 74A0718952D0CC604E49709B /* DemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7477FD4305C126F92DB837CC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Splendo Consulting B.V.";
+				TargetAttributes = {
+					74555136E1B2BB715E50195E = {
+						DevelopmentTeam = 2732HQPVJP;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 742F13205C35E0F5E5498808 /* Build configuration list for PBXProject "Demo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				en,
+				Base,
+			);
+			mainGroup = 745520950D85E4696686141D;
+			productRefGroup = 747A549D9FF0D1B49E65E190 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				74555136E1B2BB715E50195E /* Demo */,
+				74074B293DEEEE5CB9495BC2 /* DemoTests */,
+				74F1ACA722488B68F78605D9 /* DemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		746B879C3C63B46AE1237085 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		746C535FD7586B544C684D34 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				205AF6562488F017001BD99E /* Localizable.strings in Resources */,
+				209471E824C07F19001426CD /* BluetoothCharacteristicCell.xib in Resources */,
+				74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */,
+				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
+				74E6599B023623BD96737582 /* Main.storyboard in Resources */,
+				209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */,
+				74C9929AB26988E8CC66893D /* gradle.properties in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7471171052DD797BF549D296 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		95D0860F27D2540B00838E57 /* Compile Kotlin/Native */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin/Native";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/Supporting Files\"\n./gradlew :KotlinNativeFramework:embedAndSignAppleFrameworkForXcode\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		744156D82DB12C1F9CC3C68F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */,
+				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
+				20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */,
+				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
+				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
+				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
+				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
+				2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */,
+				20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */,
+				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
+				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
+				649979E725CCD37200348419 /* NetworkViewController.swift in Sources */,
+				20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */,
+				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
+				20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */,
+				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
+				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
+				649979D325CC638C00348419 /* SystemViewController.swift in Sources */,
+				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
+				20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */,
+				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
+				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
+				209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */,
+				209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */,
+				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
+				2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */,
+				20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		744899861837358C3FC4D6EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74D656BE6B4BD50115400411 /* DemoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		74EE94DACA1A8475269C9E82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				749B42F84CA72A5D4A0F3AD9 /* DemoUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		744683563AC18D9D78E89D91 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 74555136E1B2BB715E50195E /* Demo */;
+			targetProxy = 74D5F38618D40CB8E5FC86D8 /* PBXContainerItemProxy */;
+		};
+		749B2B4D04F5064568547D5D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 74555136E1B2BB715E50195E /* Demo */;
+			targetProxy = 74798B41F78378ECDB0E4BB7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		205AF6542488F017001BD99E /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				205AF6552488F017001BD99E /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		74F483E9C1890D693F808DDA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				74C07E8A2DB465B1CE47DC5E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		74FDC8922442294AF0776058 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				742CCE9033CEC8C8004D624F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7450045FC3F0FAB4E9E0751D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		74B72DFF132E49F15B2DF935 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Demo.app/Demo";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				INFOPLIST_FILE = DemoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.DemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		74BDCF7AC0CDEAF092DB5F7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 2732HQPVJP;
+				FRAMEWORK_SEARCH_PATHS = (
+					$BUILT_PRODUCTS_DIR,
+					"$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+				);
+				INFOPLIST_FILE = Demo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		74C4C9BEEE5FE949D448C58D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				INFOPLIST_FILE = DemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.DemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Demo;
+			};
+			name = Debug;
+		};
+		74DE35733E2CD78059A3003A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		74E9BA46A80E6C492CC81D95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Demo.app/Demo";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				INFOPLIST_FILE = DemoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.DemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
+		74F864CC21F489CA494FD856 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				INFOPLIST_FILE = DemoUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.DemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Demo;
+			};
+			name = Release;
+		};
+		74FB1F493C4D48DDF9E1C969 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Demo/Demo.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 2732HQPVJP;
+				FRAMEWORK_SEARCH_PATHS = (
+					$BUILT_PRODUCTS_DIR,
+					"$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+				);
+				INFOPLIST_FILE = Demo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		740AC894114C7B2501D2F458 /* Build configuration list for PBXNativeTarget "DemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74B72DFF132E49F15B2DF935 /* Debug */,
+				74E9BA46A80E6C492CC81D95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		742F13205C35E0F5E5498808 /* Build configuration list for PBXProject "Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74DE35733E2CD78059A3003A /* Debug */,
+				7450045FC3F0FAB4E9E0751D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7493E4639A804158022EC4C4 /* Build configuration list for PBXNativeTarget "DemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74C4C9BEEE5FE949D448C58D /* Debug */,
+				74F864CC21F489CA494FD856 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		74C754F7F747073B076C3A91 /* Build configuration list for PBXNativeTarget "Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74BDCF7AC0CDEAF092DB5F7F /* Debug */,
+				74FB1F493C4D48DDF9E1C969 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7477FD4305C126F92DB837CC /* Project object */;
+}

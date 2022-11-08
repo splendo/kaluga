@@ -1,0 +1,102 @@
+"app_name" = "Kaluga Example";
+
+"feature_alerts" = "Alerts";
+"feature_architecture" = "Architecture";
+"feature_date_time_picker"= "Date Time Picker";
+"feature_bluetooth" = "Bluetooth";
+"feature_hud" = "Loading Indicator";
+"feature_keyboard" = "Keyboard";
+"feature_location" = "Location";
+"feature_permissions" = "Permissions";
+"feature_links" = "Links";
+"feature_beacons" = "Beacons";
+"feature_resources" = "Resources";
+"feature_resources_color" = "Color";
+"feature_resources_button" = "Button";
+"feature_resources_label" = "Label";
+
+"show_alert" = "Show Alert";
+"dismissible_alert" = "Dismissible Alert";
+"alert_list" = "Show Alert List";
+"show_loading_indicator_system" = "Show Loading Indicator (System)";
+"show_loading_indicator_custom" = "Show Loading Indicator (Custom)";
+
+"select_time"="Select Time";
+"select_date"="Select Date";
+"current_time"="Current Time";
+"confirm_selection"="Select";
+"cancel_selection"="Cancel";
+
+"permissions_list" = "Permissions List";
+"permissions_bluetooth" = "Bluetooth Demo";
+"permissions_calendar" = "Calendar Demo";
+"permissions_camera" = "Camera Demo";
+"permissions_contacts" = "Contacts Demo";
+"permissions_location" = "Location Demo";
+"permissions_microphone" = "Microphone Demo";
+"permissions_notifications" = "Notifications Demo";
+"permissions_storage" = "Storage Demo";
+
+"permission_unknown" = "The status of the permission is not known yet";
+"permission_allowed" = "The permission has been granted";
+"permission_requestable" = "The permission can be requested";
+"permission_denied" = "The permission has been denied";
+
+"permission_request" = "Request Permission";
+"permission_request_success" = "Permission requested successfully";
+"permission_request_failed" = "Permission request failed";
+
+"architecture_details" = "Show Details";
+"architecture_details_inverse" = "Inverse Input";
+"keyboard_manager" = "Keyboard";
+"show_keyboard" = "Show Keyboard";
+"hide_keyboard" = "Hide Keyboard";
+
+"location_background" = "Kaluga Background";
+"location_enable_background" = "Enable Background";
+"location_disable_background" = "Disable Background";
+
+"bluetooth_start_scanning" = "Start Scanning";
+"bluetooth_stop_scanning" = "Stop Scanning";
+"bluetooth_no_name" = "Unnamed Bluetooth Device";
+
+"rssi" = "%d dBm";
+"txPower" = "%s dBm";
+"distance" = "%.2f m";
+
+"bluetooth_connect" = "Connect";
+"bluetooth_disconnect" = "Disconnect";
+
+"bluetooth_connected" = "Connected";
+"bluetooth_connecting" = "Connecting";
+"bluetooth_disconnected" = "Disconnected";
+"bluetooth_disconneting" = "Disconnecting";
+"bluetooth_reconnecting" = "Reconnecting";
+"bluetooth_discovering" = "Discovering";
+
+"bluetooth_service_uuids" = "Service UUIDs: %s";
+"bluetooth_service_data" = "Service Data: %s";
+"bluetooth_manufacturer_id" = "Manufacturer Id: %d";
+"bluetooth_manufacturer_data" = "Manufacturer Data: %s";
+
+"bluetooth_more" = "More";
+
+"bluetooth_services_header" = "Services";
+"bluetooth_service" = "Service";
+"bluetooth_characteristics" = "Characteristics";
+"bluetooth_descriptors" = "Descriptors";
+"bluetooth_permissions_read" = "Read";
+"bluetooth_permissions_write" = "Write";
+"bluetooth_permissions_read_encrypted" = "Read Encrypted";
+"bluetooth_permissions_write_encrypted" = "Write Encrypted";
+
+"beacons_start_monitoring" = "Start Monitoring";
+"beacons_stop_monitoring" = "Stop Monitoring";
+
+"browser_button_text" = "Open browser";
+"links_instructions" = "Tapping \"Open browser\" will redirect you in a webpage.
+There you can find a button that if tapped will bring you back to the app passing a query.
+That query will be deserialized into a object and shown in an alert.";
+
+"feature_system" = "System";
+"network_feature" = "Network";
