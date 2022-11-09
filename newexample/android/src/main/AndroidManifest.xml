@@ -107,6 +107,7 @@
             android:label="@string/feature_resources_button"/>
 
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
+        <activity android:name=".system.NetworkActivity" android:label="@string/network_feature"/>
 
 
         <service android:name=".location.LocationBackgroundService"/>

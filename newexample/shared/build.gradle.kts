@@ -21,11 +21,12 @@ val modules = listOf(
     "logging" to false,
     "resources" to true,
     "review" to true,
-    "system" to false,
-    "permissions" to false
+    "system" to true,
+    "permissions" to true
 )
 
 commonComponent {
+    logger.lifecycle("Configure framework")
     baseName = "KalugaExampleShared"
     isStatic = false
     transitiveExport = true

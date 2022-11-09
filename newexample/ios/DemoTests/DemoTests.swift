@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 import XCTest
 @testable import Demo
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class DemoTests: XCTestCase {
 

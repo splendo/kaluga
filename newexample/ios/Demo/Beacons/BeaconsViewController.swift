@@ -15,7 +15,7 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class BeaconsViewController: UICollectionViewController {
 
@@ -35,11 +35,7 @@ class BeaconsViewController: UICollectionViewController {
         return flowLayout
     }()
 
-    private lazy var viewModel = KNArchitectureFramework()
-        .createBeaconsListViewModel(
-            parent: self,
-            service: KNBeaconsFramework().service
-        )
+    private lazy var viewModel = BeaconsListViewModel()
 
     deinit {
         lifecycleManager.unbind()
@@ -54,7 +50,7 @@ class BeaconsViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
 
             return [

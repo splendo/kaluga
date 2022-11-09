@@ -26,6 +26,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
@@ -40,21 +41,15 @@ data class Repository(
     val type: String
 )
 
-class BrowserSpec : NavigationBundleSpec<BrowserSpecRow>(setOf(BrowserSpecRow.UrlSpecRow))
-
-sealed class BrowserNavigationActions<B : NavigationBundleSpecRow<*>>(bundle: NavigationBundle<B>?) : NavigationAction<B>(bundle) {
-    class OpenWebView(bundle: NavigationBundle<BrowserSpecRow>?) : BrowserNavigationActions<BrowserSpecRow>(bundle)
-}
-
-sealed class BrowserSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSpecType.StringType) {
-    object UrlSpecRow : BrowserSpecRow()
+sealed class BrowserNavigationActions<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
+    class OpenWebView(url: String) : BrowserNavigationActions<String>(url, NavigationBundleSpecType.StringType)
 }
 
 class LinksViewModel(
     linkRepoBuilder: LinksBuilder,
     val builder: AlertPresenter.Builder,
-    navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
-) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
+    navigator: Navigator<BrowserNavigationActions<*>>
+) : NavigatingViewModel<BrowserNavigationActions<*>>(navigator) {
 
     val browserButtonText = observableOf("browser_button_text".localized())
     val linksInstructions = observableOf("links_instructions".localized())
@@ -77,15 +72,7 @@ class LinksViewModel(
         val result = linksRepo.validateLink("https://kaluga-links.web.app")
         if (result != null) {
             navigator.navigate(
-                BrowserNavigationActions.OpenWebView(
-                    BrowserSpec().toBundle { row ->
-                        when (row) {
-                            is BrowserSpecRow.UrlSpecRow -> row.convertValue(
-                                result
-                            )
-                        }
-                    }
-                )
+                BrowserNavigationActions.OpenWebView(result)
             )
         } else {
             showAlert(

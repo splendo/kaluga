@@ -16,51 +16,61 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class PermissionListViewController : UITableViewController {
-    
-    private lazy var viewModel: PermissionsListViewModel = KNArchitectureFramework().createPermissionListViewModel(parent: self) { (permission) -> UIViewController in
-        return PermissionViewController.create(permission: permission)
+
+    private lazy var navigator: ViewControllerNavigator<PermissionsListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
+        NavigationSpec.Push(animated: true) {
+            guard let permission = action.value?.permission else {
+                return UIViewController()
+            }
+
+            return PermissionViewController.create(permission: permission)
+        }
     }
+    private lazy var viewModel: PermissionsListViewModel = PermissionsListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     private var permissions = [PermissionView]()
-    private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
-    
+    private var onSelected: ((Int) -> Void)? = nil
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
-            return [viewModel.observePermissions { (permissionViews: [PermissionView], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
-                self?.permissions = permissionViews
-                self?.onSelected = onSelected
-                self?.tableView.reloadData()
-            }]
+            return [
+                viewModel.permissions.observeInitialized { next in
+                    let permissions = next?.compactMap { $0 as? PermissionView } ?? []
+                    self?.permissions = permissions
+                    self?.onSelected = { (index: Int) in viewModel.onPermissionPressed(permissionView: permissions[index]) }
+                    self?.tableView.reloadData()
+                }
+            ]
         }
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return permissions.count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: PermissionsListCell.Const.identifier, for: indexPath) as! PermissionsListCell
         cell.label.text = permissions[indexPath.row].title
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(KotlinInt.init(int: Int32(indexPath.row)))
+        let _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

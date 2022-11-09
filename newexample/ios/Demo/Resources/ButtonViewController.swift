@@ -15,11 +15,11 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class ButtonViewController : UITableViewController {
     
-    private lazy var viewModel: ButtonViewModel = KNArchitectureFramework().createButtonViewModel(parent: self)
+    private lazy var viewModel: ButtonViewModel = ButtonViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider(), alertPresenterBuilder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
 
     private var buttons = [KalugaButton]()
@@ -31,7 +31,7 @@ class ButtonViewController : UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsSelection = false
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             return [
                 viewModel.buttons.observe { labels in

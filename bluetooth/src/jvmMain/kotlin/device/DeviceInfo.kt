@@ -15,14 +15,19 @@
 
  */
 
+@file:JvmName("DeviceInfoJVM")
+
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.randomUUIDString
+import com.splendo.kaluga.bluetooth.unsafeUUIDFrom
 
 actual typealias Identifier = UUID
 
 actual fun randomIdentifier() = Identifier(randomUUIDString())
+
+actual fun identifierFromString(stringValue: String): Identifier? = unsafeUUIDFrom(stringValue)
 
 actual val Identifier.stringValue: String
     get() = uuidString

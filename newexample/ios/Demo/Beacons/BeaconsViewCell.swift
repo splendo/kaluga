@@ -15,7 +15,7 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class BeaconsViewCell: UICollectionViewCell {
 

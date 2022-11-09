@@ -17,21 +17,21 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class AlertsViewController: UITableViewController {
 
     private lazy var viewModel = AlertViewModel(builder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { return [] }
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

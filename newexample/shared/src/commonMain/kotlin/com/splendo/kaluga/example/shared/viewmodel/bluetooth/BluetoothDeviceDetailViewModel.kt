@@ -17,17 +17,18 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
+import com.splendo.kaluga.bluetooth.device.SerializableIdentifier
+import com.splendo.kaluga.bluetooth.device.serializable
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.distance
 import com.splendo.kaluga.bluetooth.get
@@ -40,17 +41,14 @@ import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class DeviceDetailsSpec : NavigationBundleSpec<DeviceDetailsSpecRow<*>>(setOf(DeviceDetailsSpecRow.UUIDRow))
-
-sealed class DeviceDetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
-    object UUIDRow : DeviceDetailsSpecRow<String>(NavigationBundleSpecType.StringType)
-}
+class DeviceDetails(value: Identifier) : SingleValueNavigationAction<SerializableIdentifier>(value.serializable, NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()))
 
 class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseLifecycleViewModel(), KoinComponent {
 

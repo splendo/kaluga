@@ -17,6 +17,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 */
 
 import UIKit
+import KalugaExampleShared
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        DependencyInjectionKt.doInitKoin(customModules: [])
         return true
     }
     
@@ -43,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let vc = storyboard.instantiateViewController(withIdentifier: "LinksViewController") as! LinksViewController
         self.window?.rootViewController = vc
         
-        vc.handleIncomingLink(url: stringUrl)
+//        vc.handleIncomingLink(url: stringUrl)
         return true
     }
 

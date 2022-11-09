@@ -19,13 +19,42 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.math.pow
 
 expect class Identifier
 
 expect fun randomIdentifier(): Identifier
 
+expect fun identifierFromString(stringValue: String): Identifier?
+
 expect val Identifier.stringValue: String
+
+@Serializable(with = IdentifierSerializer::class)
+data class SerializableIdentifier(val identifier: Identifier)
+
+val Identifier.serializable get() = SerializableIdentifier(this)
+
+open class IdentifierSerializer :
+    KSerializer<SerializableIdentifier> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IdentifierString", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: SerializableIdentifier) {
+        val string = value.identifier.stringValue
+        encoder.encodeString(string)
+    }
+
+    override fun deserialize(decoder: Decoder): SerializableIdentifier {
+        val string = decoder.decodeString()
+        return SerializableIdentifier(identifierFromString(string)!!)
+    }
+}
 
 expect interface DeviceWrapper {
     val name: String?

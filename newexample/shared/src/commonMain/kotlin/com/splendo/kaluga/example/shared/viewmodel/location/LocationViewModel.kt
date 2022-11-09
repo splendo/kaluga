@@ -19,19 +19,31 @@ package com.splendo.kaluga.example.shared.viewmodel.location
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.location
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class LocationViewModel(permission: LocationPermission, repoBuilder: LocationStateRepoBuilder) : BaseLifecycleViewModel() {
+private val locationDispatcher = singleThreadDispatcher("LocationDispatcher")
 
-    private val locationStateRepo = repoBuilder.create(permission)
+class LocationViewModel(permission: LocationPermission) : BaseLifecycleViewModel(), KoinComponent {
+
+    private val logger: Logger by inject()
+    private val repoBuilder: LocationStateRepoBuilder by inject()
+    private val locationStateRepo = repoBuilder.create(
+        permission,
+        { permission, permissions -> BaseLocationManager.Settings(permission, permissions, logger = logger) },
+        coroutineScope.coroutineContext + locationDispatcher
+    )
 
     private val _location = MutableStateFlow("")
     val location = _location.toInitializedObservable(coroutineScope)

@@ -15,11 +15,11 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class LabelViewController : UITableViewController {
-    
-    private lazy var viewModel: LabelViewModel = KNArchitectureFramework().createLabelViewModel()
+
+    private var viewModel: LabelViewModel = LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider())
     private var lifecycleManager: LifecycleManager!
 
     private var labels = [KalugaLabel]()
@@ -32,11 +32,11 @@ class LabelViewController : UITableViewController {
         super.viewDidLoad()
         
         tableView.allowsSelection = false
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             return [
                 viewModel.labels.observe { labels in
-                    self?.labels = labels?.compactMap { $0 as?  KalugaLabel } ?? []
+                    self?.labels = labels?.compactMap { $0 as? KalugaLabel } ?? []
                     self?.tableView.reloadData()
                 }
             ]

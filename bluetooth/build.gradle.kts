@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
@@ -20,6 +21,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
+                expose(Dependencies.KotlinX.Serialization.Core)
+                expose(Dependencies.KotlinX.Serialization.Json)
             }
         }
         commonTest {

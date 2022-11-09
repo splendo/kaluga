@@ -22,6 +22,7 @@ import com.splendo.kaluga.architecture.observable.UninitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
@@ -30,10 +31,16 @@ import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class PermissionViewModel(permissionsBuilder: PermissionsBuilder, private val permission: Permission) : BaseLifecycleViewModel() {
+private val permissionsDispatcher = singleThreadDispatcher("PermissionsDispatcher")
 
-    private val permissions = Permissions(permissionsBuilder)
+class PermissionViewModel(private val permission: Permission) : BaseLifecycleViewModel(), KoinComponent {
+
+    private val permissionsBuilder: PermissionsBuilder by inject()
+
+    private val permissions = Permissions(permissionsBuilder, coroutineScope.coroutineContext + permissionsDispatcher)
     val permissionStateMessage: UninitializedObservable<String> = permissions[permission]
         .map { permissionState ->
             when (permissionState) {

@@ -17,20 +17,26 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.permissions
 
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.toBundle
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.permissions.base.BasePermissionManager
-import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.calendar.CalendarPermission
+import com.splendo.kaluga.permissions.camera.CameraPermission
+import com.splendo.kaluga.permissions.contacts.ContactsPermission
+import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.microphone.MicrophonePermission
+import com.splendo.kaluga.permissions.notifications.NotificationOptions
+import com.splendo.kaluga.permissions.notifications.NotificationsPermission
 import com.splendo.kaluga.permissions.registerAllPermissionsNotRegistered
+import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -46,13 +52,23 @@ enum class PermissionView(val title: String) {
     Location("permissions_location".localized()),
     Microphone("permissions_microphone".localized()),
     Notifications("permissions_notifications".localized()),
-    Storage("permissions_storage".localized())
+    Storage("permissions_storage".localized());
+
+    val permission: Permission get() = when (this) {
+        Bluetooth -> BluetoothPermission
+        Calendar -> CalendarPermission(allowWrite = true)
+        Camera -> CameraPermission
+        Contacts -> ContactsPermission(allowWrite = true)
+        Location -> LocationPermission(background = true, precise = true)
+        Microphone -> MicrophonePermission
+        Notifications -> NotificationsPermission(notificationOptions)
+        Storage -> StoragePermission(allowWrite = true)
+    }
 }
 
-object PermissionNavigationBundleSpecRow : NavigationBundleSpecRow<PermissionView>(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))
-class PermissionNavigationBundleSpec : NavigationBundleSpec<PermissionNavigationBundleSpecRow>(setOf(PermissionNavigationBundleSpecRow))
+expect val notificationOptions: NotificationOptions
 
-class PermissionsListNavigationAction(permissionView: PermissionView) : NavigationAction<PermissionNavigationBundleSpecRow>(PermissionNavigationBundleSpec().toBundle { spec -> spec.convertValue(permissionView) })
+class PermissionsListNavigationAction(permissionView: PermissionView) : SingleValueNavigationAction<PermissionView>(permissionView, NavigationBundleSpecType.SerializedType(PermissionView.serializer()))
 
 class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAction>) : NavigatingViewModel<PermissionsListNavigationAction>(navigator), KoinComponent {
 

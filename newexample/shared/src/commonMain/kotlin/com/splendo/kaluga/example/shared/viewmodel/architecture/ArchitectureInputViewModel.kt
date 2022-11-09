@@ -37,7 +37,7 @@ class InputNavigation(inputDetails: InputDetails) : SingleValueNavigationAction<
     NavigationBundleSpecType.SerializedType(InputDetails.serializer())
 )
 
-class ArchitectureInputViewModel(navigator: Navigator<SingleValueNavigationAction<InputDetails>>) : NavigatingViewModel<SingleValueNavigationAction<InputDetails>>(navigator) {
+class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : NavigatingViewModel<InputNavigation>(navigator) {
 
     val nameHeader = observableOf("Enter your Name")
     val numberHeader = observableOf("Enter a Number")

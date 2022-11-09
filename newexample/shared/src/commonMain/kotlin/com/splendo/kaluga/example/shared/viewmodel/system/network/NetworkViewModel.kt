@@ -19,12 +19,11 @@ package com.splendo.kaluga.example.shared.viewmodel.system.network
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.system.network.Network
+import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NetworkViewModel(
@@ -42,19 +41,19 @@ class NetworkViewModel(
         scope.launch {
             networkRepo.network().collect {
                 when (it) {
-                    is Network.Unknown.WithoutLastNetwork ->
+                    is NetworkConnectionType.Unknown.WithoutLastNetwork ->
                         _networkState.value =
                             "Network's state is Unknown and without the last available connection."
-                    is Network.Unknown.WithLastNetwork ->
+                    is NetworkConnectionType.Unknown.WithLastNetwork ->
                         _networkState.value =
-                            "Network's state is Unknown and with last known connection as ${it.lastKnownNetwork}."
-                    is Network.Known.Cellular ->
+                            "Network's state is Unknown and with last known connection as ${it.lastKnown}."
+                    is NetworkConnectionType.Known.Cellular ->
                         _networkState.value =
                             "Network's state is Available through Cellular."
-                    is Network.Known.Wifi ->
+                    is NetworkConnectionType.Known.Wifi ->
                         _networkState.value =
                             "Network's state is Available through WIFI."
-                    is Network.Known.Absent ->
+                    is NetworkConnectionType.Known.Absent ->
                         _networkState.value =
                             "Network's state is Absent."
                 }

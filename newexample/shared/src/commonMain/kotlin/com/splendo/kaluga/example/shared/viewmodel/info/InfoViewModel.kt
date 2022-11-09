@@ -17,43 +17,25 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.info
 
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.toBundle
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.review.ReviewManager
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
-class DialogSpec : NavigationBundleSpec<DialogSpecRow>(setOf(DialogSpecRow.TitleRow, DialogSpecRow.MessageRow))
+@Serializable
+data class DialogSpec(val title: String, val message: String)
+@Serializable
+data class MailSpec(val to: List<String>, val subject: String)
 
-sealed class DialogSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSpecType.StringType) {
-    object TitleRow : DialogSpecRow()
-    object MessageRow : DialogSpecRow()
-}
+sealed class InfoNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
 
-class LinkSpec : NavigationBundleSpec<LinkSpecRow>(setOf(LinkSpecRow.LinkRow))
-
-sealed class LinkSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSpecType.StringType) {
-    object LinkRow : LinkSpecRow()
-}
-
-class MailSpec : NavigationBundleSpec<MailSpecRow<*>>(setOf(MailSpecRow.ToRow, MailSpecRow.SubjectRow))
-
-sealed class MailSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
-    object ToRow : MailSpecRow<List<String>>(NavigationBundleSpecType.StringArrayType)
-    object SubjectRow : MailSpecRow<String>(NavigationBundleSpecType.StringType)
-}
-
-sealed class InfoNavigation<B : NavigationBundleSpecRow<*>>(bundle: NavigationBundle<B>) : NavigationAction<B>(bundle) {
-
-    class Dialog(bundle: NavigationBundle<DialogSpecRow>) : InfoNavigation<DialogSpecRow>(bundle)
-    class Link(bundle: NavigationBundle<LinkSpecRow>) : InfoNavigation<LinkSpecRow>(bundle)
-    class Mail(bundle: NavigationBundle<MailSpecRow<*>>) : InfoNavigation<MailSpecRow<*>>(bundle)
+    class Dialog(title: String, message: String) : InfoNavigation<DialogSpec>(DialogSpec(title, message), NavigationBundleSpecType.SerializedType(DialogSpec.serializer()))
+    class Link(link: String) : InfoNavigation<String>(link, NavigationBundleSpecType.StringType)
+    class Mail(to: List<String>, subject: String) : InfoNavigation<MailSpec>(MailSpec(to, subject), NavigationBundleSpecType.SerializedType(MailSpec.serializer()))
 }
 
 class InfoViewModel(
@@ -74,36 +56,10 @@ class InfoViewModel(
 
     fun onButtonPressed(button: Button) {
         when (button) {
-            is Button.About -> InfoNavigation.Dialog(
-                DialogSpec().toBundle { row ->
-                    when (row) {
-                        is DialogSpecRow.TitleRow -> row.convertValue("About Us")
-                        is DialogSpecRow.MessageRow -> row.convertValue("Kaluga is developed by Splendo Consulting BV")
-                    }
-                }
-            )
-            is Button.Website -> InfoNavigation.Link(
-                LinkSpec().toBundle { row ->
-                    when (row) {
-                        is LinkSpecRow.LinkRow -> row.convertValue("https://kaluga.splendo.com")
-                    }
-                }
-            )
-            is Button.GitHub -> InfoNavigation.Link(
-                LinkSpec().toBundle { row ->
-                    when (row) {
-                        is LinkSpecRow.LinkRow -> row.convertValue("https://github.com/splendo/kaluga")
-                    }
-                }
-            )
-            is Button.Mail -> InfoNavigation.Mail(
-                MailSpec().toBundle { row ->
-                    when (row) {
-                        is MailSpecRow.ToRow -> row.convertValue(listOf("info@splendo.com"))
-                        is MailSpecRow.SubjectRow -> row.convertValue("Question about Kaluga")
-                    }
-                }
-            )
+            is Button.About -> InfoNavigation.Dialog("About Us", "Kaluga is developed by Splendo Consulting BV")
+            is Button.Website -> InfoNavigation.Link("https://kaluga.splendo.com")
+            is Button.GitHub -> InfoNavigation.Link("https://github.com/splendo/kaluga")
+            is Button.Mail -> InfoNavigation.Mail(listOf("info@splendo.com"), ("Question about Kaluga"))
             is Button.Review -> {
                 coroutineScope.launch {
                     reviewManager.attemptToRequestReview()

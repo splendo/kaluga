@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
+class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator) {
 
     enum class ConnectButtonState {
         Connect,
@@ -101,16 +101,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
         device.disconnect()
     }
 
-    fun onMorePressed() =
-        navigator.navigate(
-            BluetoothListNavigation(
-                DeviceDetailsSpec().toBundle { specRow ->
-                    when (specRow) {
-                        is DeviceDetailsSpecRow.UUIDRow -> specRow.convertValue(identifier.stringValue)
-                    }
-                }
-            )
-        )
+    fun onMorePressed() = navigator.navigate(DeviceDetails(identifier))
 
     private fun parseServiceUUIDs(uuids: List<UUID>): String {
         val uuidString = uuids.fold("") { result, next ->

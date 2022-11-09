@@ -17,24 +17,19 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class BluetoothListNavigation(bundle: NavigationBundle<DeviceDetailsSpecRow<*>>) : NavigationAction<DeviceDetailsSpecRow<*>>(bundle)
-
-class BluetoothListViewModel(navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator), KoinComponent {
+class BluetoothListViewModel(navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator), KoinComponent {
 
     private val bluetooth: Bluetooth by inject()
     private val _isScanning = MutableStateFlow(false)

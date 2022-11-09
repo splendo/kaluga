@@ -28,10 +28,8 @@ import androidx.core.app.NotificationManagerCompat
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.permissions.location.LocationPermission
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
-class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinComponent {
+class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
     companion object {
         const val notificationId = 1
@@ -43,7 +41,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
 
     private val notificationService by lazy { applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
-    private val viewModel = LocationViewModel(permission, get())
+    private val viewModel = LocationViewModel(permission)
 
     override fun onCreate() {
         super.onCreate()

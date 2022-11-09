@@ -15,30 +15,25 @@
 
  */
 
-package com.splendo.kaluga.example.system.fragments
+package com.splendo.kaluga.example.system
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.databinding.FragmentNetworkBinding
+import com.splendo.kaluga.example.databinding.ActivityNetworkBinding
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NetworkFragment : KalugaViewModelFragment<NetworkViewModel>(R.layout.fragment_network) {
+class NetworkActivity : KalugaViewModelActivity<NetworkViewModel>(R.layout.activity_network) {
 
     override val viewModel: NetworkViewModel by viewModel()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val binding = FragmentNetworkBinding.inflate(inflater)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val binding = ActivityNetworkBinding.inflate(layoutInflater, null, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        return binding.root
+        setContentView(binding.root)
     }
+
 }

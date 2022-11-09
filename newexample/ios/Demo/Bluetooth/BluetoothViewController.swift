@@ -16,14 +16,17 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class BluetoothViewController : UICollectionViewController {
-    
-    lazy var viewModel = KNArchitectureFramework().createBluetoothListViewModel(parent: self, bluetooth: KNBluetoothFramework().bluetooth) { uuid, bluetooth in
-        return BluetoothDeviceDetailsViewController.create(deviceUuid: uuid, bluetooth: bluetooth)
+
+    lazy var navigator: ViewControllerNavigator<DeviceDetails> = ViewControllerNavigator(parentVC: self) { action in
+        NavigationSpec.Push(animated: true) {
+            BluetoothDeviceDetailsViewController.create(identifier: action.value!.identifier)
+        }
     }
-    
+    lazy var viewModel = BluetoothListViewModel(navigator: navigator)
+
     private var devices: [BluetoothListDeviceViewModel] = []
     private var lifecycleManager: LifecycleManager!
 
@@ -33,20 +36,20 @@ class BluetoothViewController : UICollectionViewController {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         flowLayout.minimumLineSpacing = 4
         collectionView.collectionViewLayout = flowLayout
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] in
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
-            
+
             return [
                 viewModel.isScanning.observe { isScanning in
                     self?.updateNavigationItem(isScanning: isScanning as? Bool ?? false)
@@ -60,9 +63,9 @@ class BluetoothViewController : UICollectionViewController {
                     self?.updateTitle(title: title as String?)
                 }
             ]
-        })
+        }
     }
-    
+
     private func updateNavigationItem(isScanning: Bool) {
         if (isScanning) {
             self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_stop_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
@@ -74,41 +77,41 @@ class BluetoothViewController : UICollectionViewController {
     private func updateTitle(title: String?) {
         self.title = title
     }
-    
+
     @objc private func toggleScanning() {
         viewModel.onScanPressed()
     }
-    
+
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-    
+
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         devices.count
     }
-    
+
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let bluetoothCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothCell.Companion.identifier, for: indexPath) as! BluetoothCell
         bluetoothCell.device = devices[indexPath.row]
         return bluetoothCell
     }
-    
+
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let btCell = cell as? BluetoothCell else {
             return
         }
-        
+
         btCell.startMonitoring()
     }
-    
+
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let btCell = cell as? BluetoothCell else {
             return
         }
-        
+
         btCell.stopMonitoring()
     }
-    
+
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         devices[indexPath.row].toggleFoldOut()
         let context = UICollectionViewFlowLayoutInvalidationContext()
@@ -143,19 +146,19 @@ class BluetoothCell: UICollectionViewCell {
     @IBOutlet var moreButton: UIButton!
     
     fileprivate var device: BluetoothListDeviceViewModel? = nil
-    
+
     @IBAction func onConnectPressed() {
         device?.onConnectPressed()
     }
-    
+
     @IBAction func onDisonnectPressed() {
         device?.onDisconnectPressed()
     }
-    
+
     @IBAction func onMorePressed() {
         device?.onMorePressed()
     }
-    
+
     func startMonitoring() {
         disposeBag.dispose()
         guard let device = device else {
@@ -222,7 +225,7 @@ class BluetoothCell: UICollectionViewCell {
             self?.manufacturerData.text = manufacturerData as? String
         }
     }
-    
+
     func stopMonitoring() {
         disposeBag.dispose()
         device?.didPause()

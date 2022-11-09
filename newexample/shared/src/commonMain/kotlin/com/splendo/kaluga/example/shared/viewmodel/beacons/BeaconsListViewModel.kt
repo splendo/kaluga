@@ -62,10 +62,12 @@ class BeaconsListViewModel : BaseLifecycleViewModel(), KoinComponent {
     }
 
     fun onScanPressed() {
-        if (_isScanning.value) {
-            service.stopMonitoring()
-        } else {
-            service.startMonitoring(coroutineScope)
+        coroutineScope.launch {
+            if (_isScanning.value) {
+                service.stopMonitoring()
+            } else {
+                service.startMonitoring(coroutineScope)
+            }
         }
     }
 

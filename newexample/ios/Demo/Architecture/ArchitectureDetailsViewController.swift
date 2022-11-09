@@ -16,7 +16,7 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class ArchitectureDetailsViewController: UIViewController {
     
@@ -30,12 +30,15 @@ class ArchitectureDetailsViewController: UIViewController {
         if #available(iOS 13.0, *) {
             vc.isModalInPresentation = true
         }
-        vc.viewModel = KNArchitectureFramework().createArchitectureDetailsViewModel(parent: vc, inputDetails: inputDetails) { inputDetails in
-            onDismiss(inputDetails)
+        let navigator = ViewControllerNavigator<CloseDetailsNavigation>(parentVC: vc) { action in
+            NavigationSpec.Dismiss(toDismiss: { $0 }, animated: true) {
+                onDismiss(action.value!)
+            }
         }
+        vc.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
         return vc
     }
-    
+
     var viewModel: ArchitectureDetailsViewModel!
     private var lifecycleManager: LifecycleManager!
     
@@ -47,16 +50,16 @@ class ArchitectureDetailsViewController: UIViewController {
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
-            
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
+
             guard let viewModel = self?.viewModel else {
                 return []
             }
-            
+
             return [
                 viewModel.name.observe { name in
                     self?.nameLabel.text = name as? String ?? ""
@@ -67,11 +70,11 @@ class ArchitectureDetailsViewController: UIViewController {
             ]
         }
     }
-    
+
     @objc @IBAction func onInversePressed(sender: Any?) {
         viewModel.onInversePressed()
     }
-    
+
     @objc @IBAction func onCloseButtonPressed(sender: Any?) {
         viewModel.onClosePressed()
     }

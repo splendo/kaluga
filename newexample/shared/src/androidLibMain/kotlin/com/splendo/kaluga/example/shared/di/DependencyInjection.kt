@@ -20,7 +20,6 @@ package com.splendo.kaluga.example.shared.di
 
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
@@ -31,10 +30,11 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDeta
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.CloseDetailsNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.shared.viewmodel.architecture.InputNavigation
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListNavigation
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetails
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -43,7 +43,6 @@ import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
-import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
@@ -93,11 +92,11 @@ internal val androidModule = module {
         PermissionsListViewModel(navigator)
     }
 
-    viewModel { (permission: Permission) -> PermissionViewModel(get(), permission) }
+    viewModel { (permission: Permission) -> PermissionViewModel(permission) }
 
-    viewModel { (permission: LocationPermission) -> LocationViewModel(permission, get()) }
+    viewModel { (permission: LocationPermission) -> LocationViewModel(permission) }
 
-    viewModel { (navigator: Navigator<SingleValueNavigationAction<InputDetails>>) ->
+    viewModel { (navigator: Navigator<InputNavigation>) ->
         ArchitectureInputViewModel(navigator)
     }
 
@@ -124,7 +123,7 @@ internal val androidModule = module {
         KeyboardViewModel(keyboardBuilder, focusHandler)
     }
 
-    viewModel { (navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>) ->
+    viewModel { (navigator: Navigator<BrowserNavigationActions<*>>) ->
         LinksViewModel(
             LinksBuilder(),
             AlertPresenter.Builder(),
@@ -132,17 +131,17 @@ internal val androidModule = module {
         )
     }
 
-    viewModel { (navigator: Navigator<SystemNavigationActions<Unit>>) ->
+    viewModel { (navigator: Navigator<SystemNavigationActions>) ->
         SystemViewModel(
             navigator
         )
     }
 
     viewModel {
-        NetworkViewModel(NetworkStateRepoBuilder(get()))
+        NetworkViewModel(NetworkStateRepoBuilder())
     }
 
-    viewModel { (navigator: Navigator<BluetoothListNavigation>) ->
+    viewModel { (navigator: Navigator<DeviceDetails>) ->
         BluetoothListViewModel(navigator)
     }
 

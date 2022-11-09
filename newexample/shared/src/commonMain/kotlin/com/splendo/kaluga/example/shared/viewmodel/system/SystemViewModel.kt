@@ -28,16 +28,13 @@ sealed class SystemFeatures(val name: String) {
     object Network : SystemFeatures("network_feature".localized())
 }
 
-sealed class SystemNavigationActions<Value>(
-    value: Value,
-    type: NavigationBundleSpecType<Value>
-) : SingleValueNavigationAction<Value>(value, type) {
-    object Network : SystemNavigationActions<Unit>(Unit, NavigationBundleSpecType.UnitType)
+sealed class SystemNavigationActions : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
+    object Network : SystemNavigationActions()
 }
 
 class SystemViewModel(
-    navigator: Navigator<SystemNavigationActions<Unit>>
-) : NavigatingViewModel<SystemNavigationActions<Unit>>(navigator) {
+    navigator: Navigator<SystemNavigationActions>
+) : NavigatingViewModel<SystemNavigationActions>(navigator) {
 
     val modules =
         observableOf(
