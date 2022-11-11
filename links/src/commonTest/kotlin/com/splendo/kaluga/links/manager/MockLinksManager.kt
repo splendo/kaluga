@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.BaseLinksBuilder
 import com.splendo.kaluga.links.Links
 import kotlinx.serialization.KSerializer
 
@@ -43,7 +44,7 @@ class MockLinksManagerBuilder : LinksManager.Builder {
     }
 }
 
-class MockLinksBuilder : Links.Builder {
+class MockLinksBuilder : BaseLinksBuilder {
     override fun create(): Links {
         return Links(MockLinksManagerBuilder())
     }

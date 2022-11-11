@@ -70,14 +70,6 @@ class Bluetooth internal constructor(
     coroutineContext: CoroutineContext,
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
-    interface Builder {
-        fun create(
-            scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-            connectionSettings: ConnectionSettings = ConnectionSettings(),
-            coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
-        ): Bluetooth
-    }
-
     internal val scanningStateRepo = ScanningStateRepo(
         scannerSettingsBuilder,
         scannerBuilder,
@@ -168,7 +160,14 @@ class Bluetooth internal constructor(
         .mapLatest { it is ScanningState.Enabled }
 }
 
-expect class BluetoothBuilder : Bluetooth.Builder
+interface BaseBluetoothBuilder {
+    fun create(
+        scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
+        connectionSettings: ConnectionSettings = ConnectionSettings(),
+        coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
+    ): Bluetooth
+}
+expect class BluetoothBuilder : BaseBluetoothBuilder
 
 operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     return this.map { devices ->

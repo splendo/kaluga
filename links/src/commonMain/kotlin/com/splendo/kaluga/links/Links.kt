@@ -24,10 +24,6 @@ class Links(
     linksManagerBuilder: LinksManager.Builder
 ) {
 
-    interface Builder {
-        fun create(): Links
-    }
-
     internal var linksManager: LinksManager = linksManagerBuilder.create()
 
     /**
@@ -50,4 +46,8 @@ class Links(
     }
 }
 
-expect class LinksBuilder constructor() : Links.Builder
+interface BaseLinksBuilder {
+    fun create(): Links
+}
+
+expect class LinksBuilder constructor() : BaseLinksBuilder

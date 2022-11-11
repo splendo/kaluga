@@ -18,6 +18,7 @@
 package com.splendo.kaluga.test.location
 
 import com.splendo.kaluga.location.BaseLocationManager
+import com.splendo.kaluga.location.BaseLocationStateRepoBuilder
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
@@ -27,7 +28,7 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Mock implementation of [LocationStateRepo.Builder]
+ * Mock implementation of [BaseLocationStateRepoBuilder]
  * @param permissionsBuilder Builds the [Permissions] to request permissions from
  * @param locationManagerBuilder The [BaseLocationManager.Builder] for building the location manager
  * @param setupMocks If `true` sets up [createMock] to automatically create a [LocationStateRepo]
@@ -36,10 +37,10 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     private val permissionsBuilder: suspend () -> Permissions,
     val locationManagerBuilder: LMB,
     setupMocks: Boolean = true
-) : LocationStateRepo.Builder {
+) : BaseLocationStateRepoBuilder {
 
     /**
-     * List of build [LocationStateRepo]
+     * List of built [LocationStateRepo]
      */
     val builtLocationStateRepo = mutableListOf<LocationStateRepo>()
 

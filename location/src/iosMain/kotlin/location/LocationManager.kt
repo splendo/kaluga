@@ -118,7 +118,7 @@ actual class LocationStateRepoBuilder(
             context
         )
     }
-) : LocationStateRepo.Builder {
+) : BaseLocationStateRepoBuilder {
 
     override fun create(
         locationPermission: LocationPermission,

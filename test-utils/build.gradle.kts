@@ -22,6 +22,7 @@ kotlin {
                 api(project(":test-utils-location"))
                 api(project(":test-utils-permissions"))
                 api(project(":test-utils-resources"))
+                api(project(":test-utils-system"))
             }
         }
         commonTest {

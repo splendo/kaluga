@@ -17,7 +17,7 @@ actual class BluetoothBuilder(
             context
         )
     }
-) : Bluetooth.Builder {
+) : BaseBluetoothBuilder {
 
     override fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,

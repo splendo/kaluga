@@ -125,7 +125,7 @@ Module | Usage | Artifact Name
 [resources](resources/) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources
 [review](review/) | Used for requesting the user to review the app | com.splendo.kaluga.review
 [scientific](scientific/) | Scientific units and conversions | com.splendo.kaluga.scientific
-[system](system/) | System APIs such as network, audio, battery  | com.splendo.kaluga.system
+[system](system/) | System APIs such as network, audio, battery | com.splendo.kaluga.system
 [test-utils](test-utils/) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils
 [test-utils-base](test-utils-base/) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils-base
 [test-utils-alerts](test-utils-alerts/) | Enables easier testing of Alerts module | com.splendo.kaluga.test-utils-alerts
@@ -137,6 +137,7 @@ Module | Usage | Artifact Name
 [test-utils-location](test-utils-location/) | Enables easier testing of Location module | com.splendo.kaluga.test-utils-location
 [test-utils-permissions](test-utils-permissions/) | Enables easier testing of Permissions modules | com.splendo.kaluga.test-utils-permissions
 [test-utils-resources](test-utils-resources/) | Enables easier testing of Resources module | com.splendo.kaluga.test-utils-resources
+[test-utils-system](test-utils-system/) | Enables easier testing of System module | com.splendo.kaluga.test-utils-system
 
 ### Friends of kaluga
 

@@ -1,14 +1,14 @@
+public abstract interface class com/splendo/kaluga/links/BaseLinksBuilder {
+	public abstract fun create ()Lcom/splendo/kaluga/links/Links;
+}
+
 public final class com/splendo/kaluga/links/Links {
 	public fun <init> (Lcom/splendo/kaluga/links/manager/LinksManager$Builder;)V
 	public final fun handleIncomingLink (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 	public final fun validateLink (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/links/Links$Builder {
-	public abstract fun create ()Lcom/splendo/kaluga/links/Links;
-}
-
-public final class com/splendo/kaluga/links/LinksBuilder : com/splendo/kaluga/links/Links$Builder {
+public final class com/splendo/kaluga/links/LinksBuilder : com/splendo/kaluga/links/BaseLinksBuilder {
 	public fun <init> ()V
 	public fun create ()Lcom/splendo/kaluga/links/Links;
 }

@@ -388,7 +388,7 @@ public abstract class com/splendo/kaluga/test/bluetooth/scanner/MockScanningStat
 	public final fun getDisable ()Lkotlin/jvm/functions/Function1;
 	protected abstract fun getPermittedHandler ()Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$PermittedHandler;
 	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-	public final fun pairedDevices (Ljava/util/Set;)Ljava/util/List;
+	public fun pairedDevices (Ljava/util/Set;)Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled$Idle : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled, com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle {

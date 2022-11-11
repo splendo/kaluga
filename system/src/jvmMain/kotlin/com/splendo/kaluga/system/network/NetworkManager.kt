@@ -17,17 +17,21 @@
 
 package com.splendo.kaluga.system.network
 
-typealias NetworkStateChange = (Network) -> Unit
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-interface BaseNetworkManager {
-    val onNetworkStateChange: NetworkStateChange
+actual class DefaultNetworkManager : BaseNetworkManager() {
 
-    interface Builder {
-        fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager
+    class Builder : BaseNetworkManager.Builder {
+        override fun create(): BaseNetworkManager = DefaultNetworkManager()
     }
 
-    fun dispose()
-}
+    override val network: Flow<NetworkConnectionType> = flowOf(NetworkConnectionType.Known.Absent)
+    override suspend fun startMonitoring() {
+        TODO("Not yet implemented")
+    }
 
-expect class NetworkManagerBuilder
-expect class NetworkManager
+    override suspend fun stopMonitoring() {
+        TODO("Not yet implemented")
+    }
+}

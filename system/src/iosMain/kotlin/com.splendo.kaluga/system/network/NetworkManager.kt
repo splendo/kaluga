@@ -26,6 +26,11 @@ import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import platform.Network.nw_interface_type_cellular
 import platform.Network.nw_interface_type_wifi
 import platform.Network.nw_path_get_status
@@ -54,26 +59,38 @@ import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 import platform.darwin.dispatch_get_main_queue
 
-fun NetworkManager(onNetworkStateChange: NetworkStateChange): NetworkManager {
-    val appleNetworkManager = if (IOSVersion.systemVersion >= IOSVersion(12)) {
-        NetworkManager.NWPathNetworkManager(onNetworkStateChange)
-    } else {
-        NetworkManager.SCNetworkManager(onNetworkStateChange)
+actual class DefaultNetworkManager internal constructor(
+    private val appleNetworkManager: AppleNetworkManager
+) : BaseNetworkManager() {
+
+    class Builder : BaseNetworkManager.Builder {
+        override fun create(): BaseNetworkManager {
+            val appleNetworkManager = if (IOSVersion.systemVersion >= IOSVersion(12)) {
+                DefaultNetworkManager.NWPathNetworkManager()
+            } else {
+                DefaultNetworkManager.SCNetworkManager()
+            }
+            return DefaultNetworkManager(appleNetworkManager)
+        }
     }
-    return NetworkManager(appleNetworkManager)
-}
 
-actual class NetworkManager internal constructor(
-    appleNetworkManager: AppleNetworkManager
-) : BaseNetworkManager by appleNetworkManager {
+    override val network: Flow<NetworkConnectionType> get() = appleNetworkManager.network
+    override suspend fun startMonitoring() = appleNetworkManager.startMonitoring()
+    override suspend fun stopMonitoring() = appleNetworkManager.stopMonitoring()
 
-    internal interface AppleNetworkManager : BaseNetworkManager
+    internal interface AppleNetworkManager : NetworkManager
 
-    internal class NWPathNetworkManager(
-        override val onNetworkStateChange: NetworkStateChange,
-    ) : AppleNetworkManager {
+    internal class NWPathNetworkManager : AppleNetworkManager {
 
-        private var nwPathMonitor: nw_path_monitor_t = null
+        private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
+        override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()
+        private val nwPathMonitor: nw_path_monitor_t = nw_path_monitor_create().apply {
+            nw_path_monitor_set_queue(
+                this,
+                dispatch_get_main_queue()
+            )
+            nw_path_monitor_set_update_handler(this, networkMonitor)
+        }
 
         private val networkMonitor = object : nw_path_monitor_update_handler_t {
             override fun invoke(network: nw_path_t) {
@@ -81,17 +98,11 @@ actual class NetworkManager internal constructor(
             }
         }
 
-        init {
-            nwPathMonitor = nw_path_monitor_create()
-            nw_path_monitor_set_queue(
-                nwPathMonitor,
-                dispatch_get_main_queue()
-            )
-            nw_path_monitor_set_update_handler(nwPathMonitor, networkMonitor)
+        override suspend fun startMonitoring() {
             nw_path_monitor_start(nwPathMonitor)
         }
 
-        override fun dispose() {
+        override suspend fun stopMonitoring() {
             nw_path_monitor_cancel(nwPathMonitor)
         }
 
@@ -101,26 +112,27 @@ actual class NetworkManager internal constructor(
                     if (nw_path_uses_interface_type(network, nw_interface_type_wifi)) {
                         if (nw_path_is_expensive(network)) {
                             // connected to hotspot
-                            onNetworkStateChange(Network.Known.Wifi(isExpensive = true))
+                            networkChannel.trySend(NetworkConnectionType.Known.Wifi(isExpensive = true))
                         } else {
-                            onNetworkStateChange(Network.Known.Wifi())
+                            networkChannel.trySend(NetworkConnectionType.Known.Wifi())
                         }
                     } else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
-                        onNetworkStateChange(Network.Known.Cellular())
+                        networkChannel.trySend(NetworkConnectionType.Known.Cellular())
                     }
                 }
                 nw_path_status_unsatisfied -> {
-                    onNetworkStateChange(Network.Known.Absent)
+                    networkChannel.trySend(NetworkConnectionType.Known.Absent)
                 }
             }
         }
     }
 
-    internal class SCNetworkManager(
-        override val onNetworkStateChange: NetworkStateChange
-    ) : AppleNetworkManager {
+    internal class SCNetworkManager : AppleNetworkManager {
 
-        private var reachability: SCNetworkReachabilityRef? = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
+        private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
+        override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()
+        private val lock = Mutex()
+        private var reachability: SCNetworkReachabilityRef? = null
 
         private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { _: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
             if (info == null) {
@@ -131,7 +143,8 @@ actual class NetworkManager internal constructor(
             networkManager.checkReachability(networkManager, flags)
         }
 
-        init {
+        override suspend fun startMonitoring() = lock.withLock {
+            reachability = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
             val context = nativeHeap.alloc<SCNetworkReachabilityContext>()
             context.info = StableRef.create(this@SCNetworkManager).asCPointer()
 
@@ -144,6 +157,10 @@ actual class NetworkManager internal constructor(
 
             nativeHeap.free(context.rawPtr)
             nativeHeap.free(flag.rawPtr)
+        }
+
+        override suspend fun stopMonitoring() = lock.withLock {
+            reachability = null
         }
 
         private fun areParametersSet(context: SCNetworkReachabilityContext): Boolean {
@@ -161,19 +178,15 @@ actual class NetworkManager internal constructor(
             when (flags) {
                 kSCNetworkReachabilityFlagsReachable -> {
                     if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                        scNetworkManager.onNetworkStateChange(Network.Known.Cellular())
+                        scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Cellular())
                     } else {
-                        scNetworkManager.onNetworkStateChange(Network.Known.Wifi())
+                        scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Wifi())
                     }
                 }
                 else -> {
-                    scNetworkManager.onNetworkStateChange(Network.Known.Absent)
+                    scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Absent)
                 }
             }
-        }
-
-        override fun dispose() {
-            reachability = null
         }
     }
 }

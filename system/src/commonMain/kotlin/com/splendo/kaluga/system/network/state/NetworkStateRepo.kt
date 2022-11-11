@@ -17,116 +17,120 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.state.ColdStateRepo
+import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.state.ColdStateFlowRepo
+import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
-import com.splendo.kaluga.system.network.Network
+import com.splendo.kaluga.system.network.NetworkConnectionType
+import com.splendo.kaluga.system.network.NetworkManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+
+typealias NetworkStateFlowRepo = StateRepo<NetworkState, MutableStateFlow<NetworkState>>
+
+abstract class BaseNetworkStateRepo(
+    createNotInitializedState: () -> NetworkState.NotInitialized,
+    createInitializingState: suspend ColdStateFlowRepo<NetworkState>.(NetworkState.Inactive) -> suspend () -> NetworkState,
+    createDeinitializingState: suspend ColdStateFlowRepo<NetworkState>.(NetworkState.Active) -> suspend () -> NetworkState.Deinitialized,
+    coroutineContext: CoroutineContext
+) : ColdStateFlowRepo<NetworkState>(
+    coroutineContext = coroutineContext,
+    initChangeStateWithRepo = { state, repo ->
+        when (state) {
+            is NetworkState.Inactive -> {
+                repo.createInitializingState(state)
+            }
+            is NetworkState.Active -> state.remain()
+        }
+    },
+    deinitChangeStateWithRepo = { state, repo ->
+        when (state) {
+            is NetworkState.Active -> repo.createDeinitializingState(state)
+            is NetworkState.Inactive -> state.remain()
+        }
+    },
+    firstState = createNotInitializedState
+)
+
+open class NetworkStateImplRepo(
+    createNetworkManager: suspend () -> NetworkManager,
+    coroutineContext: CoroutineContext
+) : BaseNetworkStateRepo(
+    createNotInitializedState = { NetworkStateImpl.NotInitialized },
+    createInitializingState = { state ->
+        when (state) {
+            is NetworkStateImpl.NotInitialized -> {
+                val manager = createNetworkManager()
+                (this as NetworkStateImplRepo).startMonitoringNetworkManager(manager)
+                state.startInitializing(manager)
+            }
+            is NetworkStateImpl.Deinitialized -> {
+                (this as NetworkStateImplRepo).startMonitoringNetworkManager(state.networkManager)
+                state.reinitialize
+            }
+            else -> state.remain()
+        }
+    },
+    createDeinitializingState = { state ->
+        (this as NetworkStateImplRepo).superVisorJob.cancelChildren()
+        state.deinitialize
+    },
+    coroutineContext = coroutineContext
+) {
+    private val superVisorJob = SupervisorJob(coroutineContext[Job])
+    private fun startMonitoringNetworkManager(manager: NetworkManager) {
+        CoroutineScope(coroutineContext + superVisorJob).launch {
+            manager.network.collect { networkType ->
+                takeAndChangeState { networkState ->
+                    when (networkState) {
+                        is NetworkState.Initializing -> networkState.initialized(networkType)
+                        is NetworkState.Available -> when (networkType) {
+                            is NetworkConnectionType.Known.Available -> networkState.available(networkType)
+                            is NetworkConnectionType.Known.Absent -> networkState.unavailable
+                            is NetworkConnectionType.Unknown -> networkState.unknown(networkType.reason)
+                        }
+                        is NetworkState.Unavailable -> when (networkType) {
+                            is NetworkConnectionType.Known.Available -> networkState.available(networkType)
+                            is NetworkConnectionType.Known.Absent -> networkState.remain()
+                            is NetworkConnectionType.Unknown -> networkState.unknown(networkType.reason)
+                        }
+                        is NetworkState.Unknown -> when (networkType) {
+                            is NetworkConnectionType.Known.Available -> networkState.available(networkType)
+                            is NetworkConnectionType.Known.Absent -> networkState.unavailable
+                            is NetworkConnectionType.Unknown -> networkState.unknown(networkType.reason)
+                        }
+                        is NetworkState.Deinitialized, is NetworkState.NotInitialized -> networkState.remain()
+                    }
+                }
+            }
+        }
+    }
+}
 
 open class NetworkStateRepo(
     private val networkManagerBuilder: BaseNetworkManager.Builder,
-) : ColdStateRepo<NetworkState>() {
+    coroutineContext: CoroutineContext,
+) : NetworkStateImplRepo(
+    createNetworkManager = {
+        networkManagerBuilder.create()
+    },
+    coroutineContext
+)
 
-    interface Builder {
-        fun create(): NetworkStateRepo
-    }
-
-    internal var lastKnownNetwork: Network = Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
-
-    private var _networkManager: BaseNetworkManager? = null
-    internal var networkManager: BaseNetworkManager?
-        get() = _networkManager
-        set(value) {
-            _networkManager?.let {
-                if (value == null) {
-                    it.dispose()
-                }
-            }
-
-            _networkManager = value
-        }
-
-    override suspend fun deinitialize(state: NetworkState) {
-        lastKnownNetwork = state.networkType
-        networkManager = null
-    }
-
-    override suspend fun initialValue(): NetworkState {
-        networkManager = networkManagerBuilder.create(::onNetworkStateChange)
-
-        return when (val network = lastKnownNetwork) {
-            is Network.Unknown.WithoutLastNetwork -> NetworkState.Unknown(
-                Network.Unknown.WithoutLastNetwork(network.reason)
-            )
-            is Network.Unknown.WithLastNetwork -> NetworkState.Unknown(
-                Network.Unknown.WithLastNetwork(network.lastKnownNetwork, network.reason)
-            )
-            is Network.Known.Cellular -> NetworkState.Unknown(
-                Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
-            )
-            is Network.Known.Wifi -> NetworkState.Unknown(
-                Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
-            )
-            Network.Known.Absent -> NetworkState.Unknown(
-                Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
-            )
-        }
-    }
-
-    protected fun onNetworkStateChange(network: Network) {
-        runBlocking {
-            takeAndChangeState { state: NetworkState ->
-                when (state) {
-                    is NetworkState.Available -> {
-                        when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> {
-                                { state.unknownWithoutLastNetwork(network.reason) }
-                            }
-                            is Network.Unknown.WithLastNetwork -> {
-                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
-                            }
-                            is Network.Known.Cellular -> state.availableWithCellular
-                            is Network.Known.Wifi -> state.availableWithWifi
-                            Network.Known.Absent -> state.unavailable
-                        }
-                    }
-                    is NetworkState.Unavailable -> {
-                        when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> {
-                                { state.unknownWithoutLastNetwork(network.reason) }
-                            }
-                            is Network.Unknown.WithLastNetwork -> {
-                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
-                            }
-                            is Network.Known.Cellular -> state.availableWithCellular
-                            is Network.Known.Wifi -> state.availableWithWifi
-                            Network.Known.Absent -> state.remain()
-                        }
-                    }
-                    is NetworkState.Unknown -> {
-                        when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> state.remain()
-                            is Network.Unknown.WithLastNetwork -> state.remain()
-                            is Network.Known.Cellular -> state.availableWithCellular
-                            is Network.Known.Wifi -> state.availableWithWifi
-                            Network.Known.Absent -> state.unavailable
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun Flow<NetworkState>.network(): Flow<Network> {
-    return map { it.networkType }.distinctUntilChanged()
+fun Flow<NetworkState>.network(): Flow<NetworkConnectionType> {
+    return filterOnlyImportant().map { it.networkConnectionType }.distinctUntilChanged()
 }
 
 fun Flow<NetworkState>.online(): Flow<Boolean> {
-    return network().mapLatest {
-        it is Network.Known.Wifi || it is Network.Known.Cellular
+    return network().map {
+        it is NetworkConnectionType.Known.Wifi || it is NetworkConnectionType.Known.Cellular
     }
 }
