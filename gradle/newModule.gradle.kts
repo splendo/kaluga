@@ -22,7 +22,7 @@ abstract class NewModule : DefaultTask() {
 
     private companion object {
         const val VALID_MODULE_NAME_REGEX = "^[^\\dA-Z-][a-z]+[a-z-]*\\Z"
-        const val VALID_PACKAGE_NAME = "^[a-z]+(\\.[a-z]+)*\\Z"
+        const val VALID_PACKAGE_NAME_REGEX = "^[a-z]+(\\.[a-z]+)*\\Z"
         const val TEMPLATE_PATH = "adding-a-new-module/template"
         const val BUILD_GRADLE_KTS = "build.gradle.kts"
         val CREATE_DIRS = listOf(
@@ -58,7 +58,7 @@ abstract class NewModule : DefaultTask() {
         
         when {
             !module.matches(Regex(VALID_MODULE_NAME_REGEX)) -> throw GradleException("`$module` is not valid module name!")
-            !packageName.matches(Regex(VALID_PACKAGE_NAME)) -> throw GradleException("`$packageName` is not a valid package name!")
+            !packageName.matches(Regex(VALID_PACKAGE_NAME_REGEX)) -> throw GradleException("`$packageName` is not a valid package name!")
             else -> {
                 CREATE_DIRS.forEach { pair ->
                     val dir = outputDir.dir("src/${pair.first}")
