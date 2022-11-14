@@ -11,9 +11,9 @@ public abstract class com/splendo/kaluga/location/BaseLocationManager : com/sple
 	public final fun handleLocationChanged (Ljava/util/List;)V
 	public fun isLocationEnabled ()Z
 	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun startMonitoringPermissions ()V
-	public fun stopMonitoringLocationEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/splendo/kaluga/location/BaseLocationManager$Builder {
@@ -264,10 +264,10 @@ public abstract interface class com/splendo/kaluga/location/LocationManager {
 	public abstract fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun startMonitoringPermissions ()V
+	public abstract fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun stopMonitoringLocationEnabled ()V
-	public abstract fun stopMonitoringPermissions ()V
+	public abstract fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/location/LocationManager$Event {
@@ -436,7 +436,7 @@ public final class com/splendo/kaluga/location/LocationStateImpl$NotInitialized 
 
 public final class com/splendo/kaluga/location/LocationStateImpl$PermittedHandler {
 	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
-	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;)V
+	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;

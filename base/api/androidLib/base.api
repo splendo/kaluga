@@ -55,12 +55,6 @@ public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
 	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
-public final class com/splendo/kaluga/base/flow/ColdFlowable : com/splendo/kaluga/flow/BaseFlowable {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun flow (Lcom/splendo/kaluga/flow/FlowConfig;)Lkotlinx/coroutines/flow/Flow;
-}
-
 public final class com/splendo/kaluga/base/flow/FlowKt {
 	public static final fun collectImportant (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun collectImportantUntilLast (Lkotlinx/coroutines/flow/Flow;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -71,12 +65,6 @@ public final class com/splendo/kaluga/base/flow/FlowKt {
 	public static final fun onCollectionEvent (Lkotlinx/coroutines/flow/MutableSharedFlow;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun takeUntilLast (Lkotlinx/coroutines/flow/Flow;Z)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun takeUntilLast$default (Lkotlinx/coroutines/flow/Flow;ZILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-}
-
-public final class com/splendo/kaluga/base/flow/HotFlowable : com/splendo/kaluga/flow/BaseFlowable {
-	public fun <init> (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getInitialValue ()Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/base/flow/SharedFlowCollectionEvent : java/lang/Enum {
@@ -866,47 +854,6 @@ public final class com/splendo/kaluga/base/utils/UnitSystem$Companion {
 	public final fun withRawValue (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/UnitSystem;
 }
 
-public abstract class com/splendo/kaluga/flow/BaseFlowable : com/splendo/kaluga/flow/Flowable {
-	public fun <init> ()V
-	public fun <init> (Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun cancelFlows ()V
-	protected final fun currentValue (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected final fun ensureChannel ()Lkotlinx/coroutines/channels/BroadcastChannel;
-	public fun flow (Lcom/splendo/kaluga/flow/FlowConfig;)Lkotlinx/coroutines/flow/Flow;
-	public fun set (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract class com/splendo/kaluga/flow/FlowConfig {
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun apply (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
-	public final fun getConfig ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/flow/FlowConfig$Conflate : com/splendo/kaluga/flow/FlowConfig {
-	public static final field INSTANCE Lcom/splendo/kaluga/flow/FlowConfig$Conflate;
-}
-
-public final class com/splendo/kaluga/flow/FlowConfig$Custom : com/splendo/kaluga/flow/FlowConfig {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-}
-
-public final class com/splendo/kaluga/flow/FlowConfig$Infinite : com/splendo/kaluga/flow/FlowConfig {
-	public static final field INSTANCE Lcom/splendo/kaluga/flow/FlowConfig$Infinite;
-}
-
-public final class com/splendo/kaluga/flow/FlowConfig$None : com/splendo/kaluga/flow/FlowConfig {
-	public static final field INSTANCE Lcom/splendo/kaluga/flow/FlowConfig$None;
-}
-
-public abstract interface class com/splendo/kaluga/flow/Flowable {
-	public abstract fun cancelFlows ()V
-	public abstract fun flow (Lcom/splendo/kaluga/flow/FlowConfig;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun flow$default (Lcom/splendo/kaluga/flow/Flowable;Lcom/splendo/kaluga/flow/FlowConfig;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public abstract fun set (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun setBlocking (Ljava/lang/Object;)V
-}
-
 public abstract class com/splendo/kaluga/state/BaseColdStateRepo : com/splendo/kaluga/state/StateRepo {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
@@ -992,19 +939,11 @@ public abstract class com/splendo/kaluga/state/HotStateRepo : com/splendo/kaluga
 }
 
 public abstract interface class com/splendo/kaluga/state/KalugaState {
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun finalState$suspendImpl (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun initialState$suspendImpl (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/state/KalugaStateKt {
 	public static final fun defaultLazySharedFlow ()Lkotlin/Lazy;
-}
-
-public abstract class com/splendo/kaluga/state/State : com/splendo/kaluga/state/KalugaState {
-	public fun <init> ()V
 }
 
 public abstract interface class com/splendo/kaluga/state/StateFlowRepo {
@@ -1016,7 +955,6 @@ public abstract class com/splendo/kaluga/state/StateRepo : kotlinx/coroutines/Co
 	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
 	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun collect (Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun flow ()Lkotlinx/coroutines/flow/Flow;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	protected abstract fun getMutableFlow ()Lkotlinx/coroutines/flow/MutableSharedFlow;
 	public final fun getSubscriptionCount ()Lkotlinx/coroutines/flow/StateFlow;

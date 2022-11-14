@@ -19,6 +19,8 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitor
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBManagerStatePoweredOn
@@ -45,14 +47,15 @@ class DefaultBluetoothMonitor internal constructor(
         }
     }
 
+    private val lock = reentrantLock()
     private var centralManager: CBCentralManager? = null
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
         get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
 
-    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = centralManager ?: centralManagerBuilder().apply {
-        centralManager = this
+    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = lock.withLock {
+        centralManager ?: centralManagerBuilder().also { this.centralManager = it }
     }
 
     override fun monitoringDidStart() {

@@ -21,6 +21,7 @@ import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.test.base.yieldMultiple
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -34,7 +35,7 @@ import kotlin.test.fail
 class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
-        var isDisposed = false
+        val isDisposed = atomic(false)
     }
 
     class ViewModel : BaseLifecycleViewModel() {
@@ -45,7 +46,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
         LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
 
         override fun dispose() {
-            isDisposed = true
+            isDisposed.value = true
         }
     }
 
@@ -72,12 +73,12 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
 
     @BeforeTest
     fun resetDisposed() {
-        isDisposed = false
+        isDisposed.value = false
     }
 
     @AfterTest
     fun testDisposed() {
-        assertTrue(isDisposed)
+        assertTrue(isDisposed.value)
     }
 }
 

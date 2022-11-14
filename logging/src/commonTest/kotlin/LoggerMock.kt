@@ -18,38 +18,29 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.logging
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 
-class LoggerMock(private val coroutineScope: CoroutineScope) : Logger {
+class LoggerMock : SynchronizedObject(), Logger {
 
-    private val mutex = Mutex()
     val throwableList = mutableListOf<Throwable?>()
     val messageList = mutableListOf<String?>()
     val tagList = mutableListOf<String?>()
     val levelList = mutableListOf<LogLevel?>()
 
-    fun clear() {
-        coroutineScope.launch {
-            mutex.withLock {
-                levelList.clear()
-                messageList.clear()
-                tagList.clear()
-                throwableList.clear()
-            }
-        }
+    fun clear() = synchronized(this) {
+        levelList.clear()
+        messageList.clear()
+        tagList.clear()
+        throwableList.clear()
     }
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-        coroutineScope.launch {
-            mutex.withLock {
-                levelList.add(level)
-                tagList.add(tag)
-                throwableList.add(throwable)
-                messageList.add(message?.invoke())
-            }
+        synchronized(this) {
+            levelList.add(level)
+            tagList.add(tag)
+            throwableList.add(throwable)
+            messageList.add(message?.invoke())
         }
     }
 }
