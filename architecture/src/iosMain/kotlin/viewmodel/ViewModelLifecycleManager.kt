@@ -19,8 +19,6 @@ package com.splendo.kaluga.architecture.viewmodel
 
 import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
 import platform.UIKit.addSubview
@@ -68,10 +66,8 @@ internal class ViewModelLifecycleManager<VM : BaseLifecycleViewModel>(private va
         super.viewDidAppear(animated)
 
         viewModel.didResume()
-        MainScope().launch {
-            onLifecycle().forEach {
-                lifecycleManager.disposeBag.add(it)
-            }
+        onLifecycle().forEach {
+            lifecycleManager.disposeBag.add(it)
         }
     }
 
@@ -79,9 +75,7 @@ internal class ViewModelLifecycleManager<VM : BaseLifecycleViewModel>(private va
         super.viewDidDisappear(animated)
 
         viewModel.didPause()
-        MainScope().launch {
-            lifecycleManager.disposeBag.dispose()
-        }
+        lifecycleManager.disposeBag.dispose()
     }
 }
 

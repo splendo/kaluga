@@ -30,10 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -47,20 +50,21 @@ class Beacons(
 
     private companion object { const val TAG = "Beacons" }
 
+    private val lock = Mutex()
     private val cache = mutableMapOf<BeaconID, BeaconJob>()
     private val cacheJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
-    private var monitoringJob: Job? = null
+    private var monitoringJob: MutableStateFlow<Job?> = MutableStateFlow(null)
 
     private val _beacons = MutableStateFlow(emptySet<BeaconInfo>())
     val beacons: StateFlow<Set<BeaconInfo>>
         get() = _beacons.asStateFlow()
 
-    fun startMonitoring(coroutineScope: CoroutineScope) {
+    suspend fun startMonitoring(coroutineScope: CoroutineScope) = lock.withLock {
         debug(TAG, "Start monitoring")
         _beacons.value = emptySet()
         bluetooth.startScanning()
-        monitoringJob = coroutineScope.launch {
+        monitoringJob.value = coroutineScope.launch {
             bluetooth.devices().collect { list ->
                 debug(TAG, "Total Bluetooth devices discovered: ${list.size}")
                 updateBeacons(list.mapNotNull { createBeaconWith(it) })
@@ -68,15 +72,15 @@ class Beacons(
         }
     }
 
-    fun stopMonitoring() {
+    suspend fun stopMonitoring() = lock.withLock {
         debug(TAG, "Stop monitoring")
         bluetooth.stopScanning()
-        monitoringJob?.cancel()
-        monitoringJob = null
+        monitoringJob.value?.cancel()
+        monitoringJob.value = null
         _beacons.value = emptySet()
     }
 
-    suspend fun isMonitoring() = bluetooth.isScanning()
+    suspend fun isMonitoring() = combine(monitoringJob.map { it != null }, bluetooth.isScanning()) { isMonitoring, isScanning -> isMonitoring && isScanning }
 
     fun isAnyInRange(beaconIds: List<String>) = beacons.map { list ->
         list.any { beaconIds.containsLowerCased(it.beaconID.asString()) }

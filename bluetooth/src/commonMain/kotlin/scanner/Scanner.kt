@@ -45,6 +45,8 @@ import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 typealias EnableSensorAction = suspend () -> Boolean
 
@@ -67,12 +69,12 @@ interface Scanner {
 
     val isSupported: Boolean
     val events: Flow<Event>
-    fun startMonitoringPermissions()
-    fun stopMonitoringPermissions()
+    suspend fun startMonitoringPermissions()
+    suspend fun stopMonitoringPermissions()
     suspend fun scanForDevices(filter: Set<UUID>)
     suspend fun stopScanning()
-    fun startMonitoringHardwareEnabled()
-    fun stopMonitoringHardwareEnabled()
+    suspend fun startMonitoringHardwareEnabled()
+    suspend fun stopMonitoringHardwareEnabled()
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
@@ -117,13 +119,15 @@ abstract class BaseScanner constructor(
     protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
     protected open val enabledFlow: Flow<List<Boolean>> get() = (bluetoothEnabledMonitor?.isEnabled ?: flowOf(false)).map { listOf(it) }
 
+    private val permissionsLock = Mutex()
     private var monitoringPermissionsJob: Job? = null
+    private val enabledJob = Mutex()
     private var monitoringBluetoothEnabledJob: Job? = null
 
-    override fun startMonitoringPermissions() {
+    override suspend fun startMonitoringPermissions() = permissionsLock.withLock {
         logger.debug(LOG_TAG) { "Start monitoring permissions" }
         if (monitoringPermissionsJob != null) return
-        monitoringPermissionsJob = launch(coroutineContext) {
+        monitoringPermissionsJob = coroutineScope.launch(coroutineContext) {
             permissionsFlow.collect { state ->
                 handlePermissionState(state)
             }
@@ -147,7 +151,7 @@ abstract class BaseScanner constructor(
         emitEvent(Scanner.Event.PermissionChanged(hasPermission))
     }
 
-    override fun stopMonitoringPermissions() {
+    override suspend fun stopMonitoringPermissions() = permissionsLock.withLock {
         monitoringPermissionsJob?.cancel()
         monitoringPermissionsJob = null
     }
@@ -170,18 +174,18 @@ abstract class BaseScanner constructor(
 
     protected abstract suspend fun didStopScanning()
 
-    override fun startMonitoringHardwareEnabled() {
+    override suspend fun startMonitoringHardwareEnabled() = enabledJob.withLock {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.startMonitoring()
         if (monitoringBluetoothEnabledJob != null) return
-        monitoringBluetoothEnabledJob = launch {
+        monitoringBluetoothEnabledJob = coroutineScope.launch {
             enabledFlow.collect {
                 checkHardwareEnabledChanged()
             }
         }
     }
 
-    override fun stopMonitoringHardwareEnabled() {
+    override suspend fun stopMonitoringHardwareEnabled() = enabledJob.withLock {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.stopMonitoring()
         monitoringBluetoothEnabledJob?.cancel()

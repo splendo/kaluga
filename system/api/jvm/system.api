@@ -129,8 +129,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Active$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Active;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Active;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Active;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -140,14 +138,10 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Available$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Available;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Available;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Available;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -157,8 +151,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Deinitialized$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Deinitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Deinitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Deinitialized;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -166,8 +158,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Inactive$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Inactive;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Inactive;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Inactive;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -177,8 +167,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Initialized$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Initialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Initialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Initialized;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -187,8 +175,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Initializing$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Initializing;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Initializing;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Initializing;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -197,8 +183,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Known$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Known;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Known;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Known;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -206,8 +190,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$NotInitialized$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$NotInitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$NotInitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$NotInitialized;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -216,8 +198,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Unavailable$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -227,8 +207,6 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 }
 
 public final class com/splendo/kaluga/system/network/state/NetworkState$Unknown$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -252,14 +230,12 @@ public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$Avai
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;Lcom/splendo/kaluga/system/network/NetworkManager;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Available;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Available;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;Lcom/splendo/kaluga/system/network/NetworkManager;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Available;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getNetworkManager ()Lcom/splendo/kaluga/system/network/NetworkManager;
 	public fun getUnavailable ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -271,13 +247,11 @@ public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$Dein
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;Lcom/splendo/kaluga/system/network/NetworkManager;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Deinitialized;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Deinitialized;Lcom/splendo/kaluga/system/network/NetworkConnectionType;Lcom/splendo/kaluga/system/network/NetworkManager;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Deinitialized;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public final fun getNetworkManager ()Lcom/splendo/kaluga/system/network/NetworkManager;
 	public fun getPreviousNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -294,11 +268,9 @@ public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$Init
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;Lcom/splendo/kaluga/system/network/NetworkManager;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Initializing;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Initializing;Lcom/splendo/kaluga/system/network/NetworkConnectionType;Lcom/splendo/kaluga/system/network/NetworkManager;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Initializing;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getNetworkManager ()Lcom/splendo/kaluga/system/network/NetworkManager;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initialized (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
@@ -306,9 +278,7 @@ public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$Init
 
 public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$NotInitialized : com/splendo/kaluga/system/network/state/NetworkStateImpl, com/splendo/kaluga/system/network/state/NetworkState$NotInitialized {
 	public static final field INSTANCE Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$NotInitialized;
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public final fun startInitializing (Lcom/splendo/kaluga/system/network/NetworkManager;)Lkotlin/jvm/functions/Function1;
 }
@@ -319,13 +289,11 @@ public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$Unav
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkManager;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Unavailable;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Unavailable;Lcom/splendo/kaluga/system/network/NetworkManager;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Unavailable;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getNetworkManager ()Lcom/splendo/kaluga/system/network/NetworkManager;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -337,13 +305,11 @@ public final class com/splendo/kaluga/system/network/state/NetworkStateImpl$Unkn
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;Lcom/splendo/kaluga/system/network/NetworkManager;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Unknown;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Unknown;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;Lcom/splendo/kaluga/system/network/NetworkManager;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkStateImpl$Unknown;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getNetworkManager ()Lcom/splendo/kaluga/system/network/NetworkManager;
 	public fun getUnavailable ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }

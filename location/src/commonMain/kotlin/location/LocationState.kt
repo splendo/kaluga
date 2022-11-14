@@ -106,7 +106,7 @@ sealed class LocationStateImpl {
             Disabled.NotPermitted(location, locationManager)
         }
 
-        fun afterNewStateIsSet(newState: LocationState) {
+        suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
                 is LocationState.Inactive,
                 is LocationState.Initializing,

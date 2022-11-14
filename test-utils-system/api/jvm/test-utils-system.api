@@ -40,13 +40,11 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Avail
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Available;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Available;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Available;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getUnavailable ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -57,12 +55,10 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Deini
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized;Lcom/splendo/kaluga/system/network/NetworkConnectionType;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Deinitialized;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getPreviousNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -81,10 +77,8 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Initi
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Initializing;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Initializing;Lcom/splendo/kaluga/system/network/NetworkConnectionType;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Initializing;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initialized (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
@@ -92,19 +86,15 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Initi
 
 public final class com/splendo/kaluga/test/system/network/MockNetworkState$NotInitialized : com/splendo/kaluga/test/system/network/MockNetworkState$Inactive, com/splendo/kaluga/system/network/state/NetworkState$NotInitialized {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/system/network/MockNetworkState$NotInitialized;
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unavailable : com/splendo/kaluga/test/system/network/MockNetworkState$Initialized, com/splendo/kaluga/system/network/state/NetworkState$Unavailable {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unavailable;
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
@@ -114,12 +104,10 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unkno
 	public final fun copy (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unknown;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unknown;Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;ILjava/lang/Object;)Lcom/splendo/kaluga/test/system/network/MockNetworkState$Unknown;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getUnavailable ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }

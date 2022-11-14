@@ -29,7 +29,7 @@ import com.splendo.kaluga.permissions.notifications.registerNotificationsPermiss
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
 import kotlin.time.Duration
 
-suspend fun PermissionsBuilder.registerAllPermissions(
+fun PermissionsBuilder.registerAllPermissions(
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
 ) {

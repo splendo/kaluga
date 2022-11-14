@@ -21,6 +21,7 @@ pluginManagement {
             val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
             val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
             val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
+            val kalugaAtomicFuGradlePluginVersion = settings.extra["kaluga.atomicFuGradlePluginVersion"]
             val kalugaBinaryCompatibilityValidatorVersion = settings.extra["kaluga.binaryCompatibilityValidatorVersion"]
 
             when (requested.id.id) {
@@ -39,6 +40,7 @@ pluginManagement {
                 -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
                 "org.jetbrains.kotlinx.binary-compatibility-validator"
                 -> useVersion("$kalugaBinaryCompatibilityValidatorVersion")
+                "org.jetbrains.kotlinx.atomicfu" -> useVersion("$kalugaAtomicFuGradlePluginVersion")
             }
         }
     }

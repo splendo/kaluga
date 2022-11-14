@@ -153,12 +153,12 @@ actual class DefaultScanner internal constructor(
         bluetoothScanner.stopScan(callback)
     }
 
-    override fun startMonitoringHardwareEnabled() {
+    override suspend fun startMonitoringHardwareEnabled() {
         locationEnabledMonitor.startMonitoring()
         super.startMonitoringHardwareEnabled()
     }
 
-    override fun stopMonitoringHardwareEnabled() {
+    override suspend fun stopMonitoringHardwareEnabled() {
         locationEnabledMonitor.stopMonitoring()
         super.stopMonitoringHardwareEnabled()
     }

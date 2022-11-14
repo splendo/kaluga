@@ -26,10 +26,19 @@ import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.test.base.BaseUIThreadTest.EmptyTestContext
 import com.splendo.kaluga.test.base.BaseUIThreadTest.TestContext
-import kotlinx.coroutines.*
+import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlin.test.AfterTest
 import kotlin.time.Duration.Companion.seconds
 
@@ -82,12 +91,12 @@ private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: su
     return contextMap[cookie] as TC
 }
 
-private var cookieTin = 0L
+private val cookieTin = atomic(0L)
 
 abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
 
     // used for thread local map access to store the testContext
-    private val cookie = ++cookieTin
+    private val cookie = cookieTin.incrementAndGet()
 
     abstract val flowFromTestContext: suspend TC.() -> F
 

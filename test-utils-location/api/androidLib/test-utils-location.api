@@ -13,17 +13,17 @@ public final class com/splendo/kaluga/test/location/MockBaseLocationManager : co
 	public final fun getRequestEnableLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStartMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStartMonitoringLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStopMonitoringLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun startMonitoringPermissions ()V
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun stopMonitoringLocationEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/test/location/MockBaseLocationManager$Builder : com/splendo/kaluga/location/BaseLocationManager$Builder {
@@ -45,19 +45,19 @@ public final class com/splendo/kaluga/test/location/MockLocationManager : com/sp
 	public final fun getRequestEnableLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStartMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStartMonitoringLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStopMonitoringLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public fun isLocationEnabled ()Z
 	public final fun isLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun startMonitoringPermissions ()V
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun stopMonitoringLocationEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/test/location/MockLocationMonitor : com/splendo/kaluga/test/base/monitor/MockServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
