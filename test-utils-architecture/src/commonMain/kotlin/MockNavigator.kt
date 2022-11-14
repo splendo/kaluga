@@ -25,7 +25,7 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 /**
  * Mock implementation of [Navigator]
  */
-class MockNavigator<A : NavigationAction<*>> : Navigator<A> {
+open class MockNavigator<A : NavigationAction<*>> : Navigator<A> {
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] of [navigate]

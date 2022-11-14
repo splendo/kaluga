@@ -29,7 +29,7 @@ public final class com/splendo/kaluga/test/architecture/MockLifecycleSubscriber 
 	public fun unsubscribe ()V
 }
 
-public final class com/splendo/kaluga/test/architecture/MockNavigator : com/splendo/kaluga/architecture/navigation/Navigator {
+public class com/splendo/kaluga/test/architecture/MockNavigator : com/splendo/kaluga/architecture/navigation/Navigator {
 	public fun <init> ()V
 	public final fun getNavigateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
