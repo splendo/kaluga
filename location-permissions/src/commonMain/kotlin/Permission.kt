@@ -35,7 +35,7 @@ data class LocationPermission(val background: Boolean = false, val precise: Bool
     override val name: String = listOfNotNull(if (background) "Background" else null, "Location", "-", if (precise) "Precise" else "Coarse").joinToString(" ")
 }
 
-suspend fun PermissionsBuilder.registerLocationPermission(
+fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -44,7 +44,7 @@ suspend fun PermissionsBuilder.registerLocationPermission(
         LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
-suspend fun PermissionsBuilder.registerLocationPermission(
+fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     locationPermissionStateRepoBuilder: (LocationPermission, BaseLocationPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<LocationPermission>
 ) = locationPermissionManagerBuilderBuilder(context).also {
@@ -54,7 +54,7 @@ suspend fun PermissionsBuilder.registerLocationPermission(
     }
 }
 
-suspend fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
+fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -63,7 +63,7 @@ suspend fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
         LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
-suspend fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
+fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     locationPermissionStateRepoBuilder: (LocationPermission, BaseLocationPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<LocationPermission>
 ) = locationPermissionManagerBuilderBuilder(context).also {

@@ -82,9 +82,7 @@ public abstract interface class com/splendo/kaluga/system/network/ReachableNetwo
 
 public abstract class com/splendo/kaluga/system/network/state/NetworkState : com/splendo/kaluga/state/KalugaState {
 	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/Network;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 

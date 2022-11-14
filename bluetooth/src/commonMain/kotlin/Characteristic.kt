@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
@@ -37,7 +38,10 @@ open class Characteristic(
 ) {
 
     private val isBusy = MutableStateFlow(false)
-    var isNotifying: Boolean = false
+    private val _isNotifying = atomic(false)
+    var isNotifying: Boolean
+        get() = _isNotifying.value
+        set(value) { _isNotifying.value = value }
 
     /**
      * Enables notification or indication for this [Characteristic].

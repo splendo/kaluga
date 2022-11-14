@@ -34,8 +34,8 @@ public final class com/splendo/kaluga/bluetooth/beacons/Beacons {
 	public final fun getBeacons ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun isAnyInRange (Ljava/util/List;)Lkotlinx/coroutines/flow/Flow;
 	public final fun isMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun startMonitoring (Lkotlinx/coroutines/CoroutineScope;)V
-	public final fun stopMonitoring ()V
+	public final fun startMonitoring (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/BeaconsKt {

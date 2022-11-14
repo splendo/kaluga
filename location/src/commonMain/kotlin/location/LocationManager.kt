@@ -36,6 +36,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 interface LocationManager {
 
@@ -50,10 +52,10 @@ interface LocationManager {
 
     val locationPermission: LocationPermission
 
-    fun startMonitoringPermissions()
-    fun stopMonitoringPermissions()
+    suspend fun startMonitoringPermissions()
+    suspend fun stopMonitoringPermissions()
     suspend fun startMonitoringLocationEnabled()
-    fun stopMonitoringLocationEnabled()
+    suspend fun stopMonitoringLocationEnabled()
     fun isLocationEnabled(): Boolean
     suspend fun requestEnableLocation()
     suspend fun startMonitoringLocation()
@@ -99,18 +101,22 @@ abstract class BaseLocationManager(
 
     abstract val locationMonitor: LocationMonitor
 
+    private val permissionsLock = Mutex()
     private var monitoringPermissionsJob: Job? = null
+    private val enabledLock = Mutex()
     private var monitoringLocationEnabledJob: Job? = null
 
-    override fun startMonitoringPermissions() {
-        logger.debug(LOG_TAG) { "Start monitoring permission" }
-        if (monitoringPermissionsJob != null) return // optimization to skip making a job
+    override suspend fun startMonitoringPermissions() {
+        permissionsLock.withLock {
+            logger.debug(LOG_TAG) { "Start monitoring permission" }
+            if (monitoringPermissionsJob != null) return // optimization to skip making a job
 
-        val job = Job(this.coroutineContext[Job])
-        monitoringPermissionsJob = job
-        launch(job) {
-            locationPermissionRepo.filterOnlyImportant().collect { state ->
-                handlePermissionState(state)
+            val job = Job(this.coroutineContext[Job])
+            monitoringPermissionsJob = job
+            coroutineScope.launch(job) {
+                locationPermissionRepo.filterOnlyImportant().collect { state ->
+                    handlePermissionState(state)
+                }
             }
         }
     }
@@ -131,22 +137,22 @@ abstract class BaseLocationManager(
         emitEvent(LocationManager.Event.PermissionChanged(hasPermission))
     }
 
-    override fun stopMonitoringPermissions() {
+    override suspend fun stopMonitoringPermissions() = permissionsLock.withLock {
         monitoringPermissionsJob?.cancel()
         monitoringPermissionsJob = null
     }
 
-    override suspend fun startMonitoringLocationEnabled() {
+    override suspend fun startMonitoringLocationEnabled() = enabledLock.withLock {
         locationMonitor.startMonitoring()
         if (monitoringLocationEnabledJob != null)
             return
-        monitoringLocationEnabledJob = launch {
+        monitoringLocationEnabledJob = coroutineScope.launch {
             locationMonitor.isEnabled.collect {
                 handleLocationEnabledChanged()
             }
         }
     }
-    override fun stopMonitoringLocationEnabled() {
+    override suspend fun stopMonitoringLocationEnabled() = enabledLock.withLock {
         locationMonitor.stopMonitoring()
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null

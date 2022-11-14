@@ -41,17 +41,11 @@ sealed class TrafficLightState :
     HandleAfterOldStateIsRemoved<TrafficLightState>,
     HandleAfterNewStateIsSet<TrafficLightState> {
 
-    val initialStateDone = EmptyCompletableDeferred()
     val beforeCreatingNewStateDone = EmptyCompletableDeferred()
     val afterCreatingNewStateDone = CompletableDeferred<TrafficLightState>()
     val afterNewStateIsSetDone = CompletableDeferred<TrafficLightState>()
     val beforeOldStateIsRemovedDone = CompletableDeferred<TrafficLightState>()
     val afterOldStateIsRemovedDone = CompletableDeferred<TrafficLightState>()
-    val finalStateDone = EmptyCompletableDeferred()
-
-    override suspend fun initialState() {
-        initialStateDone.complete()
-    }
 
     override suspend fun beforeCreatingNewState() {
         beforeCreatingNewStateDone.complete()
@@ -71,10 +65,6 @@ sealed class TrafficLightState :
 
     override suspend fun afterOldStateIsRemoved(oldState: TrafficLightState) {
         afterOldStateIsRemovedDone.complete(oldState)
-    }
-
-    override suspend fun finalState() {
-        finalStateDone.complete()
     }
 
     class RedLight internal constructor() : TrafficLightState() {
@@ -112,7 +102,6 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
         test {
             assertIs<TrafficLightState.GreenLight>(it)
             greenStateDeferred.complete(it)
-            assertTrue(it.initialStateDone.isCompleted)
         }
         val greenState = greenStateDeferred.await()
         action {

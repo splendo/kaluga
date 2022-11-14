@@ -20,7 +20,7 @@ import org.gradle.api.Project
 data class GitBranch(val branch: String, val kalugaBranchPostfix: String)
 
 val Project.GitBranch: GitBranch get() {
- val BITRISE_GIT_BRANCH = java.lang.System.getenv("BITRISE_GIT_BRANCH")
+ val GITHUB_GIT_BRANCH = java.lang.System.getenv("GITHUB_REF_NAME") // could also be a tag name
  val kaluga_branch = System.getProperty("kaluga_branch")
  val MAVEN_CENTRAL_RELEASE = System.getenv("MAVEN_CENTRAL_RELEASE")
  val release = MAVEN_CENTRAL_RELEASE?.toLowerCase()?.trim() == "true"
@@ -35,9 +35,9 @@ val Project.GitBranch: GitBranch get() {
  }
 
  // favour user definition of kaluga_branch (if present), otherwise take it from GIT branch:
- // - if running on CI: favour bitrise's branch detection
+ // - if running on CI: favour github's branch detection
  // - else: try to get it via the `git` CLI.
- val branch = (kaluga_branch ?: BITRISE_GIT_BRANCH ?: branchFromGit ).replace('/', '-').trim().toLowerCase().also {
+ val branch = (kaluga_branch ?: GITHUB_GIT_BRANCH ?: branchFromGit ).replace('/', '-').trim().toLowerCase().also {
   if (it == "HEAD") {
    logger.warn("Unable to determine current branch: Project is checked out with detached head!")
   }
@@ -48,7 +48,7 @@ val Project.GitBranch: GitBranch get() {
   else -> "-"+branch
  } + if (!release) "-SNAPSHOT" else "").also {
 
-  println("decided branch: '$branch' to postfix '$it', isRelease: $release (from: BITRISE_GIT_BRANCH env: $BITRISE_GIT_BRANCH, kaluga_branch property: $kaluga_branch , MAVEN_CENTRAL_RELEASE env: $MAVEN_CENTRAL_RELEASE , git cli: $branchFromGit)")
+  logger.lifecycle("decided branch: '$branch' to postfix '$it', isRelease: $release (from: GITHUB_GIT_BRANCH env: $GITHUB_GIT_BRANCH, kaluga_branch property: $kaluga_branch , MAVEN_CENTRAL_RELEASE env: $MAVEN_CENTRAL_RELEASE , git cli: $branchFromGit)")
  }
 
  return GitBranch(branch, kalugaBranchPostfix)

@@ -4,6 +4,7 @@ plugins {
     id("com.android.library")
     id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
 publishableComponent()

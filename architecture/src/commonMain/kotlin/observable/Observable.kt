@@ -22,6 +22,7 @@ import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.KalugaThread
 import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -189,14 +190,14 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     var onFirstObservation: (() -> Unit)? = null
         set(value) {
             // if an observation took place before this field was set, invoke immediately
-            if (firstObservation) {
+            if (firstObservation.value) {
                 value?.invoke()
             } else {
                 field = value
             }
         }
 
-    private var firstObservation = false
+    private val firstObservation = atomic(false)
 
     var beforeObservedValueGet: ((OO) -> ObservableOptional<T>)? = null
 
@@ -253,8 +254,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     }
 
     private fun getValue(): OO {
-        if (!firstObservation) {
-            firstObservation = true
+        if (firstObservation.compareAndSet(expect = false, update = true)) {
             onFirstObservation?.invoke()
         }
 

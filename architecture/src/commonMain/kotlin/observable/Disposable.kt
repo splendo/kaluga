@@ -18,8 +18,8 @@
 @file:JvmName("DisposableCommonKt")
 package com.splendo.kaluga.architecture.observable
 
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlin.jvm.JvmName
 
 typealias DisposeHandler = () -> Unit
@@ -37,12 +37,12 @@ interface Disposable {
     /**
      * Disposes the associated object
      */
-    suspend fun dispose()
+    fun dispose()
 
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    suspend fun addTo(disposeBag: DisposeBag)
+    fun addTo(disposeBag: DisposeBag)
 }
 
 expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
@@ -51,16 +51,15 @@ expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
  * Plain [Disposable] to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
-abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
+abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : SynchronizedObject(), Disposable {
 
-    private val disposal = Semaphore(1)
     private var disposeHandler: DisposeHandler? = onDispose
 
     /**
      * Disposes the associated object
      */
-    override suspend fun dispose() {
-        disposal.withPermit {
+    override fun dispose() {
+        synchronized(this) {
             disposeHandler?.let {
                 it.invoke()
                 disposeHandler = null
@@ -74,7 +73,7 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    override suspend fun addTo(disposeBag: DisposeBag) {
+    override fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 }
@@ -82,17 +81,16 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag].
  */
-class DisposeBag : Disposable {
+class DisposeBag : SynchronizedObject(), Disposable {
 
-    private val addingOperation = Semaphore(1)
     private val disposables: MutableList<Disposable> = mutableListOf()
     private val nestedBags: MutableList<DisposeBag> = mutableListOf()
 
     /**
      * Adds a nested [DisposeBag]
      */
-    suspend fun add(disposeBag: DisposeBag) {
-        addingOperation.withPermit {
+    fun add(disposeBag: DisposeBag) {
+        synchronized(this) {
             nestedBags.add(disposeBag)
         }
     }
@@ -100,13 +98,13 @@ class DisposeBag : Disposable {
     /**
      * Adds a [Disposable] to this [DisposeBag]
      */
-    suspend fun add(disposable: Disposable) {
-        addingOperation.withPermit {
+    fun add(disposable: Disposable) {
+        synchronized(this) {
             disposables.add(disposable)
         }
     }
 
-    override suspend fun addTo(disposeBag: DisposeBag) {
+    override fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 
@@ -114,13 +112,11 @@ class DisposeBag : Disposable {
      * Disposes all [Disposable]s and nested [DisposeBag]s added to this [DisposeBag].
      * Added elements can only be disposed once
      */
-    override suspend fun dispose() {
-        disposables.forEach { it.dispose() }
-        addingOperation.withPermit {
+    override fun dispose() {
+        synchronized(this) {
+            disposables.forEach { it.dispose() }
             disposables.clear()
-        }
-        nestedBags.forEach { it.dispose() }
-        addingOperation.withPermit {
+            nestedBags.forEach { it.dispose() }
             nestedBags.clear()
         }
     }

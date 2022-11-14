@@ -34,7 +34,7 @@ data class StoragePermission(val allowWrite: Boolean = false) : Permission() {
     override val name: String = "Storage - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
 }
 
-suspend fun PermissionsBuilder.registerStoragePermission(
+fun PermissionsBuilder.registerStoragePermission(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -49,7 +49,7 @@ suspend fun PermissionsBuilder.registerStoragePermission(
         )
     }
 
-suspend fun PermissionsBuilder.registerStoragePermission(
+fun PermissionsBuilder.registerStoragePermission(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>
 ) = storagePermissionManagerBuilderBuilder(context).also {
@@ -59,7 +59,7 @@ suspend fun PermissionsBuilder.registerStoragePermission(
     }
 }
 
-suspend fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
+fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -74,7 +74,7 @@ suspend fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
         )
     }
 
-suspend fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
+fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>
 ) = storagePermissionManagerBuilderBuilder(context).also {

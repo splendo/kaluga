@@ -12,6 +12,7 @@ buildscript {
         // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
         classpath("com.android.tools.build:gradle:${project.extra["kaluga.androidGradlePluginVersion"]}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.extra["kaluga.kotlinVersion"]}")
+        classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:${project.extra["kaluga.atomicFuGradlePluginVersion"]}")
     }
 }
 
@@ -22,12 +23,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint-idea")
     id("org.jetbrains.kotlin.multiplatform") apply false
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
-}
-
-// TODO: To be removed once we will migrate to kotlin version 1.6.20
-// https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5667134.0-0
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin>() {
-    rootProject.extensions.getByType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension::class.java).nodeVersion = "16.13.2"
 }
 
 allprojects {

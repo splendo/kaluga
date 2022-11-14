@@ -87,8 +87,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Active$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Active;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Active;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Active;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -97,14 +95,10 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Allowed$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Allowed;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Allowed;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Allowed;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -113,8 +107,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Deinitialized$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Deinitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Deinitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Deinitialized;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -123,8 +115,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Denied$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -133,8 +123,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Denied$Locked$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied$Locked;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied$Locked;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied$Locked;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -144,8 +132,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Denied$Requestable$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied$Requestable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied$Requestable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Denied$Requestable;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -153,8 +139,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Inactive$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Inactive;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Inactive;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Inactive;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -162,8 +146,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Initialized$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Initialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Initialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Initialized;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -172,8 +154,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Initializing$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Initializing;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Initializing;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Initializing;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -181,8 +161,6 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionState$Uninitialized$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/permissions/base/PermissionState$Uninitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/permissions/base/PermissionState$Uninitialized;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/permissions/base/PermissionState$Uninitialized;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -207,11 +185,9 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Allow
 	public static synthetic fun copy-VtjQ1oo$default (Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Allowed;JLcom/splendo/kaluga/permissions/base/PermissionManager;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Allowed;
 	public fun deny (Z)Lkotlin/jvm/functions/Function1;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getMonitoringInterval-UwyO8pc ()J
 	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/base/PermissionManager;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -223,12 +199,10 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Deini
 	public final fun copy-VtjQ1oo (JLcom/splendo/kaluga/permissions/base/PermissionManager;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Deinitialized;
 	public static synthetic fun copy-VtjQ1oo$default (Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Deinitialized;JLcom/splendo/kaluga/permissions/base/PermissionManager;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Deinitialized;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getMonitoringInterval-UwyO8pc ()J
 	public final fun getPermissionManager ()Lcom/splendo/kaluga/permissions/base/PermissionManager;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -244,12 +218,10 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Denie
 	public final fun copy-VtjQ1oo (JLcom/splendo/kaluga/permissions/base/PermissionManager;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Denied$Locked;
 	public static synthetic fun copy-VtjQ1oo$default (Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Denied$Locked;JLcom/splendo/kaluga/permissions/base/PermissionManager;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Denied$Locked;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getMonitoringInterval-UwyO8pc ()J
 	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/base/PermissionManager;
 	public fun getUnlock ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -261,12 +233,10 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Denie
 	public final fun copy-VtjQ1oo (JLcom/splendo/kaluga/permissions/base/PermissionManager;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Denied$Requestable;
 	public static synthetic fun copy-VtjQ1oo$default (Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Denied$Requestable;JLcom/splendo/kaluga/permissions/base/PermissionManager;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Denied$Requestable;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getLock ()Lkotlin/jvm/functions/Function1;
 	public fun getMonitoringInterval-UwyO8pc ()J
 	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/base/PermissionManager;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun request ()V
 	public fun toString ()Ljava/lang/String;
@@ -282,11 +252,9 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Initi
 	public final fun copy-VtjQ1oo (JLcom/splendo/kaluga/permissions/base/PermissionManager;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Initializing;
 	public static synthetic fun copy-VtjQ1oo$default (Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Initializing;JLcom/splendo/kaluga/permissions/base/PermissionManager;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionStateImpl$Initializing;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getMonitoringInterval-UwyO8pc ()J
 	public fun getPermissionManager ()Lcom/splendo/kaluga/permissions/base/PermissionManager;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
@@ -294,8 +262,6 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Initi
 
 public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Uninitialized : com/splendo/kaluga/permissions/base/PermissionStateImpl$Inactive, com/splendo/kaluga/permissions/base/PermissionState$Uninitialized {
 	public fun <init> ()V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun initialize-VtjQ1oo (JLcom/splendo/kaluga/permissions/base/PermissionManager;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
@@ -330,12 +296,12 @@ public class com/splendo/kaluga/permissions/base/PermissionsBuilder {
 	public final fun createPermissionStateRepo (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/permissions/base/BasePermissionStateRepo;
 	public final fun get (Lcom/splendo/kaluga/permissions/base/Permission;)Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;
 	public final fun getContext ()Lcom/splendo/kaluga/permissions/base/PermissionContext;
-	public final fun register (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun registerOrGet (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun registerOrGetPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun registerPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun unregister (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun unregisterPermissionStateRepoBuilder (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun register (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;)Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;
+	public final fun registerOrGet (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;)Lcom/splendo/kaluga/permissions/base/BasePermissionsBuilder;
+	public final fun registerOrGetPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/permissions/base/PermissionStateRepoBuilder;
+	public final fun registerPermissionStateRepoBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)V
+	public final fun unregister (Lcom/splendo/kaluga/permissions/base/Permission;)V
+	public final fun unregisterPermissionStateRepoBuilder (Lcom/splendo/kaluga/permissions/base/Permission;)V
 }
 
 public final class com/splendo/kaluga/permissions/base/PermissionsBuilderError : java/lang/Error {
