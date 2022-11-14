@@ -70,7 +70,7 @@ internal actual class DefaultDeviceConnectionManager(
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
     }
 
-    private val discoveringMutext = Mutex()
+    private val discoveringMutex = Mutex()
     private val discoveringServices = mutableListOf<CBUUID>()
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
@@ -138,7 +138,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun discoverServices() {
-        discoveringMutext.withLock {
+        discoveringMutex.withLock {
             discoveringServices.clear()
             discoveringCharacteristics.clear()
             peripheral.discoverServices(null)
@@ -206,7 +206,7 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun didDiscoverServices() {
         launch {
-            discoveringMutext.withLock {
+            discoveringMutex.withLock {
                 discoveringServices.addAll(
                     peripheral.services?.typedList<CBService>()?.map {
                         peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
@@ -221,7 +221,7 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun didDiscoverCharacteristic(forService: CBService) {
         launch {
-            discoveringMutext.withLock {
+            discoveringMutex.withLock {
                 discoveringServices.remove(forService.UUID)
                 discoveringCharacteristics.addAll(
                     forService.characteristics?.typedList<CBCharacteristic>()?.map {
@@ -236,7 +236,7 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
         launch {
-            discoveringMutext.withLock {
+            discoveringMutex.withLock {
                 discoveringCharacteristics.remove(forCharacteristic.UUID)
             }
             checkScanComplete()
