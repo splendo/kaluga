@@ -32,7 +32,7 @@ object CameraPermission : Permission() {
     override val name: String = "Camera"
 }
 
-suspend fun PermissionsBuilder.registerCameraPermission(
+fun PermissionsBuilder.registerCameraPermission(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -41,7 +41,7 @@ suspend fun PermissionsBuilder.registerCameraPermission(
         CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
     }
 
-suspend fun PermissionsBuilder.registerCameraPermission(
+fun PermissionsBuilder.registerCameraPermission(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
     cameraPermissionStateRepoBuilder: (BaseCameraPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CameraPermission>
 ) = cameraPermissionManagerBuilderBuilder(context).also {
@@ -51,7 +51,7 @@ suspend fun PermissionsBuilder.registerCameraPermission(
     }
 }
 
-suspend fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
+fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -60,7 +60,7 @@ suspend fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
         CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
     }
 
-suspend fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
+fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
     cameraPermissionStateRepoBuilder: (BaseCameraPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CameraPermission>
 ) = cameraPermissionManagerBuilderBuilder(context).also {

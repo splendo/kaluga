@@ -18,13 +18,13 @@
 package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.singleThreadDispatcher
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
@@ -63,13 +63,13 @@ class PermissionsBuilderError(message: String) : Error(message)
  */
 open class PermissionsBuilder(val context: PermissionContext = defaultPermissionContext) {
 
-    private val buildersLock = Mutex()
+    private val buildersLock = reentrantLock()
     private val builders = mutableMapOf<KClassifier, BasePermissionsBuilder<*>>()
-    private val repoBuildersLock = Mutex()
+    private val repoBuildersLock = reentrantLock()
     private val repoBuilders = mutableMapOf<KClassifier, PermissionStateRepoBuilder<*>>()
 
-    suspend inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> register(builder: B): B = register(P::class, builder)
-    suspend fun <P : Permission, B : BasePermissionsBuilder<P>> register(permission: KClass<P>, builder: B): B = buildersLock.withLock {
+    inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> register(builder: B): B = register(P::class, builder)
+    fun <P : Permission, B : BasePermissionsBuilder<P>> register(permission: KClass<P>, builder: B): B = buildersLock.withLock {
         if (builders[permission] == null) {
             builders[permission] = builder
             builder
@@ -78,13 +78,13 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         }
     }
 
-    suspend inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(builder: B): BasePermissionsBuilder<P> = registerOrGet(P::class, builder)
+    inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(builder: B): BasePermissionsBuilder<P> = registerOrGet(P::class, builder)
     @Suppress("UNCHECKED_CAST")
-    suspend fun <P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(permission: KClass<P>, builder: B): BasePermissionsBuilder<P> = buildersLock.withLock {
+    fun <P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(permission: KClass<P>, builder: B): BasePermissionsBuilder<P> = buildersLock.withLock {
         builders.getOrPut(permission::class) { builder } as BasePermissionsBuilder<P>
     }
 
-    suspend fun <P : Permission> unregister(permission: P) {
+    fun <P : Permission> unregister(permission: P) {
         buildersLock.withLock {
             builders.remove(permission::class)
         }
@@ -94,8 +94,8 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     operator fun <P : Permission> get(permission: P): BasePermissionsBuilder<P> =
         builders[permission::class] as? BasePermissionsBuilder<P> ?: throw PermissionsBuilderError("The Builder for $permission was not registered")
 
-    suspend inline fun <reified P : Permission> registerPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
-    suspend fun <P : Permission> registerPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) {
+    inline fun <reified P : Permission> registerPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+    fun <P : Permission> registerPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) {
         repoBuildersLock.withLock {
             if (repoBuilders[permission] == null) {
                 createPermissionStateRepoBuilder(permissionStateRepoBuilder).also { repoBuilders[permission] = it }
@@ -105,13 +105,13 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         }
     }
 
-    suspend inline fun <reified P : Permission> registerOrGetPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerOrGetPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+    inline fun <reified P : Permission> registerOrGetPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerOrGetPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
     @Suppress("UNCHECKED_CAST")
-    suspend fun <P : Permission> registerOrGetPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = repoBuildersLock.withLock {
+    fun <P : Permission> registerOrGetPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = repoBuildersLock.withLock {
         repoBuilders.getOrPut(permission) { createPermissionStateRepoBuilder(permissionStateRepoBuilder) } as PermissionStateRepoBuilder<P>
     }
 
-    suspend fun <P : Permission> unregisterPermissionStateRepoBuilder(permission: P) {
+    fun <P : Permission> unregisterPermissionStateRepoBuilder(permission: P) {
         repoBuildersLock.withLock {
             repoBuilders.remove(permission::class)
         }

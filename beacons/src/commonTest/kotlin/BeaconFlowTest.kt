@@ -32,7 +32,7 @@ abstract class BeaconFlowTest(
 
     override val flow = suspend { beacons.beacons }
 
-    fun start(coroutineScope: CoroutineScope) = beacons.startMonitoring(coroutineScope)
-    fun stop() = beacons.stopMonitoring()
+    suspend fun start(coroutineScope: CoroutineScope) = beacons.startMonitoring(coroutineScope)
+    suspend fun stop() = beacons.stopMonitoring()
     suspend fun discoverDevices(vararg devices: Device) = bluetooth.discoveredDevices.emit(devices.toList())
 }

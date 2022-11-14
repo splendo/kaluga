@@ -32,7 +32,7 @@ object BluetoothPermission : Permission() {
     override val name: String = "Bluetooth"
 }
 
-suspend fun PermissionsBuilder.registerBluetoothPermission(
+fun PermissionsBuilder.registerBluetoothPermission(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -46,7 +46,7 @@ suspend fun PermissionsBuilder.registerBluetoothPermission(
         )
     }
 
-suspend fun PermissionsBuilder.registerBluetoothPermission(
+fun PermissionsBuilder.registerBluetoothPermission(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
 ) = bluetoothPermissionManagerBuilderBuilder(context).also {
@@ -56,7 +56,7 @@ suspend fun PermissionsBuilder.registerBluetoothPermission(
     }
 }
 
-suspend fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
+fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
@@ -70,7 +70,7 @@ suspend fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
         )
     }
 
-suspend fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
+fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
 ) = bluetoothPermissionManagerBuilderBuilder(context).also {
