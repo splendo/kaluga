@@ -19,6 +19,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
+                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
         commonTest {
