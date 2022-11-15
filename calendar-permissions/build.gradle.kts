@@ -11,8 +11,6 @@ publishableComponent()
 kotlin {
     sourceSets {
         getByName("commonMain") {
-            val ext = (gradle as ExtensionAware).extra
-
             dependencies {
                 api(project(":base-permissions", ""))
             }

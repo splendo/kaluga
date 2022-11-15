@@ -12,11 +12,11 @@ publishableComponent()
 kotlin {
     sourceSets {
         getByName("commonMain") {
-            val ext = (gradle as ExtensionAware).extra
 
             dependencies {
                 api(project(":logging", ""))
                 api(project(":base", ""))
+                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
         getByName("commonTest") {
