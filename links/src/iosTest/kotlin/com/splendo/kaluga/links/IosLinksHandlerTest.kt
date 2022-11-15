@@ -47,13 +47,20 @@ class IosLinksHandlerTest {
     fun testQueryExtractorSucceed() {
         val url = "https://test.io?list_1=first&list_2=second&list_3=third"
 
-        assertEquals(listOf("first", "second", "third"), linksValidator.extractQueryAsList(url))
+        assertEquals(
+            mapOf(
+                "list_1" to "first",
+                "list_2" to "second",
+                "list_3" to "third"
+            ),
+            linksValidator.extractQuery(url)
+        )
     }
 
     @Test
     fun testQueryExtractorEmptyQuery() {
         val url = "https://test.io"
 
-        assertEquals(emptyList(), linksValidator.extractQueryAsList(url))
+        assertEquals(emptyMap<String, Any>(), linksValidator.extractQuery(url))
     }
 }

@@ -18,8 +18,11 @@
 package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.manager.LinksManagerBuilder
+import com.splendo.kaluga.links.manager.PlatformLinksHandler
 
-actual class LinksBuilder : Links.Builder {
+actual class LinksBuilder actual constructor(
+    private val platformLinksHandler: PlatformLinksHandler
+) : Links.Builder {
     override fun create(): Links =
-        Links(LinksManagerBuilder())
+        Links(LinksManagerBuilder(platformLinksHandler))
 }

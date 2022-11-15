@@ -1,28 +1,34 @@
 # Links
 
-Module used to decode an object from either an App Link, Universal Link or Deep Link's query. It also uses [kaluga-architecture](https://github.com/splendo/kaluga/tree/master/architecture) to open links in the Browser.
+Module used to decode an object from either an App Link, Universal Link or Deep Link's query. The example uses [kaluga-architecture](https://github.com/splendo/kaluga/tree/master/architecture) to open links in the Browser.
 
-## Deserializer
-`LinksDecoder` is used to convert query values into an object and it takes a list of values and a serializer. **It is important that the values passed to `LinksDecoder` are ordered in the same way they are declared in the data class**.
-When `decodeFromList` is called, a `LinksDecoder` is created and it goes through the passed `List<Any>` one per one referring to the passed `serializer` in order to know the parameter's type and finally convert it.
-### Special usages
-- Query contains an array of values: In this case the query will have to contain a parameter (put just before the list of values) that identifies the size of that array. 
+### Usages highlights
+Links uses [kotlinx.serialization-properties](kotlinx-serialization-properties) format module which allow to decode an object from a map of strings or any. Usage specification can be found in the KDoc for [`Properties`](https://github.com/Kotlin/kotlinx.serialization/blob/master/formats/properties/commonMain/src/kotlinx/serialization/properties/Properties.kt#L16) class.
+
 ``` kotlin
-@Serializable 
+@Serializable
 data class Aliment(val name: String)
 
-@Serializable 
+@Serializable
 data class Recipe(val name: String, val ingredients: List<Aliment>)
 
 // Somewhere in the code
-val query = "name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
+val query = "name=Carbonara&ingredients=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
 ```
-The list size's parameter name is not important and is not included in the data class parameters, but it is requested by the decoder.
+The list size's parameter is not included in the data class `Recipe`, but then is used by [LinksDecoder]. It's name must be the same as the array property it represents.
 
+- Nullable values should not be omitted from url query. Kaluga links does not support yet default null value for missing values.
+```kotlin
+@Serializable
+data class Foo(val bar: String?, baz: String)
+
+// Somewhere in the code
+val query = "bar=null&baz=Bazinga"
+```
 
 ## Usage
 
-The entry point for universal links or dynamic links in Android or iOS are `MainActivity.kt` and `AppDelegate.swift`. 
+The entry point for universal links or dynamic links in Android or iOS are `MainActivity.kt` and `AppDelegate.swift`.
 Said so `MainActivity.kt` will have to override `onNewIntent` and call `handleIncomingLink`, while on iOS you should override the `application` method that receives a `NSUserActivity`.
 
 
@@ -35,7 +41,7 @@ override fun onNewIntent(intent: Intent?) {
 		appLinkData?.let {
 		    val url = URL(it.path)
 		    sharedViewModel.handleIncomingData(url, Person.serializer())
-		}	
+		}
 }
 ```
 
@@ -47,7 +53,7 @@ func application(_ application: NSApplication, continue userActivity: NSUserActi
         let incomingURL = userActivity.webpageURL else {
         return false
     }
-    
+
     viewController.viewModel.handleIncomingData(incomingUrl, Person.Companion.serializer())
 }
 ```
@@ -65,11 +71,11 @@ class SharedViewModel(
     navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
 ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
     private val links = linksBuilder.create()
-    
+
     fun <T> handleIncomingData(url: String, serializer: KSerializer<T>) {
         links.handleIncomingLink(url, serializer)
     }
-    
+
     fun handleOutgoingLink(url: String) {
         links.validateLink(url)
     }

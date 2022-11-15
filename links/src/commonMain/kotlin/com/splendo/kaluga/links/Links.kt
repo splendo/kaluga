@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.links.manager.LinksManager
+import com.splendo.kaluga.links.manager.PlatformLinksHandler
+import com.splendo.kaluga.links.models.LinksManager
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 
 class Links(
     linksManagerBuilder: LinksManager.Builder
@@ -28,7 +30,10 @@ class Links(
         fun create(): Links
     }
 
-    internal var linksManager: LinksManager = linksManagerBuilder.create()
+    internal val linksManager: LinksManager = linksManagerBuilder.create()
+
+    inline fun <reified T> handleIncomingLink(url: String): T? =
+        handleIncomingLink(url, serializer<T>())
 
     /**
      * Convert an incoming url's query into [T] and return it.
@@ -50,4 +55,4 @@ class Links(
     }
 }
 
-expect class LinksBuilder constructor() : Links.Builder
+expect class LinksBuilder(platformLinksHandler: PlatformLinksHandler) : Links.Builder

@@ -17,35 +17,32 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.DataTypesValues
 import com.splendo.kaluga.links.Links
-import kotlinx.serialization.KSerializer
+import com.splendo.kaluga.links.models.LinksHandler
+import com.splendo.kaluga.links.models.LinksManager
+import com.splendo.kaluga.links.models.ParametersNameValue
+import kotlinx.coroutines.flow.MutableStateFlow
 
-class MockLinksManager : LinksManager {
-    override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
-        return when (url) {
-            Person.dummyUrl -> Person.dummyPerson as T
-            else -> null
-        }
+class MockLinksHandler : LinksHandler {
+    override fun isValid(url: String): Boolean = when (url) {
+        DataTypesValues.url -> true
+        else -> TestConstants.VALID_URLS.contains(url)
     }
 
-    override fun validateLink(url: String): String? {
-        return if (TestConstants.VALID_URLS.contains(url)) {
-            url
-        } else {
-            null
-        }
-    }
+    val extractQueryValue = MutableStateFlow(emptyMap<String, String>())
+    override fun extractQuery(url: String): ParametersNameValue = extractQueryValue.value
 }
 
-class MockLinksManagerBuilder : LinksManager.Builder {
+class MockLinksManagerBuilder(private val linksHandler: LinksHandler) : LinksManager.Builder {
     override fun create(): LinksManager {
-        return MockLinksManager()
+        return DefaultLinksManager(linksHandler)
     }
 }
 
-class MockLinksBuilder : Links.Builder {
+class MockLinksBuilder(private val linksHandler: LinksHandler) : Links.Builder {
     override fun create(): Links {
-        return Links(MockLinksManagerBuilder())
+        return Links(MockLinksManagerBuilder(linksHandler))
     }
 }
 

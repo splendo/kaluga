@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,26 +17,48 @@
 
 package com.splendo.kaluga.links.manager
 
-import kotlinx.serialization.Serializable
+import com.splendo.kaluga.links.DataTypesValues
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@Serializable
-data class Person(
-    val name: String,
-    val surname: String,
-    val spokenLanguages: List<Languages> = emptyList()
-) {
-    companion object {
-        val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
-        val dummyPerson = Person(
-            "Corrado",
-            "Quattrocchi",
-            listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH)
+class DefaultLinksManagerTest {
+
+    private val linksHandler = MockLinksHandler()
+    private val linksManagerBuilder = MockLinksManagerBuilder(linksHandler)
+    private val linksManager = linksManagerBuilder.create()
+
+    @Test
+    fun test_handle_incoming_link_succeed() {
+        linksHandler.extractQueryValue.value = DataTypesValues.validParameters
+        val result = linksManager.handleIncomingLink(
+            DataTypesValues.url,
+            DataTypesValues.serializer()
         )
-    }
-}
 
-enum class Languages {
-    ITALIAN,
-    ENGLISH,
-    DUTCH,
+        assertEquals(DataTypesValues.expectedValidValues, result)
+    }
+
+    @Test
+    fun test_handle_incoming_link_url_is_empty() {
+        val result = linksManager.handleIncomingLink(
+            DataTypesValues.testUrl,
+            DataTypesValues.serializer()
+        )
+
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun test_handle_incoming_link_is_valid() {
+        val result = linksManager.validateLink(DataTypesValues.url)
+
+        assertEquals(DataTypesValues.url, result)
+    }
+
+    @Test
+    fun test_handle_incoming_link_is_invalid() {
+        val result = linksManager.validateLink("")
+
+        assertEquals(null, result)
+    }
 }

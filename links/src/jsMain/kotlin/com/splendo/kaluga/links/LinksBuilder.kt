@@ -17,7 +17,11 @@
 
 package com.splendo.kaluga.links
 
-actual class LinksBuilder : Links.Builder {
+import com.splendo.kaluga.links.manager.PlatformLinksHandler
+
+actual class LinksBuilder actual constructor(
+    platformLinksHandler: PlatformLinksHandler
+) : Links.Builder {
     override fun create(): Links {
         TODO("Not yet implemented")
     }

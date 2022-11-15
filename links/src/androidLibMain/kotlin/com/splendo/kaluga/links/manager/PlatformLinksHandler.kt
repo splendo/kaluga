@@ -19,16 +19,18 @@ package com.splendo.kaluga.links.manager
 
 import android.net.UrlQuerySanitizer
 import android.webkit.URLUtil
+import com.splendo.kaluga.links.models.LinksHandler
+import com.splendo.kaluga.links.models.ParametersNameValue
 
 actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
 
-    override fun extractQueryAsList(url: String): List<Any> {
+    override fun extractQuery(url: String): ParametersNameValue {
         val params = UrlQuerySanitizer(url)
 
         if (params.parameterList == null) {
-            return emptyList()
+            return emptyMap()
         }
-        return params.parameterList.map { it.mValue }
+        return params.parameterList.associate { it.mParameter to it.mValue }
     }
 }

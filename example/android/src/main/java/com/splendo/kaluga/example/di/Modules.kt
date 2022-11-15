@@ -67,6 +67,7 @@ import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.links.manager.PlatformLinksHandler
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
@@ -165,7 +166,7 @@ val viewModelModule = module {
 
     viewModel { (navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>) ->
         LinksViewModel(
-            LinksBuilder(),
+            LinksBuilder(platformLinksHandler = PlatformLinksHandler()),
             AlertPresenter.Builder(),
             navigator
         )

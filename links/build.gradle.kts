@@ -36,10 +36,12 @@ kotlin {
         commonMain {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
+                val serializationVersion = ext["serialization_version"]
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":architecture", ""))
-                api("org.jetbrains.kotlinx:kotlinx-serialization-core:${ext["serialization_version"]}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
             }
         }
         commonTest {

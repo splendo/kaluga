@@ -18,26 +18,88 @@
 package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.manager.MockLinksBuilder
-import com.splendo.kaluga.links.manager.Person
+import com.splendo.kaluga.links.manager.MockLinksHandler
 import com.splendo.kaluga.links.manager.TestConstants
+import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Serializable
+enum class MyEnum {
+    A, B, C
+}
+
+@Serializable
+data class DataTypesValues(
+    val stringValue: String,
+    val intValue: Int,
+    val longValue: Long,
+    val floatValue: Float,
+    val doubleValue: Double,
+    val booleanValue: Boolean,
+    val enumValue: MyEnum,
+    val listValue: List<String>,
+    val nullableValue: String? = null
+) {
+    companion object {
+        val validParameters = mapOf(
+            "stringValue" to "Test",
+            "intValue" to "0",
+            "longValue" to "3",
+            "floatValue" to "3.14",
+            "doubleValue" to "3.14",
+            "booleanValue" to "true",
+            "enumValue" to "A",
+            "listValue.0" to "zero",
+            "listValue.1" to "first",
+            "listValue.2" to "second"
+            // nullableValue is excluded to simulate its nullability.
+        )
+        val expectedValidValues = DataTypesValues(
+            "Test",
+            0,
+            3L,
+            3.14f,
+            3.14,
+            true,
+            MyEnum.A,
+            listOf("zero", "first", "second"),
+            null
+        )
+
+        const val testUrl = "https://test.io/"
+        val testUrlQuery = """stringValue=Test&
+                intValue=0&
+                longValue=3&
+                floatValue=3.14&
+                doubleValue=3.14&
+                booleanValue=true&
+                enumValue=A&
+                listValue.0=zero&
+                listValue.1=first&
+                listValue.2=second""".lines().joinToString("") { it.trim() }
+
+        val url = "$testUrl?$testUrlQuery"
+    }
+}
+
 class LinksTest {
 
-    private val linksBuilder = MockLinksBuilder()
+    private val linksHandler = MockLinksHandler()
+    private val linksBuilder = MockLinksBuilder(linksHandler)
     private val links: Links = linksBuilder.create()
 
     @Test
     fun testIncomingLinkErrorTransaction() {
-        val result = links.handleIncomingLink("http://invalid.com", Person.serializer())
+        val result = links.handleIncomingLink("http://invalid.com", DataTypesValues.serializer())
         assertEquals(null, result)
     }
 
     @Test
     fun testIncomingTransaction() {
-        val result = links.handleIncomingLink(Person.dummyUrl, Person.serializer())
-        assertEquals(Person.dummyPerson, result)
+        linksHandler.extractQueryValue.value = DataTypesValues.validParameters
+        val result = links.handleIncomingLink(DataTypesValues.url, DataTypesValues.serializer())
+        assertEquals(DataTypesValues.expectedValidValues, result)
     }
 
     @Test

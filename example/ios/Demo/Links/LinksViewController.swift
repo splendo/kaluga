@@ -26,7 +26,12 @@ class LinksViewController : UIViewController {
     
     private let knArchitectureFramework = KNArchitectureFramework()
     private lazy var viewModel: LinksViewModel = {
-        return knArchitectureFramework.createLinksViewModel(parent: self, animated: true, completion: nil)
+        return knArchitectureFramework.createLinksViewModel(
+            parent: self,
+            alertPresenter: AlertPresenter.Builder(viewController: self),
+            animated: true,
+            completion: nil
+        )
     }()
     private var lifecycleManager: LifecycleManager!
 
