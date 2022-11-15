@@ -48,6 +48,4 @@ final class FittingWidthAutomaticHeightCollectionViewFlowLayout: UICollectionVie
              withOriginalAttributes originalAttributes: UICollectionViewLayoutAttributes) -> Bool {
         return true
     }
-
-
 }

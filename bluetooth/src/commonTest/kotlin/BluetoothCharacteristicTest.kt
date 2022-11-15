@@ -17,44 +17,92 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.test.mock.bluetooth.characteristic
+import com.splendo.kaluga.test.bluetooth.characteristic
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-class BluetoothCharacteristicTest : BluetoothFlowTest<Characteristic?>() {
+class BluetoothCharacteristicTest :
+    BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, Characteristic?>() {
 
-    override val flow = suspend {
-        setup(Setup.CHARACTERISTIC) {
-            characteristics {
-                characteristic {
-                    properties = 0
-                }
-            }
-        }
-        bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid]
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext =
+        { configuration, scope -> CharacteristicContext(configuration, scope) }
+    override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<Characteristic?> = {
+        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid]
     }
 
     @Test
-    fun testGetCharacteristic() = testWithFlow {
-        scanDevice()
-        bluetooth.startScanning()
-
+    fun testGetCharacteristic() = testWithFlowAndTestContext(
+        Configuration.DeviceWithCharacteristic(
+            serviceWrapperBuilder = {
+                characteristics {
+                    characteristic {
+                        properties = 0
+                    }
+                }
+            }
+        )
+    ) {
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
         test {
             assertNull(it)
         }
 
-        action {
-            connectDevice(device)
-            discoverService(service, device)
+        mainAction {
+            connectDevice()
+            discoverService()
         }
-        val characteristic = characteristic
+
         test {
             assertEquals(characteristic, it)
             assertFalse(characteristic.hasProperty(CharacteristicProperties.Broadcast))
             assertFalse(characteristic.hasProperty(CharacteristicProperties.Read))
             assertFalse(characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Write))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Notify))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Indicate))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.SignedWrite))
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.ExtendedProperties))
+        }
+    }
+
+    @Test
+    fun testProperties() = testWithFlowAndTestContext(
+        Configuration.DeviceWithCharacteristic(
+            serviceWrapperBuilder = {
+                characteristics {
+                    characteristic {
+                        properties = CharacteristicProperties.Read or CharacteristicProperties.WriteWithoutResponse
+                    }
+                }
+            }
+        )
+    ) {
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
+        test {
+            assertNull(it)
+        }
+
+        mainAction {
+            connectDevice()
+            discoverService()
+        }
+
+        test {
+            assertEquals(characteristic, it)
+            assertFalse(characteristic.hasProperty(CharacteristicProperties.Broadcast))
+            assertTrue(characteristic.hasProperty(CharacteristicProperties.Read))
+            assertTrue(characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse))
             assertFalse(characteristic.hasProperty(CharacteristicProperties.Write))
             assertFalse(characteristic.hasProperty(CharacteristicProperties.Notify))
             assertFalse(characteristic.hasProperty(CharacteristicProperties.Indicate))

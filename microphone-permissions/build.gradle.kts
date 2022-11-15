@@ -20,23 +20,17 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         getByName("commonMain") {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-                implementation(project(":logging", ""))
-                api(project(":base", ""))
                 api(project(":base-permissions", ""))
             }
         }
         getByName("commonTest") {
             dependencies {
-                api(project(":test-utils", ""))
+                api(project(":test-utils-base", ""))
             }
         }
     }

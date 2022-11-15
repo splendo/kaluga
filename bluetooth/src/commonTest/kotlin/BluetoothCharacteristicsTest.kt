@@ -17,31 +17,31 @@
 
 package com.splendo.kaluga.bluetooth
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothCharacteristicsTest : BluetoothFlowTest<List<Characteristic>>() {
+class BluetoothCharacteristicsTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithService, BluetoothFlowTest.ServiceContext, List<Characteristic>>() {
 
-    override val flow = suspend {
-        setup(Setup.SERVICE)
-
-        bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithService, scope: CoroutineScope) -> ServiceContext = { configuration, scope -> ServiceContext(configuration, scope) }
+    override val flowFromTestContext: suspend ServiceContext.() -> Flow<List<Characteristic>> = {
+        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()
     }
 
     @Test
-    fun testGetCharacteristics() = testWithFlow {
-        scanDevice()
-        bluetooth.startScanning()
-
+    fun testGetCharacteristics() = testWithFlowAndTestContext(Configuration.DeviceWithService()) {
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
         test {
             assertEquals(emptyList(), it)
         }
-        action {
-            connectDevice(device)
-            connectionManager.discoverServicesCompleted.get().await()
-            discoverService(service, device)
+        mainAction {
+            connectDevice()
+            discoverService()
         }
-        val service = service
         test {
             assertEquals(service.characteristics, it)
         }

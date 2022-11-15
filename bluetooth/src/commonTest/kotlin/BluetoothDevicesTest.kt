@@ -17,69 +17,67 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.ensureNeverFrozen
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothDevicesTest : BluetoothFlowTest<List<Device>>() {
+class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, List<Device>>() {
 
-    init {
-        ensureNeverFrozen()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.Bluetooth, scope: CoroutineScope) -> BluetoothContext = { configuration, scope ->
+        BluetoothContext(configuration, scope)
     }
 
-    override val flow = suspend {
-        setup(Setup.BLUETOOTH)
+    override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
         bluetooth.devices()
     }
 
     @Test
-    fun testScanDevice() = testWithFlow {
-        ensureNeverFrozen()
-        val noDevices = emptyList<Device>()
-
+    fun testScanDevice() = testWithFlowAndTestContext(
+        Configuration.Bluetooth()
+    ) {
         test {
-            assertEquals(noDevices, it)
+            assertEquals(emptyList(), it)
         }
-
-        val mockBaseScanner = mockBaseScanner()
-
-        action {
-            bluetooth.startScanning()
-        }
-
-        assertEquals(emptySet(), mockBaseScanner.scanForDevicesCompleted.get().await())
 
         val filter = setOf(randomUUID())
-        action {
-            mockBaseScanner.reset()
+        val deferredDevice = CompletableDeferred<Device>()
+        mainAction {
+            bluetooth.startScanning()
+            yield()
+            scanner.didStartScanningMock.verify(eq(emptySet()))
+
+            yield()
             bluetooth.startScanning(filter)
-        }
-        mockBaseScanner.stopScanningCompleted.get().await()
-        assertEquals(filter, mockBaseScanner.scanForDevicesCompleted.get().await())
-
-        mockBaseScanner.reset()
-
-        val deviceWrapper = createDeviceWrapper()
-        val device = createDevice(deviceWrapper)
-        val scanCompleted = EmptyCompletableDeferred()
-        action {
-            scanDevice(device, deviceWrapper, scanCompleted = scanCompleted)
+            val rssi = -100
+            val advertisementData = MockAdvertisementData()
+            val deviceWrapper = createDeviceWrapper()
+            val device = createDevice(ConnectionSettings(), deviceWrapper, rssi, advertisementData) {
+                MockDeviceConnectionManager(true, deviceWrapper, ConnectionSettings(), coroutineScope)
+            }
+            deferredDevice.complete(device)
+            scanDevice(device, deviceWrapper, rssi, advertisementData)
         }
         test {
-            scanCompleted.await()
-            assertEquals(listOf(device), it)
+            scanner.didStopScanningMock.verify()
+            scanner.didStartScanningMock.verify(eq(filter))
+            assertEquals(listOf(deferredDevice.getCompleted()), it)
         }
-        action {
-            mockBaseScanner.reset()
+        mainAction {
             bluetooth.stopScanning()
         }
 
-        mockBaseScanner.stopScanningCompleted.get().await()
-
         test {
+            scanner.didStopScanningMock.verify(times = 2)
             assertEquals(emptyList(), it)
         }
     }

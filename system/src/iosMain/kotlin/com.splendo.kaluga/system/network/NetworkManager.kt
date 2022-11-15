@@ -18,6 +18,7 @@
 package com.splendo.kaluga.system.network
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
@@ -54,11 +55,24 @@ import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 import platform.darwin.dispatch_get_main_queue
 
-actual sealed class NetworkManager : BaseNetworkManager {
+fun NetworkManager(onNetworkStateChange: NetworkStateChange): NetworkManager {
+    val appleNetworkManager = if (IOSVersion.systemVersion >= IOSVersion(12)) {
+        NetworkManager.NWPathNetworkManager(onNetworkStateChange)
+    } else {
+        NetworkManager.SCNetworkManager(onNetworkStateChange)
+    }
+    return NetworkManager(appleNetworkManager)
+}
 
-    class NWPathNetworkManager(
+actual class NetworkManager internal constructor(
+    appleNetworkManager: AppleNetworkManager
+) : BaseNetworkManager by appleNetworkManager {
+
+    internal interface AppleNetworkManager : BaseNetworkManager
+
+    internal class NWPathNetworkManager(
         override val onNetworkStateChange: NetworkStateChange,
-    ) : NetworkManager() {
+    ) : AppleNetworkManager {
 
         private var nwPathMonitor: nw_path_monitor_t = null
 
@@ -103,16 +117,16 @@ actual sealed class NetworkManager : BaseNetworkManager {
         }
     }
 
-    class SCNetworkManager(
+    internal class SCNetworkManager(
         override val onNetworkStateChange: NetworkStateChange
-    ) : NetworkManager() {
+    ) : AppleNetworkManager {
 
         private var _reachability = AtomicReference<SCNetworkReachabilityRef?>(null)
         private var reachability: SCNetworkReachabilityRef?
             get() = _reachability.get()
             set(value) = _reachability.set(value)
 
-        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { ref: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
+        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { _: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
             if (info == null) {
                 return@staticCFunction
             }

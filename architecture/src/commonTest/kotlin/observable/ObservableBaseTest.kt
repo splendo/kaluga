@@ -22,10 +22,11 @@ import co.touchlab.stately.freeze
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 abstract class ObservableBaseTest : BaseTest() {
@@ -183,7 +184,7 @@ abstract class ObservableBaseTest : BaseTest() {
         if (observable is Initialized<*, *>) {
             assertTrue(initialExpected is Value<*>)
             observableOptional.let {
-                assertTrue(it is Value<*>)
+                assertIs<Value<*>>(it)
                 assertEquals(initialExpected.value, it.value)
             }
             assertEquals(initialExpected.value, observable.current)

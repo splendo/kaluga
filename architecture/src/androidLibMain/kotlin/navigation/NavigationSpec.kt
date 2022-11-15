@@ -20,25 +20,81 @@ package com.splendo.kaluga.architecture.navigation
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import java.net.URL
+import kotlin.reflect.KClass
+import kotlin.reflect.safeCast
 
 /**
  * Spec used by [Navigator] to determine how to perform Navigation
  */
 sealed class NavigationSpec {
 
+    companion object {
+        inline fun <reified A : android.app.Activity> Activity(
+            flags: Set<IntentFlag> = emptySet(),
+            launchType: Activity.LaunchType = Activity.LaunchType.NoResult
+        ) = Activity(A::class.java, flags, launchType)
+    }
+
     /**
      * Navigates to a new [android.app.Activity]
      * The [Navigator] automatically adds the [NavigationBundle] of the [NavigationAction] as a [Bundle] to its [Intent]
      * @param activityClass [Class] of the Activity to navigate to
      * @param flags Set of [IntentFlag] to add to the navigation [Intent]
-     * @param requestCode Optional request code to add. If passed, [android.app.Activity.startActivityForResult] is called. Otherwise uses [android.app.Activity.startActivity]
+     * @param launchType The [LaunchType] to determine how the [Activity] should be launched
      */
-    data class Activity<A : android.app.Activity>(val activityClass: Class<A>, val flags: Set<IntentFlag> = emptySet(), val requestCode: Int? = null) : NavigationSpec()
+    data class Activity<A : android.app.Activity>(
+        val activityClass: Class<A>,
+        val flags: Set<IntentFlag> = emptySet(),
+        val launchType: LaunchType = LaunchType.NoResult
+    ) : NavigationSpec() {
+
+        /**
+         * Determines how [NavigationSpec.Activity] will handle launching its intent
+         */
+        sealed class LaunchType {
+
+            companion object {
+                inline fun <reified A : android.app.Activity> ActivityContract(noinline contract: A.() -> ActivityResultLauncher<Intent>) = ActivityContract(A::class, contract)
+            }
+
+            /**
+             * [Activity] will launch using [android.app.Activity.startActivity]
+             */
+            object NoResult : LaunchType()
+
+            /**
+             * [Activity] will launch using [android.app.Activity.startActivityForResult]
+             * @param requestCode The requestCode to be sent to [android.app.Activity.startActivityForResult]
+             */
+            data class ActivityResult(val requestCode: Int) : LaunchType()
+
+            /**
+             * [Activity] will launch using an [ActivityResultLauncher] generated for an instance of [activityClass]
+             * @param activityClass The [KClass] of the activity to generate the [ActivityResultLauncher] for
+             * @param provideResultLauncher A callback method called on an instance of [activityClass] to provide an [ActivityResultLauncher] to launch the new activity with.
+             * Note that this method may be called after the instance of [activityClass] has been created.
+             */
+            class ActivityContract<A : android.app.Activity>(
+                val activityClass: KClass<A>,
+                val provideResultLauncher: A.() -> ActivityResultLauncher<Intent>
+            ) : LaunchType() {
+                fun tryAndGetContract(activity: android.app.Activity): ActivityResultLauncher<Intent>? = activityClass.safeCast(activity)?.provideResultLauncher()
+            }
+        }
+
+        @Deprecated("Legacy constructor", ReplaceWith("NavigationSpec.Activity(activityClass, flags, launchType)"))
+        constructor(
+            activityClass: Class<A>,
+            flags: Set<IntentFlag> = emptySet(),
+            requestCode: Int?
+        ) : this(activityClass, flags, requestCode?.let { LaunchType.ActivityResult(it) } ?: LaunchType.NoResult)
+    }
 
     /**
      * Closes the current [android.app.Activity]

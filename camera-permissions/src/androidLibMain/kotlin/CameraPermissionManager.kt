@@ -20,38 +20,48 @@ package com.splendo.kaluga.permissions.camera
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.base.AndroidPermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
+import com.splendo.kaluga.permissions.base.PermissionContext
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class CameraPermissionManager(
+actual class DefaultCameraPermissionManager(
     context: Context,
-    stateRepo: CameraPermissionStateRepo
-) : PermissionManager<CameraPermission>(stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        arrayOf(Manifest.permission.CAMERA),
+        coroutineScope,
+        logTag,
+        logger,
+        permissionHandler
+    )
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
-    override suspend fun requestPermission() {
+    override fun requestPermissionDidStart() {
         if (supported)
             permissionsManager.requestPermissions()
+        else
+            logger.error(logTag) { "Camera not Supported" }
     }
 
-    override suspend fun initializeState(): PermissionState<CameraPermission> {
-        return when {
-            !supported -> PermissionState.Denied.Locked()
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
+    override fun monitoringDidStart(interval: Duration) {
+        if (supported)
+            permissionsManager.startMonitoring(interval)
+        else {
+            permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        if (supported)
-            permissionsManager.startMonitoring(interval)
-    }
-
-    override suspend fun stopMonitoring() {
+    override fun monitoringDidStop() {
         if (supported)
             permissionsManager.stopMonitoring()
     }
@@ -59,7 +69,7 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
-        return CameraPermissionManager(context.context, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
+        return DefaultCameraPermissionManager(context.context, settings, coroutineScope)
     }
 }

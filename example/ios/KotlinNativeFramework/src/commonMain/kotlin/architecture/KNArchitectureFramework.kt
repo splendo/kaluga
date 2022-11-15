@@ -23,7 +23,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
@@ -62,8 +62,8 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.calendar.CalendarPermission
 import com.splendo.kaluga.permissions.camera.CameraPermission
@@ -286,7 +286,7 @@ class KNArchitectureFramework {
 
     fun createColorViewModel(parent: UIViewController) = ColorViewModel(AlertPresenter.Builder(parent))
 
-    fun <VM : BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
+    fun <VM : BaseLifecycleViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
 

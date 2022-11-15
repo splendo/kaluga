@@ -6,18 +6,26 @@ public final class com/splendo/kaluga/base/AtomicReferenceDelegate {
 	public final fun setValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
 }
 
-public abstract class com/splendo/kaluga/base/DefaultServiceMonitor : com/splendo/kaluga/base/ServiceMonitor {
-	public fun <init> ()V
-	protected final fun getTAG ()Ljava/lang/String;
-	protected final fun get_isEnabled ()Lkotlinx/coroutines/flow/MutableStateFlow;
-	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
-	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun startMonitoring ()V
-	public fun stopMonitoring ()V
-	protected final fun updateState ()V
+public final class com/splendo/kaluga/base/KalugaThread {
+	public static final field Companion Lcom/splendo/kaluga/base/KalugaThread$Companion;
+	public fun <init> (Ljava/lang/Thread;)V
+	public final fun component1 ()Ljava/lang/Thread;
+	public final fun copy (Ljava/lang/Thread;)Lcom/splendo/kaluga/base/KalugaThread;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/KalugaThread;Ljava/lang/Thread;ILjava/lang/Object;)Lcom/splendo/kaluga/base/KalugaThread;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getThread ()Ljava/lang/Thread;
+	public fun hashCode ()I
+	public final fun isMainThread ()Z
+	public final fun setName (Ljava/lang/String;)V
+	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/IsOnMainThreadKt {
+public final class com/splendo/kaluga/base/KalugaThread$Companion {
+	public final fun getCurrentThread ()Lcom/splendo/kaluga/base/KalugaThread;
+}
+
+public final class com/splendo/kaluga/base/KalugaThreadKt {
 	public static final fun isOnMainThread ()Z
 }
 
@@ -38,11 +46,8 @@ public final class com/splendo/kaluga/base/RunOnMainKt {
 	public static final fun runOnMain (Lkotlin/jvm/functions/Function0;)V
 }
 
-public abstract interface class com/splendo/kaluga/base/ServiceMonitor {
-	public abstract fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun isServiceEnabled ()Z
-	public abstract fun startMonitoring ()V
-	public abstract fun stopMonitoring ()V
+public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
+	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
 public final class com/splendo/kaluga/base/flow/ColdFlowable : com/splendo/kaluga/flow/BaseFlowable {
@@ -77,13 +82,31 @@ public final class com/splendo/kaluga/base/flow/SharedFlowCollectionEvent : java
 	public static fun values ()[Lcom/splendo/kaluga/base/flow/SharedFlowCollectionEvent;
 }
 
-public abstract class com/splendo/kaluga/base/flow/SpecialFlowValue {
+public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue {
 }
 
-public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue$Last {
+public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue$Last : com/splendo/kaluga/base/flow/SpecialFlowValue {
 }
 
-public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant {
+public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant : com/splendo/kaluga/base/flow/SpecialFlowValue {
+}
+
+public abstract class com/splendo/kaluga/base/monitor/DefaultServiceMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
+	public fun <init> ()V
+	protected final fun getTAG ()Ljava/lang/String;
+	public fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun monitoringDidStart ()V
+	public abstract fun monitoringDidStop ()V
+	public final fun startMonitoring ()V
+	public final fun stopMonitoring ()V
+	protected final fun updateState ()V
+}
+
+public abstract interface class com/splendo/kaluga/base/monitor/ServiceMonitor {
+	public abstract fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun isServiceEnabled ()Z
+	public abstract fun startMonitoring ()V
+	public abstract fun stopMonitoring ()V
 }
 
 public final class com/splendo/kaluga/base/text/DateFormatStyle : java/lang/Enum {
@@ -573,7 +596,7 @@ public final class com/splendo/kaluga/base/utils/DecimalJVM {
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
 	public static synthetic fun div$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
-	public static final fun getJava (Lcom/splendo/kaluga/base/utils/RoundingMode;)I
+	public static final fun getJava (Lcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/RoundingMode;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
@@ -658,6 +681,10 @@ public final class com/splendo/kaluga/base/utils/DefaultKalugaDate$Companion {
 	public static synthetic fun epoch$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public final fun now (JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static synthetic fun now$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+}
+
+public final class com/splendo/kaluga/base/utils/Deferred_getCompletedOrNullKt {
+	public static final fun getCompletedOrNull (Lkotlinx/coroutines/Deferred;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/base/utils/EmptyCompletableDeferredKt {

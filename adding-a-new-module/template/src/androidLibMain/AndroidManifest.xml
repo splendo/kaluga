@@ -1,2 +1,2 @@
-<manifest package="com.splendo.kaluga.%MODULE%"
+<manifest package="com.splendo.kaluga.%PACKAGE%"
           xmlns:android="http://schemas.android.com/apk/res/android" />

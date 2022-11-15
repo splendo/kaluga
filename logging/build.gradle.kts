@@ -14,10 +14,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         commonMain {
             val ext = (gradle as ExtensionAware).extra
@@ -32,7 +28,7 @@ kotlin {
                 // Stately Isolite is in flux and not part of the current statelyVersion. Upgrade this when tracked properly
                 implementation("co.touchlab:stately-isolate:${ext["stately_isolate_version"]}")
                 implementation("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
-                api(project(":test-utils", ""))
+                api(project(":test-utils-base", ""))
             }
         }
     }

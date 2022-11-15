@@ -17,31 +17,38 @@
 
 package com.splendo.kaluga.bluetooth
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class BluetoothDescriptorTest : BluetoothFlowTest<Descriptor?>() {
+class BluetoothDescriptorTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, Descriptor?>() {
 
-    override val flow = suspend {
-        setup(Setup.DESCRIPTOR)
-        bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[descriptor.uuid]
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext = { configuration, scope ->
+        DescriptorContext(configuration, scope)
+    }
+
+    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<Descriptor?> = {
+        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid]
     }
 
     @Test
-    fun testGetDescriptor() = testWithFlow {
+    fun testGetDescriptor() = testWithFlowAndTestContext(
+        Configuration.DeviceWithDescriptor()
+    ) {
 
-        scanDevice(device, deviceWrapper)
-        bluetooth.startScanning()
-
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
         test {
             assertNull(it)
         }
-        action {
-            connectDevice(device)
-            discoverService(service, device)
+        mainAction {
+            connectDevice()
+            discoverService()
         }
-        val descriptor = descriptor
         test {
             assertEquals(descriptor, it)
         }

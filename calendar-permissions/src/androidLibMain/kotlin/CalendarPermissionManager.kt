@@ -19,42 +19,46 @@ package com.splendo.kaluga.permissions.calendar
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
+import com.splendo.kaluga.permissions.base.PermissionContext
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class CalendarPermissionManager(
+actual class DefaultCalendarPermissionManager(
     context: Context,
-    actual val calendar: CalendarPermission,
-    stateRepo: CalendarPermissionStateRepo
-) : PermissionManager<CalendarPermission>(stateRepo) {
+    calendarPermission: CalendarPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, if (calendar.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR))
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        if (permission.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR),
+        coroutineScope,
+        logTag,
+        logger,
+        permissionHandler
+    )
 
-    override suspend fun requestPermission() {
+    override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<CalendarPermission> {
-        return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
+    override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }
 
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
-        return CalendarPermissionManager(context.context, calendar, repo)
+    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
+        return DefaultCalendarPermissionManager(context.context, calendarPermission, settings, coroutineScope)
     }
 }

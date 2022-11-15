@@ -29,7 +29,7 @@ data class HSLColor(
     val alpha: Double = 1.0
 )
 
-val Color.hsl: HSLColor get() {
+val KalugaColor.hsl: HSLColor get() {
     val max = max(red, max(green, blue))
     val min = min(red, min(green, blue))
     val lightness = (max + min) / 2.0

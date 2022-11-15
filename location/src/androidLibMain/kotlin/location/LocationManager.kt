@@ -18,29 +18,28 @@
 package com.splendo.kaluga.location
 
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.base.monitor.EnableServiceActivity
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.Permissions
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermission
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-actual class LocationManager(
+actual class DefaultLocationManager(
     private val context: Context,
     locationManager: android.location.LocationManager?,
-    locationPermission: LocationPermission,
-    permissions: Permissions,
     private val locationProvider: LocationProvider,
-    autoRequestPermission: Boolean,
-    autoEnableLocations: Boolean,
-    locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BaseLocationManager(settings, coroutineScope) {
 
     class Builder(
         private val context: Context = ApplicationHolder.applicationContext,
@@ -49,21 +48,18 @@ actual class LocationManager(
     ) : BaseLocationManager.Builder {
 
         override fun create(
-            locationPermission: LocationPermission,
-            permissions: Permissions,
-            autoRequestPermission: Boolean,
-            autoEnableLocations: Boolean,
-            locationStateRepo: LocationStateRepo
+            settings: Settings,
+            coroutineScope: CoroutineScope
         ): BaseLocationManager {
-            return LocationManager(context, locationManager, locationPermission, permissions, locationProvider, autoRequestPermission, autoEnableLocations, locationStateRepo)
+            return DefaultLocationManager(context, locationManager, locationProvider, settings, coroutineScope)
         }
     }
 
     override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
     private val monitoringLocationJob: AtomicReference<Job?> = AtomicReference(null)
 
-    public override suspend fun requestLocationEnable() {
-        EnableLocationActivity.showEnableLocationActivity(context, hashCode().toString()).await()
+    override suspend fun requestEnableLocation() {
+        EnableServiceActivity.showEnableServiceActivity(context, hashCode().toString(), Intent(ACTION_LOCATION_SOURCE_SETTINGS)).await()
     }
 
     override suspend fun startMonitoringLocation() {
@@ -93,13 +89,19 @@ actual class LocationManager(
 
 actual class LocationStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
-    private val permissions: Permissions = Permissions(
-        PermissionsBuilder(PermissionContext(context)).apply { registerLocationPermission() },
-        Dispatchers.Main
-    )
+    private val permissionsBuilder: (CoroutineContext) -> Permissions = { coroutineContext ->
+        Permissions(
+            PermissionsBuilder(PermissionContext(context)).apply { registerLocationPermission() },
+            coroutineContext
+        )
+    }
 ) : LocationStateRepo.Builder {
 
-    override fun create(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context), coroutineContext)
+    override fun create(
+        locationPermission: LocationPermission,
+        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
+        coroutineContext: CoroutineContext
+    ): LocationStateRepo {
+        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(context), coroutineContext)
     }
 }

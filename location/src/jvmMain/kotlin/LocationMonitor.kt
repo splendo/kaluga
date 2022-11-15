@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 
 actual interface LocationMonitor : ServiceMonitor {
 
@@ -31,6 +31,11 @@ class DefaultLocationMonitor : DefaultServiceMonitor(), LocationMonitor {
     override val isServiceEnabled: Boolean
         get() = TODO("Not yet implemented")
 
-    override fun startMonitoring() = TODO("Not yet implemented")
-    override fun stopMonitoring() = TODO("Not yet implemented")
+    override fun monitoringDidStart() {
+        TODO("Not yet implemented")
+    }
+
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
+    }
 }

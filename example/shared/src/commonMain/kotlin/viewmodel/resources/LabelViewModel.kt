@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.resources
 
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.TextStyles
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
@@ -29,7 +29,7 @@ import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaLabel
 
-class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) : BaseViewModel() {
+class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) : BaseLifecycleViewModel() {
 
     companion object {
         val loremIpsumParagraph0 = listOf(

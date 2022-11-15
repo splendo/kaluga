@@ -17,14 +17,24 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.Logger
 
 class Service(
     service: ServiceWrapper,
-    private val stateRepo: DeviceStateFlowRepo
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    parentLogTag: String,
+    logger: Logger
 ) {
     val uuid = service.uuid
-    val characteristics = service.characteristics.map { Characteristic(it, stateRepo = stateRepo) }
+    val characteristics = service.characteristics.map {
+        Characteristic(
+            it,
+            emitNewAction = emitNewAction,
+            parentLogTag = "$parentLogTag Service ${uuid.uuidString}",
+            logger = logger
+        )
+    }
 }
 
 expect interface ServiceWrapper {

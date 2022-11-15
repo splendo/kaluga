@@ -23,8 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 
 actual interface BluetoothMonitor : ServiceMonitor {
 
@@ -62,16 +62,14 @@ class DefaultBluetoothMonitor internal constructor(
             bluetoothAdapter.isEnabled
         }
 
-    override fun startMonitoring() {
-        super.startMonitoring()
+    override fun monitoringDidStart() {
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
     }
 }

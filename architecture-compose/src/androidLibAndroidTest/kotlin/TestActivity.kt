@@ -19,3 +19,7 @@ package com.splendo.kaluga.architecture.compose
 import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity()
+class CorrectlySetupTest {
+    @kotlin.test.Test
+    fun testSetup() = assert(true)
+}

@@ -17,40 +17,44 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-class BluetoothRequestMtuTest : BluetoothFlowTest<Int>() {
+class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int?>() {
 
-    override val flow = suspend {
-        setup(Setup.DEVICE)
-        bluetooth.devices()[device.identifier].mtu()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
+        DeviceContext(configuration, scope)
     }
 
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int?> = { bluetooth.devices()[device.identifier].mtu() }
+
     @Test
-    fun testRequestMtu() = testWithFlow {
+    fun testRequestMtu() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService()
+    ) {
+
         val newMtu = 512
 
-        assertEquals(-1, connectionManager.mtu)
-
-        scanDevice()
-        bluetooth.startScanning()
-        action {
-            connectDevice(device)
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
+        test {
+            assertNull(it)
+        }
+        mainAction {
+            connectDevice()
             bluetooth.devices()[device.identifier].requestMtu(newMtu)
-            connectionManager.requestMtuCompleted.get().await()
-            device.filterIsInstance<DeviceState.Connected>().first()
-            connectionManager.handleNewMtu(newMtu)
+            connectionManager.requestMtuMock.verify(eq(newMtu))
         }
 
-        assertEquals(newMtu, connectionManager.mtu)
-
-        resetFlow()
-
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
+        test {
+            assertEquals(newMtu, it)
+        }
     }
 }

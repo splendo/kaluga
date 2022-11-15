@@ -19,4 +19,4 @@ package com.splendo.kaluga.resources.compose
 
 import androidx.compose.ui.graphics.Color
 
-val com.splendo.kaluga.resources.Color.composable get() = Color(this)
+val com.splendo.kaluga.resources.KalugaColor.composable get() = Color(this)

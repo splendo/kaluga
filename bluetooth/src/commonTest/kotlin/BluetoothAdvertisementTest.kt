@@ -18,31 +18,39 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothAdvertisementTest : BluetoothFlowTest<BaseAdvertisementData>() {
+class BluetoothAdvertisementTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, BaseAdvertisementData>() {
 
-    override val flow = suspend {
-        setup(Setup.DEVICE)
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<BaseAdvertisementData> = {
         bluetooth.devices()[device.identifier].advertisement()
     }
 
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
+        DeviceContext(configuration, scope)
+    }
+
     @Test
-    fun testAdvertisementData() = testWithFlow {
+    fun testAdvertisementData() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService()
+    ) {
 
-        bluetooth.startScanning()
-        scanDevice()
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
 
-        val advertisementData = advertisementData
         test {
-            assertEquals(advertisementData, it)
+            assertEquals(configuration.advertisementData, it)
         }
 
         val newAdvertisementData = MockAdvertisementData(name = "New Name")
 
-        action {
+        mainAction {
             scanDevice(advertisementData = newAdvertisementData)
         }
         test {

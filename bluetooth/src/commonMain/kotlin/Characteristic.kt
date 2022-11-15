@@ -19,11 +19,23 @@ package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
-open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
+open class Characteristic(
+    val wrapper: CharacteristicWrapper,
+    initialValue: ByteArray? = null,
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    parentLogTag: String,
+    logger: Logger
+) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
+    initialValue,
+    emitNewAction,
+    "$parentLogTag Characteristic",
+    logger
+) {
 
     private val isBusy = MutableStateFlow(false)
     private val _isNotifying = AtomicBoolean(false)
@@ -91,13 +103,13 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
 
     override val uuid = wrapper.uuid
 
-    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, stateRepo = stateRepo) }
+    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logger = logger) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)
     }
 
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Characteristic {
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic {
         return DeviceAction.Write.Characteristic(newValue, this)
     }
 

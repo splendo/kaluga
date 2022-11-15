@@ -76,9 +76,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             }
             flags = activitySpec.flags.toFlags()
         }
-        activitySpec.requestCode?.let {
-            activity.startActivityForResult(intent, it)
-        } ?: activity.startActivity(intent)
+
+        when (val requestType = activitySpec.launchType) {
+            is NavigationSpec.Activity.LaunchType.NoResult -> activity.startActivity(intent)
+            is NavigationSpec.Activity.LaunchType.ActivityResult -> activity.startActivityForResult(intent, requestType.requestCode)
+            is NavigationSpec.Activity.LaunchType.ActivityContract<*> -> requestType.tryAndGetContract(activity)
+                ?.launch(intent) ?: throw RuntimeException("Activity is not an instance of ${requestType.activityClass.simpleName}")
+        }
     }
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {
@@ -98,12 +102,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
         assert(manager?.fragmentManager != null)
         val fragmentManager = manager?.fragmentManager ?: return
-        val transaction = fragmentManager.beginTransaction()
-
-        when (val backtrackSettings = fragmentSpec.backStackSettings) {
-            is NavigationSpec.Fragment.BackStackSettings.Add -> transaction.addToBackStack(
-                backtrackSettings.name
-            )
+        val transaction = fragmentManager.beginTransaction().let {
+            when (val backtrackSettings = fragmentSpec.backStackSettings) {
+                is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
+                    backtrackSettings.name
+                )
+                else -> it
+            }
         }
 
         fragmentSpec.animationSettings?.let { animationSettings ->

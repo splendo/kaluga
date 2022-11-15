@@ -19,42 +19,49 @@ package com.splendo.kaluga.permissions.storage
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
+import com.splendo.kaluga.permissions.base.PermissionContext
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class StoragePermissionManager(
+actual class DefaultStoragePermissionManager(
     context: Context,
-    actual val storage: StoragePermission,
-    stateRepo: StoragePermissionStateRepo
-) : PermissionManager<StoragePermission>(stateRepo) {
+    storagePermission: StoragePermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, if (storage.allowWrite) arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) else arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionsManager = AndroidPermissionsManager(
+        context,
+        if (storagePermission.allowWrite)
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        else
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+        coroutineScope,
+        logTag,
+        logger,
+        permissionHandler
+    )
 
-    override suspend fun requestPermission() {
+    override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
-        return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
-        }
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
+    override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }
 
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(context.context, storage, repo)
+    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
+        return DefaultStoragePermissionManager(context.context, storagePermission, settings, coroutineScope)
     }
 }

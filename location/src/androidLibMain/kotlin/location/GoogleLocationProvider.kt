@@ -27,6 +27,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,10 +42,10 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
     ) {
         protected val fusedLocationProviderClient = FusedLocationProviderClient(context)
         protected val locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-            if (permission.precise) LocationRequest.PRIORITY_HIGH_ACCURACY else LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY
         )
-        protected val locationsState: MutableStateFlow<List<Location>> = MutableStateFlow(emptyList())
-        val locations: Flow<List<Location>> = locationsState
+        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> = MutableStateFlow(emptyList())
+        val locations: Flow<List<Location.KnownLocation>> = locationsState
 
         abstract fun startRequestingUpdates()
         abstract fun stopRequestingUpdates()
@@ -53,12 +54,10 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
 
             private val locationCallback = object : LocationCallback() {
 
-                override fun onLocationResult(locationResult: LocationResult?) {
+                override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
 
-                    locationResult?.let {
-                        locationsState.value = it.toKnownLocations()
-                    }
+                    locationsState.value = locationResult.toKnownLocations()
                 }
             }
 
@@ -77,7 +76,7 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
             private val identifier = hashCode().toString()
 
             companion object {
-                val updatingLocationInBackgroundManagers: MutableMap<String, MutableStateFlow<List<Location>>> = mutableMapOf()
+                val updatingLocationInBackgroundManagers: MutableMap<String, MutableStateFlow<List<Location.KnownLocation>>> = mutableMapOf()
             }
 
             private val locationUpdatedPendingIntent = GoogleLocationUpdatesBroadcastReceiver.intent(context, identifier)
@@ -99,7 +98,7 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
         mapOf()
     )
 
-    override fun location(permission: LocationPermission): Flow<List<Location>> = fusedLocationProviderClients.flatMapLatest {
+    override fun location(permission: LocationPermission): Flow<List<Location.KnownLocation>> = fusedLocationProviderClients.flatMapLatest {
         it[permission]?.locations ?: flowOf(emptyList())
     }
 

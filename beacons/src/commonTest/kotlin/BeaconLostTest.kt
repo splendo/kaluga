@@ -35,7 +35,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         action {
             start(MainScope())
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )
         }
 
@@ -64,7 +64,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         action {
             start(scope)
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )
         }
 
@@ -76,7 +76,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         action {
             delay(1_000)
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope)
             )
         }
 

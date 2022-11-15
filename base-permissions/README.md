@@ -3,14 +3,14 @@
 This library provide support for out-of-the-box access to device permissions.
 
 Supported device features:
- - [Bluetooth](#bluetoothPermission)
- - [Calendar](#calendarPermission)
- - [Camera](#cameraPermission)
- - [Contacts](#contactsPermission)
- - [Location](#locationPermission) (both with and without background)
- - [Microphone](#microphonePermission)
- - [Notifications](#notificationsPermission)
- - [Storage](#storagePermission) (aka Photos on iOS)
+ - [Bluetooth](../bluetooth-permissions)
+ - [Calendar](../calendar-permissions)
+ - [Camera](../camera-permissions)
+ - [Contacts](../contacts-permissions)
+ - [Location](../location-permissions) (both with and without background)
+ - [Microphone](../microphone-permissions)
+ - [Notifications](../notifications-permissions)
+ - [Storage](../storage-permissions) (aka Photos on iOS)
 
  ## Installing
  This library is available on Maven Central. You can import Kaluga Permissions as follows:
@@ -23,7 +23,7 @@ Supported device features:
  // ...
  dependencies {
      // ...
-     implementation("com.splendo.kaluga:permissions:$kalugaVersion")
+     implementation("com.splendo.kaluga:base-permissions:$kalugaVersion")
  }
  ```
 
@@ -52,3 +52,6 @@ launch {
     }
 }
 ```
+
+## Testing
+Use the [`test-utils-permissions` module](../test-utils-permissions) to get a mockable `PermissionBuilder`, `PermissionManager`, or `PermissionStateRepo`.

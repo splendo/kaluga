@@ -19,41 +19,34 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.permissions.Permissions
+import kotlinx.coroutines.CoroutineScope
 
-actual class Scanner(
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableSensors: Boolean,
-    stateRepo: ScanningStateFlowRepo
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
+actual class DefaultScanner(
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BaseScanner(settings, coroutineScope) {
 
     class Builder : BaseScanner.Builder {
 
         override fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            scanningStateRepo: ScanningStateFlowRepo,
+            settings: Settings,
+            coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
+            return DefaultScanner(settings, coroutineScope)
         }
     }
 
     override val isSupported: Boolean = false
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {}
+    override suspend fun didStartScanning(filter: Set<UUID>) {
+        TODO("Not yet implemented")
+    }
 
-    override suspend fun stopScanning() {}
-
-    override fun startMonitoringSensors() {}
-
-    override fun stopMonitoringSensors() {}
+    override suspend fun didStopScanning() {
+        TODO("Not yet implemented")
+    }
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 

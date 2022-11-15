@@ -17,34 +17,32 @@
 
 package com.splendo.kaluga.permissions.notifications
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
 actual class NotificationOptions
 
-actual class NotificationsPermissionManager(actual val notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo) : PermissionManager<NotificationsPermission>(repo) {
+actual class DefaultNotificationsPermissionManager(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    override suspend fun requestPermission() {
-        TODO("not implemented")
+    override fun requestPermissionDidStart() {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
-        TODO("not implemented")
+    override fun monitoringDidStart(interval: Duration) {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
     }
 }
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
-        return NotificationsPermissionManager(notifications, repo)
+    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<NotificationsPermission> {
+        return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }

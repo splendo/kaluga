@@ -17,37 +17,37 @@
 
 package com.splendo.kaluga.permissions.notifications
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionState
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
+import com.splendo.kaluga.permissions.base.PermissionContext
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
 actual class NotificationOptions
 
-actual class NotificationsPermissionManager(
-    actual val notifications: NotificationsPermission,
-    stateRepo: NotificationsPermissionStateRepo
-) : PermissionManager<NotificationsPermission>(stateRepo) {
+actual class DefaultNotificationsPermissionManager(
+    notificationsPermission: NotificationsPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    override suspend fun requestPermission() {
-        // No need to do anything, permission always granted
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+
+    override fun requestPermissionDidStart() {
+        permissionHandler.status(AndroidPermissionState.GRANTED)
     }
 
-    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
-        // Permission always granted
-        return PermissionState.Allowed()
+    override fun monitoringDidStart(interval: Duration) {
+        permissionHandler.status(AndroidPermissionState.GRANTED)
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        // No need to do anything, permission always granted
-    }
-
-    override suspend fun stopMonitoring() {
-    }
+    override fun monitoringDidStop() {}
 }
 
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
-        return NotificationsPermissionManager(notifications, repo)
+    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
+        return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }

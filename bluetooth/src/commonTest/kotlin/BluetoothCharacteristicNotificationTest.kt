@@ -17,160 +17,153 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.utils.firstInstance
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlin.test.fail
 
-class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<DeviceState>() {
+class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, DeviceState>() {
 
-    override val flow = suspend {
-        setup(Setup.CHARACTERISTIC)
-        connectionManager.willActionSucceed.value = true
-        device
-    }
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext = { configuration, scope -> CharacteristicContext(configuration, scope) }
+    override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<DeviceState> = { device.state }
 
     @Test
-    fun testEnableNotification() = testWithFlow {
+    fun testEnableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
         enableNotifications()
     }
 
     @Test
-    fun testEnableNotificationWhenAlreadyEnabled() = testWithFlow {
+    fun testEnableNotificationWhenAlreadyEnabled() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
 
         enableNotifications()
-        val characteristic = characteristic
-        action {
+        mainAction {
             assertNull(characteristic.enableNotification())
             assertTrue(characteristic.isNotifying)
         }
     }
 
     @Test
-    fun testDisableNotification() = testWithFlow {
+    fun testDisableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
+        enableNotifications()
 
-        val characteristic = enableNotifications()
-        action {
+        mainAction {
             characteristic.disableNotification()
+            yieldMultiple(2)
         }
 
-        val handledAction = connectionManager.handledAction
         test {
-            assertIs<DeviceState.Connected.HandlingAction>(it)
-            assertNotNull(handledAction.firstInstance<DeviceAction.Notification.Disable>())
-            assertFalse(characteristic.isNotifying)
+            val captor = AnyOrNullCaptor<DeviceAction>()
+            connectionManager.performActionMock.verify(captor, 2)
+            assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
+            assertIs<DeviceAction.Notification.Disable>(it.action)
+        }
+        mainAction {
+            connectionManager.handleCurrentAction()
+            val captor = AnyOrNullCaptor<DeviceAction>()
+            connectionManager.handleCurrentActionCompletedMock.verify(ParameterMatcher.eq(true), captor, 2)
+            assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
         }
         test {
-            assertIs<DeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
+            assertFalse(characteristic.isNotifying)
         }
     }
 
     @Test
-    fun testFailedToEnableNotification() = testWithFlow {
+    fun testFailedToEnableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic(willActionsSucceed = false)) {
         connect()
         discover()
 
-        val characteristic = characteristic
-        assertFalse(characteristic.isNotifying)
-        connectionManager.willActionSucceed.value = false
-        action {
+        mainAction {
+            assertFalse(characteristic.isNotifying)
             characteristic.enableNotification()
+            yieldMultiple(2)
         }
-        val handledAction = connectionManager.handledAction
         test {
-            val action = handledAction.firstInstance<DeviceAction.Notification.Enable>()
-            assertNotNull(action)
-            assertFalse(action.completedSuccessfully.await())
+            val captor = AnyOrNullCaptor<DeviceAction>()
+            connectionManager.performActionMock.verify(captor)
+            assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
+            assertIs<DeviceAction.Notification.Enable>(it.action)
             assertFalse(characteristic.isNotifying)
         }
     }
 
     private suspend fun connect() {
-        action {
-            device.takeAndChangeState { deviceState ->
-                println("state: $deviceState")
-                when (deviceState) {
-                    is DeviceState.Disconnected -> deviceState.connect(deviceState)
-                    else -> fail("$deviceState is not expected")
-                }
-            }
-        }
-        val connectCompleted = connectionManager.connectCompleted.get()
         test {
-            connectCompleted.await()
-            assertIs<DeviceState.Connecting>(it)
+            assertIs<ConnectableDeviceState.Disconnected>(it)
         }
-        action {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connecting -> deviceState.didConnect
-                    else -> deviceState.remain()
-                }
-            }
+        mainAction {
+            connectionManager.startConnecting()
+            yieldMultiple(2)
         }
         test {
-            assertIs<DeviceState.Connected.NoServices>(it)
+            connectionManager.connectMock.verify()
+            assertIs<ConnectableDeviceState.Connecting>(it)
+        }
+        mainAction {
+            connectionManager.handleConnect()
+        }
+        test {
+            assertIs<ConnectableDeviceState.Connected.NoServices>(it)
         }
     }
 
     private suspend fun discover() {
-        action {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.NoServices -> deviceState.discoverServices
-                    else -> deviceState.remain()
-                }
-            }
+        mainAction {
+            connectionManager.startDiscovering()
+            yieldMultiple(2)
         }
-        val discoverServicesCompleted = connectionManager.discoverServicesCompleted.get()
         test {
-            assertTrue(discoverServicesCompleted.isCompleted)
-            assertIs<DeviceState.Connected.Discovering>(it)
+            connectionManager.discoverServicesMock.verify()
+            assertIs<ConnectableDeviceState.Connected.Discovering>(it)
         }
-        val services = listOf(service)
-        action {
-            device.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.Discovering -> deviceState.didDiscoverServices(services)
-                    else -> deviceState.remain()
-                }
-            }
+        mainAction {
+            connectionManager.handleDiscoverCompleted(listOf(service))
         }
-        val service = service
         test {
-            assertIs<DeviceState.Connected.Idle>(it)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
             assertEquals(listOf(service), it.services)
         }
     }
 
-    private suspend fun enableNotifications(): Characteristic {
-        val characteristic = characteristic
-        assertFalse(characteristic.isNotifying, "Notifications already enabled!")
-        action {
+    private suspend fun enableNotifications() {
+        mainAction {
+            assertFalse(characteristic.isNotifying, "Notifications already enabled!")
             characteristic.enableNotification()
+            yieldMultiple(2)
         }
-        val handledAction = connectionManager.handledAction
         test {
-            assertIs<DeviceState.Connected.HandlingAction>(it)
-            assertNotNull(handledAction.firstInstance<DeviceAction.Notification.Enable>())
+            val captor = AnyOrNullCaptor<DeviceAction>()
+            connectionManager.performActionMock.verify(captor)
+            assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
+            assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
+            assertIs<DeviceAction.Notification.Enable>(it.action)
+        }
+        mainAction {
+            connectionManager.handleCurrentAction()
+        }
+        test {
             assertTrue(characteristic.isNotifying)
+            assertIs<ConnectableDeviceState.Connected.Idle>(it)
         }
-        test {
-            assertIs<DeviceState.Connected.Idle>(it)
-        }
-        return characteristic
     }
 }

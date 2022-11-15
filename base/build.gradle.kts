@@ -14,10 +14,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
 
         val ext = (gradle as ExtensionAware).extra
@@ -45,7 +41,7 @@ kotlin {
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

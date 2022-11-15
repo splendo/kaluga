@@ -5,9 +5,8 @@ import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
@@ -65,7 +64,7 @@ private fun <VM : BaseLifecycleViewModel> handleLocalViewModelStore(viewModel: V
             viewModelStoreOwner,
             @Suppress("UNCHECKED_CAST")
             object : ViewModelProvider.Factory {
-                override fun <T : androidx.lifecycle.ViewModel?> create(modelClass: Class<T>): T =
+                override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
                     viewModel as T
             }
         )
@@ -107,14 +106,15 @@ private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(): VM {
     return this
 }
 
-private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM) : LifecycleObserver {
+private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM) : DefaultLifecycleObserver {
     private var resumed = false
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() = viewModel.didResume().also { resumed = true }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() = viewModel.didPause().also { resumed = false }
+    override fun onResume(owner: LifecycleOwner) {
+        viewModel.didResume().also { resumed = true }
+    }
+    override fun onPause(owner: LifecycleOwner) {
+        viewModel.didPause().also { resumed = false }
+    }
 
     fun onDispose() {
         if (resumed) {

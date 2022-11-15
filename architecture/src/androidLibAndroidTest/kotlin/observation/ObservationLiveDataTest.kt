@@ -25,8 +25,8 @@ import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.test.testBlockingAndCancelScope
+import com.splendo.kaluga.test.base.BaseTest
+import com.splendo.kaluga.test.base.testBlockingAndCancelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -53,13 +53,9 @@ actual class ReviewManager(
     }
 
     actual suspend fun attemptToRequestReview() {
-        try {
-            val info = reviewManager.requestReview()
-            lifecycleManagerObserver.manager?.activity?.let {
-                reviewManager.launchReview(it, info)
-            }
-        } catch (e: com.google.android.play.core.internal.ar) {
-            com.splendo.kaluga.logging.error("Failed to retrieve review info.")
+        val info = reviewManager.requestReview()
+        lifecycleManagerObserver.manager?.activity?.let {
+            reviewManager.launchReview(it, info)
         }
     }
 }

@@ -19,7 +19,7 @@ package com.splendo.kaluga.base.test.text
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
-import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.base.BaseTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals

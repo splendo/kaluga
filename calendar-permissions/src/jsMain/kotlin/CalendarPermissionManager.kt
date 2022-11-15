@@ -17,32 +17,30 @@
 
 package com.splendo.kaluga.permissions.calendar
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class CalendarPermissionManager(actual val calendar: CalendarPermission, repo: CalendarPermissionStateRepo) : PermissionManager<CalendarPermission>(repo) {
+actual class DefaultCalendarPermissionManager(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    override suspend fun requestPermission() {
-        TODO("not implemented")
+    override fun requestPermissionDidStart() {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<CalendarPermission> {
-        TODO("not implemented")
+    override fun monitoringDidStart(interval: Duration) {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
     }
 }
 
 actual class CalendarPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
-        return CalendarPermissionManager(calendar, repo)
+    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<CalendarPermission> {
+        return DefaultCalendarPermissionManager(calendarPermission, settings, coroutineScope)
     }
 }

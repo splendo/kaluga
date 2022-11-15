@@ -14,10 +14,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         getByName("commonMain") {
             dependencies {
@@ -28,15 +24,7 @@ kotlin {
 
         getByName("commonTest") {
             dependencies {
-                api(project(":test-utils", ""))
-            }
-        }
-        getByName("androidLibMain") {
-            dependencies {
-                val ext = (gradle as ExtensionAware).extra
-                implementation(
-                    "androidx.compose.ui:ui:${ext["androidx_compose_version"]}"
-                )
+                api(project(":test-utils-base", ""))
             }
         }
     }

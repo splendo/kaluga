@@ -20,8 +20,8 @@ package com.splendo.kaluga.system.network
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.system.network.state.online
-import com.splendo.kaluga.test.FlowTest
-import com.splendo.kaluga.test.FlowTestBlock
+import com.splendo.kaluga.test.base.FlowTest
+import com.splendo.kaluga.test.base.FlowTestBlock
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals

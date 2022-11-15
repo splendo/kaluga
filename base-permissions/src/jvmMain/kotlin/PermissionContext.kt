@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 actual class PermissionContext
 

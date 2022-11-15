@@ -130,3 +130,6 @@ Define your Color Sets in project's assets if using `.CUSTOM` style:
 
 - `li_colorBackground` for surface color
 - `li_colorAccent` for progress bar / activity indicator color
+
+## Testing
+Use the [`test-utils-hud` module](../test-utils-hud) to get a mockable `HUDBuilder`.

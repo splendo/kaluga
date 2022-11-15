@@ -16,25 +16,31 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PackageInfoFlags
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.logging.warn
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.fixedRateTimer
+import kotlin.time.Duration
 
-internal enum class AndroidPermissionState {
+enum class AndroidPermissionState {
     GRANTED,
     DENIED,
     DENIED_DO_NOT_ASK;
@@ -73,22 +79,23 @@ internal enum class AndroidPermissionState {
 }
 
 /**
- * Convenience class for requesting a [Permission]
+ * Convenience class for requesting a [Permission] and monitoring [AndroidPermissionState]
  * @param context The context for which to request the [Permission]
- * @param permissionManager The [PermissionManager] managing the requested permission
  * @param permissions List of permissions to request. Should correspond to [Manifest.permission].
- * @param coroutineScope The coroutineScope on which to handle permission requests.
+ * @param logTag The tag used for logging
+ * @param logger The [Logger] used for logging
+ * @param onPermissionChanged A [AndroidPermissionStateHandler] that will be notified of changes to [AndroidPermissionState]
  */
-class AndroidPermissionsManager<P : Permission> constructor(
+class AndroidPermissionsManager constructor(
     private val context: Context = ApplicationHolder.applicationContext,
-    private val permissionManager: PermissionManager<P>,
     private val permissions: Array<String> = emptyArray(),
-    coroutineScope: CoroutineScope = permissionManager
+    coroutineScope: CoroutineScope,
+    private val logTag: String = "AndroidPermissionManager",
+    private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+    private val onPermissionChanged: AndroidPermissionStateHandler /* what */
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {
-        const val TAG = "Permissions"
-
         val permissionsStates: MutableMap<String, AndroidPermissionState> = ConcurrentHashMap()
     }
 
@@ -109,7 +116,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
                 context.startActivity(intent)
             }
         } else {
-            permissionManager.revokePermission(true)
+            onPermissionChanged.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
@@ -119,26 +126,31 @@ class AndroidPermissionsManager<P : Permission> constructor(
         val missingPermissions = permissions.toMutableList()
 
         try {
-            val packageInfo = pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
+            val packageInfo = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                pm.getPackageInfo(context.packageName, PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
+            }
 
             var declaredPermissions: List<String> = mutableListOf()
 
-            if (packageInfo != null && declaredPermissions.isEmpty()) {
+            if (packageInfo != null) {
                 declaredPermissions = packageInfo.requestedPermissions.toList()
             }
 
             if (declaredPermissions.isNotEmpty()) {
                 missingPermissions.toList().forEach { requestedPermissionName ->
                     if (declaredPermissions.contains(requestedPermissionName)) {
-                        debug(TAG, "Permission $requestedPermissionName was declared in manifest")
+                        logger.debug(logTag) { "Permission $requestedPermissionName was declared in manifest" }
                         missingPermissions.remove(requestedPermissionName)
                     } else {
-                        warn(TAG, "Permission $requestedPermissionName was not declared in manifest")
+                        logger.error(logTag) { "Permission $requestedPermissionName was not declared in manifest" }
                     }
                 }
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            error(TAG, e)
+            logger.error(logTag) { e.message.orEmpty() }
         }
 
         return missingPermissions
@@ -150,25 +162,26 @@ class AndroidPermissionsManager<P : Permission> constructor(
      * and [PermissionManager.revokePermission] if it became denied.
      * @param interval The interval in milliseconds between checks in changes to the permission state.
      */
-    fun startMonitoring(interval: Long) {
+    fun startMonitoring(interval: Duration) {
         updatePermissionsStates()
         if (timer != null) return
         // TODO use a coroutine bases timer as in iOS
-        timer = fixedRateTimer(period = interval) {
+        timer = fixedRateTimer(period = interval.inWholeMilliseconds) {
             monitor()
         }
     }
 
     internal fun monitor() {
         updatePermissionsStates()
-        if (hasPermissions) {
-            permissionManager.grantPermission()
+        val state = if (hasPermissions) {
+            AndroidPermissionState.GRANTED
         } else {
             val locked = filteredPermissionsStates.any {
                 it.value == AndroidPermissionState.DENIED_DO_NOT_ASK
             }
-            permissionManager.revokePermission(locked)
+            if (locked) AndroidPermissionState.DENIED_DO_NOT_ASK else AndroidPermissionState.DENIED
         }
+        onPermissionChanged.status(state)
     }
 
     /**
@@ -203,5 +216,37 @@ class AndroidPermissionsManager<P : Permission> constructor(
 
             permissionsStates[it] = newPermissionState
         }
+    }
+}
+
+interface AndroidPermissionStateHandler {
+    fun status(state: AndroidPermissionState)
+}
+
+class DefaultAndroidPermissionStateHandler(
+    private val eventChannel: SendChannel<PermissionManager.Event>,
+    private val logTag: String,
+    private val logger: Logger
+) : AndroidPermissionStateHandler {
+
+    override fun status(state: AndroidPermissionState) {
+        when (state) {
+            AndroidPermissionState.DENIED -> {
+                logger.info(logTag) { "Permission Revoked" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionDenied(locked = false))
+            }
+            AndroidPermissionState.GRANTED -> {
+                logger.info(logTag) { "Permission Granted" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionGranted)
+            }
+            AndroidPermissionState.DENIED_DO_NOT_ASK -> {
+                logger.info(logTag) { "Permission Locked" }
+                tryAndEmitEvent(PermissionManager.Event.PermissionDenied(locked = true))
+            }
+        }
+    }
+
+    private fun tryAndEmitEvent(event: PermissionManager.Event) {
+        eventChannel.trySend(event)
     }
 }

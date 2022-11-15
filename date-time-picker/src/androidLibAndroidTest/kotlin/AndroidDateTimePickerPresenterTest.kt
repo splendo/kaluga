@@ -55,7 +55,7 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
     override val builder get() = activity!!.viewModel.dateTimePickerBuilder
 
     companion object {
-        const val DEFAULT_TIMEOUT = 5_000L
+        const val DEFAULT_TIMEOUT = 20_000L
     }
 
     @Test

@@ -17,25 +17,37 @@
 
 package com.splendo.kaluga.permissions.calendar
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Calendar
  * @param allowWrite If `true` writing to the calendar is permitted
  */
-data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
+data class CalendarPermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Calendar - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
-fun PermissionsBuilder.registerCalendarPermission() =
-    registerCalendarPermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(CalendarPermission::class) { permission, coroutineContext ->
-            CalendarPermissionStateRepo(permission as CalendarPermission, builder as BaseCalendarPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerCalendarPermission(
+    calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerCalendarPermission(calendarPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+        CalendarPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerCalendarPermissionBuilder(context: PermissionContext = defaultPermissionContext): CalendarPermissionManagerBuilder = register(
-    builder = CalendarPermissionManagerBuilder(context),
-    permission = CalendarPermission::class
-)
+fun PermissionsBuilder.registerCalendarPermission(
+    calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
+    calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>
+) = calendarPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<CalendarPermission> { permission, coroutineContext ->
+        calendarPermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

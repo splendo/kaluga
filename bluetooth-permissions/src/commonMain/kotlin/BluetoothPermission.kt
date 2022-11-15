@@ -18,24 +18,29 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.bluetooth
 
-import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [BluetoothPermission]
  */
-expect class BluetoothPermissionManager : PermissionManager<BluetoothPermission>
+typealias BluetoothPermissionManager = PermissionManager<BluetoothPermission>
+expect class DefaultBluetoothPermissionManager : BasePermissionManager<BluetoothPermission>
 
-interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder {
+interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<BluetoothPermission> {
     /**
      * Creates a [BluetoothPermissionManager]
-     * @param repo The [BluetoothPermissionStateRepo] associated with the [BluetoothPermission]
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission>
+    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): BluetoothPermissionManager
 }
 
 /**
@@ -48,12 +53,9 @@ expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defa
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class DefaultBluetoothPermissionStateRepo(
+class BluetoothPermissionStateRepo(
     builder: BaseBluetoothPermissionManagerBuilder,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext
-) : BluetoothPermissionStateRepo(coroutineContext = coroutineContext) {
-    override val permissionManager: PermissionManager<BluetoothPermission> =
-        builder.create(this)
-}
-
-abstract class BluetoothPermissionStateRepo(coroutineContext: CoroutineContext) : PermissionStateRepo<BluetoothPermission>(coroutineContext = coroutineContext)
+) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

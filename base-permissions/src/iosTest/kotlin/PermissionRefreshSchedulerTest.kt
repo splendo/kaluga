@@ -15,111 +15,67 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.BaseTest
-import kotlinx.coroutines.CompletableDeferred
+import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.delay
-import kotlin.test.BeforeTest
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.time.Duration.Companion.milliseconds
 
 class PermissionRefreshSchedulerTest : BaseTest() {
 
-    private lateinit var permissionsManager: MockStoragePermissionManager
-
-    @BeforeTest
-    fun setUp() {
-        super.beforeTest()
-
-        val repo = MockStoragePermissionStateRepo()
-        permissionsManager = repo.permissionManager
-    }
-
     @Test
     fun testStartMonitoring() = runBlocking {
-        val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> = AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
-        val timerHelper = PermissionRefreshScheduler(permissionsManager, { authorization.value }, this)
+        val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> =
+            AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+        val authorizationProvider = object : CurrentAuthorizationStatusProvider {
+            override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
+                return authorization.value
+            }
+        }
 
-        timerHelper.startMonitoring(50)
+        val onPermissionChangedFlow = MutableStateFlow<IOSPermissionsHelper.AuthorizationStatus?>(null)
+        val timerHelper = PermissionRefreshScheduler(
+            currentAuthorizationStatusProvider = authorizationProvider,
+            onPermissionChangedFlow = object : AuthorizationStatusHandler {
+                override fun status(status: IOSPermissionsHelper.AuthorizationStatus) {
+                    onPermissionChangedFlow.value = status
+                }
+            },
+            coroutineScope = this
+        )
+
+        timerHelper.startMonitoring(50.milliseconds)
         delay(50)
-        assertFalse(permissionsManager.didGrantPermission.value.isCompleted)
-        assertFalse(permissionsManager.didRevokePermission.value.isCompleted)
+        assertNull(onPermissionChangedFlow.value)
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
-        permissionsManager.reset()
         delay(60)
-        assertTrue(permissionsManager.didGrantPermission.value.isCompleted)
+        assertEquals(
+            IOSPermissionsHelper.AuthorizationStatus.Authorized,
+            onPermissionChangedFlow.value
+        )
 
         timerHelper.isWaiting.value = true
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Denied)
-        permissionsManager.reset()
+        onPermissionChangedFlow.value = null
         delay(60)
-        assertFalse(permissionsManager.didGrantPermission.value.isCompleted)
-        assertFalse(permissionsManager.didRevokePermission.value.isCompleted)
+        assertNull(onPermissionChangedFlow.value)
 
         timerHelper.isWaiting.value = false
         delay(50)
-        assertTrue(permissionsManager.didRevokePermission.value.await())
+        assertEquals(IOSPermissionsHelper.AuthorizationStatus.Denied, onPermissionChangedFlow.value)
 
         authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
-        permissionsManager.reset()
+        onPermissionChangedFlow.value = null
         timerHelper.stopMonitoring()
         delay(50)
-        assertFalse(permissionsManager.didGrantPermission.value.isCompleted)
-        assertFalse(permissionsManager.didRevokePermission.value.isCompleted)
-        Unit
-    }
-}
-
-private class MockStoragePermissionStateRepo : PermissionStateRepo<DummyPermission>() {
-
-    override val permissionManager = MockStoragePermissionManager(this)
-}
-
-private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<DummyPermission>(mockPermissionRepo) {
-
-    var didGrantPermission: AtomicReference<EmptyCompletableDeferred> = AtomicReference(EmptyCompletableDeferred())
-    var didRevokePermission: AtomicReference<CompletableDeferred<Boolean>> = AtomicReference(CompletableDeferred())
-
-    var initialState: PermissionState<DummyPermission> = PermissionState.Denied.Requestable()
-
-    val hasRequestedPermission = EmptyCompletableDeferred()
-    val hasStartedMonitoring = CompletableDeferred<Long>()
-    val hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    override suspend fun requestPermission() {
-        hasRequestedPermission.complete()
-    }
-
-    override suspend fun initializeState(): PermissionState<DummyPermission> {
-        return initialState
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        hasStartedMonitoring.complete(interval)
-    }
-
-    override suspend fun stopMonitoring() {
-        hasStoppedMonitoring.complete()
-    }
-
-    override fun grantPermission() {
-        didGrantPermission.value.complete()
-    }
-
-    override fun revokePermission(locked: Boolean) {
-        didRevokePermission.value.complete(locked)
-    }
-
-    fun reset() {
-        didGrantPermission.set(EmptyCompletableDeferred())
-        didRevokePermission.set(CompletableDeferred())
+        assertNull(onPermissionChangedFlow.value)
     }
 }

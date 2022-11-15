@@ -188,3 +188,6 @@ MainScope().launch {
     alert.dismiss()
 }
 ```
+
+## Testing
+Use the [`test-utils-alerts` module](../test-utils-alerts) to get a mockable Alert Presenter.

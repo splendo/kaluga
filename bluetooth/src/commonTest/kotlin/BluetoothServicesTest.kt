@@ -17,32 +17,41 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothServicesTest : BluetoothFlowTest<List<Service>>() {
+class BluetoothServicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithService, BluetoothFlowTest.ServiceContext, List<Service>>() {
 
-    override val flow = suspend {
-        setup(Setup.SERVICE)
-        bluetooth.devices()[device.identifier].services()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithService, scope: CoroutineScope) -> ServiceContext = { configuration, scope ->
+        ServiceContext(configuration, scope)
     }
 
+    override val flowFromTestContext: suspend ServiceContext.() -> Flow<List<Service>> = { bluetooth.devices()[device.identifier].services() }
+
     @Test
-    fun testGetServices() = testWithFlow {
-        scanDevice()
-        bluetooth.startScanning()
+    fun testGetServices() = testWithFlowAndTestContext(
+        Configuration.DeviceWithService()
+    ) {
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
 
         test {
             assertEquals(emptyList(), it)
         }
-        action {
-            connectDevice(device)
-            connectionManager.discoverServicesCompleted.get().await()
-            discoverService(service, device)
+        mainAction {
+            connectDevice()
+            yieldMultiple(4)
+            connectionManager.discoverServicesMock.verify()
+            discoverService()
         }
-        val services = listOf(service)
         test {
-            assertEquals(services, it)
+            assertEquals(listOf(service), it)
         }
     }
 }

@@ -15,15 +15,17 @@
 
  */
 
-package com.splendo.kaluga.permissions.av
+package com.splendo.kaluga.permissions.base.av
 
-import com.splendo.kaluga.base.mainContinuation
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import platform.AVFoundation.AVAuthorizationStatus
 import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied
@@ -34,52 +36,58 @@ import platform.AVFoundation.AVMediaType
 import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.requestAccessForMediaType
 import platform.Foundation.NSBundle
+import kotlin.time.Duration
 
-abstract class AVType<P : Permission> {
-
-    abstract val permissionManager: PermissionManager<P>
+abstract class AVType {
     abstract val avMediaType: AVMediaType
     abstract val declarationName: String
 }
 
-class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, private val type: AVType<P>) {
+class AVPermissionHelper(
+    private val bundle: NSBundle,
+    private val type: AVType,
+    private val onPermissionChangedFlow: AuthorizationStatusHandler,
+    private val coroutineScope: CoroutineScope
+) : CoroutineScope by coroutineScope {
 
-    private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
-        AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
+    private class Provider(private val type: AVMediaType) : CurrentAuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(type).toAuthorizationStatus()
     }
-    private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
+
+    private val provider = Provider(type.avMediaType)
+    private val timerHelper = PermissionRefreshScheduler(provider, onPermissionChangedFlow, coroutineScope)
 
     fun requestPermission() {
+        val onPermissionChangedFlow = onPermissionChangedFlow
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            AVCaptureDevice.requestAccessForMediaType(
-                type.avMediaType,
-                mainContinuation { allowed ->
-                    timerHelper.isWaiting.value = false
-                    if (allowed) {
-                        type.permissionManager.grantPermission()
-                    } else {
-                        type.permissionManager.revokePermission(true)
-                    }
-                }
-            )
+            val mediaType = type.avMediaType
+            onPermissionChangedFlow.requestAuthorizationStatus(timerHelper, coroutineScope) {
+                val deferred = CompletableDeferred<Boolean>()
+                val callback = { allowed: Boolean ->
+                    deferred.complete(allowed)
+                    Unit
+                }.freeze()
+                AVCaptureDevice.requestAccessForMediaType(
+                    mediaType,
+                    callback
+                )
+                if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Denied
+            }
         } else {
-            type.permissionManager.revokePermission(true)
+            onPermissionChangedFlow.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
         }
     }
 
-    suspend fun initializeState(): PermissionState<P> {
-        return when {
-            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> PermissionState.Denied.Locked()
-            else -> IOSPermissionsHelper.getPermissionState(authorizationStatus())
+    fun startMonitoring(interval: Duration) {
+        when {
+            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> {
+                onPermissionChangedFlow.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
+            }
+            else -> timerHelper.startMonitoring(interval)
         }
     }
 
-    suspend fun startMonitoring(interval: Long) {
-        timerHelper.startMonitoring(interval)
-    }
-
-    suspend fun stopMonitoring() {
+    fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
 }

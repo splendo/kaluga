@@ -22,6 +22,7 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
+import com.splendo.kaluga.base.KalugaThread
 import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
@@ -323,7 +324,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     override val currentOrNull: R?
         get() = currentObserved.valueOrNull
 
-    private fun <T> handleOnMain(block: () -> T): T = if (isOnMainThread) {
+    private fun <T> handleOnMain(block: () -> T): T = if (KalugaThread.currentThread.isMainThread) {
         block()
     } else {
         runBlocking(Dispatchers.Main) {

@@ -1,0 +1,1163 @@
+public final class com/splendo/kaluga/test/base/AssertionsKt {
+	public static final fun assertFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
+	public static synthetic fun assertFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static final fun assertNotFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
+	public static synthetic fun assertNotFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/test/base/AwaitAllBlockingKt {
+	public static final fun awaitAllBlocking ([Lkotlinx/coroutines/Deferred;)Ljava/util/List;
+}
+
+public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/kaluga/test/base/BaseUIThreadTest, kotlinx/coroutines/CoroutineScope {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun action (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest ()V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getFilter ()Lkotlin/jvm/functions/Function1;
+	public final fun getFirstTestBlock ()Z
+	public abstract fun getFlowFromTestContext ()Lkotlin/jvm/functions/Function2;
+	public final fun getJob ()Lkotlinx/coroutines/Job;
+	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+	protected final fun getWaitForTestToSucceed ()J
+	public final fun mainAction (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun resetFlow (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setFirstTestBlock (Z)V
+	public final fun setJob (Lkotlinx/coroutines/Job;)V
+	public final fun test (ILkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun test$default (Lcom/splendo/kaluga/test/base/BaseFlowTest;ILkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun testWithFlowAndTestContext (Ljava/lang/Object;ZZLkotlin/jvm/functions/Function3;)V
+	public static synthetic fun testWithFlowAndTestContext$default (Lcom/splendo/kaluga/test/base/BaseFlowTest;Ljava/lang/Object;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+}
+
+public class com/splendo/kaluga/test/base/BaseTest {
+	public fun <init> ()V
+	public fun afterTest ()V
+	public fun beforeTest ()V
+}
+
+public abstract class com/splendo/kaluga/test/base/BaseUIThreadTest : com/splendo/kaluga/test/base/BaseTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public final fun testOnUIThread (Ljava/lang/Object;ZLkotlin/jvm/functions/Function2;)V
+	public static synthetic fun testOnUIThread$default (Lcom/splendo/kaluga/test/base/BaseUIThreadTest;Ljava/lang/Object;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
+	public static final field Companion Lcom/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext$Companion;
+	public fun dispose ()V
+}
+
+public final class com/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext$Companion {
+	public final fun getINSTANCE ()Lcom/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
+	public abstract fun dispose ()V
+}
+
+public final class com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext$DefaultImpls {
+	public static fun dispose (Lcom/splendo/kaluga/test/base/BaseUIThreadTest$TestContext;)V
+}
+
+public final class com/splendo/kaluga/test/base/DeliberateCancellationException : java/util/concurrent/CancellationException {
+	public fun <init> (Ljava/lang/Object;Z)V
+	public final fun getResult ()Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/test/base/FlowExtensionsKt {
+	public static final fun captureFor-8Mi8wO0 (Lkotlinx/coroutines/flow/Flow;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/test/base/FlowTest : com/splendo/kaluga/test/base/BaseFlowTest {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public abstract fun getFlow ()Lkotlin/jvm/functions/Function1;
+	public fun getFlowFromTestContext ()Lkotlin/jvm/functions/Function2;
+	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
+}
+
+public final class com/splendo/kaluga/test/base/FlowTestKt {
+	public static final fun getContextMap ()Ljava/util/Map;
+}
+
+public abstract class com/splendo/kaluga/test/base/FlowableTest : com/splendo/kaluga/test/base/BaseTest {
+	public fun <init> ()V
+	public abstract fun mutableSharedFlow ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
+}
+
+public abstract class com/splendo/kaluga/test/base/SimpleFlowTest : com/splendo/kaluga/test/base/FlowTest {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public class com/splendo/kaluga/test/base/SimpleUIThreadTest : com/splendo/kaluga/test/base/UIThreadTest {
+	public fun <init> ()V
+	public fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/splendo/kaluga/test/base/SimpleUIThreadTest$SimpleTestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext, kotlinx/coroutines/CoroutineScope {
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+	public fun dispose ()V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public abstract class com/splendo/kaluga/test/base/UIThreadTest : com/splendo/kaluga/test/base/BaseUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+	public fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public final fun testOnUIThread (ZLkotlin/jvm/functions/Function2;)V
+	public static synthetic fun testOnUIThread$default (Lcom/splendo/kaluga/test/base/UIThreadTest;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext {
+	public static final field Companion Lcom/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext$Companion;
+	public fun dispose ()V
+}
+
+public final class com/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext$Companion {
+	public final fun getINSTANCE ()Lcom/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/UIThreadTest$TestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
+}
+
+public final class com/splendo/kaluga/test/base/UIThreadTest$TestContext$DefaultImpls {
+	public static fun dispose (Lcom/splendo/kaluga/test/base/UIThreadTest$TestContext;)V
+}
+
+public final class com/splendo/kaluga/test/base/YieldMultipleKt {
+	public static final field DEFAULT_MULTIPLE_TIMES_YIELDS I
+	public static final fun yieldMultiple (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun yieldMultiple$default (ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun yieldUntil-w6K2E_k (JIJLkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun yieldUntil-w6K2E_k$default (JIJLkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/test/base/mock/BaseMethodMock {
+	protected abstract fun createStub (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	protected abstract fun getParametersSpec ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec;
+	protected final fun getStubFor (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public final fun reset ()V
+	public final fun resetCalls ()V
+	public final fun resetStubs ()V
+}
+
+public abstract class com/splendo/kaluga/test/base/mock/BaseMethodMock$Stub {
+	public fun <init> ()V
+	protected abstract fun createAnswer (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/answer/BaseAnswer;
+	public final fun doAnswer (Lcom/splendo/kaluga/test/base/mock/answer/BaseAnswer;)V
+	public final fun doExecute (Lkotlin/jvm/functions/Function1;)V
+	public final fun doReturn (Ljava/lang/Object;)V
+	public final fun doThrow (Ljava/lang/Throwable;)V
+	protected final fun getAnswer ()Ljava/util/concurrent/atomic/AtomicReference;
+	public abstract fun getMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+}
+
+public final class com/splendo/kaluga/test/base/mock/CallKt {
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/MethodMock;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/MethodMock;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/MethodMock;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/MethodMock;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/MethodMock;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/MethodMock;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/test/base/mock/MethodMock : com/splendo/kaluga/test/base/mock/BaseMethodMock {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec;)V
+	public synthetic fun createStub (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+}
+
+public final class com/splendo/kaluga/test/base/mock/MethodMock$Stub : com/splendo/kaluga/test/base/mock/BaseMethodMock$Stub {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;)V
+	public final fun call (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Ljava/lang/Object;
+	public synthetic fun createAnswer (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/answer/BaseAnswer;
+	public fun getMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+}
+
+public final class com/splendo/kaluga/test/base/mock/MockMethodKt {
+	public static final fun doReturn (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;)V
+}
+
+public final class com/splendo/kaluga/test/base/mock/OnKt {
+	public static final fun on (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static final fun on (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static final fun on (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static final fun on (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static final fun on (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static final fun on (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static synthetic fun on$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static synthetic fun on$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static synthetic fun on$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static synthetic fun on$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+	public static synthetic fun on$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+}
+
+public final class com/splendo/kaluga/test/base/mock/SuspendMethodMock : com/splendo/kaluga/test/base/mock/BaseMethodMock {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec;)V
+	public synthetic fun createStub (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;)Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;
+}
+
+public final class com/splendo/kaluga/test/base/mock/SuspendMethodMock$Stub : com/splendo/kaluga/test/base/mock/BaseMethodMock$Stub {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;)V
+	public final fun call (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun createAnswer (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/answer/BaseAnswer;
+	public final fun doAwait (Lkotlinx/coroutines/Deferred;)Lkotlinx/coroutines/Deferred;
+	public final fun doExecuteSuspended (Lkotlin/jvm/functions/Function2;)V
+	public fun getMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+}
+
+public final class com/splendo/kaluga/test/base/mock/VerifyKt {
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;I)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;I)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;I)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;I)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;I)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;I)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;)V
+	public static final fun verify (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;IILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;IILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;ILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;IILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;IILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;IILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;IILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;ILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;ILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;ILjava/lang/Object;)V
+	public static synthetic fun verify$default (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/answer/Answer : com/splendo/kaluga/test/base/mock/answer/BaseAnswer {
+	public abstract fun call (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/answer/BaseAnswer {
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/answer/SuspendedAnswer : com/splendo/kaluga/test/base/mock/answer/BaseAnswer {
+	public abstract fun call (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/test/base/mock/matcher/AnyCaptor : com/splendo/kaluga/test/base/mock/matcher/Captor {
+	public fun <init> ()V
+	public fun asMatcher ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun capture (Ljava/lang/Object;)V
+	public fun getCaptured ()Ljava/util/List;
+	public fun getLastCaptured ()Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/test/base/mock/matcher/AnyOrNullCaptor : com/splendo/kaluga/test/base/mock/matcher/Captor {
+	public fun <init> ()V
+	public fun asMatcher ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun capture (Ljava/lang/Object;)V
+	public fun getCaptured ()Ljava/util/List;
+	public fun getLastCaptured ()Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/matcher/Captor : com/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor {
+	public abstract fun capture (Ljava/lang/Object;)V
+	public abstract fun getCaptured ()Ljava/util/List;
+	public abstract fun getLastCaptured ()Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/test/base/mock/matcher/ParameterMatcher : com/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor, java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher$Companion;
+	public fun asMatcher ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun compareTo (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public abstract fun matches (Ljava/lang/Object;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/matcher/ParameterMatcher$Companion {
+	public final fun any ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun eq (Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun isInstance (Lkotlin/reflect/KClass;)Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun matching (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun notEq (Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun notNull ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun oneOf (Ljava/util/List;)Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor {
+	public abstract fun asMatcher ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/PairParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public fun <init> ()V
+	public fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Values;)V
+	public synthetic fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Values;)Z
+	public synthetic fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/PairParameters$Matchers : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)V
+	public fun asList ()Ljava/util/List;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Matchers;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Matchers;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/PairParameters$MatchersOrCaptor : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)V
+	public fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Matchers;
+	public synthetic fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$MatchersOrCaptor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$MatchersOrCaptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/PairParameters$Values : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Values;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Values;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/PairParameters$Values;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Ljava/lang/Object;
+	public final fun getSecond ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/PairParametersKt {
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function3;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public abstract fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public abstract fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public abstract fun asList ()Ljava/util/List;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public abstract fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public fun <init> ()V
+	public synthetic fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Values;)V
+	public synthetic fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+	public fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Values;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Matchers : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)V
+	public fun asList ()Ljava/util/List;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component4 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Matchers;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Matchers;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getFourth ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getThird ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$MatchersOrCaptor : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)V
+	public synthetic fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	public fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Matchers;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component4 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$MatchersOrCaptor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$MatchersOrCaptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getFourth ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getThird ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Values : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun component4 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Values;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Values;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuadrupleParameters$Values;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Ljava/lang/Object;
+	public final fun getFourth ()Ljava/lang/Object;
+	public final fun getSecond ()Ljava/lang/Object;
+	public final fun getThird ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuadrupleParametersKt {
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function4;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function5;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function4;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function5;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public fun <init> ()V
+	public synthetic fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Values;)V
+	public synthetic fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+	public fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Values;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Matchers : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)V
+	public fun asList ()Ljava/util/List;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component4 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component5 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Matchers;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Matchers;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFifth ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getFourth ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getThird ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$MatchersOrCaptor : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)V
+	public synthetic fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	public fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Matchers;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component4 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component5 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$MatchersOrCaptor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$MatchersOrCaptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFifth ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getFourth ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getThird ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Values : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun component4 ()Ljava/lang/Object;
+	public final fun component5 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Values;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Values;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/QuintupleParameters$Values;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFifth ()Ljava/lang/Object;
+	public final fun getFirst ()Ljava/lang/Object;
+	public final fun getFourth ()Ljava/lang/Object;
+	public final fun getSecond ()Ljava/lang/Object;
+	public final fun getThird ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/QuintupleParametersKt {
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function5;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function6;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function5;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function6;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function5;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function6;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public fun <init> ()V
+	public synthetic fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Values;)V
+	public synthetic fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+	public fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Values;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters$Matchers : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)V
+	public fun asList ()Ljava/util/List;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Matchers;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Matchers;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters$MatchersOrCaptor : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)V
+	public synthetic fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	public fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Matchers;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$MatchersOrCaptor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$MatchersOrCaptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/SingleParameters$Values : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Values;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Values;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/SingleParameters$Values;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/SingleParametersKt {
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function1;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public fun <init> ()V
+	public synthetic fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Values;)V
+	public synthetic fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+	public fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Values;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters$Matchers : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)V
+	public fun asList ()Ljava/util/List;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;)Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Matchers;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Matchers;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public final fun getThird ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcher;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters$MatchersOrCaptor : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public fun <init> (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)V
+	public synthetic fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	public fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Matchers;
+	public final fun component1 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun copy (Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;)Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$MatchersOrCaptor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$MatchersOrCaptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getSecond ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public final fun getThird ()Lcom/splendo/kaluga/test/base/mock/matcher/ParameterMatcherOrCaptor;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/TripleParameters$Values : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Values;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Values;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/parameters/TripleParameters$Values;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirst ()Ljava/lang/Object;
+	public final fun getSecond ()Ljava/lang/Object;
+	public final fun getThird ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/TripleParametersKt {
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function4;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function4;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function3;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function4;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/VoidParameters : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters;
+	public synthetic fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)V
+	public fun capture (Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$MatchersOrCaptor;Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$Values;)V
+	public synthetic fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values;)Z
+	public fun matches (Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$Matchers;Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$Values;)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/VoidParameters$Matchers : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$Matchers;
+	public fun asList ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/VoidParameters$MatchersOrCaptor : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$MatchersOrCaptor {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$MatchersOrCaptor;
+	public synthetic fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	public fun asMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$Matchers;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/VoidParameters$Values : com/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Values {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/parameters/VoidParameters$Values;
+}
+
+public final class com/splendo/kaluga/test/base/mock/parameters/VoidParametersKt {
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBoolean (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockBooleanArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByte (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockByteArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockChar (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockCharRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDouble (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockDoubleArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloat (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockFloatArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockInt (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockIntRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockList (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLong (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockLongRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockMap (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNonNullable (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNullable (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockNumber (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockSet (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShort (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockShortArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockString (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByte (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUByteArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUInt (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUIntRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULong (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockULongRange (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShort (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUShortArray (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockUnit (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function0;Lcom/splendo/kaluga/test/base/mock/answer/Answer;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultAnswer (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/answer/SuspendedAnswer;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function0;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun mockWithDefaultValue (Lkotlin/jvm/functions/Function1;Ljava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public abstract interface class com/splendo/kaluga/test/base/mock/verification/VerificationRule {
+	public static final field Companion Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Companion;
+	public abstract fun matches (I)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Companion {
+	public final fun atLeast (I)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Range;
+	public final fun atMost (I)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Range;
+	public final fun between (Lkotlin/ranges/IntRange;)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Range;
+	public final fun never ()Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Never;
+	public final fun times (I)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Exactly;
+}
+
+public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Exactly : com/splendo/kaluga/test/base/mock/verification/VerificationRule {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Exactly;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Exactly;IILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Exactly;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTimes ()I
+	public fun hashCode ()I
+	public fun matches (I)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Never : com/splendo/kaluga/test/base/mock/verification/VerificationRule {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Never;
+	public fun matches (I)Z
+}
+
+public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Range : com/splendo/kaluga/test/base/mock/verification/VerificationRule {
+	public fun <init> (Lkotlin/ranges/IntRange;)V
+	public final fun component1 ()Lkotlin/ranges/IntRange;
+	public final fun copy (Lkotlin/ranges/IntRange;)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Range;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Range;Lkotlin/ranges/IntRange;ILjava/lang/Object;)Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Range;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRange ()Lkotlin/ranges/IntRange;
+	public fun hashCode ()I
+	public fun matches (I)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/test/base/monitor/MockServiceMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
+	public fun <init> ()V
+	public final fun getStartMonitoringMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStopMonitoringMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public abstract fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun isServiceEnabled ()Z
+	public fun startMonitoring ()V
+	public fun stopMonitoring ()V
+}
+
