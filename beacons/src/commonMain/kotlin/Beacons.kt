@@ -50,7 +50,8 @@ class Beacons(
 
     private companion object { const val TAG = "Beacons" }
 
-    private val lock = Mutex()
+    private val monitoringLock = Mutex()
+    private val updateLock = Mutex()
     private val cache = mutableMapOf<BeaconID, BeaconJob>()
     private val cacheJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
@@ -60,7 +61,7 @@ class Beacons(
     val beacons: StateFlow<Set<BeaconInfo>>
         get() = _beacons.asStateFlow()
 
-    suspend fun startMonitoring(coroutineScope: CoroutineScope) = lock.withLock {
+    suspend fun startMonitoring(coroutineScope: CoroutineScope) = monitoringLock.withLock {
         debug(TAG, "Start monitoring")
         _beacons.value = emptySet()
         bluetooth.startScanning()
@@ -72,7 +73,7 @@ class Beacons(
         }
     }
 
-    suspend fun stopMonitoring() = lock.withLock {
+    suspend fun stopMonitoring() = monitoringLock.withLock {
         debug(TAG, "Stop monitoring")
         bluetooth.stopScanning()
         monitoringJob.value?.cancel()
@@ -86,7 +87,7 @@ class Beacons(
         list.any { beaconIds.containsLowerCased(it.beaconID.asString()) }
     }
 
-    private suspend fun updateBeacons(discovered: List<BeaconInfo>) {
+    private suspend fun updateBeacons(discovered: List<BeaconInfo>) = updateLock.withLock {
         debug(TAG, "Total Beacons discovered: ${discovered.size}")
         discovered.forEach { beacon ->
             if (cache.containsKey(beacon.beaconID)) {
