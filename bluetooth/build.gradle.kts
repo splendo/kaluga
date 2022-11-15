@@ -12,6 +12,7 @@ publishableComponent()
 dependencies {
     implement(Dependencies.BLEScanner)
     implementation(project(":location", ""))
+    implement(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
@@ -19,7 +20,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
-                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
         commonTest {

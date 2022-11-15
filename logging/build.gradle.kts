@@ -9,6 +9,10 @@ plugins {
 
 publishableComponent()
 
+dependencies {
+    implement(Dependencies.KotlinX.AtomicFu)
+}
+
 kotlin {
     sourceSets {
         commonMain {
@@ -19,7 +23,6 @@ kotlin {
         commonTest {
             dependencies {
                 api(project(":test-utils-base", ""))
-                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
     }

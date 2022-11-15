@@ -16,6 +16,7 @@ dependencies {
     expose(Dependencies.AndroidX.Lifecycle.ViewModel)
     expose(Dependencies.AndroidX.Lifecycle.LiveData)
     implement(Dependencies.AndroidX.Browser)
+    implement(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
@@ -26,7 +27,6 @@ kotlin {
                 implementation(project(":base", ""))
                 expose(Dependencies.KotlinX.Serialization.Core)
                 expose(Dependencies.KotlinX.Serialization.Json)
-                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
 
