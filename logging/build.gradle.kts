@@ -19,6 +19,7 @@ kotlin {
         commonTest {
             dependencies {
                 api(project(":test-utils-base", ""))
+                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
     }

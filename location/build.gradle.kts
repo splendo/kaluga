@@ -19,6 +19,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":location-permissions", ""))
+                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
         commonTest {
