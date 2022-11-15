@@ -12,6 +12,7 @@ publishableComponent()
 dependencies {
     implement(Dependencies.Android.PlayServices.Location)
     implement(Dependencies.KotlinX.Coroutines.PlayServices)
+    implement(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
@@ -19,7 +20,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":location-permissions", ""))
-                implement(Dependencies.KotlinX.AtomicFu)
             }
         }
         commonTest {
