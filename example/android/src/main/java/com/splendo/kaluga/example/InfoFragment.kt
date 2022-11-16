@@ -29,11 +29,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
-import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpec
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
-import com.splendo.kaluga.example.shared.viewmodel.info.LinkSpecRow
-import com.splendo.kaluga.example.shared.viewmodel.info.MailSpecRow
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.net.URL
@@ -45,22 +43,20 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
             ActivityNavigator<InfoNavigation<*>> { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {
-                        val title = action.bundle?.get(DialogSpecRow.TitleRow) ?: ""
-                        val message = action.bundle?.get(DialogSpecRow.MessageRow) ?: ""
                         NavigationSpec.Dialog(
                             createDialog = {
-                                InfoDialog(title, message)
+                                InfoDialog(action.value)
                             }
                         )
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(
-                        URL(action.bundle!!.get(LinkSpecRow.LinkRow)),
+                        URL(action.value),
                         NavigationSpec.Browser.Type.Normal
                     )
                     is InfoNavigation.Mail -> NavigationSpec.Email(
                         NavigationSpec.Email.EmailSettings(
-                            to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(),
-                            subject = action.bundle?.get(MailSpecRow.SubjectRow)
+                            to = action.value.to,
+                            subject = action.value.subject
                         )
                     )
                 }
@@ -108,7 +104,7 @@ class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<I
     }
 }
 
-class InfoDialog(val title: String, val message: String) : DialogFragment() {
+class InfoDialog(private val dialogSpec: DialogSpec) : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,8 +113,8 @@ class InfoDialog(val title: String, val message: String) : DialogFragment() {
     ): View? {
         val v = inflater.inflate(R.layout.dialog_info, container, false)
 
-        v.findViewById<TextView>(R.id.title).text = title
-        v.findViewById<TextView>(R.id.message).text = message
+        v.findViewById<TextView>(R.id.title).text = dialogSpec.title
+        v.findViewById<TextView>(R.id.message).text = dialogSpec.message
 
         return v
     }

@@ -16,7 +16,7 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class KeyboardManagerViewController : UIViewController {
     
@@ -25,24 +25,24 @@ class KeyboardManagerViewController : UIViewController {
     private lazy var editFieldFocusHandler = {
         return UIKitFocusHandler(view: self.editField)
     }()
-    lazy var viewModel = KNArchitectureFramework().createKeyboardViewModel(focusHandler: self.editFieldFocusHandler)
+    lazy var viewModel = KeyboardViewModel(keyboardManagerBuilder: KeyboardManager.Builder(application: UIApplication.shared), editFieldFocusHandler: editFieldFocusHandler)
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { return [] })
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
     }
-    
+
     @IBAction
     func showButtonPressed() {
         viewModel.onShowPressed()
     }
-    
+
     @IBAction
     func hideButtonPressed() {
         viewModel.onHidePressed()

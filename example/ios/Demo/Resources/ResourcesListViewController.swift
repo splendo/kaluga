@@ -15,49 +15,56 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class ResourcesListViewController : UITableViewController {
+
+    private lazy var navigator: ViewControllerNavigator<ResourcesListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
+        NavigationSpec.Segue(identifier: action.segueKey)
+    }
     
-    private lazy var viewModel: ResourcesListViewModel = KNArchitectureFramework().createResourcesViewModel(parent: self)
+    private lazy var viewModel: ResourcesListViewModel = ResourcesListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     private var resources = [String]()
-    private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
-    
+    private var onSelected: ((Int) -> Void)? = nil
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
-            return [viewModel.observeResources() { (resources: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
-                self?.resources = resources
-                self?.onSelected = onSelected
-                self?.tableView.reloadData()
-            }]
+            return [
+                viewModel.resources.observeInitialized { next in
+                    let resources = next ?? []
+                    self?.resources = resources.map { ($0 as! Resource).title }
+                    self?.onSelected = { (index: Int) in viewModel.onResourceSelected(resource: resources[index] as! Resource) }
+                    self?.tableView.reloadData()
+                }
+            ]
         }
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resources.count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ResourcesListCell.Const.identifier, for: indexPath) as! ResourcesListCell
         cell.label.text = resources[indexPath.row]
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(KotlinInt.init(int: Int32(indexPath.row)))
+        let _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -71,4 +78,17 @@ class ResourcesListCell : UITableViewCell {
     
     @IBOutlet weak var label: UILabel!
     
+}
+
+private extension ResourcesListNavigationAction {
+    var segueKey: String {
+        get {
+            switch self {
+            case is ResourcesListNavigationAction.Button: return "showButton"
+            case is ResourcesListNavigationAction.Color: return "showColor"
+            case is ResourcesListNavigationAction.Label: return "showLabel"
+            default: return ""
+            }
+        }
+    }
 }

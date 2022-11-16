@@ -16,24 +16,24 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
-class BluetoothDeviceDetailsViewController : UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class BluetoothDeviceDetailsViewController : UIViewController {
     
     struct Const {
         static let storyboard = UIStoryboard(name: "Main", bundle: nil)
         static let storyboardId = "BluetoothDeviceDetails"
     }
     
-    static func create(deviceUuid: UUID, bluetooth: Bluetooth) -> BluetoothDeviceDetailsViewController {
+    static func create(identifier: UUID) -> BluetoothDeviceDetailsViewController {
         let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! BluetoothDeviceDetailsViewController
         if #available(iOS 13.0, *) {
             vc.isModalInPresentation = true
         }
-        vc.viewModel = KNArchitectureFramework().createBluetoothDeviceDetailsViewModel(identifier: deviceUuid, bluetooth: bluetooth)
+        vc.viewModel = BluetoothDeviceDetailViewModel(identifier: identifier)
         return vc
     }
-    
+
     var viewModel: BluetoothDeviceDetailViewModel!
     private var lifecycleManager: LifecycleManager!
     
@@ -46,29 +46,29 @@ class BluetoothDeviceDetailsViewController : UIViewController, UICollectionViewD
     @IBOutlet var servicesList: UICollectionView!
     
     private var services: [BluetoothServiceViewModel] = []
-    
+
     private var isInvalidating: Bool = false
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         servicesHeader.text = NSLocalizedString("bluetooth_services_header", comment: "")
         deviceIdentifier.text = viewModel.identifierString
-        
+
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 8, bottom: 10, right: 8)
         flowLayout.minimumLineSpacing = 4
         servicesList.collectionViewLayout = flowLayout
 
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] in
-            
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
+
             guard let viewModel = self?.viewModel else { return []}
-            
+
             return [
             viewModel.name.observe { name in
                 self?.deviceName.text = name as String?
@@ -92,32 +92,32 @@ class BluetoothDeviceDetailsViewController : UIViewController, UICollectionViewD
                 self?.servicesList.layoutIfNeeded()
             }
             ]
-        })
+        }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return services.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let serviceCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothServiceView.Companion.identifier, for: indexPath) as! BluetoothServiceView
         serviceCell.parent = self
         serviceCell.service = services[indexPath.row]
         return serviceCell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (!isInvalidating) {
             (cell as? BluetoothServiceView)?.startMonitoring()
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (!isInvalidating) {
             (cell as? BluetoothServiceView)?.stopMonitoring()
         }
     }
-    
+
     fileprivate func updateListSize() {
         isInvalidating = true
         servicesList.collectionViewLayout.invalidateLayout()
@@ -146,13 +146,13 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
     @IBOutlet var characteristicsListHeight: NSLayoutConstraint!
     
     private var characteristics: [BluetoothCharacteristicViewModel] = []
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         serviceHeader.text = NSLocalizedString("bluetooth_service", comment: "")
         characteristicsHeader.text = NSLocalizedString("bluetooth_characteristics", comment: "")
-        
+
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 8, bottom: 10, right: 8)
@@ -162,14 +162,14 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
         characteristicsList.delegate = self
         characteristicsList.register(UINib(nibName: "BluetoothCharacteristicCell", bundle: nil), forCellWithReuseIdentifier: BluetoothCharacteristicView.Companion.identifier)
     }
-    
+
     fileprivate func startMonitoring() {
         disposeBag.dispose()
         guard let service = self.service else {
             return
         }
         service.didResume()
-        
+
         serviceIdentifier.text = service.uuid
         service.characteristics.observe { [weak self] characteristics in
             self?.characteristics = characteristics as? [BluetoothCharacteristicViewModel] ?? []
@@ -177,12 +177,12 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
             self?.updateListSize(isInvalidating: false)
         }.addTo(disposeBag: disposeBag)
     }
-    
+
     fileprivate func stopMonitoring() {
         service?.didPause()
         disposeBag.dispose()
     }
-    
+
     fileprivate func updateListSize(isInvalidating: Bool) {
         self.isInvalidating = isInvalidating
         characteristicsList.collectionViewLayout.invalidateLayout()
@@ -192,30 +192,30 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
         parent?.updateListSize()
         self.isInvalidating = false
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return characteristics.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let characteristicCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothCharacteristicView.Companion.identifier, for: indexPath) as! BluetoothCharacteristicView
         characteristicCell.parent = self
         characteristicCell.characteristic = characteristics[indexPath.row]
         return characteristicCell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (!isInvalidating) {
             (cell as? BluetoothCharacteristicView)?.startMonitoring()
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (!isInvalidating) {
             (cell as? BluetoothCharacteristicView)?.stopMonitoring()
         }
     }
-    
+
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         layoutIfNeeded()
@@ -225,7 +225,7 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
     
 }
 
-class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelegate, UICollectionViewDataSource {
+class BluetoothCharacteristicView : UICollectionViewCell {
     
     fileprivate struct Companion {
         static let identifier = "BluetoothCharacteristicView"
@@ -234,7 +234,7 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
     fileprivate weak var parent: BluetoothServiceView?
     fileprivate var characteristic: BluetoothCharacteristicViewModel?
     private let disposeBag = DisposeBag()
-    
+
     private var isInvalidating: Bool = false
     
     @IBOutlet var characteristicIdentifier: UILabel!
@@ -245,12 +245,12 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
     @IBOutlet var descriptorsListHeight: NSLayoutConstraint!
     
     private var descriptors: [BluetoothDescriptorViewModel] = []
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         descriptorsHeader.text = NSLocalizedString("bluetooth_descriptors", comment: "")
-        
+
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 8, bottom: 10, right: 8)
@@ -258,31 +258,31 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
         descriptorsList.collectionViewLayout = flowLayout
         descriptorsList.register(UINib(nibName: "BluetoothDescriptorCell", bundle: nil), forCellWithReuseIdentifier: BluetoothDescriptorView.Companion.identifier)
     }
-    
+
     fileprivate func startMonitoring() {
         disposeBag.dispose()
         guard let characteristic = self.characteristic else {
             return
         }
         characteristic.didResume()
-        
+
         characteristicIdentifier.text = characteristic.uuid
         characteristic.descriptors.observe { [weak self] descriptors in
             self?.descriptors = descriptors as? [BluetoothDescriptorViewModel] ?? []
             self?.descriptorsList.reloadData()
             self?.updateListSize(isInvalidating: false)
         }.addTo(disposeBag: disposeBag)
-        
+
         characteristic.value.observe { [weak self] value in
             self?.characteristicValue.text = value as String?
         }.addTo(disposeBag: disposeBag)
     }
-    
+
     fileprivate func stopMonitoring() {
         disposeBag.dispose()
         characteristic?.didPause()
     }
-    
+
     private func updateListSize(isInvalidating: Bool) {
         self.isInvalidating = isInvalidating
         descriptorsList.collectionViewLayout.invalidateLayout()
@@ -292,36 +292,35 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
         parent?.updateListSize(isInvalidating: true)
         self.isInvalidating = false
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return descriptors.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let descriptorCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothDescriptorView.Companion.identifier, for: indexPath) as! BluetoothDescriptorView
         descriptorCell.descriptor = descriptors[indexPath.row]
         return descriptorCell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (!isInvalidating) {
             (cell as? BluetoothDescriptorView)?.startMonitoring()
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if (!isInvalidating) {
             (cell as? BluetoothDescriptorView)?.stopMonitoring()
         }
     }
-    
+
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         layoutIfNeeded()
         layoutAttributes.frame.size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         return layoutAttributes
     }
-    
 }
 
 class BluetoothDescriptorView : UICollectionViewCell {
@@ -342,19 +341,19 @@ class BluetoothDescriptorView : UICollectionViewCell {
             return
         }
         descriptor.didResume()
-        
+
         descriptorIdentifier.text = descriptor.uuid
-        
+
         descriptor.value.observe { [weak self] value in
             self?.descriptorValue.text = value as String?
         }.addTo(disposeBag: disposeBag)
     }
-    
+
     fileprivate func stopMonitoring() {
         disposeBag.dispose()
         descriptor?.didResume()
     }
-    
+
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
         layoutIfNeeded()

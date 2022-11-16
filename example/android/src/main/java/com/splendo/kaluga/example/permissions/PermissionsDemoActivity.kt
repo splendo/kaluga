@@ -22,11 +22,10 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
-import com.splendo.kaluga.architecture.navigation.toNavigationBundle
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpec
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -43,29 +42,15 @@ import org.koin.core.parameter.parametersOf
 class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.layout.activity_permissions_demo) {
 
     override val viewModel: PermissionViewModel by viewModel {
-        val permissionNavSpec = PermissionNavigationBundleSpec()
-        intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
-            val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
-                PermissionView.Bluetooth -> BluetoothPermission
-                PermissionView.Calendar -> CalendarPermission(allowWrite = true)
-                PermissionView.Camera -> CameraPermission
-                PermissionView.Contacts -> ContactsPermission(allowWrite = true)
-                PermissionView.Location -> LocationPermission(background = true, precise = true)
-                PermissionView.Microphone -> MicrophonePermission
-                PermissionView.Notifications -> NotificationsPermission()
-                PermissionView.Storage -> StoragePermission(allowWrite = true)
-            }
-            parametersOf(permission)
+        intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))?.let { permissionView ->
+            parametersOf(permissionView.permission)
         } ?: parametersOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val permissionNavSpec = PermissionNavigationBundleSpec()
-        intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
-            supportActionBar?.title = bundle.get(PermissionNavigationBundleSpecRow).title
-        }
+        supportActionBar?.title = intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))?.title
 
         viewModel.permissionStateMessage.observe {
             findViewById<TextView>(R.id.permissions_message).text = it

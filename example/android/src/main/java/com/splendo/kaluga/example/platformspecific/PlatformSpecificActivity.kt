@@ -34,9 +34,9 @@ import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeA
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.example.platformspecific.compose.bottomSheet.BottomSheetActivity
-import com.splendo.kaluga.example.platformspecific.compose.contacts.ContactsActivity
-import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
+import com.splendo.kaluga.example.bottomSheet.BottomSheetActivity
+import com.splendo.kaluga.example.contacts.ContactsActivity
+import com.splendo.kaluga.example.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.viewmodel.featureList.PlatformFeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.PlatformSpecificFeaturesViewModel
 
@@ -51,8 +51,10 @@ class PlatformSpecificActivity : KalugaViewModelComposeActivity<PlatformSpecific
 
 private fun navigationMapper(action: PlatformFeatureListNavigationAction): NavigationSpec =
     when (action) {
-        is PlatformFeatureListNavigationAction.ComposeNavigation -> NavigationSpec.Activity(ContactsActivity::class.java)
-        is PlatformFeatureListNavigationAction.ComposeBottomSheet -> NavigationSpec.Activity(BottomSheetActivity::class.java)
+        is PlatformFeatureListNavigationAction.ComposeNavigation -> NavigationSpec.Activity(
+            ContactsActivity::class.java)
+        is PlatformFeatureListNavigationAction.ComposeBottomSheet -> NavigationSpec.Activity(
+            BottomSheetActivity::class.java)
     }
 
 @Composable

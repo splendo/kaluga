@@ -17,11 +17,10 @@
 
 import Foundation
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class NetworkViewController : UIViewController {
-    
-    private let knArchitectureFramework = KNArchitectureFramework()
+
     @IBOutlet weak var networkStateText: UILabel!
     private var lifecycleManager: LifecycleManager!
     
@@ -34,12 +33,12 @@ class NetworkViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = knArchitectureFramework.bind(viewModel: viewModel, to: self) { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             
             return [
-                viewModel.networkState.observe { value in
-                    self?.networkStateText.text = value as? String
+                viewModel.networkState.observe { next in
+                    self?.networkStateText.text = next as? String
                 }
             ]
         }

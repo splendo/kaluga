@@ -20,10 +20,7 @@ package com.splendo.kaluga.example
 
 import android.app.Application
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.example.di.utilitiesModule
-import com.splendo.kaluga.example.di.viewModelModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import com.splendo.kaluga.example.shared.di.initKoin
 
 class ExampleApplication : Application() {
 
@@ -31,9 +28,6 @@ class ExampleApplication : Application() {
         super.onCreate()
         ApplicationHolder.application = this
 
-        startKoin {
-            androidContext(this@ExampleApplication)
-            modules(utilitiesModule, viewModelModule)
-        }
+        initKoin()
     }
 }

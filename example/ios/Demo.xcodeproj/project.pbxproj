@@ -38,7 +38,6 @@
 		7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74FDC8922442294AF0776058 /* LaunchScreen.storyboard */; };
 		749B42F84CA72A5D4A0F3AD9 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */; };
 		74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74C9C443CC304CB387AB324D /* Assets.xcassets */; };
-		74C9929AB26988E8CC66893D /* gradle.properties in Resources */ = {isa = PBXBuildFile; fileRef = 74F1F3223C9CF11420F72B08 /* gradle.properties */; };
 		74D656BE6B4BD50115400411 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CF99B70DA1947AA98CA3B /* DemoTests.swift */; };
 		74E6599B023623BD96737582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74F483E9C1890D693F808DDA /* Main.storyboard */; };
 		978348A7235DF586005B140B /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* PermissionViewController.swift */; };
@@ -102,27 +101,18 @@
 		649979D225CC638C00348419 /* SystemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemViewController.swift; sourceTree = "<group>"; };
 		649979E625CCD37200348419 /* NetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
-		741672C742FA38B5D4971C10 /* gradlew */ = {isa = PBXFileReference; lastKnownFileType = text; path = gradlew; sourceTree = "<group>"; };
-		741A9B938B05534BD1B508C6 /* settings.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = settings.gradle.kts; sourceTree = "<group>"; };
 		741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUITests.swift; sourceTree = "<group>"; };
-		741E82A1DDEE399E80A02B54 /* gradle-wrapper.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = "gradle-wrapper.jar"; sourceTree = "<group>"; };
 		7428D8755D288FD7EA2E6537 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		742CCE9033CEC8C8004D624F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		7433F67D6FEF093F4C827A5A /* build.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = build.gradle.kts; sourceTree = "<group>"; };
 		744CF99B70DA1947AA98CA3B /* DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTests.swift; sourceTree = "<group>"; };
-		744F12775216AF134CBAF4E9 /* build.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = build.gradle.kts; sourceTree = "<group>"; };
 		746834742E284396FD5452F4 /* DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		746E133CAEC5C7B1D516B11F /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74A0718952D0CC604E49709B /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		74B0C3AB70AAB7878B48F6B1 /* gradle-wrapper.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = "gradle-wrapper.properties"; sourceTree = "<group>"; };
 		74BBBF2C57521E71982179E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		74BEC2BADB02749FD409313B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		74C07E8A2DB465B1CE47DC5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		74C22623993814F606777266 /* KotlinNativeFramework.kt */ = {isa = PBXFileReference; lastKnownFileType = file.kt; path = KotlinNativeFramework.kt; sourceTree = "<group>"; };
 		74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		74C9C443CC304CB387AB324D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		74E253D6EF4BB7BA4916943D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
-		74F1F3223C9CF11420F72B08 /* gradle.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = gradle.properties; sourceTree = "<group>"; };
 		978348A6235DF586005B140B /* PermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -288,23 +278,6 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
-		743414FDF97167BD81A5293E /* wrapper */ = {
-			isa = PBXGroup;
-			children = (
-				74B0C3AB70AAB7878B48F6B1 /* gradle-wrapper.properties */,
-				741E82A1DDEE399E80A02B54 /* gradle-wrapper.jar */,
-			);
-			path = wrapper;
-			sourceTree = "<group>";
-		};
-		743EA5EA3B99CA8E01574460 /* KotlinNativeFrameworkMain */ = {
-			isa = PBXGroup;
-			children = (
-				7470228E28317355EFB70D41 /* kotlin */,
-			);
-			path = KotlinNativeFrameworkMain;
-			sourceTree = "<group>";
-		};
 		745520950D85E4696686141D = {
 			isa = PBXGroup;
 			children = (
@@ -313,37 +286,7 @@
 				746CAD9D15ECB24F4ED84E11 /* Demo */,
 				7492DE0914511F3DC96A30A8 /* DemoTests */,
 				74D6698E6E24A4F93E6B289A /* DemoUITests */,
-				747F646D72854D37D5686909 /* KotlinNativeFramework */,
-				74588EBE65D1E22D05BFD2A5 /* Supporting Files */,
 			);
-			sourceTree = "<group>";
-		};
-		745778F955B940F5CB818364 /* gradle */ = {
-			isa = PBXGroup;
-			children = (
-				743414FDF97167BD81A5293E /* wrapper */,
-			);
-			path = gradle;
-			sourceTree = "<group>";
-		};
-		74588EBE65D1E22D05BFD2A5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				7433F67D6FEF093F4C827A5A /* build.gradle.kts */,
-				741672C742FA38B5D4971C10 /* gradlew */,
-				745778F955B940F5CB818364 /* gradle */,
-				741A9B938B05534BD1B508C6 /* settings.gradle.kts */,
-				74F1F3223C9CF11420F72B08 /* gradle.properties */,
-			);
-			path = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		745DD28172357B2F37C397E8 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				743EA5EA3B99CA8E01574460 /* KotlinNativeFrameworkMain */,
-			);
-			path = src;
 			sourceTree = "<group>";
 		};
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
@@ -376,14 +319,6 @@
 			path = Demo;
 			sourceTree = "<group>";
 		};
-		7470228E28317355EFB70D41 /* kotlin */ = {
-			isa = PBXGroup;
-			children = (
-				74C22623993814F606777266 /* KotlinNativeFramework.kt */,
-			);
-			path = kotlin;
-			sourceTree = "<group>";
-		};
 		747A549D9FF0D1B49E65E190 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -392,16 +327,6 @@
 				74A0718952D0CC604E49709B /* DemoUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		747F646D72854D37D5686909 /* KotlinNativeFramework */ = {
-			isa = PBXGroup;
-			children = (
-				74E253D6EF4BB7BA4916943D /* Info.plist */,
-				74ED9583BC95062A511A899E /* Supporting Files */,
-				745DD28172357B2F37C397E8 /* src */,
-			);
-			path = KotlinNativeFramework;
 			sourceTree = "<group>";
 		};
 		7492DE0914511F3DC96A30A8 /* DemoTests */ = {
@@ -420,14 +345,6 @@
 				741DDADC0C8034E32EA9C3D6 /* DemoUITests.swift */,
 			);
 			path = DemoUITests;
-			sourceTree = "<group>";
-		};
-		74ED9583BC95062A511A899E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				744F12775216AF134CBAF4E9 /* build.gradle.kts */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		978348A5235DF51D005B140B /* Permissions */ = {
@@ -550,7 +467,6 @@
 				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
 				74E6599B023623BD96737582 /* Main.storyboard in Resources */,
 				209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */,
-				74C9929AB26988E8CC66893D /* gradle.properties in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,7 +496,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Supporting Files\"\n./gradlew :KotlinNativeFramework:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -756,10 +672,16 @@
 				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
-					"$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
 				INFOPLIST_FILE = Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					KalugaExampleShared,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
@@ -882,10 +804,16 @@
 				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
-					"$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
 				);
 				INFOPLIST_FILE = Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					KalugaExampleShared,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";

@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 import UIKit
 import CoreLocation
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class LocationViewController: UIViewController {
 
@@ -30,9 +30,9 @@ class LocationViewController: UIViewController {
     
     @IBOutlet weak var label: UILabel!
     
-    lazy var viewModel = KNArchitectureFramework().createLocationViewModel(permission: Const.permission, repoBuilder: KNLocationFramework().getPermissionRepoBuilder())
+    lazy var viewModel = LocationViewModel(permission: Const.permission)
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
@@ -40,13 +40,15 @@ class LocationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {
                 return []
             }
-            return [viewModel.location.observe(onNext: { (location) in
-                self?.label.text = location as? String ?? ""
-                })]
-        })
+            return [
+                viewModel.location.observe { (location) in
+                    self?.label.text = location as? String ?? ""
+                }
+            ]
+        }
     }
 }

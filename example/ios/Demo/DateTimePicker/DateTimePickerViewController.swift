@@ -16,7 +16,7 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class DateTimePickerViewController : UIViewController {
     
@@ -24,33 +24,31 @@ class DateTimePickerViewController : UIViewController {
     
     lazy var viewModel = DateTimePickerViewModel(dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] in
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {
                 return []
             }
             return [
-                viewModel.dateLabel.observe(onNext: { (time) in
-                    if let timeString = (time as? String) {
-                        self?.timeLabel.text = String(timeString)
-                    }
-            })
+                viewModel.dateLabel.observe { (time) in
+                    self?.timeLabel.text = time as? String
+                }
             ]
-        })
+        }
     }
-    
+
     @IBAction
     func selectDatePressed() {
         viewModel.onSelectDatePressed()
     }
-    
+
     @IBAction
     func selectTimePressed() {
         viewModel.onSelectTimePressed()

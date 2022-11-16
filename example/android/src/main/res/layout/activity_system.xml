@@ -24,19 +24,10 @@
     android:layout_gravity="center_horizontal"
     android:layout_margin="@dimen/networkLayoutsMargin">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/system_features_fragment"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/system_features_list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/networkFragmentsHeight"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/system_features_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-    </ScrollView>
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </LinearLayout>

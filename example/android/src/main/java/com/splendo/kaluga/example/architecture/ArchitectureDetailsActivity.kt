@@ -19,11 +19,14 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.architecture
 
 import android.os.Bundle
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureDetailsBinding
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.CloseDetailsNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -37,7 +40,12 @@ class ArchitectureDetailsActivity : KalugaViewModelActivity<ArchitectureDetailsV
     override val viewModel: ArchitectureDetailsViewModel by viewModel {
         val type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
         intent.extras?.toTypedProperty(type)?.let { details ->
-            parametersOf(details)
+            parametersOf(
+                details,
+                ActivityNavigator<CloseDetailsNavigation> {
+                    NavigationSpec.Close(resultCode)
+                }
+            )
         } ?: parametersOf("", 0)
     }
 

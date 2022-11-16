@@ -44,8 +44,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.splendo.kaluga.example.ExampleActivity"
-                  android:label="Features list"
-                  android:exported="true">
+            android:label="Features list"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -53,9 +53,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".location.LocationActivity"
-                  android:label="@string/feature_location"/>
+            android:label="@string/feature_location"/>
         <activity android:name=".permissions.PermissionsDemoListActivity"
-                  android:label="@string/permissions_list"/>
+            android:label="@string/permissions_list"/>
         <activity android:name=".permissions.PermissionsDemoActivity" android:label="Permissions"/>
         <activity android:name=".alerts.AlertsActivity"
             android:label="@string/feature_alerts"/>
@@ -86,7 +86,7 @@
             android:label="@string/feature_platform_specific"/>
         <activity android:name="com.splendo.kaluga.example.contacts.ContactsActivity"
             android:label="@string/feature_platform_specific_compose_navigation"/>
-        <activity android:name="com.splendo.kaluga.example.platformspecific.compose.bottomSheet.BottomSheetActivity"
+        <activity android:name="com.splendo.kaluga.example.bottomSheet.BottomSheetActivity"
             android:label="@string/feature_platform_specific_compose_bottom_sheet"/>
 
         <activity android:name=".architecture.ArchitectureDetailsActivity"
@@ -107,6 +107,7 @@
             android:label="@string/feature_resources_button"/>
 
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
+        <activity android:name=".system.NetworkActivity" android:label="@string/network_feature"/>
 
 
         <service android:name=".location.LocationBackgroundService"/>

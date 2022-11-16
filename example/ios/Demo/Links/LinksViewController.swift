@@ -17,17 +17,15 @@
 
 import Foundation
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class LinksViewController : UIViewController {
     
     @IBOutlet weak var browserButton: UIButton!
     @IBOutlet weak var instructionsText: UILabel!
-    
-    private let knArchitectureFramework = KNArchitectureFramework()
-    private lazy var viewModel: LinksViewModel = {
-        return knArchitectureFramework.createLinksViewModel(parent: self, animated: true, completion: nil)
-    }()
+
+    private lazy var navigator: ViewControllerNavigator<BrowserNavigationActions<AnyObject>> = BrowserNavigatorKt.BrowserNavigator(parent: self)
+    private lazy var viewModel: LinksViewModel = LinksViewModel(linkRepoBuilder: LinksLinksBuilder(), builder: AlertPresenter.Builder(viewController: self), navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -37,7 +35,7 @@ class LinksViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = knArchitectureFramework.bind(viewModel: viewModel, to: self) {
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) {
             [
                 self.viewModel.browserButtonText.observe { buttonText in
                     self.browserButton.setTitle(buttonText as String?, for: .normal)

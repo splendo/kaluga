@@ -15,7 +15,7 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class ColorViewController : UIViewController {
     
@@ -43,7 +43,7 @@ class ColorViewController : UIViewController {
     private var blendedLightenedColors: [BackgroundStyle] = []
     private var blendedDarkenedColors: [BackgroundStyle] = []
     
-    private lazy var viewModel: ColorViewModel = KNArchitectureFramework().createColorViewModel(parent: self)
+    private lazy var viewModel: ColorViewModel = ColorViewModel(alertPresenterBuilder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -58,7 +58,7 @@ class ColorViewController : UIViewController {
         sourceDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         blendedLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         blendedDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             
             return [

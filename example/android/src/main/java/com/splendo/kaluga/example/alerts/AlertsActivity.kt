@@ -23,7 +23,7 @@ import android.os.Bundle
 import androidx.appcompat.widget.AppCompatButton
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.AlertViewModel
+import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("SetTextI18n")
