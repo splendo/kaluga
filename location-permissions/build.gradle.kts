@@ -9,7 +9,7 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.Android.PlayServices.Location)
+    implementationDependency(Dependencies.Android.PlayServices.Location)
 }
 
 kotlin {

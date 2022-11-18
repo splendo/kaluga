@@ -10,14 +10,14 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.KotlinX.AtomicFu)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implement(Dependencies.Napier)
+                implementationDependency(Dependencies.Napier)
             }
         }
         commonTest {

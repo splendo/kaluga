@@ -12,21 +12,20 @@ publishableComponent()
 
 dependencies {
     api("org.jetbrains.kotlin:kotlin-reflect:${Library.kotlinVersion}")
-    expose(Dependencies.AndroidX.Lifecycle.Runtime)
-    expose(Dependencies.AndroidX.Lifecycle.ViewModel)
-    expose(Dependencies.AndroidX.Lifecycle.LiveData)
-    implement(Dependencies.AndroidX.Browser)
-    implement(Dependencies.KotlinX.AtomicFu)
+    apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)
+    apiDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
+    apiDependency(Dependencies.AndroidX.Lifecycle.LiveData)
+    implementationDependency(Dependencies.AndroidX.Browser)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
     sourceSets {
-
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
-                expose(Dependencies.KotlinX.Serialization.Core)
-                expose(Dependencies.KotlinX.Serialization.Json)
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                apiDependency(Dependencies.KotlinX.Serialization.Json)
             }
         }
 

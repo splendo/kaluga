@@ -14,7 +14,7 @@ kotlin {
             dependencies {
                 api(project(":test-utils-base"))
                 api(project(":test-utils-architecture"))
-                expose(Dependencies.Koin.Core)
+                apiDependency(Dependencies.Koin.Core)
             }
         }
         commonTest {
