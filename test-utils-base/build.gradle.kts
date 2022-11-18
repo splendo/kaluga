@@ -9,7 +9,7 @@ plugins {
 publishableComponent()
 
 dependencies {
-    expose(Dependencies.AndroidX.ArchCore)
+    apiDependency(Dependencies.AndroidX.ArchCore)
 }
 
 kotlin {
@@ -38,8 +38,8 @@ kotlin {
 
         getByName("jvmMain") {
             dependencies {
-                expose(Dependencies.KotlinX.Coroutines.Test)
-                expose(Dependencies.KotlinX.Coroutines.Debug)
+                apiDependency(Dependencies.KotlinX.Coroutines.Test)
+                apiDependency(Dependencies.KotlinX.Coroutines.Debug)
             }
         }
     }
@@ -47,7 +47,7 @@ kotlin {
 
 android {
     dependencies {
-        expose(Dependencies.KotlinX.Coroutines.Test)
-        expose(Dependencies.KotlinX.Coroutines.Debug)
+        apiDependency(Dependencies.KotlinX.Coroutines.Test)
+        apiDependency(Dependencies.KotlinX.Coroutines.Debug)
     }
 }

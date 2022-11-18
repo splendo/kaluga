@@ -10,16 +10,13 @@ publishableComponent()
 
 kotlin {
     sourceSets {
-
-        val ext = (gradle as ExtensionAware).extra
-
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
-                expose(Dependencies.Stately.Common)
-                expose(Dependencies.Stately.Isolate)
-                expose(Dependencies.Stately.IsoCollections)
-                expose(Dependencies.Stately.Concurrency)
+                apiDependency(Dependencies.Stately.Common)
+                apiDependency(Dependencies.Stately.Isolate)
+                apiDependency(Dependencies.Stately.IsoCollections)
+                apiDependency(Dependencies.Stately.Concurrency)
             }
         }
         getByName("jsMain") {

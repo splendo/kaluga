@@ -11,7 +11,7 @@ composeAndroidComponent()
 dependencies {
     implementation(project(":base"))
     api(project(":keyboard"))
-    implement(Dependencies.AndroidX.Compose.UI)
-    implement(Dependencies.AndroidX.Compose.UITooling)
-    implement(Dependencies.KotlinX.Coroutines.Core)
+    implementationDependency(Dependencies.AndroidX.Compose.UI)
+    implementationDependency(Dependencies.AndroidX.Compose.UITooling)
+    implementationDependency(Dependencies.KotlinX.Coroutines.Core)
 }

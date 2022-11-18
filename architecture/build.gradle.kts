@@ -10,28 +10,20 @@ plugins {
 publishableComponent()
 
 dependencies {
-    val ext = (gradle as ExtensionAware).extra
-    val kotlin_version: String by ext
-    val androidx_lifecycle_version: String by ext
-    val androidx_browser_version: String by ext
-
     api("org.jetbrains.kotlin:kotlin-reflect:${Library.kotlinVersion}")
-    expose(Dependencies.AndroidX.Lifecycle.Runtime)
-    expose(Dependencies.AndroidX.Lifecycle.ViewModel)
-    expose(Dependencies.AndroidX.Lifecycle.LiveData)
-    implement(Dependencies.AndroidX.Browser)
+    apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)
+    apiDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
+    apiDependency(Dependencies.AndroidX.Lifecycle.LiveData)
+    implementationDependency(Dependencies.AndroidX.Browser)
 }
 
 kotlin {
     sourceSets {
-        val ext = (gradle as ExtensionAware).extra
-        val serialization_version: String by ext
-
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
-                expose(Dependencies.KotlinX.Serialization.Core)
-                expose(Dependencies.KotlinX.Serialization.Json)
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                apiDependency(Dependencies.KotlinX.Serialization.Json)
             }
         }
 

@@ -9,7 +9,7 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.BLEScanner)
+    implementationDependency(Dependencies.BLEScanner)
     implementation(project(":location", ""))
 }
 
@@ -18,7 +18,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
-                implement(Dependencies.Stately.Concurrency)
+                implementationDependency(Dependencies.Stately.Concurrency)
             }
         }
         commonTest {

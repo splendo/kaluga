@@ -9,8 +9,8 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.Android.Play.Core)
-    implement(Dependencies.Android.Play.CoreKtx)
+    implementationDependency(Dependencies.Android.Play.Core)
+    implementationDependency(Dependencies.Android.Play.CoreKtx)
 }
 
 kotlin {

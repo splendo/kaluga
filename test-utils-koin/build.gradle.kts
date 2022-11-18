@@ -11,11 +11,10 @@ publishableComponent()
 kotlin {
     sourceSets {
         commonMain {
-            val ext = (gradle as ExtensionAware).extra
             dependencies {
                 api(project(":test-utils-base"))
                 api(project(":test-utils-architecture"))
-                expose(Dependencies.Koin.Core)
+                apiDependency(Dependencies.Koin.Core)
             }
         }
         commonTest {

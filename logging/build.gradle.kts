@@ -12,14 +12,14 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implement(Dependencies.Napier)
-                implement(Dependencies.Stately.Concurrency)
+                implementationDependency(Dependencies.Napier)
+                implementationDependency(Dependencies.Stately.Concurrency)
             }
         }
         commonTest {
             dependencies {
-                implement(Dependencies.Stately.Isolate)
-                implement(Dependencies.Stately.IsoCollections)
+                implementationDependency(Dependencies.Stately.Isolate)
+                implementationDependency(Dependencies.Stately.IsoCollections)
                 api(project(":test-utils-base", ""))
             }
         }

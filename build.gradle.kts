@@ -24,12 +24,6 @@ plugins {
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
 }
 
-// TODO: To be removed once we will migrate to kotlin version 1.6.20
-// https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5667134.0-0
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin>() {
-    rootProject.extensions.getByType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension::class.java).nodeVersion = "16.13.2"
-}
-
 allprojects {
     repositories {
         mavenCentral()
