@@ -14,8 +14,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":base"))
-                expose(Dependencies.KotlinX.Serialization.Core)
-                expose(Dependencies.KotlinX.Serialization.Json)
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                apiDependency(Dependencies.KotlinX.Serialization.Json)
             }
         }
         commonTest {

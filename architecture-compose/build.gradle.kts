@@ -29,7 +29,7 @@ composeAndroidComponent()
 dependencies {
     api(project(":base"))
     api(project(":architecture"))
-    implement(Dependencies.AndroidX.Compose.Material)
-    implement(Dependencies.AndroidX.Navigation.Compose)
-    implement(Dependencies.KotlinX.Coroutines.Core)
+    implementationDependency(Dependencies.AndroidX.Compose.Material)
+    implementationDependency(Dependencies.AndroidX.Navigation.Compose)
+    implementationDependency(Dependencies.KotlinX.Coroutines.Core)
 }
