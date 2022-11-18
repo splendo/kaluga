@@ -9,8 +9,8 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.AndroidX.Fragment)
-    implementForDebug(Dependencies.AndroidX.FragmentKtx)
+    implementationDependency(Dependencies.AndroidX.Fragment)
+    debugImplementationDependency(Dependencies.AndroidX.FragmentKtx)
 }
 
 kotlin {

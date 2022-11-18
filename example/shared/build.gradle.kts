@@ -44,7 +44,7 @@ kotlin {
                 modules.forEach { (module, _) ->
                     api("com.splendo.kaluga:$module:$libraryVersion")
                 }
-                expose(Dependencies.Koin.Core)
+                apiDependency(Dependencies.Koin.Core)
             }
         }
     }
@@ -52,6 +52,6 @@ kotlin {
 
 android {
     dependencies {
-        expose(Dependencies.Koin.Android)
+        apiDependency(Dependencies.Koin.Android)
     }
 }

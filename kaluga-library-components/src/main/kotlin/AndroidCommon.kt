@@ -25,27 +25,27 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
     }
 
     dependencies {
-        implement(Dependencies.KotlinX.Coroutines.Android)
-        implement(Dependencies.AndroidX.AppCompat)
+        implementationDependency(Dependencies.KotlinX.Coroutines.Android)
+        implementationDependency(Dependencies.AndroidX.AppCompat)
 
-        implementForTest(Dependencies.JUnit)
-        implementForTest(Dependencies.Mockito.Core)
-        implementForTest(Dependencies.Kotlin.Test)
-        implementForTest(Dependencies.Kotlin.JUnit)
+        testImplementationDependency(Dependencies.JUnit)
+        testImplementationDependency(Dependencies.Mockito.Core)
+        testImplementationDependency(Dependencies.Kotlin.Test)
+        testImplementationDependency(Dependencies.Kotlin.JUnit)
 
-        implementForAndroidTest(Dependencies.Mockito.Android)
-        implementForAndroidTest(Dependencies.ByteBuddy.Android)
-        implementForAndroidTest(Dependencies.ByteBuddy.Agent)
+        androidTestImplementationDependency(Dependencies.Mockito.Android)
+        androidTestImplementationDependency(Dependencies.ByteBuddy.Android)
+        androidTestImplementationDependency(Dependencies.ByteBuddy.Agent)
 
-        implementForAndroidTest(Dependencies.AndroidX.Test.Core)
-        implementForAndroidTest(Dependencies.AndroidX.Test.CoreKtx)
-        implementForAndroidTest(Dependencies.AndroidX.Test.UIAutomator)
-        implementForAndroidTest(Dependencies.AndroidX.Test.Rules)
-        implementForAndroidTest(Dependencies.AndroidX.Test.JUnit)
-        implementForAndroidTest(Dependencies.AndroidX.Test.Runner)
-        implementForAndroidTest(Dependencies.AndroidX.Test.Espresso)
-        implementForAndroidTest(Dependencies.Kotlin.Test)
-        implementForAndroidTest(Dependencies.Kotlin.JUnit)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.Core)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.CoreKtx)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.UIAutomator)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.Rules)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.JUnit)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.Runner)
+        androidTestImplementationDependency(Dependencies.AndroidX.Test.Espresso)
+        androidTestImplementationDependency(Dependencies.Kotlin.Test)
+        androidTestImplementationDependency(Dependencies.Kotlin.JUnit)
     }
 }
 

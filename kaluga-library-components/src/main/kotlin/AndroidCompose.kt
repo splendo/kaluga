@@ -22,11 +22,11 @@ fun org.gradle.api.Project.composeAndroidComponent() {
     version = Library.version
     commonAndroidComponent(ComponentType.Compose)
     dependencies {
-        implement(Dependencies.AndroidX.Compose.Foundation)
-        implement(Dependencies.AndroidX.Compose.UI)
-        implement(Dependencies.AndroidX.Compose.UITooling)
-        implement(Dependencies.AndroidX.Lifecycle.ViewModelCompose)
-        implement(Dependencies.AndroidX.Activity.Compose)
+        implementationDependency(Dependencies.AndroidX.Compose.Foundation)
+        implementationDependency(Dependencies.AndroidX.Compose.UI)
+        implementationDependency(Dependencies.AndroidX.Compose.UITooling)
+        implementationDependency(Dependencies.AndroidX.Lifecycle.ViewModelCompose)
+        implementationDependency(Dependencies.AndroidX.Activity.Compose)
     }
 
     kotlinAndroid {

@@ -11,9 +11,9 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.BLEScanner)
+    implementationDependency(Dependencies.BLEScanner)
     implementation(project(":location", ""))
-    implement(Dependencies.KotlinX.AtomicFu)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
@@ -21,8 +21,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
-                expose(Dependencies.KotlinX.Serialization.Core)
-                expose(Dependencies.KotlinX.Serialization.Json)
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
             }
         }
         commonTest {
