@@ -47,7 +47,8 @@ private fun sharedModule(
 ) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
     single { PermissionsBuilder() }
-    single { locationStateRepoBuilderBuilder {
+    single {
+        locationStateRepoBuilderBuilder {
             val builder = get<PermissionsBuilder>()
             builder.registerLocationPermissionIfNotRegistered(
                 settings = BasePermissionManager.Settings(logger = get())
@@ -57,13 +58,12 @@ private fun sharedModule(
     }
     single {
         bluetoothBuilderBuilder {
-                val builder = get<PermissionsBuilder>()
-                val settings = BasePermissionManager.Settings(logger = get())
-                builder.registerBluetoothPermissionIfNotRegistered(settings = settings)
-                builder.registerLocationPermissionIfNotRegistered(settings = settings)
-                Permissions(builder, it)
-            }
-        .create(
+            val builder = get<PermissionsBuilder>()
+            val settings = BasePermissionManager.Settings(logger = get())
+            builder.registerBluetoothPermissionIfNotRegistered(settings = settings)
+            builder.registerLocationPermissionIfNotRegistered(settings = settings)
+            Permissions(builder, it)
+        }.create(
             scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
             connectionSettings = ConnectionSettings(logger = get())
         )

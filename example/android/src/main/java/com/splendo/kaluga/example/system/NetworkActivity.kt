@@ -35,5 +35,4 @@ class NetworkActivity : KalugaViewModelActivity<NetworkViewModel>(R.layout.activ
         binding.viewModel = viewModel
         setContentView(binding.root)
     }
-
 }

@@ -20,14 +20,9 @@ package com.splendo.kaluga.example.shared.viewmodel.link
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
-import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.links.LinksBuilder

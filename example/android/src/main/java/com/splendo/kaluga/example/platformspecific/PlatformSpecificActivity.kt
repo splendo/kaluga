@@ -51,10 +51,8 @@ class PlatformSpecificActivity : KalugaViewModelComposeActivity<PlatformSpecific
 
 private fun navigationMapper(action: PlatformFeatureListNavigationAction): NavigationSpec =
     when (action) {
-        is PlatformFeatureListNavigationAction.ComposeNavigation -> NavigationSpec.Activity(
-            ContactsActivity::class.java)
-        is PlatformFeatureListNavigationAction.ComposeBottomSheet -> NavigationSpec.Activity(
-            BottomSheetActivity::class.java)
+        is PlatformFeatureListNavigationAction.ComposeNavigation -> NavigationSpec.Activity<ContactsActivity>()
+        is PlatformFeatureListNavigationAction.ComposeBottomSheet -> NavigationSpec.Activity<BottomSheetActivity>()
     }
 
 @Composable

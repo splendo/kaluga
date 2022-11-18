@@ -28,14 +28,6 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import com.splendo.kaluga.permissions.calendar.CalendarPermission
-import com.splendo.kaluga.permissions.camera.CameraPermission
-import com.splendo.kaluga.permissions.contacts.ContactsPermission
-import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.permissions.microphone.MicrophonePermission
-import com.splendo.kaluga.permissions.notifications.NotificationsPermission
-import com.splendo.kaluga.permissions.storage.StoragePermission
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

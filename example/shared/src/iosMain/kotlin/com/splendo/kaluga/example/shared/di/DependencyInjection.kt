@@ -23,7 +23,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-internal val iosModule = module {  }
+internal val iosModule = module { }
 
 fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     iosModule,

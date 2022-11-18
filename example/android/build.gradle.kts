@@ -6,7 +6,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-
 group = Library.group
 version = Library.version
 

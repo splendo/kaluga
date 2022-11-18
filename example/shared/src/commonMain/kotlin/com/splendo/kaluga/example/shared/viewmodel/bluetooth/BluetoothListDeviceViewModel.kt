@@ -18,7 +18,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.UninitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
@@ -27,13 +26,13 @@ import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.advertisement
+import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
