@@ -10,12 +10,11 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.KotlinX.AtomicFu)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
     sourceSets {
-
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))

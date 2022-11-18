@@ -125,7 +125,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
 
     val commonMain = sourceSets.getByName("commonMain").apply {
         dependencies {
-            implement(Dependencies.KotlinX.Coroutines.Core)
+            implementationDependency(Dependencies.KotlinX.Coroutines.Core)
         }
     }
 
@@ -137,14 +137,14 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
         }
     }
 
-    val jvmMain = sourceSets.getByName("jvmMain").apply {
+    sourceSets.getByName("jvmMain").apply {
         dependencies {
             implementation(kotlin("stdlib"))
-            implement(Dependencies.KotlinX.Coroutines.Swing)
+            implementationDependency(Dependencies.KotlinX.Coroutines.Swing)
         }
     }
 
-    val jvmTest = sourceSets.getByName("jvmTest").apply {
+    sourceSets.getByName("jvmTest").apply {
         dependsOn(commonTest)
         dependencies {
             implementation(kotlin("test"))
@@ -152,14 +152,14 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
         }
     }
 
-    val jsMain = sourceSets.getByName("jsMain").apply {
+    sourceSets.getByName("jsMain").apply {
         dependencies {
             implementation(kotlin("stdlib-js"))
-            implement(Dependencies.KotlinX.Coroutines.Js)
+            implementationDependency(Dependencies.KotlinX.Coroutines.Js)
         }
     }
 
-    val jsTest = sourceSets.getByName("jsTest").apply {
+    sourceSets.getByName("jsTest").apply {
         dependencies {
             implementation(kotlin("test-js"))
         }
