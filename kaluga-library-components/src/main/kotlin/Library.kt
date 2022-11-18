@@ -25,6 +25,9 @@ import java.io.IOException
 
 private val libraries: MutableMap<Project, Library> = mutableMapOf()
 
+/**
+ * Gets a [Library] for the [Project]. Only creates a new instance of the Library if none exist yet, to speed up the build process
+ */
 val Project.Library get() = libraries.getOrPut(this) { Library(this) }
 
 class Library(project: Project) {

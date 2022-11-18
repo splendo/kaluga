@@ -39,7 +39,7 @@ kotlin {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":architecture", ""))
-                expose(Dependencies.KotlinX.Serialization.Core)
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
             }
         }
         commonTest {

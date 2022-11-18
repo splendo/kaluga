@@ -10,9 +10,9 @@ plugins {
 publishableComponent()
 
 dependencies {
-    implement(Dependencies.BLEScanner)
+    implementationDependency(Dependencies.BLEScanner)
     implementation(project(":location", ""))
-    implement(Dependencies.KotlinX.AtomicFu)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {

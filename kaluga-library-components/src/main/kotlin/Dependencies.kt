@@ -22,22 +22,22 @@ data class Dependency(private val group: String, private val name: String, priva
     val notation = "$group:$name${version?.let { ":$it" } ?: ""}"
 }
 
-fun KotlinDependencyHandler.expose(dependency: Dependency) = api(dependency.notation)
-fun KotlinDependencyHandler.implement(dependency: Dependency) = implementation(dependency.notation)
+fun KotlinDependencyHandler.apiDependency(dependency: Dependency) = api(dependency.notation)
+fun KotlinDependencyHandler.implementationDependency(dependency: Dependency) = implementation(dependency.notation)
 
-fun DependencyHandler.expose(dependency: Dependency) {
+fun DependencyHandler.apiDependency(dependency: Dependency) {
     add("api", dependency.notation)
 }
-fun DependencyHandler.implement(dependency: Dependency) {
+fun DependencyHandler.implementationDependency(dependency: Dependency) {
     add("implementation", dependency.notation)
 }
-fun DependencyHandler.implementForDebug(dependency: Dependency) {
+fun DependencyHandler.debugImplementationDependency(dependency: Dependency) {
     add("debugImplementation", dependency.notation)
 }
-fun DependencyHandler.implementForTest(dependency: Dependency) {
+fun DependencyHandler.testImplementationDependency(dependency: Dependency) {
     add("testImplementation", dependency.notation)
 }
-fun DependencyHandler.implementForAndroidTest(dependency: Dependency) {
+fun DependencyHandler.androidTestImplementationDependency(dependency: Dependency) {
     add("androidTestImplementation", dependency.notation)
 }
 
