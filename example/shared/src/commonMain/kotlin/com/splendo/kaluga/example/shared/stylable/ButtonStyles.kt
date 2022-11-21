@@ -26,6 +26,16 @@ import com.splendo.kaluga.resources.stylable.GradientStyle
 
 object ButtonStyles {
 
+    val default by lazy {
+        ButtonStyle(
+            TextStyles.whiteText,
+            backgroundColor = DefaultColors.mediumBlue,
+            pressedBackgroundColor = DefaultColors.darkBlue,
+            disabledBackgroundColor = DefaultColors.lightSlateGray,
+            shape = BackgroundStyle.Shape.Rectangle(10.0f)
+        )
+    }
+
     val textButton by lazy {
         ButtonStyle(TextStyles.redText)
     }

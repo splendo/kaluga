@@ -75,6 +75,7 @@ dependencies {
     val libraryVersion = Library.version
     implementation("com.splendo.kaluga:architecture-compose:$libraryVersion")
     implementation("com.splendo.kaluga:resources-compose:$libraryVersion")
+    implementation("com.splendo.kaluga:resources-databinding:$libraryVersion")
     implementation(project(":shared"))
 
     implementationDependency(Dependencies.AndroidX.Compose.UI)

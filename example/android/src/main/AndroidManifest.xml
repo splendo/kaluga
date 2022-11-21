@@ -79,7 +79,7 @@
                     android:pathPrefix="/kalugaexample"/>
             </intent-filter>
         </activity>
-        <activity android:name=".architecture.ArchitectureInputActivity"
+        <activity android:name=".architecture.androidui.ArchitectureActivity"
             android:label="@string/feature_architecture"/>
 
         <activity android:name="com.splendo.kaluga.example.platformspecific.PlatformSpecificActivity"
@@ -89,7 +89,7 @@
         <activity android:name="com.splendo.kaluga.example.bottomSheet.BottomSheetActivity"
             android:label="@string/feature_platform_specific_compose_bottom_sheet"/>
 
-        <activity android:name=".architecture.ArchitectureDetailsActivity"
+        <activity android:name=".architecture.androidui.ArchitectureDetailsActivity"
             android:label="@string/feature_architecture"/>
         <activity android:name=".bluetooth.BluetoothActivity"
             android:label="@string/feature_bluetooth"/>

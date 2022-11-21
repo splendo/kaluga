@@ -15,6 +15,19 @@
 
  */
 
-package com.splendo.kaluga.example.shared.viewmodel.featureList
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    kotlin("kapt")
+    id("jacoco")
+    id("convention.publication")
+    id("org.jlleitschuh.gradle.ktlint")
+}
 
-actual val showPlatformSpecificFeatures: Boolean = false
+databindingAndroidComponent()
+
+dependencies {
+    implementation(project(":base"))
+    api(project(":resources"))
+    implementationDependency(Dependencies.Android.Material)
+}

@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.dependencies
+
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
 
@@ -15,6 +17,10 @@
 
  */
 
-package com.splendo.kaluga.example.shared.viewmodel.featureList
+fun org.gradle.api.Project.databindingAndroidComponent() {
+    group = Library.group
+    version = Library.version
+    commonAndroidComponent(ComponentType.DataBinding)
 
-actual val showPlatformSpecificFeatures: Boolean = false
+    publish(ComponentType.DataBinding)
+}

@@ -24,7 +24,7 @@ sealed interface RouteController {
     /**
      * Navigates back
      */
-    fun back(): Boolean
+    fun back(result: Map<String, Any?> = emptyMap()): Boolean
 
     /**
      * Closes this RouteController
@@ -59,18 +59,34 @@ class NavHostRouteController(
                 navHostController.navigate(newRoute.route)
             }
             is Route.PopTo<*, *> -> {
+                navHostController.getBackStackEntry(newRoute.route).savedStateHandle.let { savedStateHandle ->
+                    newRoute.result.entries.forEach { (key, value) -> savedStateHandle[key] = value }
+                }
                 navHostController.popBackStack(newRoute.route, false)
             }
             is Route.PopToIncluding<*, *> -> {
                 navHostController.popBackStack(newRoute.route, true)
             }
-            is Route.Back -> back()
-            is Route.PopToRoot -> navHostController.popBackStack(ROOT_VIEW, false)
+            is Route.Back -> back(newRoute.result)
+            is Route.PopToRoot -> {
+                navHostController.getBackStackEntry(ROOT_VIEW).savedStateHandle.let { savedStateHandle ->
+                    newRoute.result.entries.forEach { (key, value) -> savedStateHandle[key] = value }
+                }
+                navHostController.popBackStack(ROOT_VIEW, false)
+            }
             is Route.Close -> close()
+            is Route.Launcher<*> -> newRoute.launch()
         }
     }
 
-    override fun back(): Boolean = navHostController.popBackStack() || parentRouteController?.back() ?: false
+    override fun back(result: Map<String, Any?>): Boolean = if (navHostController.backQueue.isNotEmpty()){
+        navHostController.previousBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
+            result.entries.forEach { (key, value) -> savedStateHandle[key] = value }
+        }
+        navHostController.popBackStack()
+    }
+    else { parentRouteController?.back(result) ?: false }
+
     override fun close() {
         navHostController.popBackStack(ROOT_VIEW, true)
         parentRouteController?.close()

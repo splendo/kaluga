@@ -13,8 +13,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.example.shared.viewmodel.featureList
+package com.splendo.kaluga.resources.databinding
 
-actual val showPlatformSpecificFeatures: Boolean = false
+import androidx.appcompat.app.AppCompatActivity
+
+class TestActivity : AppCompatActivity()
+
+class CorrectlySetupTest {
+    @kotlin.test.Test
+    fun testSetup() = assert(true)
+}

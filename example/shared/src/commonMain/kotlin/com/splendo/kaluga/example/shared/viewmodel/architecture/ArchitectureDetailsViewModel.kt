@@ -31,12 +31,12 @@ data class InputDetails(
     val number: Int
 )
 
-class CloseDetailsNavigation(inputDetails: InputDetails) : SingleValueNavigationAction<InputDetails>(
-    inputDetails,
-    NavigationBundleSpecType.SerializedType(InputDetails.serializer())
-)
+sealed class ArchitectureDetailsNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
+    object Close : ArchitectureDetailsNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    class FinishWithDetails(details: InputDetails) : ArchitectureDetailsNavigationAction<InputDetails>(details, NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
+}
 
-class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<CloseDetailsNavigation>) : NavigatingViewModel<CloseDetailsNavigation>(navigator) {
+class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) : NavigatingViewModel<ArchitectureDetailsNavigationAction<*>>(navigator) {
 
     private val _name = subjectOf(initialDetail.name)
     val name: InitializedObservable<String> = _name
@@ -51,7 +51,11 @@ class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navig
         numberResult = numberResult.reversed()
     }
 
-    fun onClosePressed() {
-        navigator.navigate(CloseDetailsNavigation(InputDetails(nameResult, numberResult.toIntOrNull() ?: 0)))
+    fun onBackPressed() {
+        navigator.navigate(ArchitectureDetailsNavigationAction.Close)
+    }
+
+    fun onFinishPressed() {
+        navigator.navigate(ArchitectureDetailsNavigationAction.FinishWithDetails(InputDetails(nameResult, numberResult.toIntOrNull() ?: 0)))
     }
 }

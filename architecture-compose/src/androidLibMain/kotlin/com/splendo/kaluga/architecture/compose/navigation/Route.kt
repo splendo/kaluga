@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
+import androidx.activity.result.ActivityResultLauncher
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
@@ -168,6 +169,11 @@ private val NavigationBundleValue<*>.routeArgument: String?
  */
 sealed class Route {
 
+    companion object {
+        val Back = Back(emptyMap())
+        val PopToRoot = PopToRoot(emptyMap())
+    }
+
     /**
      * Route that navigates to a new screen using a [NavigationAction]
      */
@@ -201,10 +207,12 @@ sealed class Route {
 
     /**
      * Route that navigates back to the screen associated with a [NavigationAction]
-     * @param routeAction The [Action] associated with the screen to navigate back to
+     * @param routeAction The [Action] associated with the screen to navigate back to.
+     * @param result A map of values to store in the [androidx.lifecycle.SavedStateHandle] of the screen to navigate back to.
      */
     data class PopTo<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action
+        override val routeAction: Action,
+        val result: Map<String, Any?> = emptyMap()
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -225,18 +233,33 @@ sealed class Route {
 
     /**
      * Navigates back one step in the hierarchy
+     * @param result A map of values to store in the [androidx.lifecycle.SavedStateHandle] of the previous screen.
      */
-    object Back : Route()
+    data class Back(val result: Map<String, Any?> = emptyMap()) : Route()
 
     /**
      * Navigates to the Root of a navigation stack
+     * @param result A map of values to store in the [androidx.lifecycle.SavedStateHandle] of the root screen.
      */
-    object PopToRoot : Route()
+    data class PopToRoot(val result: Map<String, Any?> = emptyMap()) : Route()
 
     /**
      * Closes all screens in the navigation stack
      */
     object Close : Route()
+
+    /**
+     * Navigates using an [ActivityResultLauncher] and a valid [input].
+     * @param activityResultLauncher The launcher to launch with. This should have been created using [androidx.activity.compose.rememberLauncherForActivityResult]
+     * @param input The input to be provided to [activityResultLauncher]
+     */
+    data class Launcher<I>(val activityResultLauncher: ActivityResultLauncher<I>, val input: I) : Route() {
+
+        /**
+         * Launches the [activityResultLauncher] with [input]
+         */
+        fun launch() = activityResultLauncher.launch(input)
+    }
 }
 
 /**
