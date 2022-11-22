@@ -28,11 +28,11 @@ object ButtonStyles {
 
     val default by lazy {
         ButtonStyle(
-            TextStyles.whiteText,
-            backgroundColor = DefaultColors.mediumBlue,
-            pressedBackgroundColor = DefaultColors.darkBlue,
-            disabledBackgroundColor = DefaultColors.lightSlateGray,
-            shape = BackgroundStyle.Shape.Rectangle(10.0f)
+            TextStyles.defaultTitle,
+            backgroundColor = DefaultColors.lightGray,
+            pressedBackgroundColor = DefaultColors.gray,
+            disabledBackgroundColor = DefaultColors.dimGray,
+            shape = BackgroundStyle.Shape.Rectangle(4.0f)
         )
     }
 

@@ -19,10 +19,13 @@ package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.activity.result.ActivityResultLauncher
 import com.splendo.kaluga.architecture.navigation.NavigationAction
+import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationBundleValue
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
+import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import kotlinx.serialization.builtins.BooleanArraySerializer
@@ -170,8 +173,16 @@ private val NavigationBundleValue<*>.routeArgument: String?
 sealed class Route {
 
     companion object {
-        val Back = Back(emptyMap())
-        val PopToRoot = PopToRoot(emptyMap())
+        val Back = Back()
+        val PopToRoot = PopToRoot()
+    }
+
+    sealed class Result {
+        companion object {
+            const val KEY = "com.splendo.kaluga.architecture.compose.navigation.Route.Result.KEY"
+        }
+        object Empty: Result()
+        data class Data<SpecRow : NavigationBundleSpecRow<*>, Bundle : NavigationBundle<SpecRow>>(val bundle: Bundle) : Result()
     }
 
     /**
@@ -208,11 +219,14 @@ sealed class Route {
     /**
      * Route that navigates back to the screen associated with a [NavigationAction]
      * @param routeAction The [Action] associated with the screen to navigate back to.
-     * @param result A map of values to store in the [androidx.lifecycle.SavedStateHandle] of the screen to navigate back to.
+     * @param result The [Result] to be provided to the screen to navigate back to.
      */
-    data class PopTo<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
+    data class PopTo<
+        SpecRow : NavigationBundleSpecRow<*>,
+        Action : NavigationAction<SpecRow>,
+        >(
         override val routeAction: Action,
-        val result: Map<String, Any?> = emptyMap()
+        val result: Result = Result.Empty
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -233,15 +247,15 @@ sealed class Route {
 
     /**
      * Navigates back one step in the hierarchy
-     * @param result A map of values to store in the [androidx.lifecycle.SavedStateHandle] of the previous screen.
+     * @param result The [Result] to provide to the previous view.
      */
-    data class Back(val result: Map<String, Any?> = emptyMap()) : Route()
+    data class Back(val result: Result = Result.Empty) : Route()
 
     /**
      * Navigates to the Root of a navigation stack
-     * @param result A map of values to store in the [androidx.lifecycle.SavedStateHandle] of the root screen.
+     * @param result The [Result] to provide to the root view.
      */
-    data class PopToRoot(val result: Map<String, Any?> = emptyMap()) : Route()
+    data class PopToRoot(val result: Result = Result.Empty) : Route()
 
     /**
      * Closes all screens in the navigation stack

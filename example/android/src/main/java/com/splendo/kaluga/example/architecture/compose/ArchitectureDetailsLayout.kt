@@ -21,15 +21,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
+import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
-import com.splendo.kaluga.example.bottomSheet.viewModel.architectureDetailsNavigationRouteMapper
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.resources.compose.Composable
 
 @Composable
 fun ArchitectureDetailsLayout(inputDetails: InputDetails, navHostController: NavHostController) {
@@ -43,9 +45,14 @@ fun ArchitectureDetailsLayout(inputDetails: InputDetails, navHostController: Nav
     }
 
     ViewModelComposable(viewModel) {
-        HardwareBackButtonNavigation(onBackButtonClickHandler = { viewModel.onBackPressed() })
+        val nameText by name.state()
+        val numberText by number.state()
+        HardwareBackButtonNavigation(onBackButtonClickHandler = { onBackPressed() })
         Column(Modifier.fillMaxWidth()) {
-            Text("")
+            Text(nameText)
+            Text(numberText)
+            inverseButton.Composable(modifier = Modifier.fillMaxWidth())
+            finishButton.Composable(modifier = Modifier.fillMaxWidth())
         }
     }
 }

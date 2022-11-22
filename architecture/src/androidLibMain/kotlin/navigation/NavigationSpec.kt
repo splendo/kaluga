@@ -25,6 +25,8 @@ import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -109,6 +111,7 @@ sealed class NavigationSpec {
      * @param tag Optional tag of the fragment transaction
      * @param backStackSettings The [BackStackSettings] of the transaction. Defaults to [BackStackSettings.DontAdd]
      * @param animationSettings Optional [AnimationSettings] for the transaction
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle showing the [Fragment]
      * @param createFragment Function to create the [androidx.fragment.app.Fragment]
      */
     data class Fragment(
@@ -117,6 +120,7 @@ sealed class NavigationSpec {
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
         val createFragment: () -> androidx.fragment.app.Fragment
     ) : NavigationSpec() {
 
@@ -169,21 +173,56 @@ sealed class NavigationSpec {
     /**
      * Removes a [Fragment] with a given tag
      * @param tag The tag of the [Fragment] to remove
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [Fragment]
      */
-    data class RemoveFragment(val tag: String) : NavigationSpec()
+    data class RemoveFragment(
+        val tag: String,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
+
+    /**
+     * Pops a [Fragment] from the backstack
+     * @param immediate If `true` the transaction should execute without waiting for pending transactions
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
+     */
+    data class PopFragment(
+        val immediate: Boolean = false,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
+
+    /**
+     * Pops a [Fragment] from the backstack
+     * @param immediate If `true` the transaction should execute without waiting for pending transactions
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
+     */
+    data class PopFragmentTo(
+        val name: String,
+        val inclusive: Boolean,
+        val immediate: Boolean = false,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
 
     /**
      * Shows a [DialogFragment]
      * @param tag Optional tag to add to the Dialog
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle showing the [DialogFragment]
      * @param createDialog Function to create the [DialogFragment] to display
      */
-    data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : NavigationSpec()
+    data class Dialog(
+        val tag: String? = null,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
+        val createDialog: () -> DialogFragment
+    ) : NavigationSpec()
 
     /**
      * Dismisses a [DialogFragment] with a given Tag
      * @param tag The tag of the [DialogFragment] to remove
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [DialogFragment]
      */
-    data class DismissDialog(val tag: String) : NavigationSpec()
+    data class DismissDialog(
+        val tag: String,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
 
     /**
      * Shows the Camera

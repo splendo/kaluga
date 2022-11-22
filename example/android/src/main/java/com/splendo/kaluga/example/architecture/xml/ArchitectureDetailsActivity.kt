@@ -16,7 +16,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.example.architecture.androidui
+package com.splendo.kaluga.example.architecture.xml
 
 import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator

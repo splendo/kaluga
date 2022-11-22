@@ -23,12 +23,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.databinding.FragmentInfoBinding
 import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpec
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
@@ -64,19 +66,31 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
 
-        super.onViewCreated(view, savedInstanceState)
-
-        val adapter = InfoAdapter(viewModel).apply {
-            view.findViewById<RecyclerView>(R.id.info_buttons)
-                .adapter = this
-        }
-        viewModel.buttons.observeInitialized { adapter.buttons = it }
+        val binding = FragmentInfoBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.infoButtons.adapter = InfoAdapter(viewModel)
+        return binding.root
     }
 }
 
 class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<InfoAdapter.InfoViewHolder>() {
+
+    companion object {
+        @BindingAdapter("infoButtons")
+        @JvmStatic
+        fun bindInfoButtons(view: RecyclerView, infoButtons: List<InfoViewModel.Button>?) {
+            val adapter = (view.adapter as? InfoAdapter) ?: return
+            adapter.buttons = infoButtons.orEmpty()
+        }
+    }
 
     class InfoViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
 

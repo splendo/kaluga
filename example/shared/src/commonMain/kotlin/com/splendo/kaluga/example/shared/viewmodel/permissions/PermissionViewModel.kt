@@ -38,6 +38,7 @@ private val permissionsDispatcher = singleThreadDispatcher("PermissionsDispatche
 
 class PermissionViewModel(private val permission: Permission) : BaseLifecycleViewModel(), KoinComponent {
 
+    val title = permission.name
     private val permissionsBuilder: PermissionsBuilder by inject()
 
     private val permissions = Permissions(permissionsBuilder, coroutineScope.coroutineContext + permissionsDispatcher)

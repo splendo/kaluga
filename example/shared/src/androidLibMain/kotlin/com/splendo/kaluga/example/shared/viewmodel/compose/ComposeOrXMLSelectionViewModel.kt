@@ -24,32 +24,32 @@ import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.resources.localized
 
-sealed class ComposeOrAndroidUINavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    object Compose : ComposeOrAndroidUINavigationAction()
-    object AndroidUI : ComposeOrAndroidUINavigationAction()
+sealed class ComposeOrXMLNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
+    object Compose : ComposeOrXMLNavigationAction()
+    object XML : ComposeOrXMLNavigationAction()
 }
 
 sealed class UIType(val title: String) {
     object Compose : UIType("android_ui_compose".localized())
-    object AndroidUI : UIType("android_ui_legacy".localized())
+    object XML : UIType("android_ui_xml".localized())
 }
 
-class ComposeOrAndroidUISelectionViewModel(
-    navigator: Navigator<ComposeOrAndroidUINavigationAction>
-) : NavigatingViewModel<ComposeOrAndroidUINavigationAction>(navigator) {
+class ComposeOrXMLSelectionViewModel(
+    navigator: Navigator<ComposeOrXMLNavigationAction>
+) : NavigatingViewModel<ComposeOrXMLNavigationAction>(navigator) {
 
     val uiTypes = observableOf(
         listOf(
             UIType.Compose,
-            UIType.AndroidUI
+            UIType.XML
         )
     )
 
     fun onUITypePressed(feature: UIType) {
         navigator.navigate(
             when (feature) {
-                is UIType.Compose -> ComposeOrAndroidUINavigationAction.Compose
-                is UIType.AndroidUI -> ComposeOrAndroidUINavigationAction.AndroidUI
+                is UIType.Compose -> ComposeOrXMLNavigationAction.Compose
+                is UIType.XML -> ComposeOrXMLNavigationAction.XML
             }
         )
     }

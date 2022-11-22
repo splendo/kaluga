@@ -67,6 +67,7 @@ kotlin {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("androidx.compose.material.ExperimentalMaterialApi")
+            optIn("androidx.compose.ui.ExperimentalComposeUiApi")
         }
     }
 }
@@ -74,6 +75,7 @@ kotlin {
 dependencies {
     val libraryVersion = Library.version
     implementation("com.splendo.kaluga:architecture-compose:$libraryVersion")
+    implementation("com.splendo.kaluga:keyboard-compose:$libraryVersion")
     implementation("com.splendo.kaluga:resources-compose:$libraryVersion")
     implementation("com.splendo.kaluga:resources-databinding:$libraryVersion")
     implementation(project(":shared"))
@@ -96,4 +98,6 @@ dependencies {
 
     implementationDependency(Dependencies.KotlinX.Serialization.Core)
     implementationDependency(Dependencies.KotlinX.Serialization.Json)
+
+    implementationDependency(Dependencies.Koin.AndroidXCompose)
 }

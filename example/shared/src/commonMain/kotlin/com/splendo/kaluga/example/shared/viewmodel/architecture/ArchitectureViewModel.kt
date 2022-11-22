@@ -21,6 +21,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.ObservableOptional
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
@@ -55,14 +56,14 @@ class ArchitectureViewModel(navigator: Navigator<ArchitectureNavigationAction<*>
             it.isNotEmpty()
         }
     }
-    val isNameValid = _isNameValid.toUninitializedObservable(coroutineScope)
+    val isNameValid = _isNameValid.toInitializedObservable(false, coroutineScope)
 
     private val _isNumberValid: Flow<Boolean> get() {
         return _numberInput.map {
             it.toIntOrNull() != null
         }
     }
-    val isNumberValid = _isNumberValid.toUninitializedObservable(coroutineScope)
+    val isNumberValid = _isNumberValid.toInitializedObservable(false, coroutineScope)
 
     private val isValid = combine(_isNameValid, _isNumberValid) {
         validName, validNumber ->

@@ -16,7 +16,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.example.architecture.androidui
+package com.splendo.kaluga.example.architecture.xml
 
 import android.content.Context
 import android.content.Intent
@@ -34,7 +34,7 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class ArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>() {
+class XMLArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>() {
 
     inner class Contract : ActivityResultContract<Intent, InputDetails?>() {
 
@@ -51,9 +51,9 @@ class ArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>() {
             ActivityNavigator<ArchitectureNavigationAction<*>> { action ->
                 when (action) {
                     is ArchitectureNavigationAction.Details -> NavigationSpec.Activity<ArchitectureDetailsActivity>(
-                        launchType = NavigationSpec.Activity.LaunchType.ActivityContract<ArchitectureActivity> { contract }
+                        launchType = NavigationSpec.Activity.LaunchType.ActivityContract<XMLArchitectureActivity> { contract }
                     )
-                    is ArchitectureNavigationAction.BottomSheet -> throw java.lang.RuntimeException()
+                    is ArchitectureNavigationAction.BottomSheet -> NavigationSpec.Dialog(BottomSheetRootDialogFragment.TAG) { BottomSheetRootDialogFragment() }
                 }
             }
         )

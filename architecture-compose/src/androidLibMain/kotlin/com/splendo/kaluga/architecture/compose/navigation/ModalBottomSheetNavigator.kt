@@ -78,10 +78,8 @@ class BottomSheetSheetContentRouteController(
         sheetContentRouteController.navigate(newRoute)
     }
 
-    override fun back(result: Map<String, Any?>): Boolean = if (navHostController.backQueue.isNotEmpty()) {
-        navHostController.previousBackStackEntry?.savedStateHandle?.let { savedStateHandle ->
-            result.entries.forEach { (key, value) -> savedStateHandle[key] = value }
-        }
+    override fun back(result: Route.Result): Boolean = if (navHostController.backQueue.isNotEmpty()) {
+        navHostController.previousBackStackEntry?.setResult(result)
         navHostController.popBackStack()
     } else {
         close()

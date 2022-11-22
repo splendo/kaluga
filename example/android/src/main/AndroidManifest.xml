@@ -45,7 +45,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.splendo.kaluga.example.ExampleActivity"
             android:label="Features list"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -53,22 +54,55 @@
             </intent-filter>
         </activity>
         <activity android:name=".location.LocationActivity"
-            android:label="@string/feature_location"/>
-        <activity android:name=".permissions.PermissionsDemoListActivity"
-            android:label="@string/permissions_list"/>
-        <activity android:name=".permissions.PermissionsDemoActivity" android:label="Permissions"/>
+            android:label="@string/feature_location"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".permissions.PermissionsListActivity"
+            android:label="@string/permissions_list"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".permissions.PermissionActivity"
+            android:label="Permissions"
+            android:screenOrientation="portrait"/>
         <activity android:name=".alerts.AlertsActivity"
-            android:label="@string/feature_alerts"/>
+            android:label="@string/feature_alerts"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".alerts.xml.XMLAlertsActivity"
+            android:label="@string/feature_alerts"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".alerts.compose.ComposeAlertsActivity"
+            android:label="@string/feature_alerts"
+            android:screenOrientation="portrait"/>
         <activity android:name=".datetimepicker.DateTimePickerActivity"
-            android:label="@string/feature_date_time_picker"/>
+            android:label="@string/feature_date_time_picker"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".datetimepicker.xml.XMLDateTimePickerActivity"
+            android:label="@string/feature_date_time_picker"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".datetimepicker.compose.ComposeDateTimePickerActivity"
+            android:label="@string/feature_date_time_picker"
+            android:screenOrientation="portrait"/>
         <activity android:name=".loading.LoadingActivity"
-            android:label="@string/feature_hud"/>
-        <activity android:name=".keyboard.KeyboardManagerActivity"
-            android:label="@string/keyboard_manager"/>
+            android:label="@string/feature_hud"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".loading.xml.XMLLoadingActivity"
+            android:label="@string/feature_hud"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".loading.compose.ComposeLoadingActivity"
+            android:label="@string/feature_hud"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".keyboard.KeyboardActivity"
+            android:label="@string/keyboard_manager"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".keyboard.xml.XMLKeyboardActivity"
+            android:label="@string/keyboard_manager"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".keyboard.compose.ComposeKeyboardActivity"
+            android:label="@string/keyboard_manager"
+            android:screenOrientation="portrait"/>
         <activity android:name=".link.LinksActivity"
             android:exported="true"
             android:label="@string/feature_links"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -79,35 +113,52 @@
                     android:pathPrefix="/kalugaexample"/>
             </intent-filter>
         </activity>
-        <activity android:name=".architecture.androidui.ArchitectureActivity"
-            android:label="@string/feature_architecture"/>
+        <activity android:name=".architecture.ArchitectureActivity"
+            android:label="@string/feature_architecture"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".architecture.xml.XMLArchitectureActivity"
+            android:label="@string/feature_architecture"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".architecture.compose.ComposeArchitectureActivity"
+            android:label="@string/feature_architecture"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name="com.splendo.kaluga.example.platformspecific.PlatformSpecificActivity"
-            android:label="@string/feature_platform_specific"/>
-        <activity android:name="com.splendo.kaluga.example.contacts.ContactsActivity"
-            android:label="@string/feature_platform_specific_compose_navigation"/>
-        <activity android:name="com.splendo.kaluga.example.bottomSheet.BottomSheetActivity"
-            android:label="@string/feature_platform_specific_compose_bottom_sheet"/>
-
-        <activity android:name=".architecture.androidui.ArchitectureDetailsActivity"
-            android:label="@string/feature_architecture"/>
+        <activity android:name=".architecture.xml.ArchitectureDetailsActivity"
+            android:label="@string/feature_architecture"
+            android:screenOrientation="portrait"/>
         <activity android:name=".bluetooth.BluetoothActivity"
-            android:label="@string/feature_bluetooth"/>
+            android:label="@string/feature_bluetooth"
+            android:screenOrientation="portrait"/>
         <activity android:name=".bluetooth.BluetoothMoreActivity"
-            android:label="@string/feature_bluetooth"/>
+            android:label="@string/feature_bluetooth"
+            android:screenOrientation="portrait"/>
         <activity android:name=".beacons.BeaconsActivity"
-            android:label="@string/feature_beacons"/>
+            android:label="@string/feature_beacons"
+            android:screenOrientation="portrait"/>
         <activity android:name=".resources.ResourcesActivity"
-            android:label="@string/feature_resources"/>
-        <activity android:name=".resources.ColorActivity"
-            android:label="@string/feature_resources_color"/>
-        <activity android:name=".resources.LabelActivity"
-            android:label="@string/feature_resources_label"/>
-        <activity android:name=".resources.ButtonActivity"
-            android:label="@string/feature_resources_button"/>
-
-        <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
-        <activity android:name=".system.NetworkActivity" android:label="@string/network_feature"/>
+            android:label="@string/feature_resources"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".resources.xml.XMLResourcesActivity"
+            android:label="@string/feature_resources"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".resources.compose.ComposeResourcesActivity"
+            android:label="@string/feature_resources"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".resources.xml.ColorActivity"
+            android:label="@string/feature_resources_color"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".resources.xml.LabelActivity"
+            android:label="@string/feature_resources_label"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".resources.xml.ButtonActivity"
+            android:label="@string/feature_resources_button"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".system.SystemActivity"
+            android:label="@string/feature_system"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".system.NetworkActivity"
+            android:label="@string/network_feature"
+            android:screenOrientation="portrait"/>
 
 
         <service android:name=".location.LocationBackgroundService"/>

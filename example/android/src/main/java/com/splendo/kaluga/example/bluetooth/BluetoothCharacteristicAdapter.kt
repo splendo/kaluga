@@ -25,18 +25,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BluetoothCharacteristicItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothCharacteristicViewModel
 
-object CharacteristicsBinding {
-
-    @BindingAdapter("characteristics")
-    @JvmStatic
-    fun bindCharacteristics(view: RecyclerView, characteristics: List<BluetoothCharacteristicViewModel>?) {
-        val characteristicAdapter = view.adapter as? BluetoothCharacteristicAdapter
-            ?: return
-        characteristicAdapter.characteristics = characteristics ?: emptyList()
-    }
-}
-
 class BluetoothCharacteristicAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BluetoothCharacteristicAdapter.BluetoothCharacteristicItemViewHolder>() {
+
+    companion object {
+        @BindingAdapter("characteristics")
+        @JvmStatic
+        fun bindCharacteristics(view: RecyclerView, characteristics: List<BluetoothCharacteristicViewModel>?) {
+            val characteristicAdapter = view.adapter as? BluetoothCharacteristicAdapter
+                ?: return
+            characteristicAdapter.characteristics = characteristics ?: emptyList()
+        }
+    }
 
     class BluetoothCharacteristicItemViewHolder(val characteristicItem: BluetoothCharacteristicItemBinding) : RecyclerView.ViewHolder(characteristicItem.root)
 

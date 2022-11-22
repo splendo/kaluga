@@ -45,6 +45,7 @@ fun <VM : BaseLifecycleViewModel> VM.bind(activity: AppCompatActivity) {
  */
 fun <VM : BaseLifecycleViewModel> VM.bind(fragment: Fragment): Boolean {
     val fragmentManager = fragment.parentFragmentManager
-    fragment.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, fragment.activity, fragment.viewLifecycleOwner, fragmentManager))
+    val childFragmentManager = fragment.childFragmentManager
+    fragment.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, fragment.activity, fragment.viewLifecycleOwner, fragmentManager, childFragmentManager))
     return true
 }

@@ -42,7 +42,8 @@ class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal con
     private val viewModel: VM,
     private val activity: Activity?,
     private val lifecycleOwner: LifecycleOwner,
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: FragmentManager,
+    private val childFragmentManager: FragmentManager? = null
 ) : DefaultLifecycleObserver {
 
     private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
@@ -58,7 +59,7 @@ class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal con
     }
 
     override fun onCreate(owner: LifecycleOwner) {
-        lifecycleSubscribables.forEach { it.subscribe(activity, lifecycleOwner, fragmentManager) }
+        lifecycleSubscribables.forEach { it.subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager) }
     }
 
     override fun onDestroy(owner: LifecycleOwner) {

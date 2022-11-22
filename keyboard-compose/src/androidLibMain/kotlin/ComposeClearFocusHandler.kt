@@ -23,7 +23,7 @@ import com.splendo.kaluga.keyboard.ClearFocusHandler
 import kotlinx.coroutines.flow.StateFlow
 
 class ComposeClearFocusHandler(private val focusManager: StateFlow<FocusManager>) : ClearFocusHandler {
-    override fun clearFocus(activity: Activity) {
+    override fun clearFocus(activity: Activity?) {
         focusManager.value.clearFocus(true)
     }
 }

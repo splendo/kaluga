@@ -20,11 +20,11 @@ package com.splendo.kaluga.keyboard
 import android.app.Activity
 
 interface ClearFocusHandler {
-    fun clearFocus(activity: Activity)
+    fun clearFocus(activity: Activity?)
 }
 
 class ViewClearFocusHandler : ClearFocusHandler {
-    override fun clearFocus(activity: Activity) {
-        activity.currentFocus?.clearFocus()
+    override fun clearFocus(activity: Activity?) {
+        activity?.currentFocus?.clearFocus()
     }
 }

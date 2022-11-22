@@ -20,7 +20,9 @@ package com.splendo.kaluga.example.shared.viewmodel.architecture
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.resources.view.KalugaButton
 
 sealed class BottomSheetNavigation : NavigationAction<Nothing>(null) {
     object Close : BottomSheetNavigation()
@@ -30,9 +32,7 @@ sealed class BottomSheetNavigation : NavigationAction<Nothing>(null) {
 class BottomSheetViewModel(navigator: Navigator<BottomSheetNavigation>) : NavigatingViewModel<BottomSheetNavigation>(navigator) {
 
     val text = "bottom_sheet_sheet_content".localized()
-    val buttonText = "bottom_sheet_show_sub_page".localized()
-
-    fun onSubPagePressed() {
+    val button = KalugaButton.Plain("bottom_sheet_show_sub_page".localized(), ButtonStyles.default) {
         navigator.navigate(BottomSheetNavigation.SubPage)
     }
 

@@ -21,22 +21,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
-import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
-import com.splendo.kaluga.example.architecture.androidui.ArchitectureActivity
+import com.splendo.kaluga.example.architecture.ArchitectureActivity
 import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothActivity
+import com.splendo.kaluga.example.databinding.FragmentFeaturesListBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
-import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
+import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
-import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import com.splendo.kaluga.example.permissions.PermissionsListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
@@ -45,19 +46,19 @@ import com.splendo.kaluga.example.system.SystemActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.layout.fragment_features_list) {
+class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
 
     override val viewModel: FeatureListViewModel by viewModel {
         parametersOf(
             ActivityNavigator<FeatureListNavigationAction> { action ->
                 when (action) {
                     FeatureListNavigationAction.Location -> NavigationSpec.Activity<LocationActivity>()
-                    FeatureListNavigationAction.Permissions -> NavigationSpec.Activity<PermissionsDemoListActivity>()
+                    FeatureListNavigationAction.Permissions -> NavigationSpec.Activity<PermissionsListActivity>()
                     FeatureListNavigationAction.Alerts -> NavigationSpec.Activity<AlertsActivity>()
                     FeatureListNavigationAction.DateTimePicker -> NavigationSpec.Activity<DateTimePickerActivity>()
                     FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity<LoadingActivity>()
                     FeatureListNavigationAction.Architecture -> NavigationSpec.Activity<ArchitectureActivity>()
-                    FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity<KeyboardManagerActivity>()
+                    FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity<KeyboardActivity>()
                     FeatureListNavigationAction.Links -> NavigationSpec.Activity<LinksActivity>()
                     FeatureListNavigationAction.System -> NavigationSpec.Activity<SystemActivity>()
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity<BluetoothActivity>()
@@ -69,18 +70,31 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.lay
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
 
-        val adapter = FeaturesAdapter(viewModel).apply {
-
-            view.findViewById<RecyclerView>(R.id.features_list).adapter = this
-        }
-        viewModel.feature.observeInitialized { adapter.features = it }
+        val binding = FragmentFeaturesListBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.featuresList.adapter = FeaturesAdapter(viewModel)
+        return binding.root
     }
 }
 
 class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
+
+    companion object {
+        @BindingAdapter("features")
+        @JvmStatic
+        fun bindFeatures(view: RecyclerView, features: List<Feature>?) {
+            val adapter = (view.adapter as? FeaturesAdapter) ?: return
+            adapter.features = features.orEmpty()
+        }
+    }
 
     class FeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button

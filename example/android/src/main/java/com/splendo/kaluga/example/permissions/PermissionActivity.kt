@@ -18,20 +18,19 @@
 package com.splendo.kaluga.example.permissions
 
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
+import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.databinding.ActivityPermissionBinding
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.layout.activity_permissions_demo) {
+class PermissionActivity : KalugaViewModelActivity<PermissionViewModel>() {
 
     override val viewModel: PermissionViewModel by viewModel {
         intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))?.let { permissionView ->
@@ -42,17 +41,12 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.title = intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))?.title
+        val binding = ActivityPermissionBinding.inflate(LayoutInflater.from(this), null, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
 
-        viewModel.permissionStateMessage.observe {
-            findViewById<TextView>(R.id.permissions_message).text = it
-        }
-
-        viewModel.showPermissionButton.observe {
-            findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).visibility = if (it == true) View.VISIBLE else View.GONE
-        }
-
-        findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).setOnClickListener { viewModel.requestPermission() }
+        supportActionBar?.title = viewModel.title
 
         viewModel.requestMessage.observeInitialized { message ->
             if (message != null) Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

@@ -30,7 +30,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.net.URL
 
-class LinksActivity : KalugaViewModelActivity<LinksViewModel>(R.layout.activity_link) {
+class LinksActivity : KalugaViewModelActivity<LinksViewModel>() {
 
     override val viewModel: LinksViewModel by viewModel {
         parametersOf(

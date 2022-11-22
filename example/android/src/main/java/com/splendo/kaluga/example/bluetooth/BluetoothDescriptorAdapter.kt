@@ -25,18 +25,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BluetoothDescriptorItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDescriptorViewModel
 
-object DescriptorsBinding {
-
-    @BindingAdapter("descriptors")
-    @JvmStatic
-    fun bindDescriptors(view: RecyclerView, descriptors: List<BluetoothDescriptorViewModel>?) {
-        val descriptorAdapter = view.adapter as? BluetoothDescriptorAdapter
-            ?: return
-        descriptorAdapter.descriptors = descriptors ?: emptyList()
-    }
-}
-
 class BluetoothDescriptorAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BluetoothDescriptorAdapter.BluetoothDescriptorItemViewHolder>() {
+
+    companion object {
+        @BindingAdapter("descriptors")
+        @JvmStatic
+        fun bindDescriptors(view: RecyclerView, descriptors: List<BluetoothDescriptorViewModel>?) {
+            val descriptorAdapter = view.adapter as? BluetoothDescriptorAdapter
+                ?: return
+            descriptorAdapter.descriptors = descriptors ?: emptyList()
+        }
+    }
 
     class BluetoothDescriptorItemViewHolder(val descriptorItem: BluetoothDescriptorItemBinding) : RecyclerView.ViewHolder(descriptorItem.root)
 

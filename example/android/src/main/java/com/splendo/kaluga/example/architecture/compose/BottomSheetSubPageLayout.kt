@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.example.bottomSheet.ui
+package com.splendo.kaluga.example.architecture.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,13 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
-import com.splendo.kaluga.example.bottomSheet.viewModel.bottomSheetSubPageNavigationRouteMapper
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
 

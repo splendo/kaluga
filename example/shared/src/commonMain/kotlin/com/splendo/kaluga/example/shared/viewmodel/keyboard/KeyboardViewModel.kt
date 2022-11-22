@@ -18,18 +18,21 @@
 package com.splendo.kaluga.example.shared.viewmodel.keyboard
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
+import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.resources.view.KalugaButton
 
 class KeyboardViewModel(keyboardManagerBuilder: BaseKeyboardManager.Builder, private val editFieldFocusHandler: FocusHandler) : BaseLifecycleViewModel() {
 
     private val keyboardManager: BaseKeyboardManager = keyboardManagerBuilder.create(coroutineScope)
 
-    fun onShowPressed() {
+    val showButton = KalugaButton.Plain("show_keyboard".localized(), ButtonStyles.default) {
         keyboardManager.show(editFieldFocusHandler)
     }
 
-    fun onHidePressed() {
+    val hideButton = KalugaButton.Plain("hide_keyboard".localized(), ButtonStyles.default) {
         keyboardManager.hide()
     }
 }

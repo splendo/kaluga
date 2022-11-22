@@ -15,17 +15,16 @@
 
  */
 
-package com.splendo.kaluga.example.beacons
+package com.splendo.kaluga.example.architecture
 
-import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
+import com.splendo.kaluga.example.architecture.compose.ComposeArchitectureActivity
+import com.splendo.kaluga.example.architecture.xml.XMLArchitectureActivity
+import com.splendo.kaluga.example.compose.ComposeOrXMLActivity
 
-object BeaconsBinding {
-    @BindingAdapter("beacons")
-    @JvmStatic
-    fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {
-        val beaconsAdapter = view.adapter as? BeaconsAdapter ?: return
-        beaconsAdapter.beacons = beacons ?: emptyList()
-    }
-}
+class ArchitectureActivity : ComposeOrXMLActivity<
+        ComposeArchitectureActivity,
+        XMLArchitectureActivity
+        >(
+    ComposeArchitectureActivity::class.java,
+    XMLArchitectureActivity::class.java
+)

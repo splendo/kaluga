@@ -21,23 +21,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.databinding.ActivityPermissionsListBinding
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PermissionsDemoListActivity : KalugaViewModelActivity<PermissionsListViewModel>(R.layout.activity_permissions_list) {
+class PermissionsListActivity : KalugaViewModelActivity<PermissionsListViewModel>() {
 
     override val viewModel: PermissionsListViewModel by viewModel {
         parametersOf(
             ActivityNavigator<PermissionsListNavigationAction> {
-                NavigationSpec.Activity<PermissionsDemoActivity>()
+                NavigationSpec.Activity<PermissionActivity>()
             }
         )
     }
@@ -45,14 +47,24 @@ class PermissionsDemoListActivity : KalugaViewModelActivity<PermissionsListViewM
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val adapter = PermissionsAdapter(viewModel).apply {
-            findViewById<RecyclerView>(R.id.permissions_list).adapter = this
-        }
-        viewModel.permissions.observeInitialized { adapter.permissions = it }
+        val binding = ActivityPermissionsListBinding.inflate(LayoutInflater.from(this), null, false)
+        binding.permissionsList.adapter = PermissionsAdapter(viewModel)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
     }
 }
 
 class PermissionsAdapter(private val viewModel: PermissionsListViewModel) : RecyclerView.Adapter<PermissionsAdapter.PermissionsViewHolder>() {
+
+    companion object {
+        @BindingAdapter("permissions")
+        @JvmStatic
+        fun bindPermissions(view: RecyclerView, permissions: List<PermissionView>?) {
+            val adapter = (view.adapter as? PermissionsAdapter) ?: return
+            adapter.permissions = permissions.orEmpty()
+        }
+    }
 
     class PermissionsViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
 
