@@ -106,7 +106,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd.v2-${{ matrix.api-level }}
+          key: avd.v3-${{ matrix.api-level }}
 
       - name: Konan cache
         uses: actions/cache@v3
@@ -125,6 +125,9 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
+          disk-size: 3G
+          ram-size: 3G
+          heap-size: 1500M
           script: echo "Generated AVD snapshot for caching."
 
       - name: run tests
@@ -136,4 +139,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
+          disk-size: 3G
+          ram-size: 3G
+          heap-size: 1500M
           script: ./gradlew --parallel :${{ matrix.module }}:connectedDebugAndroidTest
