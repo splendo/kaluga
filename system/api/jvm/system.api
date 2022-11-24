@@ -1,0 +1,160 @@
+public abstract interface class com/splendo/kaluga/system/network/BaseNetworkManager {
+	public abstract fun dispose ()V
+	public abstract fun getOnNetworkStateChange ()Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/system/network/BaseNetworkManager$Builder {
+	public abstract fun create (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/system/network/BaseNetworkManager;
+}
+
+public abstract class com/splendo/kaluga/system/network/Network {
+}
+
+public abstract class com/splendo/kaluga/system/network/Network$Known : com/splendo/kaluga/system/network/Network {
+}
+
+public final class com/splendo/kaluga/system/network/Network$Known$Absent : com/splendo/kaluga/system/network/Network$Known {
+	public static final field INSTANCE Lcom/splendo/kaluga/system/network/Network$Known$Absent;
+}
+
+public final class com/splendo/kaluga/system/network/Network$Known$Cellular : com/splendo/kaluga/system/network/Network$Known, com/splendo/kaluga/system/network/ReachableNetworkConnection {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lcom/splendo/kaluga/system/network/Network$Known$Cellular;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/Network$Known$Cellular;ZILjava/lang/Object;)Lcom/splendo/kaluga/system/network/Network$Known$Cellular;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isExpensive ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/system/network/Network$Known$Wifi : com/splendo/kaluga/system/network/Network$Known, com/splendo/kaluga/system/network/ReachableNetworkConnection {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lcom/splendo/kaluga/system/network/Network$Known$Wifi;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/Network$Known$Wifi;ZILjava/lang/Object;)Lcom/splendo/kaluga/system/network/Network$Known$Wifi;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isExpensive ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/system/network/Network$Unknown : com/splendo/kaluga/system/network/Network {
+	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getReason ()Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+}
+
+public final class com/splendo/kaluga/system/network/Network$Unknown$Reason : java/lang/Enum {
+	public static final field CONNECTING Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+	public static final field LOSING Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+	public static final field NOT_CLEAR Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+	public static fun values ()[Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+}
+
+public final class com/splendo/kaluga/system/network/Network$Unknown$WithLastNetwork : com/splendo/kaluga/system/network/Network$Unknown {
+	public fun <init> (Lcom/splendo/kaluga/system/network/Network$Known;Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;)V
+	public final fun getLastKnownNetwork ()Lcom/splendo/kaluga/system/network/Network$Known;
+	public fun getReason ()Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+}
+
+public final class com/splendo/kaluga/system/network/Network$Unknown$WithoutLastNetwork : com/splendo/kaluga/system/network/Network$Unknown {
+	public fun <init> (Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;)V
+	public fun getReason ()Lcom/splendo/kaluga/system/network/Network$Unknown$Reason;
+}
+
+public final class com/splendo/kaluga/system/network/NetworkManager {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/system/network/NetworkManagerBuilder : com/splendo/kaluga/system/network/BaseNetworkManager$Builder {
+	public fun <init> ()V
+	public fun create (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/system/network/BaseNetworkManager;
+}
+
+public abstract interface class com/splendo/kaluga/system/network/ReachableNetworkConnection {
+	public abstract fun isExpensive ()Z
+}
+
+public abstract class com/splendo/kaluga/system/network/state/NetworkState : com/splendo/kaluga/state/KalugaState {
+	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/Network;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network;
+	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/system/network/state/NetworkState$Available : com/splendo/kaluga/system/network/state/NetworkState {
+	public fun <init> (Lcom/splendo/kaluga/system/network/Network$Known;)V
+	public final fun component1 ()Lcom/splendo/kaluga/system/network/Network$Known;
+	public final fun copy (Lcom/splendo/kaluga/system/network/Network$Known;)Lcom/splendo/kaluga/system/network/state/NetworkState$Available;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkState$Available;Lcom/splendo/kaluga/system/network/Network$Known;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkState$Available;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAvailableWithCellular ()Lkotlin/jvm/functions/Function1;
+	public final fun getAvailableWithWifi ()Lkotlin/jvm/functions/Function1;
+	public fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network$Known;
+	public synthetic fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network;
+	public final fun getUnavailable ()Lkotlin/jvm/functions/Function1;
+	public final fun getUnknownWithLastNetwork ()Lkotlin/jvm/functions/Function3;
+	public final fun getUnknownWithoutLastNetwork ()Lkotlin/jvm/functions/Function2;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/system/network/state/NetworkState$Unavailable : com/splendo/kaluga/system/network/state/NetworkState {
+	public fun <init> (Lcom/splendo/kaluga/system/network/Network$Known;)V
+	public final fun component1 ()Lcom/splendo/kaluga/system/network/Network$Known;
+	public final fun copy (Lcom/splendo/kaluga/system/network/Network$Known;)Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;Lcom/splendo/kaluga/system/network/Network$Known;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAvailableWithCellular ()Lkotlin/jvm/functions/Function1;
+	public final fun getAvailableWithWifi ()Lkotlin/jvm/functions/Function1;
+	public fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network$Known;
+	public synthetic fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network;
+	public final fun getUnknownWithLastNetwork ()Lkotlin/jvm/functions/Function3;
+	public final fun getUnknownWithoutLastNetwork ()Lkotlin/jvm/functions/Function2;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/system/network/state/NetworkState$Unknown : com/splendo/kaluga/system/network/state/NetworkState {
+	public fun <init> (Lcom/splendo/kaluga/system/network/Network$Unknown;)V
+	public final fun component1 ()Lcom/splendo/kaluga/system/network/Network$Unknown;
+	public final fun copy (Lcom/splendo/kaluga/system/network/Network$Unknown;)Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;Lcom/splendo/kaluga/system/network/Network$Unknown;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAvailableWithCellular ()Lkotlin/jvm/functions/Function1;
+	public final fun getAvailableWithWifi ()Lkotlin/jvm/functions/Function1;
+	public fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network$Unknown;
+	public synthetic fun getNetworkType ()Lcom/splendo/kaluga/system/network/Network;
+	public final fun getUnavailable ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public class com/splendo/kaluga/system/network/state/NetworkStateRepo : com/splendo/kaluga/state/ColdStateRepo {
+	public fun <init> (Lcom/splendo/kaluga/system/network/BaseNetworkManager$Builder;)V
+	public synthetic fun deinitialize (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deinitialize (Lcom/splendo/kaluga/system/network/state/NetworkState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun initialValue (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected final fun onNetworkStateChange (Lcom/splendo/kaluga/system/network/Network;)V
+}
+
+public abstract interface class com/splendo/kaluga/system/network/state/NetworkStateRepo$Builder {
+	public abstract fun create ()Lcom/splendo/kaluga/system/network/state/NetworkStateRepo;
+}
+
+public final class com/splendo/kaluga/system/network/state/NetworkStateRepoBuilder : com/splendo/kaluga/system/network/state/NetworkStateRepo$Builder {
+	public fun <init> ()V
+	public fun create ()Lcom/splendo/kaluga/system/network/state/NetworkStateRepo;
+}
+
+public final class com/splendo/kaluga/system/network/state/NetworkStateRepoKt {
+	public static final fun network (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun online (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+}
+

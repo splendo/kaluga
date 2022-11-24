@@ -34,8 +34,8 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
         action {
             start(scope)
             discoverDevices(
-                BeaconMock.mockGenericDevice("AXA", scope.coroutineContext),
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockGenericDevice("AXA", scope),
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )
         }
 
@@ -59,7 +59,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
         action {
             start(scope)
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )
         }
 
@@ -70,7 +70,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
         action {
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope)
             )
         }
 

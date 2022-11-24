@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.resources.stylable
 
-import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.Font
+import com.splendo.kaluga.resources.KalugaColor
 
 data class ButtonStyle(
     val font: Font,
@@ -32,9 +32,9 @@ data class ButtonStyle(
     constructor(
         textStyle: TextStyle,
         textAlignment: TextAlignment = TextAlignment.CENTER,
-        backgroundColor: Color = DefaultColors.clear,
-        pressedBackgroundColor: Color = backgroundColor,
-        disabledBackgroundColor: Color = backgroundColor,
+        backgroundColor: KalugaColor = DefaultColors.clear,
+        pressedBackgroundColor: KalugaColor = backgroundColor,
+        disabledBackgroundColor: KalugaColor = backgroundColor,
         shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()
     ) : this(
         textStyle.font,
@@ -72,11 +72,11 @@ data class ButtonStyle(
 }
 
 data class ButtonStateStyle(
-    val textColor: Color,
+    val textColor: KalugaColor,
     val backgroundStyle: BackgroundStyle,
 ) {
 
-    constructor(textColor: Color, backgroundColor: Color = DefaultColors.clear, shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
+    constructor(textColor: KalugaColor, backgroundColor: KalugaColor = DefaultColors.clear, shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
         textColor,
         BackgroundStyle(
             BackgroundStyle.FillStyle.Solid(backgroundColor),

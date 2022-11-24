@@ -18,13 +18,21 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.Logger
 
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
-    stateRepo: DeviceStateFlowRepo
-) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, stateRepo) {
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    parentLogTag: String,
+    logger: Logger
+) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
+    initialValue,
+    emitNewAction,
+    "$parentLogTag Descriptor",
+    logger
+) {
 
     override val uuid = wrapper.uuid
 
@@ -32,7 +40,7 @@ open class Descriptor(
         return DeviceAction.Read.Descriptor(this)
     }
 
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Descriptor {
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Descriptor {
         return DeviceAction.Write.Descriptor(newValue, this)
     }
 

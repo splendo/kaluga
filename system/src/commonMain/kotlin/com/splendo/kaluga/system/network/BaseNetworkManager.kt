@@ -30,4 +30,4 @@ interface BaseNetworkManager {
 }
 
 expect class NetworkManagerBuilder
-expect sealed class NetworkManager
+expect class NetworkManager

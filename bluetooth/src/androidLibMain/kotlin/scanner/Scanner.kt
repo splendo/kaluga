@@ -17,65 +17,62 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.ParcelUuid
-import co.touchlab.stately.concurrency.AtomicReference
+import android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.monitor.EnableServiceActivity
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.logging.e
+import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOf
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
-actual class Scanner internal constructor(
+actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
     private val bluetoothScanner: BluetoothLeScannerCompat,
     private val bluetoothAdapter: BluetoothAdapter?,
     private val scanSettings: ScanSettings,
-    permissions: Permissions,
-    connectionSettings: ConnectionSettings,
-    autoRequestPermission: Boolean,
-    autoEnableSensors: Boolean,
-    stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BaseScanner(settings, coroutineScope) {
 
     class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-        private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter,
+        private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter,
         private val scanSettings: ScanSettings = defaultScanSettings,
     ) : BaseScanner.Builder {
 
         override fun create(
-            permissions: Permissions,
-            connectionSettings: ConnectionSettings,
-            autoRequestPermission: Boolean,
-            autoEnableSensors: Boolean,
-            scanningStateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
+            settings: Settings,
+            coroutineScope: CoroutineScope,
         ): BaseScanner {
-            return Scanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
+            return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope)
         }
     }
 
@@ -101,16 +98,9 @@ actual class Scanner internal constructor(
                 else -> Pair("Reason Unknown", true)
             }
 
-            launch(stateRepo.coroutineContext) {
-                stateRepo.peekState().logError(Error(error.first))
-                if (error.second) {
-                    stateRepo.takeAndChangeState { state ->
-                        when (state) {
-                            is ScanningState.Initialized.Enabled.Scanning -> state.stopScanning
-                            else -> state.remain()
-                        }
-                    }
-                }
+            e { error.first }
+            if (error.second) {
+                eventChannel.trySend(Scanner.Event.FailedScanning)
             }
         }
 
@@ -130,8 +120,7 @@ actual class Scanner internal constructor(
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
             handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
-                val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, stateRepo.coroutineContext)
+                deviceWrapper to deviceConnectionManagerBuilder
             }
         }
     }
@@ -139,14 +128,18 @@ actual class Scanner internal constructor(
     private val locationPermissionRepo get() = permissions[locationPermission]
 
     override val isSupported: Boolean = bluetoothAdapter != null
-    private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
+    private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
     override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
-    private val monitoringLocationPermissionsJob = AtomicReference<Job?>(null)
-    private val monitoringLocationEnabledJob = AtomicReference<Job?>(null)
+    override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(bluetoothPermissionRepo.filterOnlyImportant(), locationPermissionRepo.filterOnlyImportant()) { bluetoothPermission, locationPermission ->
+        listOf(bluetoothPermission, locationPermission)
+    }
+    override val enabledFlow: Flow<List<Boolean>> get() = combine(bluetoothEnabledMonitor?.isEnabled ?: flowOf(false), locationEnabledMonitor.isEnabled) { bluetoothEnabled, locationEnabled ->
+        listOf(bluetoothEnabled, locationEnabled)
+    }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
+    override suspend fun didStartScanning(filter: Set<UUID>) {
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -156,75 +149,65 @@ actual class Scanner internal constructor(
         )
     }
 
-    override suspend fun stopScanning() {
+    override suspend fun didStopScanning() {
         bluetoothScanner.stopScan(callback)
     }
 
-    override fun startMonitoringPermissions() {
-        super.startMonitoringPermissions()
-        if (monitoringLocationPermissionsJob.get() != null) return // optimization to skip making a job
-
-        val job = Job(this.coroutineContext[Job])
-
-        if (monitoringLocationPermissionsJob.compareAndSet(null, job)) {
-            launch(job) {
-                locationPermissionRepo.collect { state ->
-                    handlePermissionState(state, locationPermission)
-                }
-            }
-        }
+    override fun startMonitoringHardwareEnabled() {
+        locationEnabledMonitor.startMonitoring()
+        super.startMonitoringHardwareEnabled()
     }
 
-    override fun stopMonitoringPermissions() {
-        super.stopMonitoringPermissions()
-        monitoringLocationPermissionsJob.get()?.let {
-            if (monitoringLocationPermissionsJob.compareAndSet(it, null)) {
-                it.cancel()
-            }
-        }
+    override fun stopMonitoringHardwareEnabled() {
+        locationEnabledMonitor.stopMonitoring()
+        super.stopMonitoringHardwareEnabled()
     }
 
-    override fun startMonitoringSensors() {
-        super.startMonitoringSensors()
-        if (monitoringLocationEnabledJob.get() != null) return // optimization to skip making a job
+    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
 
-        val job = Job(this.coroutineContext[Job])
-
-        if (monitoringLocationEnabledJob.compareAndSet(null, job)) {
-            locationEnabledMonitor.startMonitoring()
-            launch(job) {
-                locationEnabledMonitor.isEnabled.collect {
-                    checkSensorsEnabledChanged()
-                }
-            }
-        }
-    }
-
-    override fun stopMonitoringSensors() {
-        super.stopMonitoringSensors()
-        monitoringLocationEnabledJob.get()?.let {
-            locationEnabledMonitor.stopMonitoring()
-            if (monitoringLocationEnabledJob.compareAndSet(it, null))
-                it.cancel()
-        }
-    }
-
-    override suspend fun isPermitted(): Boolean {
-        return super.isPermitted() && locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
-    }
-
-    override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.isServiceEnabled
-
+    @SuppressLint("MissingPermission") // Lint complains even with permissions
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
-                bluetoothAdapter?.enable()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    EnableServiceActivity.showEnableServiceActivity(
+                        applicationContext,
+                        hashCode().toString(),
+                        Intent(ACTION_BLUETOOTH_SETTINGS)
+                    ).await()
+                } else {
+                    @Suppress("DEPRECATION")
+                    bluetoothAdapter?.enable()
+                }
                 bluetoothEnabledMonitor!!.isEnabled.first { it }
             } else null,
             if (!locationEnabledMonitor.isServiceEnabled) {
-                EnableLocationActivity.showEnableLocationActivity(applicationContext, hashCode().toString())::await
+                EnableServiceActivity.showEnableServiceActivity(
+                    applicationContext,
+                    hashCode().toString(),
+                    Intent(ACTION_LOCATION_SOURCE_SETTINGS)
+                )::await
             } else null
         )
     }
+
+    override fun pairedDevices(withServices: Set<UUID>) = when (
+        ActivityCompat.checkSelfPermission(
+            applicationContext,
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) Manifest.permission.BLUETOOTH_CONNECT else Manifest.permission.BLUETOOTH
+        )
+    ) {
+        PackageManager.PERMISSION_GRANTED -> {
+            bluetoothAdapter
+                ?.bondedDevices
+                ?.filter {
+                    // If no uuids available return this device
+                    // Otherwise check if it constains any of given service uuid
+                    it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+                }
+                ?.map { it.address }
+        }
+        else -> null
+    } ?: emptyList()
 }

@@ -17,40 +17,39 @@
 
 package com.splendo.kaluga.permissions.camera
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.av.AVPermissionHelper
-import com.splendo.kaluga.permissions.av.AVTypeCamera
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
+import kotlin.time.Duration
 
-actual class CameraPermissionManager(
-    private val bundle: NSBundle,
-    stateRepo: CameraPermissionStateRepo
-) : PermissionManager<CameraPermission>(stateRepo) {
+actual class DefaultCameraPermissionManager(
+    bundle: NSBundle,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(this))
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
+    private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), permissionHandler, coroutineScope)
 
-    override suspend fun requestPermission() {
+    override fun requestPermissionDidStart() {
         avPermissionHelper.requestPermission()
     }
 
-    override suspend fun initializeState(): PermissionState<CameraPermission> {
-        return avPermissionHelper.initializeState()
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
+    override fun monitoringDidStart(interval: Duration) {
         avPermissionHelper.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun monitoringDidStop() {
         avPermissionHelper.stopMonitoring()
     }
 }
 
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
-        return CameraPermissionManager(context, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
+        return DefaultCameraPermissionManager(context, settings, coroutineScope)
     }
 }

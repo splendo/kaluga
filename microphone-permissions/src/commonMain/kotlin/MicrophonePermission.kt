@@ -17,25 +17,30 @@
 
 package com.splendo.kaluga.permissions.microphone
 
-import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [MicrophonePermission]
  */
-expect class MicrophonePermissionManager : PermissionManager<MicrophonePermission>
+typealias MicrophonePermissionManager = PermissionManager<MicrophonePermission>
+expect class DefaultMicrophonePermissionManager : BasePermissionManager<MicrophonePermission>
 
-interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder {
+interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder<MicrophonePermission> {
 
     /**
      * Creates a [MicrophonePermissionManager]
-     * @param repo The [MicrophonePermissionStateRepo] associated with the [MicrophonePermission]
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission>
+    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): MicrophonePermissionManager
 }
 
 /**
@@ -48,7 +53,9 @@ expect class MicrophonePermissionManagerBuilder(context: PermissionContext = def
  * @param builder The [MicrophonePermissionManagerBuilder] for creating the [MicrophonePermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<MicrophonePermission>(coroutineContext = coroutineContext) {
-
-    override val permissionManager: PermissionManager<MicrophonePermission> = builder.create(this)
-}
+class MicrophonePermissionStateRepo(
+    builder: BaseMicrophonePermissionManagerBuilder,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+    coroutineContext: CoroutineContext
+) : PermissionStateRepo<MicrophonePermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

@@ -24,8 +24,8 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitor
 
 actual interface LocationMonitor : ServiceMonitor {
 
@@ -60,16 +60,14 @@ class DefaultLocationMonitor(
             LocationManagerCompat.isLocationEnabled(locationManager)
         }
 
-    override fun startMonitoring() {
-        super.startMonitoring()
+    override fun monitoringDidStart() {
         applicationContext.registerReceiver(
             locationAvailabilityBroadcastReceiver,
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
     }
 
-    override fun stopMonitoring() {
-        super.stopMonitoring()
+    override fun monitoringDidStop() {
         applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
     }
 }

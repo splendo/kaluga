@@ -22,15 +22,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PermissionsDemoListActivity : KalugaViewModelActivity<PermissionsListViewModel>(R.layout.activity_permissions_list) {
 
-    override val viewModel: PermissionsListViewModel by viewModel()
+    override val viewModel: PermissionsListViewModel by viewModel {
+        parametersOf(
+            ActivityNavigator<PermissionsListNavigationAction> {
+                NavigationSpec.Activity<PermissionsDemoActivity>()
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

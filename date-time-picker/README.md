@@ -62,10 +62,10 @@ Both methods for showing return the initial selectedDate passed through the buil
 
 ### Android
 On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
-For `BaseViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
+For `BaseLifecycleViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
 
 ```kotlin
-class DatePickerViewModel: ViewModel() {
+class DatePickerViewModel: LifecycleViewModel() {
 
     val builder = DateTimePickerPresenter.Builder()
     fun show() {

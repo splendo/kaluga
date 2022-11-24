@@ -1,0 +1,43 @@
+public class com/splendo/kaluga/test/keyboard/BaseMockFocusHandler {
+	public fun <init> ()V
+	protected final fun giveFocus ()V
+	public final fun isFocused ()Z
+	protected final fun removeFocus ()V
+}
+
+public final class com/splendo/kaluga/test/keyboard/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/test/keyboard/MockFocusHandler : com/splendo/kaluga/test/keyboard/BaseMockFocusHandler, com/splendo/kaluga/keyboard/FocusHandler {
+	public fun <init> ()V
+	public fun requestFocus (Landroid/app/Activity;)V
+	public final fun simulateGiveFocus ()V
+	public final fun simulateRemoveFocus ()V
+}
+
+public final class com/splendo/kaluga/test/keyboard/MockKeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getFocusHandler ()Lcom/splendo/kaluga/keyboard/FocusHandler;
+	public final fun getHideMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getShowMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun get_focusHandler ()Ljava/util/concurrent/atomic/AtomicReference;
+	public fun hide ()V
+	public fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
+}
+
+public final class com/splendo/kaluga/test/keyboard/MockKeyboardManager$Builder : com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
+	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/keyboard/MockKeyboardManager;
+	public final fun getBuiltKeyboardManagers ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+}
+

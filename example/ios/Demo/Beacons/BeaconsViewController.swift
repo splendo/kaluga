@@ -41,6 +41,10 @@ class BeaconsViewController: UICollectionViewController {
             service: KNBeaconsFramework().service
         )
 
+    deinit {
+        lifecycleManager.unbind()
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
 

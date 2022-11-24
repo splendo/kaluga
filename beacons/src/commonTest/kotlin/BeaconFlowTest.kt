@@ -18,10 +18,10 @@
 package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.test.SimpleFlowTest
+import com.splendo.kaluga.test.base.SimpleFlowTest
 import kotlinx.coroutines.CoroutineScope
 
-open class BeaconFlowTest(
+abstract class BeaconFlowTest(
     timeoutMs: Long = 3_000
 ) : SimpleFlowTest<Set<BeaconInfo>>() {
 
@@ -32,5 +32,5 @@ open class BeaconFlowTest(
 
     fun start(coroutineScope: CoroutineScope) = beacons.startMonitoring(coroutineScope)
     fun stop() = beacons.stopMonitoring()
-    suspend fun discoverDevices(vararg devices: Device) = bluetooth.devices.emit(devices.toList())
+    suspend fun discoverDevices(vararg devices: Device) = bluetooth.discoveredDevices.emit(devices.toList())
 }

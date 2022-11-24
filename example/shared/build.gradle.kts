@@ -29,15 +29,7 @@ kotlin {
                 api("com.splendo.kaluga:resources:$libraryVersion")
                 api("com.splendo.kaluga:review:$libraryVersion")
                 api("com.splendo.kaluga:system:$libraryVersion")
-                api("com.splendo.kaluga:base-permissions:$libraryVersion")
-                api("com.splendo.kaluga:location-permissions:$libraryVersion")
-                api("com.splendo.kaluga:bluetooth-permissions:$libraryVersion")
-                api("com.splendo.kaluga:camera-permissions:$libraryVersion")
-                api("com.splendo.kaluga:contacts-permissions:$libraryVersion")
-                api("com.splendo.kaluga:microphone-permissions:$libraryVersion")
-                api("com.splendo.kaluga:storage-permissions:$libraryVersion")
-                api("com.splendo.kaluga:notifications-permissions:$libraryVersion")
-                api("com.splendo.kaluga:calendar-permissions:$libraryVersion")
+                api("com.splendo.kaluga:permissions:$libraryVersion")
             }
         }
     }

@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.resources.stylable
 
-import com.splendo.kaluga.resources.Color
+import com.splendo.kaluga.resources.KalugaColor
 import kotlin.jvm.JvmName
 
 sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
-    data class ColorPoint(val color: Color, val offset: Float)
+    data class ColorPoint(val color: KalugaColor, val offset: Float)
     data class CenterPoint(val x: Float, val y: Float)
 
     class Linear private constructor (colorPoints: List<ColorPoint>, val orientation: Orientation) : GradientStyle(colorPoints) {
@@ -38,7 +38,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
 
         companion object {
             @JvmName("fromColors")
-            operator fun invoke(colors: List<Color>, orientation: Orientation = Orientation.LEFT_RIGHT) = Linear(colors.colorPoints, orientation)
+            operator fun invoke(colors: List<KalugaColor>, orientation: Orientation = Orientation.LEFT_RIGHT) = Linear(colors.colorPoints, orientation)
             @JvmName("fromColorPoints")
             operator fun invoke(colorPoints: List<ColorPoint>, orientation: Orientation = Orientation.LEFT_RIGHT) = Linear(colorPoints, orientation)
         }
@@ -51,7 +51,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
     ) : GradientStyle(colorPoints) {
         companion object {
             @JvmName("fromColors")
-            operator fun invoke(colors: List<Color>, radius: Float, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Radial(colors.colorPoints, radius, centerPoint)
+            operator fun invoke(colors: List<KalugaColor>, radius: Float, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Radial(colors.colorPoints, radius, centerPoint)
             @JvmName("fromColorPoints")
             operator fun invoke(colorPoints: List<ColorPoint>, radius: Float, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Radial(colorPoints, radius, centerPoint)
         }
@@ -63,14 +63,14 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
     ) : GradientStyle(colorPoints) {
         companion object {
             @JvmName("fromColors")
-            operator fun invoke(colors: List<Color>, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Angular(colors.colorPoints, centerPoint)
+            operator fun invoke(colors: List<KalugaColor>, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Angular(colors.colorPoints, centerPoint)
             @JvmName("fromColorPoints")
             operator fun invoke(colorPoints: List<ColorPoint>, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Angular(colorPoints, centerPoint)
         }
     }
 }
 
-val List<Color>.colorPoints: List<GradientStyle.ColorPoint> get() {
+val List<KalugaColor>.colorPoints: List<GradientStyle.ColorPoint> get() {
     if (size < 2) {
         throw Error("Gradient must have at least two colours")
     }

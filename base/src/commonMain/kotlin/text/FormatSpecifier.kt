@@ -344,6 +344,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             RegularFormatCharacter.HEXADECIMAL_FLOAT -> {
                 // TODO Support Hexadecimal floats
             }
+            else -> {}
         }
     }
 
@@ -450,6 +451,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     DateTime.CENTURY -> i /= 100
                     DateTime.YEAR_2 -> i %= 100
                     DateTime.YEAR_4 -> size = 4
+                    else -> {}
                 }
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = size, locale = locale))
@@ -818,6 +820,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             RegularFormatCharacter.GENERAL -> {
                 checkBadFlags(currentChar, Flag.ALTERNATE)
             }
+            else -> {}
         }
     }
 

@@ -20,13 +20,32 @@ package com.splendo.kaluga.example
 
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
+import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activity_example) {
 
-    override val viewModel: ExampleViewModel by viewModel()
+    override val viewModel: ExampleViewModel by viewModel {
+        parametersOf(
+            ActivityNavigator<ExampleTabNavigation> { action ->
+                when (action) {
+                    ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(
+                        R.id.example_fragment,
+                        createFragment = { FeaturesListFragment() }
+                    )
+                    ExampleTabNavigation.Info -> NavigationSpec.Fragment(
+                        R.id.example_fragment,
+                        createFragment = { InfoFragment() }
+                    )
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

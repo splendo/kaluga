@@ -17,32 +17,49 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class BluetoothDescriptorValueTest : BluetoothFlowTest<ByteArray?>() {
+class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, ByteArray?>() {
 
-    override val flow = suspend {
-        setup(Setup.DESCRIPTOR)
-        bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[descriptor.uuid].value()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext = { configuration, scope ->
+        DescriptorContext(configuration, scope)
+    }
+
+    override val flowFromTestContext: suspend DescriptorContext.() -> Flow<ByteArray?> = {
+        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid].value()
     }
 
     @Test
-    fun testGetDescriptorValue() = testWithFlow {
+    fun testGetDescriptorValue() = testWithFlowAndTestContext(
+        Configuration.DeviceWithDescriptor()
+    ) {
         val newValue = "Test".encodeToByteArray()
-
-        scanDevice(device, deviceWrapper)
-        bluetooth.startScanning()
-
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice()
+        }
         test {
             assertNull(it)
         }
-        action {
-            connectDevice(device)
-            connectionManager.discoverServicesCompleted.get().await()
-            discoverService(service, device)
+        mainAction {
+            connectDevice()
+            discoverService()
+            yieldMultiple(5)
             descriptor.writeValue(newValue)
+            yieldMultiple(2)
+            val captor = AnyOrNullCaptor<DeviceAction>()
+            connectionManager.performActionMock.verify(captor)
+            assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
+            connectionManager.handleCurrentAction()
         }
         test {
             assertTrue(newValue contentEquals it)

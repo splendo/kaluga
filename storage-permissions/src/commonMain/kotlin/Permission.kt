@@ -17,26 +17,44 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users device storage.
  * On iOS this corresponds to the Photos permission
  * @param allowWrite If `true` writing to the storage is permitted
  */
-data class StoragePermission(val allowWrite: Boolean = false) : Permission()
+data class StoragePermission(val allowWrite: Boolean = false) : Permission() {
+    override val name: String = "Storage - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
+}
 
-fun PermissionsBuilder.registerStoragePermission() =
-    registerStoragePermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(StoragePermission::class) { permission, coroutineContext ->
-            StoragePermissionStateRepo(permission as StoragePermission, builder as BaseStoragePermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerStoragePermission(
+    storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerStoragePermission(storagePermissionManagerBuilderBuilder) { storagePermission, baseStoragePermissionManagerBuilder, coroutineContext ->
+        StoragePermissionStateRepo(
+            storagePermission,
+            baseStoragePermissionManagerBuilder,
+            monitoringInterval,
+            settings,
+            coroutineContext
+        )
     }
 
-internal fun PermissionsBuilder.registerStoragePermissionBuilder(context: PermissionContext = defaultPermissionContext): StoragePermissionManagerBuilder = register(
-    builder = StoragePermissionManagerBuilder(context),
-    permission = StoragePermission::class
-)
+fun PermissionsBuilder.registerStoragePermission(
+    storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
+    storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>
+) = storagePermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<StoragePermission> { permission, coroutineContext ->
+        storagePermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

@@ -28,10 +28,6 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
@@ -46,7 +42,7 @@ kotlin {
 
         getByName("commonTest") {
             dependencies {
-                api(project(":test-utils", ""))
+                api(project(":test-utils-base", ""))
             }
         }
     }

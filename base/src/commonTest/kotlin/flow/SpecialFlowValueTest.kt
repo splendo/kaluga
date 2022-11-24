@@ -26,7 +26,7 @@ import com.splendo.kaluga.base.flow.collectImportant
 import com.splendo.kaluga.base.flow.collectImportantUntilLast
 import com.splendo.kaluga.base.flow.collectUntilLast
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList

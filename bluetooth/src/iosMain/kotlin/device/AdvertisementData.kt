@@ -49,5 +49,5 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
         ?.toMap() ?: emptyMap()
     override val txPowerLevel: Int get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
 
-    override val isConnectible: Boolean get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
+    override val isConnectable: Boolean get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
 }

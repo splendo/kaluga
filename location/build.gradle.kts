@@ -24,13 +24,11 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":location-permissions", ""))
-                implementation(project(":logging", ""))
-                implementation(project(":base", ""))
             }
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils-location", ""))
             }
         }
     }

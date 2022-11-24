@@ -17,15 +17,11 @@
 
 package com.splendo.kaluga.resources
 
+import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
-import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.nativeHeap
-import kotlinx.cinterop.ptr
-import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
@@ -33,29 +29,26 @@ import platform.Foundation.NSAttributedString
 import platform.Foundation.NSAttributedStringKey
 import platform.Foundation.NSMakeRange
 import platform.Foundation.NSMutableAttributedString
-import platform.Foundation.NSNotFound
 import platform.Foundation.NSRange
 import platform.Foundation.NSURL
 import platform.Foundation.addAttribute
-import platform.Foundation.attribute
 import platform.Foundation.create
+import platform.Foundation.enumerateAttribute
 import platform.Foundation.length
 import platform.Foundation.removeAttribute
 import platform.UIKit.NSMutableParagraphStyle
 import platform.UIKit.NSParagraphStyle
 import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
-import platform.darwin.NSUInteger
-import kotlin.math.max
 
-actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: TextStyle)
+actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: TextStyle, actual val linkStyle: LinkStyle?)
 
 actual val StyledString.rawString: String get() = attributeString.string
 
-actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: TextStyle) {
+actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: TextStyle, private val linkStyle: LinkStyle?) {
 
     actual class Provider {
-        actual fun provide(string: String, defaultTextStyle: TextStyle) = StyledStringBuilder(string, defaultTextStyle)
+        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
     }
 
     private val attributedString = NSMutableAttributedString.Companion.create(string)
@@ -73,7 +66,7 @@ actual class StyledStringBuilder constructor(string: String, private val default
                 }
             }
             is StringStyleAttribute.ParagraphStyleAttribute -> {
-                attribute.updateParagraphAttribute(nsRange)
+                attribute.updateParagraphAttribute(range, defaultTextStyle.alignment)
             }
             is StringStyleAttribute.Link -> {
                 NSURL.Companion.URLWithString(attribute.url)?.let {
@@ -115,89 +108,76 @@ actual class StyledStringBuilder constructor(string: String, private val default
         )
     }
 
-    private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: CValue<NSRange>) {
-        var rangeToProcess = range
-        while (rangeToProcess.useContents { length } > 0UL && rangeToProcess.range.last <= range.range.last) {
-            memScoped {
-                val location = rangeToProcess.useContents { location }
-                val matchedRange = nativeHeap.alloc<NSRange>()
-                val paragraphStyle = NSMutableParagraphStyle().apply {
-                    setParagraphStyle(
-                        attributedString.attribute(
-                            "NSParagraphStyle",
-                            location,
-                            matchedRange.ptr,
-                            rangeToProcess
-                        ) as? NSParagraphStyle ?: NSParagraphStyle.defaultParagraphStyle
-                    )
-                }
+    private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: IntRange, defaultAlignment: TextAlignment) {
+        // First search for all existing paragraph attributes within range
+        val rangesWithParagraphStyle = mutableListOf<Pair<IntRange, NSParagraphStyle>>()
+        attributedString.enumerateAttribute("NSParagraphStyle", (0 until attributedString.string.length).nsRange, 0) { match, matchedNSRange, _ ->
+            val matchedRange = matchedNSRange.range
+            if (matchedRange.any { range.contains(it) } && match is NSParagraphStyle) {
+                rangesWithParagraphStyle.add(maxOf(matchedRange.first, range.first)..minOf(matchedRange.last, range.last) to match)
+            }
+        }
 
-                attributedString.removeAttribute("NSParagraphStyle", matchedRange.readValue())
+        val startOfBridgingRange: (List<Pair<IntRange, *>>) -> Int = { list -> list.lastOrNull()?.first?.endInclusive?.let { it + 1 } ?: range.first }
+        val createEmptyParagraphStyle: () -> NSMutableParagraphStyle = {
+            NSMutableParagraphStyle().apply {
+                setParagraphStyle(NSParagraphStyle.defaultParagraphStyle)
+                setAlignment(defaultAlignment.nsTextAlignment)
+            }
+        }
 
-                when (this@updateParagraphAttribute) {
-                    is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> {
-                        paragraphStyle.setHeadIndent(indent.toDouble() as CGFloat)
-                        paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble() as CGFloat)
-                    }
-                    is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> {
-                        paragraphStyle.setLineSpacing(spacing.toDouble() as CGFloat)
-                        paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble() as CGFloat)
-                        paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble() as CGFloat)
-                    }
-                    is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> {
-                        paragraphStyle.setAlignment(alignment.nsTextAlignment)
-                    }
+        // Remove existing paragraph styles and fill in the blanks
+        val rangesToUpdate = rangesWithParagraphStyle.fold(emptyList<Pair<IntRange, NSMutableParagraphStyle>>()) { acc, (existingRange, existingStyle) ->
+            // Remove attribute to be overwritten
+            attributedString.removeAttribute("NSParagraphStyle", existingRange.nsRange)
+            val bridgingRange = startOfBridgingRange(acc) until existingRange.first
+            val accWithBridging = if (!bridgingRange.isEmpty()) {
+                acc + (bridgingRange to createEmptyParagraphStyle())
+            } else {
+                acc
+            }
+
+            val mutableParagraphStyle = NSMutableParagraphStyle().apply {
+                setParagraphStyle(existingStyle)
+            }
+            accWithBridging + (existingRange to mutableParagraphStyle)
+        }.let { rangesWithoutEnd ->
+            // Dont forget to add the bridging until the end
+            val lastRange = startOfBridgingRange(rangesWithoutEnd)..range.last
+            if (!lastRange.isEmpty()) {
+                rangesWithoutEnd + (lastRange to createEmptyParagraphStyle())
+            } else {
+                rangesWithoutEnd
+            }
+        }
+
+        rangesToUpdate.forEach { (range, paragraphStyle) ->
+            when (this) {
+                is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> {
+                    paragraphStyle.setHeadIndent(indent.toDouble() as CGFloat)
+                    paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble() as CGFloat)
                 }
-                attributedString.addAttribute("NSParagraphStyle", paragraphStyle, matchedRange.readValue())
-                rangeToProcess = if (matchedRange.location != NSNotFound.toULong() as NSUInteger) {
-                    val nextStart = matchedRange.location + matchedRange.length
-                    NSMakeRange(
-                        nextStart.convert(),
-                        max(
-                            0L,
-                            range.useContents { this.length.toLong() } - nextStart.toLong()
-                        ).convert()
-                    )
-                } else {
-                    NSMakeRange((range.range.last + 1).convert(), 0)
+                is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> {
+                    paragraphStyle.setLineSpacing(spacing.toDouble() as CGFloat)
+                    paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble() as CGFloat)
+                    paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble() as CGFloat)
+                }
+                is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> {
+                    paragraphStyle.setAlignment(alignment.nsTextAlignment)
                 }
             }
+            attributedString.addAttribute("NSParagraphStyle", paragraphStyle, range.nsRange)
         }
     }
 
-    actual fun create(): StyledString = StyledString(attributedString, defaultTextStyle)
+    actual fun create(): StyledString = StyledString(attributedString, defaultTextStyle, linkStyle)
 }
 
-val NSAttributedString.urlRanges: List<Pair<NSRange, NSURL>> get() {
-    val range = IntRange(0, length.toInt() - 1).nsRange
-    var rangeToProcess = range
-    val result = mutableListOf<Pair<NSRange, NSURL>>()
-    while (rangeToProcess.useContents { length } > 0UL && rangeToProcess.range.last <= range.range.last) {
-        memScoped {
-            val location = rangeToProcess.useContents { location }
-            val matchedRange = nativeHeap.alloc<NSRange>()
-            val url = attribute(
-                "NSLink",
-                location,
-                matchedRange.ptr,
-                rangeToProcess
-            ) as? NSURL
-            url?.let {
-                result.add(Pair(matchedRange, it))
-            }
-
-            rangeToProcess = if (matchedRange.location != NSNotFound.toULong() as NSUInteger) {
-                val nextStart = matchedRange.location + matchedRange.length
-                NSMakeRange(
-                    nextStart.convert(),
-                    max(
-                        0L,
-                        range.useContents { this.length.toLong() } - nextStart.toLong()
-                    ).convert()
-                )
-            } else {
-                NSMakeRange((range.range.last + 1).convert(), 0)
-            }
+val NSAttributedString.urlRanges: List<Pair<CValue<NSRange>, NSURL>> get() {
+    val result = mutableListOf<Pair<CValue<NSRange>, NSURL>>()
+    enumerateAttribute("NSLink", IntRange(0, length.toInt() - 1).nsRange, 0) { match, matchedRange, _ ->
+        if (match is NSURL) {
+            result.add(matchedRange to match)
         }
     }
     return result

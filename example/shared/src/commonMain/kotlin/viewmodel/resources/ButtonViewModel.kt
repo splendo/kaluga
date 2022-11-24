@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.shared.viewmodel.resources
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 class ButtonViewModel(
     styledStringBuilderProvider: StyledStringBuilder.Provider,
     val alertPresenterBuilder: AlertPresenter.Builder
-) : BaseViewModel() {
+) : BaseLifecycleViewModel() {
 
     val buttons = observableOf(
         listOf(

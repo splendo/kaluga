@@ -18,14 +18,24 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: DeviceStateFlowRepo) : Flow<ByteArray?> {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
+    initialValue: ByteArray? = null,
+    private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    private val parentLogTag: String,
+    private val logger: Logger
+) : Flow<ByteArray?> {
+
+    protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
+
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =
@@ -34,7 +44,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     // TODO make configurable
     private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
 
-    suspend fun readValue(): DeviceAction {
+    fun readValue(): DeviceAction {
         val action = createReadAction()
         addAction(action)
         return action
@@ -42,40 +52,24 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     internal abstract fun createReadAction(): R
 
-    suspend fun writeValue(newValue: ByteArray?): DeviceAction {
+    fun writeValue(newValue: ByteArray): DeviceAction {
         val action = createWriteAction(newValue)
         addAction(action)
         return action
     }
 
-    internal abstract fun createWriteAction(newValue: ByteArray?): W
+    internal abstract fun createWriteAction(newValue: ByteArray): W
 
-    open suspend fun updateValue() {
+    open fun updateValue() {
         val nextValue = getUpdatedValue()
-        sharedFlow.emit(nextValue)
+        logger.debug(logTag) { "Updated value to $nextValue" }
+        sharedFlow.tryEmit(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?
 
-    protected suspend fun addAction(action: DeviceAction) {
-        stateRepo.takeAndChangeState { state ->
-            when (state) {
-                is DeviceState.Connected.Idle -> {
-                    state.handleAction(action)
-                }
-                is DeviceState.Connected.HandlingAction -> {
-                    state.addAction(action)
-                }
-                is DeviceState.Connected.NoServices,
-                is DeviceState.Connected.Discovering,
-                is DeviceState.Connecting,
-                is DeviceState.Reconnecting,
-                is DeviceState.Disconnected,
-                is DeviceState.Disconnecting,
-                -> {
-                    state.remain() // TODO consider an optional buffer
-                }
-            }
-        }
+    protected fun addAction(action: DeviceAction) {
+        logger.info(logTag) { "Add action $action" }
+        emitNewAction(DeviceConnectionManager.Event.AddAction(action))
     }
 }

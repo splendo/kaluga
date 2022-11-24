@@ -17,22 +17,37 @@
 
 package com.splendo.kaluga.permissions.notifications
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.Permission
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Permission to access the users Notifications.
  * @param options The [NotificationOptions] determining the type of notifications that can be accessed
  */
-data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
+data class NotificationsPermission(val options: NotificationOptions? = null) : Permission() {
+    override val name: String = "Notifications - ${options?.toString().orEmpty().ifEmpty { "Without Options" }}"
+}
 
-fun PermissionsBuilder.registerNotificationsPermission() =
-    registerNotificationsPermissionBuilder(context).also { builder ->
-        registerPermissionStateRepoBuilder(NotificationsPermission::class) { permission, coroutineContext ->
-            NotificationsPermissionStateRepo(permission as NotificationsPermission, builder as BaseNotificationsPermissionManagerBuilder, coroutineContext)
-        }
+fun PermissionsBuilder.registerNotificationsPermission(
+    notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
-internal fun PermissionsBuilder.registerNotificationsPermissionBuilder(context: PermissionContext = defaultPermissionContext): NotificationsPermissionManagerBuilder = register(builder = NotificationsPermissionManagerBuilder(context), permission = NotificationsPermission::class)
+fun PermissionsBuilder.registerNotificationsPermission(
+    notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
+    notificationsPermissionStateRepoBuilder: (NotificationsPermission, BaseNotificationsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<NotificationsPermission>
+) = notificationsPermissionManagerBuilderBuilder(context).also {
+    register(it)
+    registerPermissionStateRepoBuilder<NotificationsPermission> { permission, coroutineContext ->
+        notificationsPermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

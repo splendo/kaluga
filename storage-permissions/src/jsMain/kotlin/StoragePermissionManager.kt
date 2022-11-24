@@ -17,32 +17,30 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class StoragePermissionManager(actual val storage: StoragePermission, repo: StoragePermissionStateRepo) : PermissionManager<StoragePermission>(repo) {
+actual class DefaultStoragePermissionManager(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    override suspend fun requestPermission() {
-        TODO("not implemented")
+    override fun requestPermissionDidStart() {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
-        TODO("not implemented")
+    override fun monitoringDidStart(interval: Duration) {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
-    }
-
-    override suspend fun stopMonitoring() {
-        TODO("not implemented")
+    override fun monitoringDidStop() {
+        TODO("Not yet implemented")
     }
 }
 
 actual class StoragePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(storage, repo)
+    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<StoragePermission> {
+        return DefaultStoragePermissionManager(storagePermission, settings, coroutineScope)
     }
 }

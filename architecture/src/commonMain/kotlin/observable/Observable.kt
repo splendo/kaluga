@@ -22,6 +22,7 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
+import com.splendo.kaluga.base.KalugaThread
 import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
@@ -221,14 +222,24 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
 
     private val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
 
+    /**
+     *  set the value of this Observable from a suspended context.
+     */
+    suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> =
+        // this avoids unneeded freezing that sometimes occurs in the runtime anyway
+        if (isOnMainThread) {
+            setValueUnconfined(value)
+        } else withContext(Dispatchers.Main) {
+            setValueUnconfined(value)
+        }
+
     @Suppress("UNUSED_VALUE", "UNCHECKED_CAST") // should always downcast as R extends T
     /**
-     * Normally you set a value assigning [observedValue],
-     * however if you are sure you are in [Dispatchers.Main] this method can be called directly
+     * Used internally to set the [observedValue]. Make sure you are in [Dispatchers.Main] or the main thread
      *
      * @param value the new value that will be observed
      */
-    fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
+    private fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
         val v = value.asResult(defaultValue)
         val before = backingAtomicReference.get() ?: backingInternalValue
 
@@ -313,7 +324,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     override val currentOrNull: R?
         get() = currentObserved.valueOrNull
 
-    private fun <T> handleOnMain(block: () -> T): T = if (isOnMainThread) {
+    private fun <T> handleOnMain(block: () -> T): T = if (KalugaThread.currentThread.isMainThread) {
         block()
     } else {
         runBlocking(Dispatchers.Main) {
@@ -398,6 +409,15 @@ interface DefaultSubject<R : T?, T> :
     MutableDefaultInitialized<R, T?>
 
 expect interface WithState<T> {
+    /**
+     * Stateflow that expresses the content from the observable.
+     *
+     * This can be initialized lazily.
+     *
+     * Accessing this from property outside the main thread might cause a race condition,
+     * since observing the initial value needed for the stateflow has to happen on the main thread.
+     *
+     */
     val stateFlow: StateFlow<T>
     val valueDelegate: ReadOnlyProperty<Any?, T>
 }
@@ -472,12 +492,12 @@ abstract class BaseDefaultObservable<R : T?, T>(
  */
 abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
-    private val stateFlowToBind: () -> StateFlow<R?>
+    private val stateFlowToBind: suspend () -> StateFlow<R?>
 ) :
     BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
     final override fun bind(coroutineScope: CoroutineScope) =
-        bind(coroutineScope, Dispatchers.Main.immediate)
+        bind(coroutineScope, coroutineScope.coroutineContext)
 
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
@@ -488,7 +508,7 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
 
 expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>
 ) :
     AbstractBaseSubject<R, T, OO>
 
@@ -496,7 +516,12 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
 abstract class AbstractBaseInitializedSubject<T>(override val observation: ObservationInitialized<T>) :
     BaseSubject<T, T, Value<T>>(
         observation,
-        { observation.stateFlow }
+        suspend {
+            // switch context to Main since value observations for observable also happen on that thread
+            withContext(Dispatchers.Main.immediate) {
+                observation.stateFlow
+            }
+        }
     ),
     InitializedSubject<T>,
     MutableInitialized<T, T> by observation {
@@ -561,8 +586,8 @@ class SimpleInitializedSubject<T>(
         initialValue: Value<T>
     ) : this(ObservationInitialized(initialValue))
 
-    override suspend fun set(newValue: T): Unit = withContext(Dispatchers.Main.immediate) {
-        observation.setValueUnconfined(Value(newValue))
+    override suspend fun set(newValue: T) {
+        observation.setValue(Value(newValue))
     }
 
     override fun post(newValue: T) {
@@ -583,8 +608,8 @@ class SimpleDefaultSubject<R : T?, T>(
         observation.observedValue = Value(newValue)
     }
 
-    override suspend fun set(newValue: T?) = withContext<Unit>(Dispatchers.Main.immediate) {
-        observation.setValueUnconfined(Value(newValue))
+    override suspend fun set(newValue: T?) {
+        observation.setValue(Value(newValue))
     }
 }
 

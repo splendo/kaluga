@@ -21,7 +21,7 @@ import android.app.Activity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.BaseTest
+import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect

@@ -12,6 +12,9 @@ apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
+dependencies {
+    implementation(project(mapOf("path" to ":base")))
+}
 
 kotlin {
 
@@ -27,7 +30,7 @@ kotlin {
 
         commonTest {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
     }

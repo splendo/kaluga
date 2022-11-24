@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.location
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.location
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class LocationViewModel(permission: LocationPermission, repoBuilder: LocationStateRepoBuilder) : BaseViewModel() {
+class LocationViewModel(permission: LocationPermission, repoBuilder: LocationStateRepoBuilder) : BaseLifecycleViewModel() {
 
     private val locationStateRepo = repoBuilder.create(permission)
 
@@ -38,7 +38,7 @@ class LocationViewModel(permission: LocationPermission, repoBuilder: LocationSta
 
     override fun onResume(scope: CoroutineScope) {
         scope.launch {
-            locationStateRepo.flow().location().map { location ->
+            locationStateRepo.location().map { location ->
                 when (location) {
                     is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
                     is Location.UnknownLocation -> {

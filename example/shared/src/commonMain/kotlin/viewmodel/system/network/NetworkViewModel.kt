@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.system.network
 
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.system.network.Network
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.network
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 class NetworkViewModel(
     networkStateRepoBuilder: NetworkStateRepoBuilder
-) : BaseViewModel() {
+) : BaseLifecycleViewModel() {
 
     private val networkRepo = networkStateRepoBuilder.create()
 
@@ -40,7 +40,7 @@ class NetworkViewModel(
         super.onResume(scope)
 
         scope.launch {
-            networkRepo.flow().network().collect {
+            networkRepo.network().collect {
                 when (it) {
                     is Network.Unknown.WithoutLastNetwork ->
                         _networkState.value =

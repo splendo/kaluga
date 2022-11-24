@@ -31,26 +31,18 @@ actual interface CharacteristicWrapper {
     actual val properties: Int
     var writeType: Int
 
-    fun setValue(newValue: String): Boolean
-    fun setValue(newValue: ByteArray?): Boolean
-    fun setValue(mantissa: Int, exponent: Int, formatType: Int, offset: Int): Boolean
     fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper?
-
-    fun floatValue(formatType: Int, offset: Int): Float
-    fun intValue(formatType: Int, offset: Int): Int
 }
 
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
 
     override val uuid: java.util.UUID
         get() { return gattCharacteristic.uuid }
-    override val value: ByteArray?
-        get() {
-            return gattCharacteristic.value
-        }
+    override var value: ByteArray? = null
+        private set
 
     override fun updateValue(value: ByteArray?) {
-        gattCharacteristic.value = value
+        this.value = value
     }
 
     override val service: ServiceWrapper
@@ -65,27 +57,7 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
         get() { return gattCharacteristic.writeType }
         set(value) { gattCharacteristic.writeType = value }
 
-    override fun setValue(newValue: String): Boolean {
-        return gattCharacteristic.setValue(newValue)
-    }
-
-    override fun setValue(newValue: ByteArray?): Boolean {
-        return gattCharacteristic.setValue(newValue)
-    }
-
-    override fun setValue(mantissa: Int, exponent: Int, formatType: Int, offset: Int): Boolean {
-        return gattCharacteristic.setValue(mantissa, exponent, formatType, offset)
-    }
-
     override fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper? {
         return gattCharacteristic.getDescriptor(uuid)?.let { DefaultDescriptorWrapper(it) }
-    }
-
-    override fun floatValue(formatType: Int, offset: Int): Float {
-        return gattCharacteristic.getFloatValue(formatType, offset)
-    }
-
-    override fun intValue(formatType: Int, offset: Int): Int {
-        return gattCharacteristic.getIntValue(formatType, offset)
     }
 }

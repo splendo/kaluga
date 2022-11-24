@@ -17,45 +17,53 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothDistanceTest : BluetoothFlowTest<Double>() {
+class BluetoothDistanceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Double>() {
 
-    override val flow = suspend {
-        advertisementData = MockAdvertisementData(txPowerLevel = -50)
-        rssi = -50
-        setup(Setup.DEVICE)
-        bluetooth.devices()[device.identifier].distance()
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
+        DeviceContext(configuration, scope)
     }
 
+    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Double> = { bluetooth.devices()[device.identifier].distance() }
+
     @Test
-    fun testDistance() = testWithFlow {
-        scanDevice(rssi = -50)
-        bluetooth.startScanning()
+    fun testDistance() = testWithFlowAndTestContext(
+        Configuration.DeviceWithoutService(
+            rssi = -50,
+            advertisementData = MockAdvertisementData(txPowerLevel = -50)
+        )
+    ) {
+        mainAction {
+            bluetooth.startScanning()
+            scanDevice(rssi = -50)
+        }
         test {
             assertEquals(1.0, it)
         }
-        action {
+        mainAction {
             scanDevice(rssi = -70)
         }
         test {
             assertEquals(5.5, it)
         }
-        action {
+        mainAction {
             scanDevice(rssi = -50)
         }
         test {
             assertEquals(4.0, it)
         }
-        action {
+        mainAction {
             scanDevice(rssi = -30)
         }
         test {
             assertEquals(3.025, it)
         }
-        action {
+        mainAction {
             scanDevice(rssi = -30)
         }
 
@@ -65,15 +73,11 @@ class BluetoothDistanceTest : BluetoothFlowTest<Double>() {
         //     assertEquals(2.44, it)
         // }
 
-        action {
+        mainAction {
             scanDevice(rssi = -70)
         }
         test {
             assertEquals(4.42, it)
         }
-
-        resetFlow()
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
     }
 }

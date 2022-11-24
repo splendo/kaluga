@@ -45,6 +45,10 @@ class ColorViewController : UIViewController {
     
     private lazy var viewModel: ColorViewModel = KNArchitectureFramework().createColorViewModel(parent: self)
     private var lifecycleManager: LifecycleManager!
+
+    deinit {
+        lifecycleManager.unbind()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -28,6 +28,7 @@ import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.utc
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -91,6 +92,7 @@ class DateFormatterTest {
     }
 
     @Test
+    @Ignore // android emulator 23 does not correctly format the french locale
     fun testTimeFormat() {
         val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, TimeZone.utc, UnitedStatesLocale)
         val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, TimeZone.utc, FranceLocale)

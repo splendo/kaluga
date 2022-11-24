@@ -19,8 +19,8 @@ package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.assertFrozen
-import com.splendo.kaluga.test.assertNotFrozen
+import com.splendo.kaluga.test.base.assertFrozen
+import com.splendo.kaluga.test.base.assertNotFrozen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.test.Test

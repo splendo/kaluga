@@ -15,142 +15,132 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.permissions.PermissionState.Denied.Requestable
-import com.splendo.kaluga.test.FlowTest
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import com.splendo.kaluga.permissions.base.PermissionState.Allowed
+import com.splendo.kaluga.permissions.base.PermissionState.Denied.Locked
+import com.splendo.kaluga.permissions.base.PermissionState.Denied.Requestable
+import com.splendo.kaluga.test.base.BaseFlowTest
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.permissions.DummyPermission
+import com.splendo.kaluga.test.permissions.MockPermissionManager
+import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertIs
 
-class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermissionStateRepo>() {
+class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPermission>, PermissionStateTest.Context, PermissionState<DummyPermission>, PermissionStateRepo<DummyPermission>>() {
+
+    class Context(
+        val builder: MockPermissionManager.Builder<DummyPermission>,
+        coroutineScope: CoroutineScope
+    ) : TestContext {
+        val permissionStateRepo = MockPermissionStateRepo(builder = builder, coroutineContext = coroutineScope.coroutineContext)
+        val permissionManager get() = builder.createdManagers.first()
+    }
+
     override val filter: (Flow<PermissionState<DummyPermission>>) -> (Flow<PermissionState<DummyPermission>>) = {
         it.filterOnlyImportant()
     }
 
-    override val flow = suspend { MockPermissionStateRepo() }
+    override val createTestContextWithConfiguration: suspend (configuration: MockPermissionManager.Builder<DummyPermission>, scope: CoroutineScope) -> Context = { configuration, scope -> Context(configuration, scope) }
+    override val flowFromTestContext: suspend Context.() -> MockPermissionStateRepo<DummyPermission> = { permissionStateRepo }
 
     @Test
-    fun testInitialState() = testWithFlow { permissionStateRepo ->
-
-        assertFalse(permissionStateRepo.permissionManager.hasStartedMonitoring.isCompleted)
-        assertFalse(permissionStateRepo.permissionManager.hasStoppedMonitoring.isCompleted)
-
+    fun testInitialState() = testWithFlowAndTestContext(
+        MockPermissionManager.Builder(DummyPermission)
+    ) {
         test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionStateRepo.permissionManager.hasStartedMonitoring.getCompleted())
-            assertTrue(it is Requestable)
-        }
-        permissionStateRepo.permissionManager.hasStartedMonitoring.await()
-        delay(50) // / wait for init and de-init
-        resetFlow()
-        permissionStateRepo.permissionManager.hasStoppedMonitoring.await()
-    }
-
-    @Test
-    fun testRequestPermission() = testWithFlow { permissionStateRepo ->
-        val denied: CompletableDeferred<Requestable<DummyPermission>> = CompletableDeferred()
-        test {
-            assertTrue(it is Requestable)
-            denied.complete(it)
+            permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
+            assertIs<Requestable<DummyPermission>>(it)
         }
         action {
-            denied.await().request(permissionStateRepo.permissionManager)
-            assertTrue(permissionStateRepo.permissionManager.hasRequestedPermission.isCompleted)
-            permissionStateRepo.takeAndChangeState { state ->
-                when (state) {
-                    is PermissionState.Denied -> state.allow
-                    else -> state.remain()
-                }
-            }
+            resetFlow()
         }
-        test {
-            assertTrue(it is PermissionState.Allowed)
+        mainAction {
+            yieldMultiple(10)
+            permissionManager.monitoringDidStopMock.verify()
         }
     }
 
     @Test
-    fun testPermissionDenied() = testWithFlow { permissionStateRepo ->
-        permissionStateRepo.permissionManager.initialState = PermissionState.Allowed()
-
+    fun testRequestPermission() = testWithFlowAndTestContext(
+        MockPermissionManager.Builder(DummyPermission)
+    ) {
         test {
-            assertTrue(it is PermissionState.Allowed<DummyPermission>)
+            permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
+            assertIs<Requestable<DummyPermission>>(it)
+        }
+        mainAction {
+            permissionManager.requestPermissionDidStartMock.on().doExecute { permissionManager.grantPermission() }
+            permissionStateRepo.request()
+        }
+        test {
+            assertIs<Allowed<DummyPermission>>(it)
         }
         action {
-            permissionStateRepo.takeAndChangeState { state ->
-                when (state) {
-                    is PermissionState.Allowed -> suspend { state.deny(true) }
-                    else -> state.remain()
-                }
-            }
+            resetFlow()
+        }
+        mainAction {
+            yieldMultiple(10)
+            permissionManager.monitoringDidStopMock.verify()
+        }
+    }
+
+    @Test
+    fun testRequestPermissionDenied() = testWithFlowAndTestContext(
+        MockPermissionManager.Builder(DummyPermission)
+    ) {
+        test {
+            assertIs<Requestable<DummyPermission>>(it)
+        }
+        mainAction {
+            permissionManager.requestPermissionDidStartMock.on().doExecute { permissionManager.revokePermission(true) }
+            permissionStateRepo.request()
         }
         test {
-            assertTrue(it is PermissionState.Denied.Locked)
+            assertIs<Locked<DummyPermission>>(it)
+        }
+        action {
+            resetFlow()
+        }
+        mainAction {
+            yieldMultiple(10)
+            permissionManager.monitoringDidStopMock.verify()
         }
     }
 
     @Test
-    fun testRequestFromFlow() = testWithFlow { permissionStateRepo ->
-
-        val hasRequested = CompletableDeferred<Boolean>()
-        launch(Dispatchers.Main) {
-            hasRequested.complete(permissionStateRepo.request(permissionStateRepo.permissionManager))
+    fun testRevokePermission() = testWithFlowAndTestContext(
+        MockPermissionManager.Builder(DummyPermission)
+    ) {
+        test {
+            permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
+            assertIs<Requestable<DummyPermission>>(it)
         }
-        launch {
-            permissionStateRepo.permissionManager.hasRequestedPermission.await()
-            permissionStateRepo.permissionManager.grantPermission()
+        mainAction {
+            permissionManager.grantPermission()
         }
-        assertTrue(hasRequested.await())
-    }
-
-    @Test
-    fun testRequestDeniedFromFlow() = testWithFlow { permissionStateRepo ->
-        val hasRequested = CompletableDeferred<Boolean>()
-        launch {
-            hasRequested.complete(permissionStateRepo.request(permissionStateRepo.permissionManager))
+        test {
+            assertIs<Allowed<DummyPermission>>(it)
         }
-        launch {
-            permissionStateRepo.permissionManager.hasRequestedPermission.await()
-            permissionStateRepo.permissionManager.revokePermission(true)
+        mainAction {
+            permissionManager.revokePermission(true)
         }
-        assertFalse(hasRequested.await())
-    }
-}
-
-class MockPermissionStateRepo : PermissionStateRepo<DummyPermission>() {
-
-    override val permissionManager = MockPermissionManager(this)
-}
-
-class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<DummyPermission>(mockPermissionRepo) {
-
-    var initialState: PermissionState<DummyPermission> = Requestable()
-
-    val hasRequestedPermission = EmptyCompletableDeferred()
-    val hasStartedMonitoring = CompletableDeferred<Long>()
-    val hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    override suspend fun requestPermission() {
-        hasRequestedPermission.complete()
-    }
-
-    override suspend fun initializeState(): PermissionState<DummyPermission> {
-        return initialState
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        hasStartedMonitoring.complete(interval)
-    }
-
-    override suspend fun stopMonitoring() {
-        hasStoppedMonitoring.complete()
+        test {
+            assertIs<Locked<DummyPermission>>(it)
+        }
+        action {
+            resetFlow()
+        }
+        mainAction {
+            yieldMultiple(10)
+            permissionManager.monitoringDidStopMock.verify()
+        }
     }
 }

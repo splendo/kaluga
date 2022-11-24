@@ -45,4 +45,5 @@ dependencies {
     implementation("androidx.compose.material:material:" + ext["androidx_compose_version"])
     implementation("androidx.compose.ui:ui:" + ext["androidx_compose_version"])
     implementation("androidx.compose.ui:ui-tooling:" + ext["androidx_compose_version"])
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${ext["kotlinx_coroutines_version"]}!!")
 }

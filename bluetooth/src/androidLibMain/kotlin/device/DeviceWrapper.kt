@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
@@ -28,10 +29,12 @@ actual interface DeviceWrapper {
     val bondState: Int
     fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper
     fun removeBond()
+    fun createBond()
 
     val device: BluetoothDevice
 }
 
+@SuppressLint("MissingPermission")
 class DefaultDeviceWrapper(override val device: BluetoothDevice) : DeviceWrapper {
 
     override val name: String?
@@ -53,6 +56,13 @@ class DefaultDeviceWrapper(override val device: BluetoothDevice) : DeviceWrapper
     override fun removeBond() {
         try {
             device.javaClass.getMethod("removeBond").invoke(device)
+        } catch (localException: Exception) {
+        }
+    }
+
+    override fun createBond() {
+        try {
+            device.createBond()
         } catch (localException: Exception) {
         }
     }

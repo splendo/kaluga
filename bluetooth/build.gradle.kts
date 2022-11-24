@@ -20,23 +20,17 @@ dependencies {
 }
 
 kotlin {
-    js {
-        nodejs()
-    }
-
     sourceSets {
         commonMain {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
                 api(project(":bluetooth-permissions", ""))
-                implementation(project(":logging", ""))
-                implementation(project(":base", ""))
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils-bluetooth", ""))
             }
         }
     }

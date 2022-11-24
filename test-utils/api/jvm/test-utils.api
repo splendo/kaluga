@@ -1,0 +1,70 @@
+public abstract class com/splendo/kaluga/test/BaseFlowTest : com/splendo/kaluga/test/base/BaseFlowTest {
+	public fun <init> ()V
+	public final fun testWithFlowAndTestContext (ZZLkotlin/jvm/functions/Function3;)V
+	public static synthetic fun testWithFlowAndTestContext$default (Lcom/splendo/kaluga/test/BaseFlowTest;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
+}
+
+public abstract class com/splendo/kaluga/test/KoinFlowTest : com/splendo/kaluga/test/koin/BaseKoinFlowTest {
+	public fun <init> ()V
+	public abstract fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+	public fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
+}
+
+public abstract class com/splendo/kaluga/test/KoinUIThreadTest : com/splendo/kaluga/test/koin/KoinUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public class com/splendo/kaluga/test/KoinUIThreadTest$KoinTestContext : com/splendo/kaluga/test/koin/KoinUIThreadTest$KoinTestContext {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract class com/splendo/kaluga/test/KoinUIThreadViewModelTest : com/splendo/kaluga/test/KoinUIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract class com/splendo/kaluga/test/KoinUIThreadViewModelTest$KoinViewModelTestContext : com/splendo/kaluga/test/KoinUIThreadTest$KoinTestContext, com/splendo/kaluga/test/architecture/UIThreadViewModelTest$ViewModelTestContext {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
+	public fun <init> ([Lorg/koin/core/module/Module;)V
+}
+
+public final class com/splendo/kaluga/test/LegacyKt {
+	public static final fun assertFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
+	public static synthetic fun assertFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static final fun assertNotFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
+	public static synthetic fun assertNotFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static final fun awaitAllBlocking ([Lkotlinx/coroutines/Deferred;)Ljava/util/List;
+	public static final fun captureFor-8Mi8wO0 (Lkotlinx/coroutines/flow/Flow;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public class com/splendo/kaluga/test/SimpleUIThreadTest : com/splendo/kaluga/test/UIThreadTest {
+	public fun <init> ()V
+	public fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/splendo/kaluga/test/SimpleUIThreadTest$SimpleTestContext : com/splendo/kaluga/test/UIThreadTest$TestContext, kotlinx/coroutines/CoroutineScope {
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+	public fun dispose ()V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+}
+
+public abstract class com/splendo/kaluga/test/UIThreadTest : com/splendo/kaluga/test/base/UIThreadTest {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class com/splendo/kaluga/test/UIThreadTest$TestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext {
+}
+
+public final class com/splendo/kaluga/test/UIThreadTest$TestContext$DefaultImpls {
+	public static fun dispose (Lcom/splendo/kaluga/test/UIThreadTest$TestContext;)V
+}
+

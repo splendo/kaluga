@@ -20,13 +20,16 @@ package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
+import platform.CoreBluetooth.CBManager
 import platform.CoreBluetooth.CBManagerAuthorization
 import platform.CoreBluetooth.CBManagerAuthorizationAllowedAlways
 import platform.CoreBluetooth.CBManagerAuthorizationDenied
@@ -39,57 +42,70 @@ import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusDenied
 import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusNotDetermined
 import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusRestricted
 import platform.Foundation.NSBundle
-import platform.darwin.NSObject
-import platform.darwin.dispatch_get_main_queue
+import platform.darwin.dispatch_queue_create
+import kotlin.time.Duration
 
 const val NSBluetoothAlwaysUsageDescription = "NSBluetoothAlwaysUsageDescription"
 const val NSBluetoothPeripheralUsageDescription = "NSBluetoothPeripheralUsageDescription"
 
-actual class BluetoothPermissionManager(
+actual class DefaultBluetoothPermissionManager(
     private val bundle: NSBundle,
-    stateRepo: BluetoothPermissionStateRepo
-) : PermissionManager<BluetoothPermission>(stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+
+    companion object {
+        private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
+            val version = IOSVersion.systemVersion
+            return when {
+                version >= IOSVersion(13) -> CBManager.authorization.toAuthorizationStatus()
+                else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
+            }
+        }
+    }
+
+    private class Provider : CurrentAuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = checkAuthorization()
+    }
+
+    private val permissionsQueue = dispatch_queue_create("BluetoothPermissionsMonitor", null)
+    private val provider = Provider()
 
     private val centralManager = lazy {
         val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to false)
-        CBCentralManager(null, dispatch_get_main_queue(), options)
+        CBCentralManager(null, permissionsQueue, options)
     }
 
-    private val delegate = object : NSObject(), CBCentralManagerDelegateProtocol {
+    private val permissionHandler: DefaultAuthorizationStatusHandler
+    private val timerHelper: PermissionRefreshScheduler
 
-        override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            IOSPermissionsHelper.handleAuthorizationStatus(checkAuthorization(), this@BluetoothPermissionManager)
-        }
+    init {
+        permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
+        timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
     }
 
-    override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription).isEmpty()) {
-            if (!centralManager.isInitialized()) {
-                centralManager.value
-            }
+    override fun requestPermissionDidStart() {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(
+                bundle,
+                NSBluetoothAlwaysUsageDescription,
+                NSBluetoothPeripheralUsageDescription
+            ).isEmpty()
+        ) {
+            centralManager.value
         } else {
-            revokePermission(true)
+            val permissionHandler = permissionHandler
+            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
-    override suspend fun initializeState(): PermissionState<BluetoothPermission> {
-        return IOSPermissionsHelper.getPermissionState(checkAuthorization())
+    override fun monitoringDidStart(interval: Duration) {
+        val permissionHandler = permissionHandler
+        permissionHandler.status(checkAuthorization())
+        timerHelper.startMonitoring(interval)
     }
 
-    override suspend fun startMonitoring(interval: Long) {
-        centralManager.value.delegate = delegate
-    }
-
-    override suspend fun stopMonitoring() {
-        centralManager.value.delegate = null
-    }
-
-    private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
-        val version = IOSVersion.systemVersion
-        return when {
-            version >= IOSVersion(13) -> CBCentralManager().authorization.toAuthorizationStatus()
-            else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
-        }
+    override fun monitoringDidStop() {
+        timerHelper.stopMonitoring()
     }
 }
 
@@ -97,8 +113,11 @@ actual class BluetoothPermissionManagerBuilder actual constructor(
     private val context: PermissionContext
 ) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
-        return BluetoothPermissionManager(context, repo)
+    override fun create(
+        settings: BasePermissionManager.Settings,
+        coroutineScope: CoroutineScope
+    ): BluetoothPermissionManager {
+        return DefaultBluetoothPermissionManager(context, settings, coroutineScope)
     }
 }
 

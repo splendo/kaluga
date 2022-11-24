@@ -17,14 +17,17 @@
 
 package com.splendo.kaluga.permissions.contacts
 
-import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.logging.debug
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.base.requestAuthorizationStatus
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import platform.Contacts.CNAuthorizationStatus
 import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
@@ -33,58 +36,69 @@ import platform.Contacts.CNAuthorizationStatusRestricted
 import platform.Contacts.CNContactStore
 import platform.Contacts.CNEntityType
 import platform.Foundation.NSBundle
+import platform.Foundation.NSError
+import kotlin.time.Duration
 
 const val NSContactsUsageDescription = "NSContactsUsageDescription"
 
-actual class ContactsPermissionManager(
+actual class DefaultContactsPermissionManager(
     private val bundle: NSBundle,
-    actual val contacts: ContactsPermission,
-    stateRepo: ContactsPermissionStateRepo
-) : PermissionManager<ContactsPermission>(stateRepo) {
+    contactsPermission: ContactsPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
+
+    private class Provider() : CurrentAuthorizationStatusProvider {
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts).toAuthorizationStatus()
+    }
 
     private val contactStore = CNContactStore()
-    private val authorizationStatus = suspend {
-        CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts).toAuthorizationStatus()
-    }
-    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
+    private val provider = Provider()
 
-    override suspend fun requestPermission() {
+    private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
+    private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
+
+    override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
-            timerHelper.isWaiting.value = true
-            contactStore.requestAccessForEntityType(
-                CNEntityType.CNEntityTypeContacts,
-                mainContinuation { success, error ->
-                    error?.let {
-                        debug(it.localizedDescription)
-                        revokePermission(true)
-                    } ?: run {
-                        timerHelper.isWaiting.value = false
-                        if (success) grantPermission() else revokePermission(true)
-                    }
+            permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
+                val deferred = CompletableDeferred<Boolean>()
+                val callback = { success: Boolean, error: NSError? ->
+                    error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
+                    Unit
+                }.freeze()
+                contactStore.requestAccessForEntityType(
+                    CNEntityType.CNEntityTypeContacts,
+                    callback
+                )
+
+                try {
+                    if (deferred.await())
+                        IOSPermissionsHelper.AuthorizationStatus.Authorized
+                    else
+                        IOSPermissionsHelper.AuthorizationStatus.Restricted
+                } catch (t: Throwable) {
+                    IOSPermissionsHelper.AuthorizationStatus.Restricted
                 }
-            )
+            }
         } else {
-            revokePermission(true)
+            val permissionHandler = permissionHandler
+            permissionHandler.status(IOSPermissionsHelper.AuthorizationStatus.Restricted)
         }
     }
 
-    override suspend fun initializeState(): PermissionState<ContactsPermission> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
+    override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override suspend fun stopMonitoring() {
+    override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }
 
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
-        return ContactsPermissionManager(context, contacts, repo)
+    override fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
+        return DefaultContactsPermissionManager(context, contactsPermission, settings, coroutineScope)
     }
 }
 

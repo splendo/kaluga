@@ -23,10 +23,10 @@ import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.observable.InitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
-import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.DefaultColors
+import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.burn
 import com.splendo.kaluga.resources.colorBlend
 import com.splendo.kaluga.resources.colorFrom
@@ -78,7 +78,7 @@ enum class SelectableBlendMode {
 
 class ColorViewModel(
     val alertPresenterBuilder: AlertPresenter.Builder
-) : BaseViewModel() {
+) : BaseLifecycleViewModel() {
 
     private val backdropColor = MutableStateFlow(DefaultColors.mediumPurple)
     private val sourceColor = MutableStateFlow(DefaultColors.darkCyan)
@@ -119,14 +119,14 @@ class ColorViewModel(
     val darkenBlended = blendedColor.darkenList()
 
     private val steps = (1..10).map { it.toDouble() / 10.0 }
-    private fun Flow<Color>.lightenList() = map { color ->
+    private fun Flow<KalugaColor>.lightenList() = map { color ->
         steps.map {
             BackgroundStyle(
                 BackgroundStyle.FillStyle.Solid(color.lightenBy(it))
             )
         }
     }.toInitializedObservable(emptyList(), coroutineScope)
-    private fun Flow<Color>.darkenList() = map { color ->
+    private fun Flow<KalugaColor>.darkenList() = map { color ->
         steps.map {
             BackgroundStyle(
                 BackgroundStyle.FillStyle.Solid(color.darkenBy(it))
@@ -172,7 +172,7 @@ class ColorViewModel(
         backdropColor.value = sourceColor
     }
 
-    private fun submitColorText(colorText: String, onColorParsed: (Color) -> Unit) {
+    private fun submitColorText(colorText: String, onColorParsed: (KalugaColor) -> Unit) {
         colorFrom(colorText)?.let { onColorParsed(it) } ?: run {
             coroutineScope.launch {
                 alertPresenterBuilder.buildAlert(coroutineScope) {
@@ -184,7 +184,7 @@ class ColorViewModel(
         }
     }
 
-    private val Flow<Color>.backgroundStyleObservable: InitializedObservable<BackgroundStyle> get() = map {
+    private val Flow<KalugaColor>.backgroundStyleObservable: InitializedObservable<BackgroundStyle> get() = map {
         BackgroundStyle(
             BackgroundStyle.FillStyle.Solid(it)
         )

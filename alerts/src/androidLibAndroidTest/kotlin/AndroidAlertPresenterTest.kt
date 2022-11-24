@@ -54,7 +54,7 @@ class AndroidAlertPresenterTest : AlertPresenterTests() {
     override val builder get() = activity!!.viewModel.alertBuilder
 
     companion object {
-        const val DEFAULT_TIMEOUT = 5_000L
+        const val DEFAULT_TIMEOUT = 20_000L
     }
 
     @Test

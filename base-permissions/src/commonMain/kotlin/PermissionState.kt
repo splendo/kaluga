@@ -16,97 +16,149 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.state.ColdStateFlowRepo
+import com.splendo.kaluga.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.KalugaState
-import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * State of a [Permission]
  */
-sealed class PermissionState<P : Permission> : KalugaState {
+sealed interface PermissionState<P : Permission> : KalugaState {
+    sealed interface Inactive<P : Permission> : PermissionState<P>, SpecialFlowValue.NotImportant
+    interface Uninitialized<P : Permission> : Inactive<P>
+    interface Deinitialized<P : Permission> : Inactive<P> {
+        val reinitialize: suspend () -> Initializing<P>
+    }
 
-    class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
+    sealed interface Active<P : Permission> : PermissionState<P> {
+        val deinitialize: suspend () -> Deinitialized<P>
+    }
+    interface Initializing<P : Permission> : Active<P>, SpecialFlowValue.NotImportant {
+        fun initialize(allowed: Boolean, locked: Boolean): suspend () -> Initialized<P>
+    }
 
-    // TODO: consider below states could be wrapped in a sealed Known, and Flows could expose PermissionState.Known where applicable
+    sealed interface Initialized<P : Permission> : Active<P>
+    interface Allowed<P : Permission> : Initialized<P> {
+        fun deny(locked: Boolean): suspend () -> Denied<P>
+    }
+
+    sealed interface Denied<P : Permission> : Initialized<P> {
+        val allow: suspend () -> Allowed<P>
+
+        interface Locked<P : Permission> : Denied<P> {
+            val unlock: suspend () -> Requestable<P>
+        }
+
+        interface Requestable<P : Permission> : Denied<P> {
+            val lock: suspend () -> Locked<P>
+
+            fun request()
+        }
+    }
+}
+
+sealed class PermissionStateImpl<P : Permission> {
+
+    sealed class Inactive<P : Permission> : PermissionStateImpl<P>()
+    class Uninitialized<P : Permission> : Inactive<P>(), PermissionState.Uninitialized<P> {
+        fun initialize(monitoringInterval: Duration, permissionManager: PermissionManager<P>): suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
+    }
+
+    data class Deinitialized<P : Permission>(
+        val monitoringInterval: Duration,
+        val permissionManager: PermissionManager<P>
+    ) : Inactive<P>(), PermissionState.Deinitialized<P> {
+        override val reinitialize: suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
+    }
+
+    sealed class Active<P : Permission> : PermissionStateImpl<P>(), HandleBeforeOldStateIsRemoved<PermissionState<P>>, HandleAfterNewStateIsSet<PermissionState<P>> {
+        abstract val monitoringInterval: Duration
+        abstract val permissionManager: PermissionManager<P>
+
+        val deinitialize: suspend () -> Deinitialized<P> = { Deinitialized(monitoringInterval, permissionManager) }
+
+        override suspend fun afterNewStateIsSet(newState: PermissionState<P>) {
+            when (newState) {
+                is PermissionState.Inactive -> permissionManager.stopMonitoring()
+                else -> {}
+            }
+        }
+
+        override suspend fun beforeOldStateIsRemoved(oldState: PermissionState<P>) {
+            when (oldState) {
+                is PermissionState.Inactive -> permissionManager.startMonitoring(monitoringInterval)
+                else -> {}
+            }
+        }
+    }
+
+    data class Initializing<P : Permission>(
+        override val monitoringInterval: Duration,
+        override val permissionManager: PermissionManager<P>
+    ) : Active<P>(), PermissionState.Initializing<P> {
+        override fun initialize(allowed: Boolean, locked: Boolean): suspend() -> PermissionState.Initialized<P> = {
+            when {
+                !allowed && locked -> Denied.Locked(monitoringInterval, permissionManager)
+                !allowed -> Denied.Requestable(monitoringInterval, permissionManager)
+                else -> Allowed(monitoringInterval, permissionManager)
+            }
+        }
+    }
 
     /**
      * When in this state the [Permission] has been granted
      */
-    class Allowed<P : Permission> : PermissionState<P>() {
+    data class Allowed<P : Permission>(
+        override val monitoringInterval: Duration,
+        override val permissionManager: PermissionManager<P>
+    ) : Active<P>(), PermissionState.Allowed<P> {
 
-        internal fun deny(locked: Boolean): Denied<P> {
-            return if (locked) Denied.Locked() else Denied.Requestable()
+        override fun deny(locked: Boolean): suspend () -> PermissionState.Denied<P> = {
+            if (locked) Denied.Locked(monitoringInterval, permissionManager) else Denied.Requestable(monitoringInterval, permissionManager)
         }
     }
 
     /**
      * When in this state the [Permission] is denied. If can either be requestable of blocked from request.
      */
-    sealed class Denied<P : Permission> : PermissionState<P>() {
+    sealed class Denied<P : Permission> : Active<P>() {
 
-        internal val allow: suspend () -> Allowed<P> = {
-            Allowed()
+        val allow: suspend () -> Allowed<P> = {
+            Allowed(monitoringInterval, permissionManager)
         }
 
         /**
          * When in this state the [Permission] is denied and cannot be requested
          */
-        class Locked<P : Permission>() : Denied<P>() {
+        data class Locked<P : Permission>(
+            override val monitoringInterval: Duration,
+            override val permissionManager: PermissionManager<P>
+        ) : Denied<P>(), PermissionState.Denied.Locked<P> {
 
-            internal val unlock: suspend () -> Requestable<P> = {
-                Requestable()
+            override val unlock: suspend () -> Requestable<P> = {
+                Requestable(monitoringInterval, permissionManager)
             }
         }
 
         /**
          * When in this state the [Permission] is denied but can be requested. Use [request] to request the permission.
          */
-        class Requestable<P : Permission> : Denied<P>() {
+        data class Requestable<P : Permission>(
+            override val monitoringInterval: Duration,
+            override val permissionManager: PermissionManager<P>
+        ) : Denied<P>(), PermissionState.Denied.Requestable<P> {
 
-            suspend fun request(permissionManager: PermissionManager<out Permission>) {
+            override fun request() {
                 permissionManager.requestPermission()
             }
 
-            internal val lock: suspend () -> Locked<P> = {
-                Locked()
+            override val lock: suspend () -> Locked<P> = {
+                Locked(monitoringInterval, permissionManager)
             }
         }
     }
-}
-
-/**
- * State machine for managing a given [Permission].
- * Since this is a [ColdStateFlowRepo], it will only monitor for changes to permissions while being observed.
- * @param monitoringInterval The interval in milliseconds between checking for a change in [PermissionState]
- */
-abstract class PermissionStateRepo<P : Permission>(
-    private val monitoringInterval: Long = defaultMonitoringInterval,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
-) : ColdStateFlowRepo<PermissionState<P>>(
-    coroutineContext,
-    initChangeStateWithRepo = { state, repo ->
-        val pm = (repo as PermissionStateRepo<P>).permissionManager
-        pm.startMonitoring(monitoringInterval)
-        if (state is PermissionState.Unknown<P>)
-            suspend { pm.initializeState() }
-        else
-            suspend { state }
-    },
-    deinitChangeStateWithRepo = { _, repo ->
-        (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
-        null
-    },
-    firstState = { PermissionState.Unknown() }
-) {
-
-    companion object {
-        const val defaultMonitoringInterval: Long = 1000
-    }
-
-    // TODO move to constructor, so no explicit cast is needed in init block
-    abstract val permissionManager: PermissionManager<P>
 }

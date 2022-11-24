@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.stylable
 
-import com.splendo.kaluga.resources.Color
+import com.splendo.kaluga.resources.KalugaColor
 
 data class BackgroundStyle(
     val fillStyle: FillStyle,
@@ -26,7 +26,7 @@ data class BackgroundStyle(
 ) {
 
     sealed class FillStyle {
-        data class Solid(val color: Color) : FillStyle()
+        data class Solid(val color: KalugaColor) : FillStyle()
         data class Gradient(val gradientStyle: GradientStyle) : FillStyle()
     }
 
@@ -51,6 +51,6 @@ data class BackgroundStyle(
 
     sealed class StrokeStyle {
         object None : StrokeStyle()
-        data class Stroke(val width: Float, val color: Color) : StrokeStyle()
+        data class Stroke(val width: Float, val color: KalugaColor) : StrokeStyle()
     }
 }

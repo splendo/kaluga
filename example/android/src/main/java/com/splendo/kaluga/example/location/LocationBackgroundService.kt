@@ -65,7 +65,11 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
         super.onDestroy()
         viewModel.didPause()
         viewModel.onCleared()
-        stopForeground(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } else {
+            stopForeground(true)
+        }
         NotificationManagerCompat.from(applicationContext).cancel(notificationId)
     }
 

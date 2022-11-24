@@ -53,13 +53,9 @@ actual class ReviewManager(
     }
 
     actual suspend fun attemptToRequestReview() {
-        try {
-            val info = reviewManager.requestReview()
-            lifecycleManagerObserver.manager?.activity?.let {
-                reviewManager.launchReview(it, info)
-            }
-        } catch (e: com.google.android.play.core.internal.ar) {
-            com.splendo.kaluga.logging.error("Failed to retrieve review info.")
+        val info = reviewManager.requestReview()
+        lifecycleManagerObserver.manager?.activity?.let {
+            reviewManager.launchReview(it, info)
         }
     }
 }
@@ -69,7 +65,7 @@ actual class ReviewManager(
  *  Will be created if need but only one instance will exist.
  *
  * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.ViewModel],
+ * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
  * which can automatically track which Activity is active for it.
  *
  */

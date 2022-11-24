@@ -20,38 +20,41 @@ package com.splendo.kaluga.permissions.microphone
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
+import com.splendo.kaluga.permissions.base.PermissionContext
+import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
-actual class MicrophonePermissionManager(
+actual class DefaultMicrophonePermissionManager(
     context: Context,
-    stateRepo: MicrophonePermissionStateRepo
-) : PermissionManager<MicrophonePermission>(stateRepo) {
+    settings: Settings,
+    coroutineScope: CoroutineScope
+) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.RECORD_AUDIO))
+    private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionsManager = AndroidPermissionsManager(context, arrayOf(Manifest.permission.RECORD_AUDIO), coroutineScope, logTag, logger, permissionHandler)
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 
-    override suspend fun requestPermission() {
+    override fun requestPermissionDidStart() {
         if (supported)
             permissionsManager.requestPermissions()
-    }
-
-    override suspend fun initializeState(): PermissionState<MicrophonePermission> {
-        return when {
-            !supported -> PermissionState.Denied.Locked()
-            permissionsManager.hasPermissions -> PermissionState.Allowed()
-            else -> PermissionState.Denied.Requestable()
+        else {
+            permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
-    override suspend fun startMonitoring(interval: Long) {
+    override fun monitoringDidStart(interval: Duration) {
         if (supported)
             permissionsManager.startMonitoring(interval)
+        else {
+            permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
+        }
     }
 
-    override suspend fun stopMonitoring() {
+    override fun monitoringDidStop() {
         if (supported)
             permissionsManager.stopMonitoring()
     }
@@ -59,7 +62,7 @@ actual class MicrophonePermissionManager(
 
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
-        return MicrophonePermissionManager(context.context, repo)
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
+        return DefaultMicrophonePermissionManager(context.context, settings, coroutineScope)
     }
 }

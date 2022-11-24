@@ -22,13 +22,16 @@ import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 import kotlin.jvm.JvmName
 
+data class LinkStyle(val color: KalugaColor, val isUnderlined: Boolean)
+
 expect class StyledString {
     val defaultTextStyle: TextStyle
+    val linkStyle: LinkStyle?
 }
 
 expect class StyledStringBuilder {
     class Provider {
-        fun provide(string: String, defaultTextStyle: TextStyle): StyledStringBuilder
+        fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle? = null): StyledStringBuilder
     }
     fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange)
     fun create(): StyledString
@@ -36,14 +39,52 @@ expect class StyledStringBuilder {
 
 expect val StyledString.rawString: String
 
-fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: TextStyle, vararg attributes: StringStyleAttribute) = styled(
+fun String.styled(
+    provider: StyledStringBuilder.Provider,
+    defaultTextStyle: TextStyle,
+    vararg attributes: StringStyleAttribute
+) = styled(provider, defaultTextStyle, null, *attributes)
+
+fun String.styled(
+    provider: StyledStringBuilder.Provider,
+    defaultTextStyle: TextStyle,
+    linkColor: KalugaColor,
+    vararg attributes: StringStyleAttribute
+) = styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
+
+fun String.styled(
+    provider: StyledStringBuilder.Provider,
+    defaultTextStyle: TextStyle,
+    linkStyle: LinkStyle?,
+    vararg attributes: StringStyleAttribute
+) = styled(
     provider,
     defaultTextStyle,
+    linkStyle,
     *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
         { attributeSubstring(this, attribute) }
     }.toTypedArray()
 )
-fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: TextStyle, vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) = provider.provide(this, defaultTextStyle).apply {
+
+fun String.styled(
+    provider: StyledStringBuilder.Provider,
+    defaultTextStyle: TextStyle,
+    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?
+) = styled(provider, defaultTextStyle, null, *attributes)
+
+fun String.styled(
+    provider: StyledStringBuilder.Provider,
+    defaultTextStyle: TextStyle,
+    linkColor: KalugaColor,
+    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?
+) = styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
+
+fun String.styled(
+    provider: StyledStringBuilder.Provider,
+    defaultTextStyle: TextStyle,
+    linkStyle: LinkStyle?,
+    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?
+) = provider.provide(this, defaultTextStyle, linkStyle).apply {
     attributes.forEach { attribute ->
         attribute()?.let {
             addStyleAttribute(it.first, it.second)
@@ -63,12 +104,12 @@ fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute
 
 sealed class StringStyleAttribute {
     sealed class CharacterStyleAttribute : StringStyleAttribute() {
-        data class BackgroundColor(val color: Color) : CharacterStyleAttribute()
-        data class ForegroundColor(val color: Color) : CharacterStyleAttribute()
+        data class BackgroundColor(val color: KalugaColor) : CharacterStyleAttribute()
+        data class ForegroundColor(val color: KalugaColor) : CharacterStyleAttribute()
         data class TextStyle(val textStyle: com.splendo.kaluga.resources.stylable.TextStyle) : CharacterStyleAttribute()
         data class Font(val font: com.splendo.kaluga.resources.Font, val size: Float) : CharacterStyleAttribute()
-        data class Stroke(val width: Float, val color: Color) : CharacterStyleAttribute()
-        data class Shadow(val color: Color, val xOffset: Float, val yOffset: Float, val blurRadius: Float) : CharacterStyleAttribute()
+        data class Stroke(val width: Float, val color: KalugaColor) : CharacterStyleAttribute()
+        data class Shadow(val color: KalugaColor, val xOffset: Float, val yOffset: Float, val blurRadius: Float) : CharacterStyleAttribute()
         data class Kerning(val kern: Float) : CharacterStyleAttribute()
         object Strikethrough : CharacterStyleAttribute()
         object Underline : CharacterStyleAttribute()

@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.resources
 
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.TextStyles
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
@@ -29,7 +29,7 @@ import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaLabel
 
-class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) : BaseViewModel() {
+class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) : BaseLifecycleViewModel() {
 
     companion object {
         val loremIpsumParagraph0 = listOf(
@@ -88,7 +88,7 @@ class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) 
             KalugaLabel.Styled("Kerning Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Kerning(0.08f), IntRange(0, 13)) })),
             KalugaLabel.Styled("Underline Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Underline, IntRange(0, 15)) })),
             KalugaLabel.Styled("Strikethrough Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Strikethrough, IntRange(0, 20)) })),
-            KalugaLabel.Styled("Link Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.Link("https://kaluga.splendo.com"), IntRange(0, 10)) })),
+            KalugaLabel.Styled("Link Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, DefaultColors.limeGreen, { Pair(StringStyleAttribute.Link("https://kaluga.splendo.com"), IntRange(0, 10)) })),
             KalugaLabel.Styled(loremIpsum.styled(styledStringBuilderProvider, TextStyles.defaultText, StringStyleAttribute.ParagraphStyleAttribute.LineSpacing(5.0f, 10.0f, 6.0f))),
             KalugaLabel.Styled(
                 loremIpsum.styled(

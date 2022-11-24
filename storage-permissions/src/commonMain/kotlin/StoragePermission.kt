@@ -17,34 +17,35 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.PermissionContext
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.defaultPermissionContext
+import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
+import com.splendo.kaluga.permissions.base.PermissionStateRepo
+import com.splendo.kaluga.permissions.base.defaultPermissionContext
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * A [PermissionManager] for managing [StoragePermission]
  */
-expect class StoragePermissionManager : PermissionManager<StoragePermission> {
-    /**
-     * The [StoragePermission] managed by this manager.
-     */
-    val storage: StoragePermission
-}
+typealias StoragePermissionManager = PermissionManager<StoragePermission>
+expect class DefaultStoragePermissionManager : BasePermissionManager<StoragePermission>
 
 /**
  * Alias for [StoragePermissionManager]
  */
 typealias PhotosPermissionManager = StoragePermissionManager
 
-interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder {
+interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder<StoragePermission> {
     /**
      * Creates a [StoragePermissionManager]
-     * @param repo The [StoragePermissionStateRepo] associated with the [StoragePermission]
+     * @param notificationsPermission The [StoragePermission] for the PermissionManager to be created
+     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
      */
-    fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission>
+    fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): StoragePermissionManager
 }
 
 /**
@@ -62,7 +63,10 @@ typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class StoragePermissionStateRepo(storage: StoragePermission, builder: BaseStoragePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<StoragePermission>(coroutineContext = coroutineContext) {
-
-    override val permissionManager: PermissionManager<StoragePermission> = builder.create(storage, this)
-}
+class StoragePermissionStateRepo(
+    storagePermission: StoragePermission,
+    builder: BaseStoragePermissionManagerBuilder,
+    monitoringInterval: Duration = defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+    coroutineContext: CoroutineContext
+) : PermissionStateRepo<StoragePermission>(monitoringInterval, { builder.create(storagePermission, settings, it) }, coroutineContext)
