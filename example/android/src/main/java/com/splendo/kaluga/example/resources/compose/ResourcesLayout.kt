@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.material.composethemeadapter.MdcTheme
+import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteNavigator
 import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
@@ -48,6 +49,8 @@ import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.compose.Constants
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class ComposeResourcesActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug
@@ -67,45 +70,38 @@ class ComposeResourcesActivity : AppCompatActivity() {
 @Composable
 fun ResourcesLayout() {
     MdcTheme {
-        val navigator = RouteNavigator<ResourcesListNavigationAction>(rememberNavController()) { action ->
-            when (action) {
-                is ResourcesListNavigationAction.Button -> action.next
-                is ResourcesListNavigationAction.Color -> action.next
-                is ResourcesListNavigationAction.Label -> action.next
-            }
+        val viewModel = koinViewModel<ResourcesListViewModel> {
+            parametersOf(
+                NavHostRouteNavigator<ResourcesListNavigationAction>(
+                    navigationMapper = { action ->
+                        when (action) {
+                            is ResourcesListNavigationAction.Button -> action.next
+                            is ResourcesListNavigationAction.Color -> action.next
+                            is ResourcesListNavigationAction.Label -> action.next
+                        }
+                    }
+                ) {
+                    composable(ResourcesListNavigationAction.Button.route()) { ButtonsLayout() }
+                    composable(ResourcesListNavigationAction.Color.route()) { ColorsLayout() }
+                    composable(ResourcesListNavigationAction.Label.route()) { LabelsLayout() }
+                }
+            )
         }
-
-        navigator.SetupNavHost(
-            rootView = {
-                ResourcesListLayout(navigator = navigator)
-            }
-        ) {
-            composable(ResourcesListNavigationAction.Button.route()) { ButtonsLayout() }
-            composable(ResourcesListNavigationAction.Color.route()) { ColorsLayout() }
-            composable(ResourcesListNavigationAction.Label.route()) { LabelsLayout() }
-        }
-    }
-}
-
-@Composable
-fun ResourcesListLayout(navigator: Navigator<ResourcesListNavigationAction>) {
-    val viewModel = storeAndRemember {
-        ResourcesListViewModel(navigator)
-    }
-    ViewModelComposable(viewModel) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Constants.Padding.default)
-                .verticalScroll(rememberScrollState())
-        ) {
-            val resources by resources.state()
-            resources.forEach {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onResourceSelected(it) }) {
-                    Text(it.title)
+        ViewModelComposable(viewModel) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Constants.Padding.default)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                val resources by resources.state()
+                resources.forEach {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onResourceSelected(it) }) {
+                        Text(it.title)
+                    }
                 }
             }
         }

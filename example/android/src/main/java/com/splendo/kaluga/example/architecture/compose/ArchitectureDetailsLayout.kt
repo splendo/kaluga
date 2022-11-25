@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
+import com.splendo.kaluga.architecture.compose.navigation.NavHostContentRouteNavigator
 import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
@@ -32,16 +33,19 @@ import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ArchitectureDetailsLayout(inputDetails: InputDetails, navHostController: NavHostController) {
-    val navigator = RouteNavigator(
-        navHostController,
-        ::architectureDetailsNavigationRouteMapper
-    )
-
-    val viewModel = storeAndRemember {
-        ArchitectureDetailsViewModel(inputDetails, navigator)
+    val viewModel = koinViewModel<ArchitectureDetailsViewModel> {
+        parametersOf(
+            inputDetails,
+            NavHostContentRouteNavigator(
+                navHostController,
+                navigationMapper = ::architectureDetailsNavigationRouteMapper
+            )
+        )
     }
 
     ViewModelComposable(viewModel) {

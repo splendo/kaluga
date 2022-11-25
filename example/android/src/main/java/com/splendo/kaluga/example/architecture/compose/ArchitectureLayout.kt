@@ -56,8 +56,8 @@ import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRouteContro
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetSheetContentRouteController
 import com.splendo.kaluga.architecture.compose.navigation.HandleResult
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
+import com.splendo.kaluga.architecture.compose.navigation.NavHostModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteController
-import com.splendo.kaluga.architecture.compose.navigation.NavigatingModalBottomSheetLayout
 import com.splendo.kaluga.architecture.compose.navigation.composable
 import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.state
@@ -71,6 +71,8 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureView
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class ComposeArchitectureActivity : AppCompatActivity() {
 
@@ -91,107 +93,94 @@ class ComposeArchitectureActivity : AppCompatActivity() {
 @Composable
 fun ArchitectureLayout() {
     MdcTheme {
-        val architectureRouteController = BottomSheetRouteController(
-            NavHostRouteController(rememberNavController()),
-            BottomSheetSheetContentRouteController(
-                rememberNavController(),
-                rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-                rememberCoroutineScope()
-            )
-        )
-
-        architectureRouteController.NavigatingModalBottomSheetLayout(
-            sheetContent = { contentNavHostController, sheetContentNavHostController, sheetState ->
-                composable(ArchitectureNavigationAction.BottomSheet.route()) {
-                    BottomSheetLayout(contentNavHostController, sheetContentNavHostController, sheetState)
-                }
-                composable(BottomSheetNavigation.SubPage.route()) {
-                    BottomSheetSubPageLayout(
-                        contentNavHostController, sheetContentNavHostController, sheetState
-                    )
-                }
-            },
-            contentRoot = { contentNavHostController, sheetContentNavHostController, sheetState ->
-                ArchitectureLayoutLayoutContent(contentNavHostController, sheetContentNavHostController, sheetState)
-            },
-            content = { contentNavHostController, _, _ ->
-                composable<InputDetails, ArchitectureNavigationAction.Details>(
-                    type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
-                ) { inputDetails ->
-                    ArchitectureDetailsLayout(inputDetails, contentNavHostController)
-                }
-            }
-        )
-    }
-}
-
-@Composable
-fun ArchitectureLayoutLayoutContent(contentNavHostController: NavHostController, sheetNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
-
-    val navigator = ModalBottomSheetNavigator(
-        NavHostRouteController(contentNavHostController),
-        BottomSheetSheetContentRouteController(
-            sheetNavHostController,
-            sheetState,
-            rememberCoroutineScope()
-        ),
-        ::architectureNavigationRouteMapper
-    )
-
-    val viewModel = storeAndRemember {
-        ArchitectureViewModel(navigator)
-    }
-
-    ViewModelComposable(viewModel) {
-        val nameInput = nameInput.mutableState()
-        val isNameValid by isNameValid.state()
-        val numberInput = numberInput.mutableState()
-        val isNumberValid by isNumberValid.state()
-
-        val focusManager = LocalFocusManager.current
-
-        contentNavHostController.HandleResult(NavigationBundleSpecType.SerializedType(InputDetails.serializer())) {
-            nameInput.value = name
-            numberInput.value = number.toString()
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-        ) {
-            OutlinedTextField(
-                value = nameInput.value,
-                onValueChange = { nameInput.value = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onPreviewKeyEvent {
-                        if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-                            focusManager.moveFocus(FocusDirection.Down)
-                            true
-                        } else {
-                            false
+        val viewModel = koinViewModel<ArchitectureViewModel> {
+            parametersOf(
+                NavHostModalBottomSheetNavigator<ArchitectureNavigationAction<*>>(
+                    navigationMapper = ::architectureNavigationRouteMapper,
+                    contentBuilder = { contentNavHostController, _, _ ->
+                        composable<InputDetails, ArchitectureNavigationAction.Details>(
+                            type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
+                        ) { inputDetails ->
+                            ArchitectureDetailsLayout(inputDetails, contentNavHostController)
                         }
                     },
-                isError = !isNameValid,
-                placeholder = { Text(namePlaceholder) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    sheetContentBuilder = { contentNavHostController, sheetContentNavHostController, sheetState ->
+                        composable(ArchitectureNavigationAction.BottomSheet.route()) {
+                            BottomSheetLayout(
+                                contentNavHostController,
+                                sheetContentNavHostController,
+                                sheetState
+                            )
+                        }
+                        composable(BottomSheetNavigation.SubPage.route()) {
+                            BottomSheetSubPageLayout(
+                                contentNavHostController, sheetContentNavHostController, sheetState
+                            )
+                        }
+                    },
+                    initialSheetValue = ModalBottomSheetValue.Hidden
                 )
             )
-            OutlinedTextField(
-                value = numberInput.value,
-                onValueChange = { numberInput.value = it },
-                modifier = Modifier.fillMaxWidth(),
-                isError = !isNumberValid,
-                placeholder = { Text(numberPlaceholder) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
-            )
-            showDetailsButton.Composable(modifier = Modifier.fillMaxWidth())
-            showBottomSheetButton.Composable(modifier = Modifier.fillMaxWidth())
+        }
+
+        ViewModelComposable(viewModel) {
+            val nameInput = nameInput.mutableState()
+            val isNameValid by isNameValid.state()
+            val numberInput = numberInput.mutableState()
+            val isNumberValid by isNumberValid.state()
+
+            val focusManager = LocalFocusManager.current
+
+//            contentNavHostController.HandleResult(
+//                NavigationBundleSpecType.SerializedType(
+//                    InputDetails.serializer()
+//                )
+//            ) {
+//                nameInput.value = name
+//                numberInput.value = number.toString()
+//            }
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                OutlinedTextField(
+                    value = nameInput.value,
+                    onValueChange = { nameInput.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onPreviewKeyEvent {
+                            if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
+                                focusManager.moveFocus(FocusDirection.Down)
+                                true
+                            } else {
+                                false
+                            }
+                        },
+                    isError = !isNameValid,
+                    placeholder = { Text(namePlaceholder) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
+                )
+                OutlinedTextField(
+                    value = numberInput.value,
+                    onValueChange = { numberInput.value = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = !isNumberValid,
+                    placeholder = { Text(numberPlaceholder) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+                )
+                showDetailsButton.Composable(modifier = Modifier.fillMaxWidth())
+                showBottomSheetButton.Composable(modifier = Modifier.fillMaxWidth())
+            }
         }
     }
 }

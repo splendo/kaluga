@@ -5,14 +5,20 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.splendo.kaluga.architecture.compose.lifecycle.ComposableLifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -55,82 +61,136 @@ class BottomSheetRouteController(
     }
 }
 
-/**
- * A [RouteController] used for navigating the sheet content in a [ModalBottomSheetLayout]
- * @param navHostController The [NavHostController] to navigate the sheet content
- * @param sheetState The [ModalBottomSheetState] associated with the [ModalBottomSheetLayout]
- * @param coroutineScope A [CoroutineScope] used for navigation actions
- */
 class BottomSheetSheetContentRouteController(
-    internal val navHostController: NavHostController,
-    internal val sheetState: ModalBottomSheetState,
-    private val coroutineScope: CoroutineScope
+    val navHostController: StateFlow<NavHostController?>,
+    private val sheetState: SheetState
 ) : RouteController {
 
     private val sheetContentRouteController = NavHostRouteController(navHostController, this)
 
     override fun navigate(newRoute: Route) {
         if (!sheetState.isVisible) {
-            coroutineScope.launch {
-                sheetState.animateTo(ModalBottomSheetValue.Expanded)
-            }
+            sheetState.show(ModalBottomSheetValue.Expanded)
         }
         sheetContentRouteController.navigate(newRoute)
     }
 
-    override fun back(result: Route.Result): Boolean = if (navHostController.backQueue.isNotEmpty()) {
-        navHostController.previousBackStackEntry?.setResult(result)
-        navHostController.popBackStack()
-    } else {
-        close()
-        true
+    override fun back(result: Route.Result): Boolean {
+        val navHostController = navHostController.value
+        return if (navHostController != null && navHostController.backQueue.isNotEmpty()) {
+            navHostController.previousBackStackEntry?.setResult(result)
+            navHostController.popBackStack()
+        } else {
+            close()
+            true
+        }
     }
 
     override fun close() {
-        coroutineScope.launch {
-            sheetState.hide()
-        }
+        sheetState.hide()
     }
 }
 
-/**
- * A [Navigator] for a [ModalBottomSheetLayout]
- * @param routeController The [BottomSheetRouteController] used for navigating.
- * @param navigationMapper A mapper that converts an [NavigationAction] handled by this navigator into a [BottomSheetRoute]
- */
-class ModalBottomSheetNavigator<A : NavigationAction<*>>(
-    internal val routeController: BottomSheetRouteController,
+interface SheetState {
+    val isVisible: Boolean
+    fun show(value: ModalBottomSheetValue)
+    fun hide()
+}
+
+private object EmptySheetState : SheetState {
+    override val isVisible: Boolean = false
+    override fun show(value: ModalBottomSheetValue) {}
+    override fun hide() {}
+}
+
+private data class SheetStateState(
+    val state: ModalBottomSheetState,
+    val coroutineScope: CoroutineScope?
+) : SheetState {
+    override val isVisible: Boolean get() = state.isVisible
+    override fun show(value: ModalBottomSheetValue) {
+        coroutineScope?.launch { state.animateTo(value)  }
+    }
+
+    override fun hide() {
+        coroutineScope?.launch { state.hide() }
+    }
+}
+
+sealed class ModalBottomSheetNavigator<A : NavigationAction<*>>(
     private val navigationMapper: (A) -> BottomSheetRoute
-) : Navigator<A> {
+) : Navigator<A>, ComposableLifecycleSubscribable {
 
-    constructor(
-        contentNavHostController: NavHostController,
-        sheetContentNavHostController: NavHostController,
-        sheetState: ModalBottomSheetState,
-        coroutineScope: CoroutineScope,
-        navigationMapper: (A) -> BottomSheetRoute
-    ) : this(
-        BottomSheetRouteController(
-            NavHostRouteController(contentNavHostController),
-            BottomSheetSheetContentRouteController(
-                sheetContentNavHostController,
-                sheetState,
-                coroutineScope
-            )
-        ),
-        navigationMapper
-    )
-
-    constructor(
-        contentRouteController: RouteController,
-        sheetContentRouteController: BottomSheetSheetContentRouteController,
-        navigationMapper: (A) -> BottomSheetRoute
-    ) : this(
-        BottomSheetRouteController(contentRouteController, sheetContentRouteController),
-        navigationMapper
-    )
+    abstract val routeController: BottomSheetRouteController
 
     override fun navigate(action: A) = routeController.navigate(navigationMapper(action))
+}
+
+class NavHostModalBottomSheetNavigator<A : NavigationAction<*>>(
+    navigationMapper: (A) -> BottomSheetRoute,
+    contentBuilder: BottomSheetContentBuilder,
+    sheetContentBuilder: BottomSheetContentBuilder,
+    private val initialSheetValue: ModalBottomSheetValue = ModalBottomSheetValue.Hidden
+) : ModalBottomSheetNavigator<A>(navigationMapper) {
+    private val contentNavHostController = MutableStateFlow<NavHostController?>(null)
+    private val sheetContentNavHostController = MutableStateFlow<NavHostController?>(null)
+    private val sheetState = MutableStateFlow<SheetState>(EmptySheetState)
+    override val routeController = BottomSheetRouteController(
+        NavHostRouteController(contentNavHostController),
+        BottomSheetSheetContentRouteController(
+            sheetContentNavHostController,
+            object : SheetState {
+                override val isVisible: Boolean = sheetState.value.isVisible
+                override fun show(value: ModalBottomSheetValue) = sheetState.value.show(value)
+                override fun hide() = sheetState.value.hide()
+            }
+        )
+    )
+
+    override val modifier: @Composable (@Composable () -> Unit) -> Unit = @Composable { content ->
+        val contentNavController = rememberNavController()
+        val sheetContentNavController = rememberNavController()
+        val modalBottomSheetState = rememberModalBottomSheetState(initialValue = initialSheetValue)
+        val coroutineScope = rememberCoroutineScope()
+        contentNavHostController.tryEmit(contentNavController)
+        sheetContentNavHostController.tryEmit(sheetContentNavController)
+        sheetState.tryEmit(SheetStateState(modalBottomSheetState, coroutineScope))
+        SetupNavigatingModalBottomSheetLayout(
+            routeController.sheetContentRouteController,
+            contentNavController,
+            sheetContentNavController,
+            sheetContentBuilder,
+            content,
+            contentBuilder,
+            modalBottomSheetState
+        )
+    }
+}
+
+class NavHostModalBottomSheetContentNavigator<A : NavigationAction<*>>(
+    contentNavHostController: NavHostController,
+    sheetContentNavHostController: NavHostController,
+    sheetState: ModalBottomSheetState,
+    navigationMapper: (A) -> BottomSheetRoute,
+) : ModalBottomSheetNavigator<A>(navigationMapper) {
+
+    private val sheetStateState = MutableStateFlow<SheetState>(SheetStateState(sheetState, null))
+    override val routeController = BottomSheetRouteController(
+        NavHostRouteController(MutableStateFlow(contentNavHostController)),
+        BottomSheetSheetContentRouteController(
+            MutableStateFlow(sheetContentNavHostController),
+            object : SheetState {
+                override val isVisible: Boolean = sheetStateState.value.isVisible
+                override fun show(value: ModalBottomSheetValue) = sheetStateState.value.show(value)
+                override fun hide() = sheetStateState.value.hide()
+            }
+        )
+    )
+
+    override val modifier: @Composable (@Composable () -> Unit) -> Unit = @Composable { content ->
+        sheetStateState.tryEmit(SheetStateState(sheetState, rememberCoroutineScope()))
+        content()
+    }
 }
 
 typealias BottomSheetRootContentBuilder = (contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) -> Unit
@@ -143,57 +203,39 @@ typealias BottomSheetContentBuilder = NavGraphBuilder.(contentNavHostController:
  * @param content The [BottomSheetContentBuilder] for building the navigation content of the [ModalBottomSheetLayout]
  */
 @Composable
-fun <A : NavigationAction<*>> ModalBottomSheetNavigator<A>.NavigatingModalBottomSheetLayout(
+private fun SetupNavigatingModalBottomSheetLayout(
+    sheetContentRouteController: RouteController,
+    contentNavHostController: NavHostController,
+    sheetContentNavHostController: NavHostController,
     sheetContent: BottomSheetContentBuilder,
-    contentRoot: @Composable BottomSheetRootContentBuilder,
-    content: BottomSheetContentBuilder
-) = routeController.NavigatingModalBottomSheetLayout(
-    sheetContent = sheetContent,
-    contentRoot = contentRoot,
-    content = content
-)
-
-/**
- * Creates a [ModalBottomSheetLayout] that supports navigation using a [ModalBottomSheetNavigator]
- * @param sheetContent The [BottomSheetContentBuilder] for building the navigation sheet content of the [ModalBottomSheetLayout]
- * @param contentRoot The [BottomSheetRootContentBuilder] for building the root view of the content of the [ModalBottomSheetLayout]
- * @param content The [BottomSheetContentBuilder] for building the navigation content of the [ModalBottomSheetLayout]
- */
-@Composable
-fun BottomSheetRouteController.NavigatingModalBottomSheetLayout(
-    sheetContent: BottomSheetContentBuilder,
-    contentRoot: @Composable BottomSheetRootContentBuilder,
-    content: BottomSheetContentBuilder
+    contentRoot: @Composable () -> Unit,
+    content: BottomSheetContentBuilder,
+    sheetState: ModalBottomSheetState
 ) = ModalBottomSheetLayout(
     sheetContent = {
-        if (sheetContentRouteController.sheetState.isVisible) {
+        if (sheetState.isVisible) {
             HardwareBackButtonNavigation(onBackButtonClickHandler = sheetContentRouteController::close)
         }
         Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
-            sheetContentRouteController.SetupNavHost { sheetContentNavHostController ->
+            SetupNavHost(sheetContentNavHostController) { navHostController ->
                 sheetContent(
-                    contentRouteController.navHostController,
-                    sheetContentNavHostController,
-                    sheetContentRouteController.sheetState
+                    contentNavHostController,
+                    navHostController,
+                    sheetState
                 )
             }
         }
     },
-    sheetState = sheetContentRouteController.sheetState,
+    sheetState = sheetState,
 ) {
-    contentRouteController.SetupNavHost(
-        rootView = { navHostController ->
-            contentRoot(
-                navHostController,
-                sheetContentRouteController.navHostController,
-                sheetContentRouteController.sheetState
-            )
-        }
+    SetupNavHost(
+        navHostController = contentNavHostController,
+        rootView = contentRoot
     ) { navHostController ->
         content(
             navHostController,
-            sheetContentRouteController.navHostController,
-            sheetContentRouteController.sheetState
+            sheetContentNavHostController,
+            sheetState
         )
     }
 }

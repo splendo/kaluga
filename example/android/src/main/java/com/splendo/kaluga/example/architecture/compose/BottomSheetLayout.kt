@@ -28,24 +28,27 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
+import com.splendo.kaluga.architecture.compose.navigation.NavHostModalBottomSheetContentNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.compose.Constants
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun BottomSheetLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
-    val navigator = ModalBottomSheetNavigator(
-        contentNavHostController,
-        sheetContentNavHostController,
-        sheetState,
-        rememberCoroutineScope(),
-        ::bottomSheetNavigationRouteMapper,
-    )
-
-    val viewModel = storeAndRemember {
-        BottomSheetViewModel(navigator)
+    val viewModel = koinViewModel<BottomSheetViewModel> {
+        parametersOf(
+            NavHostModalBottomSheetContentNavigator<BottomSheetNavigation>(
+                contentNavHostController,
+                sheetContentNavHostController,
+                sheetState,
+                ::bottomSheetNavigationRouteMapper
+            )
+        )
     }
 
     ViewModelComposable(viewModel) {
