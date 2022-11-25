@@ -30,15 +30,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.Key
@@ -47,23 +44,16 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.mutableState
-import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRouteController
-import com.splendo.kaluga.architecture.compose.navigation.BottomSheetSheetContentRouteController
-import com.splendo.kaluga.architecture.compose.navigation.HandleResult
-import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.NavHostModalBottomSheetNavigator
-import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteController
+import com.splendo.kaluga.architecture.compose.navigation.NavHostRootResultHandler
 import com.splendo.kaluga.architecture.compose.navigation.composable
 import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureNavigationAction
@@ -95,26 +85,30 @@ fun ArchitectureLayout() {
     MdcTheme {
         val viewModel = koinViewModel<ArchitectureViewModel> {
             parametersOf(
-                NavHostModalBottomSheetNavigator<ArchitectureNavigationAction<*>>(
+                NavHostModalBottomSheetNavigator(
                     navigationMapper = ::architectureNavigationRouteMapper,
-                    contentBuilder = { contentNavHostController, _, _ ->
+                    contentBuilder = { bottomSheetNavigationState ->
                         composable<InputDetails, ArchitectureNavigationAction.Details>(
                             type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
                         ) { inputDetails ->
-                            ArchitectureDetailsLayout(inputDetails, contentNavHostController)
+                            ArchitectureDetailsLayout(inputDetails, bottomSheetNavigationState)
                         }
                     },
-                    sheetContentBuilder = { contentNavHostController, sheetContentNavHostController, sheetState ->
+                    contentRootResultHandlers = listOf(
+                        InputDetails.serializer().NavHostRootResultHandler<ArchitectureViewModel, InputDetails> {
+                            nameInput.post(it.name)
+                            numberInput.post(it.number.toString())
+                        }
+                    ),
+                    sheetContentBuilder = { bottomSheetNavigationState ->
                         composable(ArchitectureNavigationAction.BottomSheet.route()) {
                             BottomSheetLayout(
-                                contentNavHostController,
-                                sheetContentNavHostController,
-                                sheetState
+                                bottomSheetNavigationState
                             )
                         }
                         composable(BottomSheetNavigation.SubPage.route()) {
                             BottomSheetSubPageLayout(
-                                contentNavHostController, sheetContentNavHostController, sheetState
+                                bottomSheetNavigationState
                             )
                         }
                     },
@@ -130,15 +124,6 @@ fun ArchitectureLayout() {
             val isNumberValid by isNumberValid.state()
 
             val focusManager = LocalFocusManager.current
-
-//            contentNavHostController.HandleResult(
-//                NavigationBundleSpecType.SerializedType(
-//                    InputDetails.serializer()
-//                )
-//            ) {
-//                nameInput.value = name
-//                numberInput.value = number.toString()
-//            }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),

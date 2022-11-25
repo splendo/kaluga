@@ -34,21 +34,16 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.navigation.NavHostRouteNavigator
-import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
-import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
-import com.splendo.kaluga.architecture.compose.navigation.SetupNavHost
 import com.splendo.kaluga.architecture.compose.navigation.next
 import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.state
+import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.compose.Constants
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 

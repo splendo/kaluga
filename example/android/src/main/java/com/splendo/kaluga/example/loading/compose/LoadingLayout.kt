@@ -31,13 +31,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.google.android.material.composethemeadapter.MdcTheme
-import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.hud.HudViewModel
-import com.splendo.kaluga.hud.hudBuilder
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
 
 class ComposeLoadingActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug
@@ -45,9 +43,7 @@ class ComposeLoadingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CompositionLocalProvider(
-                LocalAppCompatActivity provides this
-            ) {
+            CompositionLocalProvider {
                 LoadingLayout()
             }
         }
@@ -57,10 +53,7 @@ class ComposeLoadingActivity : AppCompatActivity() {
 @Composable
 fun LoadingLayout() {
     MdcTheme {
-        val activity = LocalAppCompatActivity.current!!
-        val viewModel = storeAndRemember {
-            HudViewModel(activity.hudBuilder())
-        }
+        val viewModel = koinViewModel<HudViewModel>()
 
         ViewModelComposable(viewModel) {
             Column(

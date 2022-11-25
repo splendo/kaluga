@@ -28,7 +28,7 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.starProjectedType
 
 interface ComposableLifecycleSubscribable : LifecycleSubscribableMarker {
-    val modifier: @Composable (@Composable () -> Unit) -> Unit
+    val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
 }
 
 @Suppress("UNCHECKED_CAST")

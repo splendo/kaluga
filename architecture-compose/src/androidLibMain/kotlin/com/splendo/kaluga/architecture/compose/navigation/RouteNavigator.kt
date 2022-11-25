@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -23,8 +24,10 @@ import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.KSerializer
 
 /**
  * Controller for navigating to a [Route]
@@ -47,18 +50,15 @@ sealed interface RouteController {
     fun close()
 }
 
-/**
- * A [RouteController] managed by a [NavHostController]
- * @param navHostController A [StateFlow] indicating the current [NavHostController] managing the route stack
- * @param parentRouteController The [NavHostController] that is a parent to the [navHostController] if it exists
- */
-class NavHostRouteController(
-    internal val navHostController: StateFlow<NavHostController?>,
+sealed class NavHostProvidingRouteController<Provider>(
+    private val provider: StateFlow<Provider?>,
     private val parentRouteController: RouteController? = null
 ) : RouteController {
 
+    abstract fun Provider.provide(): NavHostController
+
     override fun navigate(newRoute: Route) {
-        val navHostController = navHostController.value ?: return
+        val navHostController = provider.value?.provide() ?: return
         when (newRoute) {
             is Route.NextRoute<*, *> -> navHostController.navigate(newRoute.route) {
                 launchSingleTop = true
@@ -88,7 +88,7 @@ class NavHostRouteController(
     }
 
     override fun back(result: Route.Result): Boolean {
-        val navHostController = navHostController.value
+        val navHostController = provider.value?.provide()
         return if (navHostController != null && navHostController.backQueue.isNotEmpty()) {
             navHostController.previousBackStackEntry?.setResult(result)
             navHostController.popBackStack()
@@ -98,13 +98,19 @@ class NavHostRouteController(
     }
 
     override fun close() {
-        navHostController.value?.popBackStack(ROOT_VIEW, true)
+        provider.value?.provide()?.popBackStack(ROOT_VIEW, true)
         parentRouteController?.close()
     }
 }
 
-typealias RouteRootContentBuilder = (NavHostController) -> Unit
-typealias RouteContentBuilder = NavGraphBuilder.(NavHostController) -> Unit
+class NavHostRouteController(
+    provider: StateFlow<NavHostController?>,
+    parentRouteController: RouteController? = null
+) : NavHostProvidingRouteController<NavHostController>(provider, parentRouteController) {
+    override fun NavHostController.provide(): NavHostController = this
+}
+
+typealias RouteContentBuilder = NavGraphBuilder.(StateFlow<NavHostController?>) -> Unit
 
 /**
  * A Navigator managed by a [RouteController]
@@ -124,39 +130,51 @@ sealed class RouteNavigator<A : NavigationAction<*>>(
 class NavHostRouteNavigator<A : NavigationAction<*>>(
     navigationMapper: (A) -> Route,
     parentRouteController: RouteController? = null,
+    rootResultHandlers: List<NavHostRootResultHandler<*, *>> = emptyList(),
     builder: RouteContentBuilder
 ) : RouteNavigator<A>(navigationMapper) {
 
     private val navHostController = MutableStateFlow<NavHostController?>(null)
     override val routeController: RouteController = NavHostRouteController(navHostController, parentRouteController)
 
-    override val modifier: @Composable (@Composable () -> Unit) -> Unit = @Composable { content ->
+    override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         val navController = rememberNavController()
         navHostController.tryEmit(navController)
         SetupNavHost(
-            navHostController = navController,
-            rootView = content,
+            navHostController = navHostController,
+            rootView = {
+                rootResultHandlers.forEach { resultHandler ->
+                    resultHandler.HandleResult(viewModel = this, navHostController = navController)
+                }
+                content()
+                       },
             builder = builder
         )
     }
 }
 
-class NavHostContentRouteNavigator<A : NavigationAction<*>>(
-    navHostController: NavHostController,
-    parentRouteController: RouteController? = null,
+class NavHostProvidingContentRouteNavigator<A : NavigationAction<*>, Provider>(
+    override val routeController: NavHostProvidingRouteController<Provider>,
     navigationMapper: (A) -> Route
 ) : RouteNavigator<A>(navigationMapper) {
 
-    override val routeController: RouteController = NavHostRouteController(MutableStateFlow(navHostController), parentRouteController)
-
-    override val modifier: @Composable (@Composable () -> Unit) -> Unit = @Composable { content ->
+    override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         content()
     }
 }
 
+fun <A : NavigationAction<*>> NavHostContentRouteNavigator(
+    navHostController: StateFlow<NavHostController?>,
+    parentRouteController: RouteController? = null,
+    navigationMapper: (A) -> Route
+): NavHostProvidingContentRouteNavigator<A, NavHostController> = NavHostProvidingContentRouteNavigator(
+    NavHostRouteController(navHostController, parentRouteController),
+    navigationMapper
+)
+
 @Composable
 fun SetupNavHost(
-    navHostController: NavHostController,
+    navHostController: StateFlow<NavHostController?>,
     builder: RouteContentBuilder
 ) = SetupNavHost(
     navHostController = navHostController,
@@ -166,15 +184,20 @@ fun SetupNavHost(
 
 @Composable
 fun SetupNavHost(
-    navHostController: NavHostController,
+    navHostController: StateFlow<NavHostController?>,
     rootView: @Composable () -> Unit,
     builder: RouteContentBuilder
-) = SetupNavHost(
-    navHostController = navHostController,
-    startDestination = ROOT_VIEW
 ) {
-    composable(ROOT_VIEW, content = { rootView() })
-    builder(navHostController)
+    val currentNavHostController by navHostController.collectAsState()
+    currentNavHostController?.let {
+        SetupNavHost(
+            navHostController = it,
+            startDestination = ROOT_VIEW
+        ) {
+            composable(ROOT_VIEW, content = { rootView() })
+            builder(navHostController)
+        }
+    }
 }
 
 /**
@@ -195,6 +218,56 @@ fun SetupNavHost(
     )
 }
 
+sealed class NavHostRootResultHandler<ViewModel: BaseLifecycleViewModel, R> {
+    abstract val viewModelClass: Class<ViewModel>
+    abstract val retain: Boolean
+    abstract val onResult: ViewModel.(R) -> Unit
+    @Composable
+    internal abstract fun NavHostController.HandleResult(callback: (R) -> Unit)
+
+    data class Bundle<ViewModel: BaseLifecycleViewModel, R : NavigationBundleSpecRow<*>>(
+        override val viewModelClass: Class<ViewModel>,
+        val spec: NavigationBundleSpec<R>,
+        override val retain: Boolean = false,
+        override val onResult: ViewModel.(NavigationBundle<R>) -> Unit
+    ) : NavHostRootResultHandler<ViewModel, NavigationBundle<R>>() {
+        @Composable
+        override fun NavHostController.HandleResult(callback: (NavigationBundle<R>) -> Unit) = HandleResult(spec, retain) { callback(this) }
+    }
+
+    data class Type<ViewModel: BaseLifecycleViewModel, R>(
+        override val viewModelClass: Class<ViewModel>,
+        val spec: NavigationBundleSpecType<R>,
+        override val retain: Boolean,
+        override val onResult: ViewModel.(R) -> Unit
+    ) : NavHostRootResultHandler<ViewModel, R>() {
+
+        @Composable
+        override fun NavHostController.HandleResult(callback: (R) -> Unit) = HandleResult(spec, retain) { callback(this) }
+    }
+
+    @Composable
+    internal fun HandleResult(viewModel: BaseLifecycleViewModel, navHostController: NavHostController) {
+        viewModelClass.cast(viewModel)?.let { vm ->
+            navHostController.HandleResult { vm.onResult(it) }
+        }
+    }
+}
+
+inline fun <reified ViewModel : BaseLifecycleViewModel, R : NavigationBundleSpecRow<*>> NavigationBundleSpec<R>.NavHostRootResultHandler(
+    retain: Boolean = false,
+    noinline onResult: ViewModel.(NavigationBundle<R>) -> Unit
+) = NavHostRootResultHandler.Bundle(ViewModel::class.java, this, retain, onResult)
+
+inline fun <reified ViewModel : BaseLifecycleViewModel, R> NavigationBundleSpecType<R>.NavHostRootResultHandler(
+    retain: Boolean = false,
+    noinline onResult: ViewModel.(R) -> Unit
+) = NavHostRootResultHandler.Type(ViewModel::class.java, this, retain, onResult)
+
+inline fun <reified ViewModel : BaseLifecycleViewModel, R> KSerializer<R>.NavHostRootResultHandler(
+    retain: Boolean = false,
+    noinline onResult: ViewModel.(R) -> Unit
+) = NavHostRootResultHandler.Type(ViewModel::class.java, NavigationBundleSpecType.SerializedType(this), retain, onResult)
 
 /**
  * Handles a [Route.Result] matching a given [NavigationBundleSpec]
@@ -206,7 +279,7 @@ fun SetupNavHost(
 fun <R : NavigationBundleSpecRow<*>> NavHostController.HandleResult(
     spec: NavigationBundleSpec<R>,
     retain: Boolean = false,
-    onResult: @Composable NavigationBundle<R>.() -> Unit
+    onResult: NavigationBundle<R>.() -> Unit
 ) = HandleResult(retain) { toNavigationBundle(spec).onResult() }
 
 /**
@@ -220,11 +293,11 @@ fun <R : NavigationBundleSpecRow<*>> NavHostController.HandleResult(
 fun <R> NavHostController.HandleResult(
     type: NavigationBundleSpecType<R>,
     retain: Boolean = false,
-    onResult: @Composable R.() -> Unit
+    onResult: R.() -> Unit
 ) = HandleResult(retain) { toTypedProperty(type).onResult() }
 
 @Composable
-internal fun NavHostController.HandleResult(retain: Boolean = false, onResult: @Composable Bundle.() -> Unit) {
+internal fun NavHostController.HandleResult(retain: Boolean = false, onResult: Bundle.() -> Unit) {
     val result = currentBackStackEntry?.savedStateHandle?.getStateFlow<Bundle?>(Route.Result.KEY, null)?.collectAsState()
     result?.value?.let {
         onResult(it)

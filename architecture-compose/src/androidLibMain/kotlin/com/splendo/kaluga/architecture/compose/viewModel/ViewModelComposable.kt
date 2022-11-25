@@ -63,12 +63,12 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     } else {
         val modifier = viewModel.ComposableLifecycleSubscribable.reduceRight { new, acc ->
             object : ComposableLifecycleSubscribable {
-                override val modifier: @Composable (@Composable () -> Unit) -> Unit = { content ->
-                    new.modifier { acc.modifier(content) }
+                override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = { content ->
+                    new.modifier(this) { acc.modifier(this, content) }
                 }
             }
         }
-        modifier.modifier { content?.invoke(viewModel) }
+        modifier.modifier(viewModel) { content?.invoke(viewModel) }
     }
 }
 

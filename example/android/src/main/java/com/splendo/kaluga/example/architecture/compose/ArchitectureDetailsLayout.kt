@@ -23,26 +23,25 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import com.splendo.kaluga.architecture.compose.navigation.BottomSheetContentRouteNavigator
+import com.splendo.kaluga.architecture.compose.navigation.BottomSheetNavigatorState
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
-import com.splendo.kaluga.architecture.compose.navigation.NavHostContentRouteNavigator
-import com.splendo.kaluga.architecture.compose.navigation.RouteNavigator
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.resources.compose.Composable
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ArchitectureDetailsLayout(inputDetails: InputDetails, navHostController: NavHostController) {
+fun ArchitectureDetailsLayout(inputDetails: InputDetails, bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>) {
     val viewModel = koinViewModel<ArchitectureDetailsViewModel> {
         parametersOf(
             inputDetails,
-            NavHostContentRouteNavigator(
-                navHostController,
+            BottomSheetContentRouteNavigator(
+                bottomSheetNavigatorState,
                 navigationMapper = ::architectureDetailsNavigationRouteMapper
             )
         )

@@ -131,7 +131,7 @@ object Dependencies {
         }
         object Navigation {
             private const val group = "$groupBase.navigation"
-            private const val version = "2.5.2"
+            private const val version = "2.5.3"
 
             val Compose = Dependency(group, "navigation-compose", version)
         }
