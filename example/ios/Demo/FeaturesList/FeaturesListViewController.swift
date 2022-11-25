@@ -21,7 +21,7 @@ import KalugaExampleShared
 class FeaturesListViewController : UITableViewController {
 
     private lazy var navigator: ViewControllerNavigator<FeatureListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
-        NavigationSpec.Segue(identifier: action.segueKey)
+        action.spec
     }
     private lazy var viewModel: FeatureListViewModel = FeatureListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
@@ -81,23 +81,24 @@ class FeaturesListCell : UITableViewCell {
 }
 
 private extension FeatureListNavigationAction {
-    var segueKey: String {
+    var spec: NavigationSpec {
         get {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             switch self {
-            case is FeatureListNavigationAction.Alerts: return "showAlerts"
-            case is FeatureListNavigationAction.Architecture: return "showArchitecture"
-            case is FeatureListNavigationAction.Beacons: return "showBeacons"
-            case is FeatureListNavigationAction.Bluetooth: return "showBluetooth"
-            case is FeatureListNavigationAction.DateTimePicker: return "showDateTimePicker"
-            case is FeatureListNavigationAction.Keyboard: return "showKeyboard"
-            case is FeatureListNavigationAction.Links: return "showLinks"
-            case is FeatureListNavigationAction.LoadingIndicator: return "showHUD"
-            case is FeatureListNavigationAction.Location: return "showLocation"
-            case is FeatureListNavigationAction.Permissions: return "showPermissions"
-            case is FeatureListNavigationAction.PlatformSpecific: return "showPlatformSpecific"
-            case is FeatureListNavigationAction.Resources: return "showResources"
-            case is FeatureListNavigationAction.System: return "showSystem"
-            default: return ""
+            case is FeatureListNavigationAction.Alerts: return NavigationSpec.Push(animated: true) { AlertsViewController.instantiate() }
+            case is FeatureListNavigationAction.Architecture: return NavigationSpec.Segue(identifier: "showArchitecture")
+            case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
+            case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
+            case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Segue(identifier: "showDateTimePicker")
+            case is FeatureListNavigationAction.Keyboard: return NavigationSpec.Segue(identifier: "showKeyboard")
+            case is FeatureListNavigationAction.Links: return NavigationSpec.Segue(identifier: "showLinks")
+            case is FeatureListNavigationAction.LoadingIndicator: return NavigationSpec.Segue(identifier: "showHUD")
+            case is FeatureListNavigationAction.Location: return NavigationSpec.Segue(identifier: "showLocation")
+            case is FeatureListNavigationAction.Permissions: return NavigationSpec.Segue(identifier: "showPermissions")
+            case is FeatureListNavigationAction.PlatformSpecific: return NavigationSpec.Segue(identifier: "showPlatformSpecific")
+            case is FeatureListNavigationAction.Resources: return NavigationSpec.Segue(identifier: "showResources")
+            case is FeatureListNavigationAction.System: return NavigationSpec.Segue(identifier: "showSystem")
+            default: fatalError("Unknown action")
             }
         }
     }

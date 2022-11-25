@@ -33,7 +33,11 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class AlertViewModel(val builder: BaseAlertPresenter.Builder, dismissTime: Duration = 3.seconds) : BaseLifecycleViewModel() {
+class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel() {
+
+    companion object {
+        private val dismissTime: Duration = 3.seconds
+    }
 
     val showAlertButton = KalugaButton.Plain("show_alert".localized(), ButtonStyles.default) {
         coroutineScope.launch {

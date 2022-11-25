@@ -30,10 +30,12 @@ class ArchitectureDetailsViewController: UIViewController {
         if #available(iOS 13.0, *) {
             vc.isModalInPresentation = true
         }
-        let navigator = ViewControllerNavigator<CloseDetailsNavigation>(parentVC: vc) { action in
+        let navigator = ArchitectureDetailsNavigatorKt.ArchitectureDetailsViewControllerNavigator(parent: vc) { details in
             NavigationSpec.Dismiss(toDismiss: { $0 }, animated: true) {
-                onDismiss(action.value!)
+                onDismiss(details)
             }
+        } onClose: {
+            NavigationSpec.Dismiss(toDismiss: { $0 }, animated: true)
         }
         vc.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
         return vc
@@ -69,14 +71,9 @@ class ArchitectureDetailsViewController: UIViewController {
                 }
             ]
         }
-    }
 
-    @objc @IBAction func onInversePressed(sender: Any?) {
-        viewModel.onInversePressed()
-    }
-
-    @objc @IBAction func onCloseButtonPressed(sender: Any?) {
-        viewModel.onClosePressed()
+        ButtonStyleKt.bindButton(inverseButton, button: viewModel.inverseButton)
+        ButtonStyleKt.bindButton(closeButton, button: viewModel.finishButton)
     }
     
 }

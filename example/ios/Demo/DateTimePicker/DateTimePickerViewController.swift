@@ -19,8 +19,11 @@ import UIKit
 import KalugaExampleShared
 
 class DateTimePickerViewController : UIViewController {
-    
+
+    @IBOutlet private var currentTimeLabel: UILabel!
     @IBOutlet private var timeLabel: UILabel!
+    @IBOutlet private var dateButton: UIButton!
+    @IBOutlet private var timeButton: UIButton!
     
     lazy var viewModel = DateTimePickerViewModel(dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
@@ -42,15 +45,9 @@ class DateTimePickerViewController : UIViewController {
                 }
             ]
         }
-    }
 
-    @IBAction
-    func selectDatePressed() {
-        viewModel.onSelectDatePressed()
-    }
-
-    @IBAction
-    func selectTimePressed() {
-        viewModel.onSelectTimePressed()
+        currentTimeLabel.text = viewModel.currentTimeTitle
+        ButtonStyleKt.bindButton(dateButton, button: viewModel.selectDateButton)
+        ButtonStyleKt.bindButton(timeButton, button: viewModel.selectTimeButton)
     }
 }

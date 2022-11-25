@@ -29,8 +29,8 @@ class SystemViewController : UITableViewController {
     }
     private lazy var viewModel: SystemViewModel = SystemViewModel(navigator: navigator)
 
-    private var modules = [String]()
-    private var onModuleTapped: ((Int) -> Void)? = nil
+    private var systemFeatures = [String]()
+    private var onSystemFeatureTapped: ((Int) -> Void)? = nil
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -45,10 +45,10 @@ class SystemViewController : UITableViewController {
                 return []
             }
             return [
-                viewModel.modules.observeInitialized { next in
-                    let modules = next?.compactMap { $0 as? SystemFeatures } ?? []
-                    self?.modules = modules.map{ $0.name }
-                    self?.onModuleTapped = { (index: Int) in viewModel.onButtonTapped(systemFeatures: modules[index]) }
+                viewModel.systemFeatures.observeInitialized { next in
+                    let systemFeatures = next?.compactMap { $0 as? SystemFeatures } ?? []
+                    self?.systemFeatures = systemFeatures.map{ $0.name }
+                    self?.onSystemFeatureTapped = { (index: Int) in viewModel.onButtonTapped(systemFeatures: systemFeatures[index]) }
                     self?.tableView.reloadData()
                 }
             ]
@@ -60,17 +60,17 @@ class SystemViewController : UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return modules.count
+        return systemFeatures.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SystemListCell.Const.identifier, for: indexPath) as! SystemListCell
-        cell.label.text = modules[indexPath.row]
+        cell.label.text = systemFeatures[indexPath.row]
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onModuleTapped?(indexPath.row)
+        let _ = onSystemFeatureTapped?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

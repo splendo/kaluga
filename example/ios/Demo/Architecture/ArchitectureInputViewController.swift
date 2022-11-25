@@ -18,7 +18,7 @@
 import UIKit
 import KalugaExampleShared
 
-class ArchitectureInputViewController: UIViewController  {
+class ArchitectureViewController: UIViewController  {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nameInput: UITextField!
@@ -30,14 +30,18 @@ class ArchitectureInputViewController: UIViewController  {
     
     @IBOutlet weak var detailsButton: UIButton!
 
-    lazy var navigator: ViewControllerNavigator<InputNavigation> = ViewControllerNavigator(parentVC: self) { action in
-        NavigationSpec.Present(animated: true, presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue), transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)) {
-            ArchitectureDetailsViewController.create(inputDetails: action.value!) { [weak self] inputDetails in
-                self?.onDetailsDismissed(inputDetails: inputDetails)
+    lazy var navigator = ArchitectureNavigatorKt.ArchitectureViewControllerNavigator(
+        parent: self,
+        onDetails: { inputDetails in
+            NavigationSpec.Present(animated: true, presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue), transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)) {
+                ArchitectureDetailsViewController.create(inputDetails: inputDetails) { [weak self] resultDetails in
+                    self?.onDetailsDismissed(inputDetails: resultDetails)
+                }
             }
-        }
-    }
-    lazy var viewModel = ArchitectureInputViewModel(navigator: navigator)
+        },
+        onBottomSheet: { fatalError("ToDo") }
+    )
+    lazy var viewModel = ArchitectureViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -54,17 +58,11 @@ class ArchitectureInputViewController: UIViewController  {
             }
 
             return [
-                viewModel.nameHeader.observeInitialized { header in
-                    self?.nameLabel.text = header as String?
-                },
                 viewModel.nameInput.observeInitialized { name in
                     self?.nameInput.text = name as String?
                 },
                 viewModel.isNameValid.observe { isValid in
                     self?.nameError.isHidden = isValid?.boolValue ?? false
-                },
-                viewModel.numberHeader.observeInitialized { header in
-                    self?.numberLabel.text = header as String?
                 },
                 viewModel.numberInput.observeInitialized { number in
                     self?.numberInput.text = number as String?
@@ -74,10 +72,9 @@ class ArchitectureInputViewController: UIViewController  {
                 }
             ]
         }
-    }
-
-    @objc @IBAction func onShowDetailsPressed(sender: Any?) {
-        viewModel.onShowDetailsPressed()
+        nameLabel.text = viewModel.namePlaceholder
+        numberLabel.text = viewModel.numberPlaceholder
+        ButtonStyleKt.bindButton(detailsButton, button: viewModel.showDetailsButton)
     }
 
     private func onDetailsDismissed(inputDetails: InputDetails) {
@@ -87,7 +84,7 @@ class ArchitectureInputViewController: UIViewController  {
 
 }
 
-extension ArchitectureInputViewController : UITextFieldDelegate {
+extension ArchitectureViewController : UITextFieldDelegate {
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         postInput(text: textField.text ?? "", fromTextField: textField)

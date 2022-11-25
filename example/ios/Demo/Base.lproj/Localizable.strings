@@ -18,6 +18,7 @@
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
 "alert_list" = "Show Alert List";
+"alert_input" = "Show Alert with input";
 "show_loading_indicator_system" = "Show Loading Indicator (System)";
 "show_loading_indicator_custom" = "Show Loading Indicator (Custom)";
 
