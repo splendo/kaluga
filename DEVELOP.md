@@ -93,13 +93,15 @@ For example if the version in `ext.gradle` is `1.1` and `feature/123_fix_bug` is
 Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`oss.sonatype.org`).
 Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/ios/Supporting\ Files`.
 ```
-kaluga.exampleEmbeddingMethod=composite
-kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/
+kaluga.exampleEmbeddingMethod=repo
+kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/
 kaluga.libraryVersion=LIBRARY_VERSION
 ```
 Where 
-`REPO_NUMBER` is the last one created after merging to master
-`LIBRARY_VERSION` is the one that we want to publish
+`REPO_NUMBER` is the id of the staging repository created to do the release (normally done automatically by GitHub Actions upon a `master` commit, the number can be found on the https://oss.sonatype.org console under "staging repositories")
+`LIBRARY_VERSION` is the version of the library that we are publish
+
+Don't forget to remove these when you are done.
 
 #### Publishing locally
 
@@ -125,11 +127,11 @@ If these values are present as environment variables they will also be picked up
 
 #### Publishing via CI
 
-Bitrise automatically publishes every branch to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). This is done using a (private) Bitrise project. A Maven Central release can be done by manually starting the `publisMavenCentralRelease` workflow for the appropriate release branch.
+GitHub Actions automatically publishes every branch (except `master`) to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). Commits on `master` are send to the Sonatype staging repository as the first step of a Maven Central release.
 
 #### Releasing to Maven Central
 
-Projects publishing to Sonatype's release repository need to be manually closed and released before they will appear on Maven Central. This can only be done by people with access.
+Projects publishing to Sonatype's staging repository need to be manually closed and released (promoted) before they will appear on Maven Central. This can only be done by people with access to https://oss.sonatype.org.
 
 #### Increase version after publishing
 
@@ -138,6 +140,8 @@ In case this has not been done yet, bump the version at [gradle/ext.gradle](grad
 ```sh
 library_version = 'X.X.X'
 ```
+
+Also update the version numbers in the README to the just released version and the next version. 
 
 ## Code conventions
 
