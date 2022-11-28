@@ -30,17 +30,17 @@ class MockFocusHandlerTest {
     @Test
     fun test_give_focus() = testFocusHandler {
         assertFalse(isFocused)
-        simulateGiveFocus()
+        giveFocus()
         assertTrue(isFocused)
     }
 
     @Test
     fun test_remove_focus() = testFocusHandler {
         assertFalse(isFocused)
-        simulateGiveFocus()
+        giveFocus()
         assertTrue(isFocused)
 
-        simulateRemoveFocus()
+        removeFocus()
         assertFalse(isFocused)
     }
 
@@ -48,10 +48,10 @@ class MockFocusHandlerTest {
     fun test_give_remove_multiple_times() = testFocusHandler {
         assertFalse(isFocused)
         repeat(10) {
-            simulateGiveFocus()
+            giveFocus()
             assertTrue(isFocused)
 
-            simulateRemoveFocus()
+            removeFocus()
             assertFalse(isFocused)
         }
     }

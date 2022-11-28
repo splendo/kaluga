@@ -45,13 +45,14 @@ import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
-import com.splendo.kaluga.keyboard.KeyboardManager
-import com.splendo.kaluga.keyboard.compose.ComposeClearFocusHandler
 import com.splendo.kaluga.keyboard.compose.ComposeFocusHandler
+import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
 import com.splendo.kaluga.resources.compose.Composable
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
+
+val composeKeyboardViewModel = "ComposeKeyboardViewModel"
 
 class ComposeKeyboardActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug
@@ -70,11 +71,9 @@ class ComposeKeyboardActivity : AppCompatActivity() {
 fun KeyboardLayout() {
     MdcTheme {
         val focusHandler = LocalFocusManager.current
-        val viewModel = koinViewModel<KeyboardViewModel> {
+        val viewModel = koinViewModel<KeyboardViewModel<ComposeFocusHandler>>(named(composeKeyboardViewModel)) {
             parametersOf(
-                KeyboardManager.Builder(
-                    clearFocusHandler = ComposeClearFocusHandler(MutableStateFlow(focusHandler))
-                ),
+                ComposeKeyboardManager.Builder(),
                 ComposeFocusHandler(FocusRequester.Default)
             )
         }

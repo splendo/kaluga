@@ -24,15 +24,20 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityKeyboardManagerBinding
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.keyboard.ViewFocusHandler
-import com.splendo.kaluga.keyboard.keyboardManagerBuilder
+import com.splendo.kaluga.keyboard.ViewKeyboardManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 
-class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel>() {
+class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel<ViewFocusHandler>>() {
 
-    override val viewModel: KeyboardViewModel by viewModel {
+    companion object {
+        const val viewModelName = "ViewKeyboardViewModel"
+    }
+
+    override val viewModel: KeyboardViewModel<ViewFocusHandler> by viewModel(named(viewModelName)) {
         parametersOf(
-            keyboardManagerBuilder(),
+            ViewKeyboardManager.Builder(),
             ViewFocusHandler(R.id.edit_field)
         )
     }

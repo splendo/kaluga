@@ -17,12 +17,7 @@
 
 package com.splendo.kaluga.keyboard.compose
 
-import android.app.Activity
 import androidx.compose.ui.focus.FocusRequester
 import com.splendo.kaluga.keyboard.FocusHandler
 
-class ComposeFocusHandler(private val focusRequester: FocusRequester) : FocusHandler {
-    override fun requestFocus(activity: Activity?) {
-        focusRequester.requestFocus()
-    }
-}
+class ComposeFocusHandler(val focusRequester: FocusRequester) : FocusHandler

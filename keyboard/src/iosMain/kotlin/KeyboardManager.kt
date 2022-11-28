@@ -22,13 +22,13 @@ import kotlinx.coroutines.CoroutineScope
 import platform.UIKit.UIApplication
 import platform.darwin.sel_registerName
 
-actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
+class UIKitKeyboardManager(private val application: UIApplication) : BaseKeyboardManager<UIKitFocusHandler> {
 
-    actual class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
+    class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder<UIKitFocusHandler> {
+        override fun create(coroutineScope: CoroutineScope) = UIKitKeyboardManager(application)
     }
 
-    override fun show(focusHandler: FocusHandler) {
+    override fun show(focusHandler: UIKitFocusHandler) {
         focusHandler.requestFocus()
     }
 

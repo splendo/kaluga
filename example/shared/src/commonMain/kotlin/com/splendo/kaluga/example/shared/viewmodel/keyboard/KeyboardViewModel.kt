@@ -24,9 +24,9 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 
-class KeyboardViewModel(keyboardManagerBuilder: BaseKeyboardManager.Builder, private val editFieldFocusHandler: FocusHandler) : BaseLifecycleViewModel() {
+class KeyboardViewModel<FH : FocusHandler>(val keyboardManagerBuilder: BaseKeyboardManager.Builder<FH>, private val editFieldFocusHandler: FH) : BaseLifecycleViewModel() {
 
-    private val keyboardManager: BaseKeyboardManager = keyboardManagerBuilder.create(coroutineScope)
+    private val keyboardManager: BaseKeyboardManager<FH> = keyboardManagerBuilder.create(coroutineScope)
 
     val showButton = KalugaButton.Plain("show_keyboard".localized(), ButtonStyles.default) {
         keyboardManager.show(editFieldFocusHandler)
