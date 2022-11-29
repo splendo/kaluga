@@ -27,17 +27,41 @@ import kotlinx.coroutines.flow.StateFlow
  * @param navigationMapper A mapper that converts an [NavigationAction] handled by this navigator into a [BottomSheetRoute]
  */
 sealed class BottomSheetNavigator<A : NavigationAction<*>>(
-    private val navigationMapper: (A) -> BottomSheetRoute
+    private val navigationMapper: @Composable (A) -> BottomSheetComposableNavSpec
 ) : Navigator<A>, ComposableLifecycleSubscribable {
 
     abstract val routeController: BottomSheetRouteController
 
-    override fun navigate(action: A) = routeController.navigate(navigationMapper(action))
+    private val actionState = MutableStateFlow<A?>(null)
+
+    override fun navigate(action: A) {
+        actionState.value = action
+    }
+
+    final override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+        SetupNavigationAction()
+        contentModifier(content)
+    }
+
+    abstract val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
+
+    @Composable
+    protected fun BaseLifecycleViewModel.SetupNavigationAction() {
+        val currentAction by actionState.collectAsState()
+        currentAction?.let { action ->
+            when (val spec = navigationMapper(action)) {
+                is BottomSheetRoute -> routeController.navigate(spec)
+                is BottomSheetLaunchedNavigation -> spec.launchedNavigation.Launch(this)
+            }
+            actionState.tryEmit(null)
+        }
+    }
+
 }
 
 /**
  * A [BottomSheetNavigator] that creates and manages a [ModalBottomSheetLayout]. This should be on top of any [ModalBottomSheetNavigator]
- * @param navigationMapper Maps [A] to a [BottomSheetRoute] to be navigated to.
+ * @param navigationMapper Maps [A] to a [BottomSheetComposableNavSpec] to be navigated to.
  * @param initialSheetValue The [ModalBottomSheetValue] the [ModalBottomSheetLayout] should default to.
  * @param parentRouteController A [RouteController] managing the parent view of the [ModalBottomSheetLayout]
  * @param contentRootResultHandlers A list of [NavHostResultHandler] to be added to the root view of the content.
@@ -45,7 +69,7 @@ sealed class BottomSheetNavigator<A : NavigationAction<*>>(
  * @param sheetContentBuilder The [BottomSheetContentBuilder] describing the navigation graph of the sheet content.
  */
 class RootModalBottomSheetNavigator<A : NavigationAction<*>>(
-    navigationMapper: (A) -> BottomSheetRoute,
+    navigationMapper: @Composable (A) -> BottomSheetComposableNavSpec,
     private val initialSheetValue: ModalBottomSheetValue = ModalBottomSheetValue.Hidden,
     parentRouteController: RouteController? = null,
     contentRootResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
@@ -63,7 +87,7 @@ class RootModalBottomSheetNavigator<A : NavigationAction<*>>(
         )
     )
 
-    override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+    override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         val contentNavController = rememberNavController()
         bottomSheetNavigationState.tryEmit(
             BottomSheetNavigatorState(
@@ -93,13 +117,13 @@ class RootModalBottomSheetNavigator<A : NavigationAction<*>>(
  * @param bottomSheetNavigatorState The [BottomSheetNavigatorState] controlling the routes.
  * @param contentResultHandlers A list of [NavHostResultHandler] to be added to the content of this navigator.
  * @param sheetContentResultHandlers A list of [NavHostResultHandler] to be added to the sheet content of this navigator.
- * @param navigationMapper Maps [A] to a [BottomSheetRoute] to be navigated to.
+ * @param navigationMapper Maps [A] to a [BottomSheetComposableNavSpec] to be navigated to.
  */
 class ModalBottomSheetNavigator<A : NavigationAction<*>>(
     bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
     contentResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     sheetContentResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    navigationMapper: (A) -> BottomSheetRoute,
+    navigationMapper: @Composable (A) -> BottomSheetComposableNavSpec
 ) : BottomSheetNavigator<A>(navigationMapper) {
 
     private val sheetStateCoroutineScope = MutableStateFlow<CoroutineScope?>(null)
@@ -112,7 +136,7 @@ class ModalBottomSheetNavigator<A : NavigationAction<*>>(
         )
     )
 
-    override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+    override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         sheetStateCoroutineScope.tryEmit(rememberCoroutineScope())
         routeController.contentRouteController.AddResultHandlers(viewModel = this, resultHandlers = contentResultHandlers)
         routeController.sheetContentRouteController.sheetContentRouteController.AddResultHandlers(viewModel = this, resultHandlers = sheetContentResultHandlers)

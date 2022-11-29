@@ -97,7 +97,6 @@ sealed class ProvidingNavHostRouteController<Provider>(
                 navHostController.popBackStack(ROOT_VIEW, false)
             }
             is Route.Close -> close()
-            is Route.Launcher<*> -> newRoute.launch()
         }
     }
 

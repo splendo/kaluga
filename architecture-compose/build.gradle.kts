@@ -32,4 +32,5 @@ dependencies {
     implementationDependency(Dependencies.AndroidX.Compose.Material)
     implementationDependency(Dependencies.AndroidX.Navigation.Compose)
     implementationDependency(Dependencies.KotlinX.Coroutines.Core)
+    implementationDependency(Dependencies.AndroidX.Browser)
 }

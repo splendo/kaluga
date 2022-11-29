@@ -25,12 +25,14 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import kotlinx.serialization.KSerializer
+import kotlin.reflect.KClass
+import kotlin.reflect.safeCast
 
 /**
  * A Handler that will allow a [NavHostController] to handle Result of a given type [R] to be received by a given [ViewModel]
  */
 sealed class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, R> {
-    abstract val viewModelClass: Class<ViewModel>
+    abstract val viewModelClass: KClass<ViewModel>
     abstract val retain: Boolean
     abstract val onResult: ViewModel.(R) -> Unit
     @Composable
@@ -40,7 +42,7 @@ sealed class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, R> {
      * [NavHostResultHandler] that handles a result of a [NavigationBundle]
      */
     data class Bundle<ViewModel : BaseLifecycleViewModel, R : NavigationBundleSpecRow<*>>(
-        override val viewModelClass: Class<ViewModel>,
+        override val viewModelClass: KClass<ViewModel>,
         val spec: NavigationBundleSpec<R>,
         override val retain: Boolean = false,
         override val onResult: ViewModel.(NavigationBundle<R>) -> Unit
@@ -53,7 +55,7 @@ sealed class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, R> {
      * [NavHostResultHandler] that handles a result of a [NavigationBundleSpecType]
      */
     data class Type<ViewModel : BaseLifecycleViewModel, R>(
-        override val viewModelClass: Class<ViewModel>,
+        override val viewModelClass: KClass<ViewModel>,
         val spec: NavigationBundleSpecType<R>,
         override val retain: Boolean,
         override val onResult: ViewModel.(R) -> Unit
@@ -65,7 +67,7 @@ sealed class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, R> {
 
     @Composable
     internal fun HandleResult(viewModel: BaseLifecycleViewModel, navHostController: NavHostController) {
-        viewModelClass.cast(viewModel)?.let { vm ->
+        viewModelClass.safeCast(viewModel)?.let { vm ->
             navHostController.HandleResult { vm.onResult(it) }
         }
     }
@@ -77,7 +79,7 @@ sealed class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, R> {
 inline fun <reified ViewModel : BaseLifecycleViewModel, R : NavigationBundleSpecRow<*>> NavigationBundleSpec<R>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(NavigationBundle<R>) -> Unit
-) = NavHostResultHandler.Bundle(ViewModel::class.java, this, retain, onResult)
+) = NavHostResultHandler.Bundle(ViewModel::class, this, retain, onResult)
 
 /**
  * Creates a [NavHostResultHandler.Type] of [R] for this [NavigationBundleSpecType]
@@ -85,7 +87,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, R : NavigationBundleSpec
 inline fun <reified ViewModel : BaseLifecycleViewModel, R> NavigationBundleSpecType<R>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(R) -> Unit
-) = NavHostResultHandler.Type(ViewModel::class.java, this, retain, onResult)
+) = NavHostResultHandler.Type(ViewModel::class, this, retain, onResult)
 
 /**
  * Creates a [NavHostResultHandler.Type] of [R] for this [KSerializer]
@@ -93,4 +95,4 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, R> NavigationBundleSpecT
 inline fun <reified ViewModel : BaseLifecycleViewModel, R> KSerializer<R>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(R) -> Unit
-) = NavHostResultHandler.Type(ViewModel::class.java, NavigationBundleSpecType.SerializedType(this), retain, onResult)
+) = NavHostResultHandler.Type(ViewModel::class, NavigationBundleSpecType.SerializedType(this), retain, onResult)
