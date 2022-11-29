@@ -15,15 +15,13 @@
 
  */
 
-package com.splendo.kaluga.architecture.compose.navigation
+package com.splendo.kaluga.architecture.compose.navigation.result
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
-import com.splendo.kaluga.architecture.navigation.ActivityNavigator
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.Navigator
+import androidx.navigation.NavBackStackEntry
+import com.splendo.kaluga.architecture.compose.navigation.Route
+import com.splendo.kaluga.architecture.navigation.toBundle
 
-
+internal fun NavBackStackEntry.setResult(result: Route.Result) = when (result) {
+    is Route.Result.Empty -> savedStateHandle.remove(Route.Result.KEY)
+    is Route.Result.Data<*, *> -> savedStateHandle[Route.Result.KEY] = result.bundle.toBundle()
+}

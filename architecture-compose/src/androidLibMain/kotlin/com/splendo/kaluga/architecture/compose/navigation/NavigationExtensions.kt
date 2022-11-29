@@ -5,9 +5,11 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
@@ -20,7 +22,7 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun LifecycleSubscribable.bind(): LifecycleSubscribable {
-    LocalAppCompatActivity.current?.let { activity ->
+    LocalContext.current.activity?.let { activity ->
         DisposableEffect(Unit) {
             subscribe(activity)
 

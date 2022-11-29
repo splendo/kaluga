@@ -30,7 +30,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -47,9 +46,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.compose.composable
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.mutableState
-import com.splendo.kaluga.architecture.compose.navigation.NavHostModalBottomSheetNavigator
-import com.splendo.kaluga.architecture.compose.navigation.NavHostRootResultHandler
+import com.splendo.kaluga.architecture.compose.navigation.RootModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.composable
+import com.splendo.kaluga.architecture.compose.navigation.result.NavHostResultHandler
 import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
@@ -85,8 +84,14 @@ fun ArchitectureLayout() {
     MdcTheme {
         val viewModel = koinViewModel<ArchitectureViewModel> {
             parametersOf(
-                NavHostModalBottomSheetNavigator(
+                RootModalBottomSheetNavigator(
                     navigationMapper = ::architectureNavigationRouteMapper,
+                    contentRootResultHandlers = listOf(
+                        InputDetails.serializer().NavHostResultHandler<ArchitectureViewModel, InputDetails> {
+                            nameInput.post(it.name)
+                            numberInput.post(it.number.toString())
+                        }
+                    ),
                     contentBuilder = { bottomSheetNavigationState ->
                         composable<InputDetails, ArchitectureNavigationAction.Details>(
                             type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
@@ -94,12 +99,6 @@ fun ArchitectureLayout() {
                             ArchitectureDetailsLayout(inputDetails, bottomSheetNavigationState)
                         }
                     },
-                    contentRootResultHandlers = listOf(
-                        InputDetails.serializer().NavHostRootResultHandler<ArchitectureViewModel, InputDetails> {
-                            nameInput.post(it.name)
-                            numberInput.post(it.number.toString())
-                        }
-                    ),
                     sheetContentBuilder = { bottomSheetNavigationState ->
                         composable(ArchitectureNavigationAction.BottomSheet.route()) {
                             BottomSheetLayout(
@@ -111,8 +110,7 @@ fun ArchitectureLayout() {
                                 bottomSheetNavigationState
                             )
                         }
-                    },
-                    initialSheetValue = ModalBottomSheetValue.Hidden
+                    }
                 )
             )
         }

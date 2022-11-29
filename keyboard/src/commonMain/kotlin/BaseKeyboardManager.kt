@@ -34,7 +34,7 @@ interface BaseKeyboardManager<FH : FocusHandler> {
     /**
      * Base KeyboardManager builder class, which used to create a [BaseKeyboardManager]
      */
-    interface Builder<FH: FocusHandler> : LifecycleSubscribableMarker {
+    interface Builder<FH : FocusHandler> : LifecycleSubscribableMarker {
 
         /**
          * Creates KeyboardManager object

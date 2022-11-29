@@ -24,8 +24,6 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationBundleValue
-import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
-import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import kotlinx.serialization.builtins.BooleanArraySerializer
@@ -181,7 +179,7 @@ sealed class Route {
         companion object {
             const val KEY = "com.splendo.kaluga.architecture.compose.navigation.Route.Result.KEY"
         }
-        object Empty: Result()
+        object Empty : Result()
         data class Data<SpecRow : NavigationBundleSpecRow<*>, Bundle : NavigationBundle<SpecRow>>(val bundle: Bundle) : Result()
     }
 

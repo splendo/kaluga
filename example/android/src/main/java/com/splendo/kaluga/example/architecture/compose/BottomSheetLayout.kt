@@ -25,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetNavigatorState
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
-import com.splendo.kaluga.architecture.compose.navigation.NavHostModalBottomSheetContentNavigator
+import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
@@ -38,9 +38,9 @@ import org.koin.core.parameter.parametersOf
 fun BottomSheetLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) {
     val viewModel = koinViewModel<BottomSheetViewModel> {
         parametersOf(
-            NavHostModalBottomSheetContentNavigator(
+            ModalBottomSheetNavigator(
                 bottomSheetNavigationState,
-                ::bottomSheetNavigationRouteMapper
+                navigationMapper = ::bottomSheetNavigationRouteMapper
             )
         )
     }

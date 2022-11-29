@@ -1,7 +1,5 @@
 package com.splendo.kaluga.architecture.compose.viewModel
 
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
@@ -15,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.lifecycle.ComposableLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
@@ -57,11 +56,13 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     content: @Composable (ViewModel.() -> Unit)? = null
 ) {
     viewModel.linkLifecycle(activity, fragmentManager)
-    val composeLifecycleSubscribables = viewModel.ComposableLifecycleSubscribable
+    val composeLifecycleSubscribables = remember(viewModel) {
+        viewModel.ComposableLifecycleSubscribable
+    }
     if (composeLifecycleSubscribables.isEmpty()) {
         content?.invoke(viewModel)
     } else {
-        val modifier = viewModel.ComposableLifecycleSubscribable.reduceRight { new, acc ->
+        val modifier = composeLifecycleSubscribables.reduceRight { new, acc ->
             object : ComposableLifecycleSubscribable {
                 override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = { content ->
                     new.modifier(this) { acc.modifier(this, content) }
@@ -79,7 +80,7 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
 @Composable
 @Deprecated(
     "Does not work for configuration changes (e.g. rotation).",
-replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
+    replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
 fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
     provider().also { handleLocalViewModelStore(it) }
@@ -154,7 +155,6 @@ private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(activity: AppCompatAc
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(Unit) {
         val observer = VmObserver(this@linkLifecycle, activity, fragmentManager)
-
         lifecycle.addObserver(observer)
 
         onDispose {
@@ -198,10 +198,3 @@ private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM,
         lifecycleSubscribables.forEach { it.unsubscribe() }
     }
 }
-
-private val Context.activity: AppCompatActivity? get() = when (this) {
-    is AppCompatActivity -> this
-    is ContextWrapper -> baseContext.activity // recursive lookup
-    else -> null
-}
-

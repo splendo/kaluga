@@ -28,8 +28,7 @@ import java.util.WeakHashMap
 
 class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = null) : BaseKeyboardManager<ComposeFocusHandler> {
 
-    class Builder : BaseKeyboardManager.Builder<ComposeFocusHandler>,
-        ComposableLifecycleSubscribable {
+    class Builder : BaseKeyboardManager.Builder<ComposeFocusHandler>, ComposableLifecycleSubscribable {
 
         private val builtManagers = WeakHashMap<Int, ComposeKeyboardManager>()
 
@@ -44,7 +43,6 @@ class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = n
             }
             content()
         }
-
     }
 
     override fun show(focusHandler: ComposeFocusHandler) {

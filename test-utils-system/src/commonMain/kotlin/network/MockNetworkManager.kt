@@ -78,4 +78,3 @@ class MockBaseNetworkManager(initialNetworkConnectionType: NetworkConnectionType
     val stopMonitoringMock = ::stopMonitoring.mock()
     override suspend fun stopMonitoring(): Unit = stopMonitoringMock.call()
 }
-

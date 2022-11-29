@@ -23,7 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.splendo.kaluga.architecture.compose.navigation.BottomSheetContentRouteNavigator
+import com.splendo.kaluga.architecture.compose.navigation.BottomSheetContentNavHostRouteNavigator
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetNavigatorState
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.state
@@ -40,7 +40,7 @@ fun ArchitectureDetailsLayout(inputDetails: InputDetails, bottomSheetNavigatorSt
     val viewModel = koinViewModel<ArchitectureDetailsViewModel> {
         parametersOf(
             inputDetails,
-            BottomSheetContentRouteNavigator(
+            BottomSheetContentNavHostRouteNavigator(
                 bottomSheetNavigatorState,
                 navigationMapper = ::architectureDetailsNavigationRouteMapper
             )
