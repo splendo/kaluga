@@ -36,14 +36,16 @@ import org.koin.core.parameter.parametersOf
 
 class XMLArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>() {
 
-    inner class Contract : ActivityResultContract<Intent, InputDetails?>() {
+    class Contract : ActivityResultContract<Intent, InputDetails?>() {
 
         override fun createIntent(context: Context, input: Intent): Intent = input
 
         override fun parseResult(
             resultCode: Int,
             intent: Intent?
-        ): InputDetails? = intent?.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
+        ): InputDetails? {
+            return intent?.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
+        }
     }
 
     override val viewModel: ArchitectureViewModel by viewModel {

@@ -1,18 +1,18 @@
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
- 
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
       http://www.apache.org/licenses/LICENSE-2.0
- 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-  
+
  */
 
 package com.splendo.kaluga.example.resources.compose
@@ -54,7 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ColorsLayout() {
     val viewModel = koinViewModel<ColorViewModel>()
-    
+
     ViewModelComposable(viewModel) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
@@ -82,9 +82,11 @@ fun ColorsLayout() {
             Row(Modifier.fillMaxWidth()) {
                 Column(Modifier.width(mainColorSize)) {
                     var backdropTempText by remember { mutableStateOf(backdropText) }
-                    Box(modifier = Modifier
-                        .size(mainColorSize)
-                        .backgroundStyle(backdropColorBackground))
+                    Box(
+                        modifier = Modifier
+                            .size(mainColorSize)
+                            .backgroundStyle(backdropColorBackground)
+                    )
                     OutlinedTextField(
                         value = backdropTempText,
                         onValueChange = { backdropTempText = it },
@@ -98,15 +100,19 @@ fun ColorsLayout() {
                     )
                 }
                 Spacer(modifier = Modifier.weight(1.0f))
-                Box(modifier = Modifier
-                    .size(mainColorSize)
-                    .backgroundStyle(blendedColorBackground))
+                Box(
+                    modifier = Modifier
+                        .size(mainColorSize)
+                        .backgroundStyle(blendedColorBackground)
+                )
                 Spacer(modifier = Modifier.weight(1.0f))
                 Column(Modifier.width(mainColorSize)) {
                     var sourceTempText by remember { mutableStateOf(sourceText) }
-                    Box(modifier = Modifier
-                        .size(mainColorSize)
-                        .backgroundStyle(sourceColorBackground))
+                    Box(
+                        modifier = Modifier
+                            .size(mainColorSize)
+                            .backgroundStyle(sourceColorBackground)
+                    )
                     OutlinedTextField(
                         value = sourceTempText,
                         onValueChange = { sourceTempText = it },
@@ -139,11 +145,14 @@ fun ListOfColors(list: List<BackgroundStyle>) {
     Row(
         Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())) {
+            .horizontalScroll(rememberScrollState())
+    ) {
         list.forEach {
-            Box(modifier = Modifier
-                .size(40.dp)
-                .backgroundStyle(it))
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .backgroundStyle(it)
+            )
         }
     }
 }

@@ -94,7 +94,8 @@ fun ResourcesLayout() {
                 resources.forEach {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onResourceSelected(it) }) {
+                        onClick = { onResourceSelected(it) }
+                    ) {
                         Text(it.title)
                     }
                 }

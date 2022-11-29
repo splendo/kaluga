@@ -54,9 +54,11 @@ fun BottomSheetLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigator
                 .padding(Constants.Padding.default)
         ) {
             Text(text)
-            button.Composable(modifier = Modifier
-                .fillMaxWidth()
-                .padding(Constants.Padding.default))
+            button.Composable(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Constants.Padding.default)
+            )
         }
     }
 }

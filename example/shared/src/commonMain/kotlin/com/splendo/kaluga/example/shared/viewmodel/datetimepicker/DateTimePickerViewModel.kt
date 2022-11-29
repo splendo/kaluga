@@ -1,7 +1,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.datetimepicker
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.KalugaDateFormatter

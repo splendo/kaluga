@@ -1,12 +1,12 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,15 +48,17 @@ sealed class BottomSheetNavigator<A : NavigationAction<*>>(
     @Composable
     protected fun BaseLifecycleViewModel.SetupNavigationAction() {
         val currentAction by actionState.collectAsState()
+        val onDispose: () -> Unit = { actionState.compareAndSet(currentAction, null) }
         currentAction?.let { action ->
             when (val spec = navigationMapper(action)) {
-                is BottomSheetRoute -> routeController.navigate(spec)
-                is BottomSheetLaunchedNavigation -> spec.launchedNavigation.Launch(this)
+                is BottomSheetRoute -> LaunchedEffect(spec) {
+                    routeController.navigate(spec)
+                    onDispose()
+                }
+                is BottomSheetLaunchedNavigation -> spec.launchedNavigation.Launch(this, onDispose)
             }
-            actionState.tryEmit(null)
         }
     }
-
 }
 
 /**
@@ -160,7 +162,6 @@ private fun SetupNavigatingModalBottomSheetLayout(
                     HardwareBackButtonNavigation(onBackButtonClickHandler = sheetContentRouteController::close)
                 }
                 Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
-                    Log.d("TEST", "SetupNavigatingModalBottomSheetLayout ${navigationState.sheetContentNavHostController}")
                     SetupNavHost(
                         bottomSheetNavigatorState = bottomSheetNavigationState,
                         navHostController = { sheetContentNavHostController },

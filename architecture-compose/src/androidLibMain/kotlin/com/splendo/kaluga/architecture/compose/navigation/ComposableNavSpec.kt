@@ -20,7 +20,6 @@ package com.splendo.kaluga.architecture.compose.navigation
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -28,8 +27,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.compose.activity
@@ -86,8 +84,10 @@ sealed class ComposableNavSpec {
          * @param type The [ActivityResultContracts.PickVisualMedia.VisualMediaType] to be selected.
          * @param onResult Returns an [Uri] of the image or video selected, or `null` if nothing was selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> PickVisualMedia(type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
-            noinline onResult: VM.(Uri?) -> Unit) = Launcher(
+        inline fun <reified VM : BaseLifecycleViewModel> PickVisualMedia(
+            type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
+            noinline onResult: VM.(Uri?) -> Unit
+        ) = Launcher(
             VM::class,
             ActivityResultContracts.PickVisualMedia(),
             { PickVisualMediaRequest(mediaType = type) },
@@ -99,8 +99,11 @@ sealed class ComposableNavSpec {
          * @param type The [ActivityResultContracts.PickVisualMedia.VisualMediaType] to be selected.
          * @param onResult Returns a list of [Uri] of the images or videos selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> PickMultipleVisualMedia(maxItems: Int? = null, type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
-            noinline onResult: VM.(List<Uri>) -> Unit) = Launcher(
+        inline fun <reified VM : BaseLifecycleViewModel> PickMultipleVisualMedia(
+            maxItems: Int? = null,
+            type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
+            noinline onResult: VM.(List<Uri>) -> Unit
+        ) = Launcher(
             VM::class,
             maxItems?.let { ActivityResultContracts.PickMultipleVisualMedia(it) } ?: ActivityResultContracts.PickMultipleVisualMedia(),
             { PickVisualMediaRequest(mediaType = type) },
@@ -201,7 +204,7 @@ sealed class ComposableNavSpec {
                 is NavigationSpec.Phone.Type.Dial -> Intent(Intent.ACTION_DIAL)
                 is NavigationSpec.Phone.Type.Call -> Intent(Intent.ACTION_CALL)
             }.apply {
-                data = Uri.parse("tel:${phoneNumber}")
+                data = Uri.parse("tel:$phoneNumber")
             }
             if (intent.resolveActivity(packageManager) != null) intent else null
         }
@@ -252,16 +255,20 @@ sealed class ComposableNavSpec {
      */
     sealed class LaunchedNavigation : ComposableNavSpec() {
         @Composable
-        protected abstract fun createLauncher(viewModel: BaseLifecycleViewModel): () -> Unit
+        protected abstract fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit
 
         /**
          * Launch this [LaunchedNavigation] for a given [viewModel].
          */
         @Composable
-        fun Launch(viewModel: BaseLifecycleViewModel) {
-            val launcher = createLauncher(viewModel)
-            LaunchedEffect(launcher) {
+        fun Launch(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit) {
+            val launcher = createLauncher(viewModel, onDispose)
+            // Ensure only launched once
+            DisposableEffect(viewModel) {
                 launcher.invoke()
+                onDispose {
+                    onDispose()
+                }
             }
         }
     }
@@ -281,10 +288,11 @@ sealed class ComposableNavSpec {
     ) : LaunchedNavigation() {
 
         @Composable
-        override fun createLauncher(viewModel: BaseLifecycleViewModel): () -> Unit {
+        override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
             val launcher = rememberLauncherForActivityResult(activityResultContract) { result ->
                 viewModelClass.safeCast(viewModel)?.let {
                     it.onResult(result)
+                    onDispose()
                 }
             }
             val input = getInput()
@@ -302,8 +310,8 @@ sealed class ComposableNavSpec {
      */
     data class CloseActivity(val result: Pair<Int, NavigationBundle<*>?>? = null) : LaunchedNavigation() {
         @Composable
-        override fun createLauncher(viewModel: BaseLifecycleViewModel): () -> Unit {
-            val activity = LocalContext.current.activity ?: return {}
+        override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
+            val activity = LocalContext.current.activity
             return {
                 result?.let { (resultCode, bundle) ->
                     val data = Intent().apply {
@@ -311,9 +319,10 @@ sealed class ComposableNavSpec {
                             putExtras(it.toBundle())
                         }
                     }
-                    activity.setResult(resultCode, data)
+                    activity?.setResult(resultCode, data)
                 }
-                activity.finish()
+                activity?.finish()
+                onDispose()
             }
         }
     }
@@ -329,10 +338,13 @@ sealed class ComposableNavSpec {
     ) : LaunchedNavigation() {
 
         @Composable
-        override fun createLauncher(viewModel: BaseLifecycleViewModel): () -> Unit {
-            val fragmentManager = LocalContext.current.activity?.supportFragmentManager ?: return {}
+        override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
+            val fragmentManager = LocalContext.current.activity?.supportFragmentManager
             return {
-                createDialog().show(fragmentManager, tag)
+                fragmentManager?.let {
+                    createDialog().show(it, tag)
+                }
+                onDispose()
             }
         }
     }
@@ -344,11 +356,14 @@ sealed class ComposableNavSpec {
     data class IntentLauncher(val createIntent: @Composable Activity.() -> Intent?) : LaunchedNavigation() {
 
         @Composable
-        override fun createLauncher(viewModel: BaseLifecycleViewModel): () -> Unit {
+        override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
             val context = LocalContext.current
-            val intent = context.activity?.intent ?: return {}
+            val intent = context.activity?.intent
             return {
-                context.startActivity(intent)
+                intent?.let {
+                    context.startActivity(it)
+                }
+                onDispose()
             }
         }
     }
@@ -374,7 +389,7 @@ inline fun <reified A : Activity, reified VM : BaseLifecycleViewModel, O> Naviga
     activityResultContract: ActivityResultContract<Intent, O>,
     flags: Set<IntentFlag> = emptySet(),
     noinline onResult: VM.(O) -> Unit
-) {
+): ComposableNavSpec.Launcher<VM, Intent, O> {
     val getInput = @Composable {
         LocalContext.current.activity?.let { activity ->
             Intent(activity, A::class.java).apply {
@@ -385,14 +400,14 @@ inline fun <reified A : Activity, reified VM : BaseLifecycleViewModel, O> Naviga
             }
         }
     }
-    ComposableNavSpec.Launcher(VM::class, activityResultContract, getInput, onResult)
+    return ComposableNavSpec.Launcher(VM::class, activityResultContract, getInput, onResult)
 }
 
 /**
  * Creates a [ComposableNavSpec.IntentLauncher] to show a given [Activity]
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  */
-inline fun <reified  A : Activity> NavigationAction<*>.ShowActivity(
+inline fun <reified A : Activity> NavigationAction<*>.ShowActivity(
     flags: Set<IntentFlag> = emptySet()
 ) = ComposableNavSpec.IntentLauncher {
     Intent(this, A::class.java).apply {

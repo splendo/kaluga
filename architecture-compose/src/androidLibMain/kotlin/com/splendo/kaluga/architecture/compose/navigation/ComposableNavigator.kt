@@ -1,6 +1,7 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,12 +49,15 @@ sealed class ComposableNavigator<A : NavigationAction<*>>(
     @Composable
     protected fun BaseLifecycleViewModel.SetupNavigationAction() {
         val currentAction by actionState.collectAsState()
+        val onDispose: () -> Unit = { actionState.compareAndSet(currentAction, null) }
         currentAction?.let { action ->
             when (val spec = navigationMapper(action)) {
-                is Route -> routeController.navigate(spec)
-                is ComposableNavSpec.LaunchedNavigation -> spec.Launch(this)
+                is Route -> LaunchedEffect(spec) {
+                    routeController.navigate(spec)
+                    onDispose()
+                }
+                is ComposableNavSpec.LaunchedNavigation -> spec.Launch(this, onDispose)
             }
-            actionState.tryEmit(null)
         }
     }
 }

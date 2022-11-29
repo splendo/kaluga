@@ -22,7 +22,6 @@ import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityLinkBinding
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
