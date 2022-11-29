@@ -35,7 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.composable
 import com.google.android.material.composethemeadapter.MdcTheme
-import com.splendo.kaluga.architecture.compose.navigation.RootNavHostRouteNavigator
+import com.splendo.kaluga.architecture.compose.navigation.RootNavHostComposableNavigator
 import com.splendo.kaluga.architecture.compose.navigation.next
 import com.splendo.kaluga.architecture.compose.navigation.route
 import com.splendo.kaluga.architecture.compose.state
@@ -67,7 +67,7 @@ fun ResourcesLayout() {
     MdcTheme {
         val viewModel = koinViewModel<ResourcesListViewModel> {
             parametersOf(
-                RootNavHostRouteNavigator<ResourcesListNavigationAction>(
+                RootNavHostComposableNavigator<ResourcesListNavigationAction>(
                     navigationMapper = { action ->
                         when (action) {
                             is ResourcesListNavigationAction.Button -> action.next

@@ -84,8 +84,8 @@ fun ArchitectureLayout() {
     MdcTheme {
         val viewModel = koinViewModel<ArchitectureViewModel> {
             parametersOf(
-                RootModalBottomSheetNavigator(
-                    navigationMapper = ::architectureNavigationRouteMapper,
+                RootModalBottomSheetNavigator<ArchitectureNavigationAction<*>>(
+                    navigationMapper = { architectureNavigationRouteMapper(it) },
                     contentRootResultHandlers = listOf(
                         InputDetails.serializer().NavHostResultHandler<ArchitectureViewModel, InputDetails> {
                             nameInput.post(it.name)

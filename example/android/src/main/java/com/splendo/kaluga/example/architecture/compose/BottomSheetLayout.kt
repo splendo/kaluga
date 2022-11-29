@@ -28,6 +28,7 @@ import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavi
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import kotlinx.coroutines.flow.StateFlow
@@ -38,9 +39,9 @@ import org.koin.core.parameter.parametersOf
 fun BottomSheetLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) {
     val viewModel = koinViewModel<BottomSheetViewModel> {
         parametersOf(
-            ModalBottomSheetNavigator(
+            ModalBottomSheetNavigator<BottomSheetNavigation>(
                 bottomSheetNavigationState,
-                navigationMapper = ::bottomSheetNavigationRouteMapper
+                navigationMapper = { bottomSheetNavigationRouteMapper(it) }
             )
         )
     }
