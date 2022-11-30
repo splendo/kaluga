@@ -25,6 +25,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.numberWithInt
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
+import platform.QuartzCore.CATransaction
 import platform.SafariServices.SFSafariViewController
 import platform.StoreKit.SKStoreProductParameterAdvertisingPartnerToken
 import platform.StoreKit.SKStoreProductParameterAffiliateToken
@@ -112,15 +113,25 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
         val parent = assertParent() ?: return
         assert(parent.navigationController != null)
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            pushSpec.completion?.invoke()
+        }
         parent.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
+        CATransaction.commit()
     }
 
     private fun popViewController(popSpec: NavigationSpec.Pop) {
         val parent = assertParent() ?: return
         assert(parent.navigationController != null)
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            popSpec.completion?.invoke()
+        }
         popSpec.to?.let {
             parent.navigationController?.popToViewController(it, popSpec.animated)
         } ?: parent.navigationController?.popViewControllerAnimated(popSpec.animated)
+        CATransaction.commit()
     }
 
     private fun presentViewController(presentSpec: NavigationSpec.Present) {

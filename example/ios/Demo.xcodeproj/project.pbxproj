@@ -24,6 +24,8 @@
 		20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D42469B25B00C9A63F /* InfoViewController.swift */; };
 		20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */; };
 		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
+		20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2904293796C5007E4079 /* BottomSheetViewController.swift */; };
+		20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */; };
 		20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */; };
 		20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3826FF550100D14AC9 /* LabelViewController.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
@@ -90,6 +92,8 @@
 		20C7D1D42469B25B00C9A63F /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureInputViewController.swift; sourceTree = "<group>"; };
 		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
+		20CA2904293796C5007E4079 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
+		20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSubPageViewController.swift; sourceTree = "<group>"; };
 		20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesListViewController.swift; sourceTree = "<group>"; };
 		20D8CD3826FF550100D14AC9 /* LabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -205,6 +209,8 @@
 			children = (
 				20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */,
 				20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */,
+				20CA2904293796C5007E4079 /* BottomSheetViewController.swift */,
+				20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */,
 			);
 			path = Architecture;
 			sourceTree = "<group>";
@@ -520,6 +526,7 @@
 				20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */,
 				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
 				20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */,
+				20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */,
 				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
 				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
 				649979D325CC638C00348419 /* SystemViewController.swift in Sources */,
@@ -529,6 +536,7 @@
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
 				209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */,
 				209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */,
+				20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */,
 				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
 				2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */,
 				20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */,

@@ -51,6 +51,7 @@
 "architecture_number_input_placeholder" = "Enter a number";
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+"architecture_finish" = "Finish";
 "keyboard_manager" = "Keyboard";
 "show_keyboard" = "Show Keyboard";
 "hide_keyboard" = "Hide Keyboard";
@@ -92,6 +93,12 @@
 "bluetooth_permissions_write" = "Write";
 "bluetooth_permissions_read_encrypted" = "Read Encrypted";
 "bluetooth_permissions_write_encrypted" = "Write Encrypted";
+
+"bottom_sheet_show_sheet" = "Open Bottom Sheet";
+"bottom_sheet_show_sub_page" = "Open Sub Page";
+"bottom_sheet_sub_page_title" = "Sub Page";
+"bottom_sheet_sheet_content" = "This is a bottom sheet";
+"bottom_sheet_sheet_sub_page_title" = "Sheet Sub Page";
 
 "beacons_start_monitoring" = "Start Monitoring";
 "beacons_stop_monitoring" = "Stop Monitoring";

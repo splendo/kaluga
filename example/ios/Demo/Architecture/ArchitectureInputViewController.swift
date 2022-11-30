@@ -29,17 +29,34 @@ class ArchitectureViewController: UIViewController  {
     @IBOutlet weak var numberError: UIImageView!
     
     @IBOutlet weak var detailsButton: UIButton!
+    @IBOutlet weak var bottomSheetButton: UIButton!
 
     lazy var navigator = ArchitectureNavigatorKt.ArchitectureViewControllerNavigator(
         parent: self,
         onDetails: { inputDetails in
-            NavigationSpec.Present(animated: true, presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue), transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)) {
+            NavigationSpec.Push(
+                animated: true
+            ) {
                 ArchitectureDetailsViewController.create(inputDetails: inputDetails) { [weak self] resultDetails in
                     self?.onDetailsDismissed(inputDetails: resultDetails)
                 }
             }
         },
-        onBottomSheet: { fatalError("ToDo") }
+        onBottomSheet: {
+            NavigationSpec.Present(
+                animated: true,
+                presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue),
+                transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)
+            ) {
+                let vc = BottomSheetViewController.create()
+                let nav = UINavigationController(rootViewController: vc)
+                if let sheet = nav.sheetPresentationController {
+                    sheet.detents = [.medium()]
+                }
+                nav.isModalInPresentation = true
+                return nav
+            }
+        }
     )
     lazy var viewModel = ArchitectureViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
@@ -75,6 +92,7 @@ class ArchitectureViewController: UIViewController  {
         nameLabel.text = viewModel.namePlaceholder
         numberLabel.text = viewModel.numberPlaceholder
         ButtonStyleKt.bindButton(detailsButton, button: viewModel.showDetailsButton)
+        ButtonStyleKt.bindButton(bottomSheetButton, button: viewModel.showBottomSheetButton)
     }
 
     private func onDetailsDismissed(inputDetails: InputDetails) {

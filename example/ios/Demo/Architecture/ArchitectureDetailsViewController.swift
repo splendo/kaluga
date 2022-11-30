@@ -31,11 +31,11 @@ class ArchitectureDetailsViewController: UIViewController {
             vc.isModalInPresentation = true
         }
         let navigator = ArchitectureDetailsNavigatorKt.ArchitectureDetailsViewControllerNavigator(parent: vc) { details in
-            NavigationSpec.Dismiss(toDismiss: { $0 }, animated: true) {
+            NavigationSpec.Pop(to: nil, animated: true) {
                 onDismiss(details)
             }
         } onClose: {
-            NavigationSpec.Dismiss(toDismiss: { $0 }, animated: true)
+            NavigationSpec.Pop(to: nil, animated: true)
         }
         vc.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
         return vc
@@ -56,6 +56,10 @@ class ArchitectureDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.hidesBackButton = true
+        let newBackButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(didDismiss))
+        self.navigationItem.leftBarButtonItem = newBackButton
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
 
             guard let viewModel = self?.viewModel else {
@@ -74,6 +78,10 @@ class ArchitectureDetailsViewController: UIViewController {
 
         ButtonStyleKt.bindButton(inverseButton, button: viewModel.inverseButton)
         ButtonStyleKt.bindButton(closeButton, button: viewModel.finishButton)
+    }
+
+    @objc func didDismiss() {
+        viewModel.onBackPressed()
     }
     
 }
