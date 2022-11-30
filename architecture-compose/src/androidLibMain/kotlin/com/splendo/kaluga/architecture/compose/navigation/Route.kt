@@ -289,7 +289,8 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
     get() = Route.PopTo(
-        this
+        this,
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )
 
 /**
@@ -306,4 +307,12 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
     get() = Route.Replace(
         this
+    )
+
+/**
+ * Creates a [Route.Back] from [Action]
+ */
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.back
+    get() = Route.Back(
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )

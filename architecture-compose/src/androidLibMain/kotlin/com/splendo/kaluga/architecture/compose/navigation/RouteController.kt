@@ -176,6 +176,8 @@ class BottomSheetSheetContentRouteController(
                 }
             }
         }
+
+        // We should call our own back/close mechanisms since the ROOT_VIEW needs to be retained.
         when (newRoute) {
             is Route.Close -> close()
             is Route.Back -> back(newRoute.result)
@@ -187,6 +189,8 @@ class BottomSheetSheetContentRouteController(
     override fun back(result: Route.Result): Boolean {
         val navHostController = bottomSheetNavigatorState.value?.sheetContentNavHostController
         val rootRoute = NavDestination.createRoute(ROOT_VIEW).hashCode()
+        // If navigating back to anything but the ROOT_VIEW, just go back
+        // Otherwise, close the BottomSheet
         return if (navHostController != null && navHostController.backQueue.isNotEmpty() && navHostController.previousBackStackEntry?.destination?.id != rootRoute) {
             navHostController.previousBackStackEntry?.setResult(result)
             navHostController.popBackStack()
@@ -198,6 +202,7 @@ class BottomSheetSheetContentRouteController(
 
     override fun close() {
         bottomSheetNavigatorState.value?.let { (_, sheetContentNavHostController, sheetState) ->
+            // Make sure we're back at the ROOT_VIEW before hiding the sheet
             sheetContentNavHostController.popBackStack(ROOT_VIEW, false)
             coroutineScope.value?.launch {
                 sheetState.hide()

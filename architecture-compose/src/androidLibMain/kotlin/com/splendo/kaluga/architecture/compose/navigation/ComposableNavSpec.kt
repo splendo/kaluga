@@ -264,7 +264,7 @@ sealed class ComposableNavSpec {
         fun Launch(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit) {
             val launcher = createLauncher(viewModel, onDispose)
             // Ensure only launched once
-            DisposableEffect(viewModel) {
+            DisposableEffect(viewModel, this) {
                 launcher.invoke()
                 onDispose {
                     onDispose()
@@ -289,12 +289,17 @@ sealed class ComposableNavSpec {
 
         @Composable
         override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
+            // Create a ManagedActivityResultLauncher to hadle the contract.
+            // This launcher needs to remain in the Compose stack since otherwise onResult will not return.
+            // Therefore only call onDispose when onResult is received.
             val launcher = rememberLauncherForActivityResult(activityResultContract) { result ->
                 viewModelClass.safeCast(viewModel)?.let {
                     it.onResult(result)
                     onDispose()
                 }
             }
+
+            // Get the input
             val input = getInput()
             return {
                 input?.let {

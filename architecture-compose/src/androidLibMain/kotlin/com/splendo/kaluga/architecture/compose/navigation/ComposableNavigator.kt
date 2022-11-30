@@ -31,7 +31,7 @@ sealed class ComposableNavigator<A : NavigationAction<*>>(
     /**
      * [RouteController] managing the [Route] navigation
      */
-    abstract val routeController: RouteController
+    abstract val routeController: RouteController?
 
     private val actionState = MutableStateFlow<A?>(null)
 
@@ -40,7 +40,9 @@ sealed class ComposableNavigator<A : NavigationAction<*>>(
     }
 
     final override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+        // Make sure Navigation actions are launched
         SetupNavigationAction()
+        // Actually modify the content
         contentModifier(content)
     }
 
@@ -49,12 +51,18 @@ sealed class ComposableNavigator<A : NavigationAction<*>>(
     @Composable
     protected fun BaseLifecycleViewModel.SetupNavigationAction() {
         val currentAction by actionState.collectAsState()
-        val onDispose: () -> Unit = { actionState.compareAndSet(currentAction, null) }
+        // If there is a current action, render it
         currentAction?.let { action ->
+            // We should only set the actionState back to null when navigation has completed.
+            // Otherwise some logic may break, such as with rememberLauncherForActivityResult.
+            val onDispose: () -> Unit = { actionState.compareAndSet(currentAction, null) }
             when (val spec = navigationMapper(action)) {
-                is Route -> LaunchedEffect(spec) {
-                    routeController.navigate(spec)
-                    onDispose()
+                is Route -> {
+                    // Navigate the route controller using a LaunchedEffect to ensure it only fires once.
+                    LaunchedEffect(this, spec) {
+                        routeController?.navigate(spec)
+                        onDispose()
+                    }
                 }
                 is ComposableNavSpec.LaunchedNavigation -> spec.Launch(this, onDispose)
             }
@@ -81,13 +89,19 @@ class RootNavHostComposableNavigator<A : NavigationAction<*>>(
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         val navController = rememberNavController()
+        // Update the NavHostController to the current state
         navHostController.tryEmit(navController)
+
+        // Show a NavHost displaying the content
         SetupNavHost(
             navHostController = navHostController,
             rootView = {
+                // Handle results of the Root View
                 rootResultHandlers.forEach { resultHandler ->
                     resultHandler.HandleResult(viewModel = this, navHostController = navController)
                 }
+
+                // Render original content
                 content()
             },
             builder = contentBuilder
@@ -108,6 +122,7 @@ sealed class ProvidingNavHostComposableNavigator<A : NavigationAction<*>, Provid
 ) : ComposableNavigator<A>(navigationMapper) {
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+        // Add Result Handlers
         routeController.AddResultHandlers(viewModel = this, resultHandlers = resultHandlers)
         content()
     }
@@ -119,7 +134,7 @@ sealed class ProvidingNavHostComposableNavigator<A : NavigationAction<*>, Provid
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
  * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
  */
-class NavHostComposableNavigator<A : NavigationAction<*>> (
+class NavHostComposableNavigator<A : NavigationAction<*>>(
     navHostController: StateFlow<NavHostController?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     parentRouteController: RouteController? = null,
@@ -136,7 +151,7 @@ class NavHostComposableNavigator<A : NavigationAction<*>> (
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
  * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
  */
-class BottomSheetContentNavHostComposableNavigator<A : NavigationAction<*>> (
+class BottomSheetContentNavHostComposableNavigator<A : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     parentRouteController: RouteController? = null,
@@ -153,7 +168,7 @@ class BottomSheetContentNavHostComposableNavigator<A : NavigationAction<*>> (
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
  * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
  */
-class BottomSheetSheetContentNavHostComposableNavigator<A : NavigationAction<*>> (
+class BottomSheetSheetContentNavHostComposableNavigator<A : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     navigationMapper: @Composable (A) -> ComposableNavSpec
@@ -164,7 +179,19 @@ class BottomSheetSheetContentNavHostComposableNavigator<A : NavigationAction<*>>
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         coroutineScopeState.tryEmit(rememberCoroutineScope())
+        // Add Result Handlers for SheetContent
         routeController.sheetContentRouteController.AddResultHandlers(viewModel = this, resultHandlers = resultHandlers)
         content()
     }
+}
+
+/**
+ * A [ComposableNavigator] that only supports [ComposableNavSpec.LaunchedNavigation] navigation.
+ * @param navigationMapper Maps [A] to a [ComposableNavSpec.LaunchedNavigation] to be navigated to.
+ */
+class LaunchedComposableNavigator<A : NavigationAction<*>>(
+    navigationMapper: @Composable (A) -> ComposableNavSpec.LaunchedNavigation
+) : ComposableNavigator<A>(navigationMapper) {
+    override val routeController: RouteController? = null
+    override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content -> content() }
 }

@@ -19,6 +19,7 @@ package com.splendo.kaluga.example.architecture.compose
 
 import com.splendo.kaluga.architecture.compose.navigation.BottomSheetRoute
 import com.splendo.kaluga.architecture.compose.navigation.Route
+import com.splendo.kaluga.architecture.compose.navigation.back
 import com.splendo.kaluga.architecture.compose.navigation.bottomSheetContent
 import com.splendo.kaluga.architecture.compose.navigation.bottomSheetSheetContent
 import com.splendo.kaluga.architecture.compose.navigation.next
@@ -38,8 +39,8 @@ internal fun architectureNavigationRouteMapper(action: ArchitectureNavigationAct
 /** Maps a navigation action to a route string. */
 internal fun architectureDetailsNavigationRouteMapper(action: ArchitectureDetailsNavigationAction<*>): Route {
     return when (action) {
-        is ArchitectureDetailsNavigationAction.FinishWithDetails -> Route.Back(Route.Result.Data(action.bundle!!))
-        is ArchitectureDetailsNavigationAction.Close -> Route.Back
+        is ArchitectureDetailsNavigationAction.FinishWithDetails -> action.back
+        is ArchitectureDetailsNavigationAction.Close -> action.back
     }
 }
 

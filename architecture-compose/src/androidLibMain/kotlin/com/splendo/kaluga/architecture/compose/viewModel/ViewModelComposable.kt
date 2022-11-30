@@ -27,8 +27,9 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.starProjectedType
 
 /**
- * Composable which manages [viewModel] lifecycle and optionally adds it to local [ViewModelStore].
- * @param viewModel view model to manage
+ * Composable which manages [viewModel] lifecycle and binds to all its publically exposed [LifecycleSubscribable].
+ * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
+ * @param viewModel [BaseLifecycleViewModel] to manage
  * @param content content based on [viewModel]
  */
 @Composable
@@ -41,10 +42,17 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     }
 }
 
+/**
+ * Composable which manages [viewModel] lifecycle and binds to all its [LifecycleSubscribable] using [fragmentManager].
+ * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
+ * @param viewModel [BaseLifecycleViewModel] to manage
+ * @param fragmentManager The [FragmentManager] to bind to all [LifecycleSubscribable] publically exposed by the [viewModel].
+ * @param content content based on [viewModel]
+ */
 @Composable
 fun <ViewModel : BaseLifecycleViewModel> FragmentViewModelComposable(
-    fragmentManager: FragmentManager,
     viewModel: ViewModel,
+    fragmentManager: FragmentManager,
     content: @Composable (ViewModel.() -> Unit)? = null
 ) = ViewModelComposable(LocalContext.current.activity, fragmentManager, viewModel, content)
 
@@ -55,17 +63,24 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     viewModel: ViewModel,
     content: @Composable (ViewModel.() -> Unit)? = null
 ) {
+    // Link the ViewModel to existing LifecycleSubsctibable
     viewModel.linkLifecycle(activity, fragmentManager)
+
+    // Get a List of all ComposableLifecycleSubscribable of the viewModel.
+    // Since these are static properties, a remember can be used.
     val composeLifecycleSubscribables = remember(viewModel) {
         viewModel.ComposableLifecycleSubscribable
     }
+    // If no ComposableLifecycleSubscribable available, just show content
     if (composeLifecycleSubscribables.isEmpty()) {
         content?.invoke(viewModel)
     } else {
+        // Otherwise, modify the content using the modifier of all ComposableLifecycleSubscribable
+        // Reduce right so the first ComposableLifecycleSubscribable acts as the first modifier (since we're wrapping)
         val modifier = composeLifecycleSubscribables.reduceRight { new, acc ->
             object : ComposableLifecycleSubscribable {
-                override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = { content ->
-                    new.modifier(this) { acc.modifier(this, content) }
+                override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = { modifiedContent ->
+                    new.modifier(this) { acc.modifier(this, modifiedContent) }
                 }
             }
         }

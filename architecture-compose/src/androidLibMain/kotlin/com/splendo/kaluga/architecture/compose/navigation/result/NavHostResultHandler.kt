@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 /**
- * A Handler that will allow a [NavHostController] to handle Result of a given type [R] to be received by a given [ViewModel]
+ * A Handler that will allow a [NavHostController] to handle [Route.Result] of a given type [R] to be received by a given [ViewModel]
  */
 sealed class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, R> {
     abstract val viewModelClass: KClass<ViewModel>

@@ -60,9 +60,11 @@ fun <R> NavHostController.HandleResult(
 
 @Composable
 internal fun NavHostController.HandleResult(retain: Boolean = false, onResult: Bundle.() -> Unit) {
+    // Check if we have a result in the current BackStack.
     val result = currentBackStackEntry?.savedStateHandle?.getStateFlow<Bundle?>(Route.Result.KEY, null)?.collectAsState()
     result?.value?.let {
         onResult(it)
+        // If retain is set we keep the result, otherwise clean up.
         if (!retain) {
             currentBackStackEntry?.savedStateHandle?.remove<Bundle>(Route.Result.KEY)
         }

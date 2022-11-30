@@ -39,21 +39,29 @@ sealed class BottomSheetNavigator<A : NavigationAction<*>>(
     }
 
     final override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+        // Make sure Navigation actions are launched
         SetupNavigationAction()
+        // Actually modify the content
         contentModifier(content)
     }
 
-    abstract val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
+    protected abstract val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
 
     @Composable
     protected fun BaseLifecycleViewModel.SetupNavigationAction() {
         val currentAction by actionState.collectAsState()
-        val onDispose: () -> Unit = { actionState.compareAndSet(currentAction, null) }
+        // If there is a current action, render it
         currentAction?.let { action ->
+            // We should only set the actionState back to null when navigation has completed.
+            // Otherwise some logic may break, such as with rememberLauncherForActivityResult.
+            val onDispose: () -> Unit = { actionState.compareAndSet(currentAction, null) }
             when (val spec = navigationMapper(action)) {
-                is BottomSheetRoute -> LaunchedEffect(spec) {
-                    routeController.navigate(spec)
-                    onDispose()
+                is BottomSheetRoute -> {
+                    // Navigate the route controller using a LaunchedEffect to ensure it only fires once.
+                    LaunchedEffect(this, spec) {
+                        routeController.navigate(spec)
+                        onDispose()
+                    }
                 }
                 is BottomSheetLaunchedNavigation -> spec.launchedNavigation.Launch(this, onDispose)
             }
@@ -91,6 +99,7 @@ class RootModalBottomSheetNavigator<A : NavigationAction<*>>(
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         val contentNavController = rememberNavController()
+        // Update the bottomSheetNavigationState to the current state.
         bottomSheetNavigationState.tryEmit(
             BottomSheetNavigatorState(
                 contentNavController,
@@ -99,11 +108,14 @@ class RootModalBottomSheetNavigator<A : NavigationAction<*>>(
             )
         )
         sheetStateCoroutineScope.tryEmit(rememberCoroutineScope())
+
+        // Show a ModalBottomSheetLayout for the content
         SetupNavigatingModalBottomSheetLayout(
             bottomSheetNavigationState,
             routeController.sheetContentRouteController,
             sheetContentBuilder,
             {
+                // Handle results of the Content Root
                 contentRootResultHandlers.forEach {
                     it.HandleResult(viewModel = this, navHostController = contentNavController)
                 }
@@ -140,8 +152,11 @@ class ModalBottomSheetNavigator<A : NavigationAction<*>>(
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         sheetStateCoroutineScope.tryEmit(rememberCoroutineScope())
+        // Handle results for both content and sheetContent
         routeController.contentRouteController.AddResultHandlers(viewModel = this, resultHandlers = contentResultHandlers)
         routeController.sheetContentRouteController.sheetContentRouteController.AddResultHandlers(viewModel = this, resultHandlers = sheetContentResultHandlers)
+
+        // Render content
         content()
     }
 }
@@ -158,10 +173,14 @@ private fun SetupNavigatingModalBottomSheetLayout(
     currentBottomSheetNavigationState?.let { navigationState ->
         ModalBottomSheetLayout(
             sheetContent = {
+                // Add a default BackButton behaviour that closes the sheet content
                 if (navigationState.sheetState.isVisible) {
                     HardwareBackButtonNavigation(onBackButtonClickHandler = sheetContentRouteController::close)
                 }
+
+                // Need a small Root Layout to render the NavHost properly
                 Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
+                    // Add NavHost to manage the SheetContent navigation
                     SetupNavHost(
                         bottomSheetNavigatorState = bottomSheetNavigationState,
                         navHostController = { sheetContentNavHostController },
@@ -174,6 +193,7 @@ private fun SetupNavigatingModalBottomSheetLayout(
             },
             sheetState = navigationState.sheetState,
         ) {
+            // Add NavHost to manage the Content navigation
             SetupNavHost(
                 bottomSheetNavigatorState = bottomSheetNavigationState,
                 navHostController = { contentNavHostController },
