@@ -73,10 +73,12 @@ fun Project.commonComponent() {
     if (Library.connectCheckExpansion) {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
-        }?.forEach {
-            logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${name}:connectedDebugAndroidTest")
-             tasks.getByPath("connectedDebugAndroidTest")
-                 .dependsOn(":${name}:connectedDebugAndroidTest")
+        }?.forEach { module ->
+            afterEvaluate {
+                logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
+                tasks.getByPath("connectedDebugAndroidTest")
+                    .dependsOn(":${module.name}:connectedDebugAndroidTest")
+            }
         }
     }
 }
