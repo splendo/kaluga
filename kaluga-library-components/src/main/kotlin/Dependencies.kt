@@ -100,7 +100,10 @@ object Dependencies {
 
         object Activity {
             private const val group = "$groupBase.activity"
-            val Compose = Dependency(group, "activity-compose", "1.6.0")
+            private const val version = "1.6.0"
+            val Activity = Dependency(group, "activity", version)
+            val Ktx = Dependency(group, "activity-ktx", version)
+            val Compose = Dependency(group, "activity-compose", version)
         }
         val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.5.1")
         val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.1.0")
