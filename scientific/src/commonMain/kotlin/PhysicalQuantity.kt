@@ -76,6 +76,8 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
     @Serializable
     object Jolt : PhysicalQuantity()
     @Serializable
+    object KinematicViscosity : PhysicalQuantity()
+    @Serializable
     object Length : PhysicalQuantity()
     @Serializable
     object Luminance : PhysicalQuantity()
