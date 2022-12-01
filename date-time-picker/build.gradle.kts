@@ -8,6 +8,10 @@ plugins {
 
 publishableComponent()
 
+dependencies {
+    androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
+}
+
 kotlin {
     sourceSets {
         getByName("commonMain") {
