@@ -11,6 +11,7 @@
 		1529FF0B35BD7AB3B6E838A9 /* UninitializedSubject.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8165D122BD8D8848D7242385 /* UninitializedSubject.generated.swift */; };
 		1E3CD7CB5C78456A64FD6847 /* LifecycleViewModel.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8678F48E60D40E6AB06177C /* LifecycleViewModel.generated.swift */; };
 		2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017B1C42400175C00F9072A /* PermissionListViewController.swift */; };
+		201EA2192937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */; };
 		2034C13A2937B494003A6D19 /* PartialSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 2034C1392937B494003A6D19 /* PartialSheet */; };
 		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
 		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
@@ -104,6 +105,7 @@
 		167E723C40578BBD9EAA6559 /* ContainerView.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ContainerView.generated.swift; sourceTree = "<group>"; };
 		1DA3213EF5694917A0138255 /* PlatformValueMapper.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = PlatformValueMapper.generated.swift; sourceTree = "<group>"; };
 		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
+		201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIOrUIKitSelectionViewController.swift; sourceTree = "<group>"; };
 		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
 		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -193,6 +195,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		201EA2172937C2CC00C562EC /* UITypeSelection */ = {
+			isa = PBXGroup;
+			children = (
+				201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */,
+			);
+			path = UITypeSelection;
+			sourceTree = "<group>";
+		};
 		20524A22257BEA020054B57E /* DateTimePicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -347,6 +357,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				201EA2172937C2CC00C562EC /* UITypeSelection */,
 				20D8CD3526FE8FBA00D14AC9 /* Resources */,
 				648214DD263095A900CDAE05 /* Demo.entitlements */,
 				641CC0D625CAC0A1001E1CD1 /* Links */,
@@ -645,6 +656,7 @@
 				C77C23B538A4DFB02C0E0773 /* LazyView.generated.swift in Sources */,
 				1E3CD7CB5C78456A64FD6847 /* LifecycleViewModel.generated.swift in Sources */,
 				8679BDAA7F79F92DAC24AF23 /* ListObservable.generated.swift in Sources */,
+				201EA2192937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift in Sources */,
 				62D65713EC7DD3C712D864BB /* ListSubject.generated.swift in Sources */,
 				008D2380957750839A7B501C /* Navigation.generated.swift in Sources */,
 				C9555693B015ADE12795997D /* NavigationBarColor.generated.swift in Sources */,
