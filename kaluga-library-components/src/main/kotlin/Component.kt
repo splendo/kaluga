@@ -74,7 +74,7 @@ fun Project.commonComponent() {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
         }?.forEach {
-            afterEvaluate {
+            it.afterEvaluate {
                 logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${name}:connectedDebugAndroidTest")
                 tasks.getByPath("connectedDebugAndroidTest")
                     .dependsOn(":${name}:connectedDebugAndroidTest")
