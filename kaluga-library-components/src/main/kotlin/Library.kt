@@ -32,7 +32,13 @@ val Project.Library get() = libraries.getOrPut(this) { Library(this) }
 
 class Library(project: Project) {
 
-    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").loadProperties()
+    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").let { file ->
+        if (file.exists) {
+            file.loadProperties()
+        } else {
+            Properties()
+        }
+    }
     private val logger = project.logger
     private val baseVersion = "1.0.0"
     val group = "com.splendo.kaluga"
