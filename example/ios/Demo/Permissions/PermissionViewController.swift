@@ -34,7 +34,7 @@ class PermissionViewController: UIViewController {
     
     @IBOutlet weak var permissionStateLabel: UILabel!
     @IBOutlet weak var requestPermissionButton: UIButton!
-    
+
     var viewModel: PermissionViewModel!
     private var lifecycleManager: LifecycleManager!
 
@@ -45,7 +45,9 @@ class PermissionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        requestPermissionButton.setTitle(NSLocalizedString("permission_request", comment: ""), for: .normal)
+        title = viewModel.title
+
+        requestPermissionButton.setTitle("permission_request".localized(), for: .normal)
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
 
@@ -64,8 +66,8 @@ class PermissionViewController: UIViewController {
                         return
                     }
 
-                    let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: message, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                    let alert = UIAlertController(title: "permission_request".localized(), message: message, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK".localized(), style: .default, handler: nil))
                     self?.present(alert, animated: true, completion: nil)
 
                 },

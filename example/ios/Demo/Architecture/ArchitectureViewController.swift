@@ -68,6 +68,8 @@ class ArchitectureViewController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_architecture".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
 
             guard let viewModel = self?.viewModel else {

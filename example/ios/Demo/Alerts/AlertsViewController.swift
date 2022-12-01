@@ -45,6 +45,8 @@ class AlertsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_alerts".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
         ButtonStyleKt.bindButton(showAlertButton, button: viewModel.showAlertButton)
         ButtonStyleKt.bindButton(showAndDismissButton, button: viewModel.showAndDismissAfter3SecondsButton)

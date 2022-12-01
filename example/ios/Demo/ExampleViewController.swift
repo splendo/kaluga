@@ -52,6 +52,8 @@ class ExampleViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "app_name".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel, let bottomView = self?.bottomView else { return [] }
 

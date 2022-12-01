@@ -37,6 +37,8 @@ class KeyboardManagerViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_keyboard".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
         ButtonStyleKt.bindButton(showButton, button: viewModel.showButton)
         ButtonStyleKt.bindButton(hideButton, button: viewModel.hideButton)

@@ -20,6 +20,16 @@ import KalugaExampleShared
 
 class DateTimePickerViewController : UIViewController {
 
+    struct Const {
+        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        static let storyboardId = "DateTimePicker"
+    }
+
+    static func instantiate() -> DateTimePickerViewController {
+        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! DateTimePickerViewController
+    }
+
+
     @IBOutlet private var currentTimeLabel: UILabel!
     @IBOutlet private var timeLabel: UILabel!
     @IBOutlet private var dateButton: UIButton!
@@ -34,6 +44,8 @@ class DateTimePickerViewController : UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_date_time_picker".localized()
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {

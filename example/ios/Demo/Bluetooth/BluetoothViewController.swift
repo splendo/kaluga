@@ -47,6 +47,8 @@ class BluetoothViewController : UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_bluetooth".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
 
@@ -68,9 +70,9 @@ class BluetoothViewController : UICollectionViewController {
 
     private func updateNavigationItem(isScanning: Bool) {
         if (isScanning) {
-            self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_stop_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
+            self.navigationItem.setRightBarButton(UIBarButtonItem(title: "bluetooth_stop_scanning".localized(), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
         } else {
-            self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_start_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
+            self.navigationItem.setRightBarButton(UIBarButtonItem(title: "bluetooth_start_scanning".localized(), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
         }
     }
 

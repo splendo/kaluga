@@ -110,3 +110,7 @@ That query will be deserialized into a object and shown in an alert.";
 
 "feature_system" = "System";
 "network_feature" = "Network";
+
+"ios_ui_type_selector" = "Select UI Type";
+"ios_swift_ui" = "SwiftUI";
+"ios_ui_kit" = "UIKit";

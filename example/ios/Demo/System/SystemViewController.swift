@@ -40,6 +40,8 @@ class SystemViewController : UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_system".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {
                 return []

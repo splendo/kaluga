@@ -83,16 +83,30 @@ class FeaturesListCell : UITableViewCell {
 private extension FeatureListNavigationAction {
     var spec: NavigationSpec {
         get {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             switch self {
-            case is FeatureListNavigationAction.Alerts: return NavigationSpec.Push(animated: true) { AlertsViewController.instantiate() }
+            case is FeatureListNavigationAction.Alerts: return NavigationSpec.Push(animated: true) {
+                SwiftUIOrUIKitSelectionViewController.create(
+                    uiKitViewController: { AlertsViewController.instantiate() },
+                    swiftUIView: { AlertsView() }
+                )
+            }
             case is FeatureListNavigationAction.Architecture: return NavigationSpec.Segue(identifier: "showArchitecture")
             case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
             case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
-            case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Segue(identifier: "showDateTimePicker")
+            case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Push(animated: true) {
+                SwiftUIOrUIKitSelectionViewController.create(
+                    uiKitViewController: { DateTimePickerViewController.instantiate() },
+                    swiftUIView: { DateTimePickerView() }
+                )
+            }
             case is FeatureListNavigationAction.Keyboard: return NavigationSpec.Segue(identifier: "showKeyboard")
             case is FeatureListNavigationAction.Links: return NavigationSpec.Segue(identifier: "showLinks")
-            case is FeatureListNavigationAction.LoadingIndicator: return NavigationSpec.Segue(identifier: "showHUD")
+            case is FeatureListNavigationAction.LoadingIndicator: return NavigationSpec.Push(animated: true) {
+                SwiftUIOrUIKitSelectionViewController.create(
+                    uiKitViewController: { LoadingViewController.instantiate() },
+                    swiftUIView: { LoadingView() }
+                )
+            }
             case is FeatureListNavigationAction.Location: return NavigationSpec.Segue(identifier: "showLocation")
             case is FeatureListNavigationAction.Permissions: return NavigationSpec.Segue(identifier: "showPermissions")
             case is FeatureListNavigationAction.PlatformSpecific: return NavigationSpec.Segue(identifier: "showPlatformSpecific")

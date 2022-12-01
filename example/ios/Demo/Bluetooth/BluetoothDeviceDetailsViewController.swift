@@ -56,7 +56,9 @@ class BluetoothDeviceDetailsViewController : UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        servicesHeader.text = NSLocalizedString("bluetooth_services_header", comment: "")
+        title = "feature_bluetooth".localized()
+
+        servicesHeader.text = "bluetooth_services_header".localized()
         deviceIdentifier.text = viewModel.identifierString
 
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
@@ -150,8 +152,8 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        serviceHeader.text = NSLocalizedString("bluetooth_service", comment: "")
-        characteristicsHeader.text = NSLocalizedString("bluetooth_characteristics", comment: "")
+        serviceHeader.text = "bluetooth_service".localized()
+        characteristicsHeader.text = "bluetooth_characteristics".localized()
 
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -249,7 +251,7 @@ class BluetoothCharacteristicView : UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        descriptorsHeader.text = NSLocalizedString("bluetooth_descriptors", comment: "")
+        descriptorsHeader.text = "bluetooth_descriptors".localized()
 
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize

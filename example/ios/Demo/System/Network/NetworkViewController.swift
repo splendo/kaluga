@@ -32,6 +32,8 @@ class NetworkViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "network_feature".localized()
         
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }

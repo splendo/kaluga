@@ -34,6 +34,8 @@ class LinksViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_links".localized()
         
         lifecycleManager = viewModel.addLifecycleManager(parent: self) {
             [

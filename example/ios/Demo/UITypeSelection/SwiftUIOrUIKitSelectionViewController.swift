@@ -25,8 +25,20 @@ class SwiftUIOrUIKitSelectionViewController : UITableViewController {
         static let storyboardId = "SwiftOrUIKit"
     }
 
-    static func create() {
+    static func create(uiKitViewController: @escaping () -> UIViewController, swiftUIView: @escaping () -> some View) -> SwiftUIOrUIKitSelectionViewController {
+        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! SwiftUIOrUIKitSelectionViewController
 
+        let navigator = ViewControllerNavigator<SwiftUIOrUIKitNavigationAction>(parentVC: vc) { action in
+            switch action {
+            case is SwiftUIOrUIKitNavigationAction.SwiftUI: return NavigationSpec.Push(animated: true) {
+                UIHostingController(rootView: swiftUIView())
+            }
+            case is SwiftUIOrUIKitNavigationAction.UIKit: return NavigationSpec.Push(animated: true, push: uiKitViewController)
+            default: fatalError("Unknown navigation action \(action)")
+            }
+        }
+        vc.viewModel = SwiftUIOrUIKitSelectionViewModel(navigator: navigator)
+        return vc
     }
 
     var viewModel: SwiftUIOrUIKitSelectionViewModel!
@@ -41,6 +53,8 @@ class SwiftUIOrUIKitSelectionViewController : UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "ios_ui_type_selector".localized()
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
@@ -79,7 +93,7 @@ class SwiftUIOrUIKitSelectionViewController : UITableViewController {
 class UITypesListCell : UITableViewCell {
 
     struct Const {
-        static let identifier = "ResourcesListCell"
+        static let identifier = "UITypesListCell"
     }
 
     @IBOutlet weak var label: UILabel!
