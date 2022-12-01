@@ -9,6 +9,7 @@ plugins {
 dependencies {
     implementationDependency(Dependencies.AndroidX.Fragment)
     testImplementationDependency(Dependencies.AndroidX.FragmentKtx)
+    androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
 }
 
 publishableComponent()
