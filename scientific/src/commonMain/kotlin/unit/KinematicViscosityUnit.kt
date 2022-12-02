@@ -57,6 +57,3 @@ infix fun Area.per(time: Time): KinematicViscosity = when (this) {
     is MetricArea -> this per time
     is ImperialArea -> this per time
 }
-
-
-

@@ -29,8 +29,8 @@ import kotlin.jvm.JvmName
 
 @JvmName("areaFromKinematicViscosityAndTimeDefault")
 fun <
-    KinematicViscosityUnit: KinematicViscosity,
-    TimeUnit: Time,
+    KinematicViscosityUnit : KinematicViscosity,
+    TimeUnit : Time,
     AreaUnit : Area
     > AreaUnit.area(
     kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
@@ -39,8 +39,8 @@ fun <
 
 @JvmName("areaFromKinematicViscosityAndTime")
 fun <
-    KinematicViscosityUnit: KinematicViscosity,
-    TimeUnit: Time,
+    KinematicViscosityUnit : KinematicViscosity,
+    TimeUnit : Time,
     AreaUnit : Area,
     Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
     > AreaUnit.area(

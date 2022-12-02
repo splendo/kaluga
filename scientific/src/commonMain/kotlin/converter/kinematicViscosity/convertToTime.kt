@@ -19,27 +19,24 @@ package com.splendo.kaluga.scientific.converter.kinematicViscosity
 
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.converter.time.time
-import com.splendo.kaluga.scientific.unit.Area
-import com.splendo.kaluga.scientific.unit.ImperialArea
 import com.splendo.kaluga.scientific.unit.ImperialKinematicViscosity
 import com.splendo.kaluga.scientific.unit.KinematicViscosity
 import com.splendo.kaluga.scientific.unit.MetricArea
 import com.splendo.kaluga.scientific.unit.MetricKinematicViscosity
 import kotlin.jvm.JvmName
 
-// TODO Implement
+@JvmName("metricKinematicViscosityDivMetricArea")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = { }
+) = this.unit.time.time(area, this)
 
-// TODO Implement
+@JvmName("imperialKinematicViscosityTimesDivImperialArea")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = { }
+) = this.unit.time.time(area, this)
 
-// TODO Implement
-infix operator fun <AreaUnit : MetricArea, KinematicViscosityUnit: KinematicViscosity> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.times(
+@JvmName("kinematicViscosityTimesDivArea")
+infix operator fun <AreaUnit : MetricArea, KinematicViscosityUnit : KinematicViscosity> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.times(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = { }
+) = this.unit.time.time(area, this)
