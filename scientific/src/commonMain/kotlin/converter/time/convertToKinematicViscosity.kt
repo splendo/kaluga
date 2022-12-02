@@ -17,3 +17,29 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.kinematicViscosity.kinematicViscosity
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.per
+import kotlin.jvm.JvmName
+
+// TODO Implement
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Time, Time>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+) = {  }
+
+// TODO Implement
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Time, Time>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+) = {  }
+
+// TODO Implement
+infix operator fun <AreaUnit : Area> ScientificValue<PhysicalQuantity.Time, Time>.div(
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+) = (SquareMeter per Second).kinematicViscosity(area, this)
