@@ -26,10 +26,10 @@ struct ButtonView: View, Equatable {
     @ObservedObject var buttons: ListObservable<KalugaButton>
 
     init() {
-        let contentView = ContainerView(.alert)
-        let viewModel = ButtonViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider(), alertPresenterBuilder: contentView.alertBuilder)
+        let containerView = ContainerView(.alert)
+        let viewModel = ButtonViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider(), alertPresenterBuilder: containerView.alertBuilder)
         buttons = ListObservable(viewModel.buttons)
-        lifecycleViewModel = LifecycleViewModel(viewModel)
+        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: containerView)
     }
 
     var body: some View {

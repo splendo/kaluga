@@ -23,10 +23,10 @@ struct DateTimePickerView: View {
     let lifecycleViewModel: LifecycleViewModel<DateTimePickerViewModel>
 
     init() {
-        let container = ContainerView(.datePicker)
-        let viewModel = DateTimePickerViewModel(dateTimePickerPresenterBuilder: container.datePickerBuilder)
+        let containerView = ContainerView(.datePicker)
+        let viewModel = DateTimePickerViewModel(dateTimePickerPresenterBuilder: containerView.datePickerBuilder)
         dateLabel = StringObservable(viewModel.dateLabel)
-        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: container)
+        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: containerView)
     }
 
     var body: some View {

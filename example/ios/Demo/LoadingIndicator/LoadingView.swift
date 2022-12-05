@@ -22,9 +22,9 @@ struct LoadingView: View {
     let lifecycleViewModel: LifecycleViewModel<HudViewModel>
 
     init() {
-        let container = ContainerView(.hud)
-        let viewModel = HudViewModel(builder: container.hudBuilder)
-        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: container)
+        let containerView = ContainerView(.hud)
+        let viewModel = HudViewModel(builder: containerView.hudBuilder)
+        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: containerView)
     }
 
     var body: some View {

@@ -22,9 +22,9 @@ struct AlertsView: View {
     let lifecycleViewModel: LifecycleViewModel<AlertViewModel>
 
     init() {
-        let container = ContainerView(.alert)
-        let viewModel = AlertViewModel(builder: container.alertBuilder)
-        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: container)
+        let containerView = ContainerView(.alert)
+        let viewModel = AlertViewModel(builder: containerView.alertBuilder)
+        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: containerView)
     }
 
     var body: some View {
