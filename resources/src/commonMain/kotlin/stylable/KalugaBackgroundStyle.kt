@@ -19,7 +19,7 @@ package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.KalugaColor
 
-data class BackgroundStyle(
+data class KalugaBackgroundStyle(
     val fillStyle: FillStyle,
     val strokeStyle: StrokeStyle = StrokeStyle.None,
     val shape: Shape = Shape.Rectangle()

@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let vc = storyboard.instantiateViewController(withIdentifier: "LinksViewController") as! LinksViewController
         self.window?.rootViewController = vc
         
-//        vc.handleIncomingLink(url: stringUrl)
+        vc.handleIncomingLink(url: stringUrl)
         return true
     }
 

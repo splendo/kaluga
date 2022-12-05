@@ -36,12 +36,12 @@ class ColorViewController : UIViewController {
     @IBOutlet var blendedLightenedColorsCollectionView: UICollectionView!
     @IBOutlet var blendedDarkenedColorsCollectionView: UICollectionView!
     
-    private var backdropLightenedColors: [BackgroundStyle] = []
-    private var backdropDarkenedColors: [BackgroundStyle] = []
-    private var sourceLightenedColors: [BackgroundStyle] = []
-    private var sourceDarkenedColors: [BackgroundStyle] = []
-    private var blendedLightenedColors: [BackgroundStyle] = []
-    private var blendedDarkenedColors: [BackgroundStyle] = []
+    private var backdropLightenedColors: [KalugaBackgroundStyle] = []
+    private var backdropDarkenedColors: [KalugaBackgroundStyle] = []
+    private var sourceLightenedColors: [KalugaBackgroundStyle] = []
+    private var sourceDarkenedColors: [KalugaBackgroundStyle] = []
+    private var blendedLightenedColors: [KalugaBackgroundStyle] = []
+    private var blendedDarkenedColors: [KalugaBackgroundStyle] = []
     
     private lazy var viewModel: ColorViewModel = ColorViewModel(alertPresenterBuilder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
@@ -52,6 +52,9 @@ class ColorViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_resources_color".localized()
+
         backdropLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         backdropDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         sourceLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
@@ -63,19 +66,19 @@ class ColorViewController : UIViewController {
             
             return [
                 viewModel.backdropColorBackground.observe { next in
-                    guard let backdropColorBackground = self?.backdropColorBackground, let backdropBackgroundStyle = next as? BackgroundStyle else {
+                    guard let backdropColorBackground = self?.backdropColorBackground, let backdropBackgroundStyle = next as? KalugaBackgroundStyle else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(backdropColorBackground, style: backdropBackgroundStyle)
                 },
                 viewModel.sourceColorBackground.observe { next in
-                    guard let sourceColorBackground = self?.sourceColorBackground, let sourceBackgroundStyle = next as? BackgroundStyle else {
+                    guard let sourceColorBackground = self?.sourceColorBackground, let sourceBackgroundStyle = next as? KalugaBackgroundStyle else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(sourceColorBackground, style: sourceBackgroundStyle)
                 },
                 viewModel.blendedColorBackground.observe { next in
-                    guard let blendedColorBackground = self?.blendedColorBackground, let blendedBackgroundStyle = next as? BackgroundStyle else {
+                    guard let blendedColorBackground = self?.blendedColorBackground, let blendedBackgroundStyle = next as? KalugaBackgroundStyle else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(blendedColorBackground, style: blendedBackgroundStyle)
@@ -93,27 +96,27 @@ class ColorViewController : UIViewController {
                     ButtonStyleKt.bindButton(blendModeButton, button: buttonStyle)
                 },
                 viewModel.lightenBackdrops.observe { next in
-                    self?.backdropLightenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.backdropLightenedColors = next?.compactMap({ $0 as? KalugaBackgroundStyle }) ?? []
                     self?.backdropLightenedColorsCollectionView?.reloadData()
                 },
                 viewModel.darkenBackdrops.observe { next in
-                    self?.backdropDarkenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.backdropDarkenedColors = next?.compactMap({ $0 as? KalugaBackgroundStyle }) ?? []
                     self?.backdropDarkenedColorsCollectionView?.reloadData()
                 },
                 viewModel.lightenSource.observe { next in
-                    self?.sourceLightenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.sourceLightenedColors = next?.compactMap({ $0 as? KalugaBackgroundStyle }) ?? []
                     self?.sourceLightenedColorsCollectionView?.reloadData()
                 },
                 viewModel.darkenSource.observe { next in
-                    self?.sourceDarkenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.sourceDarkenedColors = next?.compactMap({ $0 as? KalugaBackgroundStyle }) ?? []
                     self?.sourceDarkenedColorsCollectionView?.reloadData()
                 },
                 viewModel.lightenBlended.observe { next in
-                    self?.blendedLightenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.blendedLightenedColors = next?.compactMap({ $0 as? KalugaBackgroundStyle }) ?? []
                     self?.blendedLightenedColorsCollectionView?.reloadData()
                 },
                 viewModel.darkenBlended.observe { next in
-                    self?.blendedDarkenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.blendedDarkenedColors = next?.compactMap({ $0 as? KalugaBackgroundStyle }) ?? []
                     self?.blendedDarkenedColorsCollectionView?.reloadData()
                 },
             ]

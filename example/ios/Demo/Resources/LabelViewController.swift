@@ -30,6 +30,8 @@ class LabelViewController : UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_resources_label".localized()
         
         tableView.allowsSelection = false
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in

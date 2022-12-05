@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.stylable
 
-enum class TextAlignment {
+enum class KalugaTextAlignment {
     LEFT,
     RIGHT,
     END,

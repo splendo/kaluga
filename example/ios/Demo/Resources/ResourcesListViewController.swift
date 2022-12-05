@@ -19,6 +19,15 @@ import KalugaExampleShared
 
 class ResourcesListViewController : UITableViewController {
 
+    struct Const {
+        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        static let storyboardId = "ResourcesList"
+    }
+
+    static func instantiate() -> ResourcesListViewController {
+        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ResourcesListViewController
+    }
+
     private lazy var navigator: ViewControllerNavigator<ResourcesListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
         NavigationSpec.Segue(identifier: action.segueKey)
     }
@@ -35,6 +44,8 @@ class ResourcesListViewController : UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_resource".localized()
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }

@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
-import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
@@ -85,23 +85,23 @@ fun KalugaButton.Composable(
 @Composable
 @Preview
 fun PreviewKalugaButton() {
-    val buttonStyle = ButtonStyle(
+    val buttonStyle = KalugaButtonStyle(
         font = Typeface.DEFAULT_BOLD,
         textSize = 14.0f,
         defaultStyle = ButtonStateStyle(
             DefaultColors.white,
             DefaultColors.red,
-            shape = BackgroundStyle.Shape.Rectangle(5.0f)
+            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f)
         ),
         pressedStyle = ButtonStateStyle(
             DefaultColors.red,
             DefaultColors.white,
-            shape = BackgroundStyle.Shape.Rectangle(5.0f)
+            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f)
         ),
         disabledStyle = ButtonStateStyle(
             DefaultColors.black,
             DefaultColors.white,
-            shape = BackgroundStyle.Shape.Rectangle(5.0f)
+            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f)
         )
     )
     Column(modifier = Modifier.size(100.dp)) {

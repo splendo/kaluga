@@ -63,6 +63,12 @@ actual interface Navigator<A : NavigationAction<*>> {
     actual fun navigate(action: A)
 }
 
+class DefaultNavigator<A : NavigationAction<*>>(val onAction: (A) -> Unit) : Navigator<A> {
+    override fun navigate(action: A) {
+        onAction(action)
+    }
+}
+
 /**
  * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
  * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that

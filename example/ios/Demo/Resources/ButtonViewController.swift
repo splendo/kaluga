@@ -30,6 +30,9 @@ class ButtonViewController : UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_resources_button".localized()
+
         tableView.allowsSelection = false
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }

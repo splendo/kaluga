@@ -16,6 +16,10 @@
 		201EA21D2938E89300C562EC /* DateTimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA21C2938E89300C562EC /* DateTimePickerView.swift */; };
 		201EA21F2938EB5200C562EC /* String+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA21E2938EB5200C562EC /* String+Localized.swift */; };
 		201EA2212938ECE700C562EC /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA2202938ECE700C562EC /* LoadingView.swift */; };
+		201EA2232938F11700C562EC /* ResourcesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA2222938F11700C562EC /* ResourcesListView.swift */; };
+		201EA22529390A7F00C562EC /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA22429390A7F00C562EC /* ButtonView.swift */; };
+		201EA22729390CFE00C562EC /* LabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA22629390CFE00C562EC /* LabelView.swift */; };
+		201EA229293B8C6600C562EC /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA228293B8C6600C562EC /* ColorView.swift */; };
 		2034C13A2937B494003A6D19 /* PartialSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 2034C1392937B494003A6D19 /* PartialSheet */; };
 		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
 		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
@@ -114,6 +118,10 @@
 		201EA21C2938E89300C562EC /* DateTimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerView.swift; sourceTree = "<group>"; };
 		201EA21E2938EB5200C562EC /* String+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Localized.swift"; sourceTree = "<group>"; };
 		201EA2202938ECE700C562EC /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		201EA2222938F11700C562EC /* ResourcesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesListView.swift; sourceTree = "<group>"; };
+		201EA22429390A7F00C562EC /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		201EA22629390CFE00C562EC /* LabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelView.swift; sourceTree = "<group>"; };
+		201EA228293B8C6600C562EC /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
 		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
 		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -290,6 +298,10 @@
 				20D8CD3826FF550100D14AC9 /* LabelViewController.swift */,
 				2073D0EF270303B3002CB856 /* ButtonViewController.swift */,
 				2073D0F127032B5B002CB856 /* ColorViewController.swift */,
+				201EA2222938F11700C562EC /* ResourcesListView.swift */,
+				201EA22429390A7F00C562EC /* ButtonView.swift */,
+				201EA22629390CFE00C562EC /* LabelView.swift */,
+				201EA228293B8C6600C562EC /* ColorView.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -635,6 +647,7 @@
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
 				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
 				2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */,
+				201EA2232938F11700C562EC /* ResourcesListView.swift in Sources */,
 				20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
 				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
@@ -652,8 +665,11 @@
 				20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
+				201EA22529390A7F00C562EC /* ButtonView.swift in Sources */,
 				201EA21B2938E23600C562EC /* AlertsView.swift in Sources */,
 				209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */,
+				201EA22729390CFE00C562EC /* LabelView.swift in Sources */,
+				201EA229293B8C6600C562EC /* ColorView.swift in Sources */,
 				209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */,
 				20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */,
 				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,

@@ -110,7 +110,12 @@ private extension FeatureListNavigationAction {
             case is FeatureListNavigationAction.Location: return NavigationSpec.Segue(identifier: "showLocation")
             case is FeatureListNavigationAction.Permissions: return NavigationSpec.Segue(identifier: "showPermissions")
             case is FeatureListNavigationAction.PlatformSpecific: return NavigationSpec.Segue(identifier: "showPlatformSpecific")
-            case is FeatureListNavigationAction.Resources: return NavigationSpec.Segue(identifier: "showResources")
+            case is FeatureListNavigationAction.Resources: return NavigationSpec.Push(animated: true) {
+                SwiftUIOrUIKitSelectionViewController.create(
+                    uiKitViewController: { ResourcesListViewController.instantiate() },
+                    swiftUIView: { ResourcesListView() }
+                )
+            }
             case is FeatureListNavigationAction.System: return NavigationSpec.Segue(identifier: "showSystem")
             default: fatalError("Unknown action")
             }

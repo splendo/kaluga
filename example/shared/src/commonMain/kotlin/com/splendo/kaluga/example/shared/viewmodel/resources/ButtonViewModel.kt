@@ -24,7 +24,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
-import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.launch
@@ -76,7 +76,7 @@ class ButtonViewModel(
     }
 
     private fun String.toButton(
-        style: ButtonStyle,
+        style: KalugaButtonStyle,
         isEnabled: Boolean = true
     ): List<KalugaButton.Plain> = listOf(
         KalugaButton.Plain(this, style, isEnabled) {

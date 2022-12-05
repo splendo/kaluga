@@ -24,5 +24,5 @@ data class TextStyle(
     val font: Font,
     val color: KalugaColor,
     val size: Float,
-    val alignment: TextAlignment = TextAlignment.START
+    val alignment: KalugaTextAlignment = KalugaTextAlignment.START
 )
