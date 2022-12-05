@@ -97,14 +97,15 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            // TODO this seems to not work for Android TIRAMISU
+            /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED && status == GATT_SUCCESS) {
                     gatt?.readCharacteristic(characteristic)
                 }
-            } else {
+            } else {*/
                 @Suppress("DEPRECATION")
                 updateCharacteristic(characteristic, characteristic.value, status)
-            }
+            //}
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -116,7 +117,8 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            // TODO this seems to not work for Android TIRAMISU
+            /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
                 if (ActivityCompat.checkSelfPermission(
                         context,
                         Manifest.permission.BLUETOOTH_CONNECT
@@ -125,10 +127,10 @@ internal actual class DefaultDeviceConnectionManager(
                 ) {
                     gatt?.readDescriptor(descriptor)
                 }
-            } else {
+            } else {*/
                 @Suppress("DEPRECATION")
                 updateDescriptor(descriptor, descriptor.value, status)
-            }
+            //}
         }
 
         @Deprecated("Deprecated in Java")

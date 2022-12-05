@@ -80,26 +80,32 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
 
     override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
+        // TODO this seems to not work for Android TIRAMISU
+        /*
+        characteristic.value = value
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            gatt.writeCharacteristic(characteristic, value, characteristic.writeType) == BluetoothStatusCodes.SUCCESS
-        } else {
+            val writeType = if (android.os.Build.VERSION.SDK_INT >= 33) BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE else BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            gatt.writeCharacteristic(characteristic, value, writeType) == BluetoothStatusCodes.SUCCESS
+        } else {*/
             @Suppress("DEPRECATION")
             characteristic.value = value
             @Suppress("DEPRECATION")
-            gatt.writeCharacteristic(characteristic)
-        }
+          return  gatt.writeCharacteristic(characteristic)
+        //}
     }
 
     override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
+        // TODO this seems to not work for Android TIRAMISU
+        /*descriptor.value = value
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             gatt.writeDescriptor(descriptor, value) == BluetoothStatusCodes.SUCCESS
-        } else {
+        } else {*/
             @Suppress("DEPRECATION")
             descriptor.value = value
             @Suppress("DEPRECATION")
-            gatt.writeDescriptor(descriptor)
-        }
+          return  gatt.writeDescriptor(descriptor)
+       // }
     }
 
     override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {
