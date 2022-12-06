@@ -17,9 +17,20 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.architecture
 
+import com.splendo.kaluga.architecture.navigation.DefaultNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import platform.UIKit.UIViewController
+
+fun ArchitectureDetailsNavigator(
+    onFinishWithDetails: (InputDetails) -> Unit,
+    onClose: () -> Unit
+) = DefaultNavigator<ArchitectureDetailsNavigationAction<*>> { action ->
+    when (action) {
+        is ArchitectureDetailsNavigationAction.FinishWithDetails -> onFinishWithDetails(action.value)
+        is ArchitectureDetailsNavigationAction.Close -> onClose()
+    }
+}
 
 fun ArchitectureDetailsViewControllerNavigator(
     parent: UIViewController,

@@ -41,6 +41,8 @@
 		20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */; };
 		20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */; };
 		20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3826FF550100D14AC9 /* LabelViewController.swift */; };
+		20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */; };
+		20FFB48C293EC3CB005CF1C8 /* ArchitectureDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB48B293EC3CB005CF1C8 /* ArchitectureDetailsView.swift */; };
 		2EF7D8289105AC623E600829 /* UninitializedObservable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744B1E9043B534F8B9BD501C /* UninitializedObservable.generated.swift */; };
 		300D5D65F49D6711AC8FF5DA /* Subject.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A59766D89528BA5F4327BD /* Subject.generated.swift */; };
 		319A4712667C1DC1B422411A /* KalugaLabel+SwiftUI.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF6BD3638095E5452785FF3 /* KalugaLabel+SwiftUI.generated.swift */; };
@@ -142,6 +144,8 @@
 		20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSubPageViewController.swift; sourceTree = "<group>"; };
 		20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesListViewController.swift; sourceTree = "<group>"; };
 		20D8CD3826FF550100D14AC9 /* LabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
+		20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureView.swift; sourceTree = "<group>"; };
+		20FFB48B293EC3CB005CF1C8 /* ArchitectureDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsView.swift; sourceTree = "<group>"; };
 		27D181CE83615D345BB56946 /* HasDefaultValue.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = HasDefaultValue.generated.swift; sourceTree = "<group>"; };
 		31718DE342D28B4942D37524 /* ListObservable.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListObservable.generated.swift; sourceTree = "<group>"; };
 		382B35FA85A28992FE37B803 /* KalugaStyledString+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaStyledString+SwiftUI.generated.swift"; sourceTree = "<group>"; };
@@ -287,6 +291,8 @@
 				20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */,
 				20CA2904293796C5007E4079 /* BottomSheetViewController.swift */,
 				20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */,
+				20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */,
+				20FFB48B293EC3CB005CF1C8 /* ArchitectureDetailsView.swift */,
 			);
 			path = Architecture;
 			sourceTree = "<group>";
@@ -681,6 +687,7 @@
 				73DBBA374F2ED176BCF8E189 /* DefaultValues.generated.swift in Sources */,
 				42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */,
 				D174F54A364898AC7E0962FC /* KalugaBackgroundStyle+SwiftUI.generated.swift in Sources */,
+				20FFB48C293EC3CB005CF1C8 /* ArchitectureDetailsView.swift in Sources */,
 				D976FB8DC34A35578A995B2E /* KalugaButton+SwiftUI.generated.swift in Sources */,
 				7C49888336FE57AAA89E7958 /* KalugaDate+Extensions.generated.swift in Sources */,
 				319A4712667C1DC1B422411A /* KalugaLabel+SwiftUI.generated.swift in Sources */,
@@ -698,6 +705,7 @@
 				847C2A647F23AF46CED079CF /* RoutingState.generated.swift in Sources */,
 				C0C827F580A4F1950E9B10EE /* Shape+Helpers.generated.swift in Sources */,
 				300D5D65F49D6711AC8FF5DA /* Subject.generated.swift in Sources */,
+				20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */,
 				2EF7D8289105AC623E600829 /* UninitializedObservable.generated.swift in Sources */,
 				1529FF0B35BD7AB3B6E838A9 /* UninitializedSubject.generated.swift in Sources */,
 			);

@@ -22,10 +22,9 @@ struct ResourcesListView: View {
     @ObservedObject var navigationState = ObjectRoutingState<Route>()
     @ObservedObject var resources: ListObservable<Resource>
     let lifecycleViewModel: LifecycleViewModel<ResourcesListViewModel>
-    let router: Router
+    let router = Router()
 
     init() {
-        router = Router()
 
         let viewModel = ResourcesListViewModel(navigator: router.defaultNavigator)
         resources = ListObservable(viewModel.resources)

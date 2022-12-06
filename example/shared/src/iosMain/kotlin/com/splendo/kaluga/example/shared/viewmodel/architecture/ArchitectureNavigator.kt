@@ -17,9 +17,20 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.architecture
 
+import com.splendo.kaluga.architecture.navigation.DefaultNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import platform.UIKit.UIViewController
+
+fun ArchitectureNavigator(
+    onDetails: (InputDetails) -> Unit,
+    onBottomSheet: () -> Unit
+) = DefaultNavigator<ArchitectureNavigationAction<*>> { action ->
+    when (action) {
+        is ArchitectureNavigationAction.Details -> onDetails(action.value)
+        is ArchitectureNavigationAction.BottomSheet -> onBottomSheet()
+    }
+}
 
 fun ArchitectureViewControllerNavigator(
     parent: UIViewController,

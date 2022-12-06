@@ -17,6 +17,7 @@
 
 import UIKit
 import KalugaExampleShared
+import PartialSheet
 
 class FeaturesListViewController : UITableViewController {
 
@@ -90,7 +91,12 @@ private extension FeatureListNavigationAction {
                     swiftUIView: { AlertsView() }
                 )
             }
-            case is FeatureListNavigationAction.Architecture: return NavigationSpec.Segue(identifier: "showArchitecture")
+            case is FeatureListNavigationAction.Architecture: return NavigationSpec.Push(animated: true) {
+                SwiftUIOrUIKitSelectionViewController.create(
+                    uiKitViewController: { ArchitectureViewController.instantiate() },
+                    swiftUIView: { ArchitectureView().attachPartialSheetToRoot() }
+                )
+            }
             case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
             case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
             case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Push(animated: true) {

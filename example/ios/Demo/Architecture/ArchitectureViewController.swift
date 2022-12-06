@@ -19,6 +19,15 @@ import UIKit
 import KalugaExampleShared
 
 class ArchitectureViewController: UIViewController  {
+
+    struct Const {
+        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        static let storyboardId = "Architecture"
+    }
+
+    static func instantiate() -> ArchitectureViewController {
+        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ArchitectureViewController
+    }
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nameInput: UITextField!

@@ -97,6 +97,7 @@ struct ColorView: View, Equatable {
                 lightenedSource.asHorizontalScrollView()
                 darkenedSource.asHorizontalScrollView()
             }
+            .navigationTitle("feature_resources_color".localized())
             .onAppear {
                 disposeBag.add(
                     disposable: viewModel.backdropText.observe { next in
