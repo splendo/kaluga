@@ -73,7 +73,7 @@ struct ArchitectureView: View {
                 }
             }
             .navigation(state: bottomSheetRoutingState, type: .partialSheet(style: PSIphoneStyle.defaultStyle())) {
-                Text("Im a bottom sheet")
+                BottomSheetView().equatable().environmentObject(bottomSheetRoutingState)
             }
             .navigationTitle("feature_architecture".localized())
         }
