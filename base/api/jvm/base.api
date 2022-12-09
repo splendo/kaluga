@@ -983,14 +983,10 @@ public abstract class com/splendo/kaluga/state/HotStateRepo : com/splendo/kaluga
 }
 
 public abstract interface class com/splendo/kaluga/state/KalugaState {
-	public abstract fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/state/KalugaState$DefaultImpls {
-	public static fun finalState (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun initialState (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun remain (Lcom/splendo/kaluga/state/KalugaState;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -1000,8 +996,6 @@ public final class com/splendo/kaluga/state/KalugaStateKt {
 
 public abstract class com/splendo/kaluga/state/State : com/splendo/kaluga/state/KalugaState {
 	public fun <init> ()V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 

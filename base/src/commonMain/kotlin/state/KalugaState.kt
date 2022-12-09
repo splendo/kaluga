@@ -60,18 +60,6 @@ interface KalugaState {
      */
     @Suppress("UNCHECKED_CAST") // cast should normally work since the receiver uses one type of state
     fun <S : KalugaState> remain(): suspend() -> S = remain as suspend () -> S
-
-    /**
-     * Called when this state is the first state of the state machine
-     */
-    @Deprecated("Use an initializer state rather than relying on this method, it might be called after the initial state is already changed")
-    suspend fun initialState() {}
-
-    /**
-     * Called when this state is the final state of the state machine
-     */
-    @Deprecated("This method is not always actually called (e.g. for a HotRepo) since there is not always a final state")
-    suspend fun finalState() {}
 }
 
 @Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
@@ -159,10 +147,6 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
             (initialValue ?: initialValue()).also { value ->
                 mutableFlow.emit(value)
                 stateMutex.release() // release the initial permit held
-                // The mutex is already released above to let the state initialize afterwards, to avoid changeState mutex deadlocks
-                // However releasing the above mutex might have already changed the state to a new state before initialState runs.
-                // State machines that need initialization should rely on having an initialization state rather than using this method.
-                value.initialState()
             }
         else
             state()
@@ -390,9 +374,9 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
                 launch(coroutineContext) {
                     flow.onCollectionEvent { event ->
                         when (event) {
-                            NoMoreCollections -> noMoreCollections().also { it.finalState() }
+                            NoMoreCollections -> noMoreCollections()
                             FirstCollection -> firstCollection()
-                            LaterCollections -> laterCollections().also { it.initialState() }
+                            LaterCollections -> laterCollections()
                         }
                     }
                 }
