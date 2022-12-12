@@ -68,7 +68,6 @@ sealed class TrafficLightState :
     }
 
     class RedLight internal constructor() : TrafficLightState() {
-
         val becomeGreen = suspend { GreenLight() }
     }
 
