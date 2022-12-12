@@ -21,7 +21,6 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
-import android.bluetooth.BluetoothStatusCodes
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 
@@ -31,6 +30,7 @@ interface BluetoothGattWrapper {
     fun disconnect()
     fun close()
     fun readRemoteRssi(): Boolean
+
     /** Request MTU, returns `true` if the new MTU value has been requested successfully */
     fun requestMtu(mtu: Int): Boolean
 
@@ -80,32 +80,22 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
 
     override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
-        // TODO this seems to not work for Android TIRAMISU
-        /*
+        // TODO update implementation to call non deprecated gatt.writeCharacteristic(characteristic, value, writeType)
+        //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on characteristic.value
+        @Suppress("DEPRECATION")
         characteristic.value = value
-        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            val writeType = if (android.os.Build.VERSION.SDK_INT >= 33) BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE else BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-            gatt.writeCharacteristic(characteristic, value, writeType) == BluetoothStatusCodes.SUCCESS
-        } else {*/
-            @Suppress("DEPRECATION")
-            characteristic.value = value
-            @Suppress("DEPRECATION")
-          return  gatt.writeCharacteristic(characteristic)
-        //}
+        @Suppress("DEPRECATION")
+        return gatt.writeCharacteristic(characteristic)
     }
 
     override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
-        // TODO this seems to not work for Android TIRAMISU
-        /*descriptor.value = value
-        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            gatt.writeDescriptor(descriptor, value) == BluetoothStatusCodes.SUCCESS
-        } else {*/
-            @Suppress("DEPRECATION")
-            descriptor.value = value
-            @Suppress("DEPRECATION")
-          return  gatt.writeDescriptor(descriptor)
-       // }
+        // TODO update implementation to call non deprecated gatt.writeDescriptor(descriptor, value)
+        //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on characteristic.value
+        @Suppress("DEPRECATION")
+        descriptor.value = value
+        @Suppress("DEPRECATION")
+        return gatt.writeDescriptor(descriptor)
     }
 
     override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {
