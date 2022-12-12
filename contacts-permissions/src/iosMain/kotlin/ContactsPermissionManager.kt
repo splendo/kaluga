@@ -17,11 +17,10 @@
 
 package com.splendo.kaluga.permissions.contacts
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
@@ -36,7 +35,6 @@ import platform.Contacts.CNAuthorizationStatusRestricted
 import platform.Contacts.CNContactStore
 import platform.Contacts.CNEntityType
 import platform.Foundation.NSBundle
-import platform.Foundation.NSError
 import kotlin.time.Duration
 
 const val NSContactsUsageDescription = "NSContactsUsageDescription"
@@ -62,14 +60,12 @@ actual class DefaultContactsPermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
-                val callback = { success: Boolean, error: NSError? ->
+                contactStore.requestAccessForEntityType(
+                    CNEntityType.CNEntityTypeContacts
+                ) { success, error ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
                     Unit
-                }.freeze()
-                contactStore.requestAccessForEntityType(
-                    CNEntityType.CNEntityTypeContacts,
-                    callback
-                )
+                }
 
                 try {
                     if (deferred.await())

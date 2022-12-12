@@ -18,16 +18,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.logging
 
-import co.touchlab.stately.collections.IsoMutableList
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 
-class LoggerMock : Logger {
+class LoggerMock : SynchronizedObject(), Logger {
 
-    val throwableList = IsoMutableList<Throwable?>()
-    val messageList = IsoMutableList<String?>()
-    val tagList = IsoMutableList<String?>()
-    val levelList = IsoMutableList<LogLevel?>()
+    val throwableList = mutableListOf<Throwable?>()
+    val messageList = mutableListOf<String?>()
+    val tagList = mutableListOf<String?>()
+    val levelList = mutableListOf<LogLevel?>()
 
-    fun clear() {
+    fun clear() = synchronized(this) {
         levelList.clear()
         messageList.clear()
         tagList.clear()
@@ -35,9 +36,11 @@ class LoggerMock : Logger {
     }
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-        levelList.add(level)
-        tagList.add(tag)
-        throwableList.add(throwable)
-        messageList.add(message?.invoke())
+        synchronized(this) {
+            levelList.add(level)
+            tagList.add(tag)
+            throwableList.add(throwable)
+            messageList.add(message?.invoke())
+        }
     }
 }

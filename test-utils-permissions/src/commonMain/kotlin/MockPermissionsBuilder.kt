@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.permissions
 
-import co.touchlab.stately.collections.IsoMutableList
 import com.splendo.kaluga.permissions.base.BasePermissionStateRepo
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.Permission
@@ -55,7 +54,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [CameraPermission]
      */
-    val buildCameraStateRepos = IsoMutableList<MockBasePermissionStateRepo<CameraPermission>>()
+    val buildCameraStateRepos = mutableListOf<MockBasePermissionStateRepo<CameraPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CameraPermission]
@@ -66,7 +65,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [ContactsPermission]
      */
-    val buildContactsStateRepos = IsoMutableList<MockBasePermissionStateRepo<ContactsPermission>>()
+    val buildContactsStateRepos = mutableListOf<MockBasePermissionStateRepo<ContactsPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [ContactsPermission]
@@ -77,7 +76,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [MicrophonePermission]
      */
-    val buildMicrophoneStateRepos = IsoMutableList<MockBasePermissionStateRepo<MicrophonePermission>>()
+    val buildMicrophoneStateRepos = mutableListOf<MockBasePermissionStateRepo<MicrophonePermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [MicrophonePermission]
@@ -88,7 +87,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [NotificationsPermission]
      */
-    val buildNotificationsStateRepos = IsoMutableList<MockBasePermissionStateRepo<NotificationsPermission>>()
+    val buildNotificationsStateRepos = mutableListOf<MockBasePermissionStateRepo<NotificationsPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [NotificationsPermission]
@@ -99,7 +98,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [BluetoothPermission]
      */
-    val buildBluetoothStateRepos = IsoMutableList<MockBasePermissionStateRepo<BluetoothPermission>>()
+    val buildBluetoothStateRepos = mutableListOf<MockBasePermissionStateRepo<BluetoothPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [BluetoothPermission]
@@ -110,7 +109,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [LocationPermission]
      */
-    val buildLocationStateRepos = IsoMutableList<MockBasePermissionStateRepo<LocationPermission>>()
+    val buildLocationStateRepos = mutableListOf<MockBasePermissionStateRepo<LocationPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [LocationPermission]
@@ -121,7 +120,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [CalendarPermission]
      */
-    val buildCalendarStateRepos = IsoMutableList<MockBasePermissionStateRepo<CalendarPermission>>()
+    val buildCalendarStateRepos = mutableListOf<MockBasePermissionStateRepo<CalendarPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CalendarPermission]
@@ -132,7 +131,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [StoragePermission]
      */
-    val buildStorageStateRepos = IsoMutableList<MockBasePermissionStateRepo<StoragePermission>>()
+    val buildStorageStateRepos = mutableListOf<MockBasePermissionStateRepo<StoragePermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [StoragePermission]
@@ -195,7 +194,7 @@ class MockPermissionsBuilder(
     /**
      * Registers all [MockPermissionManager] and [MockPermissionStateRepo]
      */
-    fun registerAllPermissionsBuilders() {
+    suspend fun registerAllPermissionsBuilders() {
         register(MockBasePermissionsBuilder<BluetoothPermission>())
         registerPermissionStateRepoBuilder(::bluetoothStateRepoBuilder)
         register(MockBasePermissionsBuilder<LocationPermission>())

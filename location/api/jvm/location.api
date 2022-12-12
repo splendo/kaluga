@@ -11,9 +11,9 @@ public abstract class com/splendo/kaluga/location/BaseLocationManager : com/sple
 	public final fun handleLocationChanged (Ljava/util/List;)V
 	public fun isLocationEnabled ()Z
 	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun startMonitoringPermissions ()V
-	public fun stopMonitoringLocationEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/splendo/kaluga/location/BaseLocationManager$Builder {
@@ -212,10 +212,10 @@ public abstract interface class com/splendo/kaluga/location/LocationManager {
 	public abstract fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun startMonitoringPermissions ()V
+	public abstract fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun stopMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun stopMonitoringLocationEnabled ()V
-	public abstract fun stopMonitoringPermissions ()V
+	public abstract fun stopMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/location/LocationManager$Event {
@@ -430,15 +430,15 @@ public final class com/splendo/kaluga/location/LocationStateImpl$NotInitialized 
 
 public final class com/splendo/kaluga/location/LocationStateImpl$PermittedHandler {
 	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
-	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;)V
+	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
 }
 
 public class com/splendo/kaluga/location/LocationStateImplRepo : com/splendo/kaluga/location/BaseLocationStateRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/CoroutineContext;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/splendo/kaluga/location/LocationStateKt {
@@ -447,7 +447,7 @@ public final class com/splendo/kaluga/location/LocationStateKt {
 }
 
 public final class com/splendo/kaluga/location/LocationStateRepo : com/splendo/kaluga/location/LocationStateImplRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationStateRepo$Builder {
@@ -460,8 +460,8 @@ public final class com/splendo/kaluga/location/LocationStateRepo$Builder$Default
 
 public final class com/splendo/kaluga/location/LocationStateRepoBuilder : com/splendo/kaluga/location/LocationStateRepo$Builder {
 	public fun <init> ()V
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 

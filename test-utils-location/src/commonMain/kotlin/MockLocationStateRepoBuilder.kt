@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.location
 
-import co.touchlab.stately.collections.IsoMutableList
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
@@ -29,12 +28,12 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Mock implementation of [LocationStateRepo.Builder]
- * @param permissions The [Permissions] to request permissions from
+ * @param permissionsBuilder Builds the [Permissions] to request permissions from
  * @param locationManagerBuilder The [BaseLocationManager.Builder] for building the location manager
  * @param setupMocks If `true` sets up [createMock] to automatically create a [LocationStateRepo]
  */
 class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
-    private val permissions: Permissions,
+    private val permissionsBuilder: suspend () -> Permissions,
     val locationManagerBuilder: LMB,
     setupMocks: Boolean = true
 ) : LocationStateRepo.Builder {
@@ -42,7 +41,7 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     /**
      * List of build [LocationStateRepo]
      */
-    val builtLocationStateRepo = IsoMutableList<LocationStateRepo>()
+    val builtLocationStateRepo = mutableListOf<LocationStateRepo>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -54,7 +53,7 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
             createMock.on()
                 .doExecute { (locationPermission, settingsBuilder, coroutineContext) ->
                     LocationStateRepo(
-                        { settingsBuilder(locationPermission, permissions) },
+                        { settingsBuilder(locationPermission, permissionsBuilder()) },
                         locationManagerBuilder,
                         coroutineContext
                     ).also {

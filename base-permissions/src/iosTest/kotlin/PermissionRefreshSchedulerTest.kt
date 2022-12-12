@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.permissions.base
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.delay
@@ -32,11 +30,10 @@ class PermissionRefreshSchedulerTest : BaseTest() {
 
     @Test
     fun testStartMonitoring() = runBlocking {
-        val authorization: AtomicReference<IOSPermissionsHelper.AuthorizationStatus> =
-            AtomicReference(IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+        var authorization = IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         val authorizationProvider = object : CurrentAuthorizationStatusProvider {
             override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
-                return authorization.value
+                return authorization
             }
         }
 
@@ -55,24 +52,24 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         delay(50)
         assertNull(onPermissionChangedFlow.value)
 
-        authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
+        authorization = IOSPermissionsHelper.AuthorizationStatus.Authorized
         delay(60)
         assertEquals(
             IOSPermissionsHelper.AuthorizationStatus.Authorized,
             onPermissionChangedFlow.value
         )
 
-        timerHelper.isWaiting.value = true
-        authorization.set(IOSPermissionsHelper.AuthorizationStatus.Denied)
+        timerHelper.waitingLock.lock()
+        authorization = IOSPermissionsHelper.AuthorizationStatus.Denied
         onPermissionChangedFlow.value = null
         delay(60)
         assertNull(onPermissionChangedFlow.value)
 
-        timerHelper.isWaiting.value = false
+        timerHelper.waitingLock.unlock()
         delay(50)
         assertEquals(IOSPermissionsHelper.AuthorizationStatus.Denied, onPermissionChangedFlow.value)
 
-        authorization.set(IOSPermissionsHelper.AuthorizationStatus.Authorized)
+        authorization = IOSPermissionsHelper.AuthorizationStatus.Authorized
         onPermissionChangedFlow.value = null
         timerHelper.stopMonitoring()
         delay(50)

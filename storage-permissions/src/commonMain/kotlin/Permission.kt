@@ -58,3 +58,28 @@ fun PermissionsBuilder.registerStoragePermission(
         storagePermissionStateRepoBuilder(permission, it, coroutineContext)
     }
 }
+
+fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
+    storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerStoragePermissionIfNotRegistered(storagePermissionManagerBuilderBuilder) { storagePermission, baseStoragePermissionManagerBuilder, coroutineContext ->
+        StoragePermissionStateRepo(
+            storagePermission,
+            baseStoragePermissionManagerBuilder,
+            monitoringInterval,
+            settings,
+            coroutineContext
+        )
+    }
+
+fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
+    storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
+    storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>
+) = storagePermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<StoragePermission> { permission, coroutineContext ->
+        storagePermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

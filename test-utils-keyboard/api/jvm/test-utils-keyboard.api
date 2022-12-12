@@ -18,8 +18,8 @@ public final class com/splendo/kaluga/test/keyboard/MockKeyboardManager : com/sp
 	public final fun getFocusHandler ()Lcom/splendo/kaluga/keyboard/FocusHandler;
 	public final fun getHideMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getShowMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun get_focusHandler ()Ljava/util/concurrent/atomic/AtomicReference;
 	public fun hide ()V
+	public final fun setFocusHandler (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
 	public fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
 }
 
@@ -29,7 +29,7 @@ public final class com/splendo/kaluga/test/keyboard/MockKeyboardManager$Builder 
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
 	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/keyboard/MockKeyboardManager;
-	public final fun getBuiltKeyboardManagers ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getBuiltKeyboardManagers ()Ljava/util/List;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 

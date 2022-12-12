@@ -75,7 +75,7 @@ actual class AlertPresenter(
     }
 
     actual class Builder(private val viewController: UIViewController) : BaseAlertPresenter.Builder() {
-        actual override fun create(coroutineScope: CoroutineScope) = AlertPresenter(createAlert(), viewController)
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController)
     }
 
     override fun dismissAlert(animated: Boolean) {

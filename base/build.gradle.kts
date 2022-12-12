@@ -4,19 +4,20 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
 publishableComponent()
+
+dependencies {
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
+}
 
 kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
-                apiDependency(Dependencies.Stately.Common)
-                apiDependency(Dependencies.Stately.Isolate)
-                apiDependency(Dependencies.Stately.IsoCollections)
-                apiDependency(Dependencies.Stately.Concurrency)
             }
         }
         getByName("jsMain") {

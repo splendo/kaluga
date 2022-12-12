@@ -14,6 +14,7 @@ public final class com/splendo/kaluga/test/hud/MockHUD : com/splendo/kaluga/hud/
 	public final fun getPresentMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public fun isVisible ()Z
 	public fun present (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun setVisible (Z)V
 }
 
 public final class com/splendo/kaluga/test/hud/MockHUD$Builder : com/splendo/kaluga/hud/BaseHUD$Builder {
@@ -22,7 +23,7 @@ public final class com/splendo/kaluga/test/hud/MockHUD$Builder : com/splendo/kal
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/hud/BaseHUD;
 	public fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/hud/MockHUD;
-	public final fun getBuiltHUDs ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getBuiltHUDs ()Ljava/util/List;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 

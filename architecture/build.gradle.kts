@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
     id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
 publishableComponent()
@@ -15,6 +16,7 @@ dependencies {
     apiDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
     apiDependency(Dependencies.AndroidX.Lifecycle.LiveData)
     implementationDependency(Dependencies.AndroidX.Browser)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {

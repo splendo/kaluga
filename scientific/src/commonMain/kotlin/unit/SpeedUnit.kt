@@ -22,7 +22,6 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
-import kotlin.native.concurrent.ThreadLocal
 
 val MetricSpeedUnits: Set<MetricSpeed> get() = MetricLengthUnits.flatMap { length ->
     TimeUnits.map { MetricSpeed(length, it) }
@@ -57,7 +56,5 @@ data class ImperialSpeed(override val distance: ImperialLength, override val per
 infix fun MetricLength.per(time: Time) = MetricSpeed(this, time)
 infix fun ImperialLength.per(time: Time) = ImperialSpeed(this, time)
 
-@ThreadLocal
 val MetricSpeedOfLight = 299792458(Meter per Second)
-@ThreadLocal
 val ImperialSpeedOfLight = MetricSpeedOfLight.convert(Foot per Second)

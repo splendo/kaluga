@@ -59,7 +59,7 @@ abstract class BaseScanningStateRepo(
 )
 
 open class ScanningStateImplRepo(
-    createScanner: () -> Scanner,
+    createScanner: suspend () -> Scanner,
     private val createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
     coroutineContext: CoroutineContext
 ) : BaseScanningStateRepo(
@@ -138,7 +138,7 @@ open class ScanningStateImplRepo(
 }
 
 class ScanningStateRepo(
-    settingsBuilder: (CoroutineContext) -> BaseScanner.Settings,
+    settingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
     coroutineContext: CoroutineContext,

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,15 +17,8 @@
 
 package com.splendo.kaluga.logging
 
-import co.touchlab.stately.concurrency.value
 import io.github.aakira.napier.DebugAntilog
-import kotlin.native.concurrent.SharedImmutable
 
-@SharedImmutable
 actual val defaultLogger: Logger = NapierLogger(DebugAntilog())
 
-@SharedImmutable
-private val _logger = co.touchlab.stately.concurrency.AtomicReference(defaultLogger)
-actual var logger
-    get() = _logger.value
-    set(value) { _logger.value = value }
+actual var logger = defaultLogger

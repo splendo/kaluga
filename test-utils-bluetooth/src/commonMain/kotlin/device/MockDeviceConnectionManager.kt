@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.test.bluetooth.device
 
-import co.touchlab.stately.collections.sharedMutableListOf
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
@@ -60,7 +58,7 @@ class MockDeviceConnectionManager(
         /**
          * List of created [MockDeviceConnectionManager]
          */
-        val createdDeviceConnectionManager = sharedMutableListOf<MockDeviceConnectionManager>()
+        val createdDeviceConnectionManager = mutableListOf<MockDeviceConnectionManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -86,14 +84,10 @@ class MockDeviceConnectionManager(
         }
     }
 
-    private val _willActionSucceed = AtomicBoolean(initialWillActionSucceed)
-
     /**
      * Configure whether a [DeviceAction] will succeed
      */
-    var willActionSucceed: Boolean
-        get() = _willActionSucceed.value
-        set(value) { _willActionSucceed.value = value }
+    var willActionSucceed: Boolean = initialWillActionSucceed
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [getCurrentState]

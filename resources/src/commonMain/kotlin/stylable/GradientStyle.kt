@@ -24,7 +24,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
     data class ColorPoint(val color: KalugaColor, val offset: Float)
     data class CenterPoint(val x: Float, val y: Float)
 
-    class Linear private constructor (colorPoints: List<ColorPoint>, val orientation: Orientation) : GradientStyle(colorPoints) {
+    class Linear private constructor(colorPoints: List<ColorPoint>, val orientation: Orientation) : GradientStyle(colorPoints) {
         enum class Orientation {
             BOTTOM_LEFT_TOP_RIGHT,
             BOTTOM_TOP,

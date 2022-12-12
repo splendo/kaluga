@@ -55,3 +55,27 @@ fun PermissionsBuilder.registerBluetoothPermission(
         stateRepoBuilder(it, coroutineContext)
     }
 }
+
+fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerBluetoothPermissionIfNotRegistered(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
+        BluetoothPermissionStateRepo(
+            baseBluetoothPermissionManagerBuilder,
+            monitoringInterval,
+            settings,
+            coroutineContext
+        )
+    }
+
+fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
+    bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
+    stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
+) = bluetoothPermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<BluetoothPermission> { _, coroutineContext ->
+        stateRepoBuilder(it, coroutineContext)
+    }
+}

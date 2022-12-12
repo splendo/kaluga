@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -45,7 +45,10 @@ actual class DateTimePickerPresenter(
         private val themeResourceId: Int = 0,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseDateTimePickerPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = DateTimePickerPresenter(createDateTimePicker(), themeResourceId, lifecycleManagerObserver, coroutineScope)
+        actual override fun create(
+            dateTimePicker: DateTimePicker,
+            coroutineScope: CoroutineScope
+        ) = DateTimePickerPresenter(dateTimePicker, themeResourceId, lifecycleManagerObserver, coroutineScope)
     }
 
     private sealed class DialogPresentation {

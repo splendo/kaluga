@@ -29,13 +29,13 @@ public final class com/splendo/kaluga/bluetooth/beacons/BeaconInfoKt {
 
 public final class com/splendo/kaluga/bluetooth/beacons/Beacons {
 	public static final field TAG Ljava/lang/String;
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;J)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBeacons ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun isAnyInRange (Ljava/util/List;)Lkotlinx/coroutines/flow/Flow;
 	public final fun isMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun startMonitoring (Lkotlinx/coroutines/CoroutineScope;)V
-	public final fun stopMonitoring ()V
+	public final fun startMonitoring (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/BeaconsKt {

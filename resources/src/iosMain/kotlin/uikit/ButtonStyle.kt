@@ -44,7 +44,6 @@ import platform.objc.sel_registerName
 
 class UIControlClosure(private val action: () -> Unit) : NSObject() {
 
-    @ThreadLocal
     object Registry {
         val registeredUIControl = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
     }

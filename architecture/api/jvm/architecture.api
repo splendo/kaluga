@@ -625,7 +625,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseSimpleDispo
 	public fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
 	protected fun afterDispose ()V
 	public fun dispose ()V
-	public final fun isDisposed ()Z
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseSubject : com/splendo/kaluga/architecture/observable/AbstractBaseSubject {
@@ -681,8 +680,6 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Dispo
 
 public final class com/splendo/kaluga/architecture/observable/DisposeBag : com/splendo/kaluga/architecture/observable/Disposable {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun add (Lcom/splendo/kaluga/architecture/observable/Disposable;)V
 	public final fun add (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
 	public fun addTo (Lcom/splendo/kaluga/architecture/observable/DisposeBag;)V
@@ -701,22 +698,6 @@ public final class com/splendo/kaluga/architecture/observable/FlowObservable : c
 	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/flow/Flow;Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getFlow ()Lkotlinx/coroutines/flow/Flow;
-}
-
-public final class com/splendo/kaluga/architecture/observable/HotFlowableDefaultSubject : com/splendo/kaluga/architecture/observable/BaseDefaultSubject, com/splendo/kaluga/architecture/observable/SuspendableSetter {
-	public fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lcom/splendo/kaluga/base/flow/HotFlowable;ZLcom/splendo/kaluga/architecture/observable/ObservationDefault;)V
-	public synthetic fun <init> (Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lcom/splendo/kaluga/base/flow/HotFlowable;ZLcom/splendo/kaluga/architecture/observable/ObservationDefault;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
-	public fun post (Ljava/lang/Object;)V
-	public fun set (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/splendo/kaluga/architecture/observable/HotFlowableInitializedSubject : com/splendo/kaluga/architecture/observable/BaseInitializedSubject, com/splendo/kaluga/architecture/observable/SuspendableSetter {
-	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lcom/splendo/kaluga/base/flow/HotFlowable;ZLcom/splendo/kaluga/architecture/observable/ObservationInitialized;)V
-	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lcom/splendo/kaluga/base/flow/HotFlowable;ZLcom/splendo/kaluga/architecture/observable/ObservationInitialized;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
-	public fun post (Ljava/lang/Object;)V
-	public fun set (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/Initial {
@@ -797,11 +778,9 @@ public final class com/splendo/kaluga/architecture/observable/ObservablesKt {
 	public static final fun toDefaultObservable (Lkotlin/properties/ReadOnlyProperty;Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/ReadOnlyPropertyDefaultObservable;
 	public static final fun toDefaultObservable (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/DefaultFlowObservable;
 	public static synthetic fun toDefaultObservable$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/DefaultFlowObservable;
-	public static final fun toDefaultSubject (Lcom/splendo/kaluga/base/flow/HotFlowable;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/HotFlowableDefaultSubject;
 	public static final fun toDefaultSubject (Lkotlin/properties/ReadWriteProperty;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/ReadWritePropertyDefaultSubject;
 	public static final fun toDefaultSubject (Lkotlinx/coroutines/flow/MutableSharedFlow;Ljava/lang/Object;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/SharedFlowDefaultSubject;
 	public static final fun toDefaultSubject (Lkotlinx/coroutines/flow/MutableStateFlow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/StateFlowDefaultSubject;
-	public static synthetic fun toDefaultSubject$default (Lcom/splendo/kaluga/base/flow/HotFlowable;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/HotFlowableDefaultSubject;
 	public static synthetic fun toDefaultSubject$default (Lkotlin/properties/ReadWriteProperty;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/ReadWritePropertyDefaultSubject;
 	public static synthetic fun toDefaultSubject$default (Lkotlinx/coroutines/flow/MutableSharedFlow;Ljava/lang/Object;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/SharedFlowDefaultSubject;
 	public static synthetic fun toDefaultSubject$default (Lkotlinx/coroutines/flow/MutableStateFlow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/StateFlowDefaultSubject;
@@ -810,11 +789,9 @@ public final class com/splendo/kaluga/architecture/observable/ObservablesKt {
 	public static final fun toInitializedObservable (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/FlowInitializedObservable;
 	public static synthetic fun toInitializedObservable$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/FlowInitializedObservable;
 	public static synthetic fun toInitializedObservable$default (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/FlowInitializedObservable;
-	public static final fun toInitializedSubject (Lcom/splendo/kaluga/base/flow/HotFlowable;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/HotFlowableInitializedSubject;
 	public static final fun toInitializedSubject (Lkotlin/properties/ReadWriteProperty;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/ReadWritePropertyInitializedSubject;
 	public static final fun toInitializedSubject (Lkotlinx/coroutines/flow/MutableSharedFlow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/SharedFlowInitializedSubject;
 	public static final fun toInitializedSubject (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/architecture/observable/StateFlowInitializedSubject;
-	public static synthetic fun toInitializedSubject$default (Lcom/splendo/kaluga/base/flow/HotFlowable;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/HotFlowableInitializedSubject;
 	public static synthetic fun toInitializedSubject$default (Lkotlin/properties/ReadWriteProperty;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/ReadWritePropertyInitializedSubject;
 	public static synthetic fun toInitializedSubject$default (Lkotlinx/coroutines/flow/MutableSharedFlow;Ljava/lang/Object;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/SharedFlowInitializedSubject;
 	public static synthetic fun toInitializedSubject$default (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/observable/StateFlowInitializedSubject;
@@ -1015,8 +992,6 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithS
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun didPause ()V
 	public final fun didResume ()V
 	protected fun onPause ()V
@@ -1025,26 +1000,20 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : 
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ()V
 	public final fun clear ()V
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	protected fun onCleared ()V
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseViewModel {
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;Z)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;)V
 	public final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
  */
 package com.splendo.kaluga.logging
 
-import kotlin.native.concurrent.SharedImmutable
 import com.splendo.kaluga.logging.LogLevel as KalugaLogLevel
 import io.github.aakira.napier.Antilog as NapierLog
 import io.github.aakira.napier.LogLevel as NapierLogLevel
 
-@SharedImmutable
 val logLevel = arrayOf(
     NapierLogLevel.VERBOSE,
     NapierLogLevel.DEBUG,

@@ -18,8 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,26 +43,6 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
      * Builder class for creating a [BaseHUD]
      */
     abstract class Builder : LifecycleSubscribableMarker {
-
-        internal val lock = Lock()
-
-        /** The style of the loading indicator */
-        internal var style: HUDStyle = HUDStyle.SYSTEM
-
-        /** Sets the style for the loading indicator */
-        fun setStyle(style: HUDStyle) = apply { this.style = style }
-
-        /** The title of the loading indicator */
-        internal var title: String? = null
-
-        /** Set the title for the loading indicator */
-        fun setTitle(title: String?) = apply { this.title = title }
-
-        /** Sets default style and empty title */
-        internal fun clear() {
-            setStyle(HUDStyle.SYSTEM)
-            setTitle(null)
-        }
 
         /** */
         /**
@@ -142,8 +120,9 @@ suspend fun <T> BaseHUD.presentDuring(animated: Boolean = true, block: suspend B
  * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
  * @param initialize Method for initializing the [HUD.Builder]
  */
-fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: BaseHUD.Builder.() -> Unit = { }): BaseHUD = lock.withLock {
-    clear()
-    initialize()
-    return create(HudConfig(style, title), coroutineScope)
-}
+fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: HudConfig.Builder.() -> Unit = { }): BaseHUD = create(
+    HudConfig.Builder().apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.bluetooth.scanner
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
@@ -37,16 +36,16 @@ class MockScanner(
 ) : Scanner {
 
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
-    override fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
+    override suspend fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
 
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
-    override fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
+    override suspend fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
 
     val startMonitoringHardwareEnabledMock = ::startMonitoringHardwareEnabled.mock()
-    override fun startMonitoringHardwareEnabled(): Unit = startMonitoringHardwareEnabledMock.call()
+    override suspend fun startMonitoringHardwareEnabled(): Unit = startMonitoringHardwareEnabledMock.call()
 
     val stopMonitoringHardwareEnabledMock = ::stopMonitoringHardwareEnabled.mock()
-    override fun stopMonitoringHardwareEnabled(): Unit = stopMonitoringHardwareEnabledMock.call()
+    override suspend fun stopMonitoringHardwareEnabled(): Unit = stopMonitoringHardwareEnabledMock.call()
 
     val isHardwareEnabledMock = ::isHardwareEnabled.mock()
     override suspend fun isHardwareEnabled(): Boolean = isHardwareEnabledMock.call()
@@ -93,7 +92,7 @@ class MockBaseScanner(
         /**
          * List of created [MockScanner]
          */
-        val createdScanners = sharedMutableListOf<MockBaseScanner>()
+        val createdScanners = mutableListOf<MockBaseScanner>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -163,22 +162,22 @@ class MockBaseScanner(
      */
     val pairedDevicesMock = ::pairedDevices.mock()
 
-    override fun startMonitoringPermissions() {
+    override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
         startMonitoringPermissionsMock.call()
     }
 
-    override fun stopMonitoringPermissions() {
+    override suspend fun stopMonitoringPermissions() {
         super.stopMonitoringPermissions()
         stopMonitoringPermissionsMock.call()
     }
 
-    override fun startMonitoringHardwareEnabled() {
+    override suspend fun startMonitoringHardwareEnabled() {
         super.startMonitoringHardwareEnabled()
         startMonitoringHardwareEnabledMock.call()
     }
 
-    override fun stopMonitoringHardwareEnabled() {
+    override suspend fun stopMonitoringHardwareEnabled() {
         super.stopMonitoringHardwareEnabled()
         stopMonitoringHardwareEnabledMock.call()
     }

@@ -4,6 +4,7 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
 publishableComponent()
@@ -11,6 +12,7 @@ publishableComponent()
 dependencies {
     implementationDependency(Dependencies.BLEScanner)
     implementation(project(":location", ""))
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
@@ -18,7 +20,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":bluetooth-permissions", ""))
-                implementationDependency(Dependencies.Stately.Concurrency)
             }
         }
         commonTest {

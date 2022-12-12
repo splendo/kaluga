@@ -23,4 +23,26 @@ data class HudConfig(
     val style: HUDStyle = HUDStyle.SYSTEM,
     /** Optional title of the HUD */
     val title: String? = null
-)
+) {
+
+    class Builder {
+        /** The style of the loading indicator */
+        internal var style: HUDStyle = HUDStyle.SYSTEM
+
+        /** Sets the style for the loading indicator */
+        fun setStyle(style: HUDStyle) = apply { this.style = style }
+
+        /** The title of the loading indicator */
+        internal var title: String? = null
+
+        /** Set the title for the loading indicator */
+        fun setTitle(title: String?) = apply { this.title = title }
+
+        /**
+         * Creates a [HudConfig]
+         *
+         * @return The [HudConfig] created
+         */
+        fun build(): HudConfig = HudConfig(style, title)
+    }
+}

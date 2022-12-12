@@ -42,8 +42,8 @@ public final class com/splendo/kaluga/bluetooth/Bluetooth$ScanMode$Stopped : com
 
 public final class com/splendo/kaluga/bluetooth/BluetoothBuilder : com/splendo/kaluga/bluetooth/Bluetooth$Builder {
 	public fun <init> ()V
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
@@ -255,7 +255,7 @@ public abstract class com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionMa
 	protected final fun getCurrentAction ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction;
 	public final fun getDeviceWrapper ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
 	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
-	protected final fun getNotifyingCharacteristics ()Lco/touchlab/stately/collections/IsoMutableMap;
+	protected final fun getNotifyingCharacteristics ()Ljava/util/Map;
 	public synthetic fun getRssi ()Lkotlinx/coroutines/flow/Flow;
 	public fun getRssi ()Lkotlinx/coroutines/flow/SharedFlow;
 	public fun handleConnect ()V
@@ -836,10 +836,10 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/spl
 	public fun isHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun requestEnableHardware (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun scanForDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun startMonitoringHardwareEnabled ()V
-	public fun startMonitoringPermissions ()V
-	public fun stopMonitoringHardwareEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun startMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun stopScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -892,10 +892,10 @@ public abstract interface class com/splendo/kaluga/bluetooth/scanner/Scanner {
 	public abstract fun pairedDevices (Ljava/util/Set;)Ljava/util/List;
 	public abstract fun requestEnableHardware (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun scanForDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun startMonitoringHardwareEnabled ()V
-	public abstract fun startMonitoringPermissions ()V
-	public abstract fun stopMonitoringHardwareEnabled ()V
-	public abstract fun stopMonitoringPermissions ()V
+	public abstract fun startMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun stopScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1224,17 +1224,17 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$NotIni
 
 public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateImpl$PermittedHandler {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/Scanner;)V
-	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState;)V
-	public final fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState;)V
+	public final fun afterNewStateIsSet (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
 	public final fun getScanner ()Lcom/splendo/kaluga/bluetooth/scanner/Scanner;
 }
 
 public class com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo : com/splendo/kaluga/bluetooth/scanner/BaseScanningStateRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateRepo : com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/CoroutineContext;)V
 }
 

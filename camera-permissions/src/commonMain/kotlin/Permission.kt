@@ -50,3 +50,22 @@ fun PermissionsBuilder.registerCameraPermission(
         cameraPermissionStateRepoBuilder(it, coroutineContext)
     }
 }
+
+fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
+    cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerCameraPermissionIfNotRegistered(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
+        CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+    }
+
+fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
+    cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
+    cameraPermissionStateRepoBuilder: (BaseCameraPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CameraPermission>
+) = cameraPermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<CameraPermission> { _, coroutineContext ->
+        cameraPermissionStateRepoBuilder(it, coroutineContext)
+    }
+}

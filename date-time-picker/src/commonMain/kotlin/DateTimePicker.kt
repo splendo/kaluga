@@ -1,6 +1,6 @@
 /*
 
-Copyright 2020 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.datetimepicker
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
@@ -55,6 +53,57 @@ data class DateTimePicker(
          * Selects a Time
          */
         object TimeType : Type()
+    }
+
+    class Builder(private var type: Type = Type.TimeType) {
+        private var message: String? = null
+        private var cancelButtonTitle: String = ""
+        private var confirmButtonTitle: String = ""
+        private var locale: Locale = defaultLocale
+        private var selectedDate: KalugaDate = DefaultKalugaDate.epoch()
+
+        /**
+         * Sets the [message] displayed in the DateTimePicker
+         *
+         * @param message The message of the alert
+         */
+        fun setMessage(message: String?) = apply { this.message = message }
+
+        /**
+         * Sets this [cancelButtonTitle] shown in the DateTimePicker
+         */
+        fun setCancelButtonTitle(cancelButtonTitle: String) = apply { this.cancelButtonTitle = cancelButtonTitle }
+
+        /**
+         * Sets this [cancelButtonTitle] shown in the DateTimePicker
+         */
+        fun setConfirmButtonTitle(confirmButtonTitle: String) = apply { this.confirmButtonTitle = confirmButtonTitle }
+
+        /**
+         * Sets the Locale for which a Date is selected
+         */
+        fun setLocale(locale: Locale) = apply { this.locale = locale }
+
+        fun setSelectedDate(date: KalugaDate) = apply { this.selectedDate = date }
+
+        /**
+         * Sets a style of the alert
+         *
+         * @param type The style of an alert
+         */
+        internal fun setType(type: Type) = apply { this.type = type }
+
+        /**
+         * Creates a [DateTimePicker]
+         *
+         * @return The [DateTimePicker] object
+         * @throws IllegalArgumentException in case missing cancel or confirm titles
+         */
+        fun build(): DateTimePicker {
+            require(cancelButtonTitle.isNotEmpty() && confirmButtonTitle.isNotEmpty()) { "Please set Cancel and Confirm Titles" }
+
+            return DateTimePicker(message, cancelButtonTitle, confirmButtonTitle, type, locale, selectedDate)
+        }
     }
 }
 
@@ -102,76 +151,14 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
      */
     abstract class Builder : LifecycleSubscribableMarker {
 
-        private var message: String? = null
-        private var cancelButtonTitle: String = ""
-        private var confirmButtonTitle: String = ""
-        private var locale: Locale = defaultLocale
-        private var selectedDate: KalugaDate = DefaultKalugaDate.epoch()
-        private var type: DateTimePicker.Type = DateTimePicker.Type.TimeType
-        internal val lock = Lock()
-
-        /**
-         * Sets the [message] displayed in the DateTimePicker
-         *
-         * @param message The message of the alert
-         */
-        fun setMessage(message: String?) = apply { this.message = message }
-
-        /**
-         * Sets this [cancelButtonTitle] shown in the DateTimePicker
-         */
-        fun setCancelButtonTitle(cancelButtonTitle: String) = apply { this.cancelButtonTitle = cancelButtonTitle }
-
-        /**
-         * Sets this [cancelButtonTitle] shown in the DateTimePicker
-         */
-        fun setConfirmButtonTitle(confirmButtonTitle: String) = apply { this.confirmButtonTitle = confirmButtonTitle }
-
-        /**
-         * Sets the Locale for which a Date is selected
-         */
-        fun setLocale(locale: Locale) = apply { this.locale = locale }
-
-        fun setSelectedDate(date: KalugaDate) = apply { this.selectedDate = date }
-
-        /**
-         * Sets a style of the alert
-         *
-         * @param type The style of an alert
-         */
-        internal fun setType(type: DateTimePicker.Type) = apply { this.type = type }
-
-        /**
-         * Reset builder into initial state
-         */
-        internal fun reset() = apply {
-            this.message = null
-            this.cancelButtonTitle = ""
-            this.confirmButtonTitle = ""
-            this.locale = defaultLocale
-            this.selectedDate = DefaultKalugaDate.epoch()
-            this.type = DateTimePicker.Type.TimeType
-        }
-
-        /**
-         * Creates a DataTimePicker
-         *
-         * @return The DateTimePicker object
-         * @throws IllegalArgumentException in case missing cancel or confirm titles
-         */
-        protected fun createDateTimePicker(): DateTimePicker {
-            require(cancelButtonTitle.isNotEmpty() && confirmButtonTitle.isNotEmpty()) { "Please set Cancel and Confirm Titles" }
-
-            return DateTimePicker(message, cancelButtonTitle, confirmButtonTitle, type, locale, selectedDate)
-        }
-
         /**
          * Creates the [BaseDateTimePickerPresenter] described by this builder.
          *
+         * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The [BaseDateTimePickerPresenter] described by this builder.
          */
-        abstract fun create(coroutineScope: CoroutineScope): BaseDateTimePickerPresenter
+        abstract fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): BaseDateTimePickerPresenter
     }
 
     override fun showAsync(animated: Boolean, completion: (KalugaDate?) -> Unit) {
@@ -207,10 +194,11 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
         /**
          * Creates DateTimePickerPresenter object
          *
+         * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The DateTimePickerPresenter object
          */
-        override fun create(coroutineScope: CoroutineScope): DateTimePickerPresenter
+        override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): DateTimePickerPresenter
     }
 }
 
@@ -218,20 +206,20 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
  * Builds an alert using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @param initialize The block to construct an Alert
+ * @param initialize The block to construct an [DateTimePicker]
  * @return The built alert interface object
  */
 fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
     coroutineScope: CoroutineScope,
     earliestDate: KalugaDate? = null,
     latestDate: KalugaDate? = null,
-    initialize: BaseDateTimePickerPresenter.Builder.() -> Unit
-): BaseDateTimePickerPresenter = lock.withLock {
-    reset()
-    setType(DateTimePicker.Type.DateType(earliestDate, latestDate))
-    initialize()
-    return create(coroutineScope)
-}
+    initialize: DateTimePicker.Builder.() -> Unit
+): BaseDateTimePickerPresenter = create(
+    DateTimePicker.Builder(DateTimePicker.Type.DateType(earliestDate, latestDate)).apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)
 
 /**
  * Builds an alert using DSL syntax (thread safe)
@@ -240,9 +228,12 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseDateTimePickerPresenter.Builder.buildTimePicker(coroutineScope: CoroutineScope, initialize: BaseDateTimePickerPresenter.Builder.() -> Unit): BaseDateTimePickerPresenter = lock.withLock {
-    reset()
-    setType(DateTimePicker.Type.TimeType)
-    initialize()
-    return create(coroutineScope)
-}
+fun BaseDateTimePickerPresenter.Builder.buildTimePicker(
+    coroutineScope: CoroutineScope,
+    initialize: DateTimePicker.Builder.() -> Unit
+): BaseDateTimePickerPresenter = create(
+    DateTimePicker.Builder(DateTimePicker.Type.TimeType).apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)

@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.permissions.base
 
-import co.touchlab.stately.concurrency.AtomicBoolean
-import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -60,10 +58,10 @@ class PermissionRefreshScheduler(
         }
     }
 
-    private val lastPermission: AtomicReference<IOSPermissionsHelper.AuthorizationStatus?> = AtomicReference(null)
-    val isWaiting = AtomicBoolean(false)
-    private val timerState: AtomicReference<TimerJobState> = AtomicReference(TimerJobState.TimerNotRunning)
-    private val timerLock = Mutex()
+    private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
+    val waitingLock = Mutex()
+    private var timerState: TimerJobState = TimerJobState.TimerNotRunning
+    private val lock = Mutex()
 
     /**
      * Starts monitoring for changes to the permission
@@ -76,18 +74,16 @@ class PermissionRefreshScheduler(
     }
 
     private suspend fun launchTimerJob(interval: Duration) {
-        timerLock.withLock {
-            val timerJobState = timerState.get()
+        lock.withLock {
+            val timerJobState = timerState
             if (timerJobState is TimerJobState.TimerNotRunning) {
-                this.timerState.set(
-                    timerJobState.startTimer(interval, this) {
-                        val status = currentAuthorizationStatusProvider.provide()
-                        if (!isWaiting.value && lastPermission.get() != status) {
-                            updateLastPermission()
-                            onPermissionChangedFlow.status(status)
-                        }
+                this.timerState = timerJobState.startTimer(interval, this) {
+                    val status = currentAuthorizationStatusProvider.provide()
+                    if (!waitingLock.isLocked && lastPermission != status) {
+                        lastPermission = currentAuthorizationStatusProvider.provide()
+                        onPermissionChangedFlow.status(status)
                     }
-                )
+                }
             }
         }
     }
@@ -97,17 +93,13 @@ class PermissionRefreshScheduler(
      */
     fun stopMonitoring() {
         launch {
-            timerLock.withLock {
-                val timerJobState = timerState.get()
+            lock.withLock {
+                val timerJobState = timerState
                 if (timerJobState is TimerJobState.TimerRunning) {
-                    this@PermissionRefreshScheduler.timerState.set(timerJobState.stopTimer())
+                    this@PermissionRefreshScheduler.timerState = timerJobState.stopTimer()
                 }
+                lastPermission = null
             }
         }
-        lastPermission.set(null)
-    }
-
-    private suspend fun updateLastPermission() {
-        lastPermission.set(currentAuthorizationStatusProvider.provide())
     }
 }

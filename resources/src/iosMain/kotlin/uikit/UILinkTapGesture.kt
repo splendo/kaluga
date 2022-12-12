@@ -53,7 +53,6 @@ import kotlin.math.min
 
 class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<Pair<CValue<NSRange>, NSURL>>) : NSObject() {
 
-    @ThreadLocal
     object Registry {
         val registeredGestures = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
     }

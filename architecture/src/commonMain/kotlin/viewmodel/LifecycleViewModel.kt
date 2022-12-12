@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,18 +27,18 @@ import kotlinx.coroutines.cancelChildren
     message = "ViewModel was renamed as the name didn't match it's function.",
     replaceWith = ReplaceWith("LifecycleViewModel")
 )
-open class ViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing)
+open class ViewModel : LifecycleViewModel()
 
 @Deprecated(
     message = "BaseViewModel was renamed as the name didn't match it's function.",
     replaceWith = ReplaceWith("BaseLifecycleViewModel")
 )
-open class BaseViewModel(allowFreezing: Boolean = false) : BaseLifecycleViewModel(allowFreezing)
+open class BaseViewModel : BaseLifecycleViewModel()
 
 /**
  * Simple ViewModel class
  */
-expect open class LifecycleViewModel internal constructor(allowFreezing: Boolean = false) {
+expect open class LifecycleViewModel internal constructor() {
     /**
      * [CoroutineScope] of the ViewModel
      */
@@ -53,7 +53,7 @@ expect open class LifecycleViewModel internal constructor(allowFreezing: Boolean
 /**
  * Default [LifecycleViewModel] implementation respecting the Lifecycle of the presenting view
  */
-open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing) {
+open class BaseLifecycleViewModel : LifecycleViewModel() {
 
     private val resumedJobs = SupervisorJob()
 
@@ -88,4 +88,4 @@ open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleVie
  * Default [LifecycleViewModel] allowing navigation
  * @param navigator The [Navigator] handling navigation
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>, allowFreezing: Boolean = false) : BaseViewModel(allowFreezing)
+open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>) : BaseLifecycleViewModel()

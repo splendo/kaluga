@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.system.network.state
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
@@ -35,22 +34,19 @@ open class NetworkStateRepo(
         fun create(): NetworkStateRepo
     }
 
-    private val _lastKnownNetwork = AtomicReference<Network>(Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR))
-    internal var lastKnownNetwork: Network
-        get() = _lastKnownNetwork.get()
-        set(value) { _lastKnownNetwork.set(value) }
+    internal var lastKnownNetwork: Network = Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
 
-    private val _networkManager = AtomicReference<BaseNetworkManager?>(null)
+    private var _networkManager: BaseNetworkManager? = null
     internal var networkManager: BaseNetworkManager?
-        get() = _networkManager.get()
+        get() = _networkManager
         set(value) {
-            _networkManager.get()?.let {
+            _networkManager?.let {
                 if (value == null) {
                     it.dispose()
                 }
             }
 
-            _networkManager.set(value)
+            _networkManager = value
         }
 
     override suspend fun deinitialize(state: NetworkState) {

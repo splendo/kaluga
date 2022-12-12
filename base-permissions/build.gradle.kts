@@ -4,9 +4,14 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
 publishableComponent()
+
+dependencies {
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
+}
 
 kotlin {
     sourceSets {

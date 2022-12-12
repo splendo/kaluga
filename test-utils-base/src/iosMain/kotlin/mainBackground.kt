@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ import com.splendo.kaluga.logging.debug
 import platform.CoreFoundation.CFRunLoopRun
 import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
-import kotlin.native.concurrent.freeze
 import kotlin.native.internal.test.testLauncherEntryPoint
 import kotlin.system.exitProcess
 
 fun mainBackground(args: Array<String>) {
     debug("using background thread for iOS tests")
     val worker = Worker.start(name = "kaluga-test-background")
-    worker.execute(TransferMode.SAFE, { args.freeze() }) {
+    worker.execute(TransferMode.SAFE, { args }) { // TransferMode has no effect with the new memory manager in use
         val result = testLauncherEntryPoint(it)
         exitProcess(result)
     }

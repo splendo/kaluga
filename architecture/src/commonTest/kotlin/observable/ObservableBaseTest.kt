@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
@@ -160,9 +158,9 @@ abstract class ObservableBaseTest : BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    private val updateSemaphore = AtomicReference<Semaphore?>(null)
+    private var updateSemaphore: Semaphore? = null
     suspend fun waitForUpdate() {
-        updateSemaphore.get()?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
+        updateSemaphore?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
     }
 
     suspend fun <R : T, T, OO : ObservableOptional<R>, O : BasicObservable<R, T, OO>> testObservable(
@@ -173,8 +171,8 @@ abstract class ObservableBaseTest : BaseTest() {
         vararg updates: (O) -> ObservableOptional<R>
     ) {
         val permits = updates.size + 1 // +1 for initial state
-        val semaphore = Semaphore(permits).freeze()
-        updateSemaphore.set(semaphore)
+        val semaphore = Semaphore(permits)
+        updateSemaphore = semaphore
         repeat(permits) { semaphore.acquire() }
 
         val observableOptional by observable
@@ -201,24 +199,24 @@ abstract class ObservableBaseTest : BaseTest() {
             assertEquals(initialExpected.value, property)
         }
 
-        val observedValue = AtomicReference<R?>(unusedValue)
-        val disposable = observable.observe { observedValue.set(it) }
+        var observedValue: R? = unusedValue
+        val disposable = observable.observe { observedValue = it }
 
-        var observedInitializedValue: AtomicReference<R>? = null
+        var observedInitializedValue: R? = null
         var disposableInitialized: Disposable? = null
         if (observable is Initialized<*, *>) {
-            observedInitializedValue = AtomicReference(unusedValue)
-            disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue.set(it) }
+            observedInitializedValue = unusedValue
+            disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue = it }
         }
 
         when (initialExpected) {
-            is Nothing<*> -> assertEquals(null, observedValue.get())
-            is Value<*> -> assertEquals(initialExpected.value, observedValue.get())
+            is Nothing<*> -> assertEquals(null, observedValue)
+            is Value<*> -> assertEquals(initialExpected.value, observedValue)
         }
 
         if (observedInitializedValue != null) {
             assertTrue(initialExpected is Value<*>)
-            assertEquals(initialExpected.value as R, observedInitializedValue.get())
+            assertEquals(initialExpected.value as R, observedInitializedValue)
         }
 
         semaphore.release()
@@ -227,7 +225,7 @@ abstract class ObservableBaseTest : BaseTest() {
 
             val lastUpdate = count == updates.size - 1
 
-            val observedBefore = observedValue.get()
+            val observedBefore = observedValue
 
             if (lastUpdate) {
                 disposable.dispose()
@@ -247,15 +245,15 @@ abstract class ObservableBaseTest : BaseTest() {
             }
 
             if (lastUpdate || expected !is Value<*>) // TODO <-- sus
-                assertEquals(observedBefore, observedValue.get())
+                assertEquals(observedBefore, observedValue)
             else
-                assertEquals(expected.value, observedValue.get())
+                assertEquals(expected.value, observedValue)
 
             if (!lastUpdate && observedInitializedValue != null) {
                 assertTrue(expected is Value<*>)
-                assertEquals(expected.value, observedInitializedValue.get())
+                assertEquals(expected.value, observedInitializedValue)
             } else if (observedInitializedValue != null) {
-                assertEquals(observedBefore, observedInitializedValue.get())
+                assertEquals(observedBefore, observedInitializedValue)
             }
 
             semaphore.release()

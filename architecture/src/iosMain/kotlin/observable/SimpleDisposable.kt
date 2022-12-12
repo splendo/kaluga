@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -42,7 +42,4 @@ actual fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observa
     return observersForObservation[observation] as? List<(R) -> Unit> ?: emptyList()
 }
 
-// Use this to have a thread local reference on iOS that does not get frozen
-// TODO: this can be further improved by using a WeakRef
-@ThreadLocal
 private val observersForObservation = mutableMapOf<Observation<*, *, *>, MutableList<(Any?)->Unit>>()

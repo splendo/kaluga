@@ -26,6 +26,7 @@ import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationSta
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.withLock
 import platform.Foundation.NSBundle
 
 /**
@@ -75,10 +76,9 @@ class IOSPermissionsHelper {
 
 fun AuthorizationStatusHandler.requestAuthorizationStatus(timerHelper: PermissionRefreshScheduler? = null, coroutineScope: CoroutineScope, request: suspend () -> AuthorizationStatus) {
     coroutineScope.launch {
-        timerHelper?.isWaiting?.value = true
-        val newStatus = request()
-        timerHelper?.isWaiting?.value = false
-        status(newStatus)
+        timerHelper?.waitingLock?.withLock {
+            request()
+        }?.let { status(it) }
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.MainScope
 import permissions.KNPermissionsFramework
 
@@ -33,6 +34,6 @@ class KNBeaconsFramework {
             ConnectionSettings(),
             singleThreadDispatcher("Bluetooth")
         ),
-        timeoutMs = 60_000
+        timeout = 1.minutes
     )
 }

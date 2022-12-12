@@ -24,7 +24,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.Test
 import org.mockito.ArgumentMatchers
@@ -64,11 +65,26 @@ class AndroidPermissionsManagerTest : BaseTest() {
     @BeforeTest
     override fun beforeTest() {
         super.beforeTest()
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
 
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(context.packageName).thenReturn(packageName)
-        `when`(packageManager.getPackageInfo(Mockito.eq(packageName), Mockito.eq(PackageManager.GET_PERMISSIONS))).thenReturn(packageInfo)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            `when`(
+                packageManager.getPackageInfo(
+                    Mockito.eq(packageName),
+                    Mockito.eq(PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()))
+                )
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            `when`(
+                packageManager.getPackageInfo(
+                    Mockito.eq(packageName),
+                    Mockito.eq(PackageManager.GET_PERMISSIONS)
+                )
+            )
+        }.thenReturn(packageInfo)
         AndroidPermissionsManager.permissionsStates.clear()
     }
 
@@ -78,7 +94,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     }
 
     @Test
-    fun testMissingDeclaration() = runBlockingTest {
+    fun testMissingDeclaration() = runTest(UnconfinedTestDispatcher()) {
         val onPermissionChanged = MockPermissionStateHandler()
         androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = onPermissionChanged)
         packageInfo.requestedPermissions = emptyArray()
@@ -88,7 +104,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     }
 
     @Test
-    fun testRequestPermissions() = runBlockingTest {
+    fun testRequestPermissions() = runTest(UnconfinedTestDispatcher()) {
         val onPermissionChangedFlow = MockPermissionStateHandler()
         androidPermissionsManager = AndroidPermissionsManager(context, permissions, this, onPermissionChanged = onPermissionChangedFlow)
         packageInfo.requestedPermissions = permissions

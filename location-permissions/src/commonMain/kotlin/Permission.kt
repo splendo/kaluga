@@ -53,3 +53,22 @@ fun PermissionsBuilder.registerLocationPermission(
         locationPermissionStateRepoBuilder(permission, it, coroutineContext)
     }
 }
+
+fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
+    locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerLocationPermissionIfNotRegistered(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+        LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+    }
+
+fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
+    locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
+    locationPermissionStateRepoBuilder: (LocationPermission, BaseLocationPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<LocationPermission>
+) = locationPermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<LocationPermission> { permission, coroutineContext ->
+        locationPermissionStateRepoBuilder(permission, it, coroutineContext)
+    }
+}

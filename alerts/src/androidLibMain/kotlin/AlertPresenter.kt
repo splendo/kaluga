@@ -46,8 +46,8 @@ actual class AlertPresenter(
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseAlertPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) =
-            AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) =
+            AlertPresenter(alert, lifecycleManagerObserver, coroutineScope)
     }
 
     private companion object {

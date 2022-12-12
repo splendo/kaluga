@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
@@ -38,7 +38,7 @@ open class Characteristic(
 ) {
 
     private val isBusy = MutableStateFlow(false)
-    private val _isNotifying = AtomicBoolean(false)
+    private val _isNotifying = atomic(false)
     var isNotifying: Boolean
         get() = _isNotifying.value
         set(value) { _isNotifying.value = value }

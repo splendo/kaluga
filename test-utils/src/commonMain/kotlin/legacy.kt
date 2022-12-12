@@ -41,7 +41,7 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
     override val createTestContext: suspend (CoroutineScope) -> SimpleTestContext = { SimpleTestContext(it) }
 }
 @Deprecated("Moved to test-utils-base", ReplaceWith("UIThreadTest", "com.splendo.kaluga.test.base.UIThreadTest"))
-abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolean = false) : com.splendo.kaluga.test.base.UIThreadTest<TC>(allowFreezing) {
+abstract class UIThreadTest<TC : UIThreadTest.TestContext> : com.splendo.kaluga.test.base.UIThreadTest<TC>() {
     @Deprecated("Moved to test-utils-base", ReplaceWith("TestContext", "com.splendo.kaluga.test.base.UIThreadTest.TestContext"))
     interface TestContext : com.splendo.kaluga.test.base.UIThreadTest.TestContext
 }
@@ -62,7 +62,7 @@ abstract class BaseFlowTest<TC : UIThreadTest.TestContext, T, F : Flow<T>> : com
 }
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadTest", "com.splendo.kaluga.test.koin.KoinUIThreadTest"))
-abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : com.splendo.kaluga.test.koin.KoinUIThreadTest<TC>(allowFreezing) {
+abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : com.splendo.kaluga.test.koin.KoinUIThreadTest<TC>() {
     @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadTest.KoinTestContext", "com.splendo.kaluga.test.koin.KoinUIThreadTest"))
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,
@@ -89,8 +89,8 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
 }
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadViewModelTest", "com.splendo.kaluga.test.koin.KoinUIThreadViewModelTest"))
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
-    KoinUIThreadTest<KVMC>(allowFreezing) {
+abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel> :
+    KoinUIThreadTest<KVMC>() {
 
     @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinViewModelTestContext", "com.splendo.kaluga.test.koin.KoinUIThreadViewModelTest"))
     abstract class KoinViewModelTestContext<VM : ViewModel>(
@@ -106,17 +106,12 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
     }
 }
 
-@Deprecated("Moved to test-utils-base", ReplaceWith("assertFrozen(any, message, allowBoolean)", "com.splendo.kaluga.test.base.assertFrozen"))
-fun assertFrozen(any: Any, message: String? = null, allowBoolean: Boolean = false) = com.splendo.kaluga.test.base.assertFrozen(any, message, allowBoolean)
-@Deprecated("Moved to test-utils-base", ReplaceWith("assertNotFrozen(any, message, suppressWarning)", "com.splendo.kaluga.test.base.assertNotFrozen"))
-fun assertNotFrozen(any: Any, message: String? = null, suppressWarning: Boolean = false) = com.splendo.kaluga.test.base.assertNotFrozen(any, message, suppressWarning)
 @Deprecated("Moved to test-utils-base", ReplaceWith("awaitAllBlocking(deferreds)", "com.splendo.kaluga.test.base.awaitAllBlocking"))
 fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>): List<T> = com.splendo.kaluga.test.base.awaitAllBlocking(*deferreds)
 @Deprecated("Moved to test-utils-base", ReplaceWith("captureFor(duration)", "com.splendo.kaluga.test.base.captureFor"))
 suspend fun <T> Flow<T>.captureFor(duration: Duration): List<T> = this.captureFor(duration)
-@Deprecated("Moved to test-utils-base", ReplaceWith("testBlockingAndCancelScope(context, freezeResult, block)", "com.splendo.kaluga.test.base.testBlockingAndCancelScope"))
+@Deprecated("Moved to test-utils-base", ReplaceWith("testBlockingAndCancelScope(context, block)", "com.splendo.kaluga.test.base.testBlockingAndCancelScope"))
 inline fun <reified T> testBlockingAndCancelScope(
     context: CoroutineContext = EmptyCoroutineContext,
-    freezeResult: Boolean = true,
     crossinline block: suspend CoroutineScope.() -> T
-) = com.splendo.kaluga.test.base.testBlockingAndCancelScope(context, freezeResult, block)
+) = com.splendo.kaluga.test.base.testBlockingAndCancelScope(context, block)

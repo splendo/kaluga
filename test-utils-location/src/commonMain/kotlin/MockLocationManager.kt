@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.location
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationManager
@@ -48,11 +47,11 @@ class MockLocationManager(
     val startMonitoringLocationEnabledMock = ::startMonitoringLocationEnabled.mock()
     override suspend fun startMonitoringLocationEnabled(): Unit = startMonitoringLocationEnabledMock.call()
     val stopMonitoringLocationEnabledMock = ::stopMonitoringLocationEnabled.mock()
-    override fun stopMonitoringLocationEnabled(): Unit = stopMonitoringLocationEnabledMock.call()
+    override suspend fun stopMonitoringLocationEnabled(): Unit = stopMonitoringLocationEnabledMock.call()
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
-    override fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
+    override suspend fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
-    override fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
+    override suspend fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
 }
 
 /**
@@ -78,7 +77,7 @@ class MockBaseLocationManager(
         /**
          * Ths list of build [MockBaseLocationManager]
          */
-        val builtLocationManagers = sharedMutableListOf<MockBaseLocationManager>()
+        val builtLocationManagers = mutableListOf<MockBaseLocationManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -144,12 +143,12 @@ class MockBaseLocationManager(
      */
     val stopMonitoringLocationMock = ::stopMonitoringLocation.mock()
 
-    override fun startMonitoringPermissions() {
+    override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
         startMonitoringPermissionsMock.call()
     }
 
-    override fun stopMonitoringPermissions() {
+    override suspend fun stopMonitoringPermissions() {
         super.stopMonitoringPermissions()
         stopMonitoringPermissionsMock.call()
     }
@@ -159,7 +158,7 @@ class MockBaseLocationManager(
         startMonitoringLocationEnabledMock.call()
     }
 
-    override fun stopMonitoringLocationEnabled() {
+    override suspend fun stopMonitoringLocationEnabled() {
         super.stopMonitoringLocationEnabled()
         stopMonitoringLocationEnabledMock.call()
     }

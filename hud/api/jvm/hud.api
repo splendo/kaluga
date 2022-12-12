@@ -12,8 +12,6 @@ public abstract class com/splendo/kaluga/hud/BaseHUD : kotlinx/coroutines/Corout
 public abstract class com/splendo/kaluga/hud/BaseHUD$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/hud/BaseHUD;
-	public final fun setStyle (Lcom/splendo/kaluga/hud/HUDStyle;)Lcom/splendo/kaluga/hud/BaseHUD$Builder;
-	public final fun setTitle (Ljava/lang/String;)Lcom/splendo/kaluga/hud/BaseHUD$Builder;
 }
 
 public final class com/splendo/kaluga/hud/HUD : com/splendo/kaluga/hud/BaseHUD {
@@ -61,5 +59,12 @@ public final class com/splendo/kaluga/hud/HudConfig {
 	public final fun getTitle ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/hud/HudConfig$Builder {
+	public fun <init> ()V
+	public final fun build ()Lcom/splendo/kaluga/hud/HudConfig;
+	public final fun setStyle (Lcom/splendo/kaluga/hud/HUDStyle;)Lcom/splendo/kaluga/hud/HudConfig$Builder;
+	public final fun setTitle (Ljava/lang/String;)Lcom/splendo/kaluga/hud/HudConfig$Builder;
 }
 

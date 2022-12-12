@@ -172,7 +172,7 @@ sealed class ScanningStateImpl {
 
         val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
 
-        fun afterNewStateIsSet(newState: ScanningState) {
+        suspend fun afterNewStateIsSet(newState: ScanningState) {
             when (newState) {
                 is ScanningState.Inactive,
                 is ScanningState.Initializing,
@@ -182,7 +182,7 @@ sealed class ScanningStateImpl {
             }
         }
 
-        fun beforeOldStateIsRemoved(oldState: ScanningState) {
+        suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
             when (oldState) {
                 is ScanningState.Inactive,
                 is ScanningState.Initializing,

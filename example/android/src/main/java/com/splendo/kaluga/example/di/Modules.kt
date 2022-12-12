@@ -79,6 +79,7 @@ import com.splendo.kaluga.permissions.registerAllPermissions
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
+import kotlin.time.Duration.Companion.minutes
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -99,7 +100,7 @@ val utilitiesModule = module {
     single {
         BluetoothBuilder().create({ BaseScanner.Settings(get()) })
     }
-    single { Beacons(get<Bluetooth>(), timeoutMs = 60_000) }
+    single { Beacons(get<Bluetooth>(), timeout = 1.minutes) }
 }
 
 val viewModelModule = module {

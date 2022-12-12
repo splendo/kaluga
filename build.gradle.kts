@@ -12,6 +12,7 @@ buildscript {
         // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
         classpath("com.android.tools.build:gradle:${project.extra["kaluga.androidGradlePluginVersion"]}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.extra["kaluga.kotlinVersion"]}")
+        classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:${project.extra["kaluga.atomicFuGradlePluginVersion"]}")
     }
 }
 

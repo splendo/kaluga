@@ -50,9 +50,11 @@ object Dependencies {
     }
 
     object KotlinX {
+
+        private const val group = "org.jetbrains.kotlinx"
+
         object Coroutines {
-            private const val version = "1.6.3-native-mt"
-            private const val group = "org.jetbrains.kotlinx"
+            private const val version = "1.6.4"
             val Android = Dependency(group, "kotlinx-coroutines-android", version)
             val Core = Dependency(group, "kotlinx-coroutines-core", version)
             val Swing = Dependency(group, "kotlinx-coroutines-swing", version)
@@ -64,10 +66,11 @@ object Dependencies {
 
         object Serialization {
             private const val version =  "1.4.0"
-            private const val group = "org.jetbrains.kotlinx"
             val Core = Dependency(group, "kotlinx-serialization-core", version)
             val Json = Dependency(group, "kotlinx-serialization-json", version)
         }
+
+        val AtomicFu = Dependency(group, "atomicfu", "0.18.5")
     }
 
     object Android {
@@ -162,16 +165,6 @@ object Dependencies {
     }
 
     val Napier = Dependency("io.github.aakira", "napier", "2.6.1")
-
-    object Stately {
-        private const val group = "co.touchlab"
-        private const val version = "1.2.3"
-        private const val isolateVersion = "1.2.3"
-        val Common = Dependency(group, "stately-common", version)
-        val Concurrency = Dependency(group, "stately-concurrency", version)
-        val Isolate = Dependency(group, "stately-isolate", isolateVersion)
-        val IsoCollections = Dependency(group, "stately-iso-collections", isolateVersion)
-    }
 
     val JUnit = Dependency("junit", "junit", "4.13.2")
 

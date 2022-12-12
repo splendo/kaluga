@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.now
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
-import kotlin.native.concurrent.ThreadLocal
 
 /**
  * Style for writing the name of a [TimeZone]
@@ -30,7 +29,6 @@ enum class TimeZoneNameStyle {
     Long
 }
 
-@ThreadLocal // one instance per thread is preferred over a non-lazy initialization, since timezones are heavy to instantiate
 val TimeZone.Companion.utc: TimeZone by lazy { TimeZone.get("UTC")!! }
 
 expect class TimeZone {

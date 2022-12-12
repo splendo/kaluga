@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.architecture.observable.ObservableOptional.*
-import com.splendo.kaluga.base.flow.HotFlowable
+import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -96,45 +95,6 @@ class MutableFlowSubjectHelper<R : T, T, OO : ObservableOptional<R>>(
 
     override suspend fun set(newValue: T) = setter(newValue)
     override fun post(newValue: T) = poster(newValue)
-}
-
-class HotFlowableDefaultSubject<R : T?, T>(
-    defaultValue: R,
-    val coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-    hotFlowable: HotFlowable<T?>,
-    autoBind: Boolean = true,
-    observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, Value(hotFlowable.initialValue))
-) : BaseDefaultSubject<R, T?>(observation),
-    SuspendableSetter<T?> by MutableFlowSubjectHelper(
-        coroutineScope,
-        context,
-        flow = { hotFlowable.flow() },
-        setter = { hotFlowable.set(it) },
-        observation = observation
-    ) {
-    init {
-        if (autoBind) bind(coroutineScope, context)
-    }
-}
-
-class HotFlowableInitializedSubject<T>(
-    val coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-    hotFlowable: HotFlowable<T>,
-    autoBind: Boolean = true,
-    observation: ObservationInitialized<T> = ObservationInitialized(Value(hotFlowable.initialValue))
-) : BaseInitializedSubject<T>(observation),
-    SuspendableSetter<T> by MutableFlowSubjectHelper(
-        coroutineScope,
-        context,
-        flow = { hotFlowable.flow() },
-        setter = { hotFlowable.set(it) },
-        observation = observation
-    ) {
-    init {
-        if (autoBind) bind(coroutineScope, context)
-    }
 }
 
 open class StateFlowSubject<T>(
@@ -441,17 +401,6 @@ fun <R : T, T> Flow<T?>.toDefaultObservable(
     coroutineScope: CoroutineScope,
     context: CoroutineContext = coroutineScope.coroutineContext,
 ) = DefaultFlowObservable(defaultValue, initialValue, coroutineScope, context, this)
-
-fun <R : T?, T> HotFlowable<T?>.toDefaultSubject(
-    defaultValue: R,
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
-) = HotFlowableDefaultSubject(defaultValue, coroutineScope, context, this)
-
-fun <T> HotFlowable<T>.toInitializedSubject(
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
-) = HotFlowableInitializedSubject(coroutineScope, context, this)
 
 fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(
     defaultValue: R,

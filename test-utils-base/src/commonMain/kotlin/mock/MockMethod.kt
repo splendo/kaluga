@@ -1,25 +1,22 @@
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
- 
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
       http://www.apache.org/licenses/LICENSE-2.0
- 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-  
+
  */
 
 package com.splendo.kaluga.test.base.mock
 
-import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.collections.IsoMutableMap
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
@@ -58,7 +55,7 @@ sealed class BaseMethodMock<
         > {
 
         abstract val matchers: M
-        protected val answer = AtomicReference<A?>(null)
+        protected var answer: A? = null
 
         protected abstract fun createAnswer(result: (V) -> R): A
 
@@ -67,7 +64,7 @@ sealed class BaseMethodMock<
          * @param answer The [BaseAnswer] [A] to provide the answer for this stub.
          */
         fun doAnswer(answer: A) {
-            this.answer.set(answer)
+            this.answer = answer
         }
 
         /**
@@ -89,8 +86,8 @@ sealed class BaseMethodMock<
         fun doThrow(throwable: Throwable) = doExecute { throw throwable }
     }
 
-    private val stubs: IsoMutableMap<M, S> = IsoMutableMap()
-    private val callParameters: IsoMutableList<V> = IsoMutableList()
+    private val stubs = mutableMapOf<M, S>()
+    private val callParameters = mutableListOf<V>()
     protected abstract val ParametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
@@ -211,7 +208,7 @@ class MethodMock<M : ParametersSpec.Matchers,
          * @param values the values with which to call the stub.
          */
         fun call(values: V): R {
-            val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
+            val answer = this.answer ?: fail { "No Answer set for this stub" }
             return answer.call(values)
         }
     }
@@ -249,7 +246,7 @@ class SuspendMethodMock<
          * @param values the values with which to call the stub.
          */
         suspend fun call(values: V): R {
-            val answer = this.answer.get() ?: fail { "No Answer set for this stub" }
+            val answer = this.answer ?: fail { "No Answer set for this stub" }
             return answer.call(values)
         }
 

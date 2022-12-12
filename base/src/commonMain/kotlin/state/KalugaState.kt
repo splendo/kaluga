@@ -17,7 +17,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 package com.splendo.kaluga.state
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.FirstCollection
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
@@ -25,6 +24,7 @@ import com.splendo.kaluga.base.flow.onCollectionEvent
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -36,17 +36,14 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlin.coroutines.CoroutineContext
-import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 
-@SharedImmutable
 private val remain: suspend() -> KalugaState = { error("This should never be called. It's only used to indicate the state should remain the same") }
 
 /**
@@ -61,9 +58,6 @@ interface KalugaState {
     @Suppress("UNCHECKED_CAST") // cast should normally work since the receiver uses one type of state
     fun <S : KalugaState> remain(): suspend() -> S = remain as suspend () -> S
 }
-
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
-abstract class State : KalugaState
 
 interface HandleBeforeCreating {
     /**
@@ -132,24 +126,17 @@ abstract class StateRepo<S : KalugaState, F : MutableSharedFlow<S>>(coroutineCon
     val subscriptionCount
         get() = mutableFlow.subscriptionCount
 
-    /**
-     * Provides a [Flow] of the [KalugaState] of this repo.
-     *
-     * @return The [Flow]
-     */
-    @Deprecated(message = "StateRepo itself is now a Flow", replaceWith = ReplaceWith("StateRepo"))
-    fun flow(): Flow<S> = mutableFlow.asSharedFlow()
-
-    private val initialized = AtomicBoolean(false)
+    private val initialized = atomic(false)
 
     internal open suspend fun initialize(initialValue: S? = null): S =
-        if (initialized.compareAndSet(false, true))
+        if (initialized.compareAndSet(expect = false, update = true)) {
             (initialValue ?: initialValue()).also { value ->
                 mutableFlow.emit(value)
                 stateMutex.release() // release the initial permit held
             }
-        else
+        } else {
             state()
+        }
 
     /**
      * Gets the initial value of the repo
@@ -332,17 +319,18 @@ abstract class BaseHotStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
 
     abstract val lazyMutableSharedFlow: Lazy<F>
 
-    // guards once only initialization across threads
-    private val initialized = AtomicBoolean(false)
+    private val initialized = atomic(false)
 
     override val mutableFlow: F
         get() {
             val isInitialized = lazyMutableSharedFlow.isInitialized()
             val flow = lazyMutableSharedFlow.value
-            if (!isInitialized && initialized.compareAndSet(expected = false, new = true))
+
+            if (!isInitialized && initialized.compareAndSet(expect = false, update = true)) {
                 launch(coroutineContext) {
                     initialize()
                 }
+            }
             return flow
         }
 }
@@ -361,8 +349,7 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
     context: CoroutineContext = Dispatchers.Main.immediate
 ) : StateRepo<S, F>(context) {
 
-    // guards once only initialization across threads
-    private val initialized = AtomicBoolean(false)
+    private val initialized = atomic(false)
 
     abstract val lazyMutableFlow: Lazy<F>
 
@@ -370,7 +357,7 @@ abstract class BaseColdStateRepo<S : KalugaState, F : MutableSharedFlow<S>>(
         get() {
             val isInitialized = lazyMutableFlow.isInitialized()
             val flow = lazyMutableFlow.value
-            if (!isInitialized && initialized.compareAndSet(expected = false, new = true)) {
+            if (!isInitialized && initialized.compareAndSet(expect = false, update = true)) {
                 launch(coroutineContext) {
                     flow.onCollectionEvent { event ->
                         when (event) {
