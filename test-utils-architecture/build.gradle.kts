@@ -6,14 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
-
-dependencies { }
+publishableComponent()
 
 kotlin {
     sourceSets {

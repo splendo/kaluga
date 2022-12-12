@@ -1000,8 +1000,6 @@ public abstract class com/splendo/kaluga/state/HotStateRepo : com/splendo/kaluga
 }
 
 public abstract interface class com/splendo/kaluga/state/KalugaState {
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 

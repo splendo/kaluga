@@ -153,21 +153,19 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
 
     private fun embedNestedViewController(nestedSpec: NavigationSpec.Nested) {
         val parent = assertParent() ?: return
-        when (val type = nestedSpec.type) {
-            is NavigationSpec.Nested.Type.Replace -> {
-                parent.childViewControllers.map { it as UIViewController }.filter { it.view.tag.toLong() == type.tag }.forEach {
-                    it.willMoveToParentViewController(null)
-                    it.view.removeFromSuperview()
-                    it.removeFromParentViewController()
-                }
+        val type = nestedSpec.type
+        if (type is NavigationSpec.Nested.Type.Replace) {
+            parent.childViewControllers.map { it as UIViewController }.filter { it.view.tag.toLong() == type.tag }.forEach {
+                it.willMoveToParentViewController(null)
+                it.view.removeFromSuperview()
+                it.removeFromParentViewController()
             }
         }
 
         val child = nestedSpec.nested()
-        when (val type = nestedSpec.type) {
-            is NavigationSpec.Nested.Type.Replace -> {
-                child.view.tag = type.tag as NSInteger
-            }
+
+        if (type is NavigationSpec.Nested.Type.Replace) {
+            child.view.tag = type.tag as NSInteger
         }
         child.view.translatesAutoresizingMaskIntoConstraints = false
         parent.addChildViewController(child)

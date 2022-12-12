@@ -6,7 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-apply(from = "../../gradle/component.gradle")
+apply(from = "../../gradle/component.gradle.kts")
 
 kotlin {
     sourceSets {

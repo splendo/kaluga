@@ -26,7 +26,6 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -36,13 +35,6 @@ import kotlin.test.assertEquals
 class ColdStateRepoTest : BaseTest() {
 
     sealed class CircuitState : KalugaState {
-        val initialStateCounter = MutableStateFlow(0)
-
-        override suspend fun initialState() {
-            super.initialState()
-
-            initialStateCounter.value++
-        }
 
         object Open : CircuitState()
         object Closed : CircuitState()
@@ -84,7 +76,6 @@ class ColdStateRepoTest : BaseTest() {
         val job = launch { collect() }
         yieldMultiple(2)
         useState {
-            assertEquals(times, it.initialStateCounter.value)
             initialValueMock.verify(times)
             assertEquals(CircuitState.Open, it)
         }

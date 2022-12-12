@@ -85,7 +85,6 @@ class ThreadingTest {
         val observer: (Value?) -> Unit = { }
         val disposable = s.observe(observer)
         assertNotFrozen(value)
-        assertNotFrozen(observer)
 
         withContext(Dispatchers.Default) {
             // due to the context switch the subject itself is frozen
@@ -98,7 +97,6 @@ class ThreadingTest {
             disposable2.dispose()
         }
 
-        assertNotFrozen(observer)
         disposable.dispose()
     }
 }
