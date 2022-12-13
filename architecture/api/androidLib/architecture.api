@@ -1783,7 +1783,7 @@ public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel : andr
 
 public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelKt {
 	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/appcompat/app/AppCompatActivity;)V
-	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/fragment/app/Fragment;)Z
+	public static final fun bind (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/fragment/app/Fragment;)V
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
