@@ -28,6 +28,12 @@ publishableComponent()
 
 kotlin {
     sourceSets {
+        sourceSets.all {
+            languageSettings {
+                optIn("kotlinx.serialization.ExperimentalSerializationApi")
+            }
+        }
+
         commonMain {
             dependencies {
                 implementation(project(":base", ""))

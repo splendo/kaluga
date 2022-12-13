@@ -20,7 +20,6 @@ package com.splendo.kaluga.resources
 import kotlinx.cinterop.get
 import platform.CoreGraphics.CGColorGetAlpha
 import platform.CoreGraphics.CGColorGetComponents
-import platform.CoreGraphics.CGFloat
 import platform.UIKit.UIColor
 
 actual data class KalugaColor(val uiColor: UIColor)
@@ -34,7 +33,7 @@ actual val KalugaColor.greenInt: Int get() = (green * 255.0).toInt()
 actual val KalugaColor.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor).toDouble()
 actual val KalugaColor.alphaInt: Int get() = (alpha * 255.0).toInt()
 
-actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor = KalugaColor(UIColor.colorWithRed(red as CGFloat, green as CGFloat, blue as CGFloat, alpha as CGFloat))
+actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor = KalugaColor(UIColor.colorWithRed(red, green, blue, alpha))
 actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor {
     return colorFrom(redInt.toDouble() / 255.0, greenInt.toDouble() / 255.0, blueInt.toDouble() / 255.0, alphaInt.toDouble() / 255.0)
 }

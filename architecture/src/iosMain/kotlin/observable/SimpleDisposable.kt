@@ -28,6 +28,7 @@ actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : Ba
 
 actual fun <R : T, T, OO : ObservableOptional<R>> addObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
     val observers = observersForObservation.getOrPut(observation) { mutableListOf() }
+    @Suppress("UNCHECKED_CAST")
     observers.add(observer as (Any?) -> Unit)
 }
 

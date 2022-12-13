@@ -43,7 +43,7 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
-    fun tesParseDecimal() {
+    fun testParseDecimal() {
         val formatters = createFormatters(NumberFormatStyle.Decimal())
 
         assertEquals(2.4, formatters.usFormatter.parse("2.4"))

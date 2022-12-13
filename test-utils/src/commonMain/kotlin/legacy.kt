@@ -13,10 +13,11 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
+@file:Suppress("DEPRECATION")
 
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.architecture.viewmodel.ViewModel
+import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CoroutineScope
@@ -82,6 +83,7 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
         }
     }
 
+    @Suppress("TYPEALIAS_EXPANSION_DEPRECATION")
     fun testWithFlow(block: KoinFlowTestBlock<TC, T, F>) =
         super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
             block(this@KoinFlowTest, it)
@@ -89,11 +91,11 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
 }
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadViewModelTest", "com.splendo.kaluga.test.koin.KoinUIThreadViewModelTest"))
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel> :
+abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel> :
     KoinUIThreadTest<KVMC>() {
 
     @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinViewModelTestContext", "com.splendo.kaluga.test.koin.KoinUIThreadViewModelTest"))
-    abstract class KoinViewModelTestContext<VM : ViewModel>(
+    abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),

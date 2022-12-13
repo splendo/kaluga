@@ -14,6 +14,9 @@
     limitations under the License.
 
  */
+
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+
 package com.splendo.kaluga.base.utils
 
 expect class Decimal : Comparable<Decimal>

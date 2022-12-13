@@ -15,6 +15,8 @@
 
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
@@ -238,6 +240,7 @@ fun <R : T, T> readOnlyPropertyObservableHelper(readOnlyProperty: ReadOnlyProper
         if (new != current.valueOrNull)
             Value(new)
         else
+            @Suppress("UNCHECKED_CAST")
             current as ObservableOptional<T>
     }
 }
@@ -293,6 +296,7 @@ class ReadWritePropertyObservableHelper<R : T, T>(
             if (new != current.valueOrNull)
                 Value(new)
             else
+                @Suppress("UNCHECKED_CAST")
                 current as ObservableOptional<T>
         }
     }

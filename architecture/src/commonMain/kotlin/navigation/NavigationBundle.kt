@@ -193,6 +193,7 @@ class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val 
      * @return The value for the [row] according to its type
      * @throws [NavigationBundleGetError] if the [row] does not match the [spec]
      */
+    @Suppress("UNCHECKED_CAST")
     fun <V, S : NavigationBundleSpecRow<V>> get(row: S): V {
         row as? R ?: throw NavigationBundleGetError()
         val value = values[row] as? NavigationBundleValue<V> ?: throw NavigationBundleGetError()

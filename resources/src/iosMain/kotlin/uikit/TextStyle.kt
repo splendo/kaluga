@@ -20,7 +20,6 @@ package com.splendo.kaluga.resources.uikit
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.urlRanges
 import com.splendo.kaluga.resources.view.KalugaLabel
-import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSMutableAttributedString
 import platform.Foundation.addAttributes
 import platform.Foundation.create
@@ -91,20 +90,20 @@ fun UITextView.bindTextView(label: KalugaLabel) {
 }
 
 fun UILabel.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat))
+    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
     numberOfLines = 0
 }
 
 fun UITextView.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat))
+    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
 
 fun UITextField.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat))
+    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }

@@ -61,6 +61,7 @@ open class PermissionStateRepo<P : Permission>(
 ) : BasePermissionStateRepo<P>(
     createUninitializedState = { PermissionStateImpl.Uninitialized() },
     createInitializingState = { state ->
+        @Suppress("UNCHECKED_CAST")
         when (val stateImpl = state as PermissionStateImpl.Inactive<P>) {
             is PermissionStateImpl.Uninitialized -> {
                 val permissionManager = createPermissionManager(CoroutineScope(coroutineContext + CoroutineName("PermissionManager")))

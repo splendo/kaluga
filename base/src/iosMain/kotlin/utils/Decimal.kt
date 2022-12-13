@@ -20,7 +20,6 @@ package com.splendo.kaluga.base.utils
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSDecimalNumberHandler
 import platform.Foundation.NSRoundingMode
-import platform.darwin.NSUInteger
 import kotlin.math.absoluteValue
 
 actual data class Decimal(val nsDecimal: NSDecimalNumber) : Comparable<Decimal> {
@@ -154,14 +153,14 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
 actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0)
     1.toDecimal() / pow(n.absoluteValue)
 else
-    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong() as NSUInteger))
+    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
 
 actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0)
     1.toDecimal() / pow(n.absoluteValue, scale)
 else
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
-            n.toULong() as NSUInteger,
+            n.toULong(),
             NSDecimalNumberHandler(
                 roundingMode = NSRoundingMode.NSRoundPlain,
                 scale = scale.toShort(),
@@ -181,7 +180,7 @@ actual fun Decimal.pow(
 else
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
-            n.toULong() as NSUInteger,
+            n.toULong(),
             withBehavior = NSDecimalNumberHandler(
                 roundingMode = roundingMode.nsRoundingMode,
                 scale = scale.toShort(),
@@ -198,6 +197,7 @@ actual fun String.toDecimal() = Decimal(NSDecimalNumber(this))
 
 actual fun Decimal.toDouble() = nsDecimal.toString().toDouble()
 actual fun Decimal.toInt() = nsDecimal.intValue
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun Decimal.toString() = nsDecimal.stringValue
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = copy(

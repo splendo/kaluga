@@ -21,7 +21,6 @@ import kotlinx.cinterop.useContents
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarMatchNextTimePreservingSmallerUnits
 import platform.Foundation.NSCalendarMatchPreviousTimePreservingSmallerUnits
-import platform.Foundation.NSCalendarOptions
 import platform.Foundation.NSCalendarSearchBackwards
 import platform.Foundation.NSCalendarUnit
 import platform.Foundation.NSCalendarUnitDay
@@ -40,8 +39,6 @@ import platform.Foundation.compare
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.dateWithTimeIntervalSinceNow
 import platform.Foundation.timeIntervalSince1970
-import platform.darwin.NSInteger
-import platform.darwin.NSUInteger
 import kotlin.math.round
 
 actual typealias KalugaDateHolder = NSDate
@@ -101,7 +98,7 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         set(value) { updateDateForComponent(NSCalendarUnitWeekday, value) }
     override var firstWeekDay: Int
         get() = (calendar.firstWeekday.toInt())
-        set(value) { calendar.firstWeekday = value.toULong() as NSUInteger }
+        set(value) { calendar.firstWeekday = value.toULong() }
 
     override var hour: Int
         get() = calendar.component(NSCalendarUnitHour, fromDate = date).toInt()
@@ -126,9 +123,9 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
     override fun copy(): KalugaDate = DefaultKalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
     override fun equals(other: Any?): Boolean {
-        return (other as? DefaultKalugaDate)?.let { other ->
+        return if (other is DefaultKalugaDate) {
             calendar.calendarIdentifier == other.calendar.calendarIdentifier && millisecondSinceEpoch == other.millisecondSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
-        } ?: false
+        } else false
     }
 
     override fun hashCode(): Int {
@@ -166,14 +163,14 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
                 NSCalendarMatchPreviousTimePreservingSmallerUnits or NSCalendarSearchBackwards
             else
                 NSCalendarMatchNextTimePreservingSmallerUnits
-            calendar.dateBySettingUnit(component, value.toLong() as NSInteger, date, calendarOptions)
+            calendar.dateBySettingUnit(component, value.toLong(), date, calendarOptions)
         } else {
             val previousValue = calendar.component(component, this.date)
             calendar.dateByAddingUnit(
                 component,
-                (value - previousValue).toLong() as NSInteger,
+                (value - previousValue),
                 date,
-                0UL as NSCalendarOptions
+                0UL
             )
         }?.let {
             date = it

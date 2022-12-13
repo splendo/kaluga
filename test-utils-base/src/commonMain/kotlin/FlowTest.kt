@@ -84,6 +84,7 @@ Since the class itself is created in the test thread
 
 val contextMap = mutableMapOf<Long, TestContext>()
 
+@Suppress("UNCHECKED_CAST")
 private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
     if (!contextMap.containsKey(cookie))
         contextMap[cookie] = testContext()

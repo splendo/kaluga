@@ -44,6 +44,7 @@ inline fun <reified R : T, T> ObservableOptional<T>.resultValueOrDefault(default
 fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): ObservableOptional<R> =
     try {
         if (this is Value<*> && (this.value != null || defaultValue == null))
+            @Suppress("UNCHECKED_CAST")
             Value(this.value as R)
         else
             defaultValue ?: Nothing()
@@ -121,6 +122,7 @@ open class ObservationDefault<R : T?, T>(
         get() = this
 
     override fun observeInitialized(onNext: (R) -> Unit): Disposable {
+        @Suppress("UNCHECKED_CAST")
         return observe { onNext(it as R) }
     }
 }
@@ -171,6 +173,7 @@ open class ObservationInitialized<T>(
     }
 
     override fun observeInitialized(onNext: (T) -> Unit): Disposable {
+        @Suppress("UNCHECKED_CAST")
         return observe { onNext(it as T) }
     }
 
@@ -258,6 +261,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
             onFirstObservation?.invoke()
         }
 
+        @Suppress("UNCHECKED_CAST")
         return handleOnMain {
             backingInternalValue ?: error("unexpected null")
         } as OO
@@ -270,8 +274,8 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
      * @param onNext Function to be called each time the value of the Observable changes
      * @return [Disposable] that removes the observing function when disposed
      */
+    @Suppress("UNCHECKED_CAST")
     override fun observe(onNext: (R?) -> Unit): Disposable = handleOnMain {
-        @Suppress("UNCHECKED_CAST") // OO<T> should be guaranteed
         // send the value before adding
         val lastResult = currentObserved
         onNext((lastResult as? Value<*>)?.value as R)
@@ -289,6 +293,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     }
 
     val currentObserved: OO
+        @Suppress("UNCHECKED_CAST")
         get() = observedValue as OO
 
     @Suppress("UNCHECKED_CAST")
@@ -492,6 +497,7 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
 
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
+            @Suppress("UNCHECKED_CAST")
             stateFlowToBind().collect { set(it as T) }
         }
     }
