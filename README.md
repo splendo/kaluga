@@ -78,7 +78,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.splendo.kaluga:alerts:0.2.1")
+    implementation("com.splendo.kaluga:alerts:0.5.0")
 }
 ```
 
@@ -89,7 +89,7 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 dependencies {
-    implementation("com.splendo.kaluga:alerts:0.2.2-SNAPSHOT")
+    implementation("com.splendo.kaluga:alerts:0.6.0-SNAPSHOT")
 }
 ```
 
