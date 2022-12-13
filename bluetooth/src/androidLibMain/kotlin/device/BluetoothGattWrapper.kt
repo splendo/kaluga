@@ -91,7 +91,7 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
     override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
         // TODO update implementation to call non deprecated gatt.writeDescriptor(descriptor, value)
-        //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on characteristic.value
+        //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on descriptor.value
         @Suppress("DEPRECATION")
         descriptor.value = value
         @Suppress("DEPRECATION")
