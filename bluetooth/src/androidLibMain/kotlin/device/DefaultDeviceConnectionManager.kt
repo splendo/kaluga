@@ -108,7 +108,7 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            // TODO update implementation so it doesn't depend on characteristic.value which is deprecated
+            // TODO update implementation so it doesn't depend on descriptor.value which is deprecated
             @Suppress("DEPRECATION")
             updateDescriptor(descriptor, descriptor.value, status)
         }
