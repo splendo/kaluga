@@ -43,7 +43,7 @@ class MockHUD(
     class Builder(setupMocks: Boolean = true) : BaseHUD.Builder() {
 
         /**
-         * List of build [MockHUD]
+         * List of built [MockHUD]
          */
         val builtHUDs = mutableListOf<MockHUD>()
 

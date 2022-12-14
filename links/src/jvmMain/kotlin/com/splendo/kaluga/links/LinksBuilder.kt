@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.links
 
-actual class LinksBuilder : Links.Builder {
+actual class LinksBuilder : BaseLinksBuilder {
     override fun create(): Links {
         TODO("Not yet implemented")
     }

@@ -12,15 +12,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":base", ""))
-                implementation(project(":logging", ""))
+                api(project(":system"))
+                api(project(":test-utils-base"))
             }
         }
-
         commonTest {
-            dependencies {
-                implementation(project(":test-utils-system", ""))
-            }
+            dependencies {}
         }
     }
 }

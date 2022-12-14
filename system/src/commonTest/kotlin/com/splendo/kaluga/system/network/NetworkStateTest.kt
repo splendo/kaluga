@@ -17,270 +17,180 @@
 
 package com.splendo.kaluga.system.network
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
-import com.splendo.kaluga.system.network.state.online
-import com.splendo.kaluga.test.base.FlowTest
-import com.splendo.kaluga.test.base.FlowTestBlock
-import kotlinx.coroutines.flow.first
+import com.splendo.kaluga.test.base.mock.verify
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertIs
 
-class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
+class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() {
 
-    override val flow = suspend { MockNetworkStateRepoBuilder().create() }
+    override val flowFromTestContext: suspend Context.() -> NetworkStateRepo =
+        { networkStateRepo }
 
-    private fun testNetworkState(test: FlowTestBlock<NetworkState, NetworkStateRepo>) {
-        testWithFlow(test)
-    }
+    override val filter: (Flow<NetworkState>) -> Flow<NetworkState> = { it.filterOnlyImportant() }
 
     @Test
-    fun testInitialValueUnknown() = testNetworkState {
-        assertInitialValue(this)
-    }
-
-    @Test
-    fun testNetworkStateChanged() = testNetworkState { networkStateRepo ->
-        assertInitialValue(this)
+    fun testInitialValueUnknown() = testNetworkState(NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)) {
+        assertInitialValue()
 
         action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
+            resetFlow()
         }
 
-        test {
-            assertTrue { it is NetworkState.Available }
-            assertEquals(Network.Known.Wifi(), it.networkType)
-        }
-
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
-        }
-
-        test {
-            assertTrue { it is NetworkState.Unavailable }
-            assertEquals(Network.Known.Absent, it.networkType)
-        }
-
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
-        }
-
-        test {
-            assertTrue { it is NetworkState.Available }
-            assertEquals(Network.Known.Cellular(), it.networkType)
+        mainAction {
+            networkManager.stopMonitoringMock.verify()
         }
     }
 
     @Test
-    fun testAvailableTransition() = testNetworkState { networkStateRepo ->
-        assertInitialValue(this)
+    fun testNetworkStateChanged() = testNetworkState(NetworkConnectionType.Known.Wifi()) {
+        test {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
+        }
 
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Absent
         }
 
         test {
-            assertTrue { it is NetworkState.Available }
-            assertTrue { it.networkType is Network.Known.Wifi }
+            assertIs<NetworkState.Unavailable>(it)
+            assertEquals(NetworkConnectionType.Known.Absent, it.networkConnectionType)
         }
 
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(
-                Network.Unknown.WithLastNetwork(
-                    Network.Known.Wifi(),
-                    Network.Unknown.Reason.NOT_CLEAR
-                )
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+        }
+
+        test {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
+        }
+    }
+
+    @Test
+    fun testAvailableTransition() = testNetworkState(NetworkConnectionType.Known.Wifi()) {
+        test {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
+        }
+
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Unknown.WithLastNetwork(
+                NetworkConnectionType.Known.Wifi(),
+                NetworkConnectionType.Unknown.Reason.LOSING
             )
         }
 
         test {
-            assertTrue { it.networkType is Network.Unknown.WithLastNetwork }
-            assertTrue { (it.networkType as Network.Unknown.WithLastNetwork).lastKnownNetwork is Network.Known.Wifi }
+            assertEquals(NetworkConnectionType.Unknown.WithLastNetwork(NetworkConnectionType.Known.Wifi(), NetworkConnectionType.Unknown.Reason.LOSING), it.networkConnectionType)
         }
 
-        resetStateTo<NetworkState.Available>(networkStateRepo, Network.Known.Wifi(), this)
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Wifi()
+            yield()
+            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+        }
 
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
+        test(1) {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
+        }
+
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Absent
         }
 
         test {
-            assertTrue { it is NetworkState.Available }
-            assertTrue { it.networkType is Network.Known.Cellular }
-        }
-
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
-        }
-
-        test {
-            assertTrue { it is NetworkState.Unavailable }
-            assertTrue { it.networkType is Network.Known.Absent }
+            assertIs<NetworkState.Unavailable>(it)
         }
     }
 
     @Test
-    fun testUnavailableTransition() = testNetworkState { networkStateRepo ->
-        assertInitialValue(this)
+    fun testUnavailableTransition() = testNetworkState(NetworkConnectionType.Known.Absent) {
+        test {
+            assertIs<NetworkState.Unavailable>(it)
+        }
 
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Cellular()
         }
 
         test {
-            assertTrue { it is NetworkState.Unavailable }
-            assertTrue { it.networkType is Network.Known.Absent }
+            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
         }
 
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Absent
+            yield()
+            networkManager.network.value = NetworkConnectionType.Known.Wifi()
         }
 
-        test {
-            assertTrue { it.networkType is Network.Known.Cellular }
-        }
-
-        resetStateTo<NetworkState.Unavailable>(networkStateRepo, Network.Known.Absent, this)
-
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
-        }
-
-        test {
-            assertTrue { it is NetworkState.Available }
-            assertTrue { it.networkType is Network.Known.Wifi }
+        test(1) {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
         }
     }
 
     @Test
-    fun testUnknownTransition() = testNetworkState { networkStateRepo ->
-        networkStateRepo.lastKnownNetwork = Network.Unknown.WithoutLastNetwork(
-            Network.Unknown.Reason.NOT_CLEAR
-        )
+    fun testUnknownTransition() = testNetworkState(NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)) {
+        test {
+            assertIs<NetworkState.Unknown>(it)
+            assertEquals(NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR), it.networkConnectionType)
+        }
+
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+        }
 
         test {
-            assertTrue { it is NetworkState.Unknown }
-            assertTrue { it.networkType is Network.Unknown.WithoutLastNetwork }
+            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
         }
 
         action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Cellular())
+            resetFlow()
+        }
+
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Wifi()
         }
 
         test {
-            assertTrue { it.networkType is Network.Known.Cellular }
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
         }
-
-        resetStateTo<NetworkState.Unknown>(
-            networkStateRepo,
-            Network.Unknown.WithoutLastNetwork(
-                Network.Unknown.Reason.NOT_CLEAR
-            ),
-            this
-        )
 
         action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Wifi())
+            resetFlow()
         }
 
         test {
-            assertTrue { it is NetworkState.Available }
-            assertTrue { it.networkType is Network.Known.Wifi }
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
         }
 
-        resetStateTo<NetworkState.Unknown>(
-            networkStateRepo,
-            Network.Unknown.WithoutLastNetwork(
-                Network.Unknown.Reason.NOT_CLEAR
-            ),
-            this
-        )
-
-        action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(Network.Known.Absent)
+        mainAction {
+            networkManager.network.value = NetworkConnectionType.Known.Absent
         }
 
         test {
-            assertTrue { it is NetworkState.Unavailable }
-            assertTrue { it.networkType is Network.Known.Absent }
+            assertIs<NetworkState.Unavailable>(it)
         }
     }
 
-    @Test
-    fun test_online_convenience_method_is_online() = testNetworkState { networkStateRepo ->
-        val mockNetworkStateRepo = networkStateRepo as MockNetworkStateRepo
-
-        action {
-            mockNetworkStateRepo.simulateNetworkStateChange(Network.Known.Wifi())
-        }
+    private suspend fun assertInitialValue() {
         test {
-            val isOnline = networkStateRepo.online().first()
-            assertTrue { isOnline }
-        }
-
-        action {
-            networkStateRepo.simulateNetworkStateChange(Network.Known.Cellular())
-        }
-        test {
-            val isOnline = networkStateRepo.online().first()
-            assertTrue { isOnline }
-        }
-    }
-
-    @Test
-    fun test_online_convenience_method_is_not_online() = testNetworkState { networkStateRepo ->
-        val mockNetworkStateRepo = networkStateRepo as MockNetworkStateRepo
-
-        action {
-            mockNetworkStateRepo.simulateNetworkStateChange(
-                Network.Unknown.WithLastNetwork(
-                    lastKnownNetwork = Network.Known.Absent,
-                    reason = Network.Unknown.Reason.NOT_CLEAR
-                )
+            assertIs<NetworkState.Unknown>(it)
+            assertEquals(
+                NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR),
+                it.networkConnectionType
             )
-        }
-        test {
-            val isOnline = networkStateRepo.online().first()
-            assertFalse { isOnline }
-        }
-
-        action {
-            mockNetworkStateRepo.simulateNetworkStateChange(Network.Known.Absent)
-        }
-        test {
-            val isOnline = networkStateRepo.online().first()
-            assertFalse { isOnline }
-        }
-
-        action {
-            mockNetworkStateRepo.simulateNetworkStateChange(
-                Network.Unknown.WithoutLastNetwork(
-                    reason = Network.Unknown.Reason.NOT_CLEAR
-                )
-            )
-        }
-        test {
-            val isOnline = networkStateRepo.online().first()
-            assertFalse { isOnline }
-        }
-    }
-
-    private suspend inline fun <reified T> resetStateTo(networkStateRepo: NetworkStateRepo, network: Network, testBlock: FlowTest<NetworkState, NetworkStateRepo>) {
-        testBlock.action {
-            (networkStateRepo as MockNetworkStateRepo).simulateNetworkStateChange(network)
-        }
-        testBlock.test {
-            assertTrue { it is T }
-        }
-    }
-
-    private suspend fun assertInitialValue(testBlock: FlowTest<NetworkState, NetworkStateRepo>) {
-        testBlock.test {
-            assertTrue { it is NetworkState.Unknown }
-            assertTrue { it.networkType is Network.Unknown.WithoutLastNetwork }
-            assertEquals(Network.Unknown.Reason.NOT_CLEAR, (it.networkType as Network.Unknown.WithoutLastNetwork).reason)
+            networkManager.startMonitoringMock.verify()
         }
     }
 }

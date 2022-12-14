@@ -13,13 +13,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.system.network
+package com.splendo.kaluga.test.system
 
-actual class NetworkManagerBuilder : BaseNetworkManager.Builder {
+import androidx.appcompat.app.AppCompatActivity
 
-    override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager {
-        return NetworkManager(onNetworkStateChange)
-    }
+class TestActivity : AppCompatActivity()
+
+class CorrectlySetupTest {
+    @kotlin.test.Test
+    fun testSetup() = assert(true)
 }

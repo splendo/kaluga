@@ -17,9 +17,10 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.system.network.NetworkManagerBuilder
+import com.splendo.kaluga.system.network.DefaultNetworkManager
+import kotlin.coroutines.CoroutineContext
 
-actual class NetworkStateRepoBuilder : NetworkStateRepo.Builder {
-    override fun create(): NetworkStateRepo =
-        NetworkStateRepo(NetworkManagerBuilder())
+actual class NetworkStateRepoBuilder : BaseNetworkStateRepoBuilder {
+    override fun create(coroutineContext: CoroutineContext): NetworkStateRepo =
+        NetworkStateRepo(DefaultNetworkManager.Builder(), coroutineContext)
 }

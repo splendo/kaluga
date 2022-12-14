@@ -70,12 +70,12 @@ class MockBaseLocationManager(
     /**
      * Mock implementation of [BaseLocationManager.Builder]
      * @param initialLocationEnabled Sets the initial state of location
-     * @param setupMocks If `true` sets up [createMock] to build [MockLocationManager]
+     * @param setupMocks If `true` sets up [createMock] to build [MockBaseLocationManager]
      */
     class Builder(val initialLocationEnabled: Boolean, setupMocks: Boolean = true) : BaseLocationManager.Builder {
 
         /**
-         * Ths list of build [MockBaseLocationManager]
+         * Ths list of built [MockBaseLocationManager]
          */
         val builtLocationManagers = mutableListOf<MockBaseLocationManager>()
 

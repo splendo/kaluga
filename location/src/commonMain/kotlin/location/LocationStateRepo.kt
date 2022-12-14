@@ -146,14 +146,13 @@ class LocationStateRepo(
         )
     },
     coroutineContext = coroutineContext,
-) {
-    interface Builder {
-        fun create(
-            locationPermission: LocationPermission,
-            settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings = { permission, permissions -> BaseLocationManager.Settings(permission, permissions) },
-            coroutineContext: CoroutineContext = defaultLocationDispatcher
-        ): LocationStateRepo
-    }
-}
+)
 
-expect class LocationStateRepoBuilder : LocationStateRepo.Builder
+interface BaseLocationStateRepoBuilder {
+    fun create(
+        locationPermission: LocationPermission,
+        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings = { permission, permissions -> BaseLocationManager.Settings(permission, permissions) },
+        coroutineContext: CoroutineContext = defaultLocationDispatcher
+    ): LocationStateRepo
+}
+expect class LocationStateRepoBuilder : BaseLocationStateRepoBuilder

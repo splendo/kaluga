@@ -18,4 +18,4 @@ dependencies {
 ```
 
 ## Mocks
-This library contains mock classes for `LocationStateRepo.Builder`, `BaseLocationManager`, `BaseLocationManager.Builder`, and `LocationMonitor`.
+This library contains mock classes for `BaseLocationStateRepoBuilder`, `BaseLocationManager`, `BaseLocationManager.Builder`, and `LocationMonitor`.

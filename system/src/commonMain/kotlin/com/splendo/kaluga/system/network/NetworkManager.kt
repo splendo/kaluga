@@ -17,15 +17,18 @@
 
 package com.splendo.kaluga.system.network
 
-class MockNetworkManager(
-    override val onNetworkStateChange: NetworkStateChange
-) : BaseNetworkManager {
+import kotlinx.coroutines.flow.Flow
 
-    override fun dispose() = Unit
+interface NetworkManager {
+    val network: Flow<NetworkConnectionType>
+    suspend fun startMonitoring()
+    suspend fun stopMonitoring()
 }
 
-class MockNetworkManagerBuilder : BaseNetworkManager.Builder {
-
-    override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
-        MockNetworkManager(onNetworkStateChange)
+abstract class BaseNetworkManager : NetworkManager {
+    interface Builder {
+        fun create(): BaseNetworkManager
+    }
 }
+
+expect class DefaultNetworkManager : BaseNetworkManager

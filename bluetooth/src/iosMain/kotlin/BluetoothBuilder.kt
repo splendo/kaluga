@@ -20,7 +20,7 @@ actual class BluetoothBuilder(
         )
     },
     private val scannerBuilder: DefaultScanner.Builder = DefaultScanner.Builder()
-) : Bluetooth.Builder {
+) : BaseBluetoothBuilder {
 
     override fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,

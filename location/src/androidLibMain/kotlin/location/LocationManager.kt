@@ -98,7 +98,7 @@ actual class LocationStateRepoBuilder(
             coroutineContext
         )
     }
-) : LocationStateRepo.Builder {
+) : BaseLocationStateRepoBuilder {
 
     override fun create(
         locationPermission: LocationPermission,

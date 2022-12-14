@@ -10,6 +10,11 @@ public abstract class com/splendo/kaluga/bluetooth/Attribute : kotlinx/coroutine
 	public final fun writeValue ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction;
 }
 
+public abstract interface class com/splendo/kaluga/bluetooth/BaseBluetoothBuilder {
+	public abstract fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/BaseBluetoothBuilder;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
+}
+
 public final class com/splendo/kaluga/bluetooth/Bluetooth : com/splendo/kaluga/bluetooth/BluetoothService, kotlinx/coroutines/CoroutineScope {
 	public fun devices ()Lkotlinx/coroutines/flow/Flow;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
@@ -18,11 +23,6 @@ public final class com/splendo/kaluga/bluetooth/Bluetooth : com/splendo/kaluga/b
 	public fun pairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startScanning (Ljava/util/Set;)V
 	public fun stopScanning ()V
-}
-
-public abstract interface class com/splendo/kaluga/bluetooth/Bluetooth$Builder {
-	public abstract fun create (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
-	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/Bluetooth$Builder;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
 public abstract class com/splendo/kaluga/bluetooth/Bluetooth$ScanMode {
@@ -37,7 +37,7 @@ public final class com/splendo/kaluga/bluetooth/Bluetooth$ScanMode$Stopped : com
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/Bluetooth$ScanMode$Stopped;
 }
 
-public final class com/splendo/kaluga/bluetooth/BluetoothBuilder : com/splendo/kaluga/bluetooth/Bluetooth$Builder {
+public final class com/splendo/kaluga/bluetooth/BluetoothBuilder : com/splendo/kaluga/bluetooth/BaseBluetoothBuilder {
 	public fun <init> ()V
 	public fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;)V
 	public synthetic fun <init> (Landroid/content/Context;Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

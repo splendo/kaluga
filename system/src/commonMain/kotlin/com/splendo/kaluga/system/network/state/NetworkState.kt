@@ -17,72 +17,124 @@
 
 package com.splendo.kaluga.system.network.state
 
+import com.splendo.kaluga.base.flow.SpecialFlowValue
+import com.splendo.kaluga.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.KalugaState
-import com.splendo.kaluga.system.network.Network
+import com.splendo.kaluga.system.network.NetworkConnectionType
+import com.splendo.kaluga.system.network.NetworkManager
+import com.splendo.kaluga.system.network.unknown
 
-sealed class NetworkState(
-    open val networkType: Network,
-) : KalugaState {
+sealed interface NetworkState : KalugaState {
 
-    data class Unknown(
-        override val networkType: Network.Unknown
-    ) : NetworkState(networkType) {
+    val networkConnectionType: NetworkConnectionType
 
-        val availableWithWifi: suspend () -> Available = {
-            Available(Network.Known.Wifi())
-        }
+    sealed interface Inactive : NetworkState, SpecialFlowValue.NotImportant
+    interface NotInitialized : Inactive
 
-        val availableWithCellular: suspend () -> Available = {
-            Available(Network.Known.Cellular())
-        }
+    interface Deinitialized : Inactive {
+        val previousNetworkConnectionType: NetworkConnectionType
+        val reinitialize: suspend () -> Initializing
+    }
 
-        val unavailable: suspend () -> Unavailable = {
-            Unavailable(Network.Known.Absent)
+    sealed interface Active : NetworkState {
+        val deinitialize: suspend () -> Deinitialized
+    }
+
+    interface Initializing : Active, SpecialFlowValue.NotImportant {
+        fun initialized(networkType: NetworkConnectionType): suspend () -> Initialized
+    }
+
+    sealed interface Initialized : Active {
+        fun available(available: NetworkConnectionType.Known.Available): suspend () -> Available
+        fun unknown(reason: NetworkConnectionType.Unknown.Reason): suspend () -> Unknown
+    }
+
+    interface Unknown : Initialized {
+        override val networkConnectionType: NetworkConnectionType.Unknown
+        val unavailable: suspend () -> Unavailable
+    }
+
+    sealed interface Known : Initialized {
+        override val networkConnectionType: NetworkConnectionType.Known
+    }
+
+    interface Available : Known {
+        override val networkConnectionType: NetworkConnectionType.Known.Available
+        val unavailable: suspend () -> Unavailable
+    }
+
+    interface Unavailable : Known {
+        override val networkConnectionType: NetworkConnectionType.Known.Absent
+    }
+}
+
+sealed class NetworkStateImpl {
+    abstract val networkConnectionType: NetworkConnectionType
+
+    object NotInitialized : NetworkStateImpl(), NetworkState.NotInitialized {
+        override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
+        fun startInitializing(networkManager: NetworkManager): suspend () -> NetworkState.Initializing = {
+            Initializing(networkConnectionType, networkManager)
         }
     }
+
+    data class Deinitialized(override val previousNetworkConnectionType: NetworkConnectionType, val networkManager: NetworkManager) : NetworkStateImpl(), NetworkState.Deinitialized {
+        override val reinitialize: suspend () -> NetworkState.Initializing = { Initializing(previousNetworkConnectionType, networkManager) }
+        override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
+    }
+
+    sealed class Active : NetworkStateImpl(), HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {
+        abstract val networkManager: NetworkManager
+        val deinitialize: suspend () -> Deinitialized = { Deinitialized(networkConnectionType, networkManager) }
+
+        override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
+            when (oldState) {
+                is NetworkState.Inactive -> networkManager.startMonitoring()
+                is NetworkState.Active -> {}
+            }
+        }
+
+        override suspend fun afterNewStateIsSet(newState: NetworkState) {
+            when (newState) {
+                is NetworkState.Inactive -> networkManager.stopMonitoring()
+                is NetworkState.Active -> {}
+            }
+        }
+    }
+
+    data class Initializing(override val networkConnectionType: NetworkConnectionType, override val networkManager: NetworkManager) : Active(), NetworkState.Initializing {
+        override fun initialized(networkType: NetworkConnectionType): suspend () -> NetworkState.Initialized = {
+            when (networkType) {
+                is NetworkConnectionType.Unknown -> Unknown(networkType, networkManager)
+                is NetworkConnectionType.Known.Available -> Available(networkType, networkManager)
+                is NetworkConnectionType.Known.Absent -> Unavailable(networkManager)
+            }
+        }
+    }
+
+    sealed class Initialized : Active() {
+        fun available(available: NetworkConnectionType.Known.Available) = suspend { Available(available, networkManager) }
+        fun unknown(reason: NetworkConnectionType.Unknown.Reason): suspend () -> NetworkState.Unknown = {
+            Unknown(
+                networkConnectionType.unknown(reason),
+                networkManager
+            )
+        }
+    }
+
+    data class Unknown(override val networkConnectionType: NetworkConnectionType.Unknown, override val networkManager: NetworkManager) : Initialized(), NetworkState.Unknown {
+        override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable(networkManager) }
+    }
+
     data class Available(
-        override val networkType: Network.Known,
-    ) : NetworkState(networkType) {
-
-        val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
-            Unknown(Network.Unknown.WithLastNetwork(network, reason))
-        }
-
-        val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
-            Unknown(Network.Unknown.WithoutLastNetwork(it))
-        }
-
-        val availableWithWifi: suspend () -> Available = {
-            Available(Network.Known.Wifi())
-        }
-
-        val availableWithCellular: suspend () -> Available = {
-            Available(Network.Known.Cellular())
-        }
-
-        val unavailable: suspend () -> Unavailable = {
-            Unavailable(Network.Known.Absent)
-        }
+        override val networkConnectionType: NetworkConnectionType.Known.Available,
+        override val networkManager: NetworkManager
+    ) : Initialized(), NetworkState.Available {
+        override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable(networkManager) }
     }
 
-    data class Unavailable(
-        override val networkType: Network.Known,
-    ) : NetworkState(networkType) {
-
-        val availableWithWifi: suspend () -> Available = {
-            Available(Network.Known.Wifi())
-        }
-
-        val availableWithCellular: suspend () -> Available = {
-            Available(Network.Known.Cellular())
-        }
-
-        val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
-            Unknown(Network.Unknown.WithLastNetwork(network, reason))
-        }
-
-        val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
-            Unknown(Network.Unknown.WithoutLastNetwork(it))
-        }
+    data class Unavailable(override val networkManager: NetworkManager) : Initialized(), NetworkState.Unavailable {
+        override val networkConnectionType: NetworkConnectionType.Known.Absent = NetworkConnectionType.Known.Absent
     }
 }

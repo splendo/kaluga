@@ -25,90 +25,98 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 
-fun NetworkManager(context: Context, onNetworkStateChange: NetworkStateChange): NetworkManager {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val androidNetworkManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        NetworkManager.AndroidConnectivityCallbackManager(
-            connectivityManager,
-            onNetworkStateChange
-        )
-    } else {
-        @Suppress("DEPRECATION")
-        NetworkManager.AndroidConnectivityReceiverManager(
-            connectivityManager,
-            onNetworkStateChange,
-            context
-        )
+actual class DefaultNetworkManager internal constructor(
+    private val androidNetworkManager: AndroidNetworkManager
+) : BaseNetworkManager() {
+
+    override val network: Flow<NetworkConnectionType> get() = androidNetworkManager.network
+    override suspend fun startMonitoring() = androidNetworkManager.startMonitoring()
+    override suspend fun stopMonitoring() = androidNetworkManager.stopMonitoring()
+
+    class Builder(private val context: Context) : BaseNetworkManager.Builder {
+        override fun create(): BaseNetworkManager {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val androidNetworkManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                AndroidConnectivityCallbackManager(
+                    connectivityManager
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                AndroidConnectivityReceiverManager(
+                    connectivityManager,
+                    context
+                )
+            }
+            return DefaultNetworkManager(androidNetworkManager)
+        }
     }
-    return NetworkManager(androidNetworkManager)
-}
 
-actual class NetworkManager internal constructor(
-    androidNetworkManager: AndroidNetworkManager
-) : BaseNetworkManager by androidNetworkManager {
-
-    internal interface AndroidNetworkManager : BaseNetworkManager
+    internal interface AndroidNetworkManager : NetworkManager
 
     @RequiresApi(Build.VERSION_CODES.N)
     internal class AndroidConnectivityCallbackManager(
-        private val connectivityManager: ConnectivityManager,
-        override val onNetworkStateChange: NetworkStateChange
+        private val connectivityManager: ConnectivityManager
     ) : AndroidNetworkManager {
 
+        private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
+        override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()
         private val networkHandler = object : ConnectivityManager.NetworkCallback() {
 
             override fun onAvailable(network: android.net.Network) {
                 super.onAvailable(network)
                 val networkType = determineNetworkType()
 
-                onNetworkStateChange(networkType)
+                networkChannel.trySend(networkType)
             }
 
             override fun onUnavailable() {
                 super.onUnavailable()
-                onNetworkStateChange(Network.Known.Absent)
+                networkChannel.trySend(NetworkConnectionType.Known.Absent)
             }
 
             override fun onLosing(network: android.net.Network, maxMsToLive: Int) {
                 super.onLosing(network, maxMsToLive)
-                onNetworkStateChange(
-                    Network.Unknown.WithoutLastNetwork(
-                        Network.Unknown.Reason.LOSING
+                networkChannel.trySend(
+                    NetworkConnectionType.Unknown.WithoutLastNetwork(
+                        NetworkConnectionType.Unknown.Reason.LOSING
                     )
                 )
             }
 
             override fun onLost(network: android.net.Network) {
                 super.onLost(network)
-                onNetworkStateChange(Network.Known.Absent)
+                networkChannel.trySend(NetworkConnectionType.Known.Absent)
             }
         }
 
-        init {
+        override suspend fun startMonitoring() {
             connectivityManager.registerDefaultNetworkCallback(networkHandler)
         }
 
-        private fun determineNetworkType(): Network {
+        override suspend fun stopMonitoring() {
+            connectivityManager.unregisterNetworkCallback(networkHandler)
+        }
+
+        private fun determineNetworkType(): NetworkConnectionType {
             val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             val isCellularDataEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
             val isWifiEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
 
             return when {
                 isWifiEnabled -> {
-                    Network.Known.Wifi()
+                    NetworkConnectionType.Known.Wifi()
                 }
                 isCellularDataEnabled -> {
-                    Network.Known.Cellular()
+                    NetworkConnectionType.Known.Cellular()
                 }
                 else -> {
-                    Network.Known.Absent
+                    NetworkConnectionType.Known.Absent
                 }
             }
-        }
-
-        override fun dispose() {
-            connectivityManager.unregisterNetworkCallback(networkHandler)
         }
     }
 
@@ -116,37 +124,34 @@ actual class NetworkManager internal constructor(
     @Deprecated("Deprecated on Android")
     internal class AndroidConnectivityReceiverManager(
         private val connectivityManager: ConnectivityManager,
-        override val onNetworkStateChange: NetworkStateChange,
         private val context: Context
     ) : AndroidNetworkManager {
 
+        private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
+        override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()
         private val networkHandler = object : BroadcastReceiver() {
             override fun onReceive(c: Context, intent: Intent) {
-                val networkInfo = connectivityManager.activeNetworkInfo
-                if (networkInfo?.isConnectedOrConnecting == true) {
-                    val networkType = determineNetworkType()
-                    onNetworkStateChange(networkType)
-                } else {
-                    onNetworkStateChange(Network.Known.Absent)
-                }
+                networkChannel.trySend(determineNetworkType())
             }
         }
 
-        init {
+        override suspend fun startMonitoring() {
             context.registerReceiver(networkHandler, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            networkChannel.trySend(determineNetworkType())
         }
 
-        private fun determineNetworkType(): Network {
+        override suspend fun stopMonitoring() {
+            context.unregisterReceiver(networkHandler)
+        }
+
+        private fun determineNetworkType(): NetworkConnectionType {
             val isMetered = connectivityManager.isActiveNetworkMetered
             return when {
-                (!isMetered && connectivityManager.isDefaultNetworkActive) -> Network.Known.Wifi()
-                isMetered -> Network.Known.Cellular()
-                else -> Network.Known.Absent
+                connectivityManager.activeNetworkInfo?.isConnectedOrConnecting != true -> NetworkConnectionType.Known.Absent
+                (!isMetered && connectivityManager.isDefaultNetworkActive) -> NetworkConnectionType.Known.Wifi()
+                isMetered -> NetworkConnectionType.Known.Cellular()
+                else -> NetworkConnectionType.Known.Absent
             }
-        }
-
-        override fun dispose() {
-            context.unregisterReceiver(networkHandler)
         }
     }
 }

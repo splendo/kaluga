@@ -17,4 +17,15 @@
 
 package com.splendo.kaluga.system.network.state
 
-expect class NetworkStateRepoBuilder : NetworkStateRepo.Builder
+import com.splendo.kaluga.base.singleThreadDispatcher
+import kotlin.coroutines.CoroutineContext
+
+private val defaultNetworkDispatcher by lazy {
+    singleThreadDispatcher("Location")
+}
+
+interface BaseNetworkStateRepoBuilder {
+    fun create(coroutineContext: CoroutineContext = defaultNetworkDispatcher): NetworkStateRepo
+}
+
+expect class NetworkStateRepoBuilder : BaseNetworkStateRepoBuilder
