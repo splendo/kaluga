@@ -52,7 +52,7 @@ class KinematicViscosityTest {
         assertScientificConversion(1, (SquareMeter per Second), 0.017, (SquareMeter per Minute), 3)
         assertScientificConversion(1, (SquareMeter per Second), 0.00028, (SquareMeter per Hour), 5)
     }
-    
+
     @Test
     fun kinematicViscosityFromAreaAndTimeTest() {
         assertEqualScientificValue(1(SquareMeter per Second), (2(SquareMeter)) / 2(Second))

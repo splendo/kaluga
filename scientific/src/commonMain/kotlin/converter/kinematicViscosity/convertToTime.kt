@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.scientific.converter.kinematicViscosity
 
-
 // TODO Implement these after this is fixed https://github.com/splendo/kaluga/issues/453
 // @JvmName("metricKinematicViscosityDivMetricArea")
 // infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(
