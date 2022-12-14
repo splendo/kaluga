@@ -17,26 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.PhysicalQuantity
-import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.unit.Area
-import com.splendo.kaluga.scientific.unit.ImperialArea
-import com.splendo.kaluga.scientific.unit.MetricArea
-import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.converter.area.div
-import kotlin.jvm.JvmName
-
-@JvmName("timeDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Time, Time>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = area / this
-
-@JvmName("timeDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Time, Time>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = area / this
-
-@JvmName("timeDivArea")
-infix operator fun <AreaUnit : Area> ScientificValue<PhysicalQuantity.Time, Time>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
-) = area / this
+// TODO Implement these after this is fixed https://github.com/splendo/kaluga/issues/453
+// @JvmName("timeDivMetricArea")
+// infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Time, Time>.div(
+//     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+// ) = area / this
+//
+// @JvmName("timeDivImperialArea")
+// infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Time, Time>.div(
+//     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+// ) = area / this
+//
+// @JvmName("timeDivArea")
+// infix operator fun <AreaUnit : Area> ScientificValue<PhysicalQuantity.Time, Time>.div(
+//     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+// ) = area / this

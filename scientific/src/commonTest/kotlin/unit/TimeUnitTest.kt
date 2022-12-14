@@ -25,6 +25,7 @@ import com.splendo.kaluga.scientific.converter.action.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.converter.angle.div
 import com.splendo.kaluga.scientific.converter.angularVelocity.div
+import com.splendo.kaluga.scientific.converter.area.div
 import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.div
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
@@ -162,5 +163,28 @@ class TimeUnitTest {
     @Test
     fun timeFromWeightAndMassFlowRateTest() {
         assertEqualScientificValue(1(Hour), 2(Gram) / 2(Gram per Hour))
+    }
+
+    @Test
+    fun timeFromKinematicViscosityAndAreaTest() {
+        assertEqualScientificValue(1(Second), (2(SquareMeter) / 2(SquareMeter per Second)))
+        assertEqualScientificValue(
+            1(Second),
+            (2(SquareMeter).convert(SquareCentimeter) / 2(SquareMeter per Second))
+        )
+        assertEqualScientificValue(
+            1(Second),
+            (2(SquareMeter).convert(SquareFoot) / 2(SquareMeter per Second))
+        )
+
+        assertEqualScientificValue(1(Second), (2(SquareFoot) / 2(SquareFoot per Second)))
+        assertEqualScientificValue(
+            1(Second),
+            (2(SquareFoot).convert(SquareInch) / 2(SquareFoot per Second))
+        )
+        assertEqualScientificValue(
+            1(Second),
+            (2(SquareFoot).convert(SquareMeter) / 2(SquareFoot per Second))
+        )
     }
 }
