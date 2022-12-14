@@ -283,6 +283,11 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Jolt : com/spl
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity : com/splendo/kaluga/scientific/PhysicalQuantity {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/splendo/kaluga/scientific/PhysicalQuantity$Length : com/splendo/kaluga/scientific/PhysicalQuantity {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Length;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
@@ -772,6 +777,11 @@ public final class com/splendo/kaluga/scientific/converter/area/ConvertFromForce
 	public static final fun areaFromForceAndPressureDefault (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/area/ConvertFromKinematicViscosityAndTimeKt {
+	public static final fun areaFromKinematicViscosityAndTime (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun areaFromKinematicViscosityAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/area/ConvertFromLengthKt {
 	public static final fun areaFromLengthAndWidth (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun areaFromLengthAndWidthDefault (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -855,6 +865,10 @@ public final class com/splendo/kaluga/scientific/converter/area/ConvertToForceKt
 	public static final fun squareCentimeterTimesBaryeMultiple (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/area/ConvertToKinematicViscosityKt {
+	public static final fun areaDivTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/area/ConvertToLengthKt {
 	public static final fun areaDivLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialAreaDivImperialLength (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -922,6 +936,12 @@ public final class com/splendo/kaluga/scientific/converter/area/ConvertToSpecifi
 	public static final fun imperialAreaDivUKImperialLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun imperialAreaDivUSCustomaryLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricAreaDivMetricLinearMassDensity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/area/ConvertToTimeKt {
+	public static final fun areaDivKinematicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun imperialAreaDivKinematicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricAreaDivMetricKinematicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/area/ConvertToVolumeKt {
@@ -2167,6 +2187,17 @@ public final class com/splendo/kaluga/scientific/converter/jolt/ConvertToYankKt 
 	public static final fun imperialJoltTimesUSCustomaryWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun joltTimesWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun metricJoltTimesMetricWeight (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/kinematicViscosity/ConvertFromAreaAndTimeKt {
+	public static final fun kinematicViscosityFromAreaAndTime (Lcom/splendo/kaluga/scientific/unit/KinematicViscosity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun kinematicViscosityFromAreaAndTimeDefault (Lcom/splendo/kaluga/scientific/unit/KinematicViscosity;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/kinematicViscosity/ConvertToAreaKt {
+	public static final fun imperialKinematicViscosityTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun kinematicViscosityTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun metricKinematicViscosityTimesTime (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/length/ConvertFromAreaAndLengthKt {
@@ -3714,6 +3745,11 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertFromFrequ
 	public static final fun timeFromInvertedFrequencyDefault (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
+public final class com/splendo/kaluga/scientific/converter/time/ConvertFromKinematicViscosityAndAreaKt {
+	public static final fun timeFromKinematicViscosityAndArea (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun timeFromKinematicViscosityAndAreaDefault (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
 public final class com/splendo/kaluga/scientific/converter/time/ConvertFromLengthAndSpeedKt {
 	public static final fun timeFromDistanceAndSpeed (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun timeFromDistanceAndSpeedDefault (Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -3774,6 +3810,12 @@ public final class com/splendo/kaluga/scientific/converter/time/ConvertToAngleKt
 
 public final class com/splendo/kaluga/scientific/converter/time/ConvertToAngularVelocityKt {
 	public static final fun timeTimesAngularAcceleration (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+}
+
+public final class com/splendo/kaluga/scientific/converter/time/ConvertToAreaKt {
+	public static final fun timeTimesImperialKinematicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun timeTimesKinematicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun timeTimesMetricKinematicViscosity (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/time/ConvertToDecimalKt {
@@ -8659,6 +8701,41 @@ public final class com/splendo/kaluga/scientific/unit/ImperialJolt$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity : com/splendo/kaluga/scientific/unit/KinematicViscosity, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialArea;Lcom/splendo/kaluga/scientific/unit/Time;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/ImperialArea;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/Time;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ImperialArea;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;Lcom/splendo/kaluga/scientific/unit/ImperialArea;Lcom/splendo/kaluga/scientific/unit/Time;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getArea ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getArea ()Lcom/splendo/kaluga/scientific/unit/ImperialArea;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun getTime ()Lcom/splendo/kaluga/scientific/unit/Time;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final fun write$Self (Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract class com/splendo/kaluga/scientific/unit/ImperialLength : com/splendo/kaluga/scientific/unit/Length, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialLength$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;Lcom/splendo/kaluga/scientific/PhysicalQuantity$Length;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
@@ -10118,6 +10195,32 @@ public final class com/splendo/kaluga/scientific/unit/Kiloweber : com/splendo/ka
 	public fun toSIUnit (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 }
 
+public abstract class com/splendo/kaluga/scientific/unit/KinematicViscosity : com/splendo/kaluga/scientific/unit/AbstractScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/KinematicViscosity$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun fromSIUnit (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public abstract fun getArea ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity;
+	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
+	public fun getSymbol ()Ljava/lang/String;
+	public abstract fun getTime ()Lcom/splendo/kaluga/scientific/unit/Time;
+	public fun toSIUnit (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun write$Self (Lcom/splendo/kaluga/scientific/unit/KinematicViscosity;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/KinematicViscosity$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/KinematicViscosityUnitKt {
+	public static final fun getImperialKinematicViscosityUnits ()Ljava/util/Set;
+	public static final fun getKinematicViscosityUnits ()Ljava/util/Set;
+	public static final fun getMetricKinematicViscosityUnits ()Ljava/util/Set;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/Area;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/KinematicViscosity;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/ImperialArea;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
+	public static final fun per (Lcom/splendo/kaluga/scientific/unit/MetricArea;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
+}
+
 public final class com/splendo/kaluga/scientific/unit/Kip : com/splendo/kaluga/scientific/unit/USCustomaryForce {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Kip;
 	public fun fromSIUnit (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
@@ -11479,6 +11582,41 @@ public final class com/splendo/kaluga/scientific/unit/MetricJolt$$serializer : k
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricJolt$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity : com/splendo/kaluga/scientific/unit/KinematicViscosity, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
+	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity$Companion;
+	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity;Lcom/splendo/kaluga/scientific/unit/MetricArea;Lcom/splendo/kaluga/scientific/unit/Time;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricArea;Lcom/splendo/kaluga/scientific/unit/Time;)V
+	public final fun component1 ()Lcom/splendo/kaluga/scientific/unit/MetricArea;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/Time;
+	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricArea;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;Lcom/splendo/kaluga/scientific/unit/MetricArea;Lcom/splendo/kaluga/scientific/unit/Time;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getArea ()Lcom/splendo/kaluga/scientific/unit/Area;
+	public fun getArea ()Lcom/splendo/kaluga/scientific/unit/MetricArea;
+	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
+	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public fun getTime ()Lcom/splendo/kaluga/scientific/unit/Time;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final fun write$Self (Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
