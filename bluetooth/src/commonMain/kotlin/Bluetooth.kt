@@ -73,12 +73,18 @@ class Bluetooth internal constructor(
     coroutineContext: CoroutineContext,
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
-    interface Builder {
-        fun create(
-            scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-            connectionSettings: ConnectionSettings = ConnectionSettings(),
-            coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
-        ): Bluetooth
+    abstract class Builder {
+
+        var coroutineContext: CoroutineContext = defaultBluetoothDispatcher
+        var scannerSettingsFactory: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) }
+        var defaultConnectionSettings: ConnectionSettings = ConnectionSettings()
+
+        protected abstract fun create(): BluetoothService
+
+        fun buildBluetoothService(build: Bluetooth.Builder.() -> Unit): BluetoothService {
+            build(this)
+            return create()
+        }
     }
 
     internal val scanningStateRepo = ScanningStateRepo(
