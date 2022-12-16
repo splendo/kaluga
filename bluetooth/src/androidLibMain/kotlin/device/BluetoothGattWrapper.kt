@@ -82,6 +82,8 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         val characteristic = getCharacteristic(wrapper) ?: return false
         // TODO update implementation to call non deprecated gatt.writeCharacteristic(characteristic, value, writeType)
         //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on characteristic.value
+        // https://github.com/splendo/kaluga/issues/609
+        // https://developer.android.com/reference/android/bluetooth/BluetoothGatt#writeCharacteristic(android.bluetooth.BluetoothGattCharacteristic)
         @Suppress("DEPRECATION")
         characteristic.value = value
         @Suppress("DEPRECATION")
@@ -92,6 +94,8 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         val descriptor = getDescriptor(wrapper) ?: return false
         // TODO update implementation to call non deprecated gatt.writeDescriptor(descriptor, value)
         //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on descriptor.value
+        // https://github.com/splendo/kaluga/issues/609
+        // https://developer.android.com/reference/android/bluetooth/BluetoothGatt#writeDescriptor(android.bluetooth.BluetoothGattDescriptor)
         @Suppress("DEPRECATION")
         descriptor.value = value
         @Suppress("DEPRECATION")
