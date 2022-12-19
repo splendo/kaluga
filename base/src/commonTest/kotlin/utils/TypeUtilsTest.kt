@@ -15,10 +15,8 @@
 
  */
 
-package utils
+package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.typedList
-import com.splendo.kaluga.base.utils.typedMap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
