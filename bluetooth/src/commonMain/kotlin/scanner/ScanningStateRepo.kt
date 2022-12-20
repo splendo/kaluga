@@ -97,6 +97,7 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.DeviceDiscovered -> handleDeviceDiscovered(event)
                     is Scanner.Event.DeviceConnected -> handleDeviceConnectionChanged(event.identifier, true)
                     is Scanner.Event.DeviceDisconnected -> handleDeviceConnectionChanged(event.identifier, false)
+                    is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
         }
@@ -125,9 +126,30 @@ open class ScanningStateImplRepo(
         }
     }
 
+    private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
+        val creators = event.devices.map {
+            {
+                val (deviceWrapper, connectionManagerBuilder) = it.deviceCreator()
+                createDevice(
+                    deviceWrapper.identifier,
+                    DeviceInfoImpl(deviceWrapper, it.rssi, it.advertisementData),
+                    deviceWrapper,
+                    connectionManagerBuilder
+                )
+            }
+        }
+        state.pairedDevices(event.filter, event.identifiers.toSet(), creators)
+    }
+
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
         if (state is ScanningState.Enabled) {
             state.discovered.devices.find { it.identifier == identifier }?.let { device ->
+                if (connected)
+                    device.handleConnected()
+                else
+                    device.handleDisconnected()
+            }
+            state.paired.devices.find { it.identifier == identifier }?.let { device ->
                 if (connected)
                     device.handleConnected()
                 else

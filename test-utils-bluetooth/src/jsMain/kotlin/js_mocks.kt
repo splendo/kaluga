@@ -23,5 +23,5 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.randomUUID
 
 actual fun randomIdentifier(): Identifier = randomUUID()
-actual fun createDeviceWrapper(deviceName: String?): DeviceWrapper = TODO()
+actual fun createDeviceWrapper(deviceName: String?, identifier: Identifier): DeviceWrapper = TODO()
 actual fun ServiceWrapperBuilder.build(): ServiceWrapper = TODO()

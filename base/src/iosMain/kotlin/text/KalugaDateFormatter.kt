@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.typedList
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSDateFormatterFullStyle

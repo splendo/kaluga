@@ -26,23 +26,23 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState
 sealed class MockScanningState {
 
     companion object {
-        val nothingDiscovered = Discovered(emptySet())
+        val nothingFound = Devices(filter = emptySet())
     }
 
-    data class Discovered(
+    data class Devices(
         override val devices: List<Device>,
         override val filter: Filter,
-    ) : ScanningState.Discovered {
+    ) : ScanningState.Devices {
         constructor(filter: Filter) : this(emptyList(), filter)
 
-        override fun copyAndAdd(device: Device): Discovered =
-            Discovered(listOf(*devices.toTypedArray(), device), filter)
+        override fun copyAndAdd(device: Device): Devices =
+            Devices(listOf(*devices.toTypedArray(), device), filter)
 
-        override fun discoveredForFilter(filter: Filter) =
+        override fun foundForFilter(filter: Filter) =
             if (this.filter == filter)
                 this
             else
-                Discovered(filter)
+                Devices(filter)
     }
 
     sealed class Inactive : MockScanningState()
@@ -51,18 +51,22 @@ sealed class MockScanningState {
         fun startInitializing() = if (!isHardwareSupported) {
             { NoHardware }
         } else {
-            { Initializing(nothingDiscovered) }
+            { Initializing(nothingFound, nothingFound) }
         }
     }
 
-    data class Deinitialized(override val previouslyDiscovered: ScanningState.Discovered) :
+    data class Deinitialized(
+        override val previouslyDiscovered: ScanningState.Devices,
+        override val previouslyPaired: ScanningState.Devices
+    ) :
         Inactive(), ScanningState.Deinitialized {
-        override val reinitialize = suspend { Initializing(previouslyDiscovered) }
+        override val reinitialize = suspend { Initializing(previouslyDiscovered, previouslyPaired) }
     }
 
     sealed class Active : MockScanningState() {
-        abstract val discovered: ScanningState.Discovered
-        val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered) }
+        abstract val discovered: ScanningState.Devices
+        abstract val paired: ScanningState.Devices
+        val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, paired) }
     }
 
     class PermittedHandler {
@@ -70,7 +74,8 @@ sealed class MockScanningState {
     }
 
     data class Initializing(
-        override val discovered: ScanningState.Discovered
+        override val discovered: ScanningState.Devices,
+        override val paired: ScanningState.Devices
     ) : Active(), ScanningState.Initializing {
 
         override fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> ScanningState.Initialized =
@@ -78,7 +83,7 @@ sealed class MockScanningState {
                 when {
                     !hasPermission -> NoBluetooth.MissingPermissions()
                     !enabled -> NoBluetooth.Disabled()
-                    else -> Enabled.Idle(discovered)
+                    else -> Enabled.Idle(discovered, paired)
                 }
             }
     }
@@ -95,33 +100,69 @@ sealed class MockScanningState {
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
-        fun pairedDevices(filter: Set<UUID>): List<Identifier> = emptyList()
-
         class Idle(
-            override val discovered: ScanningState.Discovered
+            override val discovered: ScanningState.Devices,
+            override val paired: ScanningState.Devices
         ) : Enabled(), ScanningState.Enabled.Idle {
 
             override val permittedHandler: PermittedHandler = PermittedHandler()
 
+            override suspend fun retrievePairedDevices(filter: Filter) = Unit
+
+            override fun pairedDevices(
+                filter: Filter,
+                identifiers: Set<Identifier>,
+                deviceCreators: List<() -> Device>
+            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
+                remain()
+            } else {
+                suspend {
+                    Idle(
+                        discovered,
+                        Devices(deviceCreators.map { it.invoke() }, filter)
+                    )
+                }
+            }
+
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
                 Scanning(
-                    discovered.discoveredForFilter(filter)
+                    discovered.foundForFilter(filter),
+                    paired
                 )
             }
 
             override fun refresh(filter: Set<UUID>): suspend () -> Idle = {
                 Idle(
-                    discovered.discoveredForFilter(filter)
+                    discovered.foundForFilter(filter),
+                    paired
                 )
             }
         }
 
         class Scanning(
-            override val discovered: ScanningState.Discovered
+            override val discovered: ScanningState.Devices,
+            override val paired: ScanningState.Devices
         ) : Enabled(),
             ScanningState.Enabled.Scanning {
 
             override val permittedHandler: PermittedHandler = PermittedHandler()
+
+            override suspend fun retrievePairedDevices(filter: Filter) = Unit
+
+            override fun pairedDevices(
+                filter: Filter,
+                identifiers: Set<Identifier>,
+                deviceCreators: List<() -> Device>
+            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
+                remain()
+            } else {
+                suspend {
+                    Scanning(
+                        discovered,
+                        Devices(deviceCreators.map { it.invoke() }, filter)
+                    )
+                }
+            }
 
             override suspend fun discoverDevice(
                 identifier: Identifier,
@@ -135,23 +176,24 @@ sealed class MockScanningState {
                         knownDevice.rssiDidUpdate(rssi)
                         knownDevice.advertisementDataDidUpdate(advertisementData)
                         remain()
-                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator())) }
+                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), paired) }
             }
 
-            override val stopScanning = suspend { Idle(discovered) }
+            override val stopScanning = suspend { Idle(discovered, paired) }
         }
     }
 
     sealed class NoBluetooth : Active() {
 
-        override val discovered: Discovered = nothingDiscovered
+        override val discovered: Devices = nothingFound
+        override val paired: Devices = nothingFound
 
         class Disabled : NoBluetooth(), ScanningState.NoBluetooth.Disabled {
 
             private val permittedHandler = PermittedHandler()
 
             override val enable: suspend () -> ScanningState.Enabled = {
-                Enabled.Idle(nothingDiscovered)
+                Enabled.Idle(nothingFound, nothingFound)
             }
 
             override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
@@ -160,7 +202,7 @@ sealed class MockScanningState {
         class MissingPermissions : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingDiscovered)
+                if (enabled) Enabled.Idle(nothingFound, nothingFound)
                 else Disabled()
             }
         }
