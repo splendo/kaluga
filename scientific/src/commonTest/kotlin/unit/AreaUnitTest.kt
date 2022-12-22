@@ -407,8 +407,12 @@ class AreaUnitTest {
     }
 
     @Test
-    fun areaFromKinematicViscosityAndTimeTest() {
+    fun areaFromMetricKinematicViscosityAndTimeTest() {
         assertEqualScientificValue(4(SquareMeter), (2(SquareMeter per Second) * 2(Second)))
+    }
+
+    @Test
+    fun areaFromImperialKinematicViscosityAndTimeTest() {
         assertEqualScientificValue(4(SquareFoot), (2(SquareFoot per Second) * 2(Second)))
     }
 }

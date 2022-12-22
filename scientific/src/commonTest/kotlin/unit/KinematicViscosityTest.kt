@@ -27,7 +27,7 @@ import kotlin.test.Test
 class KinematicViscosityTest {
 
     @Test
-    fun kinematicViscosityConversionTest() {
+    fun metricKinematicViscosityConversionTest() {
         assertScientificConversion(1, (SquareMeter per Second), 1e+18, (SquareNanometer per Second))
         assertScientificConversion(1, (SquareMeter per Second), 1e+12, (SquareMicrometer per Second))
         assertScientificConversion(1, (SquareMeter per Second), 1000000.0, (SquareMillimeter per Second))
@@ -54,11 +54,14 @@ class KinematicViscosityTest {
     }
 
     @Test
-    fun kinematicViscosityFromAreaAndTimeTest() {
+    fun kinematicViscosityFromMetricAreaByTimeTest() {
         assertEqualScientificValue(1(SquareMeter per Second), (2(SquareMeter)) / 2(Second))
         assertEqualScientificValue(1(SquareMeter per Second), (2(Meter) * 1(Meter)) / 2(Second))
         assertEqualScientificValue(1(SquareMeter per Second), (2(Meter).convert(Foot) * 1(Meter)) / 2(Second))
+    }
 
+    @Test
+    fun kinematicViscosityFromImperialAreaByTimeTest() {
         assertEqualScientificValue(1(SquareFoot per Second), (2(SquareFoot)) / 2(Second))
         assertEqualScientificValue(1(SquareFoot per Second), (2(Foot) * 1(Foot)) / 2(Second))
         assertEqualScientificValue(1(SquareFoot per Second), (2(Foot).convert(Inch) * 1(Foot)) / 2(Second))
