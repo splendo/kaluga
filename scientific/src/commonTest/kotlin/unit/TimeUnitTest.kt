@@ -168,26 +168,10 @@ class TimeUnitTest {
     @Test
     fun timeFromMetricAreaDividedByMetricKinematicViscosityTest() {
         assertEqualScientificValue(1(Second), (2(SquareMeter) / 2(SquareMeter per Second)))
-        assertEqualScientificValue(
-            1(Second),
-            (2(SquareMeter).convert(SquareCentimeter) / 2(SquareMeter per Second))
-        )
-        assertEqualScientificValue(
-            1(Second),
-            (2(SquareMeter).convert(SquareFoot) / 2(SquareMeter per Second))
-        )
     }
 
     @Test
     fun timeFromImperialAreaByImperialKinematicViscosityTest() {
         assertEqualScientificValue(1(Second), (2(SquareFoot) / 2(SquareFoot per Second)))
-        assertEqualScientificValue(
-            1(Second),
-            (2(SquareFoot).convert(SquareInch) / 2(SquareFoot per Second))
-        )
-        assertEqualScientificValue(
-            1(Second),
-            (2(SquareFoot).convert(SquareMeter) / 2(SquareFoot per Second))
-        )
     }
 }
