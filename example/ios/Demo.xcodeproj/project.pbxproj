@@ -31,6 +31,7 @@
 		209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */; };
 		209471E824C07F19001426CD /* BluetoothCharacteristicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */; };
 		209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */; };
+		20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */; };
 		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
 		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
 		20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */; };
@@ -72,6 +73,7 @@
 		847C2A647F23AF46CED079CF /* RoutingState.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896B16F89BA730B7FBF42625 /* RoutingState.generated.swift */; };
 		8679BDAA7F79F92DAC24AF23 /* ListObservable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31718DE342D28B4942D37524 /* ListObservable.generated.swift */; };
 		93EC5B31E0ADDED3225B15C9 /* Color+Color.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F49DA13243DC3767266475 /* Color+Color.generated.swift */; };
+		9481F22DC3CFE170CE894584 /* KeyboardManager.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */; };
 		978348A7235DF586005B140B /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* PermissionViewController.swift */; };
 		C0C827F580A4F1950E9B10EE /* Shape+Helpers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2BAEDD60E67CE8F9277AC6 /* Shape+Helpers.generated.swift */; };
 		C77C23B538A4DFB02C0E0773 /* LazyView.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095989173871C8CDA70C49E1 /* LazyView.generated.swift */; };
@@ -136,6 +138,7 @@
 		209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceDetailsViewController.swift; sourceTree = "<group>"; };
 		209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothCharacteristicCell.xib; sourceTree = "<group>"; };
 		209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothDescriptorCell.xib; sourceTree = "<group>"; };
+		20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerView.swift; sourceTree = "<group>"; };
 		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
 		20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesListViewController.swift; sourceTree = "<group>"; };
@@ -151,6 +154,7 @@
 		20FFB48D293F818B005CF1C8 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		20FFB48F293FA7EB005CF1C8 /* BottomSheetSubPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSubPageView.swift; sourceTree = "<group>"; };
 		27D181CE83615D345BB56946 /* HasDefaultValue.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = HasDefaultValue.generated.swift; sourceTree = "<group>"; };
+		2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; lastKnownFileType = sourcecode.swift; name = KeyboardManager.generated.swift; path = KeyboardManager.generated.swift; sourceTree = "<group>"; };
 		31718DE342D28B4942D37524 /* ListObservable.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListObservable.generated.swift; sourceTree = "<group>"; };
 		382B35FA85A28992FE37B803 /* KalugaStyledString+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaStyledString+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		3EC460D671184DBFD03C42FB /* ListSubject.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListSubject.generated.swift; sourceTree = "<group>"; };
@@ -240,6 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */,
+				20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */,
 			);
 			path = KeyboardManager;
 			sourceTree = "<group>";
@@ -484,6 +489,7 @@
 				D7A59766D89528BA5F4327BD /* Subject.generated.swift */,
 				744B1E9043B534F8B9BD501C /* UninitializedObservable.generated.swift */,
 				8165D122BD8D8848D7242385 /* UninitializedSubject.generated.swift */,
+				2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */,
 			);
 			path = KalugaSwiftUI;
 			sourceTree = "<group>";
@@ -668,6 +674,7 @@
 				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
 				20C7D1D8246A93A600C9A63F /* ArchitectureViewController.swift in Sources */,
 				20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */,
+				20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */,
 				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
 				201EA2212938ECE700C562EC /* LoadingView.swift in Sources */,
 				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
@@ -716,6 +723,7 @@
 				20FFB490293FA7EB005CF1C8 /* BottomSheetSubPageView.swift in Sources */,
 				2EF7D8289105AC623E600829 /* UninitializedObservable.generated.swift in Sources */,
 				1529FF0B35BD7AB3B6E838A9 /* UninitializedSubject.generated.swift in Sources */,
+				9481F22DC3CFE170CE894584 /* KeyboardManager.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

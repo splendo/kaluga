@@ -16,4 +16,5 @@ args:
   includeAlerts: true
   includeHud: true
   includeDatePicker: true
+  includeKeyboard: true
   includePartialSheet: true

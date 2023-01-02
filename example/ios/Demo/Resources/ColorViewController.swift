@@ -66,19 +66,19 @@ class ColorViewController : UIViewController {
             
             return [
                 viewModel.backdropColorBackground.observe { next in
-                    guard let backdropColorBackground = self?.backdropColorBackground, let backdropBackgroundStyle = next as? KalugaBackgroundStyle else {
+                    guard let backdropColorBackground = self?.backdropColorBackground, let backdropBackgroundStyle = next else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(backdropColorBackground, style: backdropBackgroundStyle)
                 },
                 viewModel.sourceColorBackground.observe { next in
-                    guard let sourceColorBackground = self?.sourceColorBackground, let sourceBackgroundStyle = next as? KalugaBackgroundStyle else {
+                    guard let sourceColorBackground = self?.sourceColorBackground, let sourceBackgroundStyle = next else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(sourceColorBackground, style: sourceBackgroundStyle)
                 },
                 viewModel.blendedColorBackground.observe { next in
-                    guard let blendedColorBackground = self?.blendedColorBackground, let blendedBackgroundStyle = next as? KalugaBackgroundStyle else {
+                    guard let blendedColorBackground = self?.blendedColorBackground, let blendedBackgroundStyle = next else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(blendedColorBackground, style: blendedBackgroundStyle)

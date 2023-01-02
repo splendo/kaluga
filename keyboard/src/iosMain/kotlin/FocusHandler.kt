@@ -26,3 +26,5 @@ class UIKitFocusHandler(val view: UIView) : FocusHandler {
         }
     }
 }
+
+class ValueFocusHandler<Value>(val value: Value) : FocusHandler

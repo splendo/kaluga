@@ -19,6 +19,15 @@ import UIKit
 import KalugaExampleShared
 
 class KeyboardManagerViewController : UIViewController {
+
+    struct Const {
+        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        static let storyboardId = "KeyboardManagerViewController"
+    }
+
+    static func instantiate() -> KeyboardManagerViewController {
+        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! KeyboardManagerViewController
+    }
     
     @IBOutlet private var editField: UITextField!
     @IBOutlet private var showButton: UIButton!

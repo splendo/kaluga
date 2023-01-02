@@ -105,7 +105,12 @@ private extension FeatureListNavigationAction {
                     swiftUIView: { DateTimePickerView() }
                 )
             }
-            case is FeatureListNavigationAction.Keyboard: return NavigationSpec.Segue(identifier: "showKeyboard")
+            case is FeatureListNavigationAction.Keyboard: return NavigationSpec.Push(animated: true) {
+                SwiftUIOrUIKitSelectionViewController.create(
+                    uiKitViewController: { KeyboardManagerViewController.instantiate() },
+                    swiftUIView: { KeyboardManagerView() }
+                )
+            }
             case is FeatureListNavigationAction.Links: return NavigationSpec.Segue(identifier: "showLinks")
             case is FeatureListNavigationAction.LoadingIndicator: return NavigationSpec.Push(animated: true) {
                 SwiftUIOrUIKitSelectionViewController.create(
