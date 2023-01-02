@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
@@ -29,8 +28,6 @@ import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
@@ -97,14 +94,11 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED && status == GATT_SUCCESS) {
-                    gatt?.readCharacteristic(characteristic)
-                }
-            } else {
-                @Suppress("DEPRECATION")
-                updateCharacteristic(characteristic, characteristic.value, status)
-            }
+            // TODO update implementation so it doesn't depend on characteristic.value which is deprecated
+            // https://github.com/splendo/kaluga/issues/609
+            // https://developer.android.com/reference/android/bluetooth/BluetoothGattCharacteristic#getValue()
+            @Suppress("DEPRECATION")
+            updateCharacteristic(characteristic, characteristic.value, status)
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -116,19 +110,11 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                if (ActivityCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.BLUETOOTH_CONNECT
-                    ) == PackageManager.PERMISSION_GRANTED &&
-                    status == GATT_SUCCESS
-                ) {
-                    gatt?.readDescriptor(descriptor)
-                }
-            } else {
-                @Suppress("DEPRECATION")
-                updateDescriptor(descriptor, descriptor.value, status)
-            }
+            // TODO update implementation so it doesn't depend on descriptor.value which is deprecated
+            // https://github.com/splendo/kaluga/issues/609
+            // https://developer.android.com/reference/android/bluetooth/BluetoothGattDescriptor#getValue()
+            @Suppress("DEPRECATION")
+            updateDescriptor(descriptor, descriptor.value, status)
         }
 
         @Deprecated("Deprecated in Java")
