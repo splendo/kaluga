@@ -37,6 +37,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -44,13 +45,16 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.native.concurrent.SharedImmutable
+import kotlin.time.Duration.Companion.seconds
 
 @SharedImmutable // NOTE: replace with a limited parallelism dispatcher view when available
 private val defaultBluetoothDispatcher by lazy {
@@ -60,7 +64,7 @@ private val defaultBluetoothDispatcher by lazy {
 interface BluetoothService {
     fun startScanning(filter: Set<UUID> = emptySet())
     fun stopScanning()
-    suspend fun pairedDevices(filter: Set<UUID> = emptySet()): List<Identifier>
+    fun pairedDevices(filter: Set<UUID>): Flow<List<Device>>
     fun devices(): Flow<List<Device>>
     suspend fun isScanning(): Flow<Boolean>
     val isEnabled: Flow<Boolean>
@@ -108,12 +112,27 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    override suspend fun pairedDevices(filter: Set<UUID>): List<Identifier> = scanningStateRepo
-        .transformLatest { state ->
-            if (state is ScanningState.Enabled)
-                emit(state.pairedDevices(filter))
+    private companion object {
+        val PAIRED_DEVICES_REFRESH_RATE = 15.seconds
+    }
+
+    private val timer get() = flow {
+        while (isActive) {
+            emit(Unit) // start 'timer' instantly
+            delay(PAIRED_DEVICES_REFRESH_RATE)
         }
-        .first()
+    }
+
+    override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> =
+        combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
+            .transformLatest { state ->
+                if (state is ScanningState.Enabled) {
+                    // trigger retrieve paired devices list
+                    state.retrievePairedDevices(filter)
+                    emit(state.paired.devices)
+                }
+            }
+            .distinctUntilChanged()
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo.filterOnlyImportant(), scanMode) { scanState, scanMode ->
         when (scanState) {

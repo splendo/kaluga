@@ -23,7 +23,10 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 
 expect fun randomIdentifier(): Identifier
 
-expect fun createDeviceWrapper(deviceName: String? = null): DeviceWrapper
+expect fun createDeviceWrapper(
+    deviceName: String? = null,
+    identifier: Identifier = randomIdentifier()
+): DeviceWrapper
 
 fun createServiceWrapper(
     builder: ServiceWrapperBuilder.() -> Unit

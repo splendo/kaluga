@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.base.typedMap
 import platform.Foundation.NSTimeZone
 import platform.Foundation.NSTimeZoneNameStyle
 import platform.Foundation.abbreviationDictionary
