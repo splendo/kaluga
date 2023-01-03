@@ -37,9 +37,9 @@ sealed class KinematicViscosity : AbstractScientificUnit<PhysicalQuantity.Kinema
     abstract val area: Area
     abstract val time: Time
     override val quantity = PhysicalQuantity.KinematicViscosity
-    override val symbol: String by lazy { "${area.symbol}/${time.symbol}" }
-    override fun fromSIUnit(value: Decimal): Decimal = time.fromSIUnit(area.fromSIUnit(value))
-    override fun toSIUnit(value: Decimal): Decimal = area.toSIUnit(time.toSIUnit(value))
+    override val symbol: String by lazy { "${area.symbol} / ${time.symbol}" }
+    override fun fromSIUnit(value: Decimal): Decimal = time.toSIUnit(area.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = area.toSIUnit(time.fromSIUnit(value))
 }
 
 @Serializable

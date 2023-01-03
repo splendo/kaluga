@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
-import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.div
 import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.invoke
@@ -44,13 +43,13 @@ class KinematicViscosityTest {
         assertScientificConversion(1, (SquareMeter per Second), 3.86102e-7, (SquareMile per Second), 12)
         assertScientificConversion(1, (SquareMeter per Second), 0.000247105, (Acre per Second), 9)
 
-        assertScientificConversion(1, (SquareMeter per Second), 1e+9, (SquareMeter per Nanosecond))
-        assertScientificConversion(1, (SquareMeter per Second), 1000000.0, (SquareMeter per Microsecond))
-        assertScientificConversion(1, (SquareMeter per Second), 1000.0, (SquareMeter per Millisecond))
-        assertScientificConversion(1, (SquareMeter per Second), 100.0, (SquareMeter per Centisecond))
-        assertScientificConversion(1, (SquareMeter per Second), 10, (SquareMeter per Decisecond))
-        assertScientificConversion(1, (SquareMeter per Second), 0.017, (SquareMeter per Minute), 3)
-        assertScientificConversion(1, (SquareMeter per Second), 0.00028, (SquareMeter per Hour), 5)
+        assertScientificConversion(1, (SquareMeter per Second), 1e-9, (SquareMeter per Nanosecond))
+        assertScientificConversion(1, (SquareMeter per Second), 1e-6, (SquareMeter per Microsecond))
+        assertScientificConversion(1, (SquareMeter per Second), 0.001, (SquareMeter per Millisecond))
+        assertScientificConversion(1, (SquareMeter per Second), 0.01, (SquareMeter per Centisecond))
+        assertScientificConversion(1, (SquareMeter per Second), 0.1, (SquareMeter per Decisecond))
+        assertScientificConversion(1, (SquareMeter per Second), 60, (SquareMeter per Minute), 3)
+        assertScientificConversion(1, (SquareMeter per Second), 3600.0, (SquareMeter per Hour), 5)
     }
 
     @Test

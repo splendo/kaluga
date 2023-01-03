@@ -21,22 +21,8 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
 import com.splendo.kaluga.scientific.unit.Area
-import com.splendo.kaluga.scientific.unit.ImperialArea
-import com.splendo.kaluga.scientific.unit.ImperialKinematicViscosity
 import com.splendo.kaluga.scientific.unit.KinematicViscosity
-import com.splendo.kaluga.scientific.unit.MetricArea
-import com.splendo.kaluga.scientific.unit.MetricKinematicViscosity
 import kotlin.jvm.JvmName
-
-@JvmName("metricAreaDivMetricKinematicViscosity")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>
-) = (kinematicViscosity.unit.time).time(this, kinematicViscosity)
-
-@JvmName("imperialAreaDivKinematicViscosity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
-) = (kinematicViscosity.unit.time).time(this, kinematicViscosity)
 
 @JvmName("areaDivKinematicViscosity")
 infix operator fun <AreaUnit : Area, KinematicViscosityUnit : KinematicViscosity> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
