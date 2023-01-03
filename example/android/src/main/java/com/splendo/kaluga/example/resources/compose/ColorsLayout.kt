@@ -48,7 +48,7 @@ import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import com.splendo.kaluga.resources.compose.backgroundStyle
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -141,7 +141,7 @@ fun ColorsLayout() {
 }
 
 @Composable
-fun ListOfColors(list: List<BackgroundStyle>) {
+fun ListOfColors(list: List<KalugaBackgroundStyle>) {
     Row(
         Modifier
             .fillMaxWidth()

@@ -75,7 +75,7 @@ class BackgroundAdapter : RecyclerView.Adapter<BackgroundAdapter.BackgroundViewH
     companion object {
         @BindingAdapter("backgroundStyles")
         @JvmStatic
-        fun bindBackgroundStyles(view: RecyclerView, backgroundStyles: List<BackgroundStyle>?) {
+        fun bindBackgroundStyles(view: RecyclerView, backgroundStyles: List<KalugaBackgroundStyle>?) {
             val adapter = (view.adapter as? BackgroundAdapter) ?: return
             adapter.backgrounds = backgroundStyles.orEmpty()
         }
@@ -85,7 +85,7 @@ class BackgroundAdapter : RecyclerView.Adapter<BackgroundAdapter.BackgroundViewH
         val view = binding.root
     }
 
-    var backgrounds: List<BackgroundStyle> = emptyList()
+    var backgrounds: List<KalugaBackgroundStyle> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
