@@ -21,15 +21,6 @@ import KalugaExampleShared
 
 class AlertsViewController: UIViewController {
 
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "AlertsViewController"
-    }
-
-    static func instantiate() -> AlertsViewController {
-        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! AlertsViewController
-    }
-
     @IBOutlet var showAlertButton: UIButton!
     @IBOutlet var showAndDismissButton: UIButton!
     @IBOutlet var showAlertWithInputButton: UIButton!
@@ -47,7 +38,7 @@ class AlertsViewController: UIViewController {
 
         title = "feature_alerts".localized()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
         ButtonStyleKt.bindButton(showAlertButton, button: viewModel.showAlertButton)
         ButtonStyleKt.bindButton(showAndDismissButton, button: viewModel.showAndDismissAfter3SecondsButton)
         ButtonStyleKt.bindButton(showAlertWithInputButton, button: viewModel.showAlertWithInputButton)

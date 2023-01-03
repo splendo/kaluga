@@ -17,26 +17,17 @@
 import UIKit
 import KalugaExampleShared
 
-class ResourcesListViewController : UITableViewController {
-
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "ResourcesList"
-    }
-
-    static func instantiate() -> ResourcesListViewController {
-        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ResourcesListViewController
-    }
+class ResourcesListViewController: UITableViewController {
 
     private lazy var navigator: ViewControllerNavigator<ResourcesListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
         NavigationSpec.Segue(identifier: action.segueKey)
     }
     
-    private lazy var viewModel: ResourcesListViewModel = ResourcesListViewModel(navigator: navigator)
+    private lazy var viewModel = ResourcesListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     private var resources = [String]()
-    private var onSelected: ((Int) -> Void)? = nil
+    private var onSelected: ((Int) -> Void)?
 
     deinit {
         lifecycleManager.unbind()
@@ -52,8 +43,12 @@ class ResourcesListViewController : UITableViewController {
             return [
                 viewModel.resources.observeInitialized { next in
                     let resources = next ?? []
-                    self?.resources = resources.map { ($0 as! Resource).title }
-                    self?.onSelected = { (index: Int) in viewModel.onResourceSelected(resource: resources[index] as! Resource) }
+                    self?.resources = resources.map { ($0 as? Resource)?.title ?? "" }
+                    self?.onSelected = { (index: Int) in
+                        if let resource = resources[index] as? Resource {
+                            viewModel.onResourceSelected(resource: resource)
+                        }
+                    }
                     self?.tableView.reloadData()
                 }
             ]
@@ -69,37 +64,33 @@ class ResourcesListViewController : UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ResourcesListCell.Const.identifier, for: indexPath) as! ResourcesListCell
-        cell.label.text = resources[indexPath.row]
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: ResourcesListCell.Const.identifier, for: indexPath) { (cell: ResourcesListCell) in
+            cell.label.text = resources[indexPath.row]
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(indexPath.row)
+        _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
 }
 
-class ResourcesListCell : UITableViewCell {
+class ResourcesListCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "ResourcesListCell"
     }
     
     @IBOutlet weak var label: UILabel!
-    
 }
 
 private extension ResourcesListNavigationAction {
     var segueKey: String {
-        get {
-            switch self {
-            case is ResourcesListNavigationAction.Button: return "showButton"
-            case is ResourcesListNavigationAction.Color: return "showColor"
-            case is ResourcesListNavigationAction.Label: return "showLabel"
-            default: return ""
-            }
+        switch self {
+        case is ResourcesListNavigationAction.Button: return "showButton"
+        case is ResourcesListNavigationAction.Color: return "showColor"
+        case is ResourcesListNavigationAction.Label: return "showLabel"
+        default: return ""
         }
     }
 }

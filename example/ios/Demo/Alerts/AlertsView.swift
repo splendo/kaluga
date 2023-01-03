@@ -44,8 +44,9 @@ struct AlertsView: View {
                 )
                 Spacer()
             }
-        }.padding(10.0)
-            .navigationTitle(Text("feature_alerts".localized()))
+        }
+        .padding(10.0)
+        .navigationTitle(Text("feature_alerts".localized()))
     }
 }
 

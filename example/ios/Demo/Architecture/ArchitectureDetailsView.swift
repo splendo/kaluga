@@ -22,7 +22,6 @@ struct ArchitectureDetailsView: View, Equatable {
         lhs.inputDetails == rhs.inputDetails
     }
 
-
     let inputDetails: InputDetails
     private let lifecycleViewModel: LifecycleViewModel<ArchitectureDetailsViewModel>
     let router: Router
@@ -60,12 +59,16 @@ struct ArchitectureDetailsView: View, Equatable {
                 }
             }
             .padding(10.0)
-            .navigationBarItems(leading:
-                                    Button(action: { viewModel.onBackPressed() }) {
-                                            Image(systemName: "chevron.left")
-                                                .scaleEffect(0.83)
-                                                .font(Font.title.weight(.medium))
-                                        })
+            .navigationBarItems(
+                leading: Button(
+                    action: { viewModel.onBackPressed() },
+                    label: {
+                        Image(systemName: "chevron.left")
+                            .scaleEffect(0.83)
+                            .font(Font.title.weight(.medium))
+                    }
+                )
+            )
             .navigationBarBackButtonHidden(true)
         }
     }
@@ -81,8 +84,6 @@ extension ArchitectureDetailsView {
         } onClose: { [weak self] in
             self?.previousRouter?.close()
         }
-
-
         init(onFinish: @escaping (InputDetails) -> Void) {
             self.onFinish = onFinish
         }
@@ -91,8 +92,6 @@ extension ArchitectureDetailsView {
 
 struct ArchitectureDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        ArchitectureDetailsView(inputDetails: InputDetails(name: "Name", number: 42)) { _ in
-
-        }
+        ArchitectureDetailsView(inputDetails: InputDetails(name: "Name", number: 42)) { _ in }
     }
 }

@@ -20,24 +20,23 @@ import KalugaExampleShared
 
 class BottomSheetViewController: UIViewController, UISheetPresentationControllerDelegate {
 
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "BottomSheet"
-    }
-
     static func create() -> BottomSheetViewController {
-        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! BottomSheetViewController
-        let navigator = BottomSheetNavigatorKt.BottomSheetViewControllerNavigator(parent: vc, onClose: {
-            NavigationSpec.Dismiss(toDismiss: { viewController in
-                viewController.navigationController!
-            }, animated: true)
-        }, onSubPage: {
-            NavigationSpec.Push(animated: true) {
-                BottomSheetSubPageViewController.create()
+        let viewController = MainStoryboard.instantiateBottomSheetViewController()
+        let navigator = BottomSheetNavigatorKt.BottomSheetViewControllerNavigator(
+            parent: viewController,
+            onClose: {
+                NavigationSpec.Dismiss(toDismiss: { viewController in
+                    viewController.navigationController!
+                }, animated: true)
+            },
+            onSubPage: {
+                NavigationSpec.Push(animated: true) {
+                    BottomSheetSubPageViewController.create()
+                }
             }
-        })
-        vc.viewModel = BottomSheetViewModel(navigator: navigator)
-        return vc
+        )
+        viewController.viewModel = BottomSheetViewModel(navigator: navigator)
+        return viewController
     }
 
     var viewModel: BottomSheetViewModel!
@@ -58,7 +57,7 @@ class BottomSheetViewController: UIViewController, UISheetPresentationController
         self.navigationItem.leftBarButtonItem = newBackButton
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) {
-            return []
+            []
         }
 
         label.text = viewModel.text
@@ -68,5 +67,4 @@ class BottomSheetViewController: UIViewController, UISheetPresentationController
     @objc func didDismiss() {
         viewModel.onClosePressed()
     }
-
 }

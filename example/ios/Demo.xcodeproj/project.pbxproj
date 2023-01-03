@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,6 +32,13 @@
 		209471E824C07F19001426CD /* BluetoothCharacteristicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */; };
 		209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */; };
 		20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */; };
+		20BB9E6C296323260096E836 /* BluetoothServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E6B296323260096E836 /* BluetoothServiceView.swift */; };
+		20BB9E6E296323B80096E836 /* BluetoothCharacteristicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E6D296323B80096E836 /* BluetoothCharacteristicView.swift */; };
+		20BB9E70296323FD0096E836 /* BluetoothDescriptorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E6F296323FD0096E836 /* BluetoothDescriptorView.swift */; };
+		20BB9E722963281D0096E836 /* MainStoryboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E712963281D0096E836 /* MainStoryboard.swift */; };
+		20BB9E74296331290096E836 /* UICollectionView+Typed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E73296331290096E836 /* UICollectionView+Typed.swift */; };
+		20BB9E76296333BE0096E836 /* UITableView+Typed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E75296333BE0096E836 /* UITableView+Typed.swift */; };
+		20BB9E7729642FEB0096E836 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* PermissionViewController.swift */; };
 		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
 		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
 		20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */; };
@@ -74,7 +81,6 @@
 		8679BDAA7F79F92DAC24AF23 /* ListObservable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31718DE342D28B4942D37524 /* ListObservable.generated.swift */; };
 		93EC5B31E0ADDED3225B15C9 /* Color+Color.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F49DA13243DC3767266475 /* Color+Color.generated.swift */; };
 		9481F22DC3CFE170CE894584 /* KeyboardManager.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */; };
-		978348A7235DF586005B140B /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* PermissionViewController.swift */; };
 		C0C827F580A4F1950E9B10EE /* Shape+Helpers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2BAEDD60E67CE8F9277AC6 /* Shape+Helpers.generated.swift */; };
 		C77C23B538A4DFB02C0E0773 /* LazyView.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095989173871C8CDA70C49E1 /* LazyView.generated.swift */; };
 		C9555693B015ADE12795997D /* NavigationBarColor.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9189D92DAF37F9815ECFDC /* NavigationBarColor.generated.swift */; };
@@ -139,6 +145,12 @@
 		209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothCharacteristicCell.xib; sourceTree = "<group>"; };
 		209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothDescriptorCell.xib; sourceTree = "<group>"; };
 		20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerView.swift; sourceTree = "<group>"; };
+		20BB9E6B296323260096E836 /* BluetoothServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothServiceView.swift; sourceTree = "<group>"; };
+		20BB9E6D296323B80096E836 /* BluetoothCharacteristicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothCharacteristicView.swift; sourceTree = "<group>"; };
+		20BB9E6F296323FD0096E836 /* BluetoothDescriptorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDescriptorView.swift; sourceTree = "<group>"; };
+		20BB9E712963281D0096E836 /* MainStoryboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoryboard.swift; sourceTree = "<group>"; };
+		20BB9E73296331290096E836 /* UICollectionView+Typed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Typed.swift"; sourceTree = "<group>"; };
+		20BB9E75296333BE0096E836 /* UITableView+Typed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Typed.swift"; sourceTree = "<group>"; };
 		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
 		20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesListViewController.swift; sourceTree = "<group>"; };
@@ -154,7 +166,7 @@
 		20FFB48D293F818B005CF1C8 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		20FFB48F293FA7EB005CF1C8 /* BottomSheetSubPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSubPageView.swift; sourceTree = "<group>"; };
 		27D181CE83615D345BB56946 /* HasDefaultValue.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = HasDefaultValue.generated.swift; sourceTree = "<group>"; };
-		2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; lastKnownFileType = sourcecode.swift; name = KeyboardManager.generated.swift; path = KeyboardManager.generated.swift; sourceTree = "<group>"; };
+		2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = KeyboardManager.generated.swift; sourceTree = "<group>"; };
 		31718DE342D28B4942D37524 /* ListObservable.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListObservable.generated.swift; sourceTree = "<group>"; };
 		382B35FA85A28992FE37B803 /* KalugaStyledString+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaStyledString+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		3EC460D671184DBFD03C42FB /* ListSubject.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListSubject.generated.swift; sourceTree = "<group>"; };
@@ -264,6 +276,9 @@
 				209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */,
 				209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */,
 				209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */,
+				20BB9E6B296323260096E836 /* BluetoothServiceView.swift */,
+				20BB9E6D296323B80096E836 /* BluetoothCharacteristicView.swift */,
+				20BB9E6F296323FD0096E836 /* BluetoothDescriptorView.swift */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -273,6 +288,9 @@
 			children = (
 				20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */,
 				201EA21E2938EB5200C562EC /* String+Localized.swift */,
+				20BB9E712963281D0096E836 /* MainStoryboard.swift */,
+				20BB9E73296331290096E836 /* UICollectionView+Typed.swift */,
+				20BB9E75296333BE0096E836 /* UITableView+Typed.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -528,6 +546,7 @@
 			buildConfigurationList = 74C754F7F747073B076C3A91 /* Build configuration list for PBXNativeTarget "Demo" */;
 			buildPhases = (
 				95D0860F27D2540B00838E57 /* Compile Kotlin/Native */,
+				20BB9E6A29631B600096E836 /* SwiftLint */,
 				744156D82DB12C1F9CC3C68F /* Sources */,
 				74B635A880CB81844D31A213 /* Frameworks */,
 				746C535FD7586B544C684D34 /* Resources */,
@@ -632,8 +651,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		20BB9E6A29631B600096E836 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nexport PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 		95D0860F27D2540B00838E57 /* Compile Kotlin/Native */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -657,12 +696,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20BB9E7729642FEB0096E836 /* PermissionViewController.swift in Sources */,
 				205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */,
 				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
-				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
+				20BB9E70296323FD0096E836 /* BluetoothDescriptorView.swift in Sources */,
 				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
 				2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */,
 				201EA2232938F11700C562EC /* ResourcesListView.swift in Sources */,
@@ -672,15 +712,17 @@
 				649979E725CCD37200348419 /* NetworkViewController.swift in Sources */,
 				20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */,
 				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
+				20BB9E6C296323260096E836 /* BluetoothServiceView.swift in Sources */,
 				20C7D1D8246A93A600C9A63F /* ArchitectureViewController.swift in Sources */,
 				20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */,
+				20BB9E76296333BE0096E836 /* UITableView+Typed.swift in Sources */,
 				20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */,
 				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
 				201EA2212938ECE700C562EC /* LoadingView.swift in Sources */,
 				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
 				201EA21F2938EB5200C562EC /* String+Localized.swift in Sources */,
+				20BB9E6E296323B80096E836 /* BluetoothCharacteristicView.swift in Sources */,
 				649979D325CC638C00348419 /* SystemViewController.swift in Sources */,
-				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
 				20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
@@ -712,6 +754,7 @@
 				62D65713EC7DD3C712D864BB /* ListSubject.generated.swift in Sources */,
 				008D2380957750839A7B501C /* Navigation.generated.swift in Sources */,
 				C9555693B015ADE12795997D /* NavigationBarColor.generated.swift in Sources */,
+				20BB9E74296331290096E836 /* UICollectionView+Typed.swift in Sources */,
 				D17DC9D74F0BD77D12813366 /* Observable.generated.swift in Sources */,
 				6BBAC6F7C1C74608F52D7FF7 /* PlatformMappers.generated.swift in Sources */,
 				37B9F4481D30F2FC895AB554 /* PlatformValueMapper.generated.swift in Sources */,
@@ -719,6 +762,7 @@
 				847C2A647F23AF46CED079CF /* RoutingState.generated.swift in Sources */,
 				C0C827F580A4F1950E9B10EE /* Shape+Helpers.generated.swift in Sources */,
 				300D5D65F49D6711AC8FF5DA /* Subject.generated.swift in Sources */,
+				20BB9E722963281D0096E836 /* MainStoryboard.swift in Sources */,
 				20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */,
 				20FFB490293FA7EB005CF1C8 /* BottomSheetSubPageView.swift in Sources */,
 				2EF7D8289105AC623E600829 /* UninitializedObservable.generated.swift in Sources */,

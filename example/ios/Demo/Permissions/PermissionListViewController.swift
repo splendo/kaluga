@@ -18,7 +18,7 @@
 import UIKit
 import KalugaExampleShared
 
-class PermissionListViewController : UITableViewController {
+class PermissionListViewController: UITableViewController {
 
     private lazy var navigator: ViewControllerNavigator<PermissionsListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
         NavigationSpec.Push(animated: true) {
@@ -29,11 +29,11 @@ class PermissionListViewController : UITableViewController {
             return PermissionViewController.create(permission: permission)
         }
     }
-    private lazy var viewModel: PermissionsListViewModel = PermissionsListViewModel(navigator: navigator)
+    private lazy var viewModel = PermissionsListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     private var permissions = [PermissionView]()
-    private var onSelected: ((Int) -> Void)? = nil
+    private var onSelected: ((Int) -> Void)?
 
     deinit {
         lifecycleManager.unbind()
@@ -66,24 +66,22 @@ class PermissionListViewController : UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: PermissionsListCell.Const.identifier, for: indexPath) as! PermissionsListCell
-        cell.label.text = permissions[indexPath.row].title
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: PermissionsListCell.Const.identifier, for: indexPath) { (cell: PermissionsListCell) in
+            cell.label.text = permissions[indexPath.row].title
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(indexPath.row)
+        _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
 }
 
-class PermissionsListCell : UITableViewCell {
+class PermissionsListCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "PermissionsListCell"
     }
     
     @IBOutlet weak var label: UILabel!
-    
 }

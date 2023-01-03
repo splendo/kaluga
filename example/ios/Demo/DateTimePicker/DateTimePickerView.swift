@@ -44,8 +44,9 @@ struct DateTimePickerView: View {
                 Text(dateLabel.value)
                 Spacer()
             }
-        }.padding(10.0)
-            .navigationTitle(Text("feature_date_time_picker".localized()))
+        }
+        .padding(10.0)
+        .navigationTitle(Text("feature_date_time_picker".localized()))
     }
 }
 

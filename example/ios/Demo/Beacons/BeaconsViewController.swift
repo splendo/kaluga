@@ -75,9 +75,9 @@ class BeaconsViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let beaconCell = collectionView.dequeueReusableCell(withReuseIdentifier: BeaconsViewCell.identifier, for: indexPath) as! BeaconsViewCell
-        beaconCell.configure(with: beacons[indexPath.row])
-        return beaconCell
+        return collectionView.dequeueTypedReusableCell(withReuseIdentifier: BeaconsViewCell.identifier, for: indexPath) { (beaconCell: BeaconsViewCell) in
+            beaconCell.configure(with: beacons[indexPath.row])
+        }
     }
 
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

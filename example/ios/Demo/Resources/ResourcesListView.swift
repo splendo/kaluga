@@ -60,7 +60,7 @@ struct ResourcesListView: View {
 }
 
 extension ResourcesListView {
-    enum Route : Equatable {
+    enum Route: Equatable {
         case buttons
         case labels
         case colors
@@ -68,7 +68,7 @@ extension ResourcesListView {
 
     class Router {
 
-        var nextRouter: ObjectRoutingState<Route>? = nil
+        var nextRouter: ObjectRoutingState<Route>?
         lazy var defaultNavigator: DefaultNavigator<ResourcesListNavigationAction> = DefaultNavigator { [weak self] action in
             self?.nextRouter?.show(action.route)
         }

@@ -19,7 +19,7 @@ import KalugaExampleShared
 
 struct KeyboardManagerView: View {
 
-    enum Field : String, Hashable {
+    enum Field: String, Hashable {
         case textField
     }
 
@@ -31,7 +31,7 @@ struct KeyboardManagerView: View {
     init() {
         let keyboardManagerBuilder = SwiftUIKeyboardManagerBuilder<Field>()
         self.keyboardManagerBuilder = keyboardManagerBuilder
-        let viewModel = KeyboardViewModel(keyboardManagerBuilder: keyboardManagerBuilder, editFieldFocusHandler: SwiftUIFocusHandler(value: Field.textField))
+        let viewModel = KeyboardViewModel(keyboardManagerBuilder: keyboardManagerBuilder, editFieldFocusHandler: swiftUIFocusHandler(value: Field.textField))
         lifecycleViewModel = LifecycleViewModel(viewModel)
     }
 
@@ -48,8 +48,15 @@ struct KeyboardManagerView: View {
                     buttonFrame: .frame(maxWidth: .infinity)
                 )
                 Spacer()
-            }.padding(10.0)
-                .navigationTitle(Text("feature_keyboard".localized())).bindKeyboardManager(keyboardManagerBuilder: keyboardManagerBuilder, focusState: _focusedField.projectedValue)
+            }
+            .padding(10.0)
+            .navigationTitle(
+                Text("feature_keyboard".localized())
+            )
+            .bindKeyboardManager(
+                keyboardManagerBuilder: keyboardManagerBuilder,
+                focusState: _focusedField.projectedValue
+            )
         }
     }
 }
@@ -59,7 +66,3 @@ struct KeyboardManagerView_Previews: PreviewProvider {
         KeyboardManagerView()
     }
 }
-
-
-
-

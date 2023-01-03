@@ -20,25 +20,24 @@ import KalugaExampleShared
 
 class ArchitectureDetailsViewController: UIViewController {
     
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "ArchitectureDetails"
-    }
-    
     static func create(inputDetails: InputDetails, onDismiss: @escaping (InputDetails) -> Void) -> ArchitectureDetailsViewController {
-        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ArchitectureDetailsViewController
+        let viewController = MainStoryboard.instantiateArchitectureDetailsViewController()
         if #available(iOS 13.0, *) {
-            vc.isModalInPresentation = true
+            viewController.isModalInPresentation = true
         }
-        let navigator = ArchitectureDetailsNavigatorKt.ArchitectureDetailsViewControllerNavigator(parent: vc) { details in
-            NavigationSpec.Pop(to: nil, animated: true) {
-                onDismiss(details)
+        let navigator = ArchitectureDetailsNavigatorKt.ArchitectureDetailsViewControllerNavigator(
+            parent: viewController,
+            onFinishWithDetails: { details in
+                NavigationSpec.Pop(to: nil, animated: true) {
+                    onDismiss(details)
+                }
+            },
+            onClose: {
+                NavigationSpec.Pop(to: nil, animated: true)
             }
-        } onClose: {
-            NavigationSpec.Pop(to: nil, animated: true)
-        }
-        vc.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
-        return vc
+        )
+        viewController.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
+        return viewController
     }
 
     var viewModel: ArchitectureDetailsViewModel!
@@ -83,5 +82,4 @@ class ArchitectureDetailsViewController: UIViewController {
     @objc func didDismiss() {
         viewModel.onBackPressed()
     }
-    
 }

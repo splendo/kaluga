@@ -19,16 +19,16 @@ import UIKit
 import KalugaExampleShared
 import PartialSheet
 
-class FeaturesListViewController : UITableViewController {
+class FeaturesListViewController: UITableViewController {
 
     private lazy var navigator: ViewControllerNavigator<FeatureListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
         action.spec
     }
-    private lazy var viewModel: FeatureListViewModel = FeatureListViewModel(navigator: navigator)
+    private lazy var viewModel = FeatureListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     private var features = [String]()
-    private var onSelected: ((Int) -> Void)? = nil
+    private var onSelected: ((Int) -> Void)?
 
     deinit {
         lifecycleManager.unbind()
@@ -41,9 +41,11 @@ class FeaturesListViewController : UITableViewController {
             guard let viewModel = self?.viewModel else { return [] }
             return [viewModel.feature.observeInitialized { next in
                 let features = next ?? []
-                self?.features = features.map { ($0 as! Feature).title }
+                self?.features = features.map { ($0 as? Feature)?.title ?? "" }
                 self?.onSelected = { (index: Int) in
-                    viewModel.onFeaturePressed(feature: features[index] as! Feature)
+                    if let feature = features[index] as? Feature {
+                        viewModel.onFeaturePressed(feature: feature)
+                    }
                 }
                 self?.tableView.reloadData()
             }]
@@ -59,77 +61,73 @@ class FeaturesListViewController : UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: FeaturesListCell.Const.identifier, for: indexPath) as! FeaturesListCell
-        cell.label.text = features[indexPath.row]
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: FeaturesListCell.Const.identifier, for: indexPath) { (cell: FeaturesListCell) in
+            cell.label.text = features[indexPath.row]
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(indexPath.row)
+        _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
 }
 
-class FeaturesListCell : UITableViewCell {
+class FeaturesListCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "FeaturesListCell"
     }
     
     @IBOutlet weak var label: UILabel!
-    
 }
 
 private extension FeatureListNavigationAction {
     var spec: NavigationSpec {
-        get {
-            switch self {
-            case is FeatureListNavigationAction.Alerts: return NavigationSpec.Push(animated: true) {
-                SwiftUIOrUIKitSelectionViewController.create(
-                    uiKitViewController: { AlertsViewController.instantiate() },
-                    swiftUIView: { AlertsView() }
-                )
-            }
-            case is FeatureListNavigationAction.Architecture: return NavigationSpec.Push(animated: true) {
-                SwiftUIOrUIKitSelectionViewController.create(
-                    uiKitViewController: { ArchitectureViewController.instantiate() },
-                    swiftUIView: { ArchitectureView().attachPartialSheetToRoot() }
-                )
-            }
-            case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
-            case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
-            case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Push(animated: true) {
-                SwiftUIOrUIKitSelectionViewController.create(
-                    uiKitViewController: { DateTimePickerViewController.instantiate() },
-                    swiftUIView: { DateTimePickerView() }
-                )
-            }
-            case is FeatureListNavigationAction.Keyboard: return NavigationSpec.Push(animated: true) {
-                SwiftUIOrUIKitSelectionViewController.create(
-                    uiKitViewController: { KeyboardManagerViewController.instantiate() },
-                    swiftUIView: { KeyboardManagerView() }
-                )
-            }
-            case is FeatureListNavigationAction.Links: return NavigationSpec.Segue(identifier: "showLinks")
-            case is FeatureListNavigationAction.LoadingIndicator: return NavigationSpec.Push(animated: true) {
-                SwiftUIOrUIKitSelectionViewController.create(
-                    uiKitViewController: { LoadingViewController.instantiate() },
-                    swiftUIView: { LoadingView() }
-                )
-            }
-            case is FeatureListNavigationAction.Location: return NavigationSpec.Segue(identifier: "showLocation")
-            case is FeatureListNavigationAction.Permissions: return NavigationSpec.Segue(identifier: "showPermissions")
-            case is FeatureListNavigationAction.PlatformSpecific: return NavigationSpec.Segue(identifier: "showPlatformSpecific")
-            case is FeatureListNavigationAction.Resources: return NavigationSpec.Push(animated: true) {
-                SwiftUIOrUIKitSelectionViewController.create(
-                    uiKitViewController: { ResourcesListViewController.instantiate() },
-                    swiftUIView: { ResourcesListView() }
-                )
-            }
-            case is FeatureListNavigationAction.System: return NavigationSpec.Segue(identifier: "showSystem")
-            default: fatalError("Unknown action")
-            }
+        switch self {
+        case is FeatureListNavigationAction.Alerts: return NavigationSpec.Push(animated: true) {
+            SwiftUIOrUIKitSelectionViewController.create(
+                uiKitViewController: { MainStoryboard.instantiateAlertsViewController() },
+                swiftUIView: { AlertsView() }
+            )
+        }
+        case is FeatureListNavigationAction.Architecture: return NavigationSpec.Push(animated: true) {
+            SwiftUIOrUIKitSelectionViewController.create(
+                uiKitViewController: { MainStoryboard.instantiateArchitectureViewController() },
+                swiftUIView: { ArchitectureView().attachPartialSheetToRoot() }
+            )
+        }
+        case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
+        case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
+        case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Push(animated: true) {
+            SwiftUIOrUIKitSelectionViewController.create(
+                uiKitViewController: { MainStoryboard.instantiateDateTimePickerViewController() },
+                swiftUIView: { DateTimePickerView() }
+            )
+        }
+        case is FeatureListNavigationAction.Keyboard: return NavigationSpec.Push(animated: true) {
+            SwiftUIOrUIKitSelectionViewController.create(
+                uiKitViewController: { MainStoryboard.instantiateKeyboardManagerViewController() },
+                swiftUIView: { KeyboardManagerView() }
+            )
+        }
+        case is FeatureListNavigationAction.Links: return NavigationSpec.Segue(identifier: "showLinks")
+        case is FeatureListNavigationAction.LoadingIndicator: return NavigationSpec.Push(animated: true) {
+            SwiftUIOrUIKitSelectionViewController.create(
+                uiKitViewController: { MainStoryboard.instantiateLoadingViewController() },
+                swiftUIView: { LoadingView() }
+            )
+        }
+        case is FeatureListNavigationAction.Location: return NavigationSpec.Segue(identifier: "showLocation")
+        case is FeatureListNavigationAction.Permissions: return NavigationSpec.Segue(identifier: "showPermissions")
+        case is FeatureListNavigationAction.PlatformSpecific: return NavigationSpec.Segue(identifier: "showPlatformSpecific")
+        case is FeatureListNavigationAction.Resources: return NavigationSpec.Push(animated: true) {
+            SwiftUIOrUIKitSelectionViewController.create(
+                uiKitViewController: { MainStoryboard.instantiateResourcesListViewController() },
+                swiftUIView: { ResourcesListView() }
+            )
+        }
+        case is FeatureListNavigationAction.System: return NavigationSpec.Segue(identifier: "showSystem")
+        default: fatalError("Unknown action")
         }
     }
 }

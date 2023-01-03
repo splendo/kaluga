@@ -20,15 +20,6 @@ import KalugaExampleShared
 
 class LoadingViewController: UIViewController {
 
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "LoadingView"
-    }
-
-    static func instantiate() -> LoadingViewController {
-        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! LoadingViewController
-    }
-
     @IBOutlet private var systemButton: UIButton!
     @IBOutlet private var customButton: UIButton!
 
@@ -44,7 +35,7 @@ class LoadingViewController: UIViewController {
 
         title = "feature_hud".localized()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
         ButtonStyleKt.bindButton(systemButton, button: viewModel.showSystemButton)
         ButtonStyleKt.bindButton(customButton, button: viewModel.showCustomButton)
     }

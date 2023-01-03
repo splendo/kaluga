@@ -20,22 +20,21 @@ import KalugaExampleShared
 
 class BottomSheetSubPageViewController: UIViewController, UISheetPresentationControllerDelegate {
 
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "BottomSheetSubPage"
-    }
-
     static func create() -> BottomSheetSubPageViewController {
-        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! BottomSheetSubPageViewController
-        let navigator = BottomSheetSubPageNavigatorKt.BottomSheetSubPageViewControllerNavigator(parent: vc, onClose: {
-            NavigationSpec.Dismiss(toDismiss: { viewController in
-                viewController.navigationController!
-            }, animated: true)
-        }, onBack: {
-            NavigationSpec.Pop(to: nil, animated: true)
-        })
-        vc.viewModel = BottomSheetSubPageViewModel(navigator: navigator)
-        return vc
+        let viewController = MainStoryboard.instantiateBottomSheetSubPageViewController()
+        let navigator = BottomSheetSubPageNavigatorKt.BottomSheetSubPageViewControllerNavigator(
+            parent: viewController,
+            onClose: {
+                NavigationSpec.Dismiss(toDismiss: { viewController in
+                    viewController.navigationController!
+                }, animated: true)
+            },
+            onBack: {
+                NavigationSpec.Pop(to: nil, animated: true)
+            }
+        )
+        viewController.viewModel = BottomSheetSubPageViewModel(navigator: navigator)
+        return viewController
     }
 
     var viewModel: BottomSheetSubPageViewModel!
@@ -57,7 +56,7 @@ class BottomSheetSubPageViewController: UIViewController, UISheetPresentationCon
         self.navigationItem.rightBarButtonItem = closeButton
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) {
-            return []
+            []
         }
 
         label.text = viewModel.text
@@ -70,5 +69,4 @@ class BottomSheetSubPageViewController: UIViewController, UISheetPresentationCon
     @objc func didClose() {
         viewModel.onClosePressed()
     }
-
 }

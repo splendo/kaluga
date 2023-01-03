@@ -18,25 +18,19 @@
 import UIKit
 import KalugaExampleShared
 
-class KeyboardManagerViewController : UIViewController {
-
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "KeyboardManagerViewController"
-    }
-
-    static func instantiate() -> KeyboardManagerViewController {
-        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! KeyboardManagerViewController
-    }
+class KeyboardManagerViewController: UIViewController {
     
     @IBOutlet private var editField: UITextField!
     @IBOutlet private var showButton: UIButton!
     @IBOutlet private var hideButton: UIButton!
     
     private lazy var editFieldFocusHandler = {
-        return UIKitFocusHandler(view: self.editField)
+        UIKitFocusHandler(view: self.editField)
     }()
-    lazy var viewModel = KeyboardViewModel(keyboardManagerBuilder: UIKitKeyboardManager.Builder(application: UIApplication.shared), editFieldFocusHandler: editFieldFocusHandler)
+    lazy var viewModel = KeyboardViewModel(
+        keyboardManagerBuilder: UIKitKeyboardManager.Builder(application: UIApplication.shared),
+        editFieldFocusHandler: editFieldFocusHandler
+    )
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -48,7 +42,7 @@ class KeyboardManagerViewController : UIViewController {
 
         title = "feature_keyboard".localized()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
         ButtonStyleKt.bindButton(showButton, button: viewModel.showButton)
         ButtonStyleKt.bindButton(hideButton, button: viewModel.hideButton)
     }

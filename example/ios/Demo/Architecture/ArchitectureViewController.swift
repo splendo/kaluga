@@ -18,16 +18,7 @@
 import UIKit
 import KalugaExampleShared
 
-class ArchitectureViewController: UIViewController  {
-
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "Architecture"
-    }
-
-    static func instantiate() -> ArchitectureViewController {
-        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ArchitectureViewController
-    }
+class ArchitectureViewController: UIViewController {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nameInput: UITextField!
@@ -57,8 +48,8 @@ class ArchitectureViewController: UIViewController  {
                 presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue),
                 transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)
             ) {
-                let vc = BottomSheetViewController.create()
-                let nav = UINavigationController(rootViewController: vc)
+                let viewController = BottomSheetViewController.create()
+                let nav = UINavigationController(rootViewController: viewController)
                 if let sheet = nav.sheetPresentationController {
                     sheet.detents = [.medium()]
                 }
@@ -110,10 +101,9 @@ class ArchitectureViewController: UIViewController  {
         viewModel.nameInput.post(newValue: NSString(string: inputDetails.name))
         viewModel.numberInput.post(newValue: NSString(string: "\(inputDetails.number)"))
     }
-
 }
 
-extension ArchitectureViewController : UITextFieldDelegate {
+extension ArchitectureViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         postInput(text: textField.text ?? "", fromTextField: textField)
@@ -126,10 +116,10 @@ extension ArchitectureViewController : UITextFieldDelegate {
     }
 
     private func postInput(text: String, fromTextField textField: UITextField) {
-        if (textField == nameInput) {
-            viewModel.nameInput.post(newValue: NSString(string: text))
-        } else if (textField == numberInput) {
-            viewModel.numberInput.post(newValue: NSString(string: text))
+        switch textField {
+        case nameInput: viewModel.nameInput.post(newValue: NSString(string: text))
+        case numberInput: viewModel.numberInput.post(newValue: NSString(string: text))
+        default: ()
         }
     }
 }

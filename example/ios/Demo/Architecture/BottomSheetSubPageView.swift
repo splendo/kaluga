@@ -19,7 +19,7 @@ import KalugaExampleShared
 
 struct BottomSheetSubPageView: View {
 
-    class RouteStack : ObservableObject {
+    class RouteStack: ObservableObject {
         let previousRoute: RoutingState
         let parentRoute: RoutingState
 
@@ -51,14 +51,18 @@ struct BottomSheetSubPageView: View {
             }.padding(10.0)
                 .navigationBarBackButtonHidden(true)
                 .navigationBarItems(
-                    leading: Button(action: { viewModel.onBackPressed() }) {
-                        Image(systemName: "chevron.left")
-                            .scaleEffect(0.83)
-                            .font(Font.title.weight(.medium))
-                    }, trailing: Button("X") {
-                            viewModel.onClosePressed()
+                    leading: Button(
+                        action: { viewModel.onBackPressed() },
+                        label: {
+                            Image(systemName: "chevron.left")
+                                .scaleEffect(0.83)
+                                .font(Font.title.weight(.medium))
                         }
-                    )
+                    ),
+                    trailing: Button("X") {
+                            viewModel.onClosePressed()
+                    }
+                )
         }
     }
 }

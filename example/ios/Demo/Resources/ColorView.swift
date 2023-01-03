@@ -56,7 +56,6 @@ struct ColorView: View, Equatable {
         darkenedBlended = ListObservable(viewModel.darkenBlended)
         lightenedSource = ListObservable(viewModel.lightenSource)
         darkenedSource = ListObservable(viewModel.darkenSource)
-
     }
 
     var body: some View {
@@ -113,7 +112,8 @@ struct ColorView: View, Equatable {
                         }
                     }
                 )
-            }.onDisappear {
+            }
+            .onDisappear {
                 disposeBag.dispose()
             }
         }

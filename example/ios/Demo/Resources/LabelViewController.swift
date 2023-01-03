@@ -17,9 +17,9 @@
 import UIKit
 import KalugaExampleShared
 
-class LabelViewController : UITableViewController {
+class LabelViewController: UITableViewController {
 
-    private var viewModel: LabelViewModel = LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider())
+    private var viewModel = LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider())
     private var lifecycleManager: LifecycleManager!
 
     private var labels = [KalugaLabel]()
@@ -54,18 +54,17 @@ class LabelViewController : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: LabelListCell.Const.identifier, for: indexPath) as! LabelListCell
-        TextStyleKt.bindLabel(cell.label, label: labels[indexPath.row])
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: LabelListCell.Const.identifier, for: indexPath) { (cell: LabelListCell) in
+            TextStyleKt.bindLabel(cell.label, label: labels[indexPath.row])
+        }
     }
 }
 
-class LabelListCell : UITableViewCell {
+class LabelListCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "LabelListCell"
     }
     
     @IBOutlet weak var label: UILabel!
-    
 }

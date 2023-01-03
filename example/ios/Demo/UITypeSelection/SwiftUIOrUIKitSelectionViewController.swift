@@ -18,17 +18,12 @@ import UIKit
 import SwiftUI
 import KalugaExampleShared
 
-class SwiftUIOrUIKitSelectionViewController : UITableViewController {
-
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "SwiftOrUIKit"
-    }
+class SwiftUIOrUIKitSelectionViewController: UITableViewController {
 
     static func create(uiKitViewController: @escaping () -> UIViewController, swiftUIView: @escaping () -> some View) -> SwiftUIOrUIKitSelectionViewController {
-        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! SwiftUIOrUIKitSelectionViewController
+        let viewController = MainStoryboard.instantiateSwiftUIOrUIKitSelectionViewController()
 
-        let navigator = ViewControllerNavigator<SwiftUIOrUIKitNavigationAction>(parentVC: vc) { action in
+        let navigator = ViewControllerNavigator<SwiftUIOrUIKitNavigationAction>(parentVC: viewController) { action in
             switch action {
             case is SwiftUIOrUIKitNavigationAction.SwiftUI: return NavigationSpec.Push(animated: true) {
                 UIHostingController(rootView: swiftUIView())
@@ -37,15 +32,15 @@ class SwiftUIOrUIKitSelectionViewController : UITableViewController {
             default: fatalError("Unknown navigation action \(action)")
             }
         }
-        vc.viewModel = SwiftUIOrUIKitSelectionViewModel(navigator: navigator)
-        return vc
+        viewController.viewModel = SwiftUIOrUIKitSelectionViewModel(navigator: navigator)
+        return viewController
     }
 
     var viewModel: SwiftUIOrUIKitSelectionViewModel!
     private var lifecycleManager: LifecycleManager!
 
     private var uiTypes = [String]()
-    private var onSelected: ((Int) -> Void)? = nil
+    private var onSelected: ((Int) -> Void)?
 
     deinit {
         lifecycleManager.unbind()
@@ -61,8 +56,12 @@ class SwiftUIOrUIKitSelectionViewController : UITableViewController {
             return [
                 viewModel.uiTypes.observeInitialized { next in
                     let uiTypes = next ?? []
-                    self?.uiTypes = uiTypes.map { ($0 as! UIType).title }
-                    self?.onSelected = { (index: Int) in viewModel.onUITypePressed(uiType: uiTypes[index] as! UIType) }
+                    self?.uiTypes = uiTypes.map { ($0 as? UIType)?.title ?? "" }
+                    self?.onSelected = { (index: Int) in
+                        if let uiType = uiTypes[index] as? UIType {
+                            viewModel.onUITypePressed(uiType: uiType)
+                        }
+                    }
                     self?.tableView.reloadData()
                 }
             ]
@@ -78,24 +77,22 @@ class SwiftUIOrUIKitSelectionViewController : UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: UITypesListCell.Const.identifier, for: indexPath) as! UITypesListCell
-        cell.label.text = uiTypes[indexPath.row]
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: UITypesListCell.Const.identifier, for: indexPath) { (cell: UITypesListCell) in
+            cell.label.text = uiTypes[indexPath.row]
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(indexPath.row)
+        _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
 }
 
-class UITypesListCell : UITableViewCell {
+class UITypesListCell: UITableViewCell {
 
-    struct Const {
+    enum Const {
         static let identifier = "UITypesListCell"
     }
 
     @IBOutlet weak var label: UILabel!
-
 }

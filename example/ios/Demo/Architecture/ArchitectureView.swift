@@ -81,18 +81,17 @@ struct ArchitectureView: View {
 }
 
 extension ArchitectureView {
-    enum ContentRoute : Equatable {
+    enum ContentRoute: Equatable {
         case details(input: InputDetails)
     }
 
     class Router {
 
-        var nextContentRoutingState: ObjectRoutingState<ContentRoute>? = nil
-        var bottomSheetRoutingState: RoutingState? = nil
+        var nextContentRoutingState: ObjectRoutingState<ContentRoute>?
+        var bottomSheetRoutingState: RoutingState?
         lazy var defaultNavigator = ArchitectureNavigatorKt.ArchitectureNavigator(
             onDetails: { [weak self] inputDetails in
                 self?.nextContentRoutingState?.show(ContentRoute.details(input: inputDetails))
-
             },
             onBottomSheet: { [weak self] in
                 self?.bottomSheetRoutingState?.show()

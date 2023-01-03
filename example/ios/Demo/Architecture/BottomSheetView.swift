@@ -55,7 +55,6 @@ struct BottomSheetView: View, Equatable {
                             viewModel.onClosePressed()
                         }
                     )
-
             }
         }.frame(height: 150.0) // bug in partial sheet
     }

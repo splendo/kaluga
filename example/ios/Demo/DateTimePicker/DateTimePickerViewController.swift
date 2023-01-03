@@ -18,17 +18,7 @@
 import UIKit
 import KalugaExampleShared
 
-class DateTimePickerViewController : UIViewController {
-
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "DateTimePicker"
-    }
-
-    static func instantiate() -> DateTimePickerViewController {
-        Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! DateTimePickerViewController
-    }
-
+class DateTimePickerViewController: UIViewController {
 
     @IBOutlet private var currentTimeLabel: UILabel!
     @IBOutlet private var timeLabel: UILabel!
@@ -52,7 +42,7 @@ class DateTimePickerViewController : UIViewController {
                 return []
             }
             return [
-                viewModel.dateLabel.observe { (time) in
+                viewModel.dateLabel.observe { time in
                     self?.timeLabel.text = time as? String
                 }
             ]

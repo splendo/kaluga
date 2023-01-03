@@ -35,15 +35,18 @@ class BeaconsViewCell: UICollectionViewCell {
     func startMonitoring() {
         viewModel?.namespace_.observe { [weak self] namespace in
             self?.namespaceLabel.text = namespace as String?
-        }.addTo(disposeBag: disposeBag)
+        }
+        .addTo(disposeBag: disposeBag)
 
         viewModel?.instance.observe { [weak self] instance in
             self?.instanceLabel.text = instance as String?
-        }.addTo(disposeBag: disposeBag)
+        }
+        .addTo(disposeBag: disposeBag)
 
         viewModel?.txPower.observe { [weak self] txPower in
             self?.txPowerLabel.text = txPower as String?
-        }.addTo(disposeBag: disposeBag)
+        }
+        .addTo(disposeBag: disposeBag)
     }
 
     func stopMonitoring() {

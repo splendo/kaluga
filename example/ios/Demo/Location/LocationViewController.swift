@@ -22,11 +22,11 @@ import KalugaExampleShared
 
 class LocationViewController: UIViewController {
 
-    struct Const {
+    enum Const {
         static let permission = LocationPermission(background: false, precise: true)
     }
     
-    //MARK: Properties
+    // MARK: Properties
     
     @IBOutlet weak var label: UILabel!
     
@@ -47,7 +47,7 @@ class LocationViewController: UIViewController {
                 return []
             }
             return [
-                viewModel.location.observe { (location) in
+                viewModel.location.observe { location in
                     self?.label.text = location as? String ?? ""
                 }
             ]

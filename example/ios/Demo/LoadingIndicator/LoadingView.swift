@@ -38,8 +38,9 @@ struct LoadingView: View {
                 )
                 Spacer()
             }
-        }.padding(10.0)
-            .navigationTitle(Text("feature_hud".localized()))
+        }
+        .padding(10.0)
+        .navigationTitle(Text("feature_hud".localized()))
     }
 }
 

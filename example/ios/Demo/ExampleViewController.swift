@@ -18,19 +18,13 @@
 import UIKit
 import KalugaExampleShared
 
-class ExampleViewController : UIViewController {
-    
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let featuresList = "FeaturesList"
-        static let infoView = "InfoViewController"
-    }
+class ExampleViewController: UIViewController {
     
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var bottomView: UIStackView!
     
-    lazy var featuresListController = Const.storyboard.instantiateViewController(withIdentifier: Const.featuresList) as! FeaturesListViewController
-    lazy var infoViewController = Const.storyboard.instantiateViewController(withIdentifier: Const.infoView) as! InfoViewController
+    lazy var featuresListController = MainStoryboard.instantiateFeaturesListViewController()
+    lazy var infoViewController = MainStoryboard.instantiateInfoViewController()
 
     private lazy var navigator: ViewControllerNavigator<ExampleTabNavigation> = ViewControllerNavigator(parentVC: self) { action in
         NavigationSpec.Nested(type: NavigationSpec.NestedTypeReplace(tag: 1), containerView: self.containerView) {
@@ -41,7 +35,7 @@ class ExampleViewController : UIViewController {
             }
         }
     }
-    lazy var viewModel: ExampleViewModel = ExampleViewModel(navigator: navigator)
+    lazy var viewModel = ExampleViewModel(navigator: navigator)
     var lifecycleManager: LifecycleManager!
     let selectedButtonDisposeBag = DisposeBag()
 
@@ -73,16 +67,15 @@ class ExampleViewController : UIViewController {
 
                         viewModel.tab.observeInitialized { selectedTab in
                             button.isSelected = selectedTab == tab
-                        }.addTo(disposeBag: disposeBag)
+                        }
+                        .addTo(disposeBag: disposeBag)
                         button.addAction {
                             viewModel.tab.post(newValue: tab)
                         }
                         bottomView.addArrangedSubview(button)
                     }
-
                 }
             ]
         }
     }
-    
 }
