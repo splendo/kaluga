@@ -46,8 +46,6 @@ class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navig
     private val _number = MutableStateFlow(initialDetail.number.toString())
     val number = _number.toInitializedObservable(coroutineScope)
 
-
-
     val inverseButton = KalugaButton.Plain("architecture_details_inverse".localized(), ButtonStyles.default) {
         _name.value = _name.value.reversed()
         _number.value = _number.value.reversed()

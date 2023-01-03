@@ -32,6 +32,7 @@ import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothActivity
 import com.splendo.kaluga.example.databinding.FragmentFeaturesListBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
+import com.splendo.kaluga.example.datetime.TimerActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.link.LinksActivity
@@ -55,6 +56,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Location -> NavigationSpec.Activity<LocationActivity>()
                     FeatureListNavigationAction.Permissions -> NavigationSpec.Activity<PermissionsListActivity>()
                     FeatureListNavigationAction.Alerts -> NavigationSpec.Activity<AlertsActivity>()
+                    FeatureListNavigationAction.DateTime -> NavigationSpec.Activity<TimerActivity>()
                     FeatureListNavigationAction.DateTimePicker -> NavigationSpec.Activity<DateTimePickerActivity>()
                     FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity<LoadingActivity>()
                     FeatureListNavigationAction.Architecture -> NavigationSpec.Activity<ArchitectureActivity>()

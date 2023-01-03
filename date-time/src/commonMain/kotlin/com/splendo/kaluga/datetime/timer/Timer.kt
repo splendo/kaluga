@@ -28,7 +28,7 @@ interface Timer {
     /** Timer duration. */
     val duration: Duration
     /** Current state of the timer. */
-    val state: StateFlow<State>
+    val state: Flow<State>
 
     sealed interface State {
         val elapsed: Flow<Duration>

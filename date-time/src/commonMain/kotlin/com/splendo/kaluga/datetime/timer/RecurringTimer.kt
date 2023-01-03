@@ -25,10 +25,10 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
@@ -52,7 +52,13 @@ class RecurringTimer(
     coroutineScope: CoroutineScope = MainScope()
 ) : ControllableTimer {
     private val stateRepo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)
-    override val state: StateFlow<Timer.State> = stateRepo.stateFlow
+    override val state: Flow<Timer.State> = stateRepo.stateFlow.map { state ->
+        when (state) {
+            is TimerStateRepo.State.NotRunning.Finished -> state
+            is TimerStateRepo.State.NotRunning.Paused -> state
+            is TimerStateRepo.State.Running -> state
+        }
+    }
 
     override suspend fun start() = stateRepo.start()
 
@@ -108,11 +114,11 @@ private class TimerStateRepo(
     }
 
     /** Timer state. */
-    sealed class State : KalugaState, Timer.State {
+    sealed class State : KalugaState {
         abstract val totalDuration: Duration
         /** Timer is not running. */
-        sealed class NotRunning(protected val elapsedSoFar: Duration) : State(), Timer.State.NotRunning {
-            override val elapsed = flowOf(elapsedSoFar)
+        sealed class NotRunning(protected val elapsedSoFar: Duration) : State() {
+            val elapsed = flowOf(elapsedSoFar)
             /** Timer is paused. */
             class Paused(
                 elapsedSoFar: Duration,

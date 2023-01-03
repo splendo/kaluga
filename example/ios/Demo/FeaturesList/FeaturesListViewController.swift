@@ -16,6 +16,7 @@
  */
 
 import UIKit
+import SwiftUI
 import KalugaExampleShared
 import PartialSheet
 
@@ -98,6 +99,9 @@ private extension FeatureListNavigationAction {
         }
         case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
         case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
+        case is FeatureListNavigationAction.DateTime: return NavigationSpec.Push(animated: true) {
+            UIHostingController(rootView: TimerView())
+        }
         case is FeatureListNavigationAction.DateTimePicker: return NavigationSpec.Push(animated: true) {
             SwiftUIOrUIKitSelectionViewController.create(
                 uiKitViewController: { MainStoryboard.instantiateDateTimePickerViewController() },

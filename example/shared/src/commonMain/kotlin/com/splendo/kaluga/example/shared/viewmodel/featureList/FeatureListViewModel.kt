@@ -27,6 +27,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Location : FeatureListNavigationAction()
     object Permissions : FeatureListNavigationAction()
     object Alerts : FeatureListNavigationAction()
+    object DateTime : FeatureListNavigationAction()
     object DateTimePicker : FeatureListNavigationAction()
     object LoadingIndicator : FeatureListNavigationAction()
     object Architecture : FeatureListNavigationAction()
@@ -43,6 +44,7 @@ sealed class Feature(val title: String) {
     object Alerts : Feature("feature_alerts".localized())
     object Architecture : Feature("feature_architecture".localized())
     object Bluetooth : Feature("feature_bluetooth".localized())
+    object DateTime : Feature("feature_date_time".localized())
     object DateTimePicker : Feature("feature_date_time_picker".localized())
     object Keyboard : Feature("feature_keyboard".localized())
     object LoadingIndicator : Feature("feature_hud".localized())
@@ -62,6 +64,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Alerts,
             Feature.Architecture,
             Feature.Bluetooth,
+            Feature.DateTime,
             Feature.DateTimePicker,
             Feature.Keyboard,
             Feature.Links,
@@ -81,6 +84,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.Alerts -> FeatureListNavigationAction.Alerts
                 is Feature.Architecture -> FeatureListNavigationAction.Architecture
                 is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
+                is Feature.DateTime -> FeatureListNavigationAction.DateTime
                 is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
                 is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
                 is Feature.Links -> FeatureListNavigationAction.Links

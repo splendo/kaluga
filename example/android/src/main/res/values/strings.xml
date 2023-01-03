@@ -3,6 +3,7 @@
 
     <string name="feature_alerts">Alerts</string>
     <string name="feature_architecture">Architecture</string>
+    <string name="feature_date_time">Date Time</string>
     <string name="feature_date_time_picker">Date Time Picker</string>
     <string name="feature_bluetooth">Bluetooth</string>
     <string name="feature_hud">Loading Indicator</string>
