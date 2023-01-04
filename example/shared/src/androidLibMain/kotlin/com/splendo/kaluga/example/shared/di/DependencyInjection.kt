@@ -59,6 +59,10 @@ import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.CloseScientificConverterNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
@@ -183,6 +187,14 @@ internal val androidModule = module {
 
     viewModel {
         ButtonViewModel(StyledStringBuilder.Provider(), AlertPresenter.Builder())
+    }
+
+    viewModel { (navigator: Navigator<ScientificConverterNavigationAction>) ->
+        ScientificViewModel(AlertPresenter.Builder(), navigator)
+    }
+
+    viewModel { (arguments: ScientificConverterViewModel.Arguments, navigator: Navigator<CloseScientificConverterNavigationAction>) ->
+        ScientificConverterViewModel(arguments, AlertPresenter.Builder(), navigator)
     }
 }
 

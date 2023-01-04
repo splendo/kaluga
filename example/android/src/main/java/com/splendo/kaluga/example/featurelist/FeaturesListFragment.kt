@@ -40,6 +40,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
+import com.splendo.kaluga.example.scientific.ScientificActivity
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -66,6 +67,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity<BluetoothActivity>()
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity<BeaconsActivity>()
                     FeatureListNavigationAction.Resources -> NavigationSpec.Activity<ResourcesActivity>()
+                    FeatureListNavigationAction.Scientific -> NavigationSpec.Activity<ScientificActivity>()
                     FeatureListNavigationAction.PlatformSpecific -> throw java.lang.RuntimeException("Not supported")
                 }
             }

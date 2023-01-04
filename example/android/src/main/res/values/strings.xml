@@ -20,6 +20,7 @@
     <string name="feature_resources_color">Color</string>
     <string name="feature_resources_button">Button</string>
     <string name="feature_resources_label">Label</string>
+    <string name="feature_scientific">Scientific</string>
 
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>

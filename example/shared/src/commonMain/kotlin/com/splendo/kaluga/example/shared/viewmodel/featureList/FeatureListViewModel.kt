@@ -37,6 +37,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object System : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
     object Resources : FeatureListNavigationAction()
+    object Scientific : FeatureListNavigationAction()
     object PlatformSpecific : FeatureListNavigationAction()
 }
 
@@ -54,6 +55,7 @@ sealed class Feature(val title: String) {
     object System : Feature("feature_system".localized())
     object Beacons : Feature("feature_beacons".localized())
     object Resource : Feature("feature_resources".localized())
+    object Scientific : Feature("feature_scientific".localized())
     object PlatformSpecific : Feature("feature_platform_specific".localized())
 }
 
@@ -74,6 +76,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.System,
             Feature.Beacons,
             Feature.Resource,
+            Feature.Scientific,
             Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures }
         )
     )
@@ -94,6 +97,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.System -> FeatureListNavigationAction.System
                 is Feature.Beacons -> FeatureListNavigationAction.Beacons
                 is Feature.Resource -> FeatureListNavigationAction.Resources
+                is Feature.Scientific -> FeatureListNavigationAction.Scientific
                 is Feature.PlatformSpecific -> FeatureListNavigationAction.PlatformSpecific
             }
         )
