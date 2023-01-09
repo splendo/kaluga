@@ -41,6 +41,16 @@ val PhysicalQuantity.Area.converters get() = listOf<QuantityConverter<PhysicalQu
     QuantityConverter("Force from Pressure", QuantityConverter.Type.Multiplication, PressureUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is SquareCentimeter && rightUnit is Barye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Nanobarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Microbarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Millibarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Centibarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Decibarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Decabarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Hectobarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Kilobarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Megabarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Gigabarye -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialArea && rightUnit is OunceSquareInch -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialArea && rightUnit is KipSquareInch -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialArea && rightUnit is KipSquareFoot -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -78,4 +88,117 @@ val PhysicalQuantity.Area.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
+    QuantityConverter("Linear Mass Density from Density", QuantityConverter.Type.Multiplication, DensityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is UKImperialDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is USCustomaryDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is Density -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Linear Mass Density from Specific Volume", QuantityConverter.Type.Division, SpecificVolumeUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is UKImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is USCustomarySpecificVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is SpecificVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Luminous Energy from Luminous Exposure", QuantityConverter.Type.Multiplication, LuminousExposureUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricLuminousExposure -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialLuminousExposure -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is LuminousExposure -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Luminous Flux from Illuminance", QuantityConverter.Type.Multiplication, IlluminanceUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is Area && rightUnit is Illuminance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Luminous Intensity from Luminance", QuantityConverter.Type.Multiplication, LuminanceUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is Area && rightUnit is Luminance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Magnetic Flux from Magnetic Induction", QuantityConverter.Type.Multiplication, MagneticInductionUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is SquareCentimeter && rightUnit is Gauss -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is MagneticInduction -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Momentum from Dynamic Viscosity", QuantityConverter.Type.Multiplication, DynamicViscosityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricDynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialDynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is UKImperialDynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is USCustomaryDynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is DynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Specific Volume from Linear Mass Density", QuantityConverter.Type.Division, LinearMassDensityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricLinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialLinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is UKImperialLinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is USCustomaryLinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is LinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Volume from Length", QuantityConverter.Type.Multiplication, LengthUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is SquareMeter && rightUnit is Meter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareNanometer && rightUnit is Nanometer -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareMicrometer && rightUnit is Micrometer -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareMillimeter && rightUnit is Millimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareCentimeter && rightUnit is Centimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareDecimeter && rightUnit is Decimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareDecameter && rightUnit is Decameter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareHectometer && rightUnit is Hectometer -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareKilometer && rightUnit is Kilometer -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareMegameter && rightUnit is Megameter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareGigameter && rightUnit is Gigameter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricArea && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareInch && rightUnit is Inch -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareFoot && rightUnit is Foot -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareYard && rightUnit is Yard -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SquareMile && rightUnit is Mile -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Acre && rightUnit is Inch -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Acre && rightUnit is Foot -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is Length -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Volumetric Flow from Volumetric Flux", QuantityConverter.Type.Multiplication, VolumetricFluxUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is UKImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is USCustomaryVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is VolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    },
+    QuantityConverter("Weight from Area Density", QuantityConverter.Type.Multiplication, AreaDensityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricArea && rightUnit is MetricAreaDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is ImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is UKImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialArea && rightUnit is USCustomaryAreaDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Area && rightUnit is AreaDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
+        }
+    }
 )

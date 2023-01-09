@@ -24,6 +24,7 @@ import com.splendo.kaluga.scientific.unit.FootLambert
 import com.splendo.kaluga.scientific.unit.Illuminance
 import com.splendo.kaluga.scientific.unit.ImperialIlluminance
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricIlluminance
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Nit
 import com.splendo.kaluga.scientific.unit.Phot
@@ -39,7 +40,7 @@ infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantit
 @JvmName("photMultipleDivSolidAngle")
 infix operator fun <PhotUnit, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>.div(
     solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
-) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
+) where PhotUnit : MetricIlluminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
     Stilb.luminance(this, solidAngle)
 
 @JvmName("imperialIlluminanceDivSolidAngle")

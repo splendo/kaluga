@@ -45,19 +45,19 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(absorbedDos
     Gram.weight(this, absorbedDose)
 
 @JvmName("ergMultipleDivRad")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     Gram.weight(this, absorbedDose)
 
-@JvmName("ergMultipleDivRadMultiple")
+@JvmName("ergDivRadMultiple")
 infix operator fun <AbsorbedDoseUnit> ScientificValue<PhysicalQuantity.Energy, Erg>.div(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
 ) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> =
     Gram.weight(this, absorbedDose)
 
-@JvmName("ergMultipleDivAbsorbedDose")
+@JvmName("ergMultipleDivRadMultiple")
 infix operator fun <ErgUnit, AbsorbedDoseUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
-) where ErgUnit : Energy,
+) where ErgUnit : MetricEnergy,
     ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>,
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> =
@@ -73,7 +73,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(equivalentD
     Gram.weight(this, equivalentDose)
 
 @JvmName("ergMultipleDivRem")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     Gram.weight(this, equivalentDose)
 
 @JvmName("ergDivRemMultiple")
@@ -86,7 +86,7 @@ infix operator fun <EquivalentDoseUnit> ScientificValue<PhysicalQuantity.Energy,
 @JvmName("ergMultipleDivRemMultiple")
 infix operator fun <ErgUnit, EquivalentDoseUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
     equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
-) where ErgUnit : Energy,
+) where ErgUnit : MetricEnergy,
     ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>,
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
     EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =

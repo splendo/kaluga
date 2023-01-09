@@ -29,6 +29,7 @@ import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.UKImperialForce
@@ -44,7 +45,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(mass: Scien
     (Centimeter per Second per Second).acceleration(this, mass)
 
 @JvmName("dyneMultipleDivGram")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(mass: ScientificValue<PhysicalQuantity.Weight, Gram>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(mass: ScientificValue<PhysicalQuantity.Weight, Gram>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     (Centimeter per Second per Second).acceleration(this, mass)
 
 @JvmName("imperialForceDivImperialWeight")

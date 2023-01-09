@@ -34,6 +34,7 @@ import com.splendo.kaluga.scientific.unit.Kip
 import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
@@ -57,10 +58,10 @@ import kotlin.jvm.JvmName
 infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) =
     Barye.pressure(this, area)
 
-@JvmName("dyneMultipleDivSquareCentime")
+@JvmName("dyneMultipleDivSquareCentimeter")
 infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
-) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     Barye.pressure(this, area)
 
 @JvmName("poundalDivSquareFoot")

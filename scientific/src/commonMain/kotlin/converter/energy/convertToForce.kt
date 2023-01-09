@@ -32,6 +32,7 @@ import com.splendo.kaluga.scientific.unit.InchOunceForce
 import com.splendo.kaluga.scientific.unit.Length
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
 import com.splendo.kaluga.scientific.unit.MetricLength
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Newton
@@ -45,7 +46,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(distance: S
     Dyne.force(this, distance)
 
 @JvmName("ergMultipleDivCentimeter")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     Dyne.force(this, distance)
 
 @JvmName("metricAndImperialEnergyDivMetricLength")

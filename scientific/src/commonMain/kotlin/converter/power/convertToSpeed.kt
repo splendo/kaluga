@@ -39,6 +39,7 @@ import com.splendo.kaluga.scientific.unit.InchPoundForcePerSecond
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
+import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricPower
 import com.splendo.kaluga.scientific.unit.Minute
@@ -55,7 +56,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(for
     (Centimeter per Second).speed(this, force)
 
 @JvmName("ergPerSecondDivDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     (Centimeter per Second).speed(this, force)
 
 @JvmName("metricPowerDivMetricForce")

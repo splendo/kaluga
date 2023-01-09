@@ -30,6 +30,7 @@ import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.Pressure
 import com.splendo.kaluga.scientific.unit.SquareCentimeter
@@ -46,7 +47,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.time
 @JvmName("squareCentimeterTimesBaryeMultiple")
 infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.times(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+) where BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     pressure * this
 
 @JvmName("imperialAreaTimesOunceSquareInch")

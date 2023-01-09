@@ -24,13 +24,7 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.unit.AccelerationUnits
-import com.splendo.kaluga.scientific.unit.ActionUnits
-import com.splendo.kaluga.scientific.unit.AmountOfSubstanceUnits
-import com.splendo.kaluga.scientific.unit.AngleUnits
-import com.splendo.kaluga.scientific.unit.AngularAccelerationUnits
-import com.splendo.kaluga.scientific.unit.AngularVelocityUnits
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.*
 
 data class QuantityDetails<Quantity: PhysicalQuantity>(
     val quantity: Quantity,
@@ -117,6 +111,58 @@ val PhysicalQuantity.details: QuantityDetails<*>? get() {
         is PhysicalQuantity.Angle -> QuantityDetails(this, AngleUnits, converters)
         is PhysicalQuantity.AngularAcceleration -> QuantityDetails(this, AngularAccelerationUnits, converters)
         is PhysicalQuantity.AngularVelocity -> QuantityDetails(this, AngularVelocityUnits, converters)
-        else -> null
+        is PhysicalQuantity.Area -> QuantityDetails(this, AreaUnits, converters)
+        is PhysicalQuantity.AreaDensity -> QuantityDetails(this, AreaDensityUnits, converters)
+        is PhysicalQuantity.CatalysticActivity -> QuantityDetails(this, CatalysticActivityUnits, converters)
+        is PhysicalQuantity.Density -> QuantityDetails(this, DensityUnits, converters)
+        is PhysicalQuantity.DynamicViscosity -> QuantityDetails(this, DynamicViscosityUnits, converters)
+        is PhysicalQuantity.ElectricCapacitance -> QuantityDetails(this, ElectricCapacitanceUnits, converters)
+        is PhysicalQuantity.ElectricCharge -> QuantityDetails(this, ElectricChargeUnits, converters)
+        is PhysicalQuantity.ElectricConductance -> QuantityDetails(this, ElectricConductanceUnits, converters)
+        is PhysicalQuantity.ElectricCurrent -> QuantityDetails(this, ElectricCurrentUnits, converters)
+        is PhysicalQuantity.ElectricInductance -> QuantityDetails(this, ElectricInductanceUnits, converters)
+        is PhysicalQuantity.ElectricResistance -> QuantityDetails(this, ElectricResistanceUnits, converters)
+        is PhysicalQuantity.Energy -> QuantityDetails(this, EnergyUnits, converters)
+        is PhysicalQuantity.Force -> QuantityDetails(this, ForceUnits, converters)
+        is PhysicalQuantity.Frequency -> QuantityDetails(this, FrequencyUnits, emptyList())
+        is PhysicalQuantity.HeatCapacity -> QuantityDetails(this, HeatCapacityUnits, emptyList())
+        is PhysicalQuantity.Illuminance -> QuantityDetails(this, IlluminanceUnits, emptyList())
+        is PhysicalQuantity.IonizingRadiationAbsorbedDose -> QuantityDetails(this, IonizingRadiationAbsorbedDoseUnits, emptyList())
+        is PhysicalQuantity.IonizingRadiationEquivalentDose -> QuantityDetails(this, IonizingRadiationEquivalentDoseUnits, emptyList())
+        is PhysicalQuantity.Jolt -> QuantityDetails(this, JoltUnits, emptyList())
+        is PhysicalQuantity.Length -> QuantityDetails(this, LengthUnits, emptyList())
+        is PhysicalQuantity.LinearMassDensity -> QuantityDetails(this, LinearMassDensityUnits, emptyList())
+        is PhysicalQuantity.Luminance -> QuantityDetails(this, LuminanceUnits, emptyList())
+        is PhysicalQuantity.LuminousEnergy -> QuantityDetails(this, LuminousEnergyUnits, emptyList())
+        is PhysicalQuantity.LuminousExposure -> QuantityDetails(this, LuminousExposureUnits, emptyList())
+        is PhysicalQuantity.LuminousFlux -> QuantityDetails(this, LuminousFluxUnits, emptyList())
+        is PhysicalQuantity.LuminousIntensity -> QuantityDetails(this, LuminousIntensityUnits, emptyList())
+        is PhysicalQuantity.MagneticFlux -> QuantityDetails(this, MagneticFluxUnits, emptyList())
+        is PhysicalQuantity.MagneticInduction -> QuantityDetails(this, MagneticInductionUnits, emptyList())
+        is PhysicalQuantity.MassFlowRate -> QuantityDetails(this, MassFlowRateUnits, emptyList())
+        is PhysicalQuantity.Molality -> QuantityDetails(this, MolalityUnits, emptyList())
+        is PhysicalQuantity.MolarEnergy -> QuantityDetails(this, MolarEnergyUnits, emptyList())
+        is PhysicalQuantity.Molarity -> QuantityDetails(this, MolarityUnits, emptyList())
+        is PhysicalQuantity.MolarMass -> QuantityDetails(this, MolarMassUnits, emptyList())
+        is PhysicalQuantity.MolarVolume -> QuantityDetails(this, MolarVolumeUnits, emptyList())
+        is PhysicalQuantity.Momentum -> QuantityDetails(this, MomentumUnits, emptyList())
+        is PhysicalQuantity.Power -> QuantityDetails(this, PowerUnits, emptyList())
+        is PhysicalQuantity.Pressure -> QuantityDetails(this, PressureUnits, emptyList())
+        is PhysicalQuantity.Radioactivity -> QuantityDetails(this, RadioactivityUnits, emptyList())
+        is PhysicalQuantity.SolidAngle -> QuantityDetails(this, SolidAngleUnits, emptyList())
+        is PhysicalQuantity.SpecificEnergy -> QuantityDetails(this, SpecificEnergyUnits, emptyList())
+        is PhysicalQuantity.SpecificHeatCapacity -> QuantityDetails(this, SpecificHeatCapacityUnits, emptyList())
+        is PhysicalQuantity.SpecificVolume -> QuantityDetails(this, SpecificVolumeUnits, emptyList())
+        is PhysicalQuantity.Speed -> QuantityDetails(this, SpeedUnits, emptyList())
+        is PhysicalQuantity.SurfaceTension -> QuantityDetails(this, SurfaceTensionUnits, emptyList())
+        is PhysicalQuantity.Temperature -> QuantityDetails(this, TemperatureUnits, emptyList())
+        is PhysicalQuantity.ThermalResistance -> QuantityDetails(this, ThermalResistanceUnits, emptyList())
+        is PhysicalQuantity.Time -> QuantityDetails(this, TimeUnits, emptyList())
+        is PhysicalQuantity.Voltage -> QuantityDetails(this, VoltageUnits, emptyList())
+        is PhysicalQuantity.Volume -> QuantityDetails(this, VolumeUnits, emptyList())
+        is PhysicalQuantity.VolumetricFlow -> QuantityDetails(this, VolumetricFlowUnits, emptyList())
+        is PhysicalQuantity.VolumetricFlux -> QuantityDetails(this, VolumetricFluxUnits, emptyList())
+        is PhysicalQuantity.Weight -> QuantityDetails(this, WeightUnits, emptyList())
+        is PhysicalQuantity.Yank -> QuantityDetails(this, YankUnits, emptyList())
     }
 }

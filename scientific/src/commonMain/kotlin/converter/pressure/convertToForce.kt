@@ -33,6 +33,7 @@ import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.Newton
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
@@ -53,7 +54,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Pressure, Barye>.times(area:
     Dyne.force(this, area)
 
 @JvmName("baryeMultipleTimesSquareCentimeter")
-infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) where BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     Dyne.force(this, area)
 
 @JvmName("ounceSquareInchTimesImperialArea")

@@ -33,7 +33,9 @@ import com.splendo.kaluga.scientific.unit.Kip
 import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.PoundForce
@@ -60,19 +62,19 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(pressure: S
 @JvmName("dyneDivBaryeMultiple")
 infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Force, Dyne>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+) where BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     SquareCentimeter.area(this, pressure)
 
 @JvmName("dyneMultipleDivBarye")
 infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>
-) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     SquareCentimeter.area(this, pressure)
 
 @JvmName("dyneMultipleDivBaryeMultiple")
 infix operator fun <DyneUnit, BaryeUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>, BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>, BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     SquareCentimeter.area(this, pressure)
 
 @JvmName("poundForcePoundSquareInch")

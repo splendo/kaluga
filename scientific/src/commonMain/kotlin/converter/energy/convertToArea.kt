@@ -28,6 +28,7 @@ import com.splendo.kaluga.scientific.unit.InchOunceForce
 import com.splendo.kaluga.scientific.unit.InchPoundForce
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricSurfaceTension
 import com.splendo.kaluga.scientific.unit.SquareCentimeter
@@ -44,7 +45,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(surfaceTens
     SquareCentimeter.area(this, surfaceTension)
 
 @JvmName("ergMultipleDivMetricSurfaceTension")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     SquareCentimeter.area(this, surfaceTension)
 
 @JvmName("metricAndImperialEnergyDivMetricSurfaceTension")

@@ -36,6 +36,8 @@ import com.splendo.kaluga.scientific.unit.InchPoundForce
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.PoundForce
@@ -49,15 +51,15 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(force: Scie
     Centimeter.distance(this, force)
 
 @JvmName("ergMultipleDivDyne")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
     Centimeter.distance(this, force)
 
 @JvmName("ergDivDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Energy, Erg>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Energy, Erg>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     Centimeter.distance(this, force)
 
 @JvmName("ergMultipleDivDyneMultiple")
-infix operator fun <ErgUnit, DyneUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>, DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <ErgUnit, DyneUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>, DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     Centimeter.distance(this, force)
 
 @JvmName("footPoundalDivPoundal")

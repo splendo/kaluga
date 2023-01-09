@@ -43,7 +43,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Length, Centimeter>.times(fo
     force * this
 
 @JvmName("centimeterTimesDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Length, Centimeter>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Length, Centimeter>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     force * this
 
 @JvmName("metricLengthTimesMetricForce")

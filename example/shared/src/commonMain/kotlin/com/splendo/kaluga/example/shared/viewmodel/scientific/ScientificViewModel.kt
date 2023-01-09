@@ -117,7 +117,7 @@ class ScientificViewModel(
         coroutineScope.launch {
             alertPresenterBuilder.buildActionSheet(coroutineScope) {
                 setTitle("Select Quantity")
-                addActions(quantityDetails.map { Alert.Action(it.quantity::class.simpleName.orEmpty()) { currentQuantityDetails.value = it } })
+                addActions(quantityDetails.map { Alert.Action(it.quantity::class.simpleName.orEmpty().split("(?=\\p{Upper})".toRegex()).joinToString(" ")) { currentQuantityDetails.value = it } })
             }.show()
         }
     }

@@ -31,6 +31,7 @@ import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
 import com.splendo.kaluga.scientific.unit.KipSquareInch
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
@@ -50,7 +51,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.tim
 @JvmName("cubicCentimeterTimesBaryeMultiple")
 infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+) where BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
     pressure * this
 
 @JvmName("cubicFootTimesPoundSquareFoot")

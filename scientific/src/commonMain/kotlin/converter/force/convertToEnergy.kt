@@ -49,7 +49,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(distance:
     Erg.energy(this, distance)
 
 @JvmName("dyneMultipleTimesCentimeter")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
     Erg.energy(this, distance)
 
 @JvmName("metricForceTimesMetricLength")
