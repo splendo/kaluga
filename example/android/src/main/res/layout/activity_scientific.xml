@@ -128,7 +128,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/converter_separator"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:buttons="@{viewModel.converters.stateFlow}"/>
+                app:scientificConverterButtons="@{viewModel.converters.stateFlow}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

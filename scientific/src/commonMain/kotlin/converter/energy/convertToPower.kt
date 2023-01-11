@@ -35,6 +35,7 @@ import com.splendo.kaluga.scientific.unit.Deciwatt
 import com.splendo.kaluga.scientific.unit.DeciwattHour
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.ErgMultiple
 import com.splendo.kaluga.scientific.unit.ErgPerSecond
 import com.splendo.kaluga.scientific.unit.FootPoundForce
 import com.splendo.kaluga.scientific.unit.FootPoundForcePerMinute
@@ -58,12 +59,10 @@ import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilojoule
 import com.splendo.kaluga.scientific.unit.Kilowatt
 import com.splendo.kaluga.scientific.unit.KilowattHour
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Megajoule
 import com.splendo.kaluga.scientific.unit.Megawatt
 import com.splendo.kaluga.scientific.unit.MegawattHour
 import com.splendo.kaluga.scientific.unit.MetricEnergy
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Microjoule
 import com.splendo.kaluga.scientific.unit.Microwatt
 import com.splendo.kaluga.scientific.unit.MicrowattHour
@@ -175,7 +174,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(time: Scien
     ErgPerSecond.power(this, time)
 
 @JvmName("ergMultipleDivSecond")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
     ErgPerSecond.power(this, time)
 
 @JvmName("footPoundalDivSecond")

@@ -28,21 +28,18 @@ import com.splendo.kaluga.scientific.unit.ImperialAcceleration
 import com.splendo.kaluga.scientific.unit.ImperialTon
 import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.Jolt
-import com.splendo.kaluga.scientific.unit.JoltUnits
 import com.splendo.kaluga.scientific.unit.MetricAcceleration
 import com.splendo.kaluga.scientific.unit.MetricWeight
 import com.splendo.kaluga.scientific.unit.Ounce
 import com.splendo.kaluga.scientific.unit.Pound
 import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.unit.TimeUnits
 import com.splendo.kaluga.scientific.unit.UKImperialWeight
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.UsTon
 import com.splendo.kaluga.scientific.unit.Weight
-import com.splendo.kaluga.scientific.unit.WeightUnits
 
 val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<PhysicalQuantity.Acceleration, *, *>>(
-    QuantityConverter("Force from Weight", QuantityConverter.Type.Multiplication, WeightUnits) { (accelerationValue, accelerationUnit), (weightValue, weightUnit) ->
+    QuantityConverter("Force from Weight", QuantityConverter.Type.Multiplication, PhysicalQuantity.Weight) { (accelerationValue, accelerationUnit), (weightValue, weightUnit) ->
         when {
             accelerationUnit is MetricAcceleration && weightUnit is Gram -> DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             accelerationUnit is MetricAcceleration && weightUnit is MetricWeight -> DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
@@ -58,7 +55,7 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $weightUnit")
         }
     },
-    QuantityConverter("Jolt from Time", QuantityConverter.Type.Division, TimeUnits) { (accelerationValue, accelerationUnit), (timeValue, timeUnit) ->
+    QuantityConverter("Jolt from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (accelerationValue, accelerationUnit), (timeValue, timeUnit) ->
         when {
             accelerationUnit is MetricAcceleration && timeUnit is Time -> DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(timeValue, timeUnit)
             accelerationUnit is ImperialAcceleration && timeUnit is Time -> DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(timeValue, timeUnit)
@@ -66,7 +63,7 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $timeUnit")
         }
     },
-    QuantityConverter("Speed from Time", QuantityConverter.Type.Multiplication, TimeUnits) { (accelerationValue, accelerationUnit), (timeValue, timeUnit) ->
+    QuantityConverter("Speed from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (accelerationValue, accelerationUnit), (timeValue, timeUnit) ->
         when {
             accelerationUnit is MetricAcceleration && timeUnit is Time -> DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(timeValue, timeUnit)
             accelerationUnit is ImperialAcceleration && timeUnit is Time -> DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(timeValue, timeUnit)
@@ -74,7 +71,7 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $timeUnit")
         }
     },
-    QuantityConverter("Time from Jolt", QuantityConverter.Type.Division, JoltUnits) { (accelerationValue, accelerationUnit), (joltValue, joltUnit) ->
+    QuantityConverter("Time from Jolt", QuantityConverter.Type.Division, PhysicalQuantity.Jolt) { (accelerationValue, accelerationUnit), (joltValue, joltUnit) ->
         when {
             accelerationUnit is Acceleration && joltUnit is Jolt -> DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(joltValue, joltUnit)
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $joltUnit")

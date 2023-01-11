@@ -28,19 +28,19 @@ import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.TimeUnits
 
 val PhysicalQuantity.AngularVelocity.converters get() = listOf<QuantityConverter<PhysicalQuantity.AngularVelocity, *, *>>(
-    QuantityConverter("Angle from Time", QuantityConverter.Type.Multiplication, TimeUnits) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
+    QuantityConverter("Angle from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
         when {
             angularVelocityUnit is AngularVelocity && timeUnit is Time -> DefaultScientificValue(angularVelocityValue, angularVelocityUnit) * DefaultScientificValue(timeValue, timeUnit)
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $timeUnit")
         }
     },
-    QuantityConverter("Angular Acceleration from Time", QuantityConverter.Type.Division, TimeUnits) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
+    QuantityConverter("Angular Acceleration from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
         when {
             angularVelocityUnit is AngularVelocity && timeUnit is Time -> DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(timeValue, timeUnit)
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $timeUnit")
         }
     },
-    QuantityConverter("Time from Angular Acceleration", QuantityConverter.Type.Division, AngularAccelerationUnits) { (angularVelocityValue, angularVelocityUnit), (angularAccelerationValue, angularAccelerationUnit) ->
+    QuantityConverter("Time from Angular Acceleration", QuantityConverter.Type.Division, PhysicalQuantity.AngularAcceleration) { (angularVelocityValue, angularVelocityUnit), (angularAccelerationValue, angularAccelerationUnit) ->
         when {
             angularVelocityUnit is AngularVelocity && angularAccelerationUnit is AngularAcceleration -> DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(angularAccelerationValue, angularAccelerationUnit)
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $angularAccelerationUnit")

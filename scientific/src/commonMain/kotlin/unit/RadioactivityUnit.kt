@@ -63,25 +63,28 @@ object Becquerel : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndIm
 }
 
 @Serializable
-object Nanobecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Nano(Becquerel)
+sealed class BecquerelMultiple : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel>
+
 @Serializable
-object Microbecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Micro(Becquerel)
+object Nanobecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Nano(Becquerel)
 @Serializable
-object Millibecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Milli(Becquerel)
+object Microbecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Micro(Becquerel)
 @Serializable
-object Centibecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Centi(Becquerel)
+object Millibecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Milli(Becquerel)
 @Serializable
-object Decibecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Deci(Becquerel)
+object Centibecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Centi(Becquerel)
 @Serializable
-object Decabecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Deca(Becquerel)
+object Decibecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Deci(Becquerel)
 @Serializable
-object Hectobecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Hecto(Becquerel)
+object Decabecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Deca(Becquerel)
 @Serializable
-object Kilobecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Kilo(Becquerel)
+object Hectobecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Hecto(Becquerel)
 @Serializable
-object Megabecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Mega(Becquerel)
+object Kilobecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Kilo(Becquerel)
 @Serializable
-object Gigabecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Giga(Becquerel)
+object Megabecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Mega(Becquerel)
+@Serializable
+object Gigabecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Giga(Becquerel)
 
 @Serializable
 object Rutherford : Radioactivity() {
@@ -104,22 +107,25 @@ object Curie : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperi
 }
 
 @Serializable
-object Nanocurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Nano(Curie)
+sealed class CurieMultiple : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie>
+
 @Serializable
-object Microcurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Micro(Curie)
+object Nanocurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Nano(Curie)
 @Serializable
-object Millicurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Milli(Curie)
+object Microcurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Micro(Curie)
 @Serializable
-object Centicurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Centi(Curie)
+object Millicurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Milli(Curie)
 @Serializable
-object Decicurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Deci(Curie)
+object Centicurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Centi(Curie)
 @Serializable
-object Decacurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Deca(Curie)
+object Decicurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Deci(Curie)
 @Serializable
-object Hectocurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Hecto(Curie)
+object Decacurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Deca(Curie)
 @Serializable
-object Kilocurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Kilo(Curie)
+object Hectocurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Hecto(Curie)
 @Serializable
-object Megacurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Mega(Curie)
+object Kilocurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Kilo(Curie)
 @Serializable
-object Gigacurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Giga(Curie)
+object Megacurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Mega(Curie)
+@Serializable
+object Gigacurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Giga(Curie)

@@ -22,10 +22,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.angularAcceleration.times
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
 import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.unit.TimeUnits
 
 val PhysicalQuantity.AngularAcceleration.converters get() = listOf<QuantityConverter<PhysicalQuantity.AngularAcceleration, *, *>>(
-    QuantityConverter("Angular Velocity from Time", QuantityConverter.Type.Multiplication, TimeUnits) { (angularAccelerationValue, angularAccelerationUnit), (timeValue, timeUnit) ->
+    QuantityConverter("Angular Velocity from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (angularAccelerationValue, angularAccelerationUnit), (timeValue, timeUnit) ->
         when {
             angularAccelerationUnit is AngularAcceleration && timeUnit is Time -> DefaultScientificValue(angularAccelerationValue, angularAccelerationUnit) * DefaultScientificValue(timeValue, timeUnit)
             else -> throw RuntimeException("Unexpected units: $angularAccelerationUnit $timeUnit")

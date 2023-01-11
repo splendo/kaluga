@@ -22,18 +22,16 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.angle.div
 import com.splendo.kaluga.scientific.unit.Angle
 import com.splendo.kaluga.scientific.unit.AngularVelocity
-import com.splendo.kaluga.scientific.unit.AngularVelocityUnits
 import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.unit.TimeUnits
 
 val PhysicalQuantity.Angle.converters get() = listOf<QuantityConverter<PhysicalQuantity.Angle, *, *>>(
-    QuantityConverter("Angular Velocity from Time", QuantityConverter.Type.Division, TimeUnits) { (angleValue, angleUnit), (timeValue, timeUnit) ->
+    QuantityConverter("Angular Velocity from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (angleValue, angleUnit), (timeValue, timeUnit) ->
         when {
             angleUnit is Angle && timeUnit is Time -> DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(timeValue, timeUnit)
             else -> throw RuntimeException("Unexpected units: $angleUnit $timeUnit")
         }
     },
-    QuantityConverter("Time from Angular Velocity", QuantityConverter.Type.Division, AngularVelocityUnits) { (angleValue, angleUnit), (angularVelocityValue, angularVelocityUnit) ->
+    QuantityConverter("Time from Angular Velocity", QuantityConverter.Type.Division, PhysicalQuantity.AngularVelocity) { (angleValue, angleUnit), (angularVelocityValue, angularVelocityUnit) ->
         when {
             angleUnit is Angle && angularVelocityUnit is AngularVelocity -> DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(angularVelocityValue, angularVelocityUnit)
             else -> throw RuntimeException("Unexpected units: $angleUnit $angularVelocityUnit")

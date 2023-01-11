@@ -47,7 +47,7 @@ class BottomSheetRootDialogFragment : KalugaViewModelBottomSheetDialogFragment<B
 
     private val subPageNavigator = ActivityNavigator<BottomSheetSubPageNavigation> { action ->
         when (action) {
-            is BottomSheetSubPageNavigation.Back -> NavigationSpec.PopFragment(true) { childFragmentManager!! }
+            is BottomSheetSubPageNavigation.Back -> NavigationSpec.PopFragment(true, { childFragmentManager!! })
             is BottomSheetSubPageNavigation.Close -> NavigationSpec.DismissDialog(TAG)
         }
     }

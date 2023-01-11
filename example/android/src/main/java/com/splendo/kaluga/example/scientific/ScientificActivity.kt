@@ -18,13 +18,19 @@
 package com.splendo.kaluga.example.scientific
 
 import android.os.Bundle
+import androidx.databinding.BindingAdapter
+import androidx.fragment.app.FragmentResultListener
+import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityScientificBinding
-import com.splendo.kaluga.example.resources.xml.ButtonAdapter
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificViewModel
+import com.splendo.kaluga.example.view.ButtonAdapter
 import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
 import com.splendo.kaluga.resources.dpToPixel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,16 +38,53 @@ import org.koin.core.parameter.parametersOf
 
 class ScientificActivity : KalugaViewModelActivity<ScientificViewModel>() {
 
+    companion object {
+        const val leftUnitRequestKey: String = "LeftUnit"
+        const val rightUnitRequestKey: String = "RightUnit"
+
+        @BindingAdapter("scientificConverterButtons")
+        @JvmStatic
+        fun bindButtons(view: RecyclerView, buttons: List<ScientificViewModel.Button>?) {
+            val adapter = (view.adapter as? ButtonAdapter) ?: return
+            adapter.buttons = buttons?.map { it.button }.orEmpty()
+        }
+    }
+
+    class LeftUnitDialogSelectionFragment : ScientificUnitSelectionDialogFragment() {
+        override val requestKey: String = leftUnitRequestKey
+    }
+
+    class RightUnitSelectionDialogFragment : ScientificUnitSelectionDialogFragment() {
+        override val requestKey: String = rightUnitRequestKey
+    }
+
     override val viewModel: ScientificViewModel by viewModel {
         parametersOf(
-            ActivityNavigator<ScientificConverterNavigationAction> {
-                NavigationSpec.Activity<ScientificConverterActivity>()
+            ActivityNavigator<ScientificNavigationAction<*>> { action ->
+                when (action) {
+                    is ScientificNavigationAction.SelectUnit -> {
+                        NavigationSpec.Dialog(ScientificUnitSelectionDialogFragment.TAG) {
+                            when (action) {
+                                is ScientificNavigationAction.SelectUnit.Left -> LeftUnitDialogSelectionFragment()
+                                is ScientificNavigationAction.SelectUnit.Right -> RightUnitSelectionDialogFragment()
+                            }
+                        }
+                    }
+                    is ScientificNavigationAction.Converter -> NavigationSpec.Activity<ScientificConverterActivity>()
+                }
             }
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        supportFragmentManager.setFragmentResultListener(leftUnitRequestKey, this) { _, result ->
+            viewModel.didSelectLeftUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
+        }
+        supportFragmentManager.setFragmentResultListener(rightUnitRequestKey, this) { _, result ->
+            viewModel.didSelectRightUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
+        }
 
         val binding = ActivityScientificBinding.inflate(layoutInflater, null, false)
         setContentView(binding.root)

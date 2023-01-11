@@ -21,24 +21,31 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.electricInductance.div
 import com.splendo.kaluga.scientific.converter.electricInductance.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abhenry
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.ElectricInductance
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Time
 
 val PhysicalQuantity.ElectricInductance.converters get() = listOf<QuantityConverter<PhysicalQuantity.ElectricInductance, *, *>>(
-    QuantityConverter("Electric Resistance from Frequency", QuantityConverter.Type.Multiplication, FrequencyUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Electric Resistance from Frequency", QuantityConverter.Type.Multiplication, PhysicalQuantity.Frequency) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abhenry && rightUnit is Frequency -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricInductance && rightUnit is Frequency -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Resistance from Time", QuantityConverter.Type.Division, TimeUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Electric Resistance from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abhenry && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricInductance && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Magnetic Flux from Electric Current", QuantityConverter.Type.Multiplication, ElectricCurrentUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Magnetic Flux from Electric Current", QuantityConverter.Type.Multiplication, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abhenry && rightUnit is Abampere -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Abhenry && rightUnit is Biot -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -46,7 +53,7 @@ val PhysicalQuantity.ElectricInductance.converters get() = listOf<QuantityConver
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Electric Resistance", QuantityConverter.Type.Division, ElectricResistanceUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Time from Electric Resistance", QuantityConverter.Type.Division, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is ElectricInductance && rightUnit is ElectricResistance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")

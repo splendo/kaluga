@@ -24,18 +24,38 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityScientificConverterBinding
-import com.splendo.kaluga.example.shared.viewmodel.scientific.CloseScientificConverterNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterViewModel>() {
 
+    companion object {
+        const val leftUnitRequestKey: String = "ConverterLeftUnit"
+        const val rightUnitRequestKey: String = "ConverterRightUnit"
+    }
+    class LeftUnitDialogSelectionFragment : ScientificUnitSelectionDialogFragment() {
+        override val requestKey: String = leftUnitRequestKey
+    }
+
+    class RightUnitSelectionDialogFragment : ScientificUnitSelectionDialogFragment() {
+        override val requestKey: String = rightUnitRequestKey
+    }
+
     override val viewModel: ScientificConverterViewModel by viewModel {
         parametersOf(
             intent.extras!!.toTypedProperty(NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer())),
-            ActivityNavigator<CloseScientificConverterNavigationAction> {
-                NavigationSpec.Close()
+            ActivityNavigator<ScientificConverterNavigationAction<*>> { action ->
+                when (action) {
+                    is ScientificConverterNavigationAction.Close -> NavigationSpec.Close()
+                    is ScientificConverterNavigationAction.SelectUnit -> NavigationSpec.Dialog(ScientificUnitSelectionDialogFragment.TAG) {
+                        when (action) {
+                            is ScientificConverterNavigationAction.SelectUnit.Left -> LeftUnitDialogSelectionFragment()
+                            is ScientificConverterNavigationAction.SelectUnit.Right -> RightUnitSelectionDialogFragment()
+                        }
+                    }
+                }
             }
         )
     }
@@ -43,9 +63,20 @@ class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterV
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        supportFragmentManager.setFragmentResultListener(leftUnitRequestKey, this) { _, result ->
+            viewModel.didSelectLeftUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
+        }
+        supportFragmentManager.setFragmentResultListener(rightUnitRequestKey, this) { _, result ->
+            viewModel.didSelectRightUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
+        }
+
         val binding = ActivityScientificConverterBinding.inflate(layoutInflater, null, false)
         setContentView(binding.root)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+    }
+
+    override fun onBackPressed() {
+        viewModel.onClosePressed()
     }
 }

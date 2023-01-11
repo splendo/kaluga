@@ -25,11 +25,10 @@ import kotlin.reflect.KClass
 
 data class QuantityConverter<Left: PhysicalQuantity, Right: PhysicalQuantity, Result: PhysicalQuantity>(
     val leftQuantity: KClass<Left>,
-    val rightQuantity: KClass<Right>,
+    val rightQuantity: Right,
     val resultQuantity: KClass<Result>,
     val name: String,
     val type: Type,
-    val rightUnits: Set<ScientificUnit<Right>>,
     val converter: (left: Pair<Decimal, ScientificUnit<Left>>, right: Pair<Decimal, ScientificUnit<Right>>) -> ScientificValue<Result, *>
 ) {
     sealed class Type {
@@ -46,7 +45,7 @@ data class QuantityConverter<Left: PhysicalQuantity, Right: PhysicalQuantity, Re
     }
 
     fun convert(left: Decimal, leftUnit: ScientificUnit<*>, right: Decimal, rightUnit: ScientificUnit<*>): ScientificValue<*, *>? {
-        return if (leftQuantity.isInstance(leftUnit.quantity) && rightQuantity.isInstance(rightUnit.quantity)) {
+        return if (leftQuantity.isInstance(leftUnit.quantity) && rightQuantity::class.isInstance(rightUnit.quantity)) {
             converter(left to leftUnit as ScientificUnit<Left>, right to rightUnit as ScientificUnit<Right>)
         } else {
             null
@@ -57,6 +56,6 @@ data class QuantityConverter<Left: PhysicalQuantity, Right: PhysicalQuantity, Re
 inline fun <reified Left : PhysicalQuantity, reified Right : PhysicalQuantity, reified Result : PhysicalQuantity> QuantityConverter(
     name: String,
     type: QuantityConverter.Type,
-    rightUnits: Set<ScientificUnit<Right>>,
+    right: Right,
     noinline converter: (left: Pair<Decimal, ScientificUnit<Left>>, right: Pair<Decimal, ScientificUnit<Right>>) -> ScientificValue<Result, *>
-) = QuantityConverter(Left::class, Right::class, Result::class, name, type, rightUnits, converter)
+) = QuantityConverter(Left::class, right, Result::class, name, type, converter)

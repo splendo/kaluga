@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.converter.pressure.pressure
 import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.Barye
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.GrainForce
 import com.splendo.kaluga.scientific.unit.ImperialArea
@@ -33,9 +34,6 @@ import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
 import com.splendo.kaluga.scientific.unit.Kip
 import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricForce
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.Pascal
@@ -59,10 +57,9 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(area: Scien
     Barye.pressure(this, area)
 
 @JvmName("dyneMultipleDivSquareCentimeter")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
-) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    Barye.pressure(this, area)
+) = Barye.pressure(this, area)
 
 @JvmName("poundalDivSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Force, Poundal>.div(area: ScientificValue<PhysicalQuantity.Area, SquareFoot>) =

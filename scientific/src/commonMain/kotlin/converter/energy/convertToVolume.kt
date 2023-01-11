@@ -21,22 +21,20 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.volume.volume
 import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.BaryeMultiple
 import com.splendo.kaluga.scientific.unit.CubicCentimeter
 import com.splendo.kaluga.scientific.unit.CubicFoot
 import com.splendo.kaluga.scientific.unit.CubicInch
 import com.splendo.kaluga.scientific.unit.CubicMeter
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.ErgMultiple
 import com.splendo.kaluga.scientific.unit.FootPoundal
 import com.splendo.kaluga.scientific.unit.ImperialEnergy
 import com.splendo.kaluga.scientific.unit.ImperialPressure
 import com.splendo.kaluga.scientific.unit.InchOunceForce
 import com.splendo.kaluga.scientific.unit.InchPoundForce
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.unit.MetricEnergy
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
-import com.splendo.kaluga.scientific.unit.MetricPressure
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
 import com.splendo.kaluga.scientific.unit.Pressure
@@ -51,18 +49,17 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(pressure: S
     CubicCentimeter.volume(this, pressure)
 
 @JvmName("ergMultipleDivBarye")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>) =
     CubicCentimeter.volume(this, pressure)
 
 @JvmName("ergDivBaryeMultiple")
-infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Energy, Erg>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>) where BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Energy, Erg>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>) =
     CubicCentimeter.volume(this, pressure)
 
 @JvmName("ergMultipleDivBaryeMultiple")
-infix operator fun <ErgUnit, BaryeUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
+infix operator fun <ErgUnit : ErgMultiple, BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where ErgUnit : MetricEnergy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>, BaryeUnit : MetricPressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
-    CubicCentimeter.volume(this, pressure)
+) = CubicCentimeter.volume(this, pressure)
 
 @JvmName("footPoundalDivPoundSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>) =

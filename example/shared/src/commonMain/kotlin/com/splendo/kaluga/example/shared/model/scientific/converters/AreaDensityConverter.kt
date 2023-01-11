@@ -24,7 +24,7 @@ import com.splendo.kaluga.scientific.converter.areaDensity.times
 import com.splendo.kaluga.scientific.unit.*
 
 val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<PhysicalQuantity.AreaDensity, *, *>>(
-    QuantityConverter("Density from Length", QuantityConverter.Type.Division, LengthUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Density from Length", QuantityConverter.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -34,7 +34,7 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
-    QuantityConverter("Length from Specific Volume", QuantityConverter.Type.Multiplication, SpecificVolumeUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Length from Specific Volume", QuantityConverter.Type.Multiplication, PhysicalQuantity.SpecificVolume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -48,7 +48,7 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
-    QuantityConverter("Length from Density", QuantityConverter.Type.Division, DensityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Length from Density", QuantityConverter.Type.Division, PhysicalQuantity.Density) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -62,7 +62,7 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
-    QuantityConverter("Linear Mass Density from Length", QuantityConverter.Type.Division, LengthUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Linear Mass Density from Length", QuantityConverter.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -72,7 +72,7 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
-    QuantityConverter("Weight from Area", QuantityConverter.Type.Division, AreaUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Weight from Area", QuantityConverter.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

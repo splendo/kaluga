@@ -26,53 +26,48 @@ import com.splendo.kaluga.scientific.unit.Abfarad
 import com.splendo.kaluga.scientific.unit.Abohm
 import com.splendo.kaluga.scientific.unit.Abvolt
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
-import com.splendo.kaluga.scientific.unit.ElectricCapacitanceUnits
 import com.splendo.kaluga.scientific.unit.ElectricCharge
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
-import com.splendo.kaluga.scientific.unit.ElectricCurrentUnits
 import com.splendo.kaluga.scientific.unit.ElectricResistance
-import com.splendo.kaluga.scientific.unit.ElectricResistanceUnits
 import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.unit.TimeUnits
 import com.splendo.kaluga.scientific.unit.Voltage
-import com.splendo.kaluga.scientific.unit.VoltageUnits
 
 val PhysicalQuantity.ElectricCharge.converters get() = listOf<QuantityConverter<PhysicalQuantity.ElectricCharge, *, *>>(
-    QuantityConverter("Electric Charge from Voltage", QuantityConverter.Type.Division, VoltageUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Electric Charge from Voltage", QuantityConverter.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abcoulomb && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricCharge && rightUnit is Voltage -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Current from Time", QuantityConverter.Type.Multiplication, TimeUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Electric Current from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abcoulomb && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricCharge && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Energy from Voltage", QuantityConverter.Type.Multiplication, VoltageUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Energy from Voltage", QuantityConverter.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abcoulomb && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricCharge && rightUnit is Voltage -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Magnetic Flux from Electric Resistance", QuantityConverter.Type.Multiplication, ElectricResistanceUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Magnetic Flux from Electric Resistance", QuantityConverter.Type.Multiplication, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abcoulomb && rightUnit is Abohm -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricCharge && rightUnit is ElectricResistance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Electric Current", QuantityConverter.Type.Division, ElectricCurrentUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Time from Electric Current", QuantityConverter.Type.Division, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is ElectricCharge && rightUnit is ElectricCurrent -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Voltage from Electric Capacitance", QuantityConverter.Type.Division, ElectricCapacitanceUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Voltage from Electric Capacitance", QuantityConverter.Type.Division, PhysicalQuantity.ElectricCapacitance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abcoulomb && rightUnit is Abfarad -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricCharge && rightUnit is ElectricCapacitance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

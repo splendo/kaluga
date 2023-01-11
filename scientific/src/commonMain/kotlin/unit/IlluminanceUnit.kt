@@ -70,25 +70,28 @@ object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, Physi
 }
 
 @Serializable
-object Nanolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Nano(Lux)
+sealed class LuxMultiple : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux>
+
 @Serializable
-object Microlux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Micro(Lux)
+object Nanolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Nano(Lux)
 @Serializable
-object Millilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Milli(Lux)
+object Microlux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Micro(Lux)
 @Serializable
-object Centilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Centi(Lux)
+object Millilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Milli(Lux)
 @Serializable
-object Decilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deci(Lux)
+object Centilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Centi(Lux)
 @Serializable
-object Decalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deca(Lux)
+object Decilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deci(Lux)
 @Serializable
-object Hectolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Hecto(Lux)
+object Decalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deca(Lux)
 @Serializable
-object Kilolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Kilo(Lux)
+object Hectolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Hecto(Lux)
 @Serializable
-object Megalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Mega(Lux)
+object Kilolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Kilo(Lux)
 @Serializable
-object Gigalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Giga(Lux)
+object Megalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Mega(Lux)
+@Serializable
+object Gigalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Giga(Lux)
 
 @Serializable
 object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
@@ -100,25 +103,28 @@ object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, Phys
 }
 
 @Serializable
-object Nanophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Nano(Phot)
+sealed class PhotMultiple : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot>
+
 @Serializable
-object Microphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Micro(Phot)
+object Nanophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Nano(Phot)
 @Serializable
-object Milliphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Milli(Phot)
+object Microphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Micro(Phot)
 @Serializable
-object Centiphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Centi(Phot)
+object Milliphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Milli(Phot)
 @Serializable
-object Deciphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deci(Phot)
+object Centiphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Centi(Phot)
 @Serializable
-object Decaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deca(Phot)
+object Deciphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deci(Phot)
 @Serializable
-object Hectophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Hecto(Phot)
+object Decaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deca(Phot)
 @Serializable
-object Kilophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Kilo(Phot)
+object Hectophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Hecto(Phot)
 @Serializable
-object Megaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Mega(Phot)
+object Kilophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Kilo(Phot)
 @Serializable
-object Gigaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Giga(Phot)
+object Megaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Mega(Phot)
+@Serializable
+object Gigaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Giga(Phot)
 
 @Serializable
 object FootCandle : ImperialIlluminance() {

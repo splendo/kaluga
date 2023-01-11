@@ -24,7 +24,7 @@ import com.splendo.kaluga.scientific.converter.density.times
 import com.splendo.kaluga.scientific.unit.*
 
 val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<PhysicalQuantity.Density, *, *>>(
-    QuantityConverter("Area Density from Length", QuantityConverter.Type.Multiplication, LengthUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Area Density from Length", QuantityConverter.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -34,7 +34,7 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Linear Mass Density from Area", QuantityConverter.Type.Multiplication, AreaUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Linear Mass Density from Area", QuantityConverter.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -44,7 +44,7 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molarity from Molality", QuantityConverter.Type.Multiplication, MolalityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Molarity from Molality", QuantityConverter.Type.Multiplication, PhysicalQuantity.Molality) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -54,7 +54,7 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molarity from Molar Mass", QuantityConverter.Type.Division, MolarMassUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Molarity from Molar Mass", QuantityConverter.Type.Division, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -64,7 +64,7 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molar Mass from Molarity", QuantityConverter.Type.Division, MolarityUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Molar Mass from Molarity", QuantityConverter.Type.Division, PhysicalQuantity.Molarity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricMolarity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialMolarity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -74,7 +74,7 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molarity from Molar Volume", QuantityConverter.Type.Multiplication, MolarVolumeUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Molarity from Molar Volume", QuantityConverter.Type.Multiplication, PhysicalQuantity.MolarVolume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricMolarVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialMolarVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -84,7 +84,7 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Volume", QuantityConverter.Type.Multiplication, VolumeUnits) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Weight from Volume", QuantityConverter.Type.Multiplication, PhysicalQuantity.Volume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDensity && rightUnit is MetricVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDensity && rightUnit is ImperialVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
