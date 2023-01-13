@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.typedList
 import platform.Foundation.NSLocale
 import platform.Foundation.alternateQuotationBeginDelimiter
 import platform.Foundation.alternateQuotationEndDelimiter
