@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -27,6 +28,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -195,21 +197,31 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             )
         }
 
-        suspend fun awaitScanDevice(
+        private suspend fun awaitScanDevice(
             device: Device,
             deviceWrapper: DeviceWrapper,
             rssi: Int,
             advertisementData: BaseAdvertisementData
         ) {
-            bluetooth.scanningStateRepo.filter {
-                it is ScanningState.Enabled.Scanning
-            }.first()
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
                 state.discoverDevice(
                     deviceWrapper.identifier,
                     rssi,
                     advertisementData
                 ) { device }
+            }
+        }
+
+        private suspend fun awaitPairedDevices(
+            filter: Filter,
+            devices: List<Device>
+        ) {
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled>()
+            bluetooth.scanningStateRepo.takeAndChangeState(
+                remainIfStateNot = ScanningState.Enabled::class
+            ) { state ->
+                state.pairedDevices(filter, devices.map { it.identifier }.toSet(), devices.map { { it } })
             }
         }
 
@@ -221,6 +233,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ) {
             coroutineScope.launch {
                 awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
+            }
+        }
+
+        fun retrievePairedDevices(
+            filter: Filter,
+            devices: List<Device>
+        ) {
+            coroutineScope.launch {
+                awaitPairedDevices(filter, devices)
             }
         }
 
