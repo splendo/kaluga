@@ -26,8 +26,8 @@ fun ScientificConverterNavigator(
     onClose: () -> Unit
 ) = DefaultNavigator<ScientificConverterNavigationAction<*>> { action ->
     when (action) {
-        is ScientificConverterNavigationAction.SelectUnit.Left-> onSelectLeftUnit(action.value)
-        is ScientificConverterNavigationAction.SelectUnit.Right-> onSelectRightUnit(action.value)
+        is ScientificConverterNavigationAction.SelectUnit.Left -> onSelectLeftUnit(action.value)
+        is ScientificConverterNavigationAction.SelectUnit.Right -> onSelectRightUnit(action.value)
         is ScientificConverterNavigationAction.Close -> onClose()
     }
 }

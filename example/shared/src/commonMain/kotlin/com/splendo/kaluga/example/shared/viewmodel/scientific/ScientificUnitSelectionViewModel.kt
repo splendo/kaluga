@@ -28,16 +28,14 @@ import com.splendo.kaluga.example.shared.model.scientific.quantityDetails
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.scientific.PhysicalQuantity
-import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 sealed class ScientificUnitSelectionAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     object Cancelled : ScientificUnitSelectionAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
-    data class DidSelect(val index:Int) : ScientificUnitSelectionAction<Int>(index, NavigationBundleSpecType.IntegerType)
+    data class DidSelect(val index: Int) : ScientificUnitSelectionAction<Int>(index, NavigationBundleSpecType.IntegerType)
 }
 
 class ScientificUnitSelectionViewModel(

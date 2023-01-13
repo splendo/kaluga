@@ -302,7 +302,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-        QuantityConverter("Weight from Specific Energy", QuantityConverter.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverter("Weight from Specific Energy", QuantityConverter.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is MetricSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialEnergy && rightUnit is ImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

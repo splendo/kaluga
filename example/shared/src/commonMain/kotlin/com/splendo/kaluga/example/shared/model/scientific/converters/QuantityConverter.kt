@@ -23,7 +23,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.reflect.KClass
 
-data class QuantityConverter<Left: PhysicalQuantity, Right: PhysicalQuantity, Result: PhysicalQuantity>(
+data class QuantityConverter<Left : PhysicalQuantity, Right : PhysicalQuantity, Result : PhysicalQuantity>(
     val leftQuantity: KClass<Left>,
     val rightQuantity: Right,
     val resultQuantity: KClass<Result>,

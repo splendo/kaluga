@@ -22,10 +22,8 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.angularVelocity.div
 import com.splendo.kaluga.scientific.converter.angularVelocity.times
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
-import com.splendo.kaluga.scientific.unit.AngularAccelerationUnits
 import com.splendo.kaluga.scientific.unit.AngularVelocity
 import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.unit.TimeUnits
 
 val PhysicalQuantity.AngularVelocity.converters get() = listOf<QuantityConverter<PhysicalQuantity.AngularVelocity, *, *>>(
     QuantityConverter("Angle from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->

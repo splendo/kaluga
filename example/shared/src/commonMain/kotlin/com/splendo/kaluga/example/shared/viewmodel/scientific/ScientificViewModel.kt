@@ -46,16 +46,14 @@ import kotlinx.coroutines.launch
 
 sealed class ScientificNavigationAction<T>(value: T, spec: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, spec) {
     sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificNavigationAction<PhysicalQuantity>(quantity, NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer())) {
-        data class Left(val quantity: PhysicalQuantity): SelectUnit(quantity)
-        data class Right(val quantity: PhysicalQuantity): SelectUnit(quantity)
+        data class Left(val quantity: PhysicalQuantity) : SelectUnit(quantity)
+        data class Right(val quantity: PhysicalQuantity) : SelectUnit(quantity)
     }
     data class Converter(val quantity: PhysicalQuantity, val index: Int) : ScientificNavigationAction<ScientificConverterViewModel.Arguments>(
         ScientificConverterViewModel.Arguments(quantity, index),
         NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer())
     )
 }
-
-
 
 class ScientificViewModel(
     val alertPresenterBuilder: BaseAlertPresenter.Builder,

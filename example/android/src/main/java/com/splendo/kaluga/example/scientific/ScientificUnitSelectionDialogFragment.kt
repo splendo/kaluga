@@ -18,21 +18,16 @@
 package com.splendo.kaluga.example.scientific
 
 import android.app.ActionBar.LayoutParams
-import android.app.Dialog
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelDialogFragment
-import com.splendo.kaluga.example.architecture.xml.BottomSheetRootDialogFragment
 import com.splendo.kaluga.example.databinding.DialogScientificUnitSelectionBinding
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionAction
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionViewModel
@@ -40,7 +35,6 @@ import com.splendo.kaluga.example.view.ButtonAdapter
 import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
 import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.scientific.PhysicalQuantity
-import com.splendo.kaluga.scientific.unit.ScientificUnit
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -55,7 +49,7 @@ abstract class ScientificUnitSelectionDialogFragment : KalugaViewModelDialogFrag
     override val viewModel: ScientificUnitSelectionViewModel by viewModel {
         parametersOf(
             requireArguments().toTypedProperty(NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer())),
-            ActivityNavigator<ScientificUnitSelectionAction<*>> {action ->
+            ActivityNavigator<ScientificUnitSelectionAction<*>> { action ->
                 when (action) {
                     is ScientificUnitSelectionAction.Cancelled -> NavigationSpec.DismissDialog(TAG)
                     is ScientificUnitSelectionAction.DidSelect -> {

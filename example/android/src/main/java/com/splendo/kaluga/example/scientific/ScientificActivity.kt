@@ -19,7 +19,6 @@ package com.splendo.kaluga.example.scientific
 
 import android.os.Bundle
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.FragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
@@ -27,7 +26,6 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityScientificBinding
-import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificViewModel
 import com.splendo.kaluga.example.view.ButtonAdapter

@@ -31,26 +31,6 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("metricAndImperialMolarEnergyDivMetricSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>
-) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
-
-@JvmName("metricAndImperialMolarEnergyDivImperialSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>
-) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
-
-@JvmName("metricAndImperialMolarEnergyDivUKImperialSpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>
-) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
-
-@JvmName("metricAndImperialMolarEnergyDivUSCustomarySpecificEnergy")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>
-) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
-
 @JvmName("molarEnergyDivMetricSpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>
