@@ -23,39 +23,74 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.reflect.KClass
 
-data class QuantityConverter<Left : PhysicalQuantity, Right : PhysicalQuantity, Result : PhysicalQuantity>(
-    val leftQuantity: KClass<Left>,
-    val rightQuantity: Right,
-    val resultQuantity: KClass<Result>,
-    val name: String,
-    val type: Type,
-    val converter: (left: Pair<Decimal, ScientificUnit<Left>>, right: Pair<Decimal, ScientificUnit<Right>>) -> ScientificValue<Result, *>
-) {
-    sealed class Type {
+sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantity> {
+    abstract val name: String
 
-        abstract val operatorSymbol: String
-
-        object Multiplication : Type() {
-            override val operatorSymbol: String = "*"
+    data class Single<From : PhysicalQuantity, Result : PhysicalQuantity>(
+        val fromQuantity: KClass<From>,
+        val resultQuantity: KClass<Result>,
+        override val name: String,
+        val converter: (Pair<Decimal, ScientificUnit<From>>) -> ScientificValue<Result, *>
+    ) : QuantityConverter<From, Result>() {
+        fun convert(
+            value: Decimal,
+            unit: ScientificUnit<*>
+        ): ScientificValue<*, *>? {
+            return if (fromQuantity.isInstance(unit.quantity)) {
+                converter(value to unit as ScientificUnit<From>)
+            } else {
+                null
+            }
         }
-        object Division : Type() {
-            override val operatorSymbol: String = "/"
-        }
-        data class Custom(override val operatorSymbol: String) : Type()
     }
 
-    fun convert(left: Decimal, leftUnit: ScientificUnit<*>, right: Decimal, rightUnit: ScientificUnit<*>): ScientificValue<*, *>? {
-        return if (leftQuantity.isInstance(leftUnit.quantity) && rightQuantity::class.isInstance(rightUnit.quantity)) {
-            converter(left to leftUnit as ScientificUnit<Left>, right to rightUnit as ScientificUnit<Right>)
-        } else {
-            null
+    data class WithOperator<Left : PhysicalQuantity, Right : PhysicalQuantity, Result : PhysicalQuantity>(
+        val leftQuantity: KClass<Left>,
+        val rightQuantity: Right,
+        val resultQuantity: KClass<Result>,
+        override val name: String,
+        val type: Type,
+        val converter: (left: Pair<Decimal, ScientificUnit<Left>>, right: Pair<Decimal, ScientificUnit<Right>>) -> ScientificValue<Result, *>
+    ) : QuantityConverter<Left, Result>() {
+        sealed class Type {
+
+            abstract val operatorSymbol: String
+
+            object Multiplication : Type() {
+                override val operatorSymbol: String = "*"
+            }
+
+            object Division : Type() {
+                override val operatorSymbol: String = "/"
+            }
+
+            data class Custom(override val operatorSymbol: String) : Type()
+        }
+
+        fun convert(
+            left: Decimal,
+            leftUnit: ScientificUnit<*>,
+            right: Decimal,
+            rightUnit: ScientificUnit<*>
+        ): ScientificValue<*, *>? {
+            return if (leftQuantity.isInstance(leftUnit.quantity) && rightQuantity::class.isInstance(
+                    rightUnit.quantity
+                )
+            ) {
+                converter(
+                    left to leftUnit as ScientificUnit<Left>,
+                    right to rightUnit as ScientificUnit<Right>
+                )
+            } else {
+                null
+            }
         }
     }
 }
 
-inline fun <reified Left : PhysicalQuantity, reified Right : PhysicalQuantity, reified Result : PhysicalQuantity> QuantityConverter(
+inline fun <reified Left : PhysicalQuantity, reified Right : PhysicalQuantity, reified Result : PhysicalQuantity> QuantityConverterWithOperator(
     name: String,
-    type: QuantityConverter.Type,
+    type: QuantityConverter.WithOperator.Type,
     right: Right,
     noinline converter: (left: Pair<Decimal, ScientificUnit<Left>>, right: Pair<Decimal, ScientificUnit<Right>>) -> ScientificValue<Result, *>
-) = QuantityConverter(Left::class, right, Result::class, name, type, converter)
+) = QuantityConverter.WithOperator(Left::class, right, Result::class, name, type, converter)

@@ -32,8 +32,8 @@ import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.UKImperialDynamicViscosity
 import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
 
-val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverter<PhysicalQuantity.DynamicViscosity, *, *>>(
-    QuantityConverter("Momentum from Area", QuantityConverter.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverter<PhysicalQuantity.DynamicViscosity, *>>(
+    QuantityConverterWithOperator("Momentum from Area", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDynamicViscosity && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDynamicViscosity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -43,7 +43,7 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Pressure from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Pressure from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricDynamicViscosity && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialDynamicViscosity && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -53,7 +53,7 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Pressure", QuantityConverter.Type.Division, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Time from Pressure", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is DynamicViscosity && rightUnit is Pressure -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")

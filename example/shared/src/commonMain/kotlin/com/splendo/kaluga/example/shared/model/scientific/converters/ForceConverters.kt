@@ -23,8 +23,8 @@ import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQuantity.Force, *, *>>(
-    QuantityConverter("Acceleration from Weight", QuantityConverter.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQuantity.Force, *>>(
+    QuantityConverterWithOperator("Acceleration from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is DyneMultiple && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -39,7 +39,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Area from Pressure", QuantityConverter.Type.Division, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Area from Pressure", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is Barye -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Dyne && rightUnit is BaryeMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -66,7 +66,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Energy from Length", QuantityConverter.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Energy from Length", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is Centimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is DyneMultiple && rightUnit is Centimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -79,7 +79,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Length from Surface Tension", QuantityConverter.Type.Division, PhysicalQuantity.SurfaceTension) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Length from Surface Tension", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SurfaceTension) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricForce && rightUnit is MetricSurfaceTension -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialForce && rightUnit is ImperialSurfaceTension -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -93,7 +93,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Momentum from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Momentum from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is DyneMultiple && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -113,7 +113,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Power from Speed", QuantityConverter.Type.Multiplication, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Power from Speed", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is MetricSpeed -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is DyneMultiple && rightUnit is MetricSpeed -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -124,7 +124,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Pressure from Area", QuantityConverter.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Pressure from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is DyneMultiple && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -147,7 +147,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Surface Tension from Length", QuantityConverter.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Surface Tension from Length", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricForce && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialForce && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -157,13 +157,13 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Yank", QuantityConverter.Type.Division, PhysicalQuantity.Yank) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Time from Yank", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Yank) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Force && rightUnit is Yank -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Acceleration", QuantityConverter.Type.Division, PhysicalQuantity.Acceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Acceleration", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Acceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Dyne && rightUnit is MetricAcceleration -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is DyneMultiple && rightUnit is MetricAcceleration -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -184,7 +184,7 @@ val PhysicalQuantity.Force.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Yank from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Yank from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricForce && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialForce && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

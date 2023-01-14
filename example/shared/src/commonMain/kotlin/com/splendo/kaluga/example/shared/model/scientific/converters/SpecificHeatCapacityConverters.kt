@@ -33,8 +33,8 @@ import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
-val PhysicalQuantity.SpecificHeatCapacity.converters get() = listOf<QuantityConverter<PhysicalQuantity.SpecificHeatCapacity, *, *>>(
-    QuantityConverter("Heat Capacity from Weight", QuantityConverter.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.SpecificHeatCapacity.converters get() = listOf<QuantityConverter<PhysicalQuantity.SpecificHeatCapacity, *>>(
+    QuantityConverterWithOperator("Heat Capacity from Weight", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpecificHeatCapacity && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is UKImperialSpecificHeatCapacity && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -45,7 +45,7 @@ val PhysicalQuantity.SpecificHeatCapacity.converters get() = listOf<QuantityConv
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Specific Energy from Temperature", QuantityConverter.Type.Multiplication, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Specific Energy from Temperature", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpecificHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is UKImperialSpecificHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

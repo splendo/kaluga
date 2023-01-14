@@ -23,14 +23,14 @@ import com.splendo.kaluga.scientific.converter.molarity.div
 import com.splendo.kaluga.scientific.converter.molarity.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.Molarity.converters get() = listOf<QuantityConverter<PhysicalQuantity.Molarity, *, *>>(
-    QuantityConverter("Amount of Substance from Volume", QuantityConverter.Type.Multiplication, PhysicalQuantity.Volume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Molarity.converters get() = listOf<QuantityConverter<PhysicalQuantity.Molarity, *>>(
+    QuantityConverterWithOperator("Amount of Substance from Volume", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Volume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Molarity && rightUnit is Volume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Density from Molality", QuantityConverter.Type.Division, PhysicalQuantity.Molality) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Density from Molality", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Molality) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMolarity && rightUnit is MetricMolality -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMolarity && rightUnit is ImperialMolality -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -44,7 +44,7 @@ val PhysicalQuantity.Molarity.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Density from Molar Mass", QuantityConverter.Type.Multiplication, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Density from Molar Mass", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMolarity && rightUnit is MetricMolarMass -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMolarity && rightUnit is ImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -58,7 +58,7 @@ val PhysicalQuantity.Molarity.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molality from Density", QuantityConverter.Type.Division, PhysicalQuantity.Density) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Molality from Density", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Density) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Molarity && rightUnit is MetricDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Molarity && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -68,7 +68,7 @@ val PhysicalQuantity.Molarity.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molality from Specific Volume", QuantityConverter.Type.Multiplication, PhysicalQuantity.SpecificVolume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Molality from Specific Volume", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.SpecificVolume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Molarity && rightUnit is MetricSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Molarity && rightUnit is ImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

@@ -36,8 +36,8 @@ import com.splendo.kaluga.scientific.unit.USCustomaryYank
 import com.splendo.kaluga.scientific.unit.Weight
 import com.splendo.kaluga.scientific.unit.Yank
 
-val PhysicalQuantity.Yank.converters get() = listOf<QuantityConverter<PhysicalQuantity.Yank, *, *>>(
-    QuantityConverter("Force from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Yank.converters get() = listOf<QuantityConverter<PhysicalQuantity.Yank, *>>(
+    QuantityConverterWithOperator("Force from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricYank && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialYank && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -47,7 +47,7 @@ val PhysicalQuantity.Yank.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Jolt from Weight", QuantityConverter.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Jolt from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricYank && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialYank && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -61,7 +61,7 @@ val PhysicalQuantity.Yank.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Jolt", QuantityConverter.Type.Division, PhysicalQuantity.Jolt) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Jolt", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Jolt) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricYank && rightUnit is MetricJolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialYank && rightUnit is ImperialJolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

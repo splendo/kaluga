@@ -27,8 +27,8 @@ import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.UKImperialMassFlowRate
 import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
 
-val PhysicalQuantity.MassFlowRate.converters get() = listOf<QuantityConverter<PhysicalQuantity.MassFlowRate, *, *>>(
-    QuantityConverter("Weight from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.MassFlowRate.converters get() = listOf<QuantityConverter<PhysicalQuantity.MassFlowRate, *>>(
+    QuantityConverterWithOperator("Weight from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMassFlowRate && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMassFlowRate && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

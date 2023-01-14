@@ -23,8 +23,8 @@ import com.splendo.kaluga.scientific.converter.molarEnergy.div
 import com.splendo.kaluga.scientific.converter.molarEnergy.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.MolarEnergy, *, *>>(
-    QuantityConverter("Energy from Amount of Substance", QuantityConverter.Type.Multiplication, PhysicalQuantity.AmountOfSubstance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.MolarEnergy, *>>(
+    QuantityConverterWithOperator("Energy from Amount of Substance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.AmountOfSubstance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialMolarEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricMolarEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -33,7 +33,7 @@ val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molar Mass from Specific Energy", QuantityConverter.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Molar Mass from Specific Energy", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MolarEnergy && rightUnit is MetricSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MolarEnergy && rightUnit is ImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -43,7 +43,7 @@ val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Specific Energy from Molar Mass", QuantityConverter.Type.Division, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Specific Energy from Molar Mass", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialMolarEnergy && rightUnit is MetricMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialMolarEnergy && rightUnit is ImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -57,7 +57,7 @@ val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Specific Energy from Molality", QuantityConverter.Type.Multiplication, PhysicalQuantity.Molality) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Specific Energy from Molality", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Molality) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialMolarEnergy && rightUnit is MetricMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialMolarEnergy && rightUnit is ImperialMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

@@ -47,7 +47,7 @@ sealed class ScientificConverterNavigationAction<T>(value: T, type: NavigationBu
 
 class ScientificConverterViewModel internal constructor(
     private val leftUnits: Set<ScientificUnit<*>>,
-    private val converter: QuantityConverter<*, *, *>?,
+    private val converter: QuantityConverter<*, *>?,
     navigator: Navigator<ScientificConverterNavigationAction<*>>
 ) : NavigatingViewModel<ScientificConverterNavigationAction<*>>(navigator) {
 
@@ -63,13 +63,14 @@ class ScientificConverterViewModel internal constructor(
 
     private val currentLeftUnit = MutableStateFlow(leftUnits.firstOrNull())
     val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map { createLeftUnitButton(it) }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
-    private val currentRightUnit = MutableStateFlow(converter?.rightQuantity?.quantityDetails?.units?.firstOrNull())
+    val isRightUnitSelectable = converter is QuantityConverter.WithOperator<*, *, *>
+    private val currentRightUnit = MutableStateFlow((converter as? QuantityConverter.WithOperator<*, *, *>)?.rightQuantity?.quantityDetails?.units?.firstOrNull())
     val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map { createRightUnitButton(it) }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
     private val _leftValue = MutableStateFlow("0.0")
     val leftValue = _leftValue.toInitializedSubject(coroutineScope)
     private val _rightValue = MutableStateFlow("0.0")
     val rightValue = _rightValue.toInitializedSubject(coroutineScope)
-    val calculateOperatorSymbol = converter?.type?.operatorSymbol.orEmpty()
+    val calculateOperatorSymbol = (converter as? QuantityConverter.WithOperator<*, *, *>)?.type?.operatorSymbol.orEmpty()
     private val _resultValue = MutableStateFlow("")
     val resultValue = _resultValue.toInitializedObservable(coroutineScope)
 
@@ -78,9 +79,26 @@ class ScientificConverterViewModel internal constructor(
         val leftUnit = currentLeftUnit.value
         val right = numberFormatterScientific.parse(_rightValue.value)?.toDecimal()
         val rightUnit = currentRightUnit.value
-        _resultValue.value = if (left != null && leftUnit != null && right != null && rightUnit != null) {
-            converter?.convert(left, leftUnit, right, rightUnit)?.let { result ->
-                val formattedDecimal = numberFormatterDecimal.format(result.value)
+        _resultValue.value = when (converter) {
+            is QuantityConverter.Single<*, *> -> {
+                if (left != null && leftUnit != null) {
+                    converter.convert(left, leftUnit)
+                } else {
+                    null
+                }
+            }
+            is QuantityConverter.WithOperator<*, *, *> -> {
+                if (left != null && leftUnit != null && right != null && rightUnit != null) {
+                    converter.convert(left, leftUnit, right, rightUnit)
+                } else {
+                    null
+                }
+            }
+            null -> {
+                null
+            }
+        }?.let { result ->
+            val formattedDecimal = numberFormatterDecimal.format(result.value)
                 val parsedDecimal = numberFormatterDecimal.parse(formattedDecimal)
                 val formatter = if (parsedDecimal?.toDouble() == result.value.toDouble()) {
                     numberFormatterDecimal
@@ -88,10 +106,7 @@ class ScientificConverterViewModel internal constructor(
                     numberFormatterScientific
                 }
                 "${formatter.format(result.value)} ${result.unit.symbol}"
-            }.orEmpty()
-        } else {
-            ""
-        }
+        }.orEmpty()
     }
 
     fun didSelectLeftUnit(unitIndex: Int) {
@@ -99,7 +114,7 @@ class ScientificConverterViewModel internal constructor(
     }
 
     fun didSelectRightUnit(unitIndex: Int) {
-        currentRightUnit.value = converter?.rightQuantity?.quantityDetails?.units?.toList()?.getOrNull(unitIndex)
+        currentRightUnit.value = (converter as? QuantityConverter.WithOperator<*, *, *>)?.rightQuantity?.quantityDetails?.units?.toList()?.getOrNull(unitIndex)
     }
 
     fun onClosePressed() {

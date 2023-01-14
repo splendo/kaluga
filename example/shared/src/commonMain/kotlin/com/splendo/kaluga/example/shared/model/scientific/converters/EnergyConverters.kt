@@ -25,8 +25,8 @@ import com.splendo.kaluga.scientific.converter.energy.equivalentDoseBy
 import com.splendo.kaluga.scientific.converter.energy.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<PhysicalQuantity.Energy, *, *>>(
-    QuantityConverter("Action from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<PhysicalQuantity.Energy, *>>(
+    QuantityConverterWithOperator("Action from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -35,13 +35,13 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Amount of Substance from Molar Energy", QuantityConverter.Type.Division, PhysicalQuantity.MolarEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Amount of Substance from Molar Energy", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.MolarEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Energy && rightUnit is MolarEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Area from Surface Tension", QuantityConverter.Type.Division, PhysicalQuantity.SurfaceTension) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Area from Surface Tension", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SurfaceTension) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is MetricSurfaceTension -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is MetricSurfaceTension -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -63,7 +63,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Charge from Voltage", QuantityConverter.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Charge from Voltage", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -71,7 +71,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Current from Magnetic Flux", QuantityConverter.Type.Division, PhysicalQuantity.MagneticFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Current from Magnetic Flux", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.MagneticFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Maxwell -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Maxwell -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -79,7 +79,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Force from Length", QuantityConverter.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Force from Length", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Centimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Centimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -92,7 +92,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Heat Capacity from Temperature", QuantityConverter.Type.Division, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Heat Capacity from Temperature", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialEnergy && rightUnit is USCustomaryTemperature -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -103,7 +103,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Ionizing Radiation Absorbed Dose from Weight", QuantityConverter.Type.Custom("absorbed by"), PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Ionizing Radiation Absorbed Dose from Weight", QuantityConverter.WithOperator.Type.Custom("absorbed by"), PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) absorbedBy DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) absorbedBy DefaultScientificValue(rightValue, rightUnit)
@@ -111,7 +111,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Ionizing Radiation Equivalent Dose from Weight", QuantityConverter.Type.Custom("absorbed by"), PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Ionizing Radiation Equivalent Dose from Weight", QuantityConverter.WithOperator.Type.Custom("absorbed by"), PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) equivalentDoseBy DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) equivalentDoseBy DefaultScientificValue(rightValue, rightUnit)
@@ -119,7 +119,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Length from Force", QuantityConverter.Type.Division, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Length from Force", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Dyne -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Erg && rightUnit is DyneMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -139,7 +139,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Magnetic Flux from Electric Current", QuantityConverter.Type.Division, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Magnetic Flux from Electric Current", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Abampere -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Abampere -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -149,7 +149,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Molar Energy from Amount of Substance", QuantityConverter.Type.Division, PhysicalQuantity.AmountOfSubstance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Molar Energy from Amount of Substance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.AmountOfSubstance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -158,7 +158,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Power from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Power from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is WattHour && rightUnit is Hour -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is WattHourMultiple && rightUnit is Hour -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -183,7 +183,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Pressure from Volume", QuantityConverter.Type.Division, PhysicalQuantity.Volume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Pressure from Volume", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Volume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is CubicCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is CubicCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -199,7 +199,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Specific Energy from Weight", QuantityConverter.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Specific Energy from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialEnergy && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -213,7 +213,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Surface Tension from Area", QuantityConverter.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Surface Tension from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -226,7 +226,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Temperature from Heat Capacity", QuantityConverter.Type.Division, PhysicalQuantity.HeatCapacity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Temperature from Heat Capacity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.HeatCapacity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is MetricAndUKImperialHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialEnergy && rightUnit is MetricHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -240,7 +240,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Power", QuantityConverter.Type.Division, PhysicalQuantity.Power) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Time from Power", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Power) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is WattHour && rightUnit is Watt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is WattHour && rightUnit is WattMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -255,7 +255,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Voltage from Electric Charge", QuantityConverter.Type.Division, PhysicalQuantity.ElectricCharge) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Voltage from Electric Charge", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricCharge) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Abcoulomb -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Abcoulomb -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -263,7 +263,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Volume from Pressure", QuantityConverter.Type.Division, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Volume from Pressure", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Barye -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Erg && rightUnit is BaryeMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -282,7 +282,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Ionizing Radiation Absorbed Dose", QuantityConverter.Type.Division, PhysicalQuantity.IonizingRadiationAbsorbedDose) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Ionizing Radiation Absorbed Dose", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.IonizingRadiationAbsorbedDose) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Rad -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Erg && rightUnit is RadMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -292,7 +292,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Ionizing Radiation Equivalent Dose", QuantityConverter.Type.Division, PhysicalQuantity.IonizingRadiationEquivalentDose) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Ionizing Radiation Equivalent Dose", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.IonizingRadiationEquivalentDose) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is RoentgenEquivalentMan -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Erg && rightUnit is RoentgenEquivalentManMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -302,7 +302,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Specific Energy", QuantityConverter.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Specific Energy", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndImperialEnergy && rightUnit is MetricSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialEnergy && rightUnit is ImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

@@ -29,8 +29,8 @@ import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlux
 import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlux
 import com.splendo.kaluga.scientific.unit.VolumetricFlux
 
-val PhysicalQuantity.VolumetricFlux.converters get() = listOf<QuantityConverter<PhysicalQuantity.VolumetricFlux, *, *>>(
-    QuantityConverter("Volumetric Flow from Area", QuantityConverter.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.VolumetricFlux.converters get() = listOf<QuantityConverter<PhysicalQuantity.VolumetricFlux, *>>(
+    QuantityConverterWithOperator("Volumetric Flow from Area", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricVolumetricFlux && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialVolumetricFlux && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

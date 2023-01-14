@@ -38,8 +38,8 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
-val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQuantity.Speed, *, *>>(
-    QuantityConverter("Acceleration from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQuantity.Speed, *>>(
+    QuantityConverterWithOperator("Acceleration from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpeed && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialSpeed && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -47,7 +47,7 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Length from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Length from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpeed && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialSpeed && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -55,7 +55,7 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Momentum from Weight", QuantityConverter.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Momentum from Weight", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpeed && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialSpeed && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -65,7 +65,7 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Power from Force", QuantityConverter.Type.Multiplication, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Power from Force", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpeed && rightUnit is Dyne -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricSpeed && rightUnit is DyneMultiple -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -76,7 +76,7 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Acceleration", QuantityConverter.Type.Division, PhysicalQuantity.Acceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Time from Acceleration", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Acceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Speed && rightUnit is Acceleration -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")

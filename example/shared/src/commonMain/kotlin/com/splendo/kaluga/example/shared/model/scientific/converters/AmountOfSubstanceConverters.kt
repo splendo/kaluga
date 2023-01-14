@@ -24,8 +24,8 @@ import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConverter<PhysicalQuantity.AmountOfSubstance, *, *>>(
-    QuantityConverter("Energy from Molar Energy", QuantityConverter.Type.Multiplication, PhysicalQuantity.MolarEnergy) { (amountOfSubstanceValue, amountOfSubstanceUnit), (molarEnergyValue, molarEnergyUnit) ->
+val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConverter<PhysicalQuantity.AmountOfSubstance, *>>(
+    QuantityConverterWithOperator("Energy from Molar Energy", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.MolarEnergy) { (amountOfSubstanceValue, amountOfSubstanceUnit), (molarEnergyValue, molarEnergyUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && molarEnergyUnit is MetricAndImperialMolarEnergy -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) * DefaultScientificValue(molarEnergyValue, molarEnergyUnit)
             amountOfSubstanceUnit is AmountOfSubstance && molarEnergyUnit is MetricMolarEnergy -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) * DefaultScientificValue(molarEnergyValue, molarEnergyUnit)
@@ -34,7 +34,7 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $molarEnergyUnit")
         }
     },
-    QuantityConverter("Molality from Weight", QuantityConverter.Type.Division, PhysicalQuantity.Weight) { (amountOfSubstanceValue, amountOfSubstanceUnit), (weightValue, weightUnit) ->
+    QuantityConverterWithOperator("Molality from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (amountOfSubstanceValue, amountOfSubstanceUnit), (weightValue, weightUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is MetricWeight -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is ImperialWeight -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
@@ -44,7 +44,7 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $weightUnit")
         }
     },
-    QuantityConverter("Molarity from Volume", QuantityConverter.Type.Division, PhysicalQuantity.Volume) { (amountOfSubstanceValue, amountOfSubstanceUnit), (volumeValue, volumeUnit) ->
+    QuantityConverterWithOperator("Molarity from Volume", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Volume) { (amountOfSubstanceValue, amountOfSubstanceUnit), (volumeValue, volumeUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is MetricVolume -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is ImperialVolume -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
@@ -54,19 +54,19 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $volumeUnit")
         }
     },
-    QuantityConverter("Radioactivity from Time", QuantityConverter.Type.Custom("with λ"), PhysicalQuantity.Time) { (amountOfSubstanceValue, amountOfSubstanceUnit), (timeValue, timeUnit) ->
+    QuantityConverterWithOperator("Radioactivity from Time", QuantityConverter.WithOperator.Type.Custom("with λ"), PhysicalQuantity.Time) { (amountOfSubstanceValue, amountOfSubstanceUnit), (timeValue, timeUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && timeUnit is Time -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit).decaysWithHalfLife(DefaultScientificValue(timeValue, timeUnit))
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $timeUnit")
         }
     },
-    QuantityConverter("Time from Catalystic Activity", QuantityConverter.Type.Division, PhysicalQuantity.CatalysticActivity) { (amountOfSubstanceValue, amountOfSubstanceUnit), (catalysticActivityValue, catalysticActivityUnit) ->
+    QuantityConverterWithOperator("Time from Catalystic Activity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.CatalysticActivity) { (amountOfSubstanceValue, amountOfSubstanceUnit), (catalysticActivityValue, catalysticActivityUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && catalysticActivityUnit is CatalysticActivity -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(catalysticActivityValue, catalysticActivityUnit)
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $catalysticActivityUnit")
         }
     },
-    QuantityConverter("Volume from Molarity", QuantityConverter.Type.Division, PhysicalQuantity.Molarity) { (amountOfSubstanceValue, amountOfSubstanceUnit), (molarityValue, molarityUnit) ->
+    QuantityConverterWithOperator("Volume from Molarity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Molarity) { (amountOfSubstanceValue, amountOfSubstanceUnit), (molarityValue, molarityUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is MetricMolarity -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is ImperialMolarity -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
@@ -76,7 +76,7 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $molarityUnit")
         }
     },
-    QuantityConverter("Weight from Molality", QuantityConverter.Type.Division, PhysicalQuantity.Molality) { (amountOfSubstanceValue, amountOfSubstanceUnit), (molalityValue, molalityUnit) ->
+    QuantityConverterWithOperator("Weight from Molality", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Molality) { (amountOfSubstanceValue, amountOfSubstanceUnit), (molalityValue, molalityUnit) ->
         when {
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is MetricMolality -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is ImperialMolality -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)

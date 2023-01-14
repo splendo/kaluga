@@ -22,8 +22,8 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.surfaceTension.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.SurfaceTension.converters get() = listOf<QuantityConverter<PhysicalQuantity.SurfaceTension, *, *>>(
-    QuantityConverter("Energy from Area", QuantityConverter.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.SurfaceTension.converters get() = listOf<QuantityConverter<PhysicalQuantity.SurfaceTension, *>>(
+    QuantityConverterWithOperator("Energy from Area", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSurfaceTension && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricSurfaceTension && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -37,7 +37,7 @@ val PhysicalQuantity.SurfaceTension.converters get() = listOf<QuantityConverter<
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Force from Length", QuantityConverter.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Force from Length", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSurfaceTension && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialSurfaceTension && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

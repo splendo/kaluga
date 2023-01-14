@@ -30,8 +30,8 @@ import com.splendo.kaluga.scientific.unit.MetricArea
 import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
 import com.splendo.kaluga.scientific.unit.Time
 
-val PhysicalQuantity.LuminousEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.LuminousEnergy, *, *>>(
-    QuantityConverter("Energy from Luminous Exposure", QuantityConverter.Type.Division, PhysicalQuantity.LuminousExposure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.LuminousEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.LuminousEnergy, *>>(
+    QuantityConverterWithOperator("Energy from Luminous Exposure", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.LuminousExposure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousEnergy && rightUnit is MetricLuminousExposure -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is LuminousEnergy && rightUnit is ImperialLuminousExposure -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -39,7 +39,7 @@ val PhysicalQuantity.LuminousEnergy.converters get() = listOf<QuantityConverter<
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Exposure from Area", QuantityConverter.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Exposure from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousEnergy && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is LuminousEnergy && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -47,13 +47,13 @@ val PhysicalQuantity.LuminousEnergy.converters get() = listOf<QuantityConverter<
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Flux from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Flux from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Time from Luminous Flux", QuantityConverter.Type.Division, PhysicalQuantity.LuminousFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Time from Luminous Flux", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.LuminousFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousEnergy && rightUnit is LuminousFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")

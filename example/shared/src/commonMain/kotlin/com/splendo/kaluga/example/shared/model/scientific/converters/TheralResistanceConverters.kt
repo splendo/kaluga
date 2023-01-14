@@ -30,8 +30,8 @@ import com.splendo.kaluga.scientific.unit.ThermalResistance
 import com.splendo.kaluga.scientific.unit.UKImperialThermalResistance
 import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 
-val PhysicalQuantity.ThermalResistance.converters get() = listOf<QuantityConverter<PhysicalQuantity.ThermalResistance, *, *>>(
-    QuantityConverter("Temperature from Power", QuantityConverter.Type.Multiplication, PhysicalQuantity.Power) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.ThermalResistance.converters get() = listOf<QuantityConverter<PhysicalQuantity.ThermalResistance, *>>(
+    QuantityConverterWithOperator("Temperature from Power", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Power) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndUKImperialThermalResistance && rightUnit is Power -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricThermalResistance && rightUnit is MetricAndImperialPower -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

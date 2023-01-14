@@ -25,8 +25,8 @@ import com.splendo.kaluga.scientific.unit.Gauss
 import com.splendo.kaluga.scientific.unit.MagneticInduction
 import com.splendo.kaluga.scientific.unit.SquareCentimeter
 
-val PhysicalQuantity.MagneticInduction.converters get() = listOf<QuantityConverter<PhysicalQuantity.MagneticInduction, *, *>>(
-    QuantityConverter("Magnetic Flux from Area", QuantityConverter.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.MagneticInduction.converters get() = listOf<QuantityConverter<PhysicalQuantity.MagneticInduction, *>>(
+    QuantityConverterWithOperator("Magnetic Flux from Area", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Gauss && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MagneticInduction && rightUnit is Area -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

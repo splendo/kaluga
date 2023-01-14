@@ -22,8 +22,8 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.solidAngle.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.SolidAngle.converters get() = listOf<QuantityConverter<PhysicalQuantity.SolidAngle, *, *>>(
-    QuantityConverter("Illuminance from Luminance", QuantityConverter.Type.Multiplication, PhysicalQuantity.Luminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.SolidAngle.converters get() = listOf<QuantityConverter<PhysicalQuantity.SolidAngle, *>>(
+    QuantityConverterWithOperator("Illuminance from Luminance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Luminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is SolidAngle && rightUnit is Luminance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is SolidAngle && rightUnit is Lambert -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -33,7 +33,7 @@ val PhysicalQuantity.SolidAngle.converters get() = listOf<QuantityConverter<Phys
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Flux from Luminous Intensity", QuantityConverter.Type.Multiplication, PhysicalQuantity.LuminousIntensity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Flux from Luminous Intensity", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.LuminousIntensity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is SolidAngle && rightUnit is LuminousIntensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")

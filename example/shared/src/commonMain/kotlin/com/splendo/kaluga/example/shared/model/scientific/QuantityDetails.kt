@@ -29,7 +29,7 @@ import com.splendo.kaluga.scientific.unit.*
 data class QuantityDetails<Quantity : PhysicalQuantity>(
     val quantity: Quantity,
     val units: Set<ScientificUnit<Quantity>>,
-    val converters: List<QuantityConverter<Quantity, *, *>>
+    val converters: List<QuantityConverter<Quantity, *>>
 ) {
     fun convert(value: Decimal, unit: ScientificUnit<*>, to: ScientificUnit<*>): ScientificValue<Quantity, *>? = if (unit.quantity == quantity && to.quantity == quantity) {
         DefaultScientificValue(value, unit as ScientificUnit<Quantity>).convert(to as ScientificUnit<Quantity>)

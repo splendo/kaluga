@@ -23,15 +23,15 @@ import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.power.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQuantity.Power, *, *>>(
-    QuantityConverter("Electric Current from Voltage", QuantityConverter.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQuantity.Power, *>>(
+    QuantityConverterWithOperator("Electric Current from Voltage", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is ErgPerSecond && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Power && rightUnit is Voltage -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Energy from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Energy from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Watt && rightUnit is Hour -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Nanowatt && rightUnit is Hour -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -57,7 +57,7 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Force from Speed", QuantityConverter.Type.Division, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Force from Speed", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is ErgPerSecond && rightUnit is MetricSpeed -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricPower && rightUnit is MetricSpeed -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -67,7 +67,7 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Speed from Force", QuantityConverter.Type.Division, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Speed from Force", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is ErgPerSecond && rightUnit is Dyne -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgPerSecond && rightUnit is DyneMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -89,7 +89,7 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Temperature from Thermal Resistance", QuantityConverter.Type.Multiplication, PhysicalQuantity.ThermalResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Temperature from Thermal Resistance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ThermalResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Power && rightUnit is MetricAndUKImperialThermalResistance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndImperialPower && rightUnit is MetricThermalResistance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -102,7 +102,7 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Voltage from Electric Current", QuantityConverter.Type.Division, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Voltage from Electric Current", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is ErgPerSecond && rightUnit is Abampere -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgPerSecond && rightUnit is Biot -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

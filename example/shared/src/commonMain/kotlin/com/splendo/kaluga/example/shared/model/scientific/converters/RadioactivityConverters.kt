@@ -19,4 +19,4 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.PhysicalQuantity
 
-val PhysicalQuantity.Radioactivity.converters get() = listOf<QuantityConverter<PhysicalQuantity.Radioactivity, *, *>>()
+val PhysicalQuantity.Radioactivity.converters get() = listOf<QuantityConverter<PhysicalQuantity.Radioactivity, *>>()

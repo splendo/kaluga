@@ -39,8 +39,8 @@ import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
-val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<PhysicalQuantity.HeatCapacity, *, *>>(
-    QuantityConverter("Energy from Temperature", QuantityConverter.Type.Multiplication, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<PhysicalQuantity.HeatCapacity, *>>(
+    QuantityConverterWithOperator("Energy from Temperature", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -50,7 +50,7 @@ val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Specific Heat Capacity from Weight", QuantityConverter.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Specific Heat Capacity from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -64,7 +64,7 @@ val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Specific Heat Capacity", QuantityConverter.Type.Division, PhysicalQuantity.SpecificHeatCapacity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Specific Heat Capacity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SpecificHeatCapacity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

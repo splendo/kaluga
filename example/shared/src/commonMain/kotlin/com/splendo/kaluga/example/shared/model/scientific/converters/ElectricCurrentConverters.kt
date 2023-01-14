@@ -36,8 +36,8 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.Voltage
 
-val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter<PhysicalQuantity.ElectricCurrent, *, *>>(
-    QuantityConverter("Electric Charge from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter<PhysicalQuantity.ElectricCurrent, *>>(
+    QuantityConverterWithOperator("Electric Charge from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -45,7 +45,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Charge from Time", QuantityConverter.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Charge from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -53,7 +53,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Energy from Magnetic Flux", QuantityConverter.Type.Multiplication, PhysicalQuantity.MagneticFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Energy from Magnetic Flux", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.MagneticFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Maxwell -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Maxwell -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -61,7 +61,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Magnetic Flux from Electric Inductance", QuantityConverter.Type.Multiplication, PhysicalQuantity.ElectricInductance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Magnetic Flux from Electric Inductance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ElectricInductance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Abhenry -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Abhenry -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -69,7 +69,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Power from Voltage", QuantityConverter.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Power from Voltage", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -77,7 +77,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Voltage from Electric Conductance", QuantityConverter.Type.Division, PhysicalQuantity.ElectricConductance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Voltage from Electric Conductance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricConductance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Absiemens -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Absiemens -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -85,7 +85,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Voltage from Electric Resistance", QuantityConverter.Type.Multiplication, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Voltage from Electric Resistance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Abohm -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Abohm -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

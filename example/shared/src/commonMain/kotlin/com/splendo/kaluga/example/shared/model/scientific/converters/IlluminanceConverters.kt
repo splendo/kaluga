@@ -31,8 +31,8 @@ import com.splendo.kaluga.scientific.unit.PhotMultiple
 import com.splendo.kaluga.scientific.unit.SolidAngle
 import com.splendo.kaluga.scientific.unit.Time
 
-val PhysicalQuantity.Illuminance.converters get() = listOf<QuantityConverter<PhysicalQuantity.Illuminance, *, *>>(
-    QuantityConverter("Luminance from Solid Angle", QuantityConverter.Type.Division, PhysicalQuantity.SolidAngle) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Illuminance.converters get() = listOf<QuantityConverter<PhysicalQuantity.Illuminance, *>>(
+    QuantityConverterWithOperator("Luminance from Solid Angle", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SolidAngle) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Phot && rightUnit is SolidAngle -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is PhotMultiple && rightUnit is SolidAngle -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -41,7 +41,7 @@ val PhysicalQuantity.Illuminance.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Exposure from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Exposure from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricIlluminance && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialIlluminance && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -49,13 +49,13 @@ val PhysicalQuantity.Illuminance.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Flux from Area", QuantityConverter.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Flux from Area", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Illuminance && rightUnit is Area -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Solid Angle from Luminance", QuantityConverter.Type.Division, PhysicalQuantity.Luminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Solid Angle from Luminance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Luminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Illuminance && rightUnit is Luminance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")

@@ -23,8 +23,8 @@ import com.splendo.kaluga.scientific.converter.time.div
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQuantity.Time, *, *>>(
-    QuantityConverter("Acceleration from Jolt", QuantityConverter.Type.Multiplication, PhysicalQuantity.Jolt) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQuantity.Time, *>>(
+    QuantityConverterWithOperator("Acceleration from Jolt", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Jolt) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricJolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialJolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -32,7 +32,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Action from Energy", QuantityConverter.Type.Multiplication, PhysicalQuantity.Energy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Action from Energy", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Energy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricAndImperialEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is MetricEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -41,25 +41,25 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Amount of Substance from Catalystic Activity", QuantityConverter.Type.Multiplication, PhysicalQuantity.CatalysticActivity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Amount of Substance from Catalystic Activity", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.CatalysticActivity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is CatalysticActivity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Angle from Angular Velocity", QuantityConverter.Type.Multiplication, PhysicalQuantity.AngularVelocity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Angle from Angular Velocity", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.AngularVelocity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is AngularVelocity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Angular Velocity from Angular Acceleration", QuantityConverter.Type.Multiplication, PhysicalQuantity.AngularAcceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Angular Velocity from Angular Acceleration", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.AngularAcceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is AngularAcceleration -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Dynamic Viscosity from Pressure", QuantityConverter.Type.Multiplication, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Dynamic Viscosity from Pressure", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Pressure) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricPressure -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialPressure -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -69,14 +69,14 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Capacitance from Electric Resistance", QuantityConverter.Type.Division, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Capacitance from Electric Resistance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is Abohm -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ElectricResistance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Charge from Electric Current", QuantityConverter.Type.Multiplication, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Charge from Electric Current", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ElectricCurrent) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is Abampere -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is Biot -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -84,21 +84,21 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Inductance from Electric Resistance", QuantityConverter.Type.Multiplication, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Inductance from Electric Resistance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ElectricResistance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is Abohm -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ElectricResistance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Electric Resistance from Electric Capacitance", QuantityConverter.Type.Division, PhysicalQuantity.ElectricCapacitance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Resistance from Electric Capacitance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricCapacitance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is Abfarad -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ElectricCapacitance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Energy from Power", QuantityConverter.Type.Multiplication, PhysicalQuantity.Power) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Energy from Power", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Power) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Hour && rightUnit is Watt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Hour && rightUnit is Nanowatt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -124,7 +124,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Force from Yank", QuantityConverter.Type.Multiplication, PhysicalQuantity.Yank) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Force from Yank", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Yank) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricYank -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialYank -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -134,7 +134,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Length from Speed", QuantityConverter.Type.Multiplication, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Length from Speed", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricSpeed -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialSpeed -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -142,13 +142,13 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Energy from Luminous Flux", QuantityConverter.Type.Multiplication, PhysicalQuantity.LuminousFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Energy from Luminous Flux", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.LuminousFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is LuminousFlux -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Exposure from Illuminance", QuantityConverter.Type.Multiplication, PhysicalQuantity.Illuminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Exposure from Illuminance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Illuminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricIlluminance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialIlluminance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -156,14 +156,14 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Magnetic Flux from Voltage", QuantityConverter.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Magnetic Flux from Voltage", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is Voltage -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Momentum from Force", QuantityConverter.Type.Multiplication, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Momentum from Force", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Force) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is Dyne -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is DyneMultiple -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -183,7 +183,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Speed from Acceleration", QuantityConverter.Type.Multiplication, PhysicalQuantity.Acceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Speed from Acceleration", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Acceleration) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricAcceleration -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialAcceleration -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -191,7 +191,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Volume from Volumetric Flow", QuantityConverter.Type.Multiplication, PhysicalQuantity.VolumetricFlow) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Volume from Volumetric Flow", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.VolumetricFlow) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricVolumetricFlow -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialVolumetricFlow -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -201,7 +201,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Mass Flow Rate", QuantityConverter.Type.Multiplication, PhysicalQuantity.MassFlowRate) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Mass Flow Rate", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.MassFlowRate) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Time && rightUnit is MetricMassFlowRate -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is ImperialMassFlowRate -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

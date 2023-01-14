@@ -22,8 +22,8 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.momentum.div
 import com.splendo.kaluga.scientific.unit.*
 
-val PhysicalQuantity.Momentum.converters get() = listOf<QuantityConverter<PhysicalQuantity.Momentum, *, *>>(
-    QuantityConverter("Area from Dynamic Viscosity", QuantityConverter.Type.Division, PhysicalQuantity.DynamicViscosity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.Momentum.converters get() = listOf<QuantityConverter<PhysicalQuantity.Momentum, *>>(
+    QuantityConverterWithOperator("Area from Dynamic Viscosity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.DynamicViscosity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMomentum && rightUnit is MetricDynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMomentum && rightUnit is ImperialDynamicViscosity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -37,7 +37,7 @@ val PhysicalQuantity.Momentum.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Dynamic Viscosity from Area", QuantityConverter.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Dynamic Viscosity from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMomentum && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMomentum && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -47,7 +47,7 @@ val PhysicalQuantity.Momentum.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Force from Time", QuantityConverter.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Force from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMomentum && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMomentum && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -57,7 +57,7 @@ val PhysicalQuantity.Momentum.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Speed from Weight", QuantityConverter.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Speed from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMomentum && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMomentum && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -71,7 +71,7 @@ val PhysicalQuantity.Momentum.converters get() = listOf<QuantityConverter<Physic
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Weight from Speed", QuantityConverter.Type.Division, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Speed", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Speed) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricMomentum && rightUnit is MetricSpeed -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialMomentum && rightUnit is ImperialSpeed -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

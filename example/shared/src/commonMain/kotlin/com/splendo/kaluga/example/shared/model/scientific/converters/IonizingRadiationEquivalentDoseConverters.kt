@@ -29,8 +29,8 @@ import com.splendo.kaluga.scientific.unit.UKImperialWeight
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
-val PhysicalQuantity.IonizingRadiationEquivalentDose.converters get() = listOf<QuantityConverter<PhysicalQuantity.IonizingRadiationEquivalentDose, *, *>>(
-    QuantityConverter("Energy from Weight", QuantityConverter.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.IonizingRadiationEquivalentDose.converters get() = listOf<QuantityConverter<PhysicalQuantity.IonizingRadiationEquivalentDose, *>>(
+    QuantityConverterWithOperator("Energy from Weight", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is RoentgenEquivalentMan && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is RoentgenEquivalentManMultiple && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

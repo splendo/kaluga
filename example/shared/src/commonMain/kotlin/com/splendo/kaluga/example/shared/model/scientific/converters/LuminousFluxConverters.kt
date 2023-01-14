@@ -34,8 +34,8 @@ import com.splendo.kaluga.scientific.unit.SolidAngle
 import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import com.splendo.kaluga.scientific.unit.Time
 
-val PhysicalQuantity.LuminousFlux.converters get() = listOf<QuantityConverter<PhysicalQuantity.LuminousFlux, *, *>>(
-    QuantityConverter("Area from Illuminance", QuantityConverter.Type.Division, PhysicalQuantity.Illuminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+val PhysicalQuantity.LuminousFlux.converters get() = listOf<QuantityConverter<PhysicalQuantity.LuminousFlux, *>>(
+    QuantityConverterWithOperator("Area from Illuminance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Illuminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousFlux && rightUnit is Phot -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is LuminousFlux && rightUnit is PhotMultiple -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -44,7 +44,7 @@ val PhysicalQuantity.LuminousFlux.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Illuminance from Area", QuantityConverter.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Illuminance from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousFlux && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is LuminousFlux && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -53,19 +53,19 @@ val PhysicalQuantity.LuminousFlux.converters get() = listOf<QuantityConverter<Ph
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Energy from Time", QuantityConverter.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Energy from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousFlux && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Luminous Intensity from Solid Angle", QuantityConverter.Type.Division, PhysicalQuantity.SolidAngle) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Luminous Intensity from Solid Angle", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SolidAngle) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousFlux && rightUnit is SolidAngle -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverter("Solid Angle from Luminous Intensity", QuantityConverter.Type.Division, PhysicalQuantity.LuminousIntensity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Solid Angle from Luminous Intensity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.LuminousIntensity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is LuminousFlux && rightUnit is LuminousIntensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
