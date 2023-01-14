@@ -31,6 +31,7 @@ val ScientificUnit<*>.name: String get() = when (this) {
     is ImperialMetricAndImperialPowerWrapper -> "${metricAndImperialPower.name} (Imperial)"
     is HeatCapacity -> "${energy.name} per ${per.name}"
     is Jolt -> "${acceleration.name} per ${per.name}"
+    is KinematicViscosity -> "${area.name} per ${time.name}"
     is LinearMassDensity -> "${weight.name} per ${per.name}"
     is LuminousEnergy -> "${luminousFlux.name}-${time.name}"
     is LuminousExposure -> "${illuminance.name}-${time.name}"

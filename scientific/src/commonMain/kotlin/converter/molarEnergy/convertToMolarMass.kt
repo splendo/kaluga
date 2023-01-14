@@ -22,7 +22,6 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.molarMass.molarMass
 import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
 import com.splendo.kaluga.scientific.unit.Kilogram
-import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
 import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
 import com.splendo.kaluga.scientific.unit.MolarEnergy
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
