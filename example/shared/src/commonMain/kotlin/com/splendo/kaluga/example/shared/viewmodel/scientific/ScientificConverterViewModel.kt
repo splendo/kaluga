@@ -66,9 +66,9 @@ class ScientificConverterViewModel internal constructor(
     val isRightUnitSelectable = converter is QuantityConverter.WithOperator<*, *, *>
     private val currentRightUnit = MutableStateFlow((converter as? QuantityConverter.WithOperator<*, *, *>)?.rightQuantity?.quantityDetails?.units?.firstOrNull())
     val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map { createRightUnitButton(it) }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
-    private val _leftValue = MutableStateFlow("0.0")
+    private val _leftValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
     val leftValue = _leftValue.toInitializedSubject(coroutineScope)
-    private val _rightValue = MutableStateFlow("0.0")
+    private val _rightValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
     val rightValue = _rightValue.toInitializedSubject(coroutineScope)
     val calculateOperatorSymbol = (converter as? QuantityConverter.WithOperator<*, *, *>)?.type?.operatorSymbol.orEmpty()
     private val _resultValue = MutableStateFlow("")
@@ -82,14 +82,22 @@ class ScientificConverterViewModel internal constructor(
         _resultValue.value = when (converter) {
             is QuantityConverter.Single<*, *> -> {
                 if (left != null && leftUnit != null) {
-                    converter.convert(left, leftUnit)
+                    try {
+                        converter.convert(left, leftUnit)
+                    } catch (e: Exception) {
+                        null
+                    }
                 } else {
                     null
                 }
             }
             is QuantityConverter.WithOperator<*, *, *> -> {
                 if (left != null && leftUnit != null && right != null && rightUnit != null) {
-                    converter.convert(left, leftUnit, right, rightUnit)
+                    try {
+                        converter.convert(left, leftUnit, right, rightUnit)
+                    } catch (e: Exception) {
+                        null
+                    }
                 } else {
                     null
                 }
@@ -99,14 +107,14 @@ class ScientificConverterViewModel internal constructor(
             }
         }?.let { result ->
             val formattedDecimal = numberFormatterDecimal.format(result.value)
-                val parsedDecimal = numberFormatterDecimal.parse(formattedDecimal)
-                val formatter = if (parsedDecimal?.toDouble() == result.value.toDouble()) {
-                    numberFormatterDecimal
-                } else {
-                    numberFormatterScientific
-                }
-                "${formatter.format(result.value)} ${result.unit.symbol}"
-        }.orEmpty()
+            val parsedDecimal = numberFormatterDecimal.parse(formattedDecimal)
+            val formatter = if (parsedDecimal?.toDouble() == result.value.toDouble()) {
+                numberFormatterDecimal
+            } else {
+                numberFormatterScientific
+            }
+            "${formatter.format(result.value)} ${result.unit.symbol}"
+        } ?: "Invalid Result"
     }
 
     fun didSelectLeftUnit(unitIndex: Int) {

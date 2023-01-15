@@ -19,6 +19,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.converter.specificVolume.density
 import com.splendo.kaluga.scientific.converter.specificVolume.div
 import com.splendo.kaluga.scientific.converter.specificVolume.times
 import com.splendo.kaluga.scientific.unit.*
@@ -36,6 +37,16 @@ val PhysicalQuantity.SpecificVolume.converters get() = listOf<QuantityConverter<
             leftUnit is USCustomarySpecificVolume && rightUnit is USCustomaryLinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is SpecificVolume && rightUnit is LinearMassDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Density") { value, unit ->
+        when (unit) {
+            is MetricSpecificVolume -> DefaultScientificValue(value, unit).density()
+            is ImperialSpecificVolume -> DefaultScientificValue(value, unit).density()
+            is UKImperialSpecificVolume -> DefaultScientificValue(value, unit).density()
+            is USCustomarySpecificVolume -> DefaultScientificValue(value, unit).density()
+            is SpecificVolume -> DefaultScientificValue(value, unit).density()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     },
     QuantityConverterWithOperator("Length from Area Density", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.AreaDensity) { (leftValue, leftUnit), (rightValue, rightUnit) ->

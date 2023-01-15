@@ -19,6 +19,8 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.converter.specificEnergy.asAbsorbedDose
+import com.splendo.kaluga.scientific.converter.specificEnergy.asEquivalentDose
 import com.splendo.kaluga.scientific.converter.specificEnergy.div
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
 import com.splendo.kaluga.scientific.unit.*
@@ -38,6 +40,28 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
+    SingleQuantityConverter("Ionizing Radiation Absorbed Dose") { value, unit ->
+        when (unit) {
+            is SpecificEnergy -> DefaultScientificValue(value, unit).asAbsorbedDose()
+            else -> throw RuntimeException("Unexpected unit: $unit")
+        }
+    },
+    SingleQuantityConverter("Ionizing Radiation Equivalent Dose") { value, unit ->
+        when (unit) {
+            is SpecificEnergy -> DefaultScientificValue(value, unit).asEquivalentDose()
+            else -> throw RuntimeException("Unexpected unit: $unit")
+        }
+    },
+    QuantityConverterWithOperator("Kinematic Viscosity from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricSpecificEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialSpecificEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is UKImperialSpecificEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is USCustomarySpecificEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is SpecificEnergy && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
     QuantityConverterWithOperator("Molality from Molar Energy", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.MolarEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpecificEnergy && rightUnit is MolarEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
@@ -48,7 +72,7 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Molar Energy from Molar Mass", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Molar Energy from Molar Mass", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricSpecificEnergy && rightUnit is MolarMass -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialSpecificEnergy && rightUnit is MolarMass -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

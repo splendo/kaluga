@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.density.div
+import com.splendo.kaluga.scientific.converter.density.specificVolume
 import com.splendo.kaluga.scientific.converter.density.times
 import com.splendo.kaluga.scientific.unit.*
 
@@ -31,6 +32,16 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             leftUnit is UKImperialDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is USCustomaryDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Density && rightUnit is Length -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    QuantityConverterWithOperator("Dynamic Viscosity from Kinematic Viscosity", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.KinematicViscosity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is MetricDensity && rightUnit is MetricKinematicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is ImperialDensity && rightUnit is ImperialKinematicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is UKImperialDensity && rightUnit is ImperialKinematicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is USCustomaryDensity && rightUnit is ImperialKinematicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Density && rightUnit is KinematicViscosity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -82,6 +93,16 @@ val PhysicalQuantity.Density.converters get() = listOf<QuantityConverter<Physica
             leftUnit is USCustomaryDensity && rightUnit is ImperialMolarVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Density && rightUnit is MolarVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Specific Volume") { value, unit ->
+        when (unit) {
+            is MetricDensity -> DefaultScientificValue(value, unit).specificVolume()
+            is ImperialDensity -> DefaultScientificValue(value, unit).specificVolume()
+            is UKImperialDensity -> DefaultScientificValue(value, unit).specificVolume()
+            is USCustomaryDensity -> DefaultScientificValue(value, unit).specificVolume()
+            is Density -> DefaultScientificValue(value, unit).specificVolume()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     },
     QuantityConverterWithOperator("Weight from Volume", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Volume) { (leftValue, leftUnit), (rightValue, rightUnit) ->

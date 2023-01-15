@@ -35,47 +35,47 @@ import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
-@JvmName("metricDynamicViscosityDivMetricDensitu")
+@JvmName("metricDynamicViscosityDivMetricDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, MetricDensity>
 ) = (SquareMeter per unit.time).kinematicViscosity(this, density)
 
-@JvmName("imperialDynamicViscosityDivImperialDensitu")
+@JvmName("imperialDynamicViscosityDivImperialDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("imperialDynamicViscosityDivUKImperialDensitu")
+@JvmName("imperialDynamicViscosityDivUKImperialDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("imperialDynamicViscosityDivUSCustomaryDensitu")
+@JvmName("imperialDynamicViscosityDivUSCustomaryDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("ukImperialDynamicViscosityDivImperialDensitu")
+@JvmName("ukImperialDynamicViscosityDivImperialDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, UKImperialDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("ukImperialDynamicViscosityDivUKImperialDensitu")
+@JvmName("ukImperialDynamicViscosityDivUKImperialDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, UKImperialDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("usCustomaryDynamicViscosityDivImperialDensitu")
+@JvmName("usCustomaryDynamicViscosityDivImperialDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, USCustomaryDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("usCustomaryDynamicViscosityDivUSCustomaryDensitu")
+@JvmName("usCustomaryDynamicViscosityDivUSCustomaryDensity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, USCustomaryDynamicViscosity>.div(
     density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
 ) = (SquareFoot per unit.time).kinematicViscosity(this, density)
 
-@JvmName("dynamicViscosityDivDensitu")
+@JvmName("dynamicViscosityDivDensity")
 infix operator fun <DynamicViscosityUnit : DynamicViscosity, DensityUnit : Density> ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>.div(
     density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
 ) = (SquareMeter per unit.time).kinematicViscosity(this, density)

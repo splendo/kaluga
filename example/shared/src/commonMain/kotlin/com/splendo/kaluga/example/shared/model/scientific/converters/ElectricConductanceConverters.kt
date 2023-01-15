@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.electricConductance.div
+import com.splendo.kaluga.scientific.converter.electricConductance.resistance
 import com.splendo.kaluga.scientific.converter.electricConductance.times
 import com.splendo.kaluga.scientific.unit.Absiemens
 import com.splendo.kaluga.scientific.unit.Abvolt
@@ -36,11 +37,18 @@ val PhysicalQuantity.ElectricConductance.converters get() = listOf<QuantityConve
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Electric Current from Voltage", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Current from Voltage", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Absiemens && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricConductance && rightUnit is Voltage -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Electric Resistance") { value, unit ->
+        when (unit) {
+            is Absiemens -> DefaultScientificValue(value, unit).resistance()
+            is ElectricConductance -> DefaultScientificValue(value, unit).resistance()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     },
     QuantityConverterWithOperator("Frequency from Electric Capacitance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.ElectricCapacitance) { (leftValue, leftUnit), (rightValue, rightUnit) ->

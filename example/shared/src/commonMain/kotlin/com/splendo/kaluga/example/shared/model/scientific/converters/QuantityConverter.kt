@@ -30,14 +30,14 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
         val fromQuantity: KClass<From>,
         val resultQuantity: KClass<Result>,
         override val name: String,
-        val converter: (Pair<Decimal, ScientificUnit<From>>) -> ScientificValue<Result, *>
+        val converter: (Decimal, ScientificUnit<From>) -> ScientificValue<Result, *>
     ) : QuantityConverter<From, Result>() {
         fun convert(
             value: Decimal,
             unit: ScientificUnit<*>
         ): ScientificValue<*, *>? {
             return if (fromQuantity.isInstance(unit.quantity)) {
-                converter(value to unit as ScientificUnit<From>)
+                converter(value, unit as ScientificUnit<From>)
             } else {
                 null
             }
@@ -87,6 +87,11 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
         }
     }
 }
+
+inline fun <reified From : PhysicalQuantity, reified Result : PhysicalQuantity> SingleQuantityConverter(
+    name: String,
+    noinline converter: (value: Decimal, unit: ScientificUnit<From>) -> ScientificValue<Result, *>
+) = QuantityConverter.Single(From::class, Result::class, name, converter)
 
 inline fun <reified Left : PhysicalQuantity, reified Right : PhysicalQuantity, reified Result : PhysicalQuantity> QuantityConverterWithOperator(
     name: String,

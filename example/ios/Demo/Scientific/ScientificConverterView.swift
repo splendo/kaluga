@@ -68,13 +68,15 @@ struct ScientificConverterView: View, Equatable {
                                 .frame(maxWidth: .infinity)
                             currentLeftUnitButton.value.toButton()
                         }.frame(maxWidth: .infinity)
-                        Text(viewModel.calculateOperatorSymbol)
-                        HStack {
-                            TextField("", text: $rightValue.value)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(maxWidth: .infinity)
-                            currentRightUnitButton.value.toButton()
-                        }.frame(maxWidth: .infinity)
+                        if viewModel.isRightUnitSelectable {
+                            Text(viewModel.calculateOperatorSymbol)
+                            HStack {
+                                TextField("", text: $rightValue.value)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(maxWidth: .infinity)
+                                currentRightUnitButton.value.toButton()
+                            }.frame(maxWidth: .infinity)
+                        }
                     }
                     viewModel.calculateButton.toButton(buttonFrame: .frame(maxWidth: .infinity))
                     HStack {

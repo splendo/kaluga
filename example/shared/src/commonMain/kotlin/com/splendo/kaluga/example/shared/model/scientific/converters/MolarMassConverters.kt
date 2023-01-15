@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.molarMass.div
+import com.splendo.kaluga.scientific.converter.molarMass.molality
 import com.splendo.kaluga.scientific.converter.molarMass.times
 import com.splendo.kaluga.scientific.unit.*
 
@@ -50,6 +51,16 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is USCustomaryMolarMass && rightUnit is USCustomaryMolarVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is MolarMass && rightUnit is MolarVolume -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Molality") { value, unit ->
+        when (unit) {
+            is MetricMolarMass -> DefaultScientificValue(value, unit).molality()
+            is ImperialMolarMass -> DefaultScientificValue(value, unit).molality()
+            is UKImperialMolarMass -> DefaultScientificValue(value, unit).molality()
+            is USCustomaryMolarMass -> DefaultScientificValue(value, unit).molality()
+            is MolarMass -> DefaultScientificValue(value, unit).molality()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     },
     QuantityConverterWithOperator("Molar Energy from Specific Energy", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->

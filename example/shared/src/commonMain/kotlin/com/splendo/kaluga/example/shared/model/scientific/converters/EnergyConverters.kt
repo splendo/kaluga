@@ -111,7 +111,7 @@ val PhysicalQuantity.Energy.converters get() = listOf<QuantityConverter<Physical
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Ionizing Radiation Equivalent Dose from Weight", QuantityConverter.WithOperator.Type.Custom("absorbed by"), PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Ionizing Radiation Equivalent Dose from Weight", QuantityConverter.WithOperator.Type.Custom("equivalent dose by"), PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Erg && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) equivalentDoseBy DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ErgMultiple && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) equivalentDoseBy DefaultScientificValue(rightValue, rightUnit)

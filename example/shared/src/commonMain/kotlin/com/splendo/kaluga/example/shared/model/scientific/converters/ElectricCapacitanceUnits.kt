@@ -28,7 +28,7 @@ import com.splendo.kaluga.scientific.unit.Frequency
 import com.splendo.kaluga.scientific.unit.Voltage
 
 val PhysicalQuantity.ElectricCapacitance.converters get() = listOf<QuantityConverter<PhysicalQuantity.ElectricCapacitance, *>>(
-    QuantityConverterWithOperator("Electric Charge from voltage", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Charge from Voltage", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abfarad && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ElectricCapacitance && rightUnit is Voltage -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

@@ -45,7 +45,7 @@ val PhysicalQuantity.ElectricCurrent.converters get() = listOf<QuantityConverter
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Electric Charge from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Electric Conductance from Voltage", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Voltage) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abampere && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Biot && rightUnit is Abvolt -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

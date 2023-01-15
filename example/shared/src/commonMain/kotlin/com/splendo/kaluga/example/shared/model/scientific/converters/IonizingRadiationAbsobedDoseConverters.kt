@@ -19,6 +19,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.asSpecificEnergy
 import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.times
 import com.splendo.kaluga.scientific.unit.Gram
 import com.splendo.kaluga.scientific.unit.ImperialWeight
@@ -39,6 +40,14 @@ val PhysicalQuantity.IonizingRadiationAbsorbedDose.converters get() = listOf<Qua
             leftUnit is IonizingRadiationAbsorbedDose && rightUnit is USCustomaryWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is IonizingRadiationAbsorbedDose && rightUnit is Weight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Specific Energy") { value, unit ->
+        when (unit) {
+            is Rad -> DefaultScientificValue(value, unit).asSpecificEnergy()
+            is RadMultiple -> DefaultScientificValue(value, unit).asSpecificEnergy()
+            is IonizingRadiationAbsorbedDose -> DefaultScientificValue(value, unit).asSpecificEnergy()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     }
 )

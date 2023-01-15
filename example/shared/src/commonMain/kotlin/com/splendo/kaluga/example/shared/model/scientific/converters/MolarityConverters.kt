@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.molarity.div
+import com.splendo.kaluga.scientific.converter.molarity.molarVolume
 import com.splendo.kaluga.scientific.converter.molarity.times
 import com.splendo.kaluga.scientific.unit.*
 
@@ -76,6 +77,16 @@ val PhysicalQuantity.Molarity.converters get() = listOf<QuantityConverter<Physic
             leftUnit is Molarity && rightUnit is USCustomarySpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Molarity && rightUnit is SpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Molar Volume") { value, unit ->
+        when (unit) {
+            is MetricMolarity -> DefaultScientificValue(value, unit).molarVolume()
+            is ImperialMolarity -> DefaultScientificValue(value, unit).molarVolume()
+            is UKImperialMolarity -> DefaultScientificValue(value, unit).molarVolume()
+            is USCustomaryMolarity -> DefaultScientificValue(value, unit).molarVolume()
+            is Molarity -> DefaultScientificValue(value, unit).molarVolume()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     }
 )

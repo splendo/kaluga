@@ -19,6 +19,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.converter.electricResistance.conductance
 import com.splendo.kaluga.scientific.converter.electricResistance.div
 import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.unit.Abampere
@@ -34,6 +35,13 @@ import com.splendo.kaluga.scientific.unit.Frequency
 import com.splendo.kaluga.scientific.unit.Time
 
 val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConverter<PhysicalQuantity.ElectricResistance, *>>(
+    SingleQuantityConverter("Electric Conductance") { value, unit ->
+        when (unit) {
+            is Abohm -> DefaultScientificValue(value, unit).conductance()
+            is ElectricResistance -> DefaultScientificValue(value, unit).conductance()
+            else -> throw RuntimeException("Unexpected unit: $unit")
+        }
+    },
     QuantityConverterWithOperator("Electric Inductance from Frequency", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Frequency) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is Abohm && rightUnit is Frequency -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)

@@ -20,10 +20,21 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.molarVolume.div
+import com.splendo.kaluga.scientific.converter.molarVolume.molarity
 import com.splendo.kaluga.scientific.converter.molarVolume.times
 import com.splendo.kaluga.scientific.unit.*
 
 val PhysicalQuantity.MolarVolume.converters get() = listOf<QuantityConverter<PhysicalQuantity.MolarVolume, *>>(
+    SingleQuantityConverter("Molarity") { value, unit ->
+        when (unit) {
+            is MetricMolarVolume -> DefaultScientificValue(value, unit).molarity()
+            is ImperialMolarVolume -> DefaultScientificValue(value, unit).molarity()
+            is UKImperialMolarVolume -> DefaultScientificValue(value, unit).molarity()
+            is USCustomaryMolarVolume -> DefaultScientificValue(value, unit).molarity()
+            is MolarVolume -> DefaultScientificValue(value, unit).molarity()
+            else -> throw RuntimeException("Unexpected unit: $unit")
+        }
+    },
     QuantityConverterWithOperator("Molar Mass from Density", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Density) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MolarVolume && rightUnit is MetricDensity -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

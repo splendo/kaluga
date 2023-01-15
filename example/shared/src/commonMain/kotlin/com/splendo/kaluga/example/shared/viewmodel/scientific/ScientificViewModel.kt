@@ -80,9 +80,9 @@ class ScientificViewModel(
     val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map { createLeftUnitButton(it) }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
     private val currentRightUnit = MutableStateFlow<ScientificUnit<*>?>(null)
     val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map { createRightUnitButton(it) }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
-    private val _leftValue = MutableStateFlow("0.0")
+    private val _leftValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
     val leftValue = _leftValue.toInitializedSubject(coroutineScope)
-    private val _rightValue = MutableStateFlow("0.0")
+    private val _rightValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
     val rightValue = _rightValue.toInitializedObservable(coroutineScope)
 
     val converters = currentQuantityDetails.map { details ->
@@ -117,10 +117,10 @@ class ScientificViewModel(
                     numberFormatterScientific
                 }
                 formatter.format(result.value)
-            }.orEmpty()
+            }
         } else {
-            ""
-        }
+            null
+        } ?: "Invalid Result"
     }
 
     private fun createQuantityButton(currentQuantityDetails: QuantityDetails<*>?) = KalugaButton.Plain(currentQuantityDetails?.let { it.quantity::class.simpleName }.orEmpty(), ButtonStyles.default) { selectQuantity() }

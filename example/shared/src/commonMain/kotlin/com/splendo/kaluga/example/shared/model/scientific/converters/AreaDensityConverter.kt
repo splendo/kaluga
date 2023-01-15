@@ -62,7 +62,7 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Linear Mass Density from Length", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Linear Mass Density from Length", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
@@ -72,7 +72,7 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Weight from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator("Weight from Area", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
             leftUnit is MetricAreaDensity && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is ImperialAreaDensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)

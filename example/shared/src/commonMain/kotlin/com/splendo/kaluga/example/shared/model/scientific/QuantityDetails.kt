@@ -129,6 +129,7 @@ internal val PhysicalQuantity.quantityDetails: QuantityDetails<*>? get() = when 
     is PhysicalQuantity.IonizingRadiationAbsorbedDose -> QuantityDetails(this, IonizingRadiationAbsorbedDoseUnits, converters)
     is PhysicalQuantity.IonizingRadiationEquivalentDose -> QuantityDetails(this, IonizingRadiationEquivalentDoseUnits, converters)
     is PhysicalQuantity.Jolt -> QuantityDetails(this, JoltUnits, converters)
+    is PhysicalQuantity.KinematicViscosity -> QuantityDetails(this, KinematicViscosityUnits, converters)
     is PhysicalQuantity.Length -> QuantityDetails(this, LengthUnits, converters)
     is PhysicalQuantity.LinearMassDensity -> QuantityDetails(this, LinearMassDensityUnits, converters)
     is PhysicalQuantity.Luminance -> QuantityDetails(this, LuminanceUnits, converters)

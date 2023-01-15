@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.time.div
+import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.unit.*
 
@@ -131,6 +132,23 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is UKImperialYank -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is USCustomaryYank -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Time && rightUnit is Yank -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Frequency") { value, unit ->
+        when (unit) {
+            is Minute -> DefaultScientificValue(value, unit).frequency()
+            is Time -> DefaultScientificValue(value, unit).frequency()
+            else -> throw RuntimeException("Unexpected unit: $unit")
+        }
+    },
+    QuantityConverterWithOperator("Kinematic Viscosity from Specific Energy", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+        when {
+            leftUnit is Time && rightUnit is MetricSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Time && rightUnit is ImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Time && rightUnit is UKImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Time && rightUnit is USCustomarySpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Time && rightUnit is SpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

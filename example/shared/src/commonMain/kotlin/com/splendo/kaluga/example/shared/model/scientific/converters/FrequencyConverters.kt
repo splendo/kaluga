@@ -19,9 +19,11 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.converter.frequency.time
 import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.unit.Abfarad
 import com.splendo.kaluga.scientific.unit.Abhenry
+import com.splendo.kaluga.scientific.unit.BeatsPerMinute
 import com.splendo.kaluga.scientific.unit.ElectricCapacitance
 import com.splendo.kaluga.scientific.unit.ElectricInductance
 import com.splendo.kaluga.scientific.unit.Frequency
@@ -39,6 +41,13 @@ val PhysicalQuantity.Frequency.converters get() = listOf<QuantityConverter<Physi
             leftUnit is Frequency && rightUnit is Abhenry -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             leftUnit is Frequency && rightUnit is ElectricInductance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
+        }
+    },
+    SingleQuantityConverter("Time") { value, unit ->
+        when (unit) {
+            is BeatsPerMinute -> DefaultScientificValue(value, unit).time()
+            is Frequency -> DefaultScientificValue(value, unit).time()
+            else -> throw RuntimeException("Unexpected unit: $unit")
         }
     }
 )
