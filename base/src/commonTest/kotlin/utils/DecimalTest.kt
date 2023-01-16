@@ -26,24 +26,24 @@ import kotlin.test.assertTrue
 class DecimalTest {
     @Test
     fun testCalculation() {
-        assertEquals(0.1.toDecimal().plus(0.2.toDecimal()).toDouble(), 0.3)
-        assertEquals(1.99.toDecimal().round(1).toDouble(), 2.0)
-        assertEquals(1.91.toDecimal().round(1).toDouble(), 1.9)
+        assertEquals(0.3, 0.1.toDecimal().plus(0.2.toDecimal()).toDouble())
+        assertEquals(2.0, 1.99.toDecimal().round(1).toDouble())
+        assertEquals(1.9, 1.91.toDecimal().round(1).toDouble())
 
-        assertEquals(1.5.toDecimal().round(0).toDouble(), 2.0)
-        assertEquals(1.5.toDecimal().round(0, RoundingMode.RoundDown).toDouble(), 1.0)
-        assertEquals(1.5.toDecimal().round(0, RoundingMode.RoundUp).toDouble(), 2.0)
+        assertEquals(2.0, 1.5.toDecimal().round(0).toDouble())
+        assertEquals(1.0, 1.5.toDecimal().round(0, RoundingMode.RoundDown).toDouble())
+        assertEquals(2.0, 1.5.toDecimal().round(0, RoundingMode.RoundUp).toDouble())
 
-        assertEquals((0.5.toDecimal() + 0.5.toDecimal()).toDouble(), 1.0)
-        assertEquals((0.56.toDecimal() + 0.5.toDecimal()).round(1).toDouble(), 1.1)
-        assertEquals((1.5.toDecimal() - 0.5.toDecimal()).toDouble(), 1.0)
-        assertEquals((1.56.toDecimal() - 0.5.toDecimal()).round(1).toDouble(), 1.1)
-        assertEquals((5.toDecimal() / 10.toDecimal()).toDouble(), 0.5)
-        assertEquals((0.5.toDecimal() * 2.toDecimal()).toDouble(), 1.0)
-        assertEquals(((1.toDecimal() / 3.toDecimal()).times(2.toDecimal(), 3, RoundingMode.RoundHalfEven)).toDouble(), 0.667)
-        assertEquals(1.toDecimal().div(3.toDecimal(), 3).toDouble(), 0.333)
-        assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundDown).toDouble(), 0.333)
-        assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundUp).toDouble(), 0.334)
+        assertEquals(1.0, (0.5.toDecimal() + 0.5.toDecimal()).toDouble())
+        assertEquals(1.1, (0.56.toDecimal() + 0.5.toDecimal()).round(1).toDouble())
+        assertEquals(1.0, (1.5.toDecimal() - 0.5.toDecimal()).toDouble())
+        assertEquals(1.1, (1.56.toDecimal() - 0.5.toDecimal()).round(1).toDouble())
+        assertEquals(0.5, (5.toDecimal() / 10.toDecimal()).toDouble())
+        assertEquals(1.0, (0.5.toDecimal() * 2.toDecimal()).toDouble())
+        assertEquals(0.667, ((1.toDecimal() / 3.toDecimal()).times(2.toDecimal(), 3, RoundingMode.RoundHalfEven)).toDouble())
+        assertEquals(0.333, 1.toDecimal().div(3.toDecimal(), 3).toDouble())
+        assertEquals(0.333, 1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundDown).toDouble())
+        assertEquals(0.334, 1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundUp).toDouble())
 
         assertFailsWith(DecimalException::class) { 1.0.toDecimal() / 0.0.toDecimal() }
         assertFailsWith(DecimalException::class) { 1.0.toDecimal().div(0.0.toDecimal(), 3) }
