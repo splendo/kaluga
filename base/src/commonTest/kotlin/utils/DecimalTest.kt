@@ -46,6 +46,8 @@ class DecimalTest {
         assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundUp).toDouble(), 0.334)
 
         assertFailsWith(DecimalException::class) { 1.0.toDecimal() / 0.0.toDecimal() }
+        assertFailsWith(DecimalException::class) { 1.0.toDecimal().div(0.0.toDecimal(), 3) }
+        assertFailsWith(DecimalException::class) { 1.0.toDecimal().div(0.0.toDecimal(), 3, RoundingMode.RoundDown) }
     }
 
     @Test
