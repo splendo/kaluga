@@ -18,7 +18,6 @@ package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.utils.firstInstance
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.transformWhile
 import kotlin.time.Duration
