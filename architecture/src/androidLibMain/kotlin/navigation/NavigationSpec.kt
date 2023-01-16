@@ -173,30 +173,33 @@ sealed class NavigationSpec {
     /**
      * Removes a [Fragment] with a given tag
      * @param tag The tag of the [Fragment] to remove
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [Fragment]
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class RemoveFragment(
         val tag: String,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
-        val fragmentRequestKey: String? = null
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**
      * Pops a [Fragment] from the backstack
      * @param immediate If `true` the transaction should execute without waiting for pending transactions
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class PopFragment(
         val immediate: Boolean = false,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
-        val fragmentRequestKey: String? = null
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**
      * Pops a [Fragment] from the backstack
      * @param immediate If `true` the transaction should execute without waiting for pending transactions
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
@@ -204,8 +207,8 @@ sealed class NavigationSpec {
         val name: String,
         val inclusive: Boolean,
         val immediate: Boolean = false,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
-        val fragmentRequestKey: String? = null
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**
@@ -223,13 +226,14 @@ sealed class NavigationSpec {
     /**
      * Dismisses a [DialogFragment] with a given Tag
      * @param tag The tag of the [DialogFragment] to remove
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [DialogFragment]
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class DismissDialog(
         val tag: String,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
-        val fragmentRequestKey: String? = null
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**

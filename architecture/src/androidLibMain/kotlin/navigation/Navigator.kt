@@ -122,8 +122,9 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             )
         }
 
-        val fragment = fragmentSpec.createFragment()
-        fragment.arguments = bundle?.toBundle()
+        val fragment = fragmentSpec.createFragment().apply {
+            arguments = bundle?.toBundle()
+        }
         when (fragmentSpec.type) {
             is NavigationSpec.Fragment.Type.Add -> transaction.add(
                 fragmentSpec.containerId,
@@ -142,10 +143,11 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
 
     private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!)
-        removeFragmentSpec.fragmentRequestKey?.let {
-            if (bundle != null)
-                fragmentManager.setFragmentResult(it, bundle.toBundle())
+        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!).apply {
+            removeFragmentSpec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
         }
         val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
 
@@ -156,10 +158,11 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
 
     private fun popFragment(popFragmentSpec: NavigationSpec.PopFragment, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!)
-        popFragmentSpec.fragmentRequestKey?.let {
-            if (bundle != null)
-                fragmentManager.setFragmentResult(it, bundle.toBundle())
+        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!).apply {
+            popFragmentSpec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
         }
         if (popFragmentSpec.immediate) {
             fragmentManager.popBackStackImmediate()
@@ -170,10 +173,11 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
 
     private fun popFragmentTo(popToFragmentSpec: NavigationSpec.PopFragmentTo, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!)
-        popToFragmentSpec.fragmentRequestKey?.let {
-            if (bundle != null)
-                fragmentManager.setFragmentResult(it, bundle.toBundle())
+        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!).apply {
+            popToFragmentSpec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
         }
         val flags = if (popToFragmentSpec.inclusive) FragmentManager.POP_BACK_STACK_INCLUSIVE else 0
         if (popToFragmentSpec.immediate) {
@@ -194,10 +198,11 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
 
     private fun dismissDialog(spec: NavigationSpec.DismissDialog, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = spec.getFragmentManager(manager!!)
-        spec.fragmentRequestKey?.let {
-            if (bundle != null)
-                fragmentManager.setFragmentResult(it, bundle.toBundle())
+        val fragmentManager = spec.getFragmentManager(manager!!).apply {
+            spec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
         }
         val dialog = fragmentManager.findFragmentByTag(spec.tag) as? DialogFragment ?: return
         dialog.dismiss()
