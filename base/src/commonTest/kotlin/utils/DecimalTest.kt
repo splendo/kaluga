@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -43,6 +44,8 @@ class DecimalTest {
         assertEquals(1.toDecimal().div(3.toDecimal(), 3).toDouble(), 0.333)
         assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundDown).toDouble(), 0.333)
         assertEquals(1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundUp).toDouble(), 0.334)
+
+        assertFailsWith(DecimalException::class) { 1.0.toDecimal() / 0.0.toDecimal() }
     }
 
     @Test
