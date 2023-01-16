@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -49,6 +50,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 typealias EnableSensorAction = suspend () -> Boolean
+typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
 
 interface Scanner {
 
@@ -60,9 +62,16 @@ interface Scanner {
         data class DeviceDiscovered(
             val identifier: Identifier,
             val rssi: Int,
-            val advertisementData: AdvertisementData,
-            val deviceCreator: () -> (Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>)
+            val advertisementData: BaseAdvertisementData,
+            val deviceCreator: DeviceCreator
         ) : Event()
+        data class PairedDevicesRetrieved(
+            val filter: Filter,
+            val devices: List<DeviceDiscovered>
+        ) : Event() {
+            val identifiers = devices.map(DeviceDiscovered::identifier)
+            val deviceCreators = devices.map(DeviceDiscovered::deviceCreator)
+        }
         data class DeviceConnected(val identifier: Identifier) : Event()
         data class DeviceDisconnected(val identifier: Identifier) : Event()
     }
@@ -78,7 +87,7 @@ interface Scanner {
     suspend fun isHardwareEnabled(): Boolean
     suspend fun requestEnableHardware()
     fun generateEnableSensorsActions(): List<EnableSensorAction>
-    fun pairedDevices(withServices: Set<UUID>): List<Identifier>
+    suspend fun retrievePairedDevices(withServices: Set<UUID>)
 }
 
 abstract class BaseScanner constructor(
@@ -94,7 +103,9 @@ abstract class BaseScanner constructor(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
-        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+        /** If set, will include bonded devices in discovered result list on Android */
+        val discoverBondedDevices: Boolean = true,
     )
 
     interface Builder {
@@ -213,11 +224,19 @@ abstract class BaseScanner constructor(
         identifier: Identifier,
         rssi: Int,
         advertisementData: AdvertisementData,
-        deviceCreator: () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
+        deviceCreator: DeviceCreator
     ) {
         logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
         emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+    }
+
+    internal fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
+        logger.info(LOG_TAG) {
+            val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
+            "Paired Devices retrieved: $identifiers for filter: $filter"
+        }
+        emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {
