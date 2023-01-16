@@ -19,7 +19,7 @@
 
 package com.splendo.kaluga.base.utils
 
-class DecimalException(val message: String?) : ArithmeticException(message)
+class DecimalException(message: String?) : ArithmeticException(message)
 
 expect class Decimal : Comparable<Decimal>
 
