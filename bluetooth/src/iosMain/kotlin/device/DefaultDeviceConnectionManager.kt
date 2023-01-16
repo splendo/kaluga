@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.toNSData
-import com.splendo.kaluga.base.typedList
+import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,34 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base
-
-import kotlinx.cinterop.ByteVar
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.allocArrayOf
-import kotlinx.cinterop.get
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.reinterpret
-import platform.Foundation.NSData
-import platform.Foundation.create
-
-/**
- * Converts a [NSData] to its corresponding [ByteArray]
- * @return The [ByteArray] equivalent to this [NSData]
- */
-fun NSData.toByteArray(): ByteArray {
-    val bytes = bytes?.let { it } ?: return byteArrayOf()
-    val ktBytes: CPointer<ByteVar> = bytes.reinterpret()
-    return ByteArray(length.toInt()) { index -> ktBytes[index] }
-}
-
-/**
- * Converts a [ByteArray] to its corresponding [NSData]
- * @return Th [NSData] corresponding to this [ByteArray]
- */
-fun ByteArray.toNSData(): NSData = memScoped {
-    return NSData.create(bytes = allocArrayOf(this@toNSData), length = this@toNSData.size.toULong())
-}
+package com.splendo.kaluga.base.utils
 
 /**
  * Converts a list of unknown typing to a list of a given type.
