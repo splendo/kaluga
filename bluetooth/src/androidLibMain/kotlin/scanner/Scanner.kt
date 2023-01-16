@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice.BOND_NONE
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
@@ -37,6 +38,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
+import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
@@ -115,7 +117,11 @@ actual class DefaultScanner internal constructor(
             }
         }
 
+        @SuppressLint("MissingPermission") // Lint complains even with permissions
         private fun handleScanResult(scanResult: ScanResult) {
+            if (!settings.discoverBondedDevices && scanResult.device.bondState != BOND_NONE)
+                return // ignore bonded devices
+
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
@@ -192,22 +198,41 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = when (
-        ActivityCompat.checkSelfPermission(
+    @SuppressLint("MissingPermission") // Lint complains even with permissions
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
+        if (!isSupported) return
+        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            Manifest.permission.BLUETOOTH_CONNECT
+        else
+            Manifest.permission.BLUETOOTH
+        val result = ActivityCompat.checkSelfPermission(
             applicationContext,
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) Manifest.permission.BLUETOOTH_CONNECT else Manifest.permission.BLUETOOTH
+            permission
         )
-    ) {
-        PackageManager.PERMISSION_GRANTED -> {
-            bluetoothAdapter
-                ?.bondedDevices
-                ?.filter {
-                    // If no uuids available return this device
-                    // Otherwise check if it constains any of given service uuid
-                    it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+        if (result != PackageManager.PERMISSION_GRANTED) return
+        val devices = bluetoothAdapter?.bondedDevices
+            ?.filter {
+                // If no uuids available return this device
+                // Otherwise check if it contains any of given service uuid
+                it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+            }
+            ?.map { device ->
+                val deviceWrapper = DefaultDeviceWrapper(device)
+                val deviceCreator: DeviceCreator = {
+                    deviceWrapper to deviceConnectionManagerBuilder
                 }
-                ?.map { it.address }
-        }
-        else -> null
-    } ?: emptyList()
+                val serviceUUIDs = device.uuids
+                    ?.map(ParcelUuid::getUuid)
+                    ?: withServices.toList() // fallback to filter, as it *must* contain one of them
+
+                Scanner.Event.DeviceDiscovered(
+                    identifier = deviceWrapper.identifier,
+                    rssi = Int.MIN_VALUE,
+                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
+                    deviceCreator = deviceCreator
+                )
+            } ?: emptyList()
+        // We have to call even with empty list to clean up cached devices
+        handlePairedDevices(withServices, devices)
+    }
 }
