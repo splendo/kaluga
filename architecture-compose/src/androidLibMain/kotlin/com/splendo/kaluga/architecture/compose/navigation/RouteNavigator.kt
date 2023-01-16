@@ -87,11 +87,10 @@ class NavHostRouteController(
         }
     }
 
-    override fun back(result: Route.Result): Boolean = if (navHostController.backQueue.isNotEmpty()){
+    override fun back(result: Route.Result): Boolean = if (navHostController.backQueue.isNotEmpty()) {
         navHostController.previousBackStackEntry?.setResult(result)
         navHostController.popBackStack()
-    }
-    else { parentRouteController?.back(result) ?: false }
+    } else { parentRouteController?.back(result) ?: false }
 
     override fun close() {
         navHostController.popBackStack(ROOT_VIEW, true)
