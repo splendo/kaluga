@@ -409,4 +409,3 @@ internal fun <
 } else {
     throw ScientificConverterException("Inverting by 0.0")
 }
-

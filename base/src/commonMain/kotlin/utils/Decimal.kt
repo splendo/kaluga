@@ -19,6 +19,8 @@
 
 package com.splendo.kaluga.base.utils
 
+class DecimalException(val message: String?) : ArithmeticException(message)
+
 expect class Decimal : Comparable<Decimal>
 
 expect operator fun Decimal.plus(value: Decimal): Decimal

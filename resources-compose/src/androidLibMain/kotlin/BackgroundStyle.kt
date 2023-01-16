@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.resources.DefaultColors
-import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 
 fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = background(
     backgroundStyle.fillStyle.brush,

@@ -99,18 +99,21 @@ actual fun Decimal.minus(
 
 actual operator fun Decimal.div(
     value: Decimal
-): Decimal = Decimal(BigDecimal.divide(bd, value.bd, Rounding()))
+): Decimal = if (value.toDouble() != 0.0) Decimal(BigDecimal.divide(bd, value.bd, Rounding())) else throw DecimalException("Divide by zero")
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int
-): Decimal = Decimal(BigDecimal.divide(bd, value.bd, Rounding(scale)))
+): Decimal = if (value.toDouble() != 0.0) Decimal(BigDecimal.divide(bd, value.bd, Rounding(scale))) else throw DecimalException("Divide by zero")
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
+): Decimal = if (value.toDouble() != 0.0)
+    round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
+else
+    throw DecimalException("Divide by zero")
 
 actual operator fun Decimal.times(
     value: Decimal

@@ -25,7 +25,6 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.reinterpret
 import platform.Foundation.NSData
 import platform.Foundation.create
-import platform.darwin.NSUInteger
 
 /**
  * Converts a [NSData] to its corresponding [ByteArray]
