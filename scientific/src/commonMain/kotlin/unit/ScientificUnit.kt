@@ -95,6 +95,7 @@ val Units: Set<ScientificUnit<*>> get() = AccelerationUnits +
     IonizingRadiationAbsorbedDoseUnits +
     IonizingRadiationEquivalentDoseUnits +
     JoltUnits +
+    KinematicViscosityUnits +
     LengthUnits +
     LinearMassDensityUnits +
     LuminanceUnits +

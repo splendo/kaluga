@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CoroutineScope
 
 actual class DefaultScanner(
@@ -50,5 +49,5 @@ actual class DefaultScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 
-    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = emptyList()
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>) = TODO("Not yet implemented")
 }
