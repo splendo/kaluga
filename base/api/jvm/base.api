@@ -571,6 +571,10 @@ public final class com/splendo/kaluga/base/utils/ContainsAnyKt {
 	public static final fun containsAny (Ljava/lang/Iterable;Ljava/lang/Iterable;)Z
 }
 
+public final class com/splendo/kaluga/base/utils/DecimalException : java/lang/ArithmeticException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public final class com/splendo/kaluga/base/utils/DecimalJVM {
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
