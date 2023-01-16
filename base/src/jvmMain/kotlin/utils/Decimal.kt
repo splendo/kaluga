@@ -51,22 +51,26 @@ actual fun Decimal.minus(
     roundingMode: RoundingMode
 ) = this.subtract(value).setScale(scale, roundingMode.java)
 
-actual operator fun Decimal.div(value: Decimal) = this.divide(value, MathContext.DECIMAL128)
+actual operator fun Decimal.div(value: Decimal) = if (value != Decimal.ZERO) this.divide(value, MathContext.DECIMAL128)
+else throw DecimalException("Divide by zero")
 
-actual fun Decimal.div(value: Decimal, scale: Int) =
+actual fun Decimal.div(value: Decimal, scale: Int) = if (value != Decimal.ZERO)
     this.divide(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
+else throw DecimalException("Divide by zero")
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-) = this.divide(
-    value,
-    MathContext(
-        MathContext.DECIMAL128.precision,
-        roundingMode.java
-    )
-).setScale(scale, roundingMode.java)
+) = if (value != Decimal.ZERO)
+    this.divide(
+        value,
+        MathContext(
+            MathContext.DECIMAL128.precision,
+            roundingMode.java
+        )
+    ).setScale(scale, roundingMode.java)
+else throw DecimalException("Divide by zero")
 
 actual operator fun Decimal.times(value: Decimal) =
     this.multiply(value, MathContext.DECIMAL128)
