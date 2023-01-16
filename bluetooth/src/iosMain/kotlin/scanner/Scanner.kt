@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.typedMap
+import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
@@ -25,6 +25,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
@@ -36,6 +37,7 @@ import platform.CoreBluetooth.CBCentralManagerScanOptionAllowDuplicatesKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionSolicitedServiceUUIDsKey
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
+import platform.CoreBluetooth.CBService
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
@@ -148,9 +150,35 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = CBCentralManager(null, pairedDevicesQueue)
-        .retrieveConnectedPeripheralsWithServices(withServices.toList())
-        .mapNotNull { (it as? CBPeripheral)?.identifier }
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
+        val awaitPoweredOn = EmptyCompletableDeferred()
+        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+        val centralManager = CBCentralManager(delegate, pairedDevicesQueue)
+        awaitPoweredOn.await()
+        val devices = centralManager
+            .retrieveConnectedPeripheralsWithServices(withServices.toList())
+            .filterIsInstance<CBPeripheral>()
+            .map { peripheral ->
+                activeDelegates.add(delegate)
+                val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
+                val deviceCreator: DeviceCreator = {
+                    deviceWrapper to DefaultDeviceConnectionManager.Builder(centralManager, peripheral)
+                }
+                val serviceUUIDs: List<UUID> = peripheral.services
+                    ?.filterIsInstance<CBService>()
+                    ?.map { it.UUID }
+                    ?: withServices.toList() // fallback to filter, as it *must* contain one of them
+
+                Scanner.Event.DeviceDiscovered(
+                    identifier = deviceWrapper.identifier,
+                    rssi = Int.MIN_VALUE,
+                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
+                    deviceCreator = deviceCreator
+                )
+            }
+        // We have to call even with empty list to clean up cached devices
+        handlePairedDevices(withServices, devices)
+    }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         central.delegate?.let {

@@ -25,7 +25,6 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
-import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -59,14 +58,9 @@ import platform.SystemConfiguration.SCNetworkReachabilitySetDispatchQueue
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
-import platform.darwin.DISPATCH_QUEUE_SERIAL
-import platform.darwin.DISPATCH_QUEUE_SERIAL_WITH_AUTORELEASE_POOL
 import platform.darwin.dispatch_get_main_queue
-import platform.darwin.dispatch_qos_class_t
 import platform.darwin.dispatch_queue_attr_make_with_qos_class
-import platform.darwin.dispatch_queue_attr_tVar
 import platform.darwin.dispatch_queue_create
-import platform.darwin.dispatch_queue_serial_t
 import platform.posix.QOS_CLASS_UTILITY
 
 actual class DefaultNetworkManager internal constructor(
@@ -100,11 +94,14 @@ actual class DefaultNetworkManager internal constructor(
             }
         }
         private val nwPathMonitor: nw_path_monitor_t = nw_path_monitor_create().apply {
-            val queue = dispatch_queue_create("com.splendo.kaluga.system.network", dispatch_queue_attr_make_with_qos_class(
-                null,
-                QOS_CLASS_UTILITY,
-                DISPATCH_QUEUE_PRIORITY_DEFAULT
-            ))
+            val queue = dispatch_queue_create(
+                "com.splendo.kaluga.system.network",
+                dispatch_queue_attr_make_with_qos_class(
+                    null,
+                    QOS_CLASS_UTILITY,
+                    DISPATCH_QUEUE_PRIORITY_DEFAULT
+                )
+            )
             nw_path_monitor_set_queue(
                 this,
                 queue
