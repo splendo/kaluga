@@ -33,6 +33,7 @@ import com.splendo.kaluga.example.shared.model.scientific.quantityDetails
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.converter.ScientificConverterException
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -84,7 +85,7 @@ class ScientificConverterViewModel internal constructor(
                 if (left != null && leftUnit != null) {
                     try {
                         converter.convert(left, leftUnit)
-                    } catch (e: Exception) {
+                    } catch (e: ScientificConverterException) {
                         null
                     }
                 } else {
@@ -95,7 +96,7 @@ class ScientificConverterViewModel internal constructor(
                 if (left != null && leftUnit != null && right != null && rightUnit != null) {
                     try {
                         converter.convert(left, leftUnit, right, rightUnit)
-                    } catch (e: Exception) {
+                    } catch (e: ScientificConverterException) {
                         null
                     }
                 } else {
