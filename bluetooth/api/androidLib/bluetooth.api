@@ -798,6 +798,12 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceInfo {
 	public abstract fun getUpdatedAt ()Lcom/splendo/kaluga/base/utils/KalugaDate;
 }
 
+public final class com/splendo/kaluga/bluetooth/device/DeviceInfoAndroid {
+	public static final fun getStringValue (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun identifierFromString (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun randomIdentifier ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/bluetooth/device/DeviceInfoImpl : com/splendo/kaluga/bluetooth/device/DeviceInfo {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)V
@@ -819,8 +825,7 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceInfoImpl : com/sple
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceInfoKt {
-	public static final fun getStringValue (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun randomIdentifier ()Ljava/lang/String;
+	public static final fun getSerializable (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceState {
@@ -836,11 +841,36 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceWrappe
 	public abstract fun removeBond ()V
 }
 
+public class com/splendo/kaluga/bluetooth/device/IdentifierSerializer : kotlinx/serialization/KSerializer {
+	public fun <init> ()V
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
 public abstract interface class com/splendo/kaluga/bluetooth/device/NotConnectableDeviceState : com/splendo/kaluga/bluetooth/device/DeviceState {
 }
 
 public final class com/splendo/kaluga/bluetooth/device/NotConnectableDeviceStateImpl : com/splendo/kaluga/bluetooth/device/NotConnectableDeviceState {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/NotConnectableDeviceStateImpl;
+}
+
+public final class com/splendo/kaluga/bluetooth/device/SerializableIdentifier {
+	public static final field Companion Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIdentifier ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/device/SerializableIdentifier$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/splendo/kaluga/bluetooth/scanner/Scanner, kotlinx/coroutines/CoroutineScope {
@@ -901,7 +931,7 @@ public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner : com/spl
 	public fun generateEnableSensorsActions ()Ljava/util/List;
 	public fun isHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun isSupported ()Z
-	public fun pairedDevices (Ljava/util/Set;)Ljava/util/List;
+	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun stopMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
