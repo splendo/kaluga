@@ -41,18 +41,27 @@ import kotlin.math.max
 
 object Binding {
 
+    /**
+     * Binds a [BackgroundStyle] to a [View].
+     */
     @BindingAdapter("backgroundStyle")
     @JvmStatic
     fun bindBackground(view: View, backgroundStyle: BackgroundStyle) {
         view.applyBackgroundStyle(backgroundStyle)
     }
 
+    /**
+     * Binds an [Image] to an [ImageView].
+     */
     @BindingAdapter("image")
     @JvmStatic
     fun bindImage(view: ImageView, image: Image?) {
         view.setImageDrawable(image?.drawable)
     }
 
+    /**
+     * Binds a [KalugaButton] to a [Button].
+     */
     @BindingAdapter("kalugaButton")
     @JvmStatic
     fun bindKalugaButton(button: Button, kalugaButton: KalugaButton?) {
@@ -61,6 +70,9 @@ object Binding {
         }
     }
 
+    /**
+     * Binds a [KalugaLabel] to a [TextView]
+     */
     @BindingAdapter("kalugaLabel")
     @JvmStatic
     fun bindKalugaLabel(view: TextView, kalugaLabel: KalugaLabel?) {
@@ -69,6 +81,9 @@ object Binding {
         }
     }
 
+    /**
+     * Binds a [TextStyle] to a [TextView].
+     */
     @BindingAdapter("textStyle")
     @JvmStatic
     fun bindTextStyle(textView: TextView, textStyle: TextStyle?) {
@@ -77,6 +92,9 @@ object Binding {
         }
     }
 
+    /**
+     * Binds a [TextStyle] to a  [TextView] using [TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration]
+     */
     @BindingAdapter("autoTextStyle", "autoTextMinScalingFactor")
     @JvmStatic
     fun bindAutoTextStyle(textView: TextView, autoTextStyle: TextStyle?, autoTextMinScalingFactor: Float) {
@@ -87,18 +105,27 @@ object Binding {
         }
     }
 
+    /**
+     * Binds a [TextStyle] to the [TextInputLayout.getEditText] of a [TextInputLayout]
+     */
     @BindingAdapter("textStyle")
     @JvmStatic
     fun bindTextInputLayoutTextStyle(textView: TextInputLayout, textStyle: TextStyle) {
         textView.editText?.applyTextStyle(textStyle)
     }
 
+    /**
+     * Binds a [TextStyle] to the [TextInputLayout.getPrefixTextView] of a [TextInputLayout]
+     */
     @BindingAdapter("prefixTextStyle")
     @JvmStatic
     fun bindPrefixTextStyle(textView: TextInputLayout, textStyle: TextStyle) {
         textView.prefixTextView.applyTextStyle(textStyle)
     }
 
+    /**
+     * Binds a [TextStyle] to the [TextInputLayout.getSuffixTextView] of a [TextInputLayout]
+     */
     @BindingAdapter("suffixTextStyle")
     @JvmStatic
     fun bindSuffixTextStyle(textView: TextInputLayout, textStyle: TextStyle) {

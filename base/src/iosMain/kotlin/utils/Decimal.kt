@@ -90,35 +90,39 @@ actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 )
 
-actual operator fun Decimal.div(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal))
+actual operator fun Decimal.div(value: Decimal) = if (value.nsDecimal != NSDecimalNumber.zero) copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal)) else throw DecimalException("Divide by zero")
 
-actual fun Decimal.div(value: Decimal, scale: Int) = copy(
-    nsDecimal = nsDecimal.decimalNumberByDividingBy(
-        decimalNumber = value.nsDecimal,
-        withBehavior = NSDecimalNumberHandler(
-            NSRoundingMode.NSRoundBankers,
-            scale.toShort(),
-            raiseOnExactness = true,
-            raiseOnOverflow = true,
-            raiseOnUnderflow = true,
-            raiseOnDivideByZero = true
+actual fun Decimal.div(value: Decimal, scale: Int) = if (value.nsDecimal != NSDecimalNumber.zero)
+    copy(
+        nsDecimal = nsDecimal.decimalNumberByDividingBy(
+            decimalNumber = value.nsDecimal,
+            withBehavior = NSDecimalNumberHandler(
+                NSRoundingMode.NSRoundBankers,
+                scale.toShort(),
+                raiseOnExactness = true,
+                raiseOnOverflow = true,
+                raiseOnUnderflow = true,
+                raiseOnDivideByZero = true
+            )
         )
     )
-)
+else throw DecimalException("Divide by zero")
 
-actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
-    nsDecimal = nsDecimal.decimalNumberByDividingBy(
-        decimalNumber = value.nsDecimal,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = roundingMode.nsRoundingMode,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
+actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) = if (value.nsDecimal != NSDecimalNumber.zero)
+    copy(
+        nsDecimal = nsDecimal.decimalNumberByDividingBy(
+            decimalNumber = value.nsDecimal,
+            withBehavior = NSDecimalNumberHandler(
+                roundingMode = roundingMode.nsRoundingMode,
+                scale = scale.toShort(),
+                raiseOnExactness = false,
+                raiseOnOverflow = false,
+                raiseOnUnderflow = false,
+                raiseOnDivideByZero = true
+            )
         )
     )
-)
+else throw DecimalException("Divide by zero")
 
 actual operator fun Decimal.times(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
 
