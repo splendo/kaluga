@@ -63,7 +63,7 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     viewModel: ViewModel,
     content: @Composable (ViewModel.() -> Unit)? = null
 ) {
-    // Link the ViewModel to existing LifecycleSubsctibable
+    // Link the ViewModel to existing LifecycleSubscribable
     viewModel.linkLifecycle(activity, fragmentManager)
 
     // Get a List of all ComposableLifecycleSubscribable of the viewModel.

@@ -624,6 +624,10 @@ public final class com/splendo/kaluga/base/utils/DecimalAndroid {
 	public static final fun toString (Ljava/math/BigDecimal;)Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/base/utils/DecimalException : java/lang/ArithmeticException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public final class com/splendo/kaluga/base/utils/DecimalKt {
 	public static final fun toDecimalList (Ljava/util/Collection;)Ljava/util/List;
 	public static final fun toDecimalList ([B)Ljava/util/List;
