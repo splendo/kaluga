@@ -22,8 +22,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
-import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
@@ -34,7 +33,7 @@ import org.koin.core.parameter.parametersOf
 class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.layout.activity_permissions_demo) {
 
     override val viewModel: PermissionViewModel by viewModel {
-        intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))?.let { permissionView ->
+        parseTypeOfOrNull(PermissionView.serializer())?.let { permissionView ->
             parametersOf(permissionView.permission)
         } ?: parametersOf()
     }
@@ -42,7 +41,7 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.title = intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(PermissionView.serializer()))?.title
+        supportActionBar?.title = parseTypeOfOrNull(PermissionView.serializer())?.title
 
         viewModel.permissionStateMessage.observe {
             findViewById<TextView>(R.id.permissions_message).text = it
