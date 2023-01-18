@@ -7,14 +7,14 @@ public final class com/splendo/kaluga/datetime/timer/RecurringTimer : com/splend
 	public synthetic fun <init> (JJLkotlin/time/TimeSource;Lkotlin/jvm/functions/Function2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JJLkotlin/time/TimeSource;Lkotlin/jvm/functions/Function2;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getDuration-UwyO8pc ()J
-	public fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getState ()Lkotlinx/coroutines/flow/Flow;
 	public fun pause (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/splendo/kaluga/datetime/timer/Timer {
 	public abstract fun getDuration-UwyO8pc ()J
-	public abstract fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getState ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public abstract interface class com/splendo/kaluga/datetime/timer/Timer$State {
