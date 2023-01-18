@@ -13,8 +13,8 @@ app:autoTextStyle=textStyle
 app:autoTextMinScalingFactor=scalingFactor
 ```
 
-## BackgroundStyle
-Use `app:backgroundStyle` to bind a `BackgroundStyle` to a `View`
+## KalugaBackgroundStyle
+Use `app:backgroundStyle` to bind a `KalugaBackgroundStyle` to a `View`
 
 ## KalugaButton
 Use `app:kalugaButton` to bind a `KalugaButton` to a `Button`

@@ -42,7 +42,7 @@ import kotlin.math.max
 object Binding {
 
     /**
-     * Binds a [BackgroundStyle] to a [View].
+     * Binds a [KalugaBackgroundStyle] to a [View].
      */
     @BindingAdapter("backgroundStyle")
     @JvmStatic
