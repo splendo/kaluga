@@ -175,7 +175,6 @@ sealed class NavigationSpec {
      * @param tag The tag of the [Fragment] to remove
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [Fragment]
-     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class RemoveFragment(
         val tag: String,
@@ -188,7 +187,6 @@ sealed class NavigationSpec {
      * @param immediate If `true` the transaction should execute without waiting for pending transactions
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
-     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class PopFragment(
         val immediate: Boolean = false,
@@ -201,7 +199,6 @@ sealed class NavigationSpec {
      * @param immediate If `true` the transaction should execute without waiting for pending transactions
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
-     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class PopFragmentTo(
         val name: String,
@@ -228,7 +225,6 @@ sealed class NavigationSpec {
      * @param tag The tag of the [DialogFragment] to remove
      * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [DialogFragment]
-     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
      */
     data class DismissDialog(
         val tag: String,
