@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-actual class TimeZone internal constructor(internal val timeZone: java.util.TimeZone) {
+actual class TimeZone internal constructor(internal val timeZone: java.util.TimeZone) : BaseTimeZone() {
 
     actual companion object {
         actual fun get(identifier: String): TimeZone? {
@@ -31,19 +31,19 @@ actual class TimeZone internal constructor(internal val timeZone: java.util.Time
         actual val availableIdentifiers get() = java.util.TimeZone.getAvailableIDs().asList()
     }
 
-    actual val identifier: String = timeZone.id
-    actual fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String {
+    override val identifier: String = timeZone.id
+    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String {
         val styleJava = when (style) {
             TimeZoneNameStyle.Short -> java.util.TimeZone.SHORT
             TimeZoneNameStyle.Long -> java.util.TimeZone.LONG
         }
         return timeZone.getDisplayName(withDaylightSavings, styleJava, locale.locale)
     }
-    actual val offsetFromGMTInMilliseconds = timeZone.rawOffset.toLong()
-    actual val daylightSavingsOffsetInMilliseconds: Long = timeZone.dstSavings.toLong()
-    actual fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
-    actual fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
-    actual fun copy(): TimeZone = TimeZone(timeZone.clone() as java.util.TimeZone)
+    override val offsetFromGMTInMilliseconds = timeZone.rawOffset.toLong()
+    override val daylightSavingsOffsetInMilliseconds: Long = timeZone.dstSavings.toLong()
+    override fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
+    override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
+    override fun copy(): TimeZone = TimeZone(timeZone.clone() as java.util.TimeZone)
     override fun equals(other: Any?): Boolean {
         return (other as? TimeZone)?.let { timeZone == other.timeZone } ?: false
     }
