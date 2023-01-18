@@ -58,8 +58,153 @@ public final class com/splendo/kaluga/architecture/navigation/ActivityNavigator 
 	public fun unsubscribe ()V
 }
 
+public final class com/splendo/kaluga/architecture/navigation/ActivityParseExtraKt {
+	public static final fun parseBoolean (Landroid/app/Activity;)Z
+	public static final fun parseBooleanArray (Landroid/app/Activity;)[Z
+	public static final fun parseBooleanArrayOrNull (Landroid/app/Activity;)[Z
+	public static final fun parseBooleanOrNull (Landroid/app/Activity;)Ljava/lang/Boolean;
+	public static final fun parseByte (Landroid/app/Activity;)B
+	public static final fun parseByteArray (Landroid/app/Activity;)[B
+	public static final fun parseByteArrayOrNull (Landroid/app/Activity;)[B
+	public static final fun parseByteOrNull (Landroid/app/Activity;)Ljava/lang/Byte;
+	public static final fun parseChar (Landroid/app/Activity;)C
+	public static final fun parseCharArray (Landroid/app/Activity;)[C
+	public static final fun parseCharArrayOrNull (Landroid/app/Activity;)[C
+	public static final fun parseCharOrNull (Landroid/app/Activity;)Ljava/lang/Character;
+	public static final fun parseCharSequenceOrNull (Landroid/app/Activity;)Ljava/lang/CharSequence;
+	public static final fun parseDate (Landroid/app/Activity;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDateArray (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseDateArrayOrNull (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseDateOrNull (Landroid/app/Activity;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDouble (Landroid/app/Activity;)D
+	public static final fun parseDoubleArray (Landroid/app/Activity;)[D
+	public static final fun parseDoubleArrayOrNull (Landroid/app/Activity;)[D
+	public static final fun parseDoubleOrNull (Landroid/app/Activity;)Ljava/lang/Double;
+	public static final fun parseExtra (Landroid/app/Activity;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseExtraOrNull (Landroid/app/Activity;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseFloat (Landroid/app/Activity;)F
+	public static final fun parseFloatArray (Landroid/app/Activity;)[F
+	public static final fun parseFloatArrayOrNull (Landroid/app/Activity;)[F
+	public static final fun parseFloatOrNull (Landroid/app/Activity;)Ljava/lang/Float;
+	public static final fun parseInt (Landroid/app/Activity;)I
+	public static final fun parseIntArray (Landroid/app/Activity;)[I
+	public static final fun parseIntArrayOrNull (Landroid/app/Activity;)[I
+	public static final fun parseIntOrNull (Landroid/app/Activity;)Ljava/lang/Integer;
+	public static final fun parseLong (Landroid/app/Activity;)J
+	public static final fun parseLongArray (Landroid/app/Activity;)[J
+	public static final fun parseLongArrayOrNull (Landroid/app/Activity;)[J
+	public static final fun parseLongOrNull (Landroid/app/Activity;)Ljava/lang/Long;
+	public static final fun parseShort (Landroid/app/Activity;)S
+	public static final fun parseShortArray (Landroid/app/Activity;)[S
+	public static final fun parseShortArrayOrNull (Landroid/app/Activity;)[S
+	public static final fun parseShortOrNull (Landroid/app/Activity;)Ljava/lang/Short;
+	public static final fun parseString (Landroid/app/Activity;)Ljava/lang/String;
+	public static final fun parseStringList (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseStringListOrNull (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseStringOrNull (Landroid/app/Activity;)Ljava/lang/String;
+	public static final fun parseTypeOf (Landroid/app/Activity;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun parseTypeOfOrNull (Landroid/app/Activity;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+}
+
 public final class com/splendo/kaluga/architecture/navigation/BundleConversionError : java/lang/Exception {
 	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/architecture/navigation/BundleToTypedPropertyKt {
+	public static final fun asBoolean (Landroid/os/Bundle;)Z
+	public static final fun asBooleanArray (Landroid/os/Bundle;)[Z
+	public static final fun asBooleanArrayOrNull (Landroid/os/Bundle;)[Z
+	public static final fun asBooleanOrNull (Landroid/os/Bundle;)Ljava/lang/Boolean;
+	public static final fun asByte (Landroid/os/Bundle;)B
+	public static final fun asByteArray (Landroid/os/Bundle;)[B
+	public static final fun asByteArrayOrNull (Landroid/os/Bundle;)[B
+	public static final fun asByteOrNull (Landroid/os/Bundle;)Ljava/lang/Byte;
+	public static final fun asChar (Landroid/os/Bundle;)C
+	public static final fun asCharArray (Landroid/os/Bundle;)[C
+	public static final fun asCharArrayOrNull (Landroid/os/Bundle;)[C
+	public static final fun asCharOrNull (Landroid/os/Bundle;)Ljava/lang/Character;
+	public static final fun asCharSequence (Landroid/os/Bundle;)Ljava/lang/CharSequence;
+	public static final fun asCharSequenceOrNull (Landroid/os/Bundle;)Ljava/lang/CharSequence;
+	public static final fun asDate (Landroid/os/Bundle;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun asDateArray (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asDateArrayOrNull (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asDateOrNull (Landroid/os/Bundle;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun asDouble (Landroid/os/Bundle;)D
+	public static final fun asDoubleArray (Landroid/os/Bundle;)[D
+	public static final fun asDoubleArrayOrNull (Landroid/os/Bundle;)[D
+	public static final fun asDoubleOrNull (Landroid/os/Bundle;)Ljava/lang/Double;
+	public static final fun asFloat (Landroid/os/Bundle;)F
+	public static final fun asFloatArray (Landroid/os/Bundle;)[F
+	public static final fun asFloatArrayOrNull (Landroid/os/Bundle;)[F
+	public static final fun asFloatOrNull (Landroid/os/Bundle;)Ljava/lang/Float;
+	public static final fun asInt (Landroid/os/Bundle;)I
+	public static final fun asIntArray (Landroid/os/Bundle;)[I
+	public static final fun asIntArrayOrNull (Landroid/os/Bundle;)[I
+	public static final fun asIntOrNull (Landroid/os/Bundle;)Ljava/lang/Integer;
+	public static final fun asLong (Landroid/os/Bundle;)J
+	public static final fun asLongArray (Landroid/os/Bundle;)[J
+	public static final fun asLongArrayOrNull (Landroid/os/Bundle;)[J
+	public static final fun asLongOrNull (Landroid/os/Bundle;)Ljava/lang/Long;
+	public static final fun asShort (Landroid/os/Bundle;)S
+	public static final fun asShortArray (Landroid/os/Bundle;)[S
+	public static final fun asShortArrayOrNull (Landroid/os/Bundle;)[S
+	public static final fun asShortOrNull (Landroid/os/Bundle;)Ljava/lang/Short;
+	public static final fun asString (Landroid/os/Bundle;)Ljava/lang/String;
+	public static final fun asStringList (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asStringListOrNull (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asStringOrNull (Landroid/os/Bundle;)Ljava/lang/String;
+	public static final fun asTypeOf (Landroid/os/Bundle;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun asTypeOfOrNull (Landroid/os/Bundle;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun toTypedProperty (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
+	public static final fun toTypedPropertyOrNull (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/FragmentParseArgumentsKt {
+	public static final fun parseBoolean (Landroidx/fragment/app/Fragment;)Z
+	public static final fun parseBooleanArray (Landroidx/fragment/app/Fragment;)[Z
+	public static final fun parseBooleanArrayOrNull (Landroidx/fragment/app/Fragment;)[Z
+	public static final fun parseBooleanOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Boolean;
+	public static final fun parseByte (Landroidx/fragment/app/Fragment;)B
+	public static final fun parseByteArray (Landroidx/fragment/app/Fragment;)[B
+	public static final fun parseByteArrayOrNull (Landroidx/fragment/app/Fragment;)[B
+	public static final fun parseByteOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Byte;
+	public static final fun parseChar (Landroidx/fragment/app/Fragment;)C
+	public static final fun parseCharArray (Landroidx/fragment/app/Fragment;)[C
+	public static final fun parseCharArrayOrNull (Landroidx/fragment/app/Fragment;)[C
+	public static final fun parseCharOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Character;
+	public static final fun parseCharSequenceOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/CharSequence;
+	public static final fun parseDate (Landroidx/fragment/app/Fragment;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDateArray (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseDateArrayOrNull (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseDateOrNull (Landroidx/fragment/app/Fragment;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDouble (Landroidx/fragment/app/Fragment;)D
+	public static final fun parseDoubleArray (Landroidx/fragment/app/Fragment;)[D
+	public static final fun parseDoubleArrayOrNull (Landroidx/fragment/app/Fragment;)[D
+	public static final fun parseDoubleOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Double;
+	public static final fun parseExtra (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseExtraOrNull (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseFloat (Landroidx/fragment/app/Fragment;)F
+	public static final fun parseFloatArray (Landroidx/fragment/app/Fragment;)[F
+	public static final fun parseFloatArrayOrNull (Landroidx/fragment/app/Fragment;)[F
+	public static final fun parseFloatOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Float;
+	public static final fun parseInt (Landroidx/fragment/app/Fragment;)I
+	public static final fun parseIntArray (Landroidx/fragment/app/Fragment;)[I
+	public static final fun parseIntArrayOrNull (Landroidx/fragment/app/Fragment;)[I
+	public static final fun parseIntOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Integer;
+	public static final fun parseLong (Landroidx/fragment/app/Fragment;)J
+	public static final fun parseLongArray (Landroidx/fragment/app/Fragment;)[J
+	public static final fun parseLongArrayOrNull (Landroidx/fragment/app/Fragment;)[J
+	public static final fun parseLongOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Long;
+	public static final fun parseShort (Landroidx/fragment/app/Fragment;)S
+	public static final fun parseShortArray (Landroidx/fragment/app/Fragment;)[S
+	public static final fun parseShortArrayOrNull (Landroidx/fragment/app/Fragment;)[S
+	public static final fun parseShortOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Short;
+	public static final fun parseString (Landroidx/fragment/app/Fragment;)Ljava/lang/String;
+	public static final fun parseStringList (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseStringListOrNull (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseStringOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/String;
+	public static final fun parseTypeOf (Landroidx/fragment/app/Fragment;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun parseTypeOfOrNull (Landroidx/fragment/app/Fragment;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/IntentFlag {
@@ -254,7 +399,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleGe
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleKt {
 	public static final fun toBundle (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)Landroid/os/Bundle;
 	public static final fun toNavigationBundle (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
-	public static final fun toTypedProperty (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
 }
 
 public class com/splendo/kaluga/architecture/navigation/NavigationBundleSpec {
