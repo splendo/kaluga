@@ -48,12 +48,12 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         when (spec) {
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
-            is NavigationSpec.Fragment -> navigateToFragment(spec)
-            is NavigationSpec.RemoveFragment -> removeFragment(spec)
-            is NavigationSpec.PopFragment -> popFragment(spec)
-            is NavigationSpec.PopFragmentTo -> popFragmentTo(spec)
-            is NavigationSpec.Dialog -> navigateToDialog(spec)
-            is NavigationSpec.DismissDialog -> dismissDialog(spec)
+            is NavigationSpec.Fragment -> navigateToFragment(spec, bundle)
+            is NavigationSpec.RemoveFragment -> removeFragment(spec, bundle)
+            is NavigationSpec.PopFragment -> popFragment(spec, bundle)
+            is NavigationSpec.PopFragmentTo -> popFragmentTo(spec, bundle)
+            is NavigationSpec.Dialog -> navigateToDialog(spec, bundle)
+            is NavigationSpec.DismissDialog -> dismissDialog(spec, bundle)
             is NavigationSpec.Camera -> navigateToCamera(spec)
             is NavigationSpec.Email -> navigateToEmail(spec)
             is NavigationSpec.FileSelector -> navigateToFileSelector(spec)
@@ -101,7 +101,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         activity.finish()
     }
 
-    private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
+    private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment, bundle: NavigationBundle<*>?) {
         assert(manager != null)
         val fragmentManager = fragmentSpec.getFragmentManager(manager!!)
         val transaction = fragmentManager.beginTransaction().let {
@@ -122,7 +122,9 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             )
         }
 
-        val fragment = fragmentSpec.createFragment()
+        val fragment = fragmentSpec.createFragment().apply {
+            arguments = bundle?.toBundle()
+        }
         when (fragmentSpec.type) {
             is NavigationSpec.Fragment.Type.Add -> transaction.add(
                 fragmentSpec.containerId,
@@ -139,9 +141,14 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         transaction.commit()
     }
 
-    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment) {
+    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!)
+        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!).apply {
+            removeFragmentSpec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
+        }
         val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
 
         val transaction = fragmentManager.beginTransaction()
@@ -149,9 +156,14 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         transaction.commit()
     }
 
-    private fun popFragment(popFragmentSpec: NavigationSpec.PopFragment) {
+    private fun popFragment(popFragmentSpec: NavigationSpec.PopFragment, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!)
+        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!).apply {
+            popFragmentSpec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
+        }
         if (popFragmentSpec.immediate) {
             fragmentManager.popBackStackImmediate()
         } else {
@@ -159,9 +171,14 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         }
     }
 
-    private fun popFragmentTo(popToFragmentSpec: NavigationSpec.PopFragmentTo) {
+    private fun popFragmentTo(popToFragmentSpec: NavigationSpec.PopFragmentTo, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!)
+        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!).apply {
+            popToFragmentSpec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
+        }
         val flags = if (popToFragmentSpec.inclusive) FragmentManager.POP_BACK_STACK_INCLUSIVE else 0
         if (popToFragmentSpec.immediate) {
             fragmentManager.popBackStackImmediate(popToFragmentSpec.name, flags)
@@ -170,15 +187,23 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         }
     }
 
-    private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
+    private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog, bundle: NavigationBundle<*>?) {
         assert(manager != null)
         val fragmentManager = dialogSpec.getFragmentManager(manager!!)
-        dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
+        dialogSpec.createDialog().apply {
+            arguments = bundle?.toBundle()
+            show(fragmentManager, dialogSpec.tag)
+        }
     }
 
-    private fun dismissDialog(spec: NavigationSpec.DismissDialog) {
+    private fun dismissDialog(spec: NavigationSpec.DismissDialog, bundle: NavigationBundle<*>?) {
         assert(manager != null)
-        val fragmentManager = spec.getFragmentManager(manager!!)
+        val fragmentManager = spec.getFragmentManager(manager!!).apply {
+            spec.fragmentRequestKey?.let {
+                if (bundle != null)
+                    setFragmentResult(it, bundle.toBundle())
+            }
+        }
         val dialog = fragmentManager.findFragmentByTag(spec.tag) as? DialogFragment ?: return
         dialog.dismiss()
     }
