@@ -913,6 +913,7 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Ema
 	public final fun getBcc ()Ljava/util/List;
 	public final fun getBody ()Ljava/lang/String;
 	public final fun getCc ()Ljava/util/List;
+	public final fun getIntent ()Landroid/content/Intent;
 	public final fun getSubject ()Ljava/lang/String;
 	public final fun getTo ()Ljava/util/List;
 	public final fun getType ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type;
@@ -1117,66 +1118,82 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Set
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
+	public abstract fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AirplaneMode : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AirplaneMode;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Apn : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Apn;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AppDetails : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AppDetails;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Bluetooth : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Bluetooth;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Date : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Date;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Display : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Display;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$General : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$General;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InputMethod : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InputMethod;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InternalStorage : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InternalStorage;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Locale : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Locale;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$LocationSource : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$LocationSource;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$MemoryCard : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$MemoryCard;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Security : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Security;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wifi : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wifi;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wireless : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wireless;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1203,6 +1220,7 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Tex
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getBody ()Ljava/lang/String;
+	public final fun getIntent ()Landroid/content/Intent;
 	public final fun getRecipients ()Ljava/util/List;
 	public final fun getSubject ()Ljava/lang/String;
 	public final fun getType ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type;

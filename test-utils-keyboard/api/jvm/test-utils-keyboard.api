@@ -1,14 +1,8 @@
-public class com/splendo/kaluga/test/keyboard/BaseMockFocusHandler {
+public final class com/splendo/kaluga/test/keyboard/MockFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public fun <init> ()V
-	protected final fun giveFocus ()V
+	public final fun giveFocus ()V
 	public final fun isFocused ()Z
-	protected final fun removeFocus ()V
-}
-
-public final class com/splendo/kaluga/test/keyboard/MockFocusHandler : com/splendo/kaluga/test/keyboard/BaseMockFocusHandler, com/splendo/kaluga/keyboard/FocusHandler {
-	public fun <init> ()V
-	public final fun simulateGiveFocus ()V
-	public final fun simulateRemoveFocus ()V
+	public final fun removeFocus ()V
 }
 
 public final class com/splendo/kaluga/test/keyboard/MockKeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager {
