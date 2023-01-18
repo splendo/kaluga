@@ -18,8 +18,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlin.jvm.JvmName
 
@@ -32,107 +30,102 @@ expect class KalugaDateHolder
  * Class describing a point in time
  * Dates are localized according to a [Locale] and relative to a given [TimeZone]
  */
-abstract class KalugaDate : Comparable<KalugaDate> {
+interface KalugaDate : Comparable<KalugaDate> {
     /**
      * The [TimeZone] in which the Date is set
      */
-    abstract var timeZone: TimeZone
+    var timeZone: TimeZone
 
     /**
      * The number of the era, e.g., AD or BC in the Julian calendar
      */
-    abstract var era: Int
+    var era: Int
 
     /**
      * The year
      */
-    abstract var year: Int
+    var year: Int
 
     /**
      * The month of the year. Starts at 1
      */
-    abstract var month: Int
+    var month: Int
 
     /**
      * The number of days in the current month
      */
-    abstract val daysInMonth: Int
+    val daysInMonth: Int
 
     /**
      * The week number within the current year.
      */
-    abstract var weekOfYear: Int
+    var weekOfYear: Int
 
     /**
      * The week number within the current month
      */
-    abstract var weekOfMonth: Int
+    var weekOfMonth: Int
 
     /**
      * The day of the current month
      */
-    abstract var day: Int
+    var day: Int
 
     /**
      * The day of the current year
      */
-    abstract var dayOfYear: Int
+    var dayOfYear: Int
 
     /**
      * The day of the week. Starts at 1
      */
-    abstract var weekDay: Int
+    var weekDay: Int
 
     /**
      * The first day of the week. E.g. Sunday in the US, Monday in France. Starts at 1.
      */
-    abstract var firstWeekDay: Int
+    var firstWeekDay: Int
 
     /**
      * The hour of the current day
      */
-    abstract var hour: Int
+    var hour: Int
 
     /**
      * The minute of the current hour
      */
-    abstract var minute: Int
+    var minute: Int
 
     /**
      * The second of the current minute
      */
-    abstract var second: Int
+    var second: Int
 
     /**
      * The millisecond of the current second
      */
-    abstract var millisecond: Int
+    var millisecond: Int
 
     /**
      * The number of milliseconds passed since epoch time (January 1st 1970 00:00:00:00 GMT)
      */
-    abstract var millisecondSinceEpoch: Long
+    var millisecondSinceEpoch: Long
 
     /**
      * Creates a copy of a [KalugaDate]
      * @return A copy of this [KalugaDate]
      */
-    abstract fun copy(): KalugaDate
+    fun copy(): KalugaDate
 
     /**
      * Returns whether this Date is in the same [timeZone] and has the same time based on [millisecondSinceEpoch]
      * @return `true` if the two dates are equal
      */
-    abstract override fun equals(other: Any?): Boolean
+    override fun equals(other: Any?): Boolean
 
-    abstract override fun hashCode(): Int
+    override fun hashCode(): Int
 
-    override fun toString(): String {
-        val formatter = KalugaDateFormatter.iso8601Pattern(timeZone)
-        return formatter.format(this)
-    }
-
-    abstract val date: KalugaDateHolder
+    val date: KalugaDateHolder
 }
 
 expect class DefaultKalugaDate : KalugaDate {

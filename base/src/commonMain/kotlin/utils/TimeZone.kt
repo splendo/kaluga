@@ -31,54 +31,7 @@ enum class TimeZoneNameStyle {
 
 val TimeZone.Companion.utc: TimeZone by lazy { TimeZone.get("UTC")!! }
 
-abstract class BaseTimeZone {
-
-    /**
-     * The identifier of the [TimeZone]
-     */
-    abstract val identifier: String
-
-    /**
-     * Gets the display name for this [TimeZone] formatted for a given [Locale]
-     * @param style The [TimeZoneNameStyle] of the name. Can be either [TimeZoneNameStyle.Short] or [TimeZoneNameStyle.Long]
-     * @param withDaylightSavings If `true` the name for the DaylightSavings version of the [TimeZone] will be used. Defaults to [TimeZone.usesDaylightSavingsTime]
-     * @param locale The [Locale] used for naming the [TimeZone]. Defaults to [Locale.defaultLocale]
-     */
-    abstract fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean = usesDaylightSavingsTime(), locale: Locale = defaultLocale): String
-
-    /**
-     * The number of milliseconds this timezone differs from GMT when daylight savings time is not active
-     */
-    abstract val offsetFromGMTInMilliseconds: Long
-
-    /**
-     * The number of milliseconds this timezone differs from itself during Daylight Savings
-     */
-    abstract val daylightSavingsOffsetInMilliseconds: Long
-
-    /**
-     * The number of milliseconds this [TimeZone] differs from GMT at a given [KalugaDate]
-     * @param date The [KalugaDate] for which to check the offset. Defaults to [DefaultKalugaDate.now]
-     * @return The number of milliseconds this [TimeZone] differs from GMT at [date]
-     */
-    abstract fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate = now()): Long
-
-    /**
-     * Returns `true` if this [TimeZone] is observing daylight savings at a given [KalugaDate]
-     * @param date The [KalugaDate] for which to check whether daylight savings is observed. Defaults to [KalugaDate.now]
-     * @return `true` if this [TimeZone] if observing daylight savings at [date]
-     */
-    abstract fun usesDaylightSavingsTime(date: KalugaDate = now()): Boolean
-
-    /**
-     * Creates a copy of this [TimeZone]
-     */
-    abstract fun copy(): BaseTimeZone
-
-    override fun toString(): String = displayName(TimeZoneNameStyle.Long)
-}
-
-expect class TimeZone : BaseTimeZone {
+expect class TimeZone {
     companion object {
         /**
          * Gets a [TimeZone] based on a given Identifier
@@ -98,4 +51,46 @@ expect class TimeZone : BaseTimeZone {
          */
         val availableIdentifiers: List<String>
     }
+
+    /**
+     * The identifier of the [TimeZone]
+     */
+    val identifier: String
+
+    /**
+     * Gets the display name for this [TimeZone] formatted for a given [Locale]
+     * @param style The [TimeZoneNameStyle] of the name. Can be either [TimeZoneNameStyle.Short] or [TimeZoneNameStyle.Long]
+     * @param withDaylightSavings If `true` the name for the DaylightSavings version of the [TimeZone] will be used. Defaults to [TimeZone.usesDaylightSavingsTime]
+     * @param locale The [Locale] used for naming the [TimeZone]. Defaults to [Locale.defaultLocale]
+     */
+    fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean = usesDaylightSavingsTime(), locale: Locale = defaultLocale): String
+
+    /**
+     * The number of milliseconds this timezone differs from GMT when daylight savings time is not active
+     */
+    val offsetFromGMTInMilliseconds: Long
+
+    /**
+     * The number of milliseconds this timezone differs from itself during Daylight Savings
+     */
+    val daylightSavingsOffsetInMilliseconds: Long
+
+    /**
+     * The number of milliseconds this [TimeZone] differs from GMT at a given [KalugaDate]
+     * @param date The [KalugaDate] for which to check the offset. Defaults to [KalugaDate.now]
+     * @return The number of milliseconds this [TimeZone] differs from GMT at [date]
+     */
+    fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate = now()): Long
+
+    /**
+     * Returns `true` if this [TimeZone] is observing daylight savings at a given [KalugaDate]
+     * @param date The [KalugaDate] for which to check whether daylight savings is observed. Defaults to [KalugaDate.now]
+     * @return `true` if this [TimeZone] if observing daylight savings at [date]
+     */
+    fun usesDaylightSavingsTime(date: KalugaDate = now()): Boolean
+
+    /**
+     * Creates a copy of this [TimeZone]
+     */
+    fun copy(): TimeZone
 }

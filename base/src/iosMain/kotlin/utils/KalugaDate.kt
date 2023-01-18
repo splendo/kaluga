@@ -43,7 +43,7 @@ import kotlin.math.round
 
 actual typealias KalugaDateHolder = NSDate
 
-actual class DefaultKalugaDate internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : KalugaDate() {
+actual class DefaultKalugaDate internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : KalugaDate {
     actual companion object {
 
         const val nanoSecondPerMilliSecond = 1000 * 1000

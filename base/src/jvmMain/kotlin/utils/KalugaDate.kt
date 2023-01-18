@@ -22,7 +22,7 @@ import java.util.Date
 
 actual typealias KalugaDateHolder = Date
 
-actual class DefaultKalugaDate internal constructor(internal val calendar: Calendar) : KalugaDate() {
+actual class DefaultKalugaDate internal constructor(internal val calendar: Calendar) : KalugaDate {
 
     actual companion object {
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(

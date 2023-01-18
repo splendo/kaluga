@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.utils
 actual typealias KalugaDateHolder = kotlin.js.Date
 
 // TODO Implement with proper date solution for Java Script
-actual class DefaultKalugaDate internal constructor(override val date: KalugaDateHolder) : KalugaDate() {
+actual class DefaultKalugaDate internal constructor(override val date: KalugaDateHolder) : KalugaDate {
 
     actual companion object {
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
