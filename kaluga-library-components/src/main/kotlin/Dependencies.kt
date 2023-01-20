@@ -96,12 +96,18 @@ object Dependencies {
         val AtomicFu = Dependency(group, "atomicfu", "0.19.0")
     }
 
+    object Accompanist {
+        private const val groupBase = "com.google.accompanist"
+        private const val version = "0.28.0"
+
+        val MaterialThemeAdapter = Dependency(groupBase, "accompanist-themeadapter-material", version)
+    }
+
     object Android {
         internal const val groupBase = "com.google.android"
         private const val materialBase = "$groupBase.material"
 
         val Material = Dependency(materialBase, "material", "1.7.0")
-        val MaterialComposeThemeAdapter = Dependency(materialBase, "compose-theme-adapter", "1.2.1")
 
         object Play {
             private const val group = "$groupBase.play"

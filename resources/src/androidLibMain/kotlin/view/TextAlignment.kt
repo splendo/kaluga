@@ -12,6 +12,7 @@ fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment {
     val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         context.resources.configuration.locales.get(0)
     } else {
+        @Suppress("DEPRECATION")
         context.resources.configuration.locale
     }
     return when (this) {

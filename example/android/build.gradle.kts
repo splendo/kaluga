@@ -95,7 +95,7 @@ dependencies {
 
     implementationDependency(Dependencies.Android.PlayServices.Location)
     implementationDependency(Dependencies.Android.Material)
-    implementationDependency(Dependencies.Android.MaterialComposeThemeAdapter)
+    implementationDependency(Dependencies.Accompanist.MaterialThemeAdapter)
 
     implementationDependency(Dependencies.KotlinX.Serialization.Core)
     implementationDependency(Dependencies.KotlinX.Serialization.Json)

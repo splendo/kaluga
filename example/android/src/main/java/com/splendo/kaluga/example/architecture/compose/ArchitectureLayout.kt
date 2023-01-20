@@ -44,7 +44,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.compose.composable
-import com.google.android.material.composethemeadapter.MdcTheme
+import com.google.accompanist.themeadapter.material.MdcTheme
 import com.splendo.kaluga.architecture.compose.mutableState
 import com.splendo.kaluga.architecture.compose.navigation.RootModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.composable

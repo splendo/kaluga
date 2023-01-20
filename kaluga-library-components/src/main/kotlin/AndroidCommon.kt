@@ -66,30 +66,6 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         }
     }
 
-    project.logger.lifecycle("Android sourcesets for this project module are configured as a library")
-    sourceSets {
-        getByName("main") {
-            manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
-            res.srcDir("src/androidLibMain/res")
-            when (componentType) {
-                is ComponentType.Compose,
-                is ComponentType.DataBinding -> {
-                    java.srcDir("src/androidLibMain/kotlin")
-                }
-                is ComponentType.Default -> {}
-            }
-        }
-        getByName("androidTest") {
-            manifest.srcFile("src/androidLibAndroidTest/AndroidManifest.xml")
-            java.srcDir("src/androidLibAndroidTest/kotlin")
-            res.srcDir("src/androidLibAndroidTest/res")
-        }
-
-        getByName("test") {
-            java.srcDir("src/androidLibUnitTest/kotlin")
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
