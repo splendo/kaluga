@@ -23,10 +23,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
@@ -40,10 +40,17 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
         permission: LocationPermission,
         protected val context: Context
     ) {
-        protected val fusedLocationProviderClient = FusedLocationProviderClient(context)
-        protected val locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-            if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        )
+        protected val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+        protected val locationRequest = LocationRequest.Builder(1)
+            .setMaxUpdateDelayMillis(1000)
+            .setMinUpdateIntervalMillis(1)
+            .setPriority(
+                if (permission.precise)
+                    Priority.PRIORITY_HIGH_ACCURACY
+                else
+                    Priority.PRIORITY_BALANCED_POWER_ACCURACY
+            )
+            .build()
         protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> = MutableStateFlow(emptyList())
         val locations: Flow<List<Location.KnownLocation>> = locationsState
 

@@ -26,7 +26,7 @@ actual class KalugaThread {
     }
 
     actual var name: String = "Main Thread"
-        set(value) = Unit
+        set(_) = Unit
     actual val isMainThread: Boolean = true
 
     override fun equals(other: Any?): Boolean {

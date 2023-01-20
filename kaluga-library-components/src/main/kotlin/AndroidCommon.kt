@@ -33,6 +33,7 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
         testImplementationDependency(Dependencies.Kotlin.Test)
         testImplementationDependency(Dependencies.Kotlin.JUnit)
 
+        androidTestImplementationDependency(Dependencies.Mockito.Core)
         androidTestImplementationDependency(Dependencies.Mockito.Android)
         androidTestImplementationDependency(Dependencies.ByteBuddy.Android)
         androidTestImplementationDependency(Dependencies.ByteBuddy.Agent)
@@ -55,7 +56,6 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
 
     defaultConfig {
         minSdk = LibraryImpl.Android.minSdk
-        targetSdk = LibraryImpl.Android.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
+import java.util.Locale
 
 sealed class ComponentType {
     object Default : ComponentType()
@@ -40,7 +41,7 @@ fun Project.commonComponent(iosExport: (Framework.() -> Unit)? = null) {
 
     commonAndroidComponent()
     androidLibrary {
-        commonMultiplatformComponentAndroid(this@commonComponent)
+        commonMultiplatformComponentAndroid()
     }
 
     task("printConfigurations") {
@@ -52,15 +53,15 @@ fun Project.commonComponent(iosExport: (Framework.() -> Unit)? = null) {
     afterEvaluate {
         Library.IOS.targets.forEach {
             val targetName = it.sourceSetName
-            if (tasks.names.contains("linkDebugTest${targetName.capitalize() }")) {
+            if (tasks.names.contains("linkDebugTest${targetName.capitalize(Locale.ENGLISH) }")) {
                 // creating copy task for the target
-                val copyTask = tasks.create("copy${targetName.capitalize() }TestResources", Copy::class.java) {
+                val copyTask = tasks.create("copy${targetName.capitalize(Locale.ENGLISH) }TestResources", Copy::class.java) {
                     from("src/iosTest/resources/.")
                     into("$buildDir/bin/$targetName/debugTest")
                 }
 
                 // apply copy task to the target
-                tasks.named("linkDebugTest${targetName.capitalize()}") {
+                tasks.named("linkDebugTest${targetName.capitalize(Locale.ENGLISH)}") {
                     dependsOn(copyTask)
                 }
             }
@@ -116,9 +117,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
 
     jvm()
     js(KotlinJsCompilerType.IR) {
-        // Disable JS browser tests for now
-        // See https://github.com/splendo/kaluga/issues/97
-        // browser()
+        browser()
         nodejs()
         compilations.configureEach {
             kotlinOptions {
@@ -127,6 +126,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
                 moduleKind = "umd"
             }
         }
+        binaries.executable()
     }
 
     val commonMain = sourceSets.getByName("commonMain").apply {
@@ -206,7 +206,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
     }
 }
 
-fun LibraryExtension.commonMultiplatformComponentAndroid(project: Project) {
+fun LibraryExtension.commonMultiplatformComponentAndroid() {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }

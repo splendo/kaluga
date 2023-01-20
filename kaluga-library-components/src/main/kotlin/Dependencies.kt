@@ -15,30 +15,53 @@
 
  */
 
+import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
-data class Dependency(private val group: String, private val name: String, private val version: String? = null) {
+data class Dependency(val group: String, val name: String, val version: String? = null) {
     val notation = "$group:$name${version?.let { ":$it" } ?: ""}"
 }
 
-fun KotlinDependencyHandler.apiDependency(dependency: Dependency) = api(dependency.notation)
-fun KotlinDependencyHandler.implementationDependency(dependency: Dependency) = implementation(dependency.notation)
+typealias ModuleDependencyHandler = ModuleDependency.() -> Unit
+
+fun KotlinDependencyHandler.apiDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) = api(dependency.notation) {
+    handler?.invoke(this)
+}
+fun KotlinDependencyHandler.implementationDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) = implementation(dependency.notation) {
+    handler?.invoke(this)
+}
 
 fun DependencyHandler.apiDependency(dependency: Dependency) {
     add("api", dependency.notation)
 }
-fun DependencyHandler.implementationDependency(dependency: Dependency) {
-    add("implementation", dependency.notation)
+fun DependencyHandler.implementationDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) {
+    add("implementation", dependency.notation).apply {
+        (this as? ModuleDependency)?.let {
+            handler?.invoke(it)
+        }
+    }
 }
-fun DependencyHandler.debugImplementationDependency(dependency: Dependency) {
-    add("debugImplementation", dependency.notation)
+fun DependencyHandler.debugImplementationDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) {
+    add("debugImplementation", dependency.notation).apply {
+        (this as? ModuleDependency)?.let {
+            handler?.invoke(it)
+        }
+    }
 }
-fun DependencyHandler.testImplementationDependency(dependency: Dependency) {
-    add("testImplementation", dependency.notation)
+fun DependencyHandler.testImplementationDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) {
+    add("testImplementation", dependency.notation).apply {
+        (this as? ModuleDependency)?.let {
+            handler?.invoke(it)
+        }
+    }
 }
-fun DependencyHandler.androidTestImplementationDependency(dependency: Dependency) {
-    add("androidTestImplementation", dependency.notation)
+fun DependencyHandler.androidTestImplementationDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) {
+    add("androidTestImplementation", dependency.notation).apply {
+        (this as? ModuleDependency)?.let {
+            handler?.invoke(it)
+        }
+    }
 }
 
 object Dependencies {
@@ -65,20 +88,20 @@ object Dependencies {
         }
 
         object Serialization {
-            private const val version =  "1.4.0"
+            private const val version =  "1.4.1"
             val Core = Dependency(group, "kotlinx-serialization-core", version)
             val Json = Dependency(group, "kotlinx-serialization-json", version)
         }
 
-        val AtomicFu = Dependency(group, "atomicfu", "0.18.5")
+        val AtomicFu = Dependency(group, "atomicfu", "0.19.0")
     }
 
     object Android {
         internal const val groupBase = "com.google.android"
         private const val materialBase = "$groupBase.material"
 
-        val Material = Dependency(materialBase, "material", "1.6.1")
-        val MaterialComposeThemeAdapter = Dependency(materialBase, "compose-theme-adapter", "1.1.17")
+        val Material = Dependency(materialBase, "material", "1.7.0")
+        val MaterialComposeThemeAdapter = Dependency(materialBase, "compose-theme-adapter", "1.2.1")
 
         object Play {
             private const val group = "$groupBase.play"
@@ -87,7 +110,7 @@ object Dependencies {
         }
         object PlayServices {
             private const val group = "$groupBase.gms"
-            private const val version = "20.0.0"
+            private const val version = "21.0.1"
             val Location = Dependency(group, "play-services-location", version)
         }
     }
@@ -96,27 +119,28 @@ object Dependencies {
 
         private const val groupBase = "androidx"
         private const val fragmentGroup = "$groupBase.fragment"
-        private const val fragmentVersion = "1.5.3"
+        private const val fragmentVersion = "1.5.5"
 
         object Activity {
             private const val group = "$groupBase.activity"
-            private const val version = "1.6.0"
+            private const val version = "1.6.1"
             val Activity = Dependency(group, "activity", version)
             val Ktx = Dependency(group, "activity-ktx", version)
             val Compose = Dependency(group, "activity-compose", version)
         }
-        val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.5.1")
+        val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.6.0")
         val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.1.0")
         val Browser = Dependency("$groupBase.browser", "browser", "1.4.0")
         object Compose {
-            private const val version = "1.2.1"
+            private const val version = "1.3.1"
+            private const val uiVersion = "1.3.3"
             private const val composeGroupBase = "$groupBase.compose"
 
             val Foundation = Dependency("$composeGroupBase.foundation", "foundation", version)
             val Material = Dependency("$composeGroupBase.material", "material", version)
-            val UI = Dependency("$composeGroupBase.ui", "ui", version)
-            val UITooling = Dependency("$composeGroupBase.ui", "ui-tooling", version)
-            val UIToolingPreview = Dependency("$composeGroupBase.ui", "ui-tooling-preview", version)
+            val UI = Dependency("$composeGroupBase.ui", "ui", uiVersion)
+            val UITooling = Dependency("$composeGroupBase.ui", "ui-tooling", uiVersion)
+            val UIToolingPreview = Dependency("$composeGroupBase.ui", "ui-tooling-preview", uiVersion)
         }
         val ConstraintLayout = Dependency("$groupBase.constraintlayout", "constraintlayout", "2.1.4")
         val Core = Dependency("$groupBase.core", "core", "1.9.0")
@@ -141,9 +165,9 @@ object Dependencies {
         object Test {
             private const val group = "$groupBase.test"
             private const val versionPostfix = ""
-            private const val version = "1.4.0$versionPostfix"
-            private const val espressoVersion = "3.4.0$versionPostfix"
-            private const val junitVersion = "1.1.3$versionPostfix"
+            private const val version = "1.5.0$versionPostfix"
+            private const val espressoVersion = "3.5.1$versionPostfix"
+            private const val junitVersion = "1.1.5$versionPostfix"
             private const val uiAutomatorVersion = "2.2.0"
 
             val Core = Dependency(group, "core", version)
@@ -160,9 +184,11 @@ object Dependencies {
 
     object Koin {
         private const val group = "io.insert-koin"
-        private const val version = "3.2.2"
-        val Android = Dependency(group, "koin-android", version)
-        val AndroidXCompose = Dependency(group, "koin-androidx-compose", version)
+        private const val version = "3.3.2"
+        private const val androidVersion = "3.3.2"
+        private const val composeVersion = "3.4.1"
+        val Android = Dependency(group, "koin-android", androidVersion)
+        val AndroidXCompose = Dependency(group, "koin-androidx-compose", composeVersion)
         val Core = Dependency(group, "koin-core", version)
     }
 
@@ -172,7 +198,7 @@ object Dependencies {
 
     object Mockito {
         private const val group = "org.mockito"
-        private const val version = "4.8.1"
+        private const val version = "5.0.0"
 
         val Android = Dependency(group, "mockito-android", version)
         val Core = Dependency(group, "mockito-core", version)
@@ -180,7 +206,7 @@ object Dependencies {
 
     object ByteBuddy {
         private const val group = "net.bytebuddy"
-        private const val version = "1.12.16"
+        private const val version = "1.12.22"
 
         val Android = Dependency(group, "byte-buddy-android", version)
         val Agent = Dependency(group, "byte-buddy-agent", version)
