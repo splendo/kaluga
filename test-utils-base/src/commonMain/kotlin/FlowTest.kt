@@ -28,6 +28,8 @@ import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.test.base.BaseUIThreadTest.EmptyTestContext
 import com.splendo.kaluga.test.base.BaseUIThreadTest.TestContext
 import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.getAndUpdate
+import kotlinx.atomicfu.updateAndGet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -77,27 +79,7 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
         }
 }
 
-/*
-Context for each tests needs to be created and kept on the main thread for iOS.
-
-Since the class itself is created in the test thread
-*/
-
-val contextMap = mutableMapOf<Long, TestContext>()
-
-@Suppress("UNCHECKED_CAST")
-private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
-    if (!contextMap.containsKey(cookie))
-        contextMap[cookie] = testContext()
-    return contextMap[cookie] as TC
-}
-
-private val cookieTin = atomic(0L)
-
 abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
-
-    // used for thread local map access to store the testContext
-    private val cookie = cookieTin.incrementAndGet()
 
     abstract val flowFromTestContext: suspend TC.() -> F
 
@@ -107,12 +89,13 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     var job: Job? = null
 
+    private val testContext = atomic<TC?>(null)
     private lateinit var testChannel: Channel<Pair<TestBlock<TC, T>, EmptyCompletableDeferred>>
 
     @AfterTest
     override fun afterTest() {
         runBlocking {
-            disposeContext(cookie)
+            disposeContext()
         }
         super.afterTest()
     }
@@ -170,8 +153,6 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 // startFlow is only called when the first test block is offered
 
                 val flow = flowFromTestContext
-
-                val cookie = cookie
                 val scope = scope
 
                 val createTestContextWithConfiguration = createTestContextWithConfiguration
@@ -179,12 +160,12 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 val f =
                     if (createFlowInMainScope) {
                         withContext(Dispatchers.Main.immediate) {
-                            (flow(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) }))
+                            (flow(testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!))
                         }
                     } else {
                         flow(
                             withContext(Dispatchers.Main.immediate) {
-                                (testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })
+                                (testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!)
                             }
                         )
                     }
@@ -195,7 +176,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 resetFlow()
             } finally {
                 if (!retainContextAfterTest) {
-                    disposeContext(cookie)
+                    disposeContext()
                 }
             }
         }
@@ -209,11 +190,11 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         val filter = filter
         val scope = scope
         val createTestContextWithConfiguration = createTestContextWithConfiguration
-        val cookie = cookie
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
-                val testContext = testContext(cookie) { createTestContextWithConfiguration(configuration, scope) }
+                val testContext = testContext.updateAndGet { it
+                    ?: createTestContextWithConfiguration(configuration, scope) }!!
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
                 filter(flow).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
@@ -249,14 +230,13 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     suspend fun mainAction(action: ScopeActionBlock<TC>) {
         debug("start mainAction")
         awaitTestBlocks()
-        val cookie = cookie
         val createTestContextWithConfiguration = createTestContextWithConfiguration
         val scope = scope
         require(lateConfiguration != null) { "Only use mainAction from inside `testWith` methods" }
         val configuration = lateConfiguration!!
         withContext(Dispatchers.Main.immediate) {
             debug("in main scope for mainAction")
-            action(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })
+            action(testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!)
         }
         debug("did mainAction")
     }
@@ -286,10 +266,9 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         testChannel.trySend(Pair(test, completable)).isSuccess
     }
 
-    private suspend fun disposeContext(cookie: Long) {
+    private suspend fun disposeContext() {
         withContext(Dispatchers.Main.immediate) {
-            val testContext = contextMap.remove(cookie)
-            testContext?.dispose()
+            testContext.getAndUpdate { null }?.dispose()
         }
     }
 }

@@ -28,24 +28,3 @@ actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : Ba
         GCScheduler.schedule()
     }
 }
-
-actual fun <R : T, T, OO : ObservableOptional<R>> addObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
-    val observers = observersForObservation.getOrPut(observation) { concurrentMutableListOf() }
-    @Suppress("UNCHECKED_CAST")
-    observers.add(observer as (Any?) -> Unit)
-}
-
-actual fun <R : T, T, OO : ObservableOptional<R>> removeObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
-    observersForObservation.synchronized {
-        val observers = this[observation] ?: return@synchronized
-        observers.remove(observer)
-        if (observers.isEmpty())
-            remove(observation)
-    }
-}
-
-actual fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit> {
-    return observersForObservation[observation] as? List<(R) -> Unit> ?: emptyList()
-}
-
-private val observersForObservation = concurrentMutableMapOf<Observation<*, *, *>, ConcurrentMutableList<(Any?) -> Unit>>()
