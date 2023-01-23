@@ -18,6 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test.base
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -102,7 +103,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     open val filter: (Flow<T>) -> Flow<T> = { it }
 
-    private val tests: MutableList<EmptyCompletableDeferred> = mutableListOf()
+    private val tests: MutableList<EmptyCompletableDeferred> = concurrentMutableListOf()
 
     var job: Job? = null
 

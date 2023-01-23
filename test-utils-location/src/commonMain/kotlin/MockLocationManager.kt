@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.location
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationManager
@@ -77,7 +78,7 @@ class MockBaseLocationManager(
         /**
          * Ths list of built [MockBaseLocationManager]
          */
-        val builtLocationManagers = mutableListOf<MockBaseLocationManager>()
+        val builtLocationManagers = concurrentMutableListOf<MockBaseLocationManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

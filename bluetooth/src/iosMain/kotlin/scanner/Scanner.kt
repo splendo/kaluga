@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.collections.concurrentMutableSetOf
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -96,7 +97,7 @@ actual class DefaultScanner internal constructor(
     private val centralManagersLock = Mutex()
     private val centralManagers = mutableListOf<CBCentralManager>()
     private val discoveringDelegates = mutableListOf<CBCentralManagerDelegateProtocol>()
-    private val activeDelegates = mutableSetOf<CBCentralManagerDelegateProtocol>()
+    private val activeDelegates = concurrentMutableSetOf<CBCentralManagerDelegateProtocol>()
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder { CBCentralManager(null, enabledQueue, emptyMap<Any?, Any>()) }.create()
 
     private suspend fun scan(filter: UUID? = null) {

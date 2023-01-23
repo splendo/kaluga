@@ -133,11 +133,7 @@ class AndroidPermissionsManager constructor(
                 pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
             }
 
-            var declaredPermissions: List<String> = mutableListOf()
-
-            if (packageInfo != null) {
-                declaredPermissions = packageInfo.requestedPermissions.toList()
-            }
+            val declaredPermissions: List<String> = packageInfo?.requestedPermissions?.toList().orEmpty()
 
             if (declaredPermissions.isNotEmpty()) {
                 missingPermissions.toList().forEach { requestedPermissionName ->

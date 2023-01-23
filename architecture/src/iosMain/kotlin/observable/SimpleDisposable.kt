@@ -18,6 +18,9 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.GCScheduler
+import com.splendo.kaluga.base.collections.ConcurrentMutableList
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose) {
 
@@ -27,20 +30,22 @@ actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : Ba
 }
 
 actual fun <R : T, T, OO : ObservableOptional<R>> addObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
-    val observers = observersForObservation.getOrPut(observation) { mutableListOf() }
+    val observers = observersForObservation.getOrPut(observation) { concurrentMutableListOf() }
     @Suppress("UNCHECKED_CAST")
     observers.add(observer as (Any?) -> Unit)
 }
 
 actual fun <R : T, T, OO : ObservableOptional<R>> removeObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
-    val observers = observersForObservation[observation] ?: return
-    observers.remove(observer)
-    if (observers.isEmpty())
-        observersForObservation.remove(observation)
+    observersForObservation.synchronized {
+        val observers = this[observation] ?: return@synchronized
+        observers.remove(observer)
+        if (observers.isEmpty())
+            remove(observation)
+    }
 }
 
 actual fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit> {
     return observersForObservation[observation] as? List<(R) -> Unit> ?: emptyList()
 }
 
-private val observersForObservation = mutableMapOf<Observation<*, *, *>, MutableList<(Any?)->Unit>>()
+private val observersForObservation = concurrentMutableMapOf<Observation<*, *, *>, ConcurrentMutableList<(Any?) -> Unit>>()

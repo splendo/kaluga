@@ -24,6 +24,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.splendo.kaluga.base.collections.ConcurrentMutableMap
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import kotlinx.coroutines.CompletableDeferred
 
 class EnableServiceActivity : AppCompatActivity() {
@@ -31,7 +33,7 @@ class EnableServiceActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_CALLBACK_ID = "EXTRA_CALLBACK_ID"
         private const val EXTRA_SETTING_ID = "EXTRA_CALLBACK_ID"
-        val enablingHandlers: MutableMap<Pair<String, String>, CompletableDeferred<Boolean>> = mutableMapOf()
+        val enablingHandlers: ConcurrentMutableMap<Pair<String, String>, CompletableDeferred<Boolean>> = concurrentMutableMapOf()
 
         fun showEnableServiceActivity(context: Context, identifier: String, settingsIntent: Intent): CompletableDeferred<Boolean> {
             val settingKey = settingsIntent.action.orEmpty()
@@ -72,8 +74,10 @@ class EnableServiceActivity : AppCompatActivity() {
     private fun complete(success: Boolean) {
         val actionKey = settingsIntent?.action.orEmpty()
         intent.getStringExtra(EXTRA_CALLBACK_ID)?.let {
-            enablingHandlers[it to actionKey]?.complete(success)
-            enablingHandlers.remove(it to actionKey)
+            enablingHandlers.synchronized {
+                this[it to actionKey]?.complete(success)
+                remove(it to actionKey)
+            }
         }
         finish()
     }

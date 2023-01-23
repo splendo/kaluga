@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -96,7 +97,7 @@ abstract class BaseDeviceConnectionManager(
     private val logger = settings.logger
 
     protected var currentAction: DeviceAction? = null
-    protected val notifyingCharacteristics = mutableMapOf<String, Characteristic>()
+    protected val notifyingCharacteristics = concurrentMutableMapOf<String, Characteristic>()
 
     private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
     override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()

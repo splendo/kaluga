@@ -202,7 +202,7 @@ class LogTest {
         assertEquals(logLevel, mockLogger.levelList[0])
         assertEquals(tag, mockLogger.tagList[0])
         assertEquals(throwable, mockLogger.throwableList[0])
-        assertEquals(message, mockLogger.messageList[0])
+        assertEquals(message, mockLogger.messageList[0]?.invoke())
 
         mockLogger.clear()
     }

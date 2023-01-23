@@ -18,6 +18,8 @@
 @file:JvmName("DisposableCommonKt")
 package com.splendo.kaluga.architecture.observable
 
+import com.splendo.kaluga.base.collections.ConcurrentMutableList
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlin.jvm.JvmName
@@ -81,27 +83,23 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : SynchronizedObj
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag].
  */
-class DisposeBag : SynchronizedObject(), Disposable {
+class DisposeBag : Disposable {
 
-    private val disposables: MutableList<Disposable> = mutableListOf()
-    private val nestedBags: MutableList<DisposeBag> = mutableListOf()
+    private val disposables: ConcurrentMutableList<Disposable> = concurrentMutableListOf()
+    private val nestedBags: ConcurrentMutableList<DisposeBag> = concurrentMutableListOf()
 
     /**
      * Adds a nested [DisposeBag]
      */
     fun add(disposeBag: DisposeBag) {
-        synchronized(this) {
-            nestedBags.add(disposeBag)
-        }
+        nestedBags.add(disposeBag)
     }
 
     /**
      * Adds a [Disposable] to this [DisposeBag]
      */
     fun add(disposable: Disposable) {
-        synchronized(this) {
-            disposables.add(disposable)
-        }
+        disposables.add(disposable)
     }
 
     override fun addTo(disposeBag: DisposeBag) {
@@ -113,11 +111,13 @@ class DisposeBag : SynchronizedObject(), Disposable {
      * Added elements can only be disposed once
      */
     override fun dispose() {
-        synchronized(this) {
-            disposables.forEach { it.dispose() }
-            disposables.clear()
-            nestedBags.forEach { it.dispose() }
-            nestedBags.clear()
+        disposables.synchronized {
+            forEach { it.dispose() }
+            clear()
+        }
+        nestedBags.synchronized {
+            forEach { it.dispose() }
+            clear()
         }
     }
 }

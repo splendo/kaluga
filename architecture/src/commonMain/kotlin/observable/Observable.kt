@@ -20,6 +20,7 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.KalugaThread
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.isOnMainThread
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.atomicfu.atomic
@@ -186,7 +187,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
 ) : Initial<R, T> {
 
     // this is not used by iOS
-    internal val observers by lazy { mutableListOf<(R) -> Unit>() }
+    internal val observers by lazy { concurrentMutableListOf<(R) -> Unit>() }
 
     open val defaultValue: Value<R>? = null
 

@@ -33,14 +33,17 @@ actual class DefaultLocationPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
-    private val permissions: Array<String> get() {
-        val result = mutableListOf(Manifest.permission.ACCESS_COARSE_LOCATION)
+    private val permissions: Array<String> get() = listOfNotNull(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
         if (permission.precise)
-            result.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            Manifest.permission.ACCESS_FINE_LOCATION
+        else
+            null,
         if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
-            result.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        return result.toTypedArray()
-    }
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        else
+            null
+    ).toTypedArray()
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, logTag, logger, permissionHandler)

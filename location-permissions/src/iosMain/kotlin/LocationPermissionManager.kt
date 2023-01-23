@@ -68,9 +68,10 @@ actual class DefaultLocationPermissionManager(
     private val authorizationDelegate = Delegate(permission, permissionHandler, coroutineScope)
 
     override fun requestPermissionDidStart() {
-        val locationDeclarations = mutableListOf(NSLocationWhenInUseUsageDescription)
-        if (permission.background) {
-            locationDeclarations.addAll(listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription))
+        val locationDeclarations = listOf(NSLocationWhenInUseUsageDescription) + if (permission.background) {
+            listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription)
+        } else {
+            emptyList()
         }
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             launch {

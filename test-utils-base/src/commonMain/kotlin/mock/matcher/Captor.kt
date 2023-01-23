@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.base.mock.matcher
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
+
 /**
  * Captures a parameter to it can be extracted from [com.splendo.kaluga.test.base.mock.verify]
  */
@@ -42,7 +44,7 @@ sealed interface Captor<T> : ParameterMatcherOrCaptor<T> {
  * A [Captor] for capturing non-nullable parameters
  */
 class AnyCaptor<T : Any> : Captor<T> {
-    private val _captured = mutableListOf<T>()
+    private val _captured = concurrentMutableListOf<T>()
     override val captured: List<T> get() = _captured.toList()
     override val lastCaptured: T? get() = _captured.lastOrNull()
 
@@ -57,7 +59,7 @@ class AnyCaptor<T : Any> : Captor<T> {
  * A [Captor] for capturing nullable parameters
  */
 class AnyOrNullCaptor<T : Any> : Captor<T?> {
-    private val _captured = mutableListOf<T?>()
+    private val _captured = concurrentMutableListOf<T?>()
     override val captured: List<T?> get() = _captured.toList()
     override val lastCaptured: T? get() = _captured.lastOrNull()
 
