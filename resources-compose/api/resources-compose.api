@@ -30,6 +30,7 @@ public final class com/splendo/kaluga/resources/compose/KalugaLabelKt {
 }
 
 public final class com/splendo/kaluga/resources/compose/RelativeRadialGradient : androidx/compose/ui/graphics/ShaderBrush {
+	public static final field $stable I
 	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FI[Lkotlin/Pair;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FI[Lkotlin/Pair;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/util/List;Ljava/util/List;Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FIILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -40,6 +41,7 @@ public final class com/splendo/kaluga/resources/compose/RelativeRadialGradient :
 }
 
 public final class com/splendo/kaluga/resources/compose/RelativeSweepGradient : androidx/compose/ui/graphics/ShaderBrush {
+	public static final field $stable I
 	public fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;[Lkotlin/Pair;)V
 	public fun createShader-uvyYCjk (J)Landroid/graphics/Shader;
 	public fun equals (Ljava/lang/Object;)Z
