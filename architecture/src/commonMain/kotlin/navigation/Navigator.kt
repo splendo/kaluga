@@ -38,12 +38,40 @@ open class SingleValueNavigationAction<T>(
 )
 
 /**
+ * Exception thrown by a [Navigator]
+ */
+open class NavigationException(message: String?) : RuntimeException(message)
+
+/**
  * Class that can trigger a given [NavigationAction]
  */
 expect interface Navigator<A : NavigationAction<*>> {
     /**
      * Triggers a given [NavigationAction]
      * @param action The [NavigationAction] to trigger
+     * @throws [NavigationException] if navigation fails.
      */
     fun navigate(action: A)
+}
+
+/**
+ * Triggers a given [NavigationAction] and returns `true` if it succeeded.
+ * @param action The [NavigationAction] to trigger.
+ * @return `true` if the navigation succeeded, false otherwise
+ */
+fun <A : NavigationAction<*>> Navigator<A>.navigateWithSuccess(action: A): Boolean = try {
+    navigate(action)
+    true
+} catch (e: NavigationException) {
+    false
+}
+
+/**
+ * Triggers a given [NavigationAction] or executes a closure if the navigation failed to complete
+ * @param action The [NavigationAction] to trigger.
+ * @param onFailure Closure for handling case when navigation failed.
+ */
+fun <A : NavigationAction<*>> Navigator<A>.navigateOrElse(action: A, onFailure: () -> Unit) {
+    if (!navigateWithSuccess(action))
+        onFailure()
 }

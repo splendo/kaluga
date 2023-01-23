@@ -69,6 +69,8 @@ class DefaultNavigator<A : NavigationAction<*>>(val onAction: (A) -> Unit) : Nav
     }
 }
 
+object MissingViewControllerNavigationException : NavigationException("Missing Parent ViewController")
+
 /**
  * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
  * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
@@ -364,7 +366,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
         }
     }
 
-    private fun assertParent() = parent.get().also { assert(it != null) }
+    private fun assertParent() = parent.get() ?: throw MissingViewControllerNavigationException
 }
 
 // Seems to be a bug on commonizer using new targets sourcesets which is preventing to infer the correct type
