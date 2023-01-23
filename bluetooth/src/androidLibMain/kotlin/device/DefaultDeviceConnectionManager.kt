@@ -94,11 +94,7 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            // TODO update implementation so it doesn't depend on characteristic.value which is deprecated
-            // https://github.com/splendo/kaluga/issues/609
-            // https://developer.android.com/reference/android/bluetooth/BluetoothGattCharacteristic#getValue()
-            @Suppress("DEPRECATION")
-            updateCharacteristic(characteristic, characteristic.value, status)
+            handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS)
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -110,11 +106,7 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            // TODO update implementation so it doesn't depend on descriptor.value which is deprecated
-            // https://github.com/splendo/kaluga/issues/609
-            // https://developer.android.com/reference/android/bluetooth/BluetoothGattDescriptor#getValue()
-            @Suppress("DEPRECATION")
-            updateDescriptor(descriptor, descriptor.value, status)
+            handleUpdatedDescriptor(descriptor.uuid, status == GATT_SUCCESS)
         }
 
         @Deprecated("Deprecated in Java")
