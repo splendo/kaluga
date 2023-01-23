@@ -193,8 +193,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
-                val testContext = testContext.updateAndGet { it
-                    ?: createTestContextWithConfiguration(configuration, scope) }!!
+                val testContext = testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
                 filter(flow).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")

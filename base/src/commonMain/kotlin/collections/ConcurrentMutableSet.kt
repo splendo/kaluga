@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.collections
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
-class ConcurrentMutableSet<E> internal constructor(private val internal: MutableSet<E> = mutableSetOf()): MutableSet<E> {
+class ConcurrentMutableSet<E> internal constructor(private val internal: MutableSet<E> = mutableSetOf()) : MutableSet<E> {
     private val lock = reentrantLock()
 
     override val size: Int get() = synchronized { size }
