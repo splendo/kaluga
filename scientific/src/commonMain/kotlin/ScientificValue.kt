@@ -301,7 +301,7 @@ fun <
 ) = if (factor.value != 0.0) {
     factory(this / factor.decimalValue, factor.unit)
 } else {
-    throw ScientificConverterException("Dividing by 0.0")
+    throw ScientificConverterException("Dividing by zero")
 }
 
 fun <
@@ -311,10 +311,10 @@ fun <
     > ScientificValue<Quantity, Unit>.div(
     factor: Decimal,
     factory: (Decimal, Unit) -> Value
-) = if (factor.toDouble() == 0.0) {
+) = if (factor.toDouble() != 0.0) {
     factory(decimalValue / factor, unit)
 } else {
-    throw ScientificConverterException("Dividing by 0.0")
+    throw ScientificConverterException("Dividing by zero")
 }
 
 infix operator fun <
@@ -378,7 +378,7 @@ internal fun <
 ) = if (divider.value != 0.0) {
     fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this, factory)
 } else {
-    throw ScientificConverterException("Dividing by 0.0")
+    throw ScientificConverterException("Dividing by zero")
 }
 
 internal fun <
@@ -407,5 +407,5 @@ internal fun <
 ) = if (inverse.value != 0.0) {
     fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)
 } else {
-    throw ScientificConverterException("Inverting by 0.0")
+    throw ScientificConverterException("Inverting by zero")
 }

@@ -64,8 +64,8 @@ class KinematicViscosityTest {
         assertEqualScientificValue(1(SquareFoot per Second), (2(SquareFoot)) / 2(Second))
         assertEqualScientificValue(1(SquareFoot per Second), (2(Foot) * 1(Foot)) / 2(Second))
 
-        assertEqualScientificValue(1(SquareMeter per Second), (2(SquareMeter).convert(SquareFoot)) / 2(Second))
-        assertEqualScientificValue(1(SquareMeter per Second), (2(Meter) * 1(Meter).convert(Foot)) / 2(Second))
+        assertEqualScientificValue(1(SquareMeter per Second), 2(SquareMeter as Area) / 2(Second))
+        assertEqualScientificValue(1(SquareMeter per Second), 2(Meter) * 1(Meter as Length) / 2(Second))
     }
 
     @Test
@@ -91,7 +91,7 @@ class KinematicViscosityTest {
         assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(Second) * 2(FootPoundForce per Pound.ukImperial)))
         assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(FootPoundForce per Pound.usCustomary)) * 2(Second))
         assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(Second) * 2(FootPoundForce per Pound.usCustomary)))
-        assertEqualScientificValue(4(SquareMeter per Second), (2(Joule per Kilogram)).convert(FootPoundForce per Pound) * 2(Second))
-        assertEqualScientificValue(4(SquareMeter per Second), (2(Second) * 2(Joule per Kilogram).convert(FootPoundForce per Pound)))
+        assertEqualScientificValue(4(SquareMeter per Second), (2((Joule per Kilogram) as SpecificEnergy)) * 2(Second))
+        assertEqualScientificValue(4(SquareMeter per Second), (2(Second) * 2((Joule per Kilogram) as SpecificEnergy)))
     }
 }
