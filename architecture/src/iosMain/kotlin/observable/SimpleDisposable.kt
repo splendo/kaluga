@@ -18,9 +18,6 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.GCScheduler
-import com.splendo.kaluga.base.collections.ConcurrentMutableList
-import com.splendo.kaluga.base.collections.concurrentMutableListOf
-import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose) {
 
