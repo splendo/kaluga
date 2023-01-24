@@ -19,12 +19,12 @@ import Foundation
 import UIKit
 import KalugaExampleShared
 
-class NetworkViewController : UIViewController {
+class NetworkViewController: UIViewController {
 
     @IBOutlet weak var networkStateText: UILabel!
     private var lifecycleManager: LifecycleManager!
     
-    private lazy var viewModel: NetworkViewModel = NetworkViewModel(networkStateRepoBuilder: NetworkStateRepoBuilder())
+    private lazy var viewModel = NetworkViewModel(networkStateRepoBuilder: NetworkStateRepoBuilder())
     
     deinit {
         lifecycleManager.unbind()
@@ -32,6 +32,8 @@ class NetworkViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "network_feature".localized()
         
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
@@ -43,5 +45,4 @@ class NetworkViewController : UIViewController {
             ]
         }
     }
-    
 }

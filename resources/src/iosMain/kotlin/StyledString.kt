@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.stylable.TextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
@@ -107,7 +107,7 @@ actual class StyledStringBuilder constructor(string: String, private val default
         )
     }
 
-    private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: IntRange, defaultAlignment: TextAlignment) {
+    private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: IntRange, defaultAlignment: KalugaTextAlignment) {
         // First search for all existing paragraph attributes within range
         val rangesWithParagraphStyle = mutableListOf<Pair<IntRange, NSParagraphStyle>>()
         attributedString.enumerateAttribute("NSParagraphStyle", (0 until attributedString.string.length).nsRange, 0) { match, matchedNSRange, _ ->

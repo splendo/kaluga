@@ -21,21 +21,21 @@ import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.KalugaColor
 
-data class ButtonStyle(
+data class KalugaButtonStyle(
     val font: Font,
     val textSize: Float,
-    val textAlignment: TextAlignment = TextAlignment.CENTER,
+    val textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER,
     val defaultStyle: ButtonStateStyle,
     val pressedStyle: ButtonStateStyle = defaultStyle,
     val disabledStyle: ButtonStateStyle = defaultStyle
 ) {
     constructor(
         textStyle: TextStyle,
-        textAlignment: TextAlignment = TextAlignment.CENTER,
+        textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER,
         backgroundColor: KalugaColor = DefaultColors.clear,
         pressedBackgroundColor: KalugaColor = backgroundColor,
         disabledBackgroundColor: KalugaColor = backgroundColor,
-        shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()
+        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()
     ) : this(
         textStyle.font,
         textStyle.size,
@@ -73,13 +73,13 @@ data class ButtonStyle(
 
 data class ButtonStateStyle(
     val textColor: KalugaColor,
-    val backgroundStyle: BackgroundStyle,
+    val backgroundStyle: KalugaBackgroundStyle,
 ) {
 
-    constructor(textColor: KalugaColor, backgroundColor: KalugaColor = DefaultColors.clear, shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
+    constructor(textColor: KalugaColor, backgroundColor: KalugaColor = DefaultColors.clear, shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()) : this(
         textColor,
-        BackgroundStyle(
-            BackgroundStyle.FillStyle.Solid(backgroundColor),
+        KalugaBackgroundStyle(
+            KalugaBackgroundStyle.FillStyle.Solid(backgroundColor),
             shape = shape
         )
     )

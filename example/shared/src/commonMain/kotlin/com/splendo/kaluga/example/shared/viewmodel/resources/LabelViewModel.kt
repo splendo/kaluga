@@ -25,7 +25,7 @@ import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.attributeSubstring
 import com.splendo.kaluga.resources.defaultBoldFont
-import com.splendo.kaluga.resources.stylable.TextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaLabel
 
@@ -101,7 +101,7 @@ class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) 
                 loremIpsum.styled(
                     styledStringBuilderProvider,
                     TextStyles.defaultText,
-                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(TextAlignment.END)) }
+                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(KalugaTextAlignment.END)) }
                 ),
             ),
             KalugaLabel.Styled(
@@ -111,7 +111,7 @@ class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) 
                     { attributeSubstring(this, StringStyleAttribute.ParagraphStyleAttribute.LineSpacing(2.0f, 4.0f, 1.0f)) },
                     { attributeSubstring(loremIpsumParagraph0, StringStyleAttribute.CharacterStyleAttribute.BackgroundColor(DefaultColors.deepSkyBlue)) },
                     { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent(10.0f)) },
-                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(TextAlignment.END)) },
+                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(KalugaTextAlignment.END)) },
                     { attributeSubstring(loremIpsumParagraph2, StringStyleAttribute.CharacterStyleAttribute.Kerning(0.08f)) }
                 ),
             )

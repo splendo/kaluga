@@ -21,7 +21,7 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.architecture.observable.InitializedObservable
+import com.splendo.kaluga.architecture.observable.BaseInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
@@ -47,7 +47,7 @@ import com.splendo.kaluga.resources.overlay
 import com.splendo.kaluga.resources.saturate
 import com.splendo.kaluga.resources.screen
 import com.splendo.kaluga.resources.softLight
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -121,15 +121,15 @@ class ColorViewModel(
     private val steps = (1..10).map { it.toDouble() / 10.0 }
     private fun Flow<KalugaColor>.lightenList() = map { color ->
         steps.map {
-            BackgroundStyle(
-                BackgroundStyle.FillStyle.Solid(color.lightenBy(it))
+            KalugaBackgroundStyle(
+                KalugaBackgroundStyle.FillStyle.Solid(color.lightenBy(it))
             )
         }
     }.toInitializedObservable(emptyList(), coroutineScope)
     private fun Flow<KalugaColor>.darkenList() = map { color ->
         steps.map {
-            BackgroundStyle(
-                BackgroundStyle.FillStyle.Solid(color.darkenBy(it))
+            KalugaBackgroundStyle(
+                KalugaBackgroundStyle.FillStyle.Solid(color.darkenBy(it))
             )
         }
     }.toInitializedObservable(emptyList(), coroutineScope)
@@ -184,9 +184,9 @@ class ColorViewModel(
         }
     }
 
-    private val Flow<KalugaColor>.backgroundStyleObservable: InitializedObservable<BackgroundStyle> get() = map {
-        BackgroundStyle(
-            BackgroundStyle.FillStyle.Solid(it)
+    private val Flow<KalugaColor>.backgroundStyleObservable: BaseInitializedObservable<KalugaBackgroundStyle> get() = map {
+        KalugaBackgroundStyle(
+            KalugaBackgroundStyle.FillStyle.Solid(it)
         )
-    }.toInitializedObservable(BackgroundStyle(BackgroundStyle.FillStyle.Solid(DefaultColors.clear)), coroutineScope)
+    }.toInitializedObservable(KalugaBackgroundStyle(KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.clear)), coroutineScope)
 }

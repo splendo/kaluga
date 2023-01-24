@@ -15,12 +15,19 @@
 
  */
 
-package com.splendo.kaluga.resources.stylable
+package com.splendo.kaluga.example.shared.viewmodel.architecture
 
-enum class TextAlignment {
-    LEFT,
-    RIGHT,
-    END,
-    START,
-    CENTER
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
+import platform.UIKit.UIViewController
+
+fun BottomSheetSubPageViewControllerNavigator(
+    parent: UIViewController,
+    onClose: () -> NavigationSpec,
+    onBack: () -> NavigationSpec
+) = ViewControllerNavigator<BottomSheetSubPageNavigation>(parent) { action ->
+    when (action) {
+        is BottomSheetSubPageNavigation.Close -> onClose()
+        is BottomSheetSubPageNavigation.Back -> onBack()
+    }
 }

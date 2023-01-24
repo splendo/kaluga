@@ -20,23 +20,24 @@ import KalugaExampleShared
 
 class ArchitectureDetailsViewController: UIViewController {
     
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "ArchitectureDetails"
-    }
-    
     static func create(inputDetails: InputDetails, onDismiss: @escaping (InputDetails) -> Void) -> ArchitectureDetailsViewController {
-        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ArchitectureDetailsViewController
+        let viewController = MainStoryboard.instantiateArchitectureDetailsViewController()
         if #available(iOS 13.0, *) {
-            vc.isModalInPresentation = true
+            viewController.isModalInPresentation = true
         }
-        let navigator = ViewControllerNavigator<CloseDetailsNavigation>(parentVC: vc) { action in
-            NavigationSpec.Dismiss(toDismiss: { $0 }, animated: true) {
-                onDismiss(action.value!)
+        let navigator = ArchitectureDetailsNavigatorKt.ArchitectureDetailsViewControllerNavigator(
+            parent: viewController,
+            onFinishWithDetails: { details in
+                NavigationSpec.Pop(to: nil, animated: true) {
+                    onDismiss(details)
+                }
+            },
+            onClose: {
+                NavigationSpec.Pop(to: nil, animated: true)
             }
-        }
-        vc.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
-        return vc
+        )
+        viewController.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
+        return viewController
     }
 
     var viewModel: ArchitectureDetailsViewModel!
@@ -54,6 +55,10 @@ class ArchitectureDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.hidesBackButton = true
+        let newBackButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(didDismiss))
+        self.navigationItem.leftBarButtonItem = newBackButton
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
 
             guard let viewModel = self?.viewModel else {
@@ -69,14 +74,12 @@ class ArchitectureDetailsViewController: UIViewController {
                 }
             ]
         }
+
+        ButtonStyleKt.bindButton(inverseButton, button: viewModel.inverseButton)
+        ButtonStyleKt.bindButton(closeButton, button: viewModel.finishButton)
     }
 
-    @objc @IBAction func onInversePressed(sender: Any?) {
-        viewModel.onInversePressed()
+    @objc func didDismiss() {
+        viewModel.onBackPressed()
     }
-
-    @objc @IBAction func onCloseButtonPressed(sender: Any?) {
-        viewModel.onClosePressed()
-    }
-    
 }

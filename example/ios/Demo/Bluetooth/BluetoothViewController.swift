@@ -18,7 +18,7 @@
 import UIKit
 import KalugaExampleShared
 
-class BluetoothViewController : UICollectionViewController {
+class BluetoothViewController: UICollectionViewController {
 
     lazy var navigator: ViewControllerNavigator<DeviceDetails> = ViewControllerNavigator(parentVC: self) { action in
         NavigationSpec.Push(animated: true) {
@@ -47,6 +47,8 @@ class BluetoothViewController : UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_bluetooth".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
 
@@ -67,10 +69,26 @@ class BluetoothViewController : UICollectionViewController {
     }
 
     private func updateNavigationItem(isScanning: Bool) {
-        if (isScanning) {
-            self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_stop_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
+        if isScanning {
+            self.navigationItem.setRightBarButton(
+                UIBarButtonItem(
+                    title: "bluetooth_stop_scanning".localized(),
+                    style: .plain,
+                    target: self,
+                    action: #selector(self.toggleScanning)
+                ),
+                animated: true
+            )
         } else {
-            self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_start_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
+            self.navigationItem.setRightBarButton(
+                UIBarButtonItem(
+                    title: "bluetooth_start_scanning".localized(),
+                    style: .plain,
+                    target: self,
+                    action: #selector(self.toggleScanning)
+                ),
+                animated: true
+            )
         }
     }
 
@@ -91,9 +109,12 @@ class BluetoothViewController : UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let bluetoothCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothCell.Companion.identifier, for: indexPath) as! BluetoothCell
-        bluetoothCell.device = devices[indexPath.row]
-        return bluetoothCell
+        return collectionView.dequeueTypedReusableCell(
+            withReuseIdentifier: BluetoothCell.Companion.identifier,
+            for: indexPath
+        ) { (bluetoothCell: BluetoothCell) in
+            bluetoothCell.device = devices[indexPath.row]
+        }
     }
 
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -122,7 +143,7 @@ class BluetoothViewController : UICollectionViewController {
 
 class BluetoothCell: UICollectionViewCell {
     
-    fileprivate struct Companion {
+    fileprivate enum Companion {
         static let identifier = "BluetoothCell"
     }
     
@@ -145,7 +166,7 @@ class BluetoothCell: UICollectionViewCell {
     @IBOutlet var moreButtonContainer: UIView!
     @IBOutlet var moreButton: UIButton!
     
-    fileprivate var device: BluetoothListDeviceViewModel? = nil
+    fileprivate var device: BluetoothListDeviceViewModel?
 
     @IBAction func onConnectPressed() {
         device?.onConnectPressed()
@@ -168,29 +189,25 @@ class BluetoothCell: UICollectionViewCell {
 
         deviceIdentifier.text = device.identifierString
 
-        device.name.observe { [weak self] name in
-            self?.deviceName.text = name as? String
-        }.addTo(disposeBag: disposeBag)
-
-        device.rssi.observe { [weak self] rssiValue in
-            self?.rssi.text = rssiValue as? String
-        }.addTo(disposeBag: disposeBag)
-
-        device.txPower.observe { [weak self] txPowerValue in
-            self?.txPower.text = txPowerValue as? String
-        }.addTo(disposeBag: disposeBag)
-
-        device.status.observe { [weak self] status in
-            self?.connectionStatus.text = status as? String
-        }.addTo(disposeBag: disposeBag)
-
-        device.isConnectButtonVisible.observe { [weak self] isVisible in
-            self?.buttonContainer.alpha = (isVisible as? Bool ?? false) ? 1.0 : 0.0
-        }.addTo(disposeBag: disposeBag)
-
-        device.connectButtonState.observe { [weak self] connectButtonState in
-            let state: BluetoothListDeviceViewModel.ConnectButtonState = connectButtonState as? BluetoothListDeviceViewModel.ConnectButtonState ?? BluetoothListDeviceViewModel.ConnectButtonState.disconnect
-            switch state {
+        let disposables = [
+            device.name.observe { [weak self] name in
+                self?.deviceName.text = name as? String
+            },
+            device.rssi.observe { [weak self] rssiValue in
+                self?.rssi.text = rssiValue as? String
+            },
+            device.txPower.observe { [weak self] txPowerValue in
+                self?.txPower.text = txPowerValue as? String
+            },
+            device.status.observe { [weak self] status in
+                self?.connectionStatus.text = status as? String
+            },
+            device.isConnectButtonVisible.observe { [weak self] isVisible in
+                self?.buttonContainer.alpha = (isVisible as? Bool ?? false) ? 1.0 : 0.0
+            },
+            device.connectButtonState.observe { [weak self] connectButtonState in
+                let state = connectButtonState as? BluetoothListDeviceViewModel.ConnectButtonState ?? BluetoothListDeviceViewModel.ConnectButtonState.disconnect
+                switch state {
                 case BluetoothListDeviceViewModel.ConnectButtonState.connect:
                     self?.connectButton.isHidden = false
                     self?.disconnectButton.isHidden = true
@@ -198,8 +215,13 @@ class BluetoothCell: UICollectionViewCell {
                     self?.connectButton.isHidden = true
                     self?.disconnectButton.isHidden = false
                 default: ()
+                }
             }
-        }.addTo(disposeBag: disposeBag)
+        ]
+
+        for disposable in disposables {
+            disposable.addTo(disposeBag: disposeBag)
+        }
 
         device.isFoldedOut.observe { [weak self] isFoldedOut in
             self?.foldOutMenu.isHidden = !((isFoldedOut as? Bool) ?? false)
