@@ -36,7 +36,15 @@ class ConcurrentMutableMap<K, V> internal constructor(private val internal: Muta
     override fun putAll(from: Map<out K, V>) = synchronized { putAll(from) }
     override fun remove(key: K): V? = synchronized { remove(key) }
     override fun equals(other: Any?): Boolean = when (other) {
-        is Map<*, *> -> entries == other.entries
+        is ConcurrentMutableMap<*, *> -> synchronized {
+            val inner = this
+            other.synchronized {
+                inner == this
+            }
+        }
+        is Map<*, *> -> synchronized {
+            this == other
+        }
         else -> false
     }
 

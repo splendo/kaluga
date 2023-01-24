@@ -45,7 +45,7 @@ class ConcurrentMutableList<E> internal constructor(private val internal: Mutabl
     override fun subList(fromIndex: Int, toIndex: Int): ConcurrentMutableList<E> = synchronized { ConcurrentMutableList(subList(fromIndex, toIndex)) }
     override fun isEmpty(): Boolean = synchronized { isEmpty() }
     override fun equals(other: Any?): Boolean = when (other) {
-        is ConcurrentMutableSet<*> -> {
+        is ConcurrentMutableList<*> -> {
             synchronized {
                 val inner = this
                 other.synchronized {
@@ -53,7 +53,7 @@ class ConcurrentMutableList<E> internal constructor(private val internal: Mutabl
                 }
             }
         }
-        is MutableSet<*> -> synchronized {
+        is List<*> -> synchronized {
             this == other
         }
         else -> false
