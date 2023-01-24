@@ -36,3 +36,13 @@ class UIKitKeyboardManager(private val application: UIApplication) : BaseKeyboar
         application.sendAction(sel_registerName("resignFirstResponder"), null, null, null)
     }
 }
+
+open class ValueKeyboardManager<Value>(private val onFocusOnValue: (Value?) -> Unit) : BaseKeyboardManager<ValueFocusHandler<Value>> {
+    override fun show(focusHandler: ValueFocusHandler<Value>) {
+        onFocusOnValue(focusHandler.value)
+    }
+
+    override fun hide() {
+        onFocusOnValue(null)
+    }
+}

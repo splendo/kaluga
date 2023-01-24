@@ -45,9 +45,9 @@ class SwiftUIOrUIKitSelectionViewModel(
         )
     )
 
-    fun onUITypePressed(feature: UIType) {
+    fun onUITypePressed(uiType: UIType) {
         navigator.navigate(
-            when (feature) {
+            when (uiType) {
                 is UIType.SwiftUI -> SwiftUIOrUIKitNavigationAction.SwiftUI
                 is UIType.UIKit -> SwiftUIOrUIKitNavigationAction.UIKit
             }

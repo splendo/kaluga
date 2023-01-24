@@ -77,9 +77,9 @@ To only apply a `TextStyle` use `TextView.applyTextStyle(textStyle)`
 You can easily bind a `KalugaLabel` to a `UILabel` or `UITextView` by using `UILabel.bindLabel(label)` or `UITextView.bindLabel(label)` respectively
 To only apply a `TextStyle` use `UILabel.applyTextStyle(textStyle)`, `UITextView.bindLabel(label)` or `UITextField.bindLabel(label)` 
 
-### BackgroundStyle
-Create a `BackgroundStyle` to apply a background to any view.
-A `BackgroundStyle` takes a `FillStyle`, `StrokeStyle` and `Shape` to describe the background.
+### KalugaBackgroundStyle
+Create a `KalugaBackgroundStyle` to apply a background to any view.
+A `KalugaBackgroundStyle` takes a `FillStyle`, `StrokeStyle` and `Shape` to describe the background.
 
 `FillStyle` can be either `Solid` or `Gradient`, where `Gradient` requires a `GradientStyle` to be created.
 `StrokeStyle` can be either `None`, removing all strokes, or `Stroke`, taking a width and `Color` to describe the stroke
@@ -88,36 +88,36 @@ A `BackgroundStyle` takes a `FillStyle`, `StrokeStyle` and `Shape` to describe t
 The `GradientStyle` can be `Linear`, `Radial`, or `Angular` and is created from either a list of `Color` or `ColorPoint`, where the `ColorPoint` specifies the position of the color on a scale of `0.0`- `1.0`
 
 ```kotlin
-BackgroundStyle(
-    BackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
-    BackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-    BackgroundStyle.Shape.Rectangle(10.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))
+KalugaBackgroundStyle(
+    KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
+    KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
+    KalugaBackgroundStyle.Shape.Rectangle(10.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))
 )
 ```
 
 #### Android
 *For compose use the [Resources Compose library](../resources-compose)*
 
-Apply a `BackgroundStyle` to any `View` using `View.applyBackgroundStyle(backgroundStyle`
+Apply a `KalugaBackgroundStyle` to any `View` using `View.applyBackgroundStyle(backgroundStyle`
 
 #### iOS
 *For SwiftUI see [Kaluga SwiftUI](https://github.com/splendo/kaluga-swiftui)*
 
-Apply a `BackgroundStyle` to any `UIView` using `UIView.applyBackgroundStyle(backgroundStyle)` or to a `CALayer` using `CALayer.applyBackgroundStyle(backgroundStyle, bounds)`
+Apply a `KalugaBackgroundStyle` to any `UIView` using `UIView.applyBackgroundStyle(backgroundStyle)` or to a `CALayer` using `CALayer.applyBackgroundStyle(backgroundStyle, bounds)`
 
 ### KalugaButton and ButtonStyle
 Like `TextStyle` for a Label, a `ButtonStyle` can be created for a button.
 
 A `ButtonStyle` takes a font, textSize, text alignment and a `ButtonStateStyle` for its default, pressed, and disabled states.
-The `ButtonStateStyle` consists of a text color and a `BackgroundStyle` describing the background of the button.
+The `ButtonStateStyle` consists of a text color and a `KalugaBackgroundStyle` describing the background of the button.
 
 ```kotlin
 ButtonStyle(
     defaultFont,
     12.0f,
-    defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, BackgroundStyle.Shape.Rectangle(10.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))),
-    pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, BackgroundStyle.Shape.Rectangle(5.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))),
-    disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, BackgroundStyle.Shape.Rectangle(10.0f))
+    defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, KalugaBackgroundStyle.Shape.Rectangle(10.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))),
+    pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, KalugaBackgroundStyle.Shape.Rectangle(5.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))),
+    disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Rectangle(10.0f))
 )
 ```
 

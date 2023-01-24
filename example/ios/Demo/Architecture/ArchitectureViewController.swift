@@ -18,7 +18,7 @@
 import UIKit
 import KalugaExampleShared
 
-class ArchitectureInputViewController: UIViewController  {
+class ArchitectureViewController: UIViewController {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var nameInput: UITextField!
@@ -29,15 +29,36 @@ class ArchitectureInputViewController: UIViewController  {
     @IBOutlet weak var numberError: UIImageView!
     
     @IBOutlet weak var detailsButton: UIButton!
+    @IBOutlet weak var bottomSheetButton: UIButton!
 
-    lazy var navigator: ViewControllerNavigator<InputNavigation> = ViewControllerNavigator(parentVC: self) { action in
-        NavigationSpec.Present(animated: true, presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue), transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)) {
-            ArchitectureDetailsViewController.create(inputDetails: action.value!) { [weak self] inputDetails in
-                self?.onDetailsDismissed(inputDetails: inputDetails)
+    lazy var navigator = ArchitectureNavigatorKt.ArchitectureViewControllerNavigator(
+        parent: self,
+        onDetails: { inputDetails in
+            NavigationSpec.Push(
+                animated: true
+            ) {
+                ArchitectureDetailsViewController.create(inputDetails: inputDetails) { [weak self] resultDetails in
+                    self?.onDetailsDismissed(inputDetails: resultDetails)
+                }
+            }
+        },
+        onBottomSheet: {
+            NavigationSpec.Present(
+                animated: true,
+                presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue),
+                transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)
+            ) {
+                let viewController = BottomSheetViewController.create()
+                let nav = UINavigationController(rootViewController: viewController)
+                if let sheet = nav.sheetPresentationController {
+                    sheet.detents = [.medium()]
+                }
+                nav.isModalInPresentation = true
+                return nav
             }
         }
-    }
-    lazy var viewModel = ArchitectureInputViewModel(navigator: navigator)
+    )
+    lazy var viewModel = ArchitectureViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -47,6 +68,8 @@ class ArchitectureInputViewController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_architecture".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
 
             guard let viewModel = self?.viewModel else {
@@ -54,17 +77,11 @@ class ArchitectureInputViewController: UIViewController  {
             }
 
             return [
-                viewModel.nameHeader.observeInitialized { header in
-                    self?.nameLabel.text = header as String?
-                },
                 viewModel.nameInput.observeInitialized { name in
                     self?.nameInput.text = name as String?
                 },
                 viewModel.isNameValid.observe { isValid in
                     self?.nameError.isHidden = isValid?.boolValue ?? false
-                },
-                viewModel.numberHeader.observeInitialized { header in
-                    self?.numberLabel.text = header as String?
                 },
                 viewModel.numberInput.observeInitialized { number in
                     self?.numberInput.text = number as String?
@@ -74,20 +91,19 @@ class ArchitectureInputViewController: UIViewController  {
                 }
             ]
         }
-    }
-
-    @objc @IBAction func onShowDetailsPressed(sender: Any?) {
-        viewModel.onShowDetailsPressed()
+        nameLabel.text = viewModel.namePlaceholder
+        numberLabel.text = viewModel.numberPlaceholder
+        ButtonStyleKt.bindButton(detailsButton, button: viewModel.showDetailsButton)
+        ButtonStyleKt.bindButton(bottomSheetButton, button: viewModel.showBottomSheetButton)
     }
 
     private func onDetailsDismissed(inputDetails: InputDetails) {
         viewModel.nameInput.post(newValue: NSString(string: inputDetails.name))
         viewModel.numberInput.post(newValue: NSString(string: "\(inputDetails.number)"))
     }
-
 }
 
-extension ArchitectureInputViewController : UITextFieldDelegate {
+extension ArchitectureViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         postInput(text: textField.text ?? "", fromTextField: textField)
@@ -100,10 +116,10 @@ extension ArchitectureInputViewController : UITextFieldDelegate {
     }
 
     private func postInput(text: String, fromTextField textField: UITextField) {
-        if (textField == nameInput) {
-            viewModel.nameInput.post(newValue: NSString(string: text))
-        } else if (textField == numberInput) {
-            viewModel.numberInput.post(newValue: NSString(string: text))
+        switch textField {
+        case nameInput: viewModel.nameInput.post(newValue: NSString(string: text))
+        case numberInput: viewModel.numberInput.post(newValue: NSString(string: text))
+        default: ()
         }
     }
 }

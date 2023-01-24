@@ -31,32 +31,32 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.resources.DefaultColors
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 
-fun Modifier.backgroundStyle(backgroundStyle: BackgroundStyle) = background(
+fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = background(
     backgroundStyle.fillStyle.brush,
     backgroundStyle.shape.shape
 ).border(backgroundStyle.strokeStyle.borderStroke, backgroundStyle.shape.shape)
 
-val BackgroundStyle.FillStyle.brush: Brush get() = when (this) {
-    is BackgroundStyle.FillStyle.Solid -> SolidColor(color.composable)
-    is BackgroundStyle.FillStyle.Gradient -> gradientStyle.brush
+val KalugaBackgroundStyle.FillStyle.brush: Brush get() = when (this) {
+    is KalugaBackgroundStyle.FillStyle.Solid -> SolidColor(color.composable)
+    is KalugaBackgroundStyle.FillStyle.Gradient -> gradientStyle.brush
 }
 
-val BackgroundStyle.Shape.shape: Shape get() = when (this) {
-    is BackgroundStyle.Shape.Rectangle -> RoundedCornerRadiusShape(
-        if (roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
-        if (roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
-        if (roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
-        if (roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp)
+val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
+    is KalugaBackgroundStyle.Shape.Rectangle -> RoundedCornerRadiusShape(
+        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
+        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
+        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
+        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp)
     )
-    is BackgroundStyle.Shape.Oval -> androidx.compose.foundation.shape.CircleShape
+    is KalugaBackgroundStyle.Shape.Oval -> androidx.compose.foundation.shape.CircleShape
 }
 
-val BackgroundStyle.StrokeStyle.borderStroke: BorderStroke get() = when (this) {
-    is BackgroundStyle.StrokeStyle.None -> BorderStroke(0.0f.dp, Color.Transparent)
-    is BackgroundStyle.StrokeStyle.Stroke -> BorderStroke(width.dp, color.composable)
+val KalugaBackgroundStyle.StrokeStyle.borderStroke: BorderStroke get() = when (this) {
+    is KalugaBackgroundStyle.StrokeStyle.None -> BorderStroke(0.0f.dp, Color.Transparent)
+    is KalugaBackgroundStyle.StrokeStyle.Stroke -> BorderStroke(width.dp, color.composable)
 }
 
 @Preview
@@ -64,8 +64,8 @@ val BackgroundStyle.StrokeStyle.borderStroke: BorderStroke get() = when (this) {
 fun PreviewBackgroundStyle() {
     Box(
         modifier = Modifier.backgroundStyle(
-            BackgroundStyle(
-                BackgroundStyle.FillStyle.Gradient(
+            KalugaBackgroundStyle(
+                KalugaBackgroundStyle.FillStyle.Gradient(
                     GradientStyle.Radial(
                         listOf(
                             GradientStyle.ColorPoint(DefaultColors.darkBlue, 0.2f),
@@ -76,8 +76,8 @@ fun PreviewBackgroundStyle() {
                         GradientStyle.CenterPoint(0.2f, 0.3f)
                     )
                 ),
-                BackgroundStyle.StrokeStyle.Stroke(1.0f, DefaultColors.black),
-                BackgroundStyle.Shape.Rectangle(4.0f, 2.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT, BackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT))
+                KalugaBackgroundStyle.StrokeStyle.Stroke(1.0f, DefaultColors.black),
+                KalugaBackgroundStyle.Shape.Rectangle(4.0f, 2.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT))
             )
         )
     ) {

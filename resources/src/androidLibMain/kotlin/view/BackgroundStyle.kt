@@ -24,10 +24,10 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.view.View
 import com.splendo.kaluga.resources.dpToPixel
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
 
-fun BackgroundStyle.createDrawable(context: Context): Drawable {
+fun KalugaBackgroundStyle.createDrawable(context: Context): Drawable {
     return GradientDrawable().apply {
         applyShape(this@createDrawable.shape, context)
         applyFillStyle(fillStyle, context)
@@ -35,33 +35,33 @@ fun BackgroundStyle.createDrawable(context: Context): Drawable {
     }
 }
 
-private fun GradientDrawable.applyShape(shape: BackgroundStyle.Shape, context: Context) {
+private fun GradientDrawable.applyShape(shape: KalugaBackgroundStyle.Shape, context: Context) {
     this.shape = when (shape) {
-        is BackgroundStyle.Shape.Rectangle -> {
+        is KalugaBackgroundStyle.Shape.Rectangle -> {
             val radiusX = shape.cornerRadiusX.dpToPixel(context)
             val radiusY = shape.cornerRadiusY.dpToPixel(context)
             cornerRadii = floatArrayOf(
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) radiusX else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) radiusY else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) radiusX else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) radiusY else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusX else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusY else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusX else 0.0f,
-                if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusY else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) radiusX else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) radiusY else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) radiusX else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) radiusY else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusX else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusY else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusX else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusY else 0.0f,
             )
             GradientDrawable.RECTANGLE
         }
-        is BackgroundStyle.Shape.Oval -> GradientDrawable.OVAL
+        is KalugaBackgroundStyle.Shape.Oval -> GradientDrawable.OVAL
     }
 }
 
-private fun GradientDrawable.applyFillStyle(fillStyle: BackgroundStyle.FillStyle, context: Context) {
+private fun GradientDrawable.applyFillStyle(fillStyle: KalugaBackgroundStyle.FillStyle, context: Context) {
     when (fillStyle) {
-        is BackgroundStyle.FillStyle.Solid -> {
+        is KalugaBackgroundStyle.FillStyle.Solid -> {
             color = ColorStateList(arrayOf(intArrayOf()), intArrayOf(fillStyle.color))
         }
-        is BackgroundStyle.FillStyle.Gradient -> {
+        is KalugaBackgroundStyle.FillStyle.Gradient -> {
             val colors = fillStyle.gradientStyle.colorPoints.map { it.color }.toIntArray()
             val offsets = fillStyle.gradientStyle.colorPoints.map { it.offset }.toFloatArray()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -104,15 +104,15 @@ private fun GradientDrawable.applyGradientStyle(gradientStyle: GradientStyle, co
     }
 }
 
-private fun GradientDrawable.applyStrokeStyle(strokeStyle: BackgroundStyle.StrokeStyle, context: Context) {
+private fun GradientDrawable.applyStrokeStyle(strokeStyle: KalugaBackgroundStyle.StrokeStyle, context: Context) {
     when (strokeStyle) {
-        is BackgroundStyle.StrokeStyle.Stroke -> {
+        is KalugaBackgroundStyle.StrokeStyle.Stroke -> {
             setStroke(strokeStyle.width.dpToPixel(context).toInt(), ColorStateList(arrayOf(intArrayOf()), intArrayOf(strokeStyle.color)))
         }
-        is BackgroundStyle.StrokeStyle.None -> {}
+        is KalugaBackgroundStyle.StrokeStyle.None -> {}
     }
 }
 
-fun View.applyBackgroundStyle(backgroundStyle: BackgroundStyle) {
+fun View.applyBackgroundStyle(backgroundStyle: KalugaBackgroundStyle) {
     background = backgroundStyle.createDrawable(context)
 }

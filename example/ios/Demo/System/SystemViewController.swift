@@ -19,7 +19,7 @@ import Foundation
 import UIKit
 import KalugaExampleShared
 
-class SystemViewController : UITableViewController {
+class SystemViewController: UITableViewController {
 
     private lazy var navigator: ViewControllerNavigator<SystemNavigationActions> = ViewControllerNavigator(parentVC: self) { action in
         switch action {
@@ -27,10 +27,10 @@ class SystemViewController : UITableViewController {
         default: return NavigationSpec.Segue(identifier: "")
         }
     }
-    private lazy var viewModel: SystemViewModel = SystemViewModel(navigator: navigator)
+    private lazy var viewModel = SystemViewModel(navigator: navigator)
 
-    private var modules = [String]()
-    private var onModuleTapped: ((Int) -> Void)? = nil
+    private var systemFeatures = [String]()
+    private var onSystemFeatureTapped: ((Int) -> Void)?
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -40,15 +40,17 @@ class SystemViewController : UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_system".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {
                 return []
             }
             return [
-                viewModel.modules.observeInitialized { next in
-                    let modules = next?.compactMap { $0 as? SystemFeatures } ?? []
-                    self?.modules = modules.map{ $0.name }
-                    self?.onModuleTapped = { (index: Int) in viewModel.onButtonTapped(systemFeatures: modules[index]) }
+                viewModel.systemFeatures.observeInitialized { next in
+                    let systemFeatures = next?.compactMap { $0 as? SystemFeatures } ?? []
+                    self?.systemFeatures = systemFeatures.map { $0.name }
+                    self?.onSystemFeatureTapped = { (index: Int) in viewModel.onButtonTapped(systemFeatures: systemFeatures[index]) }
                     self?.tableView.reloadData()
                 }
             ]
@@ -60,28 +62,26 @@ class SystemViewController : UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return modules.count
+        return systemFeatures.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SystemListCell.Const.identifier, for: indexPath) as! SystemListCell
-        cell.label.text = modules[indexPath.row]
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: SystemListCell.Const.identifier, for: indexPath) { (cell: SystemListCell) in
+            cell.label.text = systemFeatures[indexPath.row]
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onModuleTapped?(indexPath.row)
+        _ = onSystemFeatureTapped?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
 }
 
-class SystemListCell : UITableViewCell {
+class SystemListCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "SystemListCell"
     }
     
     @IBOutlet weak var label: UILabel!
-    
 }

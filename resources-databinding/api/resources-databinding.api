@@ -14,7 +14,7 @@ public class com/splendo/kaluga/resources/databinding/BR {
 public final class com/splendo/kaluga/resources/databinding/Binding {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/databinding/Binding;
 	public static final fun bindAutoTextStyle (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/stylable/TextStyle;F)V
-	public static final fun bindBackground (Landroid/view/View;Lcom/splendo/kaluga/resources/stylable/BackgroundStyle;)V
+	public static final fun bindBackground (Landroid/view/View;Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)V
 	public static final fun bindImage (Landroid/widget/ImageView;Lcom/splendo/kaluga/resources/Image;)V
 	public static final fun bindKalugaButton (Landroid/widget/Button;Lcom/splendo/kaluga/resources/view/KalugaButton;)V
 	public static final fun bindKalugaLabel (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/view/KalugaLabel;)V

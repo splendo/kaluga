@@ -27,7 +27,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
 import com.splendo.kaluga.resources.Image
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
@@ -42,12 +42,14 @@ import kotlin.math.max
 object Binding {
 
     /**
-     * Binds a [BackgroundStyle] to a [View].
+     * Binds a [KalugaBackgroundStyle] to a [View].
      */
     @BindingAdapter("backgroundStyle")
     @JvmStatic
-    fun bindBackground(view: View, backgroundStyle: BackgroundStyle) {
-        view.applyBackgroundStyle(backgroundStyle)
+    fun bindBackground(view: View, backgroundStyle: KalugaBackgroundStyle?) {
+        backgroundStyle?.let {
+            view.applyBackgroundStyle(it)
+        }
     }
 
     /**
@@ -110,8 +112,10 @@ object Binding {
      */
     @BindingAdapter("textStyle")
     @JvmStatic
-    fun bindTextInputLayoutTextStyle(textView: TextInputLayout, textStyle: TextStyle) {
-        textView.editText?.applyTextStyle(textStyle)
+    fun bindTextInputLayoutTextStyle(textView: TextInputLayout, textStyle: TextStyle?) {
+        textStyle?.let {
+            textView.editText?.applyTextStyle(it)
+        }
     }
 
     /**
@@ -119,8 +123,10 @@ object Binding {
      */
     @BindingAdapter("prefixTextStyle")
     @JvmStatic
-    fun bindPrefixTextStyle(textView: TextInputLayout, textStyle: TextStyle) {
-        textView.prefixTextView.applyTextStyle(textStyle)
+    fun bindPrefixTextStyle(textView: TextInputLayout, textStyle: TextStyle?) {
+        textStyle?.let {
+            textView.prefixTextView.applyTextStyle(it)
+        }
     }
 
     /**
@@ -128,7 +134,9 @@ object Binding {
      */
     @BindingAdapter("suffixTextStyle")
     @JvmStatic
-    fun bindSuffixTextStyle(textView: TextInputLayout, textStyle: TextStyle) {
-        textView.suffixTextView.applyTextStyle(textStyle)
+    fun bindSuffixTextStyle(textView: TextInputLayout, textStyle: TextStyle?) {
+        textStyle?.let {
+            textView.suffixTextView.applyTextStyle(it)
+        }
     }
 }

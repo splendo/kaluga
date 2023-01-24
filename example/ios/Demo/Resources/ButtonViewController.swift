@@ -17,9 +17,12 @@
 import UIKit
 import KalugaExampleShared
 
-class ButtonViewController : UITableViewController {
+class ButtonViewController: UITableViewController {
     
-    private lazy var viewModel: ButtonViewModel = ButtonViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider(), alertPresenterBuilder: AlertPresenter.Builder(viewController: self))
+    private lazy var viewModel = ButtonViewModel(
+        styledStringBuilderProvider: StyledStringBuilder.Provider(),
+        alertPresenterBuilder: AlertPresenter.Builder(viewController: self)
+    )
     private var lifecycleManager: LifecycleManager!
 
     private var buttons = [KalugaButton]()
@@ -30,6 +33,9 @@ class ButtonViewController : UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_resources_button".localized()
+
         tableView.allowsSelection = false
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
@@ -51,18 +57,17 @@ class ButtonViewController : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ButtonListCell.Const.identifier, for: indexPath) as! ButtonListCell
-        ButtonStyleKt.bindButton(cell.button, button: buttons[indexPath.row])
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: ButtonListCell.Const.identifier, for: indexPath) { (cell: ButtonListCell) in
+            ButtonStyleKt.bindButton(cell.button, button: buttons[indexPath.row])
+        }
     }
 }
 
-class ButtonListCell : UITableViewCell {
+class ButtonListCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "ButtonListCell"
     }
     
     @IBOutlet weak var button: UIButton!
-    
 }

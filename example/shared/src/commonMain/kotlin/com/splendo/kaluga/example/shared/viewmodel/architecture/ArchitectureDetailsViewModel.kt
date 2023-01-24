@@ -20,12 +20,12 @@ package com.splendo.kaluga.example.shared.viewmodel.architecture
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
-import com.splendo.kaluga.architecture.observable.InitializedObservable
-import com.splendo.kaluga.architecture.observable.subjectOf
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,21 +41,20 @@ sealed class ArchitectureDetailsNavigationAction<T>(value: T, type: NavigationBu
 
 class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) : NavigatingViewModel<ArchitectureDetailsNavigationAction<*>>(navigator) {
 
-    private val _name = subjectOf(initialDetail.name)
-    val name: InitializedObservable<String> = _name
-    private val _number = subjectOf(initialDetail.number.toString())
-    val number: InitializedObservable<String> = _number
+    private val _name = MutableStateFlow(initialDetail.name)
+    val name = _name.toInitializedObservable(coroutineScope)
+    private val _number = MutableStateFlow(initialDetail.number.toString())
+    val number = _number.toInitializedObservable(coroutineScope)
 
-    private var nameResult: String by _name.valueDelegate
-    private var numberResult: String by _number.valueDelegate
+
 
     val inverseButton = KalugaButton.Plain("architecture_details_inverse".localized(), ButtonStyles.default) {
-        nameResult = nameResult.reversed()
-        numberResult = numberResult.reversed()
+        _name.value = _name.value.reversed()
+        _number.value = _number.value.reversed()
     }
 
     val finishButton = KalugaButton.Plain("architecture_finish".localized(), ButtonStyles.default) {
-        navigator.navigate(ArchitectureDetailsNavigationAction.FinishWithDetails(InputDetails(nameResult, numberResult.toIntOrNull() ?: 0)))
+        navigator.navigate(ArchitectureDetailsNavigationAction.FinishWithDetails(InputDetails(_name.value, _number.value.toIntOrNull() ?: 0)))
     }
 
     fun onBackPressed() {

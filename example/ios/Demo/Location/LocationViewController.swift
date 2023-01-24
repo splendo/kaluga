@@ -22,11 +22,11 @@ import KalugaExampleShared
 
 class LocationViewController: UIViewController {
 
-    struct Const {
+    enum Const {
         static let permission = LocationPermission(background: false, precise: true)
     }
     
-    //MARK: Properties
+    // MARK: Properties
     
     @IBOutlet weak var label: UILabel!
     
@@ -40,12 +40,14 @@ class LocationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_location".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {
                 return []
             }
             return [
-                viewModel.location.observe { (location) in
+                viewModel.location.observe { location in
                     self?.label.text = location as? String ?? ""
                 }
             ]
