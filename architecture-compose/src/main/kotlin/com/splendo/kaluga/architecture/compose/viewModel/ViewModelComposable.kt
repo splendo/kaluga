@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.lifecycle.ComposableLifecycleSubscribable
+import com.splendo.kaluga.architecture.compose.lifecycle.composableLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribableManager
@@ -60,7 +61,7 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     viewModel.linkLifecycle(activity, fragmentManager)
 
     // Get a List of all ComposableLifecycleSubscribable of the viewModel.
-    val composeLifecycleSubscribables = viewModel.ComposableLifecycleSubscribable()
+    val composeLifecycleSubscribables = viewModel.composableLifecycleSubscribable()
 
     // If no ComposableLifecycleSubscribable available, just show content
     if (composeLifecycleSubscribables.value.isEmpty()) {

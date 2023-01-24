@@ -1826,11 +1826,14 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithS
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ()V
+	public fun <init> ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
+	protected final fun addLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
 	public final fun didPause ()V
 	public final fun didResume ()V
+	public final fun getActiveLifecycleSubscribables ()Lkotlinx/coroutines/flow/StateFlow;
 	protected fun onPause ()V
 	protected fun onResume (Lkotlinx/coroutines/CoroutineScope;)V
+	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
@@ -1872,6 +1875,13 @@ public final class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelLife
 	public fun onResume (Landroidx/lifecycle/LifecycleOwner;)V
 }
 
+public final class com/splendo/kaluga/architecture/viewmodel/LifecycleSubscribableManager {
+	public fun <init> (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroid/app/Activity;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroid/app/Activity;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun onCreate (Landroidx/lifecycle/LifecycleOwner;)V
+	public final fun onDestroy ()V
+}
+
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel : androidx/lifecycle/ViewModel {
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	protected fun onCleared ()V
@@ -1883,8 +1893,8 @@ public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelK
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;)V
-	public final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
+	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {

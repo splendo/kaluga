@@ -22,5 +22,7 @@ fun org.gradle.api.Project.databindingAndroidComponent() {
     version = Library.version
     commonAndroidComponent(ComponentType.DataBinding)
 
+    ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
+
     publish(ComponentType.DataBinding)
 }
