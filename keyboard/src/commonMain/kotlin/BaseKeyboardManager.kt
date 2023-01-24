@@ -24,50 +24,35 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * Common interface which handles the focus on a view.
  */
-expect interface FocusHandler
+interface FocusHandler
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
  */
-interface BaseKeyboardManager {
+interface BaseKeyboardManager<FH : FocusHandler> {
 
     /**
-     * Base KeyboardManager builder class, which used to create an KeyboardManager
-     *
-     * @see KeyboardManager
+     * Base KeyboardManager builder class, which used to create a [BaseKeyboardManager]
      */
-    interface Builder : LifecycleSubscribableMarker {
+    interface Builder<FH : FocusHandler> : LifecycleSubscribableMarker {
 
         /**
          * Creates KeyboardManager object
          *
          * @return The KeyboardManager object
          */
-        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager
+        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<FH>
     }
 
     /**
-     * Shows the keyboard for a given [KeyboardHostingView]
+     * Shows the keyboard for a given [FocusHandler]
      *
-     * @param keyboardHostingView The view for which the keyboard will be shown
+     * @param focusHandler The [FocusHandler] for which the keyboard will be shown
      */
-    fun show(focusHandler: FocusHandler)
+    fun show(focusHandler: FH)
 
     /**
      * Dismisses the current keyboard
      */
     fun hide()
-}
-
-/**
- * Manager for Showing and Hiding the Keyboard.
- */
-expect class KeyboardManager : BaseKeyboardManager {
-
-    /**
-     * Builder for creating a [KeyboardManager].
-     */
-    class Builder : BaseKeyboardManager.Builder {
-        override fun create(coroutineScope: CoroutineScope): KeyboardManager
-    }
 }

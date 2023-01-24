@@ -15,6 +15,13 @@
 
  */
 
-package com.splendo.kaluga.keyboard
+package com.splendo.kaluga.architecture.compose.navigation.result
 
-actual interface FocusHandler
+import androidx.navigation.NavBackStackEntry
+import com.splendo.kaluga.architecture.compose.navigation.Route
+import com.splendo.kaluga.architecture.navigation.toBundle
+
+internal fun NavBackStackEntry.setResult(result: Route.Result) = when (result) {
+    is Route.Result.Empty -> savedStateHandle.remove(Route.Result.KEY)
+    is Route.Result.Data<*, *> -> savedStateHandle[Route.Result.KEY] = result.bundle.toBundle()
+}

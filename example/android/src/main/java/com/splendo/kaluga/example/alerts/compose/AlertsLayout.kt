@@ -31,13 +31,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.google.android.material.composethemeadapter.MdcTheme
-import com.splendo.kaluga.alerts.alertPresenterBuilder
-import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
 
 class ComposeAlertsActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug
@@ -45,9 +43,7 @@ class ComposeAlertsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CompositionLocalProvider(
-                LocalAppCompatActivity provides this
-            ) {
+            CompositionLocalProvider {
                 AlertsLayout()
             }
         }
@@ -57,10 +53,7 @@ class ComposeAlertsActivity : AppCompatActivity() {
 @Composable
 fun AlertsLayout() {
     MdcTheme {
-        val activity = LocalAppCompatActivity.current!!
-        val viewModel = storeAndRemember {
-            AlertViewModel(activity.alertPresenterBuilder())
-        }
+        val viewModel = koinViewModel<AlertViewModel>()
 
         ViewModelComposable(viewModel) {
             Column(

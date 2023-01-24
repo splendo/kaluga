@@ -20,10 +20,10 @@ package com.splendo.kaluga.keyboard
 
 import kotlinx.coroutines.CoroutineScope
 
-actual class KeyboardManager : BaseKeyboardManager {
+class KeyboardManager : BaseKeyboardManager<FocusHandler> {
 
-    actual class Builder : BaseKeyboardManager.Builder {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
+    class Builder : BaseKeyboardManager.Builder<FocusHandler> {
+        override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
     }
 
     override fun show(focusHandler: FocusHandler) {

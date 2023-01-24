@@ -23,38 +23,31 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import com.splendo.kaluga.architecture.compose.navigation.BottomSheetNavigatorState
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.example.compose.Constants
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
+import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun BottomSheetSubPageLayout(
-    contentNavHostController: NavHostController,
-    sheetContentNavHostController: NavHostController,
-    sheetState: ModalBottomSheetState
+    bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>
 ) {
-    val navigator = ModalBottomSheetNavigator(
-        contentNavHostController,
-        sheetContentNavHostController,
-        sheetState,
-        rememberCoroutineScope(),
-        ::bottomSheetSubPageNavigationRouteMapper
-    )
-
-    val viewModel = store {
-        remember {
-            BottomSheetSubPageViewModel(navigator)
-        }
+    val viewModel = koinViewModel<BottomSheetSubPageViewModel> {
+        parametersOf(
+            ModalBottomSheetNavigator<BottomSheetSubPageNavigation>(
+                bottomSheetNavigationState,
+                navigationMapper = { bottomSheetSubPageNavigationRouteMapper(it) }
+            )
+        )
     }
 
     ViewModelComposable(viewModel) {

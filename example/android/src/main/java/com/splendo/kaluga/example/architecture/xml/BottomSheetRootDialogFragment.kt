@@ -127,5 +127,4 @@ class BottomSheetFragment(val viewModel: BottomSheetViewModel) : Fragment() {
             }
         }
     }
-
 }

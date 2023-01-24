@@ -15,20 +15,19 @@
 
  */
 
-package com.splendo.kaluga.test.keyboard
+package com.splendo.kaluga.architecture.compose.navigation
 
-import com.splendo.kaluga.keyboard.FocusHandler
+import androidx.compose.material.ModalBottomSheetLayout
 
-actual class MockFocusHandler : BaseMockFocusHandler(), FocusHandler {
-    override fun requestFocus() {
-        super.giveFocus()
-    }
-
-    actual fun simulateGiveFocus() {
-        requestFocus()
-    }
-
-    actual fun simulateRemoveFocus() {
-        super.removeFocus()
+/**
+ * A controller that handles the [Route] for a [ModalBottomSheetLayout]
+ */
+class BottomSheetRouteController(
+    internal val contentRouteController: RouteController,
+    internal val sheetContentRouteController: BottomSheetSheetContentRouteController
+) {
+    fun navigate(route: BottomSheetRoute) = when (route) {
+        is BottomSheetRoute.SheetContent -> sheetContentRouteController.navigate(route.route)
+        is BottomSheetRoute.Content -> contentRouteController.navigate(route.route)
     }
 }

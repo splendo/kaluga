@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
-import androidx.activity.result.ActivityResultLauncher
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
@@ -168,7 +167,7 @@ private val NavigationBundleValue<*>.routeArgument: String?
 /**
  * Route for navigating within a [RouteController].
  */
-sealed class Route {
+sealed class Route : ComposableNavSpec() {
 
     companion object {
         val Back = Back()
@@ -259,19 +258,6 @@ sealed class Route {
      * Closes all screens in the navigation stack
      */
     object Close : Route()
-
-    /**
-     * Navigates using an [ActivityResultLauncher] and a valid [input].
-     * @param activityResultLauncher The launcher to launch with. This should have been created using [androidx.activity.compose.rememberLauncherForActivityResult]
-     * @param input The input to be provided to [activityResultLauncher]
-     */
-    data class Launcher<I>(val activityResultLauncher: ActivityResultLauncher<I>, val input: I) : Route() {
-
-        /**
-         * Launches the [activityResultLauncher] with [input]
-         */
-        fun launch() = activityResultLauncher.launch(input)
-    }
 }
 
 /**
@@ -284,7 +270,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 
 /**
  * Creates a [Route.FromRoute] from [Action]
- * @param from The string route to navigate from
+ * @param route The string route to navigate from
  */
 fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) =
     Route.FromRoute(this, route)
@@ -303,7 +289,8 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
     get() = Route.PopTo(
-        this
+        this,
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )
 
 /**
@@ -320,4 +307,12 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
     get() = Route.Replace(
         this
+    )
+
+/**
+ * Creates a [Route.Back] from [Action]
+ */
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.back
+    get() = Route.Back(
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )

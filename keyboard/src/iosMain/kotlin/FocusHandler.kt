@@ -19,12 +19,8 @@ package com.splendo.kaluga.keyboard
 
 import platform.UIKit.UIView
 
-actual interface FocusHandler {
-    fun requestFocus()
-}
-
 class UIKitFocusHandler(val view: UIView) : FocusHandler {
-    override fun requestFocus() {
+    fun requestFocus() {
         if (view.canBecomeFirstResponder) {
             view.becomeFirstResponder()
         }

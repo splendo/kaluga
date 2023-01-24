@@ -36,11 +36,10 @@ import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
-import com.splendo.kaluga.datetimepicker.datePickerPresenterBuilder
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
 
 class ComposeDateTimePickerActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug
@@ -60,10 +59,7 @@ class ComposeDateTimePickerActivity : AppCompatActivity() {
 @Composable
 fun DateTimePickerLayout() {
     MdcTheme {
-        val activity = LocalAppCompatActivity.current!!
-        val viewModel = storeAndRemember {
-            DateTimePickerViewModel(activity.datePickerPresenterBuilder())
-        }
+        val viewModel = koinViewModel<DateTimePickerViewModel>()
 
         ViewModelComposable(viewModel) {
 

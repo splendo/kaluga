@@ -1,23 +1,22 @@
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
- 
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
       http://www.apache.org/licenses/LICENSE-2.0
- 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-  
+
  */
 
 package com.splendo.kaluga.example.resources.compose
 
-import android.view.KeyEvent
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,39 +32,29 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.splendo.kaluga.alerts.alertPresenterBuilder
 import com.splendo.kaluga.architecture.compose.state
-import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import com.splendo.kaluga.resources.compose.backgroundStyle
 import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ColorsLayout() {
-    val activity = LocalAppCompatActivity.current!!
-    val viewModel = storeAndRemember {
-        ColorViewModel(activity.alertPresenterBuilder())
-    }
-    
+    val viewModel = koinViewModel<ColorViewModel>()
+
     ViewModelComposable(viewModel) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
@@ -94,9 +82,11 @@ fun ColorsLayout() {
             Row(Modifier.fillMaxWidth()) {
                 Column(Modifier.width(mainColorSize)) {
                     var backdropTempText by remember { mutableStateOf(backdropText) }
-                    Box(modifier = Modifier
-                        .size(mainColorSize)
-                        .backgroundStyle(backdropColorBackground))
+                    Box(
+                        modifier = Modifier
+                            .size(mainColorSize)
+                            .backgroundStyle(backdropColorBackground)
+                    )
                     OutlinedTextField(
                         value = backdropTempText,
                         onValueChange = { backdropTempText = it },
@@ -110,15 +100,19 @@ fun ColorsLayout() {
                     )
                 }
                 Spacer(modifier = Modifier.weight(1.0f))
-                Box(modifier = Modifier
-                    .size(mainColorSize)
-                    .backgroundStyle(blendedColorBackground))
+                Box(
+                    modifier = Modifier
+                        .size(mainColorSize)
+                        .backgroundStyle(blendedColorBackground)
+                )
                 Spacer(modifier = Modifier.weight(1.0f))
                 Column(Modifier.width(mainColorSize)) {
                     var sourceTempText by remember { mutableStateOf(sourceText) }
-                    Box(modifier = Modifier
-                        .size(mainColorSize)
-                        .backgroundStyle(sourceColorBackground))
+                    Box(
+                        modifier = Modifier
+                            .size(mainColorSize)
+                            .backgroundStyle(sourceColorBackground)
+                    )
                     OutlinedTextField(
                         value = sourceTempText,
                         onValueChange = { sourceTempText = it },
@@ -151,11 +145,14 @@ fun ListOfColors(list: List<BackgroundStyle>) {
     Row(
         Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())) {
+            .horizontalScroll(rememberScrollState())
+    ) {
         list.forEach {
-            Box(modifier = Modifier
-                .size(40.dp)
-                .backgroundStyle(it))
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .backgroundStyle(it)
+            )
         }
     }
 }

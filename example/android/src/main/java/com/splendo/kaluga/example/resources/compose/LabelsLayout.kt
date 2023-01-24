@@ -28,17 +28,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
-import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.compose.Composable
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LabelsLayout() {
-    val viewModel = storeAndRemember {
-        LabelViewModel(StyledStringBuilder.Provider())
-    }
+    val viewModel = koinViewModel<LabelViewModel>()
 
     ViewModelComposable(viewModel) {
         val labels by labels.state()

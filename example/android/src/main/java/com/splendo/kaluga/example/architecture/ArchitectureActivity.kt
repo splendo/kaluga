@@ -22,9 +22,9 @@ import com.splendo.kaluga.example.architecture.xml.XMLArchitectureActivity
 import com.splendo.kaluga.example.compose.ComposeOrXMLActivity
 
 class ArchitectureActivity : ComposeOrXMLActivity<
-        ComposeArchitectureActivity,
-        XMLArchitectureActivity
-        >(
+    ComposeArchitectureActivity,
+    XMLArchitectureActivity
+    >(
     ComposeArchitectureActivity::class.java,
     XMLArchitectureActivity::class.java
 )

@@ -273,7 +273,44 @@ sealed class NavigationSpec {
             val subject: String? = null,
             val body: String? = null,
             val attachments: List<Uri> = emptyList()
-        )
+        ) {
+            val intent get() = when (attachments.size) {
+                0 -> Intent(Intent.ACTION_SEND)
+                1 -> Intent(Intent.ACTION_SEND).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        attachments[0]
+                    )
+                }
+                else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        ArrayList(
+                            attachments
+                        )
+                    )
+                }
+            }.apply {
+                setDataAndType(
+                    Uri.parse("mailto:"),
+                    when (this@EmailSettings.type) {
+                        is Type.Plain -> "text/plain"
+                        is Type.Stylized -> "*/*"
+                    }
+                )
+                if (to.isNotEmpty()) {
+                    putExtra(Intent.EXTRA_EMAIL, to.toTypedArray())
+                }
+                if (cc.isNotEmpty()) {
+                    putExtra(Intent.EXTRA_CC, cc.toTypedArray())
+                }
+                if (bcc.isNotEmpty()) {
+                    putExtra(Intent.EXTRA_BCC, bcc.toTypedArray())
+                }
+                subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
+                body?.let { putExtra(Intent.EXTRA_TEXT, it) }
+            }
+        }
     }
 
     /**
@@ -320,21 +357,68 @@ sealed class NavigationSpec {
      */
     data class Settings(val type: Type) : NavigationSpec() {
         sealed class Type {
-            object General : Type()
-            object Wireless : Type()
-            object AirplaneMode : Type()
-            object Wifi : Type()
-            object Apn : Type()
-            object Bluetooth : Type()
-            object Date : Type()
-            object Locale : Type()
-            object InputMethod : Type()
-            object Display : Type()
-            object Security : Type()
-            object LocationSource : Type()
-            object InternalStorage : Type()
-            object MemoryCard : Type()
-            object AppDetails : Type()
+
+            abstract fun intent(activity: android.app.Activity): Intent
+
+            object General : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_SETTINGS)
+            }
+            object Wireless : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
+            }
+            object AirplaneMode : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_AIRPLANE_MODE_SETTINGS)
+            }
+            object Wifi : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_WIFI_SETTINGS)
+            }
+
+            object Apn : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_APN_SETTINGS)
+            }
+
+            object Bluetooth : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)
+            }
+
+            object Date : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_DATE_SETTINGS)
+            }
+
+            object Locale : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_LOCALE_SETTINGS)
+            }
+
+            object InputMethod : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)
+            }
+
+            object Display : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS)
+            }
+
+            object Security : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+            }
+
+            object LocationSource : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            }
+
+            object InternalStorage : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
+            }
+
+            object MemoryCard : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_MEMORY_CARD_SETTINGS)
+            }
+
+            object AppDetails : Type() {
+                override fun intent(activity: android.app.Activity): Intent {
+                    val uri = Uri.fromParts("package", activity.packageName, null)
+                    return Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
+                }
+            }
         }
     }
 
@@ -360,7 +444,37 @@ sealed class NavigationSpec {
          * @param body Optional body of the message
          * @param attachments List of [Uri] pointing to attachments to add
          */
-        data class TextMessengerSettings(val type: Type = Type.Plain, val recipients: List<String>, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList())
+        data class TextMessengerSettings(val type: Type = Type.Plain, val recipients: List<String>, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList()) {
+            val intent: Intent = when (attachments.size) {
+                0 -> Intent(Intent.ACTION_SEND)
+                1 -> Intent(Intent.ACTION_SEND).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        attachments[0]
+                    )
+                }
+                else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        ArrayList(
+                            attachments
+                        )
+                    )
+                }
+            }.apply {
+                val recipients = recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
+                setDataAndType(
+                    Uri.parse("smsto:$recipients"),
+                    when (this@TextMessengerSettings.type) {
+                        is Type.Plain -> "text/plain"
+                        is Type.Image -> "image/*"
+                        is Type.Video -> "video/*"
+                    }
+                )
+                subject?.let { putExtra("subject", it) }
+                body?.let { putExtra("sms_body", it) }
+            }
+        }
     }
 
     /**

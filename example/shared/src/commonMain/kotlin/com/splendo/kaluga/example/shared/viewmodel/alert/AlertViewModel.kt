@@ -66,7 +66,7 @@ class AlertViewModel(val builder: BaseAlertPresenter.Builder, dismissTime: Durat
         }
     }
 
-    val showAlertWithInputButton = KalugaButton.Plain("alert_list".localized(), ButtonStyles.default) {
+    val showAlertWithInputButton = KalugaButton.Plain("alert_input".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
             val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
@@ -85,7 +85,7 @@ class AlertViewModel(val builder: BaseAlertPresenter.Builder, dismissTime: Durat
         }
     }
 
-    val showAlertWithListButton = KalugaButton.Plain("alert_input".localized(), ButtonStyles.default) {
+    val showAlertWithListButton = KalugaButton.Plain("alert_list".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             builder.buildActionSheet(this) {
                 setTitle("Select an option")

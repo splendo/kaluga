@@ -47,7 +47,6 @@ import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewMo
 import com.splendo.kaluga.example.shared.viewmodel.hud.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
@@ -63,8 +62,6 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.keyboard.FocusHandler
-import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.base.Permission
@@ -135,10 +132,6 @@ internal val androidModule = module {
 
     viewModel {
         HudViewModel(HUD.Builder())
-    }
-
-    viewModel { (keyboardBuilder: KeyboardManager.Builder, focusHandler: FocusHandler) ->
-        KeyboardViewModel(keyboardBuilder, focusHandler)
     }
 
     viewModel { (navigator: Navigator<BrowserNavigationActions<*>>) ->

@@ -20,32 +20,30 @@ package com.splendo.kaluga.example.architecture.compose
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import com.splendo.kaluga.architecture.compose.navigation.BottomSheetNavigatorState
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.navigation.ModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.architecture.compose.viewModel.storeAndRemember
 import com.splendo.kaluga.example.compose.Constants
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
 import com.splendo.kaluga.resources.compose.Composable
+import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun BottomSheetLayout(contentNavHostController: NavHostController, sheetContentNavHostController: NavHostController, sheetState: ModalBottomSheetState) {
-    val navigator = ModalBottomSheetNavigator(
-        contentNavHostController,
-        sheetContentNavHostController,
-        sheetState,
-        rememberCoroutineScope(),
-        ::bottomSheetNavigationRouteMapper,
-    )
-
-    val viewModel = storeAndRemember {
-        BottomSheetViewModel(navigator)
+fun BottomSheetLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) {
+    val viewModel = koinViewModel<BottomSheetViewModel> {
+        parametersOf(
+            ModalBottomSheetNavigator<BottomSheetNavigation>(
+                bottomSheetNavigationState,
+                navigationMapper = { bottomSheetNavigationRouteMapper(it) }
+            )
+        )
     }
 
     ViewModelComposable(viewModel) {
@@ -56,9 +54,11 @@ fun BottomSheetLayout(contentNavHostController: NavHostController, sheetContentN
                 .padding(Constants.Padding.default)
         ) {
             Text(text)
-            button.Composable(modifier = Modifier
-                .fillMaxWidth()
-                .padding(Constants.Padding.default))
+            button.Composable(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Constants.Padding.default)
+            )
         }
     }
 }
