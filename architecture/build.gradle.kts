@@ -15,6 +15,7 @@ dependencies {
     apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)
     apiDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
     apiDependency(Dependencies.AndroidX.Lifecycle.LiveData)
+    apiDependency(Dependencies.Android.Material)
     implementationDependency(Dependencies.AndroidX.Browser)
     implementationDependency(Dependencies.KotlinX.AtomicFu)
 }

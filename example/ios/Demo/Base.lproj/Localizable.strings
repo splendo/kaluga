@@ -46,6 +46,8 @@
 "permission_request_success" = "Permission requested successfully";
 "permission_request_failed" = "Permission request failed";
 
+"architecture_name_input_placeholder" = "Enter your Name";
+"architecture_number_input_placeholder" = "Enter a number";
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
 "keyboard_manager" = "Keyboard";

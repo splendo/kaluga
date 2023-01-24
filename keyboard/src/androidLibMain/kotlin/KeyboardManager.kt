@@ -40,14 +40,13 @@ actual class KeyboardManager(
     }
 
     override fun show(focusHandler: FocusHandler) {
-        lifecycleManagerObserver.manager?.activity?.let {
-            focusHandler.requestFocus(it)
-        }
+        focusHandler.requestFocus(lifecycleManagerObserver.manager?.activity)
     }
 
     override fun hide() {
-        lifecycleManagerObserver.manager?.activity?.let { activity ->
-            clearFocusHandler.clearFocus(activity)
+        val managedActivity = lifecycleManagerObserver.manager?.activity
+        clearFocusHandler.clearFocus(managedActivity)
+        managedActivity?.let { activity ->
             val inputMethodManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.let {
                 if (it.isAcceptingText) {

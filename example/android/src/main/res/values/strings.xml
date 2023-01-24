@@ -52,8 +52,11 @@
     <string name="permission_request_success">Permission requested successfully</string>
     <string name="permission_request_failed">Permission request failed</string>
 
+    <string name="architecture_name_input_placeholder">Enter your Name</string>
+    <string name="architecture_number_input_placeholder">Enter a number</string>
     <string name="architecture_details">Show Details</string>
     <string name="architecture_details_inverse">Inverse Input</string>
+    <string name="architecture_finish">Finish</string>
     <string name="keyboard_manager">Keyboard</string>
     <string name="show_keyboard">Show Keyboard</string>
     <string name="hide_keyboard">Hide Keyboard</string>
@@ -109,4 +112,6 @@
     <string name="bottom_sheet_sheet_content">This is a bottom sheet</string>
     <string name="bottom_sheet_sheet_sub_page_title">Sheet Sub Page</string>
 
+    <string name="android_ui_compose">Compose Implementation</string>
+    <string name="android_ui_xml">XML Implementation</string>
 </resources>

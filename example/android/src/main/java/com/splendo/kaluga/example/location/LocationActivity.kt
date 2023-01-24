@@ -20,16 +20,15 @@ package com.splendo.kaluga.example.location
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatTextView
+import android.view.LayoutInflater
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.databinding.ActivityLocationBinding
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.permissions.location.LocationPermission
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class LocationActivity : KalugaViewModelActivity<LocationViewModel>(R.layout.activity_location) {
+class LocationActivity : KalugaViewModelActivity<LocationViewModel>() {
 
     companion object {
         private val permission = LocationPermission(background = false, precise = true)
@@ -42,16 +41,21 @@ class LocationActivity : KalugaViewModelActivity<LocationViewModel>(R.layout.act
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        findViewById<AppCompatButton>(R.id.enable_background).setOnClickListener {
+        val binding = ActivityLocationBinding.inflate(LayoutInflater.from(this), null, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
+
+        binding.enableBackground.setOnClickListener {
             startService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
 
-        findViewById<AppCompatButton>(R.id.disable_background).setOnClickListener {
+        binding.disableBackground.setOnClickListener {
             stopService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
 
         viewModel.location.observeInitialized {
-            val info = findViewById<AppCompatTextView>(R.id.info)
+            val info = binding.info
             info.text = it
             info.animate().withEndAction {
                 info.animate().setDuration(10000).alpha(0.12f).start()

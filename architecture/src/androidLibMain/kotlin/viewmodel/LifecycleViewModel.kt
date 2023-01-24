@@ -48,6 +48,7 @@ fun <VM : BaseLifecycleViewModel> VM.bind(fragment: Fragment) =
             viewModel = this,
             activity = fragment.activity,
             lifecycleOwner = fragment.viewLifecycleOwner,
-            fragmentManager = fragment.parentFragmentManager
+            fragmentManager = fragment.parentFragmentManager,
+            childFragmentManager = fragment.childFragmentManager
         )
     )

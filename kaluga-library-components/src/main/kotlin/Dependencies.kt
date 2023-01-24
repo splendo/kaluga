@@ -162,6 +162,7 @@ object Dependencies {
         private const val group = "io.insert-koin"
         private const val version = "3.2.2"
         val Android = Dependency(group, "koin-android", version)
+        val AndroidXCompose = Dependency(group, "koin-androidx-compose", version)
         val Core = Dependency(group, "koin-core", version)
     }
 

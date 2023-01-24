@@ -23,6 +23,9 @@ import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.InitializedObservable
 import com.splendo.kaluga.architecture.observable.subjectOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,12 +34,12 @@ data class InputDetails(
     val number: Int
 )
 
-class CloseDetailsNavigation(inputDetails: InputDetails) : SingleValueNavigationAction<InputDetails>(
-    inputDetails,
-    NavigationBundleSpecType.SerializedType(InputDetails.serializer())
-)
+sealed class ArchitectureDetailsNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
+    object Close : ArchitectureDetailsNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    class FinishWithDetails(details: InputDetails) : ArchitectureDetailsNavigationAction<InputDetails>(details, NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
+}
 
-class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<CloseDetailsNavigation>) : NavigatingViewModel<CloseDetailsNavigation>(navigator) {
+class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) : NavigatingViewModel<ArchitectureDetailsNavigationAction<*>>(navigator) {
 
     private val _name = subjectOf(initialDetail.name)
     val name: InitializedObservable<String> = _name
@@ -46,12 +49,16 @@ class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navig
     private var nameResult: String by _name.valueDelegate
     private var numberResult: String by _number.valueDelegate
 
-    fun onInversePressed() {
+    val inverseButton = KalugaButton.Plain("architecture_details_inverse".localized(), ButtonStyles.default) {
         nameResult = nameResult.reversed()
         numberResult = numberResult.reversed()
     }
 
-    fun onClosePressed() {
-        navigator.navigate(CloseDetailsNavigation(InputDetails(nameResult, numberResult.toIntOrNull() ?: 0)))
+    val finishButton = KalugaButton.Plain("architecture_finish".localized(), ButtonStyles.default) {
+        navigator.navigate(ArchitectureDetailsNavigationAction.FinishWithDetails(InputDetails(nameResult, numberResult.toIntOrNull() ?: 0)))
+    }
+
+    fun onBackPressed() {
+        navigator.navigate(ArchitectureDetailsNavigationAction.Close)
     }
 }

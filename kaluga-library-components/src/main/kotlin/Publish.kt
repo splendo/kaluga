@@ -24,7 +24,8 @@ fun Project.publish(componentType: ComponentType = ComponentType.Default) {
             publications {
                 logger.lifecycle("This project module will be published as: $componentType")
                 when (componentType) {
-                    is ComponentType.Compose -> {
+                    is ComponentType.Compose,
+                    is ComponentType.DataBinding -> {
                         create("release", MavenPublication::class.java) {
                             from(components.getByName("release"))
 

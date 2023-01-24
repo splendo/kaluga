@@ -26,15 +26,21 @@ import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.CloseDetailsNavigation
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputNavigation
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetails
+import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -88,6 +94,10 @@ internal val androidModule = module {
         )
     }
 
+    viewModel { (navigator: Navigator<ComposeOrXMLNavigationAction>) ->
+        ComposeOrXMLSelectionViewModel(navigator)
+    }
+
     viewModel { (navigator: Navigator<PermissionsListNavigationAction>) ->
         PermissionsListViewModel(navigator)
     }
@@ -96,15 +106,23 @@ internal val androidModule = module {
 
     viewModel { (permission: LocationPermission) -> LocationViewModel(permission) }
 
-    viewModel { (navigator: Navigator<InputNavigation>) ->
-        ArchitectureInputViewModel(navigator)
+    viewModel { (navigator: Navigator<ArchitectureNavigationAction<*>>) ->
+        ArchitectureViewModel(navigator)
     }
 
-    viewModel { (initialDetail: InputDetails, navigator: Navigator<CloseDetailsNavigation>) ->
+    viewModel { (initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) ->
         ArchitectureDetailsViewModel(
             initialDetail,
             navigator
         )
+    }
+
+    viewModel { (navigator: Navigator<BottomSheetNavigation>) ->
+        BottomSheetViewModel(navigator)
+    }
+
+    viewModel { (navigator: Navigator<BottomSheetSubPageNavigation>) ->
+        BottomSheetSubPageViewModel(navigator)
     }
 
     viewModel {

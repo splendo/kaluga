@@ -28,7 +28,8 @@ interface LifecycleSubscribable : LifecycleSubscribableMarker {
     data class LifecycleManager(
         val activity: Activity?,
         val lifecycleOwner: LifecycleOwner,
-        val fragmentManager: FragmentManager
+        val fragmentManager: FragmentManager,
+        val childFragmentManager: FragmentManager? = null
     )
 
     val manager: LifecycleManager?
@@ -65,3 +66,4 @@ open class LifecycleSubscriber : LifecycleSubscribable {
  */
 fun LifecycleSubscribable.subscribe(activity: AppCompatActivity) = subscribe(LifecycleSubscribable.LifecycleManager(activity, activity, activity.supportFragmentManager))
 fun LifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, fragmentManager: FragmentManager) = subscribe(LifecycleSubscribable.LifecycleManager(activity, owner, fragmentManager))
+fun LifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, parentFragmentManager: FragmentManager, childFragmentManager: FragmentManager?) = subscribe(LifecycleSubscribable.LifecycleManager(activity, owner, parentFragmentManager, childFragmentManager))

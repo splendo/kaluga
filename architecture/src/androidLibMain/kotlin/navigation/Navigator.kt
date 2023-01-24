@@ -24,6 +24,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
@@ -50,6 +51,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec)
             is NavigationSpec.RemoveFragment -> removeFragment(spec)
+            is NavigationSpec.PopFragment -> popFragment(spec)
+            is NavigationSpec.PopFragmentTo -> popFragmentTo(spec)
             is NavigationSpec.Dialog -> navigateToDialog(spec)
             is NavigationSpec.DismissDialog -> dismissDialog(spec)
             is NavigationSpec.Camera -> navigateToCamera(spec)
@@ -100,8 +103,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+        assert(manager != null)
+        val fragmentManager = fragmentSpec.getFragmentManager(manager!!)
         val transaction = fragmentManager.beginTransaction().let {
             when (val backtrackSettings = fragmentSpec.backStackSettings) {
                 is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
@@ -138,8 +141,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+        assert(manager != null)
+        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!)
         val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
 
         val transaction = fragmentManager.beginTransaction()
@@ -147,15 +150,36 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         transaction.commit()
     }
 
+    private fun popFragment(popFragmentSpec: NavigationSpec.PopFragment) {
+        assert(manager != null)
+        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!)
+        if (popFragmentSpec.immediate) {
+            fragmentManager.popBackStackImmediate()
+        } else {
+            fragmentManager.popBackStack()
+        }
+    }
+
+    private fun popFragmentTo(popToFragmentSpec: NavigationSpec.PopFragmentTo) {
+        assert(manager != null)
+        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!)
+        val flags = if (popToFragmentSpec.inclusive) FragmentManager.POP_BACK_STACK_INCLUSIVE else 0
+        if (popToFragmentSpec.immediate) {
+            fragmentManager.popBackStackImmediate(popToFragmentSpec.name, flags)
+        } else {
+            fragmentManager.popBackStack(popToFragmentSpec.name, flags)
+        }
+    }
+
     private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+        assert(manager != null)
+        val fragmentManager = dialogSpec.getFragmentManager(manager!!)
         dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
     }
 
     private fun dismissDialog(spec: NavigationSpec.DismissDialog) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+        assert(manager != null)
+        val fragmentManager = spec.getFragmentManager(manager!!)
         val dialog = fragmentManager.findFragmentByTag(spec.tag) as? DialogFragment ?: return
         dialog.dismiss()
     }
@@ -198,11 +222,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
                 )
             }
         }.apply {
-            data = Uri.parse("mailto:")
-            type = when (settings.type) {
-                is NavigationSpec.Email.Type.Plain -> "text/plain"
-                is NavigationSpec.Email.Type.Stylized -> "*/*"
-            }
+            setDataAndType(
+                Uri.parse("mailto:"),
+                when (settings.type) {
+                    is NavigationSpec.Email.Type.Plain -> "text/plain"
+                    is NavigationSpec.Email.Type.Stylized -> "*/*"
+                }
+            )
             if (settings.to.isNotEmpty()) {
                 putExtra(Intent.EXTRA_EMAIL, settings.to.toTypedArray())
             }
@@ -303,12 +329,14 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             }
         }.apply {
             val recipients = settings.recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
-            data = Uri.parse("smsto:$recipients")
-            type = when (settings.type) {
-                is NavigationSpec.TextMessenger.Type.Plain -> "text/plain"
-                is NavigationSpec.TextMessenger.Type.Image -> "image/*"
-                is NavigationSpec.TextMessenger.Type.Video -> "video/*"
-            }
+            setDataAndType(
+                Uri.parse("smsto:$recipients"),
+                when (settings.type) {
+                    is NavigationSpec.TextMessenger.Type.Plain -> "text/plain"
+                    is NavigationSpec.TextMessenger.Type.Image -> "image/*"
+                    is NavigationSpec.TextMessenger.Type.Video -> "video/*"
+                }
+            )
             settings.subject?.let { putExtra("subject", it) }
             settings.body?.let { putExtra("sms_body", it) }
         }

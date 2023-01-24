@@ -40,7 +40,7 @@ public final class com/splendo/kaluga/architecture/compose/navigation/BottomShee
 public final class com/splendo/kaluga/architecture/compose/navigation/BottomSheetSheetContentRouteController : com/splendo/kaluga/architecture/compose/navigation/RouteController {
 	public static final field $stable I
 	public fun <init> (Landroidx/navigation/NavHostController;Landroidx/compose/material/ModalBottomSheetState;Lkotlinx/coroutines/CoroutineScope;)V
-	public fun back ()Z
+	public fun back (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)Z
 	public fun close ()V
 	public fun navigate (Lcom/splendo/kaluga/architecture/compose/navigation/Route;)V
 }
@@ -90,7 +90,7 @@ public final class com/splendo/kaluga/architecture/compose/navigation/NavHostRou
 	public static final field $stable I
 	public fun <init> (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;)V
 	public synthetic fun <init> (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun back ()Z
+	public fun back (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)Z
 	public fun close ()V
 	public fun navigate (Lcom/splendo/kaluga/architecture/compose/navigation/Route;)V
 }
@@ -102,16 +102,31 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Navigation
 
 public abstract class com/splendo/kaluga/architecture/compose/navigation/Route {
 	public static final field $stable I
+	public static final field Companion Lcom/splendo/kaluga/architecture/compose/navigation/Route$Companion;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Back : com/splendo/kaluga/architecture/compose/navigation/Route {
 	public static final field $stable I
-	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Back;
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;
+	public final fun copy (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$Back;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Back;Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$Back;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getResult ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Close : com/splendo/kaluga/architecture/compose/navigation/Route {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Close;
+}
+
+public final class com/splendo/kaluga/architecture/compose/navigation/Route$Companion {
+	public final fun getBack ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Back;
+	public final fun getPopToRoot ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopToRoot;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$FromRoute : com/splendo/kaluga/architecture/compose/navigation/Route$Navigate {
@@ -123,6 +138,21 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$From
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFrom ()Ljava/lang/String;
 	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/architecture/compose/navigation/Route$Launcher : com/splendo/kaluga/architecture/compose/navigation/Route {
+	public static final field $stable I
+	public fun <init> (Landroidx/activity/result/ActivityResultLauncher;Ljava/lang/Object;)V
+	public final fun component1 ()Landroidx/activity/result/ActivityResultLauncher;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun copy (Landroidx/activity/result/ActivityResultLauncher;Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$Launcher;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Launcher;Landroidx/activity/result/ActivityResultLauncher;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$Launcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActivityResultLauncher ()Landroidx/activity/result/ActivityResultLauncher;
+	public final fun getInput ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public final fun launch ()V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -144,10 +174,13 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$Next
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$PopTo : com/splendo/kaluga/architecture/compose/navigation/Route$Navigate {
 	public static final field $stable I
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
-	public final fun copy (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopTo;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopTo;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopTo;
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component2 ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;
+	public final fun copy (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopTo;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopTo;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopTo;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getResult ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -164,7 +197,16 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$PopT
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$PopToRoot : com/splendo/kaluga/architecture/compose/navigation/Route {
 	public static final field $stable I
-	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopToRoot;
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;
+	public final fun copy (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopToRoot;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopToRoot;Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$PopToRoot;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getResult ()Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Replace : com/splendo/kaluga/architecture/compose/navigation/Route$Navigate {
@@ -177,8 +219,34 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$Repl
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract class com/splendo/kaluga/architecture/compose/navigation/Route$Result {
+	public static final field $stable I
+	public static final field Companion Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Companion;
+	public static final field KEY Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/architecture/compose/navigation/Route$Result$Companion {
+}
+
+public final class com/splendo/kaluga/architecture/compose/navigation/Route$Result$Data : com/splendo/kaluga/architecture/compose/navigation/Route$Result {
+	public static final field $stable I
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)V
+	public final fun component1 ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
+	public final fun copy (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Data;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Data;Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Data;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBundle ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/architecture/compose/navigation/Route$Result$Empty : com/splendo/kaluga/architecture/compose/navigation/Route$Result {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Empty;
+}
+
 public abstract interface class com/splendo/kaluga/architecture/compose/navigation/RouteController {
-	public abstract fun back ()Z
+	public abstract fun back (Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result;)Z
 	public abstract fun close ()V
 	public abstract fun navigate (Lcom/splendo/kaluga/architecture/compose/navigation/Route;)V
 }
@@ -203,6 +271,8 @@ public class com/splendo/kaluga/architecture/compose/navigation/RouteNavigator :
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/RouteNavigatorKt {
+	public static final fun HandleResult (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;ZLkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleResult (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun SetupNavHost (Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun SetupNavHost (Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 	public static final fun SetupNavHost (Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
