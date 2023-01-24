@@ -64,10 +64,10 @@ class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
 }
 ```
 
-The `KalugaViewModelLifecycleObserver` will automatically update the `LifecycleSubscribable.LifecycleManager` context of all `LifecycleSubscribable` added to `BaseLifecycleViewModel.activeLifecycleSubscribables` of the viewModel.
+The `KalugaViewModelLifecycleObserver` will automatically update the `ActivityLifecycleSubscribable.LifecycleManager` context of all `ActivityLifecycleSubscribable` added to `BaseLifecycleViewModel.activeLifecycleSubscribables` of the viewModel.
 Implement this interface if a viewModel has properties that should be lifecycle or context aware.
 It can be delegated using `LifecycleSubscriber`.
-The `LifecycleManagerObserver` is a default implementation of `LifecycleSubscribable` that provides updates to the context as a `Flow`.
+The `LifecycleManagerObserver` is a default implementation of `ActivityLifecycleSubscribable` that provides updates to the context as a `Flow`.
 
 ### iOS
 On iOS the viewModel lifecycle should match 'onDidAppear'/`viewDidDisappear`.

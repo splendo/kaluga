@@ -23,8 +23,8 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.coroutineScope
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.flow.runningFold
 
@@ -68,7 +68,7 @@ class LifecycleSubscribableManager<VM : BaseLifecycleViewModel>(
 ) {
     fun onCreate(owner: LifecycleOwner) {
         owner.lifecycle.coroutineScope.launchWhenCreated {
-            viewModel.activeLifecycleSubscribables.runningFold(emptySet<LifecycleSubscribableMarker>() to emptySet<LifecycleSubscribableMarker>()) { (_, previous), next ->
+            viewModel.activeLifecycleSubscribables.runningFold(emptySet<LifecycleSubscribable>() to emptySet<LifecycleSubscribable>()) { (_, previous), next ->
                 previous to next.toSet()
             }.collect { (previous, next) ->
                 val toDelete = previous - next
@@ -85,16 +85,16 @@ class LifecycleSubscribableManager<VM : BaseLifecycleViewModel>(
         }
     }
 
-    private fun LifecycleSubscribableMarker.onSubscribe(lifecycleOwner: LifecycleOwner) {
+    private fun LifecycleSubscribable.onSubscribe(lifecycleOwner: LifecycleOwner) {
         when (this) {
-            is LifecycleSubscribable -> subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager)
+            is ActivityLifecycleSubscribable -> subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager)
             else -> {}
         }
     }
 
-    private fun LifecycleSubscribableMarker.onUnsubscribe() {
+    private fun LifecycleSubscribable.onUnsubscribe() {
         when (this) {
-            is LifecycleSubscribable -> unsubscribe()
+            is ActivityLifecycleSubscribable -> unsubscribe()
             else -> {}
         }
     }

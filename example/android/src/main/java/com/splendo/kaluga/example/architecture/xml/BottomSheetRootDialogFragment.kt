@@ -26,7 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelBottomSheetDialogFragment
@@ -83,7 +83,7 @@ class BottomSheetRootDialogFragment : KalugaViewModelBottomSheetDialogFragment<B
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
 
-                subPageNavigator.subscribe(LifecycleSubscribable.LifecycleManager(activity, viewLifecycleOwner, parentFragmentManager, childFragmentManager))
+                subPageNavigator.subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, viewLifecycleOwner, parentFragmentManager, childFragmentManager))
             }
 
             override fun onDestroy(owner: LifecycleOwner) {

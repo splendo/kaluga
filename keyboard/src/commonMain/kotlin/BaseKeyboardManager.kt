@@ -19,7 +19,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -35,7 +35,7 @@ interface BaseKeyboardManager<FH : FocusHandler> {
     /**
      * Base KeyboardManager builder class, which used to create a [BaseKeyboardManager]
      */
-    interface Builder<FH : FocusHandler> : LifecycleSubscribableMarker {
+    interface Builder<FH : FocusHandler> : LifecycleSubscribable {
 
         /**
          * Creates KeyboardManager object

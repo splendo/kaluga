@@ -26,7 +26,7 @@ import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -120,7 +120,7 @@ sealed class NavigationSpec {
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
         val createFragment: () -> androidx.fragment.app.Fragment
     ) : NavigationSpec() {
 
@@ -179,7 +179,7 @@ sealed class NavigationSpec {
     data class RemoveFragment(
         val tag: String,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**
@@ -191,7 +191,7 @@ sealed class NavigationSpec {
     data class PopFragment(
         val immediate: Boolean = false,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**
@@ -205,7 +205,7 @@ sealed class NavigationSpec {
         val inclusive: Boolean,
         val immediate: Boolean = false,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**
@@ -216,7 +216,7 @@ sealed class NavigationSpec {
      */
     data class Dialog(
         val tag: String? = null,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
         val createDialog: () -> DialogFragment
     ) : NavigationSpec()
 
@@ -229,7 +229,7 @@ sealed class NavigationSpec {
     data class DismissDialog(
         val tag: String,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: LifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
     ) : NavigationSpec()
 
     /**

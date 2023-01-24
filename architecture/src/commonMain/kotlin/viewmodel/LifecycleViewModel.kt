@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
@@ -57,14 +57,14 @@ expect open class LifecycleViewModel internal constructor() {
 
 /**
  * Default [LifecycleViewModel] implementation respecting the Lifecycle of the presenting view.
- * @param lifecycleSubscribables The [LifecycleSubscribableMarker] to be used by this viewModel.
+ * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
-open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscribableMarker) : LifecycleViewModel() {
+open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscribable) : LifecycleViewModel() {
 
-    private val _activeLifecycleSubscribables = MutableStateFlow(lifecycleSubscribables.toList())
+    private val _activeLifecycleSubscribables = MutableStateFlow(lifecycleSubscribables.toSet())
 
     /**
-     * A [StateFlow] of the list of [LifecycleSubscribableMarker] that are currently in use.
+     * A [StateFlow] of the set of [LifecycleSubscribable] that are currently in use.
      * Hook up your lifecycle to these markers where required.
      */
     val activeLifecycleSubscribables = _activeLifecycleSubscribables.asStateFlow()
@@ -97,23 +97,23 @@ open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscr
     protected open fun onPause() {}
 
     /**
-     * Adds a list of [LifecycleSubscribableMarker] to [activeLifecycleSubscribables].
+     * Adds a list of [LifecycleSubscribable] to [activeLifecycleSubscribables].
      */
-    protected fun addLifecycleSubscribables(vararg markers: LifecycleSubscribableMarker) {
-        _activeLifecycleSubscribables.update { it.toMutableSet().apply { addAll(markers) }.toList() }
+    protected fun addLifecycleSubscribables(vararg markers: LifecycleSubscribable) {
+        _activeLifecycleSubscribables.update { it.toMutableSet().apply { addAll(markers.toSet()) }.toSet() }
     }
 
     /**
-     * Removes a list of [LifecycleSubscribableMarker] from [activeLifecycleSubscribables] (if added).
+     * Removes a list of [LifecycleSubscribable] from [activeLifecycleSubscribables] (if added).
      */
-    protected fun removeLifecycleSubscribables(vararg markers: LifecycleSubscribableMarker) {
-        _activeLifecycleSubscribables.update { it.toMutableSet().apply { removeAll(markers.toSet()) }.toList() }
+    protected fun removeLifecycleSubscribables(vararg markers: LifecycleSubscribable) {
+        _activeLifecycleSubscribables.update { it.toMutableSet().apply { removeAll(markers.toSet()) }.toSet() }
     }
 }
 
 /**
  * Default [LifecycleViewModel] allowing navigation.
  * @param navigator The [Navigator] handling navigation.
- * @param lifecycleSubscribables The [LifecycleSubscribableMarker] to be used by this viewModel.
+ * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(protected val navigator: Navigator<A>, vararg lifecycleSubscribables: LifecycleSubscribableMarker) : BaseLifecycleViewModel(*lifecycleSubscribables, navigator)
+open class NavigatingViewModel<A : NavigationAction<*>>(protected val navigator: Navigator<A>, vararg lifecycleSubscribables: LifecycleSubscribable) : BaseLifecycleViewModel(*lifecycleSubscribables, navigator)

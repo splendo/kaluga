@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -252,7 +252,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
      *
      * @see [AlertPresenter.Builder]
      */
-    abstract class Builder : LifecycleSubscribableMarker {
+    abstract class Builder : LifecycleSubscribable {
 
         /**
          * Creates the [BaseAlertPresenter] described by this builder.

@@ -23,7 +23,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 
-interface LifecycleSubscribable : LifecycleSubscribableMarker {
+actual interface LifecycleSubscribable
+
+interface ActivityLifecycleSubscribable : LifecycleSubscribable {
 
     data class LifecycleManager(
         val activity: Activity?,
@@ -48,11 +50,11 @@ interface LifecycleSubscribable : LifecycleSubscribableMarker {
     fun unsubscribe()
 }
 
-open class LifecycleSubscriber : LifecycleSubscribable {
+open class ActivityLifecycleSubscriber : ActivityLifecycleSubscribable {
 
-    override var manager: LifecycleSubscribable.LifecycleManager? = null
+    override var manager: ActivityLifecycleSubscribable.LifecycleManager? = null
 
-    override fun subscribe(manager: LifecycleSubscribable.LifecycleManager) {
+    override fun subscribe(manager: ActivityLifecycleSubscribable.LifecycleManager) {
         this.manager = manager
     }
 
@@ -62,8 +64,8 @@ open class LifecycleSubscriber : LifecycleSubscribable {
 }
 
 /**
- * Convenience method to subscribe an [AppCompatActivity] to this [LifecycleSubscribable] using its default [LifecycleOwner] and [FragmentManager].
+ * Convenience method to subscribe an [AppCompatActivity] to this [ActivityLifecycleSubscribable] using its default [LifecycleOwner] and [FragmentManager].
  */
-fun LifecycleSubscribable.subscribe(activity: AppCompatActivity) = subscribe(LifecycleSubscribable.LifecycleManager(activity, activity, activity.supportFragmentManager))
-fun LifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, fragmentManager: FragmentManager) = subscribe(LifecycleSubscribable.LifecycleManager(activity, owner, fragmentManager))
-fun LifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, parentFragmentManager: FragmentManager, childFragmentManager: FragmentManager?) = subscribe(LifecycleSubscribable.LifecycleManager(activity, owner, parentFragmentManager, childFragmentManager))
+fun ActivityLifecycleSubscribable.subscribe(activity: AppCompatActivity) = subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, activity, activity.supportFragmentManager))
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, fragmentManager: FragmentManager) = subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, fragmentManager))
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, parentFragmentManager: FragmentManager, childFragmentManager: FragmentManager?) = subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, parentFragmentManager, childFragmentManager))

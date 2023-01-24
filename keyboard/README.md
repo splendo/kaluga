@@ -36,7 +36,7 @@ fun hideKeyboard(builder: KeyboardManager.Builder) {
 The `KeyboardManager.Builder` and `FocusHandler` are provided on the platform.
 
 ### Android
-On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the keyboard.
+On Android the builder is an `ActivityLifecycleSubscribable` (see Architecture) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the keyboard.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 The keyboardHostingView is any resource Id for a `View` attached to the `Activity` bound to the manager.
 

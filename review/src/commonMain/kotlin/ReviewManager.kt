@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.review
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
 /**
  * Manager for requesting the system to show a Review Dialog.
@@ -25,7 +25,7 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
  */
 expect class ReviewManager {
 
-    class Builder : LifecycleSubscribableMarker {
+    class Builder : LifecycleSubscribable {
         fun create(): ReviewManager
     }
 

@@ -22,4 +22,4 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 /**
  * Implementing this interface as a public property of a [LifecycleViewModel] allows for automatic binding to platform specific lifecycle aware manager.
  */
-interface LifecycleSubscribableMarker
+expect interface LifecycleSubscribable

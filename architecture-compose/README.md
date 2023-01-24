@@ -22,13 +22,13 @@ Compose architecture can be easily used by any Composable function.
 To do so, simply create a `BaseLifecycleViewModel`, preferably using a composable method that retains the viewModel on configuration changes such as [`androidx.lifecycle.viewmodel.compose.viewModel()`](https://developer.android.com/reference/kotlin/androidx/lifecycle/viewmodel/compose/package-summary#viewModel(androidx.lifecycle.ViewModelStoreOwner,kotlin.String,androidx.lifecycle.ViewModelProvider.Factory,androidx.lifecycle.viewmodel.CreationExtras)) or [`org.koin.androidx.compose.koinViewModel`](https://insert-koin.io/docs/reference/koin-android/compose#viewmodel-for-composable)
 Then wrap the ViewModel using the `ViewModelComposable` wrapping function.
 
-`ViewModelComposable` will automatically bind to all `LifecycleSubscribables` exposed by `BaseLifecycleViewModel.activeLifecycleSubscribables` using the activity that hosts the Composable.
+`ViewModelComposable` will automatically bind to all `LifecycleSubscribable` exposed by `BaseLifecycleViewModel.activeLifecycleSubscribables` using the activity that hosts the Composable.
 `FragmentViewModelComposable` can be called instead to provide an additional `FragmentManager` to bind to.
 
 A `KalugaViewModelComposeActivity` can be declared to automatically create a `BaseLifecycleViewModel` and wrap it in `ViewModelComposable` as the Content of the activity.
 
 ### ComposableLifecycleSubscribable
-This Kaluga library adds a new `LifecycleSubscribableMarker`: `ComposableLifecycleSubscribable`.
+This Kaluga library adds a new `LifecycleSubscribable`: `ComposableLifecycleSubscribable`.
 The `ComposableLifecycleSubscribable` provides a modifying function to wrap around a composable view.
 `ViewModelComposable` will automatically modify its content with all `ComposableLifecycleSubscribable` exposed by `BaseLifecycleViewModel.activeLifecycleSubscribables`.
 

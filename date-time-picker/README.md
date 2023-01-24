@@ -61,7 +61,7 @@ The can be shown using either `suspend fun show(animated: Boolean = true): Date?
 Both methods for showing return the initial selectedDate passed through the builder, modified by the selected date, or null if the date selection was cancelled.
 
 ### Android
-On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
+On Android the builder is an `ActivityLifecycleSubscribable` (see Architecture) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 
 ```kotlin

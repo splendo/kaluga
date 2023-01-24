@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.lifecycle.ComposableLifecycleSubscribable
 import com.splendo.kaluga.architecture.compose.lifecycle.composableLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribableManager
 
@@ -37,10 +37,10 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
 }
 
 /**
- * Composable which manages [viewModel] lifecycle and binds to all its [LifecycleSubscribable] using [fragmentManager].
+ * Composable which manages [viewModel] lifecycle and binds to all its [ActivityLifecycleSubscribable] using [fragmentManager].
  * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
  * @param viewModel [BaseLifecycleViewModel] to manage
- * @param fragmentManager The [FragmentManager] to bind to all [LifecycleSubscribable] in [BaseLifecycleViewModel.activeLifecycleSubscribables].
+ * @param fragmentManager The [FragmentManager] to bind to all [ActivityLifecycleSubscribable] in [BaseLifecycleViewModel.activeLifecycleSubscribables].
  * @param content content based on [viewModel]
  */
 @Composable

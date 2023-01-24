@@ -130,7 +130,7 @@ public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter : com/splendo
 	public fun showAsync (ZLkotlin/jvm/functions/Function0;)V
 }
 
-public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
 }

@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribableMarker {
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
 
     actual fun navigate(action: A)
 }

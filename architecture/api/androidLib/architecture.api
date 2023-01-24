@@ -1,33 +1,18 @@
-public final class com/splendo/kaluga/architecture/lifecycle/GetOrPutAndRemoveOnDestroyFromCacheKt {
-	public static final fun getLifecycleAwareActivityCache ()Ljava/util/Map;
-}
-
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscriber {
-	public fun <init> ()V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public final fun getManagerState ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-}
-
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserverKt {
-	public static final fun lifecycleManagerObserver (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;
-}
-
-public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
-	public abstract fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public abstract fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+public abstract interface class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+	public abstract fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public abstract fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public abstract fun unsubscribe ()V
 }
 
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager {
+public final class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager {
 	public fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
 	public synthetic fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Landroid/app/Activity;
 	public final fun component2 ()Landroidx/lifecycle/LifecycleOwner;
 	public final fun component3 ()Landroidx/fragment/app/FragmentManager;
 	public final fun component4 ()Landroidx/fragment/app/FragmentManager;
-	public final fun copy (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
+	public final fun copy (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getActivity ()Landroid/app/Activity;
 	public final fun getChildFragmentManager ()Landroidx/fragment/app/FragmentManager;
@@ -37,28 +22,43 @@ public final class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribab
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableKt {
-	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)V
-	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
-	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;Landroidx/appcompat/app/AppCompatActivity;)V
+public final class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribableKt {
+	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroidx/appcompat/app/AppCompatActivity;)V
 }
 
-public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
-}
-
-public class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+public class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable {
 	public fun <init> ()V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 
-public final class com/splendo/kaluga/architecture/navigation/ActivityNavigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable, com/splendo/kaluga/architecture/navigation/Navigator {
+public final class com/splendo/kaluga/architecture/lifecycle/GetOrPutAndRemoveOnDestroyFromCacheKt {
+	public static final fun getLifecycleAwareActivityCache ()Ljava/util/Map;
+}
+
+public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscriber {
+	public fun <init> ()V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public final fun getManagerState ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+}
+
+public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserverKt {
+	public static final fun lifecycleManagerObserver (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;
+}
+
+public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+}
+
+public final class com/splendo/kaluga/architecture/navigation/ActivityNavigator : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable, com/splendo/kaluga/architecture/navigation/Navigator {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 
@@ -1285,7 +1285,7 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Thi
 	public static fun values ()[Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$ThirdPartyApp$OpenMode;
 }
 
-public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public abstract fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
 }
 
@@ -1826,14 +1826,14 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithS
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
-	protected final fun addLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
+	public fun <init> ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
+	protected final fun addLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 	public final fun didPause ()V
 	public final fun didResume ()V
 	public final fun getActiveLifecycleSubscribables ()Lkotlinx/coroutines/flow/StateFlow;
 	protected fun onPause ()V
 	protected fun onResume (Lkotlinx/coroutines/CoroutineScope;)V
-	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
+	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
@@ -1893,7 +1893,7 @@ public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelK
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 

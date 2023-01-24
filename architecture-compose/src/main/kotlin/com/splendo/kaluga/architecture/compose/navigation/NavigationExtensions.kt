@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
  * Current implementation expects [KalugaViewModelComposeActivity] to be a host since it provides [LocalAppCompatActivity].
  */
 @Composable
-fun LifecycleSubscribable.bind(): LifecycleSubscribable {
+fun ActivityLifecycleSubscribable.bind(): ActivityLifecycleSubscribable {
     LocalContext.current.activity?.let { activity ->
         DisposableEffect(Unit) {
             subscribe(activity)

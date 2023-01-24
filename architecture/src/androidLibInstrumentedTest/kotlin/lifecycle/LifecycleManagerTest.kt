@@ -45,7 +45,7 @@ class LifecycleManagerTest {
     fun testLifecycleManagerObserver() = runBlocking(Dispatchers.Main) {
         val activity = activity!!
         val observer = activity.lifecycleManagerObserver()
-        assertEquals(LifecycleSubscribable.LifecycleManager(activity, activity, activity.supportFragmentManager), observer.managerState.value)
+        assertEquals(ActivityLifecycleSubscribable.LifecycleManager(activity, activity, activity.supportFragmentManager), observer.managerState.value)
 
         withContext(Dispatchers.Default) {
             activityRule.scenario.moveToState(Lifecycle.State.DESTROYED)

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
 /**
  * Action that describes the intent to navigate
@@ -47,7 +47,7 @@ open class NavigationException(message: String?) : RuntimeException(message)
 /**
  * Class that can trigger a given [NavigationAction]
  */
-expect interface Navigator<A : NavigationAction<*>> : LifecycleSubscribableMarker {
+expect interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
     /**
      * Triggers a given [NavigationAction]
      * @param action The [NavigationAction] to trigger
