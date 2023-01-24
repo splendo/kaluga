@@ -13,6 +13,7 @@ val modules = listOf(
     "base" to false,
     "bluetooth" to false,
     "beacons" to false,
+    "date-time" to false,
     "date-time-picker" to true,
     "hud" to true,
     "keyboard" to true,

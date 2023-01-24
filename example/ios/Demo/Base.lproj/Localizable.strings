@@ -2,6 +2,7 @@
 
 "feature_alerts" = "Alerts";
 "feature_architecture" = "Architecture";
+"feature_date_time"= "Date Time";
 "feature_date_time_picker"= "Date Time Picker";
 "feature_bluetooth" = "Bluetooth";
 "feature_hud" = "Loading Indicator";

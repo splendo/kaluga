@@ -25,10 +25,10 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
@@ -52,7 +52,8 @@ class RecurringTimer(
     coroutineScope: CoroutineScope = MainScope()
 ) : ControllableTimer {
     private val stateRepo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)
-    override val state: StateFlow<Timer.State> = stateRepo.stateFlow
+    override val state: Flow<Timer.State> = stateRepo.stateFlow.map { it.timerState }
+    override val currentState: Timer.State get() = stateRepo.stateFlow.value.timerState
 
     override suspend fun start() = stateRepo.start()
 
@@ -108,16 +109,21 @@ private class TimerStateRepo(
     }
 
     /** Timer state. */
-    sealed class State : KalugaState, Timer.State {
+    sealed class State : KalugaState {
         abstract val totalDuration: Duration
+        abstract val timerState: Timer.State
+
         /** Timer is not running. */
-        sealed class NotRunning(protected val elapsedSoFar: Duration) : State(), Timer.State.NotRunning {
-            override val elapsed = flowOf(elapsedSoFar)
+        sealed class NotRunning(protected val elapsedSoFar: Duration) : State() {
+            val elapsed = flowOf(elapsedSoFar)
             /** Timer is paused. */
             class Paused(
                 elapsedSoFar: Duration,
                 override val totalDuration: Duration
             ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
+
+                override val timerState: Timer.State get() = this
+
                 fun start(
                     interval: Duration,
                     timeSource: TimeSource,
@@ -138,7 +144,9 @@ private class TimerStateRepo(
             /** Timer is finished. */
             class Finished(
                 override val totalDuration: Duration
-            ) : NotRunning(totalDuration), Timer.State.NotRunning.Finished
+            ) : NotRunning(totalDuration), Timer.State.NotRunning.Finished {
+                override val timerState: Timer.State get() = this
+            }
         }
 
         /** Timer is running. */
@@ -158,6 +166,8 @@ private class TimerStateRepo(
                 timeSource = timeSource,
                 delayFunction = delayFunction
             )
+
+            override val timerState: Timer.State get() = this
 
             private val supervisor = SupervisorJob()
 

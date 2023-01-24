@@ -41,6 +41,7 @@ import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewMo
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetails
 import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.datetime.TimerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -124,6 +125,10 @@ internal val androidModule = module {
 
     viewModel {
         AlertViewModel(AlertPresenter.Builder())
+    }
+
+    viewModel {
+        TimerViewModel()
     }
 
     viewModel {

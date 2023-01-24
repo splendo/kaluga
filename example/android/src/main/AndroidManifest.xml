@@ -71,6 +71,9 @@
         <activity android:name=".alerts.compose.ComposeAlertsActivity"
             android:label="@string/feature_alerts"
             android:screenOrientation="fullSensor"/>
+        <activity android:name=".datetime.TimerActivity"
+            android:label="@string/feature_date_time"
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".datetimepicker.DateTimePickerActivity"
             android:label="@string/feature_date_time_picker"
             android:screenOrientation="fullSensor"/>
