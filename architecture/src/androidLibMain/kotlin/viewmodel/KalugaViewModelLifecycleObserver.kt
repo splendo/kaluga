@@ -22,15 +22,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.coroutineScope
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.subscribe
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
-import kotlin.reflect.KVisibility
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.starProjectedType
+import kotlinx.coroutines.flow.runningFold
 
 /**
  * [LifecycleObserver] used to manage the lifecycle of a [BaseLifecycleViewModel]
@@ -41,29 +37,18 @@ import kotlin.reflect.full.starProjectedType
 class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal constructor(
     private val viewModel: VM,
     private val activity: Activity?,
-    private val lifecycleOwner: LifecycleOwner,
     private val fragmentManager: FragmentManager,
-    private val childFragmentManager: FragmentManager? = null
+    childFragmentManager: FragmentManager? = null
 ) : DefaultLifecycleObserver {
 
-    private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
-        @Suppress("UNCHECKED_CAST")
-        viewModel::class.memberProperties
-            .filter { it !is KMutableProperty1 }
-            .mapNotNull { it as? KProperty1<VM, Any?> }
-            .filter {
-                it.getter.visibility == KVisibility.PUBLIC &&
-                    it.getter.returnType.isSubtypeOf(LifecycleSubscribableMarker::class.starProjectedType)
-            }
-            .mapNotNull { it.getter(viewModel) as? LifecycleSubscribable }
-    }
+    private val manager = LifecycleSubscribableManager(viewModel, activity, fragmentManager, childFragmentManager)
 
     override fun onCreate(owner: LifecycleOwner) {
-        lifecycleSubscribables.forEach { it.subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager) }
+        manager.onCreate(owner)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        lifecycleSubscribables.forEach { it.unsubscribe() }
+        manager.onDestroy()
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -72,5 +57,45 @@ class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal con
 
     override fun onPause(owner: LifecycleOwner) {
         viewModel.didPause()
+    }
+}
+
+class LifecycleSubscribableManager<VM : BaseLifecycleViewModel>(
+    private val viewModel: VM,
+    private val activity: Activity?,
+    private val fragmentManager: FragmentManager,
+    private val childFragmentManager: FragmentManager? = null
+) {
+    fun onCreate(owner: LifecycleOwner) {
+        owner.lifecycle.coroutineScope.launchWhenCreated {
+            viewModel.activeLifecycleSubscribables.runningFold(emptySet<LifecycleSubscribableMarker>() to emptySet<LifecycleSubscribableMarker>()) { (_, previous), next ->
+                previous to next.toSet()
+            }.collect { (previous, next) ->
+                val toDelete = previous - next
+                val toAdd = next - previous
+                toDelete.forEach { it.onUnsubscribe() }
+                toAdd.forEach { it.onSubscribe(owner) }
+            }
+        }
+    }
+
+    fun onDestroy() {
+        viewModel.activeLifecycleSubscribables.value.forEach {
+            it.onUnsubscribe()
+        }
+    }
+
+    private fun LifecycleSubscribableMarker.onSubscribe(lifecycleOwner: LifecycleOwner) {
+        when (this) {
+            is LifecycleSubscribable -> subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager)
+            else -> {}
+        }
+    }
+
+    private fun LifecycleSubscribableMarker.onUnsubscribe() {
+        when (this) {
+            is LifecycleSubscribable -> unsubscribe()
+            else -> {}
+        }
     }
 }

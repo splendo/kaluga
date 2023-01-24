@@ -17,12 +17,12 @@ dependencies {
 ```
 
 ## ViewModels
-ViewModels can be created by subclassing the `BaseViewModel` class. The viewModel runs within its own coroutine scope that exists for the entire lifetime of the viewModel.
+ViewModels can be created by subclassing the `BaseLifecycleViewModel` class. The viewModel runs within its own coroutine scope that exists for the entire lifetime of the viewModel.
 In addition viewModels have their own lifecycle, allowing them to the paused and resumed by the view. When the viewModel is resumed a `CoroutineScope` with a lifecycle limited to the resumed state is provided.
 Launch any coroutines within this scope to automatically cancel when the viewModel is paused.
 
 ```kotlin
-class SomeViewModel : BaseViewModel() {
+class SomeViewModel : BaseLifecycleViewModel() {
 
     init {
         coroutineScope.launch {
@@ -64,7 +64,7 @@ class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
 }
 ```
 
-The `KalugaViewModelLifecycleObserver` will automatically update the `LifecycleSubscribable.LifecycleManager` context of all **public** `LifecycleSubscribable` properties of the viewModel.
+The `KalugaViewModelLifecycleObserver` will automatically update the `LifecycleSubscribable.LifecycleManager` context of all `LifecycleSubscribable` added to `BaseLifecycleViewModel.activeLifecycleSubscribables` of the viewModel.
 Implement this interface if a viewModel has properties that should be lifecycle or context aware.
 It can be delegated using `LifecycleSubscriber`.
 The `LifecycleManagerObserver` is a default implementation of `LifecycleSubscribable` that provides updates to the context as a `Flow`.
@@ -279,15 +279,6 @@ class SomeViewController : UIViewController {
     }
 ```
 
-#### Kotlin/Native freezing and memory management
-
-By default observables do not freeze themselves or their values. The internally stored value for the current observation is held in a regular `var`, and it is mutated only from the supplied `CoroutineContext` (`Dispatchers.Main.immidiate` by default).
-Once access is done from another thread than that of the context this `var` gets frozen (due to the context switch), and future updates frozen and stored in an `AtomicReference`. This mean the value in memory at the time of freezing will be held in memory with the Observable.
-
-In practise, when operating in a ViewModel this should suffice. A caveat is that when the `stateFlow` field of an observable is used (which internally is lazily initialized) it will also hold the value and `StateFlow`s always freeze their values regardless of thread access.
-
-Subjects which require a `CoroutineScope` to be created usually `bind` the StateFlow automatically (which will cause it to be initialized, freezing values). This behaviour can be turned off with the `autoBind` paramater. 
-
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.
 This viewModel takes a `Navigator` interface that responds to a given `NavigationAction`.
@@ -322,7 +313,7 @@ val viewModel = SomeNavigatingViewModel(
     ActivityNavigator { action ->
         when (action) {
             is ActionA -> NavigationSpec.Activity(SomeActivity::class.java)
-            is ActionB -> NavigationSpec.Fragment(R.id.some_fragment_container, createFragment = {SomeFragment()})
+            is ActionB -> NavigationSpec.Fragment(R.id.some_fragment_container, createFragment = { SomeFragment() })
         }   
     })
 
@@ -331,7 +322,7 @@ val viewModel = SomeNavigatingViewModel(
     ViewControllerNavigator(viewController) { action ->
         when (action) {
             is ActionA -> NavigationSpec.Present(present = { someViewController() })
-            is ActionB -> NavigationSpec.Nested(containerView = containerView, nested = {someNestedViewController()})
+            is ActionB -> NavigationSpec.Nested(containerView = containerView, nested = { someNestedViewController() })
         }
     }
 )

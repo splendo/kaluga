@@ -53,10 +53,8 @@ However kaluga's [architecture module](architecture/) offers a cross-platform [`
 
 ```kotlin
 // this can just be in the commonMain source
-class HudViewModel: BaseViewModel() {
-
-    val hudBuilder = HUD.Builder()
-
+class HudViewModel(private val hudBuilder: HUD.Builder): BaseLifecycleViewModel(hudBuilder) {
+    
     suspend fun doWork() = 
         hudBuilder.presentDuring {
             delay(1000)

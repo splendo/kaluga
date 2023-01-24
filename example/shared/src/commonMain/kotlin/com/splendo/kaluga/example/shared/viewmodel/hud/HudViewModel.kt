@@ -30,7 +30,7 @@ import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class HudViewModel(val builder: BaseHUD.Builder) : BaseLifecycleViewModel() {
+class HudViewModel(private val builder: BaseHUD.Builder) : BaseLifecycleViewModel(builder) {
 
     val showSystemButton = KalugaButton.Plain("show_loading_indicator_system".localized(), ButtonStyles.default) {
         // SYSTEM style by default

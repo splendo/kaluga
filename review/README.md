@@ -38,16 +38,14 @@ For production apps this should refer to `Live`, though a `Fake` type may be pas
 Note that Fake will still not show a Review dialog on apps not installed though the Playstore.
 
 On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the review manager.
-For `BaseLifecycleViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
+For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
 
 ```kotlin
-class ReviewViewModel: BaseLifecycleViewModel() {
-
-    val builder = ReviewManager.Builder()
-
+class ReviewViewModel(val builder: ReviewManager.Builder): BaseLifecycleViewModel(builder) {
+    
     fun attemptToRequestReview() {
         coroutineScope.launch {
-            viewModel.builder.create().attemptToRequestReview()
+            builder.create().attemptToRequestReview()
         }
     }
 }

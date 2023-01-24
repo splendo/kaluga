@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.resources
 
-import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
@@ -31,8 +31,8 @@ import kotlinx.coroutines.launch
 
 class ButtonViewModel(
     styledStringBuilderProvider: StyledStringBuilder.Provider,
-    val alertPresenterBuilder: AlertPresenter.Builder
-) : BaseLifecycleViewModel() {
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder
+) : BaseLifecycleViewModel(alertPresenterBuilder) {
 
     val buttons = observableOf(
         listOf(

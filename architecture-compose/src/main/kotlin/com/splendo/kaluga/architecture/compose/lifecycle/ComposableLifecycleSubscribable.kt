@@ -18,25 +18,21 @@
 package com.splendo.kaluga.architecture.compose.lifecycle
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
-import kotlin.reflect.KVisibility
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.starProjectedType
+import kotlinx.coroutines.flow.map
+import kotlin.coroutines.EmptyCoroutineContext
 
 interface ComposableLifecycleSubscribable : LifecycleSubscribableMarker {
     val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
 }
 
-@Suppress("UNCHECKED_CAST")
-internal val <VM : BaseLifecycleViewModel> VM.ComposableLifecycleSubscribable: List<ComposableLifecycleSubscribable> get() = this::class.memberProperties
-    .filter { it !is KMutableProperty1 }
-    .mapNotNull { it as? KProperty1<VM, Any?> }
-    .filter {
-        it.getter.visibility == KVisibility.PUBLIC &&
-            it.getter.returnType.isSubtypeOf(LifecycleSubscribableMarker::class.starProjectedType)
+@Composable
+internal fun <VM : BaseLifecycleViewModel> VM.ComposableLifecycleSubscribable(): State<List<ComposableLifecycleSubscribable>> = remember {
+    activeLifecycleSubscribables.map { list ->
+        list.mapNotNull { it as? ComposableLifecycleSubscribable }
     }
-    .mapNotNull { it.getter(this) as? ComposableLifecycleSubscribable }
+}.collectAsState(emptyList(), EmptyCoroutineContext)

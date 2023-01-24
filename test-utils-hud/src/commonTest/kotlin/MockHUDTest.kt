@@ -38,7 +38,7 @@ import kotlin.test.assertTrue
 
 class MockHUDTest : UIThreadViewModelTest<MockHUDTest.TestContext, MockHUDTest.ViewModel>() {
 
-    class ViewModel(val hudBuilder: BaseHUD.Builder) : BaseLifecycleViewModel() {
+    class ViewModel(val hudBuilder: BaseHUD.Builder) : BaseLifecycleViewModel(hudBuilder) {
         fun buildAndShowHud(config: HudConfig, isFinished: Deferred<Unit>): Pair<Deferred<BaseHUD>, Deferred<Unit>> {
             val isShowing = CompletableDeferred<BaseHUD>()
             val hasFinishedShowing = CompletableDeferred<Unit>()

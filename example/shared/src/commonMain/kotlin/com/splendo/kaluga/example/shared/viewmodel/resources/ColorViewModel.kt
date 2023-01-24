@@ -19,6 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.resources
 
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.observable.BaseInitializedObservable
@@ -77,8 +78,8 @@ enum class SelectableBlendMode {
 }
 
 class ColorViewModel(
-    val alertPresenterBuilder: AlertPresenter.Builder
-) : BaseLifecycleViewModel() {
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder
+) : BaseLifecycleViewModel(alertPresenterBuilder) {
 
     private val backdropColor = MutableStateFlow(DefaultColors.mediumPurple)
     private val sourceColor = MutableStateFlow(DefaultColors.darkCyan)

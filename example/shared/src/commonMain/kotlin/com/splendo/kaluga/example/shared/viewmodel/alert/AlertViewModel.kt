@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel() {
+class AlertViewModel(private val builder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel(builder) {
 
     companion object {
         private val dismissTime: Duration = 3.seconds

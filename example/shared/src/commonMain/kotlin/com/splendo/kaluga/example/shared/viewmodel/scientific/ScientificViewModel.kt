@@ -56,9 +56,9 @@ sealed class ScientificNavigationAction<T>(value: T, spec: NavigationBundleSpecT
 }
 
 class ScientificViewModel(
-    val alertPresenterBuilder: BaseAlertPresenter.Builder,
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
     navigator: Navigator<ScientificNavigationAction<*>>
-) : NavigatingViewModel<ScientificNavigationAction<*>>(navigator) {
+) : NavigatingViewModel<ScientificNavigationAction<*>>(navigator, alertPresenterBuilder) {
 
     data class Button(val name: String, val quantity: PhysicalQuantity, val index: Int, val navigator: Navigator<in ScientificNavigationAction.Converter>) {
         val id: String get() = "${quantity.name}_$index"

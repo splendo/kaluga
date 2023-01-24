@@ -39,9 +39,9 @@ sealed class InfoNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : Si
 }
 
 class InfoViewModel(
-    val reviewManagerBuilder: ReviewManager.Builder,
+    reviewManagerBuilder: ReviewManager.Builder,
     navigator: Navigator<InfoNavigation<*>>
-) : NavigatingViewModel<InfoNavigation<*>>(navigator) {
+) : NavigatingViewModel<InfoNavigation<*>>(navigator, reviewManagerBuilder) {
 
     sealed class Button(val title: String) {
         object About : Button("About")

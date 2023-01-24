@@ -25,7 +25,7 @@ This can be done by extending `BaseUIThreadViewModelTest` or `UIThreadViewModelT
 ```kotlin
 class CustomUIThreadViewModelTest : UIThreadViewModelTest<CustomViewModelTestContext, MyViewModel>() {
 
-    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class MyViewModel(private val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel(alertBuilder)
 
     class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder() // creates on UI thread and can be passed to viewModel
