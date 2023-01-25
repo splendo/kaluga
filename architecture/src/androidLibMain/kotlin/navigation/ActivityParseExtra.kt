@@ -23,34 +23,19 @@ import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.serialization.KSerializer
 
 /**
- * Parses the [Bundle] of [android.app.Activity.getIntent] into [T] using a convert method.
- * @param convert The method for converting [Bundle] into [T]
- * @return The [T] value extracted from the [Bundle]
- * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
- */
-fun <T> Activity.parseExtra(convert: Bundle.() -> T): T = intent.extras!!.convert()
-
-/**
- * Parses the [Bundle] of [android.app.Activity.getIntent] into [T] using a convert method.
- * @param convert The method for converting [Bundle] into [T]
- * @return The [T] value extracted from the [Bundle] or `null` if [android.content.Intent.getExtras] is `null`
- */
-fun <T> Activity.parseExtraOrNull(convert: Bundle.() -> T?): T? = intent.extras?.convert()
-
-/**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Boolean].
  * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanType]
  * @return The [Boolean] stored in the bundle
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanType].
  */
-fun Activity.parseBoolean(): Boolean = parseExtra { asBoolean() }
+fun Activity.parseBoolean(): Boolean = intent.parseBoolean()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Boolean] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Boolean] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseBooleanOrNull(): Boolean? = parseExtra { asBooleanOrNull() }
+fun Activity.parseBooleanOrNull(): Boolean? = intent.parseBooleanOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [BooleanArray].
@@ -59,13 +44,13 @@ fun Activity.parseBooleanOrNull(): Boolean? = parseExtra { asBooleanOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanArrayType].
  */
-fun Activity.parseBooleanArray(): BooleanArray = parseExtra { asBooleanArray() }
+fun Activity.parseBooleanArray(): BooleanArray = intent.parseBooleanArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [BooleanArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.BooleanArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [BooleanArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseBooleanArrayOrNull(): BooleanArray? = parseExtra { asBooleanArrayOrNull() }
+fun Activity.parseBooleanArrayOrNull(): BooleanArray? = intent.parseBooleanArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Byte].
@@ -74,13 +59,13 @@ fun Activity.parseBooleanArrayOrNull(): BooleanArray? = parseExtra { asBooleanAr
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteType].
  */
-fun Activity.parseByte(): Byte = parseExtra { asByte() }
+fun Activity.parseByte(): Byte = intent.parseByte()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Byte] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Byte] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseByteOrNull(): Byte? = parseExtra { asByteOrNull() }
+fun Activity.parseByteOrNull(): Byte? = intent.parseByteOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [ByteArray].
@@ -89,13 +74,13 @@ fun Activity.parseByteOrNull(): Byte? = parseExtra { asByteOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
-fun Activity.parseByteArray(): ByteArray = parseExtra { asByteArray() }
+fun Activity.parseByteArray(): ByteArray = intent.parseByteArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [ByteArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ByteArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ByteArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseByteArrayOrNull(): ByteArray? = parseExtra { asByteArrayOrNull() }
+fun Activity.parseByteArrayOrNull(): ByteArray? = intent.parseByteArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Char].
@@ -104,13 +89,13 @@ fun Activity.parseByteArrayOrNull(): ByteArray? = parseExtra { asByteArrayOrNull
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharType].
  */
-fun Activity.parseChar(): Char = parseExtra { asChar() }
+fun Activity.parseChar(): Char = intent.parseChar()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Char] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Char] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseCharOrNull(): Char? = parseExtra { asCharOrNull() }
+fun Activity.parseCharOrNull(): Char? = intent.parseCharOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [CharArray].
@@ -119,19 +104,19 @@ fun Activity.parseCharOrNull(): Char? = parseExtra { asCharOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharArrayType].
  */
-fun Activity.parseCharArray(): CharArray = parseExtra { asCharArray() }
+fun Activity.parseCharArray(): CharArray = intent.parseCharArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [CharArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseCharArrayOrNull(): CharArray? = parseExtra { asCharArrayOrNull() }
+fun Activity.parseCharArrayOrNull(): CharArray? = intent.parseCharArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [CharSequence] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.CharSequenceType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [CharSequence] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseCharSequenceOrNull(): CharSequence? = parseExtra { asCharSequenceOrNull() }
+fun Activity.parseCharSequenceOrNull(): CharSequence? = intent.parseCharSequenceOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [KalugaDate].
@@ -140,13 +125,13 @@ fun Activity.parseCharSequenceOrNull(): CharSequence? = parseExtra { asCharSeque
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateType].
  */
-fun Activity.parseDate(): KalugaDate = parseExtra { asDate() }
+fun Activity.parseDate(): KalugaDate = intent.parseDate()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [KalugaDate] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseDateOrNull(): KalugaDate? = parseExtra { asDateOrNull() }
+fun Activity.parseDateOrNull(): KalugaDate? = intent.parseDateOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [List] of [KalugaDate].
@@ -155,13 +140,13 @@ fun Activity.parseDateOrNull(): KalugaDate? = parseExtra { asDateOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateArrayType].
  */
-fun Activity.parseDateArray(): List<KalugaDate> = parseExtra { asDateArray() }
+fun Activity.parseDateArray(): List<KalugaDate> = intent.parseDateArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [List] of [KalugaDate] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DateArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [KalugaDate] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseDateArrayOrNull(): List<KalugaDate>? = parseExtra { asDateArrayOrNull() }
+fun Activity.parseDateArrayOrNull(): List<KalugaDate>? = intent.parseDateArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Double].
@@ -170,13 +155,13 @@ fun Activity.parseDateArrayOrNull(): List<KalugaDate>? = parseExtra { asDateArra
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleType].
  */
-fun Activity.parseDouble(): Double = parseExtra { asDouble() }
+fun Activity.parseDouble(): Double = intent.parseDouble()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Double] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Double] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseDoubleOrNull(): Double? = parseExtra { asDoubleOrNull() }
+fun Activity.parseDoubleOrNull(): Double? = intent.parseDoubleOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [DoubleArray].
@@ -185,13 +170,13 @@ fun Activity.parseDoubleOrNull(): Double? = parseExtra { asDoubleOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleArrayType].
  */
-fun Activity.parseDoubleArray(): DoubleArray = parseExtra { asDoubleArray() }
+fun Activity.parseDoubleArray(): DoubleArray = intent.parseDoubleArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [DoubleArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.DoubleArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [DoubleArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseDoubleArrayOrNull(): DoubleArray? = parseExtra { asDoubleArrayOrNull() }
+fun Activity.parseDoubleArrayOrNull(): DoubleArray? = intent.parseDoubleArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Float].
@@ -200,13 +185,13 @@ fun Activity.parseDoubleArrayOrNull(): DoubleArray? = parseExtra { asDoubleArray
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatType].
  */
-fun Activity.parseFloat(): Float = parseExtra { asFloat() }
+fun Activity.parseFloat(): Float = intent.parseFloat()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Float] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Float] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseFloatOrNull(): Float? = parseExtra { asFloatOrNull() }
+fun Activity.parseFloatOrNull(): Float? = intent.parseFloatOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [FloatArray].
@@ -215,13 +200,13 @@ fun Activity.parseFloatOrNull(): Float? = parseExtra { asFloatOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatArrayType].
  */
-fun Activity.parseFloatArray(): FloatArray = parseExtra { asFloatArray() }
+fun Activity.parseFloatArray(): FloatArray = intent.parseFloatArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [FloatArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.FloatArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [FloatArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseFloatArrayOrNull(): FloatArray? = parseExtra { asFloatArrayOrNull() }
+fun Activity.parseFloatArrayOrNull(): FloatArray? = intent.parseFloatArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Int].
@@ -230,13 +215,13 @@ fun Activity.parseFloatArrayOrNull(): FloatArray? = parseExtra { asFloatArrayOrN
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerType].
  */
-fun Activity.parseInt(): Int = parseExtra { asInt() }
+fun Activity.parseInt(): Int = intent.parseInt()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Int] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Int] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseIntOrNull(): Int? = parseExtra { asIntOrNull() }
+fun Activity.parseIntOrNull(): Int? = intent.parseIntOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [IntArray].
@@ -245,13 +230,13 @@ fun Activity.parseIntOrNull(): Int? = parseExtra { asIntOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerArrayType].
  */
-fun Activity.parseIntArray(): IntArray = parseExtra { asIntArray() }
+fun Activity.parseIntArray(): IntArray = intent.parseIntArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [IntArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.IntegerArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [IntArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseIntArrayOrNull(): IntArray? = parseExtra { asIntArrayOrNull() }
+fun Activity.parseIntArrayOrNull(): IntArray? = intent.parseIntArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Long].
@@ -260,13 +245,13 @@ fun Activity.parseIntArrayOrNull(): IntArray? = parseExtra { asIntArrayOrNull() 
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongType].
  */
-fun Activity.parseLong(): Long = parseExtra { asLong() }
+fun Activity.parseLong(): Long = intent.parseLong()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Long] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Long] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseLongOrNull(): Long? = parseExtra { asLongOrNull() }
+fun Activity.parseLongOrNull(): Long? = intent.parseLongOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [LongArray].
@@ -275,13 +260,13 @@ fun Activity.parseLongOrNull(): Long? = parseExtra { asLongOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongArrayType].
  */
-fun Activity.parseLongArray(): LongArray = parseExtra { asLongArray() }
+fun Activity.parseLongArray(): LongArray = intent.parseLongArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [LongArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.LongArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [LongArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseLongArrayOrNull(): LongArray? = parseExtra { asLongArrayOrNull() }
+fun Activity.parseLongArrayOrNull(): LongArray? = intent.parseLongArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Short].
@@ -290,13 +275,13 @@ fun Activity.parseLongArrayOrNull(): LongArray? = parseExtra { asLongArrayOrNull
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortType].
  */
-fun Activity.parseShort(): Short = parseExtra { asShort() }
+fun Activity.parseShort(): Short = intent.parseShort()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [Short] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [Short] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseShortOrNull(): Short? = parseExtra { asShortOrNull() }
+fun Activity.parseShortOrNull(): Short? = intent.parseShortOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [ShortArray].
@@ -305,13 +290,13 @@ fun Activity.parseShortOrNull(): Short? = parseExtra { asShortOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortArrayType].
  */
-fun Activity.parseShortArray(): ShortArray = parseExtra { asShortArray() }
+fun Activity.parseShortArray(): ShortArray = intent.parseShortArray()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [ShortArray] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.ShortArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [ShortArray] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseShortArrayOrNull(): ShortArray? = parseExtra { asShortArrayOrNull() }
+fun Activity.parseShortArrayOrNull(): ShortArray? = intent.parseShortArrayOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [String].
@@ -320,13 +305,13 @@ fun Activity.parseShortArrayOrNull(): ShortArray? = parseExtra { asShortArrayOrN
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringType].
  */
-fun Activity.parseString(): String = parseExtra { asString() }
+fun Activity.parseString(): String = intent.parseString()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [String] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseStringOrNull(): String? = parseExtra { asStringOrNull() }
+fun Activity.parseStringOrNull(): String? = intent.parseStringOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [List] of [String].
@@ -335,13 +320,13 @@ fun Activity.parseStringOrNull(): String? = parseExtra { asStringOrNull() }
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringArrayType].
  */
-fun Activity.parseStringList(): List<String> = parseExtra { asStringList() }
+fun Activity.parseStringList(): List<String> = intent.parseStringList()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [List] of [String] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.StringArrayType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @return The [List] of [String] stored in the bundle or null if no such value was found.
  */
-fun Activity.parseStringListOrNull(): List<String>? = parseExtra { asStringListOrNull() }
+fun Activity.parseStringListOrNull(): List<String>? = intent.parseStringListOrNull()
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [T].
@@ -351,19 +336,11 @@ fun Activity.parseStringListOrNull(): List<String>? = parseExtra { asStringListO
  * @throws NullPointerException if [android.content.Intent.getExtras] is `null`
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
  */
-fun <T> Activity.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
-    toTypedProperty(
-        NavigationBundleSpecType.SerializedType(serializer)
-    )
-}
+fun <T> Activity.parseTypeOf(serializer: KSerializer<T>): T = intent.parseTypeOf(serializer)
 
 /**
  * Parses the [Bundle] of [android.app.Activity.getIntent] into [T] if is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.SerializedType] with [serializer] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
-fun <T> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
-    toTypedPropertyOrNull(
-        NavigationBundleSpecType.SerializedType(serializer)
-    )
-}
+fun <T> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)

@@ -354,5 +354,4 @@ fun <T> Bundle.asTypeOf(serializer: KSerializer<T>): T = toTypedProperty(Navigat
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
-fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(
-    NavigationBundleSpecType.SerializedType(serializer))
+fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))
