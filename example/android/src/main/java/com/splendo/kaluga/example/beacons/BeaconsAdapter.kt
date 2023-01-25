@@ -25,16 +25,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BeaconItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
 
-class BeaconsAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BeaconsAdapter.BeaconItemViewHolder>() {
-
-    companion object {
-        @BindingAdapter("beacons")
-        @JvmStatic
-        fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {
-            val beaconsAdapter = view.adapter as? BeaconsAdapter ?: return
-            beaconsAdapter.beacons = beacons ?: emptyList()
-        }
+object BeaconsBinding {
+    @BindingAdapter("beacons")
+    @JvmStatic
+    fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {
+        val beaconsAdapter = view.adapter as? BeaconsAdapter ?: return
+        beaconsAdapter.beacons = beacons ?: emptyList()
     }
+}
+
+class BeaconsAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BeaconsAdapter.BeaconItemViewHolder>() {
 
     class BeaconItemViewHolder(val binding: BeaconItemBinding) : RecyclerView.ViewHolder(binding.root)
 

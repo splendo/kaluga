@@ -34,18 +34,20 @@ import com.splendo.kaluga.resources.dpToPixel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+object ScientificConverterButtonBinding {
+    @BindingAdapter("scientificConverterButtons")
+    @JvmStatic
+    fun bindButtons(view: RecyclerView, buttons: List<ScientificViewModel.Button>?) {
+        val adapter = (view.adapter as? ButtonAdapter) ?: return
+        adapter.buttons = buttons?.map { it.button }.orEmpty()
+    }
+}
+
 class ScientificActivity : KalugaViewModelActivity<ScientificViewModel>() {
 
     companion object {
         const val leftUnitRequestKey: String = "LeftUnit"
         const val rightUnitRequestKey: String = "RightUnit"
-
-        @BindingAdapter("scientificConverterButtons")
-        @JvmStatic
-        fun bindButtons(view: RecyclerView, buttons: List<ScientificViewModel.Button>?) {
-            val adapter = (view.adapter as? ButtonAdapter) ?: return
-            adapter.buttons = buttons?.map { it.button }.orEmpty()
-        }
     }
 
     class LeftUnitDialogSelectionFragment : ScientificUnitSelectionDialogFragment() {

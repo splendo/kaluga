@@ -57,17 +57,17 @@ class XMLResourcesActivity : KalugaViewModelActivity<ResourcesListViewModel>() {
     }
 }
 
+object ResourcesBinding {
+    @BindingAdapter("resources")
+    @JvmStatic
+    fun bindResources(view: RecyclerView, resources: List<Resource>?) {
+        val adapter = (view.adapter as? ResourcesAdapter) ?: return
+        adapter.resources = resources.orEmpty()
+    }
+}
+
 class ResourcesAdapter(private val viewModel: ResourcesListViewModel) :
     RecyclerView.Adapter<ResourcesAdapter.ResourceViewHolder>() {
-
-    companion object {
-        @BindingAdapter("resources")
-        @JvmStatic
-        fun bindResources(view: RecyclerView, resources: List<Resource>?) {
-            val adapter = (view.adapter as? ResourcesAdapter) ?: return
-            adapter.resources = resources.orEmpty()
-        }
-    }
 
     class ResourceViewHolder(val binding: ViewListButtonBinding) :
         RecyclerView.ViewHolder(binding.root) {
