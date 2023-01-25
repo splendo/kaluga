@@ -15,6 +15,8 @@
 
  */
 
+@file:JvmName("DeviceInfoAndroid")
+
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.randomUUIDString
@@ -22,6 +24,8 @@ import com.splendo.kaluga.bluetooth.randomUUIDString
 actual typealias Identifier = String
 
 actual fun randomIdentifier() = randomUUIDString()
+
+actual fun identifierFromString(stringValue: String): Identifier? = stringValue
 
 actual val Identifier.stringValue: String
     get() = this

@@ -23,6 +23,8 @@ import com.google.android.material.tabs.TabLayout
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
+import com.splendo.kaluga.example.featurelist.FeaturesListFragment
+import com.splendo.kaluga.example.info.InfoFragment
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

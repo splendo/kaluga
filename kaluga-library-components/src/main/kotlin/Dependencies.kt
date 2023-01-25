@@ -116,6 +116,7 @@ object Dependencies {
             val Material = Dependency("$composeGroupBase.material", "material", version)
             val UI = Dependency("$composeGroupBase.ui", "ui", version)
             val UITooling = Dependency("$composeGroupBase.ui", "ui-tooling", version)
+            val UIToolingPreview = Dependency("$composeGroupBase.ui", "ui-tooling-preview", version)
         }
         val ConstraintLayout = Dependency("$groupBase.constraintlayout", "constraintlayout", "2.1.4")
         val Core = Dependency("$groupBase.core", "core", "1.9.0")
@@ -133,7 +134,7 @@ object Dependencies {
         }
         object Navigation {
             private const val group = "$groupBase.navigation"
-            private const val version = "2.5.2"
+            private const val version = "2.5.3"
 
             val Compose = Dependency(group, "navigation-compose", version)
         }
@@ -161,6 +162,7 @@ object Dependencies {
         private const val group = "io.insert-koin"
         private const val version = "3.2.2"
         val Android = Dependency(group, "koin-android", version)
+        val AndroidXCompose = Dependency(group, "koin-androidx-compose", version)
         val Core = Dependency(group, "koin-core", version)
     }
 

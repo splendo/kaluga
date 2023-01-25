@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 import XCTest
 @testable import Demo
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class DemoTests: XCTestCase {
 
@@ -42,5 +42,4 @@ class DemoTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

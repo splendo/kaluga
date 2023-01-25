@@ -18,13 +18,14 @@
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPublication
 
-fun Project.publish(componentType: ComponentType = ComponentType.Default()) {
+fun Project.publish(componentType: ComponentType = ComponentType.Default) {
     afterEvaluate {
         publishing {
             publications {
                 logger.lifecycle("This project module will be published as: $componentType")
                 when (componentType) {
-                    is ComponentType.Compose -> {
+                    is ComponentType.Compose,
+                    is ComponentType.DataBinding -> {
                         create("release", MavenPublication::class.java) {
                             from(components.getByName("release"))
 

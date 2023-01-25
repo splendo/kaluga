@@ -18,7 +18,7 @@
 package com.splendo.kaluga.resources.uikit
 
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
-import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
@@ -65,7 +65,7 @@ fun UIButton.bindButton(button: KalugaButton) {
     addTarget(wrappedAction, sel_registerName("invoke"), UIControlEventTouchUpInside)
 }
 
-fun UIButton.applyStyle(buttonStyle: ButtonStyle) {
+fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle) {
     setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble()))
     setContentHorizontalAlignment(buttonStyle.textAlignment.contentHorizontalAlignment)
     applyButtonStateStyle(buttonStyle.defaultStyle, UIControlStateNormal)

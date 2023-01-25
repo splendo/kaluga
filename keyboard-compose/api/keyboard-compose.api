@@ -1,12 +1,24 @@
-public final class com/splendo/kaluga/keyboard/compose/ComposeClearFocusHandler : com/splendo/kaluga/keyboard/ClearFocusHandler {
-	public static final field $stable I
-	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
-	public fun clearFocus (Landroid/app/Activity;)V
-}
-
 public final class com/splendo/kaluga/keyboard/compose/ComposeFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public static final field $stable I
 	public fun <init> (Landroidx/compose/ui/focus/FocusRequester;)V
-	public fun requestFocus (Landroid/app/Activity;)V
+	public final fun getFocusRequester ()Landroidx/compose/ui/focus/FocusRequester;
+}
+
+public final class com/splendo/kaluga/keyboard/compose/ComposeKeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Landroidx/compose/ui/focus/FocusManager;)V
+	public synthetic fun <init> (Landroidx/compose/ui/focus/FocusManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun hide ()V
+	public synthetic fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
+	public fun show (Lcom/splendo/kaluga/keyboard/compose/ComposeFocusHandler;)V
+}
+
+public final class com/splendo/kaluga/keyboard/compose/ComposeKeyboardManager$Builder : com/splendo/kaluga/architecture/compose/lifecycle/ComposableLifecycleSubscribable, com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
+	public synthetic fun getModifier ()Lkotlin/jvm/functions/Function2;
+	public fun getModifier ()Lkotlin/jvm/functions/Function4;
 }
 

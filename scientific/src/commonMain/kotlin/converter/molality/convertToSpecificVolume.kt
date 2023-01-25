@@ -78,7 +78,7 @@ infix operator fun <MolalityUnit : Molality, MolarVolumeUnit : MolarVolume> Scie
     molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
 ) = molarVolume * this
 
-@JvmName("metricMolalityDivMetricMolality")
+@JvmName("metricMolalityDivMetricMolarity")
 infix operator fun ScientificValue<PhysicalQuantity.Molality, MetricMolality>.div(molarity: ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>) =
     (molarity.unit.per per unit.per).specificVolume(this, molarity)
 

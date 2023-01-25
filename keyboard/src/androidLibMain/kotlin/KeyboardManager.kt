@@ -26,28 +26,25 @@ import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromC
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
 
-actual class KeyboardManager(
+class ViewKeyboardManager(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    private val clearFocusHandler: ClearFocusHandler,
     coroutineScope: CoroutineScope
-) : BaseKeyboardManager, CoroutineScope by coroutineScope {
+) : BaseKeyboardManager<ViewFocusHandler>, CoroutineScope by coroutineScope {
 
-    actual class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-        private val clearFocusHandler: ClearFocusHandler = ViewClearFocusHandler()
-    ) : BaseKeyboardManager.Builder, LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, clearFocusHandler, coroutineScope)
+    class Builder(
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+    ) : BaseKeyboardManager.Builder<ViewFocusHandler>, LifecycleSubscribable by lifecycleManagerObserver {
+        override fun create(coroutineScope: CoroutineScope) = ViewKeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 
-    override fun show(focusHandler: FocusHandler) {
-        lifecycleManagerObserver.manager?.activity?.let {
-            focusHandler.requestFocus(it)
-        }
+    override fun show(focusHandler: ViewFocusHandler) {
+        focusHandler.requestFocus(lifecycleManagerObserver.manager?.activity)
     }
 
     override fun hide() {
-        lifecycleManagerObserver.manager?.activity?.let { activity ->
-            clearFocusHandler.clearFocus(activity)
+        val managedActivity = lifecycleManagerObserver.manager?.activity
+        managedActivity?.let { activity ->
+            activity.currentFocus?.clearFocus()
             val inputMethodManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.let {
                 if (it.isAcceptingText) {
@@ -67,6 +64,6 @@ actual class KeyboardManager(
  * which can automatically track which Activity is active for it.
  *
  */
-fun AppCompatActivity.keyboardManagerBuilder(clearFocusHandler: ClearFocusHandler = ViewClearFocusHandler()): KeyboardManager.Builder = getOrPutAndRemoveOnDestroyFromCache {
-    KeyboardManager.Builder(lifecycleManagerObserver(), clearFocusHandler)
+fun AppCompatActivity.keyboardManagerBuilder(): ViewKeyboardManager.Builder = getOrPutAndRemoveOnDestroyFromCache {
+    ViewKeyboardManager.Builder(lifecycleManagerObserver())
 }

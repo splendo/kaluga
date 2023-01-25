@@ -107,25 +107,28 @@ object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 }
 
 @Serializable
-object Nanonewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Nano(Newton)
+sealed class NewtonMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton>
+
 @Serializable
-object Micronewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Micro(Newton)
+object Nanonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Nano(Newton)
 @Serializable
-object Millinewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Milli(Newton)
+object Micronewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Micro(Newton)
 @Serializable
-object Centinewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Centi(Newton)
+object Millinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Milli(Newton)
 @Serializable
-object Decinewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deci(Newton)
+object Centinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Centi(Newton)
 @Serializable
-object Decanewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deca(Newton)
+object Decinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deci(Newton)
 @Serializable
-object Hectonewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Hecto(Newton)
+object Decanewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deca(Newton)
 @Serializable
-object Kilonewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Kilo(Newton)
+object Hectonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Hecto(Newton)
 @Serializable
-object Meganewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Mega(Newton)
+object Kilonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Kilo(Newton)
 @Serializable
-object Giganewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Giga(Newton)
+object Meganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Mega(Newton)
+@Serializable
+object Giganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Giga(Newton)
 
 @Serializable
 object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
@@ -137,25 +140,28 @@ object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQu
 }
 
 @Serializable
-object Nanodyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Nano(Dyne)
+sealed class DyneMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>
+
 @Serializable
-object Microdyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Micro(Dyne)
+object Nanodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Nano(Dyne)
 @Serializable
-object Millidyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Milli(Dyne)
+object Microdyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Micro(Dyne)
 @Serializable
-object Centidyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Centi(Dyne)
+object Millidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Milli(Dyne)
 @Serializable
-object Decidyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deci(Dyne)
+object Centidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Centi(Dyne)
 @Serializable
-object Decadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deca(Dyne)
+object Decidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deci(Dyne)
 @Serializable
-object Hectodyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Hecto(Dyne)
+object Decadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deca(Dyne)
 @Serializable
-object Kilodyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Kilo(Dyne)
+object Hectodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Hecto(Dyne)
 @Serializable
-object Megadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Mega(Dyne)
+object Kilodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Kilo(Dyne)
 @Serializable
-object Gigadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Giga(Dyne)
+object Megadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Mega(Dyne)
+@Serializable
+object Gigadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Giga(Dyne)
 
 @Serializable
 object KilogramForce : MetricForce() {

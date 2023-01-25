@@ -23,10 +23,9 @@ import com.splendo.kaluga.scientific.converter.luminance.luminance
 import com.splendo.kaluga.scientific.unit.FootLambert
 import com.splendo.kaluga.scientific.unit.Illuminance
 import com.splendo.kaluga.scientific.unit.ImperialIlluminance
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Nit
 import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.PhotMultiple
 import com.splendo.kaluga.scientific.unit.SolidAngle
 import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
@@ -37,10 +36,9 @@ infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantit
 ) = Stilb.luminance(this, solidAngle)
 
 @JvmName("photMultipleDivSolidAngle")
-infix operator fun <PhotUnit, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>.div(
+infix operator fun <PhotUnit : PhotMultiple, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>.div(
     solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
-) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
-    Stilb.luminance(this, solidAngle)
+) = Stilb.luminance(this, solidAngle)
 
 @JvmName("imperialIlluminanceDivSolidAngle")
 infix operator fun <IlluminanceUnit : ImperialIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(

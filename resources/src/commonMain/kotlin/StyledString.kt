@@ -18,7 +18,7 @@
 @file:JvmName("AndroidStyledString")
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.stylable.TextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 import kotlin.jvm.JvmName
 
@@ -120,7 +120,7 @@ sealed class StringStyleAttribute {
     sealed class ParagraphStyleAttribute : StringStyleAttribute() {
         data class LeadingIndent(val indent: Float, val firstLineIndent: Float = indent) : ParagraphStyleAttribute()
         data class LineSpacing(val spacing: Float, val paragraphSpacing: Float = 0.0f, val paragraphSpacingBefore: Float = 0.0f) : ParagraphStyleAttribute()
-        data class Alignment(val alignment: TextAlignment) : ParagraphStyleAttribute()
+        data class Alignment(val alignment: KalugaTextAlignment) : ParagraphStyleAttribute()
     }
 
     data class Link(val url: String) : StringStyleAttribute()

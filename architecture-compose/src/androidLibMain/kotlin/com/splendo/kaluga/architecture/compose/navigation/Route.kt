@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
+import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
@@ -166,7 +167,20 @@ private val NavigationBundleValue<*>.routeArgument: String?
 /**
  * Route for navigating within a [RouteController].
  */
-sealed class Route {
+sealed class Route : ComposableNavSpec() {
+
+    companion object {
+        val Back = Back()
+        val PopToRoot = PopToRoot()
+    }
+
+    sealed class Result {
+        companion object {
+            const val KEY = "com.splendo.kaluga.architecture.compose.navigation.Route.Result.KEY"
+        }
+        object Empty : Result()
+        data class Data<SpecRow : NavigationBundleSpecRow<*>, Bundle : NavigationBundle<SpecRow>>(val bundle: Bundle) : Result()
+    }
 
     /**
      * Route that navigates to a new screen using a [NavigationAction]
@@ -201,10 +215,15 @@ sealed class Route {
 
     /**
      * Route that navigates back to the screen associated with a [NavigationAction]
-     * @param routeAction The [Action] associated with the screen to navigate back to
+     * @param routeAction The [Action] associated with the screen to navigate back to.
+     * @param result The [Result] to be provided to the screen to navigate back to.
      */
-    data class PopTo<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action
+    data class PopTo<
+        SpecRow : NavigationBundleSpecRow<*>,
+        Action : NavigationAction<SpecRow>,
+        >(
+        override val routeAction: Action,
+        val result: Result = Result.Empty
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -225,13 +244,15 @@ sealed class Route {
 
     /**
      * Navigates back one step in the hierarchy
+     * @param result The [Result] to provide to the previous view.
      */
-    object Back : Route()
+    data class Back(val result: Result = Result.Empty) : Route()
 
     /**
      * Navigates to the Root of a navigation stack
+     * @param result The [Result] to provide to the root view.
      */
-    object PopToRoot : Route()
+    data class PopToRoot(val result: Result = Result.Empty) : Route()
 
     /**
      * Closes all screens in the navigation stack
@@ -249,7 +270,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 
 /**
  * Creates a [Route.FromRoute] from [Action]
- * @param from The string route to navigate from
+ * @param route The string route to navigate from
  */
 fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) =
     Route.FromRoute(this, route)
@@ -268,7 +289,8 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
     get() = Route.PopTo(
-        this
+        this,
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )
 
 /**
@@ -285,4 +307,12 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
     get() = Route.Replace(
         this
+    )
+
+/**
+ * Creates a [Route.Back] from [Action]
+ */
+val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.back
+    get() = Route.Back(
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )

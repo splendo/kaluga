@@ -19,23 +19,15 @@ package com.splendo.kaluga.test.keyboard
 
 import com.splendo.kaluga.keyboard.FocusHandler
 
-open class BaseMockFocusHandler {
+class MockFocusHandler : FocusHandler {
     var isFocused: Boolean = false
         private set
 
-    protected fun giveFocus() {
+    fun giveFocus() {
         isFocused = true
     }
 
-    protected fun removeFocus() {
+    fun removeFocus() {
         isFocused = false
     }
-}
-
-/**
- * Mock implementation of [FocusHandler]
- */
-expect class MockFocusHandler constructor() : BaseMockFocusHandler, FocusHandler {
-    fun simulateGiveFocus()
-    fun simulateRemoveFocus()
 }

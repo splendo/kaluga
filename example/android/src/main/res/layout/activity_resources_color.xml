@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:button="@{viewModel.blendModeButton.stateFlow}"
+        app:kalugaButton="@{viewModel.blendModeButton.stateFlow}"
         app:layout_constraintStart_toStartOf="@id/blended"
         app:layout_constraintEnd_toEndOf="@id/blended"
         app:layout_constraintTop_toBottomOf="@id/blended"/>
@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:button="@{viewModel.flipButton}"
+        app:kalugaButton="@{viewModel.flipButton}"
         app:layout_constraintStart_toStartOf="@id/blended"
         app:layout_constraintEnd_toEndOf="@id/blended"
         app:layout_constraintTop_toBottomOf="@id/blend_mode"/>
@@ -97,7 +97,7 @@
         app:layout_constraintTop_toBottomOf="@id/flip"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:backgrounds="@{viewModel.lightenBackdrops.stateFlow}"
+        app:backgroundStyles="@{viewModel.lightenBackdrops.stateFlow}"
         tools:listitem="@layout/view_resource_list_background"
         />
 
@@ -109,7 +109,7 @@
         app:layout_constraintTop_toBottomOf="@id/backdrop_lighten"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:backgrounds="@{viewModel.darkenBackdrops.stateFlow}"
+        app:backgroundStyles="@{viewModel.darkenBackdrops.stateFlow}"
         tools:listitem="@layout/view_resource_list_background"
         />
 
@@ -121,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@id/backdrop_darken"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:backgrounds="@{viewModel.lightenSource.stateFlow}"
+        app:backgroundStyles="@{viewModel.lightenSource.stateFlow}"
         tools:listitem="@layout/view_resource_list_background"
         />
 
@@ -133,7 +133,7 @@
         app:layout_constraintTop_toBottomOf="@id/source_lighten"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:backgrounds="@{viewModel.darkenSource.stateFlow}"
+        app:backgroundStyles="@{viewModel.darkenSource.stateFlow}"
         tools:listitem="@layout/view_resource_list_background"
         />
 
@@ -145,7 +145,7 @@
         app:layout_constraintTop_toBottomOf="@id/source_darken"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:backgrounds="@{viewModel.lightenBlended.stateFlow}"
+        app:backgroundStyles="@{viewModel.lightenBlended.stateFlow}"
         tools:listitem="@layout/view_resource_list_background"
         />
 
@@ -157,7 +157,7 @@
         app:layout_constraintTop_toBottomOf="@id/blended_lighten"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:backgrounds="@{viewModel.darkenBlended.stateFlow}"
+        app:backgroundStyles="@{viewModel.darkenBlended.stateFlow}"
         tools:listitem="@layout/view_resource_list_background"
         />
 

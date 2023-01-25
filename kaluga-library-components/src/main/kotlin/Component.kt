@@ -21,26 +21,25 @@ import org.gradle.api.tasks.Copy
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
+import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
-import org.jetbrains.kotlin.konan.file.File
 
 sealed class ComponentType {
-    abstract val isApp: Boolean
-
-    data class Default(override val isApp: Boolean = false) : ComponentType()
-    data class Compose(override val isApp: Boolean = false) : ComponentType()
+    object Default : ComponentType()
+    object Compose : ComponentType()
+    object DataBinding : ComponentType()
 }
 
-fun Project.commonComponent() {
+fun Project.commonComponent(iosExport: (Framework.() -> Unit)? = null) {
     group = Library.group
     version = Library.version
     kotlinMultiplatform {
-        commonMultiplatformComponent(this@commonComponent)
+        commonMultiplatformComponent(this@commonComponent, iosExport)
     }
 
     commonAndroidComponent()
-    android {
+    androidLibrary {
         commonMultiplatformComponentAndroid(this@commonComponent)
     }
 
@@ -83,7 +82,7 @@ fun Project.commonComponent() {
     }
 }
 
-fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Project) {
+fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Project, iosExport: (Framework.() -> Unit)? = null) {
     targets {
         configureEach {
             compilations.configureEach {
@@ -96,6 +95,11 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
     val target: KotlinNativeTarget.() -> Unit =
         {
             binaries {
+                iosExport?.let { iosExport ->
+                    framework {
+                        iosExport()
+                    }
+                }
                 getTest("DEBUG").apply {
                     freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
                 }

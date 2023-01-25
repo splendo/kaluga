@@ -22,15 +22,14 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialLength
 import com.splendo.kaluga.scientific.unit.Inch
 import com.splendo.kaluga.scientific.unit.Length
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.MetricLength
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.PoundForce
 import com.splendo.kaluga.scientific.unit.Poundal
@@ -43,7 +42,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Length, Centimeter>.times(fo
     force * this
 
 @JvmName("centimeterTimesDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Length, Centimeter>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Length, Centimeter>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) =
     force * this
 
 @JvmName("metricLengthTimesMetricForce")

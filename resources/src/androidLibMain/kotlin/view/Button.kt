@@ -23,7 +23,7 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.StateSet
 import com.splendo.kaluga.resources.KalugaColor
-import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 
 /**
  * Binds kaluga button
@@ -47,7 +47,7 @@ sealed class RippleStyle {
     data class CustomRipple(val color: KalugaColor) : RippleStyle()
 }
 
-fun android.widget.Button.applyButtonStyle(style: ButtonStyle, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
+fun android.widget.Button.applyButtonStyle(style: KalugaButtonStyle, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     typeface = style.font
     isAllCaps = false
     textSize = style.textSize

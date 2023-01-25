@@ -21,6 +21,7 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.BaryeMultiple
 import com.splendo.kaluga.scientific.unit.CubicCentimeter
 import com.splendo.kaluga.scientific.unit.CubicFoot
 import com.splendo.kaluga.scientific.unit.CubicInch
@@ -34,8 +35,6 @@ import com.splendo.kaluga.scientific.unit.InchPoundForce
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
 import com.splendo.kaluga.scientific.unit.KipSquareInch
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
@@ -53,7 +52,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Pressure, Barye>.times(volum
     Erg.energy(this, volume)
 
 @JvmName("baryeMultipleTimesCubicCentimeter")
-infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
+infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) =
     Erg.energy(this, volume)
 
 @JvmName("poundSquareFootTimesCubicFoot")

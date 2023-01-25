@@ -26,16 +26,15 @@ import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 
 /** A [CompositionLocal] containing the current activity. */
 val LocalAppCompatActivity = staticCompositionLocalOf<AppCompatActivity?> { null }
 
 /**
- * An implementation of [KalugaViewModelActivity] which provides a [CompositionLocal] containing
- * the current activity.
+ * An implementation of [AppCompatActivity] which creates a [VM] and renders it using [ViewModelComposable].
+ * Also provides a reference to this [AppCompatActivity] using [LocalAppCompatActivity].
  */
-abstract class KalugaViewModelComposeActivity<VM : BaseLifecycleViewModel> : KalugaViewModelActivity<VM>() {
+abstract class KalugaViewModelComposeActivity<VM : BaseLifecycleViewModel> : AppCompatActivity() {
 
     @SuppressLint("MissingSuperCall") // Lint bug
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +44,32 @@ abstract class KalugaViewModelComposeActivity<VM : BaseLifecycleViewModel> : Kal
             CompositionLocalProvider(
                 LocalAppCompatActivity provides this
             ) {
-                Layout(viewModel)
+                RootView {
+                    ViewModelComposable(viewModel = createViewModel()) {
+                        Layout()
+                    }
+                }
             }
         }
     }
 
+    /**
+     * Wrapper view to contain the ViewModel.
+     */
     @Composable
-    protected abstract fun Layout(viewModel: VM)
+    protected open fun RootView(content: @Composable () -> Unit) {
+        content()
+    }
+
+    /**
+     * Creates the [VM]. Vms should be stores so they can be retained, e.g using [androidx.lifecycle.viewmodel.compose.viewModel]
+     */
+    @Composable
+    protected abstract fun createViewModel(): VM
+
+    /**
+     * Creates the layout associated with a [VM]
+     */
+    @Composable
+    protected abstract fun VM.Layout()
 }
