@@ -130,6 +130,9 @@ private extension FeatureListNavigationAction {
                 swiftUIView: { ResourcesListView() }
             )
         }
+        case is FeatureListNavigationAction.Scientific: return NavigationSpec.Push(animated: true) {
+            UIHostingController(rootView: ScientificView())
+        }
         case is FeatureListNavigationAction.System: return NavigationSpec.Segue(identifier: "showSystem")
         default: fatalError("Unknown action")
         }

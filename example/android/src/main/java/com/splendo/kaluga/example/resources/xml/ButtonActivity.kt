@@ -18,18 +18,12 @@
 package com.splendo.kaluga.example.resources.xml
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityButtonBinding
-import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
+import com.splendo.kaluga.example.view.ButtonAdapter
 import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
 import com.splendo.kaluga.resources.dpToPixel
-import com.splendo.kaluga.resources.view.KalugaButton
-import com.splendo.kaluga.resources.view.bindButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ButtonActivity : KalugaViewModelActivity<ButtonViewModel>() {
@@ -44,44 +38,5 @@ class ButtonActivity : KalugaViewModelActivity<ButtonViewModel>() {
         binding.lifecycleOwner = this
         setContentView(binding.root)
         binding.buttonsList.addItemDecoration(VerticalSpaceItemDecoration(10.0f.dpToPixel(this).toInt()))
-    }
-}
-
-class ButtonAdapter : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
-
-    companion object {
-        @BindingAdapter("buttons")
-        @JvmStatic
-        fun bindButtons(view: RecyclerView, buttons: List<KalugaButton>?) {
-            val adapter = (view.adapter as? ButtonAdapter) ?: return
-            adapter.buttons = buttons.orEmpty()
-        }
-    }
-
-    class ButtonViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
-        val button = binding.button
-    }
-
-    var buttons: List<KalugaButton> = emptyList()
-        set(newValue) {
-            field = newValue
-            notifyDataSetChanged()
-        }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ButtonViewHolder {
-        val binding = ViewListButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ButtonViewHolder(binding)
-    }
-
-    override fun getItemCount(): Int = buttons.size
-
-    override fun onBindViewHolder(holder: ButtonViewHolder, position: Int) {
-        buttons.getOrNull(position)?.let { button ->
-            holder.button.bindButton(button)
-        } ?: run {
-            holder.button.text = null
-            holder.button.background = null
-            holder.button.setOnClickListener(null)
-        }
     }
 }

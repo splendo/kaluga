@@ -47,7 +47,7 @@ sealed class ThermalResistance : AbstractScientificUnit<PhysicalQuantity.Thermal
     abstract val temperature: Temperature
     abstract val per: Power
     override val quantity = PhysicalQuantity.ThermalResistance
-    override val symbol: String by lazy { "${temperature.symbol}/${per.symbol}" }
+    override val symbol: String by lazy { "${temperature.symbol} / ${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(temperature.deltaFromSIUnitDelta(value))
     override fun toSIUnit(value: Decimal): Decimal = temperature.deltaToSIUnitDelta(per.fromSIUnit(value))
 }

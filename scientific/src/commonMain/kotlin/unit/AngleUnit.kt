@@ -57,15 +57,18 @@ object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Phy
 }
 
 @Serializable
-object Nanoradian : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Nano(Radian)
+sealed class RadianMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian>
+
 @Serializable
-object Microradian : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Micro(Radian)
+object Nanoradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Nano(Radian)
 @Serializable
-object Milliradian : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Milli(Radian)
+object Microradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Micro(Radian)
 @Serializable
-object Centiradian : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Centi(Radian)
+object Milliradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Milli(Radian)
 @Serializable
-object Deciradian : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Deci(Radian)
+object Centiradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Centi(Radian)
+@Serializable
+object Deciradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Deci(Radian)
 
 @Serializable
 object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
@@ -78,15 +81,18 @@ object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Physi
 }
 
 @Serializable
-object Nanoturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Nano(Turn)
+sealed class TurnMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn>
+
 @Serializable
-object Microturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Micro(Turn)
+object Nanoturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Nano(Turn)
 @Serializable
-object Milliturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Milli(Turn)
+object Microturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Micro(Turn)
 @Serializable
-object Centiturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Centi(Turn)
+object Milliturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Milli(Turn)
 @Serializable
-object Deciturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Deci(Turn)
+object Centiturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Centi(Turn)
+@Serializable
+object Deciturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Deci(Turn)
 
 @Serializable
 object Degree : Angle() {

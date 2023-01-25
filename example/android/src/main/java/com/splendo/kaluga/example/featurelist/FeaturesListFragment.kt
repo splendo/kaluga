@@ -40,6 +40,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
+import com.splendo.kaluga.example.scientific.ScientificActivity
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -66,6 +67,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity<BluetoothActivity>()
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity<BeaconsActivity>()
                     FeatureListNavigationAction.Resources -> NavigationSpec.Activity<ResourcesActivity>()
+                    FeatureListNavigationAction.Scientific -> NavigationSpec.Activity<ScientificActivity>()
                     FeatureListNavigationAction.PlatformSpecific -> throw java.lang.RuntimeException("Not supported")
                 }
             }
@@ -87,16 +89,16 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
     }
 }
 
-class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
-
-    companion object {
-        @BindingAdapter("features")
-        @JvmStatic
-        fun bindFeatures(view: RecyclerView, features: List<Feature>?) {
-            val adapter = (view.adapter as? FeaturesAdapter) ?: return
-            adapter.features = features.orEmpty()
-        }
+object FeatureBinding {
+    @BindingAdapter("features")
+    @JvmStatic
+    fun bindFeatures(view: RecyclerView, features: List<Feature>?) {
+        val adapter = (view.adapter as? FeaturesAdapter) ?: return
+        adapter.features = features.orEmpty()
     }
+}
+
+class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
 
     class FeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button

@@ -88,6 +88,7 @@ dependencies {
     implementationDependency(Dependencies.AndroidX.Activity.Compose)
     implementationDependency(Dependencies.AndroidX.Navigation.Compose)
 
+    implementationDependency(Dependencies.AndroidX.Fragment)
     implementationDependency(Dependencies.AndroidX.FragmentKtx)
     implementationDependency(Dependencies.AndroidX.ConstraintLayout)
     implementationDependency(Dependencies.AndroidX.Lifecycle.Service)

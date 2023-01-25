@@ -22,6 +22,7 @@ val modules = listOf(
     "logging" to false,
     "resources" to true,
     "review" to true,
+    "scientific" to false,
     "system" to true,
     "permissions" to true
 )

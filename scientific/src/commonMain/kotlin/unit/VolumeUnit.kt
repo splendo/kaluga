@@ -160,34 +160,37 @@ object Liter : MetricVolume(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 }
 
 @Serializable
-object Deciliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deci(Liter)
+sealed class LiterMultiple : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter>
 
 @Serializable
-object Centiliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Centi(Liter)
+object Deciliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deci(Liter)
 
 @Serializable
-object Milliliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Milli(Liter)
+object Centiliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Centi(Liter)
 
 @Serializable
-object Microliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Micro(Liter)
+object Milliliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Milli(Liter)
 
 @Serializable
-object Nanoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Nano(Liter)
+object Microliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Micro(Liter)
 
 @Serializable
-object Decaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deca(Liter)
+object Nanoliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Nano(Liter)
 
 @Serializable
-object Hectoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Hecto(Liter)
+object Decaliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deca(Liter)
 
 @Serializable
-object Kiloliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Kilo(Liter)
+object Hectoliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Hecto(Liter)
 
 @Serializable
-object Megaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Mega(Liter)
+object Kiloliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Kilo(Liter)
 
 @Serializable
-object Gigaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Giga(Liter)
+object Megaliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Mega(Liter)
+
+@Serializable
+object Gigaliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Giga(Liter)
 
 // Imperial
 @Serializable

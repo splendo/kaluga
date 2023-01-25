@@ -55,16 +55,16 @@ class PermissionsListActivity : KalugaViewModelActivity<PermissionsListViewModel
     }
 }
 
-class PermissionsAdapter(private val viewModel: PermissionsListViewModel) : RecyclerView.Adapter<PermissionsAdapter.PermissionsViewHolder>() {
-
-    companion object {
-        @BindingAdapter("permissions")
-        @JvmStatic
-        fun bindPermissions(view: RecyclerView, permissions: List<PermissionView>?) {
-            val adapter = (view.adapter as? PermissionsAdapter) ?: return
-            adapter.permissions = permissions.orEmpty()
-        }
+object PermissionBinding {
+    @BindingAdapter("permissions")
+    @JvmStatic
+    fun bindPermissions(view: RecyclerView, permissions: List<PermissionView>?) {
+        val adapter = (view.adapter as? PermissionsAdapter) ?: return
+        adapter.permissions = permissions.orEmpty()
     }
+}
+
+class PermissionsAdapter(private val viewModel: PermissionsListViewModel) : RecyclerView.Adapter<PermissionsAdapter.PermissionsViewHolder>() {
 
     class PermissionsViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
 

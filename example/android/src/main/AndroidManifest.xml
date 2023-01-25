@@ -156,6 +156,12 @@
         <activity android:name=".resources.xml.ButtonActivity"
             android:label="@string/feature_resources_button"
             android:screenOrientation="fullSensor"/>
+        <activity android:name=".scientific.ScientificActivity"
+            android:label="@string/feature_scientific"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".scientific.ScientificConverterActivity"
+            android:label="@string/feature_scientific"
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".system.SystemActivity"
             android:label="@string/feature_system"
             android:screenOrientation="fullSensor"/>

@@ -40,6 +40,7 @@
 		20BB9E76296333BE0096E836 /* UITableView+Typed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E75296333BE0096E836 /* UITableView+Typed.swift */; };
 		20BB9E7729642FEB0096E836 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* PermissionViewController.swift */; };
 		20BB9E7A29645AA10096E836 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E7929645AA10096E836 /* TimerView.swift */; };
+		20C03634296F03FF004B86DD /* ScientificUnitSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C03633296F03FF004B86DD /* ScientificUnitSelectionView.swift */; };
 		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
 		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
 		20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */; };
@@ -48,6 +49,8 @@
 		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
 		20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2904293796C5007E4079 /* BottomSheetViewController.swift */; };
 		20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */; };
+		20D4E17C296D562D00A046D6 /* ScientificView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D4E17B296D562D00A046D6 /* ScientificView.swift */; };
+		20D4E17E296D565000A046D6 /* ScientificConverterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D4E17D296D565000A046D6 /* ScientificConverterView.swift */; };
 		20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */; };
 		20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3826FF550100D14AC9 /* LabelViewController.swift */; };
 		20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */; };
@@ -153,6 +156,7 @@
 		20BB9E73296331290096E836 /* UICollectionView+Typed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Typed.swift"; sourceTree = "<group>"; };
 		20BB9E75296333BE0096E836 /* UITableView+Typed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Typed.swift"; sourceTree = "<group>"; };
 		20BB9E7929645AA10096E836 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		20C03633296F03FF004B86DD /* ScientificUnitSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScientificUnitSelectionView.swift; sourceTree = "<group>"; };
 		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
 		20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesListViewController.swift; sourceTree = "<group>"; };
@@ -161,6 +165,8 @@
 		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
 		20CA2904293796C5007E4079 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
 		20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSubPageViewController.swift; sourceTree = "<group>"; };
+		20D4E17B296D562D00A046D6 /* ScientificView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScientificView.swift; sourceTree = "<group>"; };
+		20D4E17D296D565000A046D6 /* ScientificConverterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScientificConverterView.swift; sourceTree = "<group>"; };
 		20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesListViewController.swift; sourceTree = "<group>"; };
 		20D8CD3826FF550100D14AC9 /* LabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
 		20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureView.swift; sourceTree = "<group>"; };
@@ -336,6 +342,16 @@
 			path = Architecture;
 			sourceTree = "<group>";
 		};
+		20D4E17A296D561500A046D6 /* Scientific */ = {
+			isa = PBXGroup;
+			children = (
+				20D4E17B296D562D00A046D6 /* ScientificView.swift */,
+				20D4E17D296D565000A046D6 /* ScientificConverterView.swift */,
+				20C03633296F03FF004B86DD /* ScientificUnitSelectionView.swift */,
+			);
+			path = Scientific;
+			sourceTree = "<group>";
+		};
 		20D8CD3526FE8FBA00D14AC9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -426,6 +442,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				20D4E17A296D561500A046D6 /* Scientific */,
 				20BB9E7829645A8E0096E836 /* DateTime */,
 				201EA2172937C2CC00C562EC /* UITypeSelection */,
 				20D8CD3526FE8FBA00D14AC9 /* Resources */,
@@ -713,6 +730,7 @@
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */,
 				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
+				20D4E17E296D565000A046D6 /* ScientificConverterView.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				20BB9E70296323FD0096E836 /* BluetoothDescriptorView.swift in Sources */,
 				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
@@ -724,6 +742,7 @@
 				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
 				649979E725CCD37200348419 /* NetworkViewController.swift in Sources */,
 				20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */,
+				20C03634296F03FF004B86DD /* ScientificUnitSelectionView.swift in Sources */,
 				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
 				20BB9E6C296323260096E836 /* BluetoothServiceView.swift in Sources */,
 				20C7D1D8246A93A600C9A63F /* ArchitectureViewController.swift in Sources */,
@@ -779,6 +798,7 @@
 				20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */,
 				20FFB490293FA7EB005CF1C8 /* BottomSheetSubPageView.swift in Sources */,
 				2EF7D8289105AC623E600829 /* UninitializedObservable.generated.swift in Sources */,
+				20D4E17C296D562D00A046D6 /* ScientificView.swift in Sources */,
 				1529FF0B35BD7AB3B6E838A9 /* UninitializedSubject.generated.swift in Sources */,
 				9481F22DC3CFE170CE894584 /* KeyboardManager.generated.swift in Sources */,
 			);

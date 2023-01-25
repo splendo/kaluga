@@ -33,7 +33,7 @@ infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantit
     luminance: ScientificValue<PhysicalQuantity.Luminance, Stilb>
 ) = luminance * this
 
-@JvmName("solidAngleTimesLambertTimes")
+@JvmName("solidAngleTimesLambert")
 infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>.times(
     luminance: ScientificValue<PhysicalQuantity.Luminance, Lambert>
 ) = luminance * this

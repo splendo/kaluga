@@ -59,6 +59,12 @@ import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
@@ -69,6 +75,7 @@ import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -183,6 +190,18 @@ internal val androidModule = module {
 
     viewModel {
         ButtonViewModel(StyledStringBuilder.Provider(), AlertPresenter.Builder())
+    }
+
+    viewModel { (navigator: Navigator<ScientificNavigationAction<*>>) ->
+        ScientificViewModel(AlertPresenter.Builder(), navigator)
+    }
+
+    viewModel { (quantity: PhysicalQuantity, navigator: Navigator<ScientificUnitSelectionAction<*>>) ->
+        ScientificUnitSelectionViewModel(quantity, navigator)
+    }
+
+    viewModel { (arguments: ScientificConverterViewModel.Arguments, navigator: Navigator<ScientificConverterNavigationAction<*>>) ->
+        ScientificConverterViewModel(arguments, navigator)
     }
 }
 
