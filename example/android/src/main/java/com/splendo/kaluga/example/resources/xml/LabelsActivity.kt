@@ -47,16 +47,16 @@ class LabelActivity : KalugaViewModelActivity<LabelViewModel>() {
     }
 }
 
-class LabelAdapter : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
-
-    companion object {
-        @BindingAdapter("labels")
-        @JvmStatic
-        fun bindLabels(view: RecyclerView, labels: List<KalugaLabel>?) {
-            val adapter = (view.adapter as? LabelAdapter) ?: return
-            adapter.labels = labels.orEmpty()
-        }
+object LabelsBinding {
+    @BindingAdapter("labels")
+    @JvmStatic
+    fun bindLabels(view: RecyclerView, labels: List<KalugaLabel>?) {
+        val adapter = (view.adapter as? LabelAdapter) ?: return
+        adapter.labels = labels.orEmpty()
     }
+}
+
+class LabelAdapter : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
 
     class LabelViewHolder(val binding: ViewListTextViewBinding) : RecyclerView.ViewHolder(binding.root) {
         val label = binding.label

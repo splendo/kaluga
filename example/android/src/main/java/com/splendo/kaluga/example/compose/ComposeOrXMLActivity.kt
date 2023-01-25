@@ -61,16 +61,16 @@ abstract class ComposeOrXMLActivity<ComposeActivity : AppCompatActivity, XMLActi
     }
 }
 
-class UITypesAdapter(private val viewModel: ComposeOrXMLSelectionViewModel) : RecyclerView.Adapter<UITypesAdapter.UITypesViewHolder>() {
-
-    companion object {
-        @BindingAdapter("uiTypes")
-        @JvmStatic
-        fun bindUITypes(view: RecyclerView, uiTypes: List<UIType>?) {
-            val adapter = (view.adapter as? UITypesAdapter) ?: return
-            adapter.uiTypes = uiTypes.orEmpty()
-        }
+object UITypeBinding {
+    @BindingAdapter("uiTypes")
+    @JvmStatic
+    fun bindUITypes(view: RecyclerView, uiTypes: List<UIType>?) {
+        val adapter = (view.adapter as? UITypesAdapter) ?: return
+        adapter.uiTypes = uiTypes.orEmpty()
     }
+}
+
+class UITypesAdapter(private val viewModel: ComposeOrXMLSelectionViewModel) : RecyclerView.Adapter<UITypesAdapter.UITypesViewHolder>() {
 
     class UITypesViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button

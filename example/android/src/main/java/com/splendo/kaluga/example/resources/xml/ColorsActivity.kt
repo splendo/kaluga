@@ -70,16 +70,16 @@ class ColorActivity : KalugaViewModelActivity<ColorViewModel>() {
     }
 }
 
-class BackgroundAdapter : RecyclerView.Adapter<BackgroundAdapter.BackgroundViewHolder>() {
-
-    companion object {
-        @BindingAdapter("backgroundStyles")
-        @JvmStatic
-        fun bindBackgroundStyles(view: RecyclerView, backgroundStyles: List<KalugaBackgroundStyle>?) {
-            val adapter = (view.adapter as? BackgroundAdapter) ?: return
-            adapter.backgrounds = backgroundStyles.orEmpty()
-        }
+object BackgroundStyleBinding {
+    @BindingAdapter("backgroundStyles")
+    @JvmStatic
+    fun bindBackgroundStyles(view: RecyclerView, backgroundStyles: List<KalugaBackgroundStyle>?) {
+        val adapter = (view.adapter as? BackgroundAdapter) ?: return
+        adapter.backgrounds = backgroundStyles.orEmpty()
     }
+}
+
+class BackgroundAdapter : RecyclerView.Adapter<BackgroundAdapter.BackgroundViewHolder>() {
 
     class BackgroundViewHolder(val binding: ViewResourceListBackgroundBinding) : RecyclerView.ViewHolder(binding.root) {
         val view = binding.root

@@ -31,6 +31,7 @@ data class QuantityDetails<Quantity : PhysicalQuantity>(
     val units: Set<ScientificUnit<Quantity>>,
     val converters: List<QuantityConverter<Quantity, *>>
 ) {
+    @Suppress("UNCHECKED_CAST")
     fun convert(value: Decimal, unit: ScientificUnit<*>, to: ScientificUnit<*>): ScientificValue<Quantity, *>? = if (unit.quantity == quantity && to.quantity == quantity) {
         DefaultScientificValue(value, unit as ScientificUnit<Quantity>).convert(to as ScientificUnit<Quantity>)
     } else {
