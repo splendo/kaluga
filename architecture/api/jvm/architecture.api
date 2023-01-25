@@ -482,8 +482,17 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 	public fun getValue ()Lkotlin/Unit;
 }
 
+public class com/splendo/kaluga/architecture/navigation/NavigationException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator {
 	public abstract fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public final class com/splendo/kaluga/architecture/navigation/NavigatorKt {
+	public static final fun navigateOrElse (Lcom/splendo/kaluga/architecture/navigation/Navigator;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lkotlin/jvm/functions/Function0;)V
+	public static final fun navigateWithSuccess (Lcom/splendo/kaluga/architecture/navigation/Navigator;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)Z
 }
 
 public class com/splendo/kaluga/architecture/navigation/SingleValueNavigationAction : com/splendo/kaluga/architecture/navigation/NavigationAction {

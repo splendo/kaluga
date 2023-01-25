@@ -430,6 +430,14 @@ public final class com/splendo/kaluga/architecture/navigation/IntentParseExtraKt
 	public static final fun parseTypeOfOrNull (Landroid/content/Intent;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 }
 
+public final class com/splendo/kaluga/architecture/navigation/MissingActivityNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/MissingActivityNavigationException;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/MissingLifecycleManagerNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/MissingLifecycleManagerNavigationException;
+}
+
 public class com/splendo/kaluga/architecture/navigation/NavigationAction {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)V
 	public final fun getBundle ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
@@ -914,6 +922,10 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue;
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Lkotlin/Unit;
+}
+
+public class com/splendo/kaluga/architecture/navigation/NavigationException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1465,6 +1477,11 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Thi
 
 public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
 	public abstract fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public final class com/splendo/kaluga/architecture/navigation/NavigatorKt {
+	public static final fun navigateOrElse (Lcom/splendo/kaluga/architecture/navigation/Navigator;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lkotlin/jvm/functions/Function0;)V
+	public static final fun navigateWithSuccess (Lcom/splendo/kaluga/architecture/navigation/Navigator;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)Z
 }
 
 public class com/splendo/kaluga/architecture/navigation/SingleValueNavigationAction : com/splendo/kaluga/architecture/navigation/NavigationAction {

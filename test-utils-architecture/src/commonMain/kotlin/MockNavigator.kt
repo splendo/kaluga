@@ -18,18 +18,33 @@
 package com.splendo.kaluga.test.architecture
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
+import com.splendo.kaluga.architecture.navigation.NavigationException
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
+
+class MockNavigationException(action: NavigationAction<*>) : NavigationException("Mock exception for $action")
 
 /**
  * Mock implementation of [Navigator]
  */
-open class MockNavigator<A : NavigationAction<*>> : Navigator<A> {
+open class MockNavigator<A : NavigationAction<*>>(handleAction: (A) -> Unit = { }) : Navigator<A> {
+
+    companion object {
+        /**
+         * Creates a [MockNavigator] that automatically throws a [MockNavigationException] when [navigate] is called.
+         */
+        fun <A : NavigationAction<*>> navigatorThatThrows() = MockNavigator<A> { throw MockNavigationException(it) }
+    }
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] of [navigate]
      */
     val navigateMock = this::navigate.mock()
     override fun navigate(action: A): Unit = navigateMock.call(action)
+
+    init {
+        navigateMock.on().doExecute { (action) -> handleAction(action) }
+    }
 }

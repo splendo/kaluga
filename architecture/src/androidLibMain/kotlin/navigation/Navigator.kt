@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -31,6 +32,9 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribableMarker {
     actual fun navigate(action: A)
 }
+
+object MissingLifecycleManagerNavigationException : NavigationException("LifecycleManager not attached")
+object MissingActivityNavigationException : NavigationException("LifecycleManager does not have an activity")
 
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -70,8 +74,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         activitySpec: NavigationSpec.Activity<*>,
         bundle: NavigationBundle<*>?
     ) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         val intent = Intent(activity, activitySpec.activityClass).apply {
             bundle?.let {
                 putExtras(it.toBundle())
@@ -88,8 +91,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         closeSpec.result?.let { resultCode ->
             val data = Intent().apply {
                 bundle?.let {
@@ -102,8 +104,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment, bundle: NavigationBundle<*>?) {
-        assert(manager != null)
-        val fragmentManager = fragmentSpec.getFragmentManager(manager!!)
+        val manager = manager ?: throw MissingLifecycleManagerNavigationException
+        val fragmentManager = fragmentSpec.getFragmentManager(manager)
         val transaction = fragmentManager.beginTransaction().let {
             when (val backtrackSettings = fragmentSpec.backStackSettings) {
                 is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
@@ -142,8 +144,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment, bundle: NavigationBundle<*>?) {
-        assert(manager != null)
-        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!).apply {
+        val manager = manager ?: throw MissingLifecycleManagerNavigationException
+        val fragmentManager = removeFragmentSpec.getFragmentManager(manager).apply {
             removeFragmentSpec.fragmentRequestKey?.let { key ->
                 bundle?.let { setFragmentResult(key, it.toBundle()) }
             }
@@ -156,8 +158,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun popFragment(popFragmentSpec: NavigationSpec.PopFragment, bundle: NavigationBundle<*>?) {
-        assert(manager != null)
-        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!).apply {
+        val manager = manager ?: throw MissingLifecycleManagerNavigationException
+        val fragmentManager = popFragmentSpec.getFragmentManager(manager).apply {
             popFragmentSpec.fragmentRequestKey?.let { key ->
                 bundle?.let { setFragmentResult(key, it.toBundle()) }
             }
@@ -170,8 +172,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun popFragmentTo(popToFragmentSpec: NavigationSpec.PopFragmentTo, bundle: NavigationBundle<*>?) {
-        assert(manager != null)
-        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!).apply {
+        val manager = manager ?: throw MissingLifecycleManagerNavigationException
+        val fragmentManager = popToFragmentSpec.getFragmentManager(manager).apply {
             popToFragmentSpec.fragmentRequestKey?.let { key ->
                 bundle?.let { setFragmentResult(key, it.toBundle()) }
             }
@@ -185,8 +187,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog, bundle: NavigationBundle<*>?) {
-        assert(manager != null)
-        val fragmentManager = dialogSpec.getFragmentManager(manager!!)
+        val manager = manager ?: throw MissingLifecycleManagerNavigationException
+        val fragmentManager = dialogSpec.getFragmentManager(manager)
         dialogSpec.createDialog().apply {
             arguments = bundle?.toBundle()
             show(fragmentManager, dialogSpec.tag)
@@ -194,8 +196,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun dismissDialog(spec: NavigationSpec.DismissDialog, bundle: NavigationBundle<*>?) {
-        assert(manager != null)
-        val fragmentManager = spec.getFragmentManager(manager!!).apply {
+        val manager = manager ?: throw MissingLifecycleManagerNavigationException
+        val fragmentManager = spec.getFragmentManager(manager).apply {
             spec.fragmentRequestKey?.let { key ->
                 bundle?.let { setFragmentResult(key, it.toBundle()) }
             }
@@ -205,8 +207,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToCamera(cameraSpec: NavigationSpec.Camera) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         val intent = when (cameraSpec.type) {
             is NavigationSpec.Camera.Type.Image -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             is NavigationSpec.Camera.Type.Video -> Intent(MediaStore.ACTION_VIDEO_CAPTURE)
@@ -222,8 +223,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToEmail(emailSpec: NavigationSpec.Email) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         val intent = emailSpec.emailSettings.intent
 
         intent.resolveActivity(activity.packageManager)?.let {
@@ -232,8 +232,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToFileSelector(fileSelectorSpec: NavigationSpec.FileSelector) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         val settings = fileSelectorSpec.fileSelectorSettings
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = settings.type
@@ -247,8 +246,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToPhone(phoneSpec: NavigationSpec.Phone) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
 
         val intent = when (phoneSpec.type) {
             is NavigationSpec.Phone.Type.Dial -> Intent(Intent.ACTION_DIAL)
@@ -263,8 +261,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToSettings(settingsSpec: NavigationSpec.Settings) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         val intent = settingsSpec.type.intent(activity)
 
         intent.resolveActivity(activity.packageManager)?.let {
@@ -273,8 +270,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
         val intent = messengerSpec.settings.intent
 
         intent.resolveActivity(activity.packageManager)?.let {
@@ -283,8 +279,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToBrowser(browserSpec: NavigationSpec.Browser) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
 
         when (browserSpec.viewType) {
             NavigationSpec.Browser.Type.CustomTab -> {
@@ -325,8 +320,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToThirdPartyApp(packageName: String): Boolean {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return false
+        val activity = getActivity()
 
         val intent = activity.packageManager.getLaunchIntentForPackage(packageName) ?: return false
         return try {
@@ -359,9 +353,15 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     }
 
     private fun navigateToIntent(intentSpec: NavigationSpec.CustomIntent) {
-        assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
+        val activity = getActivity()
 
         activity.startActivity(intentSpec.intent)
+    }
+
+    private fun getActivity(): Activity {
+        return when (val manager = manager) {
+            null -> throw MissingLifecycleManagerNavigationException
+            else -> manager.activity ?: throw MissingActivityNavigationException
+        }
     }
 }

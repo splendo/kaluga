@@ -27,10 +27,21 @@ public final class com/splendo/kaluga/test/architecture/MockLifecycleSubscriber 
 	public fun unsubscribe ()V
 }
 
+public final class com/splendo/kaluga/test/architecture/MockNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
 public class com/splendo/kaluga/test/architecture/MockNavigator : com/splendo/kaluga/architecture/navigation/Navigator {
+	public static final field Companion Lcom/splendo/kaluga/test/architecture/MockNavigator$Companion;
 	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getNavigateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public final class com/splendo/kaluga/test/architecture/MockNavigator$Companion {
+	public final fun navigatorThatThrows ()Lcom/splendo/kaluga/test/architecture/MockNavigator;
 }
 
 public abstract class com/splendo/kaluga/test/architecture/SimpleUIThreadViewModelTest : com/splendo/kaluga/test/architecture/UIThreadViewModelTest {
