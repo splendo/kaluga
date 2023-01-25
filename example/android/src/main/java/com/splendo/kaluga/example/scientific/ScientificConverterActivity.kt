@@ -21,6 +21,7 @@ import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.architecture.navigation.parseTypeOf
 import com.splendo.kaluga.architecture.navigation.toTypedProperty
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityScientificConverterBinding
@@ -45,7 +46,7 @@ class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterV
 
     override val viewModel: ScientificConverterViewModel by viewModel {
         parametersOf(
-            intent.extras!!.toTypedProperty(NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer())),
+            parseTypeOf(ScientificConverterViewModel.Arguments.serializer()),
             ActivityNavigator<ScientificConverterNavigationAction<*>> { action ->
                 when (action) {
                     is ScientificConverterNavigationAction.Close -> NavigationSpec.Close()

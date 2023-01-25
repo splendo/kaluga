@@ -18,8 +18,7 @@
 package com.splendo.kaluga.example.bluetooth
 
 import android.os.Bundle
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
-import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.navigation.parseTypeOf
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.bluetooth.device.SerializableIdentifier
 import com.splendo.kaluga.example.databinding.ActivityBluetoothMoreBinding
@@ -31,7 +30,7 @@ class BluetoothMoreActivity : KalugaViewModelActivity<BluetoothDeviceDetailViewM
 
     override val viewModel: BluetoothDeviceDetailViewModel by viewModel {
         parametersOf(
-            intent.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()))!!.identifier
+            parseTypeOf(SerializableIdentifier.serializer()).identifier
         )
     }
 

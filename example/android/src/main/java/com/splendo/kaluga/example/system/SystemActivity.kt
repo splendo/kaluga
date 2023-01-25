@@ -55,18 +55,18 @@ class SystemActivity : KalugaViewModelActivity<SystemViewModel>() {
     }
 }
 
+object SystemFeaturesBinding {
+    @BindingAdapter("systemFeatures")
+    @JvmStatic
+    fun bindSystemFeatures(view: RecyclerView, resources: List<SystemFeatures>?) {
+        val adapter = (view.adapter as? SystemFeatureAdapter) ?: return
+        adapter.systemFeatures = resources.orEmpty()
+    }
+}
+
 class SystemFeatureAdapter(
     private val viewModel: SystemViewModel
 ) : RecyclerView.Adapter<SystemFeatureAdapter.SystemFeatureViewHolder>() {
-
-    companion object {
-        @BindingAdapter("systemFeatures")
-        @JvmStatic
-        fun bindSystemFeatures(view: RecyclerView, resources: List<SystemFeatures>?) {
-            val adapter = (view.adapter as? SystemFeatureAdapter) ?: return
-            adapter.systemFeatures = resources.orEmpty()
-        }
-    }
 
     inner class SystemFeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button

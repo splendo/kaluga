@@ -89,16 +89,16 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
     }
 }
 
-class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
-
-    companion object {
-        @BindingAdapter("features")
-        @JvmStatic
-        fun bindFeatures(view: RecyclerView, features: List<Feature>?) {
-            val adapter = (view.adapter as? FeaturesAdapter) ?: return
-            adapter.features = features.orEmpty()
-        }
+object FeatureBinding {
+    @BindingAdapter("features")
+    @JvmStatic
+    fun bindFeatures(view: RecyclerView, features: List<Feature>?) {
+        val adapter = (view.adapter as? FeaturesAdapter) ?: return
+        adapter.features = features.orEmpty()
     }
+}
+
+class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
 
     class FeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button

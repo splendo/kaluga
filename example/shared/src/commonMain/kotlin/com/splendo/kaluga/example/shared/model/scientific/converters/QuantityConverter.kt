@@ -32,6 +32,8 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
         override val name: String,
         val converter: (Decimal, ScientificUnit<From>) -> ScientificValue<Result, *>
     ) : QuantityConverter<From, Result>() {
+
+        @Suppress("UNCHECKED_CAST")
         fun convert(
             value: Decimal,
             unit: ScientificUnit<*>
@@ -67,6 +69,7 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
             data class Custom(override val operatorSymbol: String) : Type()
         }
 
+        @Suppress("UNCHECKED_CAST")
         fun convert(
             left: Decimal,
             leftUnit: ScientificUnit<*>,
