@@ -54,8 +54,8 @@ sealed class ComposableNavSpec {
          * @param uri The [Uri] where the taken picture should be stored.
          * @param onResult Returns `true` if a picture was taken successfully.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> TakePicture(uri: Uri?, noinline onResult: VM.(Boolean) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> TakePicture(uri: Uri?, noinline onResult: ViewModel.(Boolean) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.TakePicture(),
             { uri },
             onResult
@@ -66,8 +66,8 @@ sealed class ComposableNavSpec {
          * @param uri The [Uri] where the captured video should be stored.
          * @param onResult Returns `true` if a video was captured successfully.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> CaptureVideo(uri: Uri?, noinline onResult: VM.(Boolean) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> CaptureVideo(uri: Uri?, noinline onResult: ViewModel.(Boolean) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.CaptureVideo(),
             { uri },
             onResult
@@ -84,11 +84,11 @@ sealed class ComposableNavSpec {
          * @param type The [ActivityResultContracts.PickVisualMedia.VisualMediaType] to be selected.
          * @param onResult Returns an [Uri] of the image or video selected, or `null` if nothing was selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> PickVisualMedia(
+        inline fun <reified ViewModel : BaseLifecycleViewModel> PickVisualMedia(
             type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
-            noinline onResult: VM.(Uri?) -> Unit
+            noinline onResult: ViewModel.(Uri?) -> Unit
         ) = Launcher(
-            VM::class,
+            ViewModel::class,
             ActivityResultContracts.PickVisualMedia(),
             { PickVisualMediaRequest(mediaType = type) },
             onResult
@@ -99,12 +99,12 @@ sealed class ComposableNavSpec {
          * @param type The [ActivityResultContracts.PickVisualMedia.VisualMediaType] to be selected.
          * @param onResult Returns a list of [Uri] of the images or videos selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> PickMultipleVisualMedia(
+        inline fun <reified ViewModel : BaseLifecycleViewModel> PickMultipleVisualMedia(
             maxItems: Int? = null,
             type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
-            noinline onResult: VM.(List<Uri>) -> Unit
+            noinline onResult: ViewModel.(List<Uri>) -> Unit
         ) = Launcher(
-            VM::class,
+            ViewModel::class,
             maxItems?.let { ActivityResultContracts.PickMultipleVisualMedia(it) } ?: ActivityResultContracts.PickMultipleVisualMedia(),
             { PickVisualMediaRequest(mediaType = type) },
             onResult
@@ -115,8 +115,8 @@ sealed class ComposableNavSpec {
          * @param types List of mime types allowed to be selected.
          * @param onResult Returns an [Uri] of the file selected, or `null` if nothing was selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> OpenDocument(types: List<String>, noinline onResult: VM.(Uri?) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> OpenDocument(types: List<String>, noinline onResult: ViewModel.(Uri?) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.OpenDocument(),
             { types.toTypedArray() },
             onResult
@@ -127,8 +127,8 @@ sealed class ComposableNavSpec {
          * @param types List of mime types allowed to be selected.
          * @param onResult Returns a list of [Uri] of the documents selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> OpenMultipleDocument(types: List<String>, noinline onResult: VM.(List<Uri>) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> OpenMultipleDocument(types: List<String>, noinline onResult: ViewModel.(List<Uri>) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.OpenMultipleDocuments(),
             { types.toTypedArray() },
             onResult
@@ -140,8 +140,8 @@ sealed class ComposableNavSpec {
          * @param mimeType The mime type of the file.
          * @param onResult Returns the [Uri] of the document created.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> CreateDocument(fileName: String, mimeType: String, noinline onResult: VM.(Uri?) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> CreateDocument(fileName: String, mimeType: String, noinline onResult: ViewModel.(Uri?) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.CreateDocument(mimeType),
             { fileName },
             onResult
@@ -152,8 +152,8 @@ sealed class ComposableNavSpec {
          * @param startingLocation Optional [Uri] of the folder to start in.
          * @param onResult Returns an [Uri] of the folder selected, or `null` if nothing was selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> OpenDocumentTree(startingLocation: Uri? = null, noinline onResult: VM.(Uri?) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> OpenDocumentTree(startingLocation: Uri? = null, noinline onResult: ViewModel.(Uri?) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.OpenDocumentTree(),
             { startingLocation },
             onResult
@@ -163,8 +163,8 @@ sealed class ComposableNavSpec {
          * Creates a [ComposableNavSpec.Launcher] to open the contacts list to select a contact.
          * @param onResult Returns an [Uri] of the contact selected, or `null` if nothing was selected.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> PickContact(noinline onResult: VM.(Uri?) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> PickContact(noinline onResult: ViewModel.(Uri?) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.PickContact(),
             { null },
             onResult
@@ -175,8 +175,8 @@ sealed class ComposableNavSpec {
          * @param permission Key of the permission to be requested. E.g. [android.Manifest.permission.ACCESS_COARSE_LOCATION].
          * @param onResult Returns `true` if the permission was granted, `false` otherwise.
          */
-        inline fun <reified VM : BaseLifecycleViewModel> RequestPermission(permission: String, noinline onResult: VM.(Boolean) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> RequestPermission(permission: String, noinline onResult: ViewModel.(Boolean) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.RequestPermission(),
             { permission },
             onResult
@@ -187,8 +187,8 @@ sealed class ComposableNavSpec {
          * @param permissions Keys of the permission to be requested. E.g. [android.Manifest.permission.ACCESS_COARSE_LOCATION].
          * @param onResult Returns map containing whether the permission was granted for each permission in [permissions].
          */
-        inline fun <reified VM : BaseLifecycleViewModel> RequestMultiplePermissions(permissions: List<String>, noinline onResult: VM.(Map<String, Boolean>) -> Unit) = Launcher(
-            VM::class,
+        inline fun <reified ViewModel : BaseLifecycleViewModel> RequestMultiplePermissions(permissions: List<String>, noinline onResult: ViewModel.(Map<String, Boolean>) -> Unit) = Launcher(
+            ViewModel::class,
             ActivityResultContracts.RequestMultiplePermissions(),
             { permissions.toTypedArray() },
             onResult
@@ -280,11 +280,11 @@ sealed class ComposableNavSpec {
      * @param getInput The input to be provided to [activityResultContract]
      * @param onResult Callback to handle the result of [activityResultContract]
      */
-    data class Launcher<VM : BaseLifecycleViewModel, I, O>(
-        val viewModelClass: KClass<VM>,
-        val activityResultContract: ActivityResultContract<I, O>,
-        val getInput: @Composable () -> I?,
-        val onResult: VM.(O) -> Unit
+    data class Launcher<ViewModel : BaseLifecycleViewModel, Input, Output>(
+        val viewModelClass: KClass<ViewModel>,
+        val activityResultContract: ActivityResultContract<Input, Output>,
+        val getInput: @Composable () -> Input?,
+        val onResult: ViewModel.(Output) -> Unit
     ) : LaunchedNavigation() {
 
         @Composable
@@ -379,10 +379,10 @@ sealed class ComposableNavSpec {
  * @param activityResultContract The [ActivityResultContract] to launch.
  * @param onResult The result received after the launched screen has completed.
  */
-inline fun <reified VM : BaseLifecycleViewModel, I, O> SingleValueNavigationAction<I>.Launcher(
-    activityResultContract: ActivityResultContract<I, O>,
-    noinline onResult: VM.(O) -> Unit
-) = ComposableNavSpec.Launcher(VM::class, activityResultContract, { value }, onResult)
+inline fun <reified ViewModel : BaseLifecycleViewModel, Input, Output> SingleValueNavigationAction<Input>.Launcher(
+    activityResultContract: ActivityResultContract<Input, Output>,
+    noinline onResult: ViewModel.(Output) -> Unit
+) = ComposableNavSpec.Launcher(ViewModel::class, activityResultContract, { value }, onResult)
 
 /**
  * Creates a [ComposableNavSpec.Launcher] that takes an [Intent] containing the [NavigationAction.bundle] as the input of its [ActivityResultContract].
@@ -390,14 +390,14 @@ inline fun <reified VM : BaseLifecycleViewModel, I, O> SingleValueNavigationActi
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  * @param onResult The result received after the launched screen has completed.
  */
-inline fun <reified A : Activity, reified VM : BaseLifecycleViewModel, O> NavigationAction<*>.Launcher(
-    activityResultContract: ActivityResultContract<Intent, O>,
+inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLifecycleViewModel, Output> NavigationAction<*>.Launcher(
+    activityResultContract: ActivityResultContract<Intent, Output>,
     flags: Set<IntentFlag> = emptySet(),
-    noinline onResult: VM.(O) -> Unit
-): ComposableNavSpec.Launcher<VM, Intent, O> {
+    noinline onResult: ViewModel.(Output) -> Unit
+): ComposableNavSpec.Launcher<ViewModel, Intent, Output> {
     val getInput = @Composable {
         LocalContext.current.activity?.let { activity ->
-            Intent(activity, A::class.java).apply {
+            Intent(activity, Activity::class.java).apply {
                 bundle?.let {
                     putExtras(it.toBundle())
                 }
@@ -405,17 +405,17 @@ inline fun <reified A : Activity, reified VM : BaseLifecycleViewModel, O> Naviga
             }
         }
     }
-    return ComposableNavSpec.Launcher(VM::class, activityResultContract, getInput, onResult)
+    return ComposableNavSpec.Launcher(ViewModel::class, activityResultContract, getInput, onResult)
 }
 
 /**
  * Creates a [ComposableNavSpec.IntentLauncher] to show a given [Activity]
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  */
-inline fun <reified A : Activity> NavigationAction<*>.ShowActivity(
+inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(
     flags: Set<IntentFlag> = emptySet()
 ) = ComposableNavSpec.IntentLauncher {
-    Intent(this, A::class.java).apply {
+    Intent(this, Activity::class.java).apply {
         bundle?.let {
             putExtras(it.toBundle())
         }

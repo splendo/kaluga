@@ -89,7 +89,7 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     "Does not work for configuration changes (e.g. rotation).",
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
-fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
+fun <ViewModel : BaseLifecycleViewModel> store(provider: @Composable () -> ViewModel): ViewModel =
     provider().also { handleLocalViewModelStore(it) }
 
 /**
@@ -103,7 +103,7 @@ fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
 @Suppress("Deprecation")
-fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> VM): VM = store {
+fun <ViewModel : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> ViewModel): ViewModel = store {
     remember(provider)
 }
 
@@ -118,12 +118,12 @@ fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposable
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
 @Suppress("Deprecation")
-fun <VM : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> VM): VM = store {
+fun <ViewModel : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> ViewModel): ViewModel = store {
     remember(key, provider)
 }
 
 @Composable
-private fun <VM : BaseLifecycleViewModel> handleLocalViewModelStore(viewModel: VM): VM {
+private fun <ViewModel : BaseLifecycleViewModel> handleLocalViewModelStore(viewModel: ViewModel): ViewModel {
     // we delegate VM cleanup to the ViewModelStore, which lives in scope of the current @Composable
     val viewModelStoreOwner = rememberComposableViewModelStoreOwner(viewModel)
 
@@ -160,7 +160,7 @@ private fun rememberComposableViewModelStoreOwner(viewModel: BaseLifecycleViewMo
 }
 
 @Composable
-private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(activity: AppCompatActivity?, fragmentManager: FragmentManager): VM {
+private fun <ViewModel : BaseLifecycleViewModel> ViewModel.linkLifecycle(activity: AppCompatActivity?, fragmentManager: FragmentManager): ViewModel {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(Unit) {
         val observer = VmObserver(this@linkLifecycle, activity, fragmentManager)
@@ -174,7 +174,7 @@ private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(activity: AppCompatAc
     return this
 }
 
-private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM, activity: AppCompatActivity?, fragmentManager: FragmentManager) : DefaultLifecycleObserver {
+private class VmObserver<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, activity: AppCompatActivity?, fragmentManager: FragmentManager) : DefaultLifecycleObserver {
 
     private val manager = LifecycleSubscribableManager(viewModel, activity, fragmentManager)
     private var resumed = false

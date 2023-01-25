@@ -25,9 +25,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 /**
  * Convenience [DialogFragment] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelDialogFragment<VM : BaseLifecycleViewModel> : DialogFragment() {
+abstract class KalugaViewModelDialogFragment<ViewModel : BaseLifecycleViewModel> : DialogFragment() {
 
-    abstract val viewModel: VM
+    abstract val viewModel: ViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,9 +38,9 @@ abstract class KalugaViewModelDialogFragment<VM : BaseLifecycleViewModel> : Dial
 /**
  * Convenience [BottomSheetDialogFragment] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelBottomSheetDialogFragment<VM : BaseLifecycleViewModel> : BottomSheetDialogFragment() {
+abstract class KalugaViewModelBottomSheetDialogFragment<ViewModel : BaseLifecycleViewModel> : BottomSheetDialogFragment() {
 
-    abstract val viewModel: VM
+    abstract val viewModel: ViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

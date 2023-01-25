@@ -29,8 +29,8 @@ import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscriber
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
-    actual fun navigate(action: A)
+actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: Action)
 }
 
 object MissingLifecycleManagerNavigationException : NavigationException("LifecycleManager not attached")
@@ -42,9 +42,9 @@ object MissingActivityNavigationException : NavigationException("LifecycleManage
  * Requires to be subscribed to an activity via [subscribe] to work
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) : Navigator<A>, ActivityLifecycleSubscribable by ActivityLifecycleSubscriber() {
+class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action>, ActivityLifecycleSubscribable by ActivityLifecycleSubscriber() {
 
-    override fun navigate(action: A) {
+    override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 

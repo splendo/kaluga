@@ -34,7 +34,7 @@ actual open class LifecycleViewModel internal actual constructor() : androidx.li
  * Binds an [AppCompatActivity] to the [LifecycleViewModel] to manage the viewmodel lifecycle.
  * @param activity The [AppCompatActivity] to bind to.
  */
-fun <VM : BaseLifecycleViewModel> VM.bind(activity: AppCompatActivity) {
+fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(activity: AppCompatActivity) {
     activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity.supportFragmentManager))
 }
 
@@ -42,7 +42,7 @@ fun <VM : BaseLifecycleViewModel> VM.bind(activity: AppCompatActivity) {
  * Binds a [Fragment] to the [LifecycleViewModel] to manage the viewmodel lifecycle
  * @param fragment The [Fragment] to bind to.
  */
-fun <VM : BaseLifecycleViewModel> VM.bind(fragment: Fragment) =
+fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(fragment: Fragment) =
     fragment.lifecycle.addObserver(
         KalugaViewModelLifecycleObserver(
             viewModel = this,

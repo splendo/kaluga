@@ -34,8 +34,8 @@ import kotlinx.coroutines.flow.runningFold
  * @param activity The [Activity] managing the lifecycle
  * @param fragmentManager The [FragmentManager] for this lifecycle
  */
-class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal constructor(
-    private val viewModel: VM,
+class KalugaViewModelLifecycleObserver<ViewModel : BaseLifecycleViewModel> internal constructor(
+    private val viewModel: ViewModel,
     private val activity: Activity?,
     private val fragmentManager: FragmentManager,
     childFragmentManager: FragmentManager? = null
@@ -60,8 +60,8 @@ class KalugaViewModelLifecycleObserver<VM : BaseLifecycleViewModel> internal con
     }
 }
 
-class LifecycleSubscribableManager<VM : BaseLifecycleViewModel>(
-    private val viewModel: VM,
+class LifecycleSubscribableManager<ViewModel : BaseLifecycleViewModel>(
+    private val viewModel: ViewModel,
     private val activity: Activity?,
     private val fragmentManager: FragmentManager,
     private val childFragmentManager: FragmentManager? = null

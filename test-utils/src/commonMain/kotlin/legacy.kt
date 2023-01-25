@@ -42,28 +42,28 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
     override val createTestContext: suspend (CoroutineScope) -> SimpleTestContext = { SimpleTestContext(it) }
 }
 @Deprecated("Moved to test-utils-base", ReplaceWith("UIThreadTest", "com.splendo.kaluga.test.base.UIThreadTest"))
-abstract class UIThreadTest<TC : UIThreadTest.TestContext> : com.splendo.kaluga.test.base.UIThreadTest<TC>() {
+abstract class UIThreadTest<Context : UIThreadTest.TestContext> : com.splendo.kaluga.test.base.UIThreadTest<Context>() {
     @Deprecated("Moved to test-utils-base", ReplaceWith("TestContext", "com.splendo.kaluga.test.base.UIThreadTest.TestContext"))
     interface TestContext : com.splendo.kaluga.test.base.UIThreadTest.TestContext
 }
 
 @Deprecated("Moved to test-utils-base", ReplaceWith("FlowTestBlockWithContext", "com.splendo.kaluga.test.base.FlowTestBlockWithContext"))
-typealias FlowTestBlockWithContext<TC, T, F> = com.splendo.kaluga.test.base.FlowTestBlockWithContext<Unit, TC, T, F>
+typealias FlowTestBlockWithContext<Context, T, F> = com.splendo.kaluga.test.base.FlowTestBlockWithContext<Unit, Context, T, F>
 @Deprecated("Moved to test-utils-base", ReplaceWith("FlowableTest", "com.splendo.kaluga.test.base.FlowableTest"))
 typealias FlowableTest<T> = com.splendo.kaluga.test.base.FlowableTest<T>
 @Deprecated("Moved to test-utils-base", ReplaceWith("FlowTest", "com.splendo.kaluga.test.base.FlowTest"))
 typealias FlowTest<T, F> = com.splendo.kaluga.test.base.FlowTest<T, F>
 @Deprecated("Moved to test-utils-base", ReplaceWith("BaseFlowTest", "com.splendo.kaluga.test.base.BaseFlowTest"))
-abstract class BaseFlowTest<TC : UIThreadTest.TestContext, T, F : Flow<T>> : com.splendo.kaluga.test.base.BaseFlowTest<Unit, TC, T, F>() {
+abstract class BaseFlowTest<Context : UIThreadTest.TestContext, T, F : Flow<T>> : com.splendo.kaluga.test.base.BaseFlowTest<Unit, Context, T, F>() {
     fun testWithFlowAndTestContext(
         createFlowInMainScope: Boolean = true,
         retainContextAfterTest: Boolean = false,
-        blockWithContext: FlowTestBlockWithContext<TC, T, F>
+        blockWithContext: FlowTestBlockWithContext<Context, T, F>
     ) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope, retainContextAfterTest, blockWithContext)
 }
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadTest", "com.splendo.kaluga.test.koin.KoinUIThreadTest"))
-abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : com.splendo.kaluga.test.koin.KoinUIThreadTest<TC>() {
+abstract class KoinUIThreadTest<Context : KoinUIThreadTest.KoinTestContext> : com.splendo.kaluga.test.koin.KoinUIThreadTest<Context>() {
     @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadTest.KoinTestContext", "com.splendo.kaluga.test.koin.KoinUIThreadTest"))
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,
@@ -72,11 +72,11 @@ abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : com.spl
 }
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinFlowTestBlock", "com.splendo.kaluga.test.koin.KoinFlowTestBlock"))
-typealias KoinFlowTestBlock<TC, T, F> = suspend KoinFlowTest<TC, T, F>.(F) -> Unit
+typealias KoinFlowTestBlock<Context, T, F> = suspend KoinFlowTest<Context, T, F>.(F) -> Unit
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinFlowTest", "com.splendo.kaluga.test.koin.KoinFlowTest"))
-abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : com.splendo.kaluga.test.koin.BaseKoinFlowTest<Unit, TC, T, F>() {
-    abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
-    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> TC get() {
+abstract class KoinFlowTest<Context : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : com.splendo.kaluga.test.koin.BaseKoinFlowTest<Unit, Context, T, F>() {
+    abstract val createTestContext: suspend (scope: CoroutineScope) -> Context
+    override val createTestContextWithConfiguration: suspend (configuration: Unit, scope: CoroutineScope) -> Context get() {
         val createTestContext = this.createTestContext
         return { _, scope ->
             createTestContext(scope)
@@ -84,22 +84,22 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
     }
 
     @Suppress("TYPEALIAS_EXPANSION_DEPRECATION")
-    fun testWithFlow(block: KoinFlowTestBlock<TC, T, F>) =
+    fun testWithFlow(block: KoinFlowTestBlock<Context, T, F>) =
         super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
             block(this@KoinFlowTest, it)
         }
 }
 
 @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinUIThreadViewModelTest", "com.splendo.kaluga.test.koin.KoinUIThreadViewModelTest"))
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel> :
-    KoinUIThreadTest<KVMC>() {
+abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
+    KoinUIThreadTest<Context>() {
 
     @Deprecated("Moved to test-utils-koin", ReplaceWith("KoinViewModelTestContext", "com.splendo.kaluga.test.koin.KoinUIThreadViewModelTest"))
-    abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
+    abstract class KoinViewModelTestContext<ViewModel : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
-        UIThreadViewModelTest.ViewModelTestContext<VM> {
+        UIThreadViewModelTest.ViewModelTestContext<ViewModel> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,

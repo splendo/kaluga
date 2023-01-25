@@ -31,7 +31,7 @@ interface ComposableLifecycleSubscribable : LifecycleSubscribable {
 }
 
 @Composable
-internal fun <VM : BaseLifecycleViewModel> VM.composableLifecycleSubscribable(): State<List<ComposableLifecycleSubscribable>> = remember {
+internal fun <ViewModel : BaseLifecycleViewModel> ViewModel.composableLifecycleSubscribable(): State<List<ComposableLifecycleSubscribable>> = remember {
     activeLifecycleSubscribables.map { list ->
         list.mapNotNull { it as? ComposableLifecycleSubscribable }
     }
