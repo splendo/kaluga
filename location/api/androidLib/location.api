@@ -111,38 +111,31 @@ public final class com/splendo/kaluga/location/DefaultLocationMonitor : com/sple
 }
 
 public final class com/splendo/kaluga/location/GoogleLocationProvider : com/splendo/kaluga/location/LocationProvider {
-	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings;)V
+	public synthetic fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun location (Lcom/splendo/kaluga/permissions/location/LocationPermission;)Lkotlinx/coroutines/flow/Flow;
 	public fun startMonitoringLocation (Lcom/splendo/kaluga/permissions/location/LocationPermission;)V
 	public fun stopMonitoringLocation (Lcom/splendo/kaluga/permissions/location/LocationPermission;)V
 }
 
-public abstract class com/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType {
-	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Landroid/content/Context;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	protected final fun getContext ()Landroid/content/Context;
-	protected final fun getFusedLocationProviderClient ()Lcom/google/android/gms/location/FusedLocationProviderClient;
-	protected final fun getLocationRequest ()Lcom/google/android/gms/location/LocationRequest;
-	public final fun getLocations ()Lkotlinx/coroutines/flow/Flow;
-	protected final fun getLocationsState ()Lkotlinx/coroutines/flow/MutableStateFlow;
-	public abstract fun startRequestingUpdates ()V
-	public abstract fun stopRequestingUpdates ()V
+public final class com/splendo/kaluga/location/GoogleLocationProvider$Settings {
+	public static final field Companion Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings$Companion;
+	public synthetic fun <init> (JJJLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-UwyO8pc ()J
+	public final fun component2-UwyO8pc ()J
+	public final fun component3-UwyO8pc ()J
+	public final fun copy-WzaCiaA (JJJ)Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings;
+	public static synthetic fun copy-WzaCiaA$default (Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings;JJJILjava/lang/Object;)Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInterval-UwyO8pc ()J
+	public final fun getMaxUpdateDelay-UwyO8pc ()J
+	public final fun getMinUpdateInterval-UwyO8pc ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType$Background : com/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType {
-	public static final field Companion Lcom/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType$Background$Companion;
-	public fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Landroid/content/Context;)V
-	public fun startRequestingUpdates ()V
-	public fun stopRequestingUpdates ()V
-}
-
-public final class com/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType$Background$Companion {
-	public final fun getUpdatingLocationInBackgroundManagers ()Ljava/util/Map;
-}
-
-public final class com/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType$Foreground : com/splendo/kaluga/location/GoogleLocationProvider$FusedLocationProviderClientType {
-	public fun <init> (Lcom/splendo/kaluga/permissions/location/LocationPermission;Landroid/content/Context;)V
-	public fun startRequestingUpdates ()V
-	public fun stopRequestingUpdates ()V
+public final class com/splendo/kaluga/location/GoogleLocationProvider$Settings$Companion {
+	public final fun getDefault ()Lcom/splendo/kaluga/location/GoogleLocationProvider$Settings;
 }
 
 public final class com/splendo/kaluga/location/GoogleLocationUpdatesBroadcastReceiver : android/content/BroadcastReceiver {
