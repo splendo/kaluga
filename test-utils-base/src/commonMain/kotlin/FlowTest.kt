@@ -29,7 +29,6 @@ import com.splendo.kaluga.test.base.BaseUIThreadTest.EmptyTestContext
 import com.splendo.kaluga.test.base.BaseUIThreadTest.TestContext
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
-import kotlinx.atomicfu.updateAndGet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,11 +44,11 @@ import kotlinx.coroutines.withTimeout
 import kotlin.test.AfterTest
 import kotlin.time.Duration.Companion.seconds
 
-typealias TestBlock<TC, T> = suspend TC.(T) -> Unit
+typealias TestBlock<Context, T> = suspend Context.(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
-typealias ScopeActionBlock<TC> = suspend TC.() -> Unit
+typealias ScopeActionBlock<Context> = suspend Context.() -> Unit
 
-typealias FlowTestBlockWithContext<C, TC, T, F> = suspend BaseFlowTest<C, TC, T, F>.(F) -> Unit
+typealias FlowTestBlockWithContext<Configuration, Context, T, F> = suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit
 
 typealias FlowTestBlock<T, F> = suspend FlowTest<T, F>.(F) -> Unit
 
@@ -79,9 +78,9 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
         }
 }
 
-abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
+abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<Configration, Context>(), CoroutineScope by scope {
 
-    abstract val flowFromTestContext: suspend TC.() -> F
+    abstract val flowFromTestContext: suspend Context.() -> F
 
     open val filter: (Flow<T>) -> Flow<T> = { it }
 
@@ -89,8 +88,8 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     var job: Job? = null
 
-    private val testContext = atomic<TC?>(null)
-    private lateinit var testChannel: Channel<Pair<TestBlock<TC, T>, EmptyCompletableDeferred>>
+    private val testContext = atomic<Context?>(null)
+    private lateinit var testChannel: Channel<Pair<TestBlock<Context, T>, EmptyCompletableDeferred>>
 
     @AfterTest
     override fun afterTest() {
@@ -137,13 +136,13 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     }
 
     private var lateflow: F? = null
-    private var lateConfiguration: C? = null
+    private var lateConfiguration: Configration? = null
 
     fun testWithFlowAndTestContext(
-        configuration: C,
+        configuration: Configration,
         createFlowInMainScope: Boolean = true,
         retainContextAfterTest: Boolean = false,
-        blockWithContext: FlowTestBlockWithContext<C, TC, T, F>
+        blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>
     ) {
 
         runBlocking {
@@ -160,12 +159,12 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 val f =
                     if (createFlowInMainScope) {
                         withContext(Dispatchers.Main.immediate) {
-                            (flow(testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!))
+                            (flow(getOrCreateContext { createTestContextWithConfiguration(configuration, scope) }))
                         }
                     } else {
                         flow(
                             withContext(Dispatchers.Main.immediate) {
-                                (testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!)
+                                (getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
                             }
                         )
                     }
@@ -183,7 +182,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     }
 
     @Suppress("SuspendFunctionOnCoroutineScope")
-    private suspend fun startFlow(configuration: C, flow: F) {
+    private suspend fun startFlow(configuration: Configration, flow: F) {
         debug("launch flow scope...")
         val testChannel = testChannel
         val started = EmptyCompletableDeferred()
@@ -193,7 +192,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
-                val testContext = testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!
+                val testContext = getOrCreateContext { createTestContextWithConfiguration(configuration, scope) }
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
                 filter(flow).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
@@ -226,7 +225,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         debug("waited for main thread to be launched")
     }
 
-    suspend fun mainAction(action: ScopeActionBlock<TC>) {
+    suspend fun mainAction(action: ScopeActionBlock<Context>) {
         debug("start mainAction")
         awaitTestBlocks()
         val createTestContextWithConfiguration = createTestContextWithConfiguration
@@ -235,7 +234,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         val configuration = lateConfiguration!!
         withContext(Dispatchers.Main.immediate) {
             debug("in main scope for mainAction")
-            action(testContext.updateAndGet { it ?: createTestContextWithConfiguration(configuration, scope) }!!)
+            action(getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
         }
         debug("did mainAction")
     }
@@ -249,7 +248,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     var firstTestBlock = true
 
-    suspend fun test(skip: Int = 0, test: TestBlock<TC, T>) {
+    suspend fun test(skip: Int = 0, test: TestBlock<Context, T>) {
         if (firstTestBlock) {
             firstTestBlock = false
             debug("first test offered, starting collection")
@@ -268,6 +267,17 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     private suspend fun disposeContext() {
         withContext(Dispatchers.Main.immediate) {
             testContext.getAndUpdate { null }?.dispose()
+        }
+    }
+
+    private suspend fun getOrCreateContext(create: suspend () -> Context): Context {
+        // updateAndGet doesnt work properly on JVM so we built it ourselves
+        while (true) {
+            val currentContext = testContext.value
+            val nextContext = currentContext ?: create()
+            if (testContext.compareAndSet(currentContext, nextContext)) {
+                return nextContext
+            }
         }
     }
 }
