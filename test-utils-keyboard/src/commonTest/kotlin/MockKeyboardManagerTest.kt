@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
 
 class MockKeyboardManagerTest : UIThreadViewModelTest<MockKeyboardManagerTest.TestContext, MockKeyboardManagerTest.ViewModel>() {
 
-    class ViewModel(keyboardManagerBuilder: MockKeyboardManager.Builder<MockFocusHandler>, val focusHandler: MockFocusHandler) : BaseLifecycleViewModel() {
+    class ViewModel(keyboardManagerBuilder: MockKeyboardManager.Builder<MockFocusHandler>, val focusHandler: MockFocusHandler) : BaseLifecycleViewModel(keyboardManagerBuilder) {
 
         val keyboardManager = keyboardManagerBuilder.create(coroutineScope)
 

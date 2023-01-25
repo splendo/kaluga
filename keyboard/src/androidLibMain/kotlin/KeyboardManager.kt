@@ -21,7 +21,7 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +33,7 @@ class ViewKeyboardManager(
 
     class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : BaseKeyboardManager.Builder<ViewFocusHandler>, LifecycleSubscribable by lifecycleManagerObserver {
+    ) : BaseKeyboardManager.Builder<ViewFocusHandler>, ActivityLifecycleSubscribable by lifecycleManagerObserver {
         override fun create(coroutineScope: CoroutineScope) = ViewKeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 

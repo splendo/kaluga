@@ -14,19 +14,18 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.test.architecture
 
-package com.splendo.kaluga.review
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import platform.StoreKit.SKStoreReviewController
+class MockActivityLifecycleSubscriber : ActivityLifecycleSubscribable {
+    override var manager: ActivityLifecycleSubscribable.LifecycleManager? = null
 
-actual class ReviewManager {
-
-    actual class Builder : LifecycleSubscribable {
-        actual fun create() = ReviewManager()
+    override fun subscribe(manager: ActivityLifecycleSubscribable.LifecycleManager) {
+        this.manager = manager
     }
 
-    actual suspend fun attemptToRequestReview() {
-        SKStoreReviewController.requestReview()
+    override fun unsubscribe() {
+        manager = null
     }
 }

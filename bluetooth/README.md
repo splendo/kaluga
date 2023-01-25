@@ -83,7 +83,7 @@ CommonViewModel(bluetoothBuilder)
 ...
 
 // Common code
-class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseViewModel() {
+class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseLifecycleViewModel() {
     private val repo: Bluetooth = bltBuilder.create(
         connectionSettings = ConnectionSettings(
             ConnectionSettings.ReconnectionSettings.Never

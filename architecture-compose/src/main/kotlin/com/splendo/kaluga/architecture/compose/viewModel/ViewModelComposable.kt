@@ -15,19 +15,13 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import com.splendo.kaluga.architecture.compose.activity
 import com.splendo.kaluga.architecture.compose.lifecycle.ComposableLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
-import com.splendo.kaluga.architecture.lifecycle.subscribe
+import com.splendo.kaluga.architecture.compose.lifecycle.composableLifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
-import kotlin.reflect.KVisibility
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.starProjectedType
+import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribableManager
 
 /**
- * Composable which manages [viewModel] lifecycle and binds to all its publically exposed [LifecycleSubscribable].
+ * Composable which manages [viewModel] lifecycle and binds to all its [BaseLifecycleViewModel.activeLifecycleSubscribables].
  * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
  * @param viewModel [BaseLifecycleViewModel] to manage
  * @param content content based on [viewModel]
@@ -43,10 +37,10 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
 }
 
 /**
- * Composable which manages [viewModel] lifecycle and binds to all its [LifecycleSubscribable] using [fragmentManager].
+ * Composable which manages [viewModel] lifecycle and binds to all its [ActivityLifecycleSubscribable] using [fragmentManager].
  * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
  * @param viewModel [BaseLifecycleViewModel] to manage
- * @param fragmentManager The [FragmentManager] to bind to all [LifecycleSubscribable] publically exposed by the [viewModel].
+ * @param fragmentManager The [FragmentManager] to bind to all [ActivityLifecycleSubscribable] in [BaseLifecycleViewModel.activeLifecycleSubscribables].
  * @param content content based on [viewModel]
  */
 @Composable
@@ -67,17 +61,15 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     viewModel.linkLifecycle(activity, fragmentManager)
 
     // Get a List of all ComposableLifecycleSubscribable of the viewModel.
-    // Since these are static properties, a remember can be used.
-    val composeLifecycleSubscribables = remember(viewModel) {
-        viewModel.ComposableLifecycleSubscribable
-    }
+    val composeLifecycleSubscribables = viewModel.composableLifecycleSubscribable()
+
     // If no ComposableLifecycleSubscribable available, just show content
-    if (composeLifecycleSubscribables.isEmpty()) {
+    if (composeLifecycleSubscribables.value.isEmpty()) {
         content?.invoke(viewModel)
     } else {
         // Otherwise, modify the content using the modifier of all ComposableLifecycleSubscribable
         // Reduce right so the first ComposableLifecycleSubscribable acts as the first modifier (since we're wrapping)
-        val modifier = composeLifecycleSubscribables.reduceRight { new, acc ->
+        val modifier = composeLifecycleSubscribables.value.reduceRight { new, acc ->
             object : ComposableLifecycleSubscribable {
                 override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = { modifiedContent ->
                     new.modifier(this) { acc.modifier(this, modifiedContent) }
@@ -97,7 +89,7 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     "Does not work for configuration changes (e.g. rotation).",
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
-fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
+fun <ViewModel : BaseLifecycleViewModel> store(provider: @Composable () -> ViewModel): ViewModel =
     provider().also { handleLocalViewModelStore(it) }
 
 /**
@@ -111,7 +103,7 @@ fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
 @Suppress("Deprecation")
-fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> VM): VM = store {
+fun <ViewModel : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> ViewModel): ViewModel = store {
     remember(provider)
 }
 
@@ -126,12 +118,12 @@ fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposable
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
 @Suppress("Deprecation")
-fun <VM : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> VM): VM = store {
+fun <ViewModel : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> ViewModel): ViewModel = store {
     remember(key, provider)
 }
 
 @Composable
-private fun <VM : BaseLifecycleViewModel> handleLocalViewModelStore(viewModel: VM): VM {
+private fun <ViewModel : BaseLifecycleViewModel> handleLocalViewModelStore(viewModel: ViewModel): ViewModel {
     // we delegate VM cleanup to the ViewModelStore, which lives in scope of the current @Composable
     val viewModelStoreOwner = rememberComposableViewModelStoreOwner(viewModel)
 
@@ -168,7 +160,7 @@ private fun rememberComposableViewModelStoreOwner(viewModel: BaseLifecycleViewMo
 }
 
 @Composable
-private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(activity: AppCompatActivity?, fragmentManager: FragmentManager): VM {
+private fun <ViewModel : BaseLifecycleViewModel> ViewModel.linkLifecycle(activity: AppCompatActivity?, fragmentManager: FragmentManager): ViewModel {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(Unit) {
         val observer = VmObserver(this@linkLifecycle, activity, fragmentManager)
@@ -182,23 +174,13 @@ private fun <VM : BaseLifecycleViewModel> VM.linkLifecycle(activity: AppCompatAc
     return this
 }
 
-private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM, private val activity: AppCompatActivity?, private val fragmentManager: FragmentManager) : DefaultLifecycleObserver {
+private class VmObserver<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, activity: AppCompatActivity?, fragmentManager: FragmentManager) : DefaultLifecycleObserver {
+
+    private val manager = LifecycleSubscribableManager(viewModel, activity, fragmentManager)
     private var resumed = false
 
-    private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
-        @Suppress("UNCHECKED_CAST")
-        viewModel::class.memberProperties
-            .filter { it !is KMutableProperty1 }
-            .mapNotNull { it as? KProperty1<VM, Any?> }
-            .filter {
-                it.getter.visibility == KVisibility.PUBLIC &&
-                    it.getter.returnType.isSubtypeOf(LifecycleSubscribableMarker::class.starProjectedType)
-            }
-            .mapNotNull { it.getter(viewModel) as? LifecycleSubscribable }
-    }
-
     override fun onCreate(owner: LifecycleOwner) {
-        lifecycleSubscribables.forEach { it.subscribe(activity, owner, fragmentManager) }
+        manager.onCreate(owner)
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -212,6 +194,6 @@ private class VmObserver<VM : BaseLifecycleViewModel>(private val viewModel: VM,
         if (resumed) {
             viewModel.didPause()
         }
-        lifecycleSubscribables.forEach { it.unsubscribe() }
+        manager.onDestroy()
     }
 }

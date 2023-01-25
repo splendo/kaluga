@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,18 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test.architecture
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+package com.splendo.kaluga.architecture.lifecycle
 
-class MockLifecycleSubscriber : LifecycleSubscribable {
-    override var manager: LifecycleSubscribable.LifecycleManager? = null
-
-    override fun subscribe(manager: LifecycleSubscribable.LifecycleManager) {
-        this.manager = manager
-    }
-
-    override fun unsubscribe() {
-        manager = null
-    }
-}
+actual interface LifecycleSubscribable

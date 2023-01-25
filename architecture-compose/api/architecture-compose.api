@@ -7,7 +7,7 @@ public final class com/splendo/kaluga/architecture/compose/ObservablesKt {
 	public static final fun state (Lcom/splendo/kaluga/architecture/observable/WithState;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
-public abstract interface class com/splendo/kaluga/architecture/compose/lifecycle/ComposableLifecycleSubscribable : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract interface class com/splendo/kaluga/architecture/compose/lifecycle/ComposableLifecycleSubscribable : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public abstract fun getModifier ()Lkotlin/jvm/functions/Function4;
 }
 
@@ -275,7 +275,7 @@ public final class com/splendo/kaluga/architecture/compose/navigation/NavHostRou
 
 public final class com/splendo/kaluga/architecture/compose/navigation/NavigationExtensionsKt {
 	public static final fun HardwareBackButtonNavigation (Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)V
-	public static final fun bind (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;
+	public static final fun bind (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;
 }
 
 public abstract class com/splendo/kaluga/architecture/compose/navigation/ProvidingNavHostComposableNavigator : com/splendo/kaluga/architecture/compose/navigation/ComposableNavigator {

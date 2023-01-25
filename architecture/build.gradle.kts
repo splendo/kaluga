@@ -11,7 +11,6 @@ plugins {
 publishableComponent()
 
 dependencies {
-    api("org.jetbrains.kotlin:kotlin-reflect:${Library.kotlinVersion}")
     apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)
     apiDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
     apiDependency(Dependencies.AndroidX.Lifecycle.LiveData)

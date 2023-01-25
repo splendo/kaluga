@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder) : BaseLifecycleViewModel() {
+class DateTimePickerViewModel(private val dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder) : BaseLifecycleViewModel(dateTimePickerPresenterBuilder) {
 
     companion object {
         private val formatter = KalugaDateFormatter.dateTimeFormat(DateFormatStyle.Long, DateFormatStyle.Long)

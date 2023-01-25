@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.link
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
@@ -42,9 +42,9 @@ sealed class BrowserNavigationActions<T>(value: T, type: NavigationBundleSpecTyp
 
 class LinksViewModel(
     linkRepoBuilder: LinksBuilder,
-    val builder: AlertPresenter.Builder,
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
     navigator: Navigator<BrowserNavigationActions<*>>
-) : NavigatingViewModel<BrowserNavigationActions<*>>(navigator) {
+) : NavigatingViewModel<BrowserNavigationActions<*>>(navigator, alertPresenterBuilder) {
 
     val browserButtonText = observableOf("browser_button_text".localized())
     val linksInstructions = observableOf("links_instructions".localized())
@@ -54,7 +54,7 @@ class LinksViewModel(
     fun showAlert(title: String, message: String, style: Alert.Action.Style) {
         coroutineScope.launch {
             val action = Alert.Action("Ok", style)
-            val alert = builder.buildAlert(this) {
+            val alert = alertPresenterBuilder.buildAlert(this) {
                 setTitle(title)
                 setMessage(message)
                 addActions(action)

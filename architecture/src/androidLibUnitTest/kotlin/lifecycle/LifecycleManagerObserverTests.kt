@@ -24,7 +24,6 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertNull
 import org.junit.Before
@@ -51,13 +50,13 @@ class LifecycleManagerObserverTests : BaseTest() {
     @Test
     fun testLifecycleManagerObserverHandlerCalled() = runBlocking {
         val observer = LifecycleManagerObserver()
-        val data: LifecycleSubscribable.LifecycleManager? = LifecycleSubscribable.LifecycleManager(
+        val data: ActivityLifecycleSubscribable.LifecycleManager? = ActivityLifecycleSubscribable.LifecycleManager(
             activity,
             lifecycleOwner,
             fragmentManager
         )
 
-        val deferredLifecycleManager = MutableList(3) { CompletableDeferred<LifecycleSubscribable.LifecycleManager?>() }
+        val deferredLifecycleManager = MutableList(3) { CompletableDeferred<ActivityLifecycleSubscribable.LifecycleManager?>() }
         val job = launch(Dispatchers.Main) {
             observer.managerState.collect { context ->
                 deferredLifecycleManager.firstOrNull { !it.isCompleted }?.complete(context)

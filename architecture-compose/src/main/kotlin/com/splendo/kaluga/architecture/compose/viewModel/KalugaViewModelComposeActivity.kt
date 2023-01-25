@@ -31,10 +31,10 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 val LocalAppCompatActivity = staticCompositionLocalOf<AppCompatActivity?> { null }
 
 /**
- * An implementation of [AppCompatActivity] which creates a [VM] and renders it using [ViewModelComposable].
+ * An implementation of [AppCompatActivity] which creates a [ViewModel] and renders it using [ViewModelComposable].
  * Also provides a reference to this [AppCompatActivity] using [LocalAppCompatActivity].
  */
-abstract class KalugaViewModelComposeActivity<VM : BaseLifecycleViewModel> : AppCompatActivity() {
+abstract class KalugaViewModelComposeActivity<ViewModel : BaseLifecycleViewModel> : AppCompatActivity() {
 
     @SuppressLint("MissingSuperCall") // Lint bug
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,14 +62,14 @@ abstract class KalugaViewModelComposeActivity<VM : BaseLifecycleViewModel> : App
     }
 
     /**
-     * Creates the [VM]. Vms should be stores so they can be retained, e.g using [androidx.lifecycle.viewmodel.compose.viewModel]
+     * Creates the [ViewModel]. Vms should be stores so they can be retained, e.g using [androidx.lifecycle.viewmodel.compose.viewModel]
      */
     @Composable
-    protected abstract fun createViewModel(): VM
+    protected abstract fun createViewModel(): ViewModel
 
     /**
-     * Creates the layout associated with a [VM]
+     * Creates the layout associated with a [ViewModel]
      */
     @Composable
-    protected abstract fun VM.Layout()
+    protected abstract fun ViewModel.Layout()
 }

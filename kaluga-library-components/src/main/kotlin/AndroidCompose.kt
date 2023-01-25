@@ -37,5 +37,7 @@ fun org.gradle.api.Project.composeAndroidComponent() {
         }
     }
 
+    ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
+
     publish(ComponentType.Compose)
 }

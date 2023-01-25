@@ -25,12 +25,12 @@ import android.provider.MediaStore
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscriber
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribableMarker {
-    actual fun navigate(action: A)
+actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: Action)
 }
 
 object MissingLifecycleManagerNavigationException : NavigationException("LifecycleManager not attached")
@@ -42,9 +42,9 @@ object MissingActivityNavigationException : NavigationException("LifecycleManage
  * Requires to be subscribed to an activity via [subscribe] to work
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) : Navigator<A>, LifecycleSubscribable by LifecycleSubscriber() {
+class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action>, ActivityLifecycleSubscribable by ActivityLifecycleSubscriber() {
 
-    override fun navigate(action: A) {
+    override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 

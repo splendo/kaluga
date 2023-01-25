@@ -19,11 +19,11 @@ public final class com/splendo/kaluga/test/architecture/BuildConfig {
 	public fun <init> ()V
 }
 
-public final class com/splendo/kaluga/test/architecture/MockLifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+public final class com/splendo/kaluga/test/architecture/MockActivityLifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable {
 	public fun <init> ()V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 

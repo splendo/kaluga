@@ -24,11 +24,11 @@ import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 
-abstract class ViewModelTest<VM : LifecycleViewModel> : BaseTest() {
+abstract class ViewModelTest<ViewModel : LifecycleViewModel> : BaseTest() {
 
-    lateinit var viewModel: VM
+    lateinit var viewModel: ViewModel
 
-    protected abstract fun createViewModel(): VM
+    protected abstract fun createViewModel(): ViewModel
 
     @BeforeTest
     override fun beforeTest() {
@@ -37,54 +37,54 @@ abstract class ViewModelTest<VM : LifecycleViewModel> : BaseTest() {
     }
 }
 
-abstract class SimpleUIThreadViewModelTest<VM : LifecycleViewModel> :
-    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>() {
+abstract class SimpleUIThreadViewModelTest<ViewModel : LifecycleViewModel> :
+    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel>() {
 
-    override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<VM> =
+    override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<ViewModel> =
         { LazyViewModelTestContext(it, ::createViewModel) }
 
-    abstract fun createViewModel(): VM
+    abstract fun createViewModel(): ViewModel
 }
 
 /**
  * A [UIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : LifecycleViewModel>() :
-    UIThreadTest<VMC>() {
+abstract class UIThreadViewModelTest<Context : UIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel>() :
+    UIThreadTest<Context>() {
 
     /**
      * [ViewModelTestContext] that lazily creates the view model
      * @param coroutineScope The [CoroutineScope] of the [LazyViewModelTestContext]
      * @param createViewModel Creator for the [LifecycleViewModel]
      */
-    open class LazyViewModelTestContext<VM : LifecycleViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) : BaseUIThreadViewModelTest.LazyViewModelTestContext<VM>(coroutineScope, createViewModel), ViewModelTestContext<VM>
+    open class LazyViewModelTestContext<ViewModel : LifecycleViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> ViewModel) : BaseUIThreadViewModelTest.LazyViewModelTestContext<ViewModel>(coroutineScope, createViewModel), ViewModelTestContext<ViewModel>
 
     /**
      * A [UIThreadTest.TestContext] that provides a [LifecycleViewModel]
      */
-    interface ViewModelTestContext<VM : LifecycleViewModel> : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, TestContext
+    interface ViewModelTestContext<ViewModel : LifecycleViewModel> : BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel>, TestContext
 }
 
 /**
  * A [BaseUIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class BaseUIThreadViewModelTest<C, VMC : BaseUIThreadViewModelTest.ViewModelTestContext<VM>, VM : LifecycleViewModel>() :
-    BaseUIThreadTest<C, VMC>() {
+abstract class BaseUIThreadViewModelTest<Configuration, Context : BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
+    BaseUIThreadTest<Configuration, Context>() {
 
     /**
      * [ViewModelTestContext] that lazily creates the view model
      * @param coroutineScope The [CoroutineScope] of the [LazyViewModelTestContext]
      * @param createViewModel Creator for the [LifecycleViewModel]
      */
-    open class LazyViewModelTestContext<VM : LifecycleViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
-        ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
-        override val viewModel: VM by lazy { createViewModel() }
+    open class LazyViewModelTestContext<ViewModel : LifecycleViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> ViewModel) :
+        ViewModelTestContext<ViewModel>, CoroutineScope by coroutineScope {
+        override val viewModel: ViewModel by lazy { createViewModel() }
     }
 
     /**
      * A [BaseUIThreadTest.TestContext] that provides a [LifecycleViewModel]
      */
-    interface ViewModelTestContext<VM : LifecycleViewModel> : TestContext {
-        val viewModel: VM
+    interface ViewModelTestContext<ViewModel : LifecycleViewModel> : TestContext {
+        val viewModel: ViewModel
     }
 }

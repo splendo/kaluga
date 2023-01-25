@@ -21,4 +21,8 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
 class AlertsViewModel : BaseLifecycleViewModel() {
     val alertBuilder = AlertPresenter.Builder()
+
+    init {
+        addLifecycleSubscribables(alertBuilder)
+    }
 }

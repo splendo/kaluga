@@ -24,7 +24,7 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.utils.KalugaDate
@@ -44,7 +44,7 @@ actual class DateTimePickerPresenter(
     actual class Builder(
         private val themeResourceId: Int = 0,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : BaseDateTimePickerPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
+    ) : BaseDateTimePickerPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
         actual override fun create(
             dateTimePicker: DateTimePicker,
             coroutineScope: CoroutineScope

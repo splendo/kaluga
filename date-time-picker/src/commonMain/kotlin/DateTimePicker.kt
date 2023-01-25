@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.datetimepicker
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
@@ -149,7 +149,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
      *
      * @see [DateTimePickerPresenter.Builder]
      */
-    abstract class Builder : LifecycleSubscribableMarker {
+    abstract class Builder : LifecycleSubscribable {
 
         /**
          * Creates the [BaseDateTimePickerPresenter] described by this builder.

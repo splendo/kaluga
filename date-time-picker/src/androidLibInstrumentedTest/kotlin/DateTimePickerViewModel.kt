@@ -21,4 +21,8 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
 class DateTimePickerViewModel : BaseLifecycleViewModel() {
     val dateTimePickerBuilder = DateTimePickerPresenter.Builder()
+
+    init {
+        addLifecycleSubscribables(dateTimePickerBuilder)
+    }
 }

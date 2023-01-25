@@ -22,4 +22,8 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 open class HudViewModel : BaseLifecycleViewModel() {
 
     val builder = HUD.Builder()
+
+    init {
+        addLifecycleSubscribables(builder)
+    }
 }
