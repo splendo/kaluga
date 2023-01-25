@@ -25,8 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BluetoothServiceItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothServiceViewModel
 
-object ServicesBinding {
-
+object ServiceBinding {
     @BindingAdapter("services")
     @JvmStatic
     fun bindServices(view: RecyclerView, services: List<BluetoothServiceViewModel>?) {

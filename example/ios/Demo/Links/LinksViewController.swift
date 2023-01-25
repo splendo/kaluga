@@ -19,13 +19,17 @@ import Foundation
 import UIKit
 import KalugaExampleShared
 
-class LinksViewController : UIViewController {
+class LinksViewController: UIViewController {
     
     @IBOutlet weak var browserButton: UIButton!
     @IBOutlet weak var instructionsText: UILabel!
 
     private lazy var navigator: ViewControllerNavigator<BrowserNavigationActions<AnyObject>> = BrowserNavigatorKt.BrowserNavigator(parent: self)
-    private lazy var viewModel: LinksViewModel = LinksViewModel(linkRepoBuilder: LinksLinksBuilder(), builder: AlertPresenter.Builder(viewController: self), navigator: navigator)
+    private lazy var viewModel = LinksViewModel(
+        linkRepoBuilder: LinksLinksBuilder(),
+        builder: AlertPresenter.Builder(viewController: self),
+        navigator: navigator
+    )
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -34,6 +38,8 @@ class LinksViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_links".localized()
         
         lifecycleManager = viewModel.addLifecycleManager(parent: self) {
             [

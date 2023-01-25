@@ -24,13 +24,22 @@ import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.alerts.buildAlertWithInput
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel() {
 
-    fun showAlert() {
+    companion object {
+        private val dismissTime: Duration = 3.seconds
+    }
+
+    val showAlertButton = KalugaButton.Plain("show_alert".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
             val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
@@ -46,22 +55,22 @@ class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseLifecycleVie
         }
     }
 
-    fun showAndDismissAfter(timeSecs: Long) {
+    val showAndDismissAfter3SecondsButton = KalugaButton.Plain("dismissible_alert".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             val job = launch {
                 builder.buildAlert(coroutineScope) {
-                    setTitle("Wait for $timeSecs sec...")
+                    setTitle("Wait for ${dismissTime.inWholeSeconds} sec...")
                     setPositiveButton("OK")
                 }.show()
             }
             launch {
-                delay(timeSecs * 1_000)
+                delay(dismissTime)
                 job.cancel()
             }
         }
     }
 
-    fun showAlertWithInput() {
+    val showAlertWithInputButton = KalugaButton.Plain("alert_input".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
             val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
@@ -80,7 +89,7 @@ class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseLifecycleVie
         }
     }
 
-    fun showAlertWithList() {
+    val showAlertWithListButton = KalugaButton.Plain("alert_list".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             builder.buildActionSheet(this) {
                 setTitle("Select an option")

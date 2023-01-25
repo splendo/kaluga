@@ -18,9 +18,11 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.converter.ScientificConverterException
 import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.length.times
+import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.unit.Decimeter
 import com.splendo.kaluga.scientific.unit.Hectogram
 import com.splendo.kaluga.scientific.unit.Hertz
@@ -30,6 +32,7 @@ import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ScientificValueTest {
 
@@ -52,5 +55,9 @@ class ScientificValueTest {
         assertEquals(0.5(Hertz), 1.0 / 2(Second))
         assertEquals(3(Kilogram), 9(Kilogram) / 30(Hectogram))
         assertEquals(3(Kilogram), 9(Kilogram) / 3)
+
+        assertFailsWith<ScientificConverterException> { 1(Kilogram) / 0(Kilogram) }
+        assertFailsWith<ScientificConverterException> { 1(Kilogram) / 0 }
+        assertFailsWith<ScientificConverterException> { 0(Second).frequency() }
     }
 }

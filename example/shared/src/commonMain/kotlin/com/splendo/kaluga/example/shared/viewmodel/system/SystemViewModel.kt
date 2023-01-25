@@ -36,7 +36,7 @@ class SystemViewModel(
     navigator: Navigator<SystemNavigationActions>
 ) : NavigatingViewModel<SystemNavigationActions>(navigator) {
 
-    val modules =
+    val systemFeatures =
         observableOf(
             listOf(
                 SystemFeatures.Network

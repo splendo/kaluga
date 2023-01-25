@@ -26,22 +26,28 @@ import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.CloseDetailsNavigation
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputNavigation
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetails
+import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.datetime.TimerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.hud.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
@@ -53,18 +59,23 @@ import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterViewModel
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionAction
+import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.keyboard.FocusHandler
-import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -88,6 +99,10 @@ internal val androidModule = module {
         )
     }
 
+    viewModel { (navigator: Navigator<ComposeOrXMLNavigationAction>) ->
+        ComposeOrXMLSelectionViewModel(navigator)
+    }
+
     viewModel { (navigator: Navigator<PermissionsListNavigationAction>) ->
         PermissionsListViewModel(navigator)
     }
@@ -96,19 +111,31 @@ internal val androidModule = module {
 
     viewModel { (permission: LocationPermission) -> LocationViewModel(permission) }
 
-    viewModel { (navigator: Navigator<InputNavigation>) ->
-        ArchitectureInputViewModel(navigator)
+    viewModel { (navigator: Navigator<ArchitectureNavigationAction<*>>) ->
+        ArchitectureViewModel(navigator)
     }
 
-    viewModel { (initialDetail: InputDetails, navigator: Navigator<CloseDetailsNavigation>) ->
+    viewModel { (initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) ->
         ArchitectureDetailsViewModel(
             initialDetail,
             navigator
         )
     }
 
+    viewModel { (navigator: Navigator<BottomSheetNavigation>) ->
+        BottomSheetViewModel(navigator)
+    }
+
+    viewModel { (navigator: Navigator<BottomSheetSubPageNavigation>) ->
+        BottomSheetSubPageViewModel(navigator)
+    }
+
     viewModel {
         AlertViewModel(AlertPresenter.Builder())
+    }
+
+    viewModel {
+        TimerViewModel()
     }
 
     viewModel {
@@ -117,10 +144,6 @@ internal val androidModule = module {
 
     viewModel {
         HudViewModel(HUD.Builder())
-    }
-
-    viewModel { (keyboardBuilder: KeyboardManager.Builder, focusHandler: FocusHandler) ->
-        KeyboardViewModel(keyboardBuilder, focusHandler)
     }
 
     viewModel { (navigator: Navigator<BrowserNavigationActions<*>>) ->
@@ -167,6 +190,18 @@ internal val androidModule = module {
 
     viewModel {
         ButtonViewModel(StyledStringBuilder.Provider(), AlertPresenter.Builder())
+    }
+
+    viewModel { (navigator: Navigator<ScientificNavigationAction<*>>) ->
+        ScientificViewModel(AlertPresenter.Builder(), navigator)
+    }
+
+    viewModel { (quantity: PhysicalQuantity, navigator: Navigator<ScientificUnitSelectionAction<*>>) ->
+        ScientificUnitSelectionViewModel(quantity, navigator)
+    }
+
+    viewModel { (arguments: ScientificConverterViewModel.Arguments, navigator: Navigator<ScientificConverterNavigationAction<*>>) ->
+        ScientificConverterViewModel(arguments, navigator)
     }
 }
 

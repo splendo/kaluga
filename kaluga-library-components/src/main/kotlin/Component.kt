@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTes
 sealed class ComponentType {
     object Default : ComponentType()
     object Compose : ComponentType()
+    object DataBinding : ComponentType()
 }
 
 fun Project.commonComponent(iosExport: (Framework.() -> Unit)? = null) {

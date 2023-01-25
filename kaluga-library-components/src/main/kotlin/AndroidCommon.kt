@@ -71,8 +71,12 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         getByName("main") {
             manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
             res.srcDir("src/androidLibMain/res")
-            if (componentType is ComponentType.Compose) {
-                java.srcDir("src/androidLibMain/kotlin")
+            when (componentType) {
+                is ComponentType.Compose,
+                is ComponentType.DataBinding -> {
+                    java.srcDir("src/androidLibMain/kotlin")
+                }
+                is ComponentType.Default -> {}
             }
         }
         getByName("androidTest") {
@@ -104,6 +108,14 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
             }
             composeOptions {
                 kotlinCompilerExtensionVersion = LibraryImpl.Android.composeCompiler
+            }
+        }
+        is ComponentType.DataBinding -> {
+            project.logger.lifecycle("This project module is a Databinding only module")
+            buildFeatures {
+                dataBinding {
+                    enable = true
+                }
             }
         }
         is ComponentType.Default-> {}

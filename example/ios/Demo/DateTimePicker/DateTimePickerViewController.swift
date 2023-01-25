@@ -18,9 +18,12 @@
 import UIKit
 import KalugaExampleShared
 
-class DateTimePickerViewController : UIViewController {
-    
+class DateTimePickerViewController: UIViewController {
+
+    @IBOutlet private var currentTimeLabel: UILabel!
     @IBOutlet private var timeLabel: UILabel!
+    @IBOutlet private var dateButton: UIButton!
+    @IBOutlet private var timeButton: UIButton!
     
     lazy var viewModel = DateTimePickerViewModel(dateTimePickerPresenterBuilder: DateTimePickerPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
@@ -32,25 +35,21 @@ class DateTimePickerViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "feature_date_time_picker".localized()
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else {
                 return []
             }
             return [
-                viewModel.dateLabel.observe { (time) in
+                viewModel.dateLabel.observe { time in
                     self?.timeLabel.text = time as? String
                 }
             ]
         }
-    }
 
-    @IBAction
-    func selectDatePressed() {
-        viewModel.onSelectDatePressed()
-    }
-
-    @IBAction
-    func selectTimePressed() {
-        viewModel.onSelectTimePressed()
+        currentTimeLabel.text = viewModel.currentTimeTitle
+        ButtonStyleKt.bindButton(dateButton, button: viewModel.selectDateButton)
+        ButtonStyleKt.bindButton(timeButton, button: viewModel.selectTimeButton)
     }
 }

@@ -18,13 +18,13 @@
 package com.splendo.kaluga.resources.compose
 
 import androidx.compose.ui.text.style.TextAlign
-import com.splendo.kaluga.resources.stylable.TextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 
-val TextAlignment.composable: TextAlign
+val KalugaTextAlignment.composable: TextAlign
     get() = when (this) {
-        TextAlignment.CENTER -> TextAlign.Center
-        TextAlignment.LEFT -> TextAlign.Left
-        TextAlignment.START -> TextAlign.Start
-        TextAlignment.END -> TextAlign.End
-        TextAlignment.RIGHT -> TextAlign.Right
+        KalugaTextAlignment.CENTER -> TextAlign.Center
+        KalugaTextAlignment.LEFT -> TextAlign.Left
+        KalugaTextAlignment.START -> TextAlign.Start
+        KalugaTextAlignment.END -> TextAlign.End
+        KalugaTextAlignment.RIGHT -> TextAlign.Right
     }

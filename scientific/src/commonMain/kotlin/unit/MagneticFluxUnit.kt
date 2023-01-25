@@ -49,25 +49,28 @@ object Weber : MagneticFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperia
 }
 
 @Serializable
-object Nanoweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Nano(Weber)
+sealed class WeberMultiple : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber>
+
 @Serializable
-object Microweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Micro(Weber)
+object Nanoweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Nano(Weber)
 @Serializable
-object Milliweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Milli(Weber)
+object Microweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Micro(Weber)
 @Serializable
-object Centiweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Centi(Weber)
+object Milliweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Milli(Weber)
 @Serializable
-object Deciweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Deci(Weber)
+object Centiweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Centi(Weber)
 @Serializable
-object Decaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Deca(Weber)
+object Deciweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Deci(Weber)
 @Serializable
-object Hectoweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Hecto(Weber)
+object Decaweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Deca(Weber)
 @Serializable
-object Kiloweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Kilo(Weber)
+object Hectoweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Hecto(Weber)
 @Serializable
-object Megaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Mega(Weber)
+object Kiloweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Kilo(Weber)
 @Serializable
-object Gigaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Giga(Weber)
+object Megaweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Mega(Weber)
+@Serializable
+object Gigaweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Giga(Weber)
 @Serializable
 object Maxwell : MagneticFlux() {
     override val symbol = "Mx"

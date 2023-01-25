@@ -73,3 +73,5 @@ projectFilesBackup*/
 google-services.json
 
 *.framework
+
+example/ios/Generated/

@@ -103,28 +103,31 @@ object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQ
 }
 
 @Serializable
-object Nanogram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Nano(Gram)
-@Serializable
-object Microgram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Micro(Gram)
-@Serializable
-object Milligram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Milli(Gram)
-@Serializable
-object Centigram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Centi(Gram)
-@Serializable
-object Decigram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deci(Gram)
-@Serializable
-object Decagram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deca(Gram)
-@Serializable
-object Hectogram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Hecto(Gram)
-@Serializable
-object Kilogram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Kilo(Gram)
-@Serializable
-object Megagram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram)
-@Serializable
-object Gigagram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Giga(Gram)
+sealed class GramMultiple : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram>
 
 @Serializable
-object Tonne : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram) {
+object Nanogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Nano(Gram)
+@Serializable
+object Microgram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Micro(Gram)
+@Serializable
+object Milligram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Milli(Gram)
+@Serializable
+object Centigram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Centi(Gram)
+@Serializable
+object Decigram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deci(Gram)
+@Serializable
+object Decagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deca(Gram)
+@Serializable
+object Hectogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Hecto(Gram)
+@Serializable
+object Kilogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Kilo(Gram)
+@Serializable
+object Megagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram)
+@Serializable
+object Gigagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Giga(Gram)
+
+@Serializable
+object Tonne : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram) {
     override val symbol: String = "t"
 }
 
@@ -138,25 +141,28 @@ object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, Physica
 }
 
 @Serializable
-object Nanodalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Nano(Dalton)
+sealed class DaltonMultiple : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton>
+
 @Serializable
-object Microdalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Micro(Dalton)
+object Nanodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Nano(Dalton)
 @Serializable
-object Millidalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Milli(Dalton)
+object Microdalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Micro(Dalton)
 @Serializable
-object Centidalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Centi(Dalton)
+object Millidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Milli(Dalton)
 @Serializable
-object Decidalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deci(Dalton)
+object Centidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Centi(Dalton)
 @Serializable
-object Decadalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deca(Dalton)
+object Decidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deci(Dalton)
 @Serializable
-object HectoDalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Hecto(Dalton)
+object Decadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deca(Dalton)
 @Serializable
-object Kilodalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Kilo(Dalton)
+object HectoDalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Hecto(Dalton)
 @Serializable
-object Megadalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Mega(Dalton)
+object Kilodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Kilo(Dalton)
 @Serializable
-object Gigadalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Giga(Dalton)
+object Megadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Mega(Dalton)
+@Serializable
+object Gigadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Giga(Dalton)
 
 // Imperial Weight
 @Serializable

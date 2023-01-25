@@ -21,11 +21,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 
-abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KTC>() {
+abstract class KeyboardManagerTests<FH : FocusHandler, KTC : KeyboardTestContext<FH>> : UIThreadTest<KTC>() {
 
-    abstract class KeyboardTestContext : TestContext, CoroutineScope {
-        abstract val builder: KeyboardManager.Builder
-        abstract val focusHandler: FocusHandler
+    abstract class KeyboardTestContext<FH : FocusHandler> : TestContext, CoroutineScope {
+        abstract val builder: BaseKeyboardManager.Builder<FH>
+        abstract val focusHandler: FH
 
         abstract fun verifyShow()
         abstract fun verifyDismiss()

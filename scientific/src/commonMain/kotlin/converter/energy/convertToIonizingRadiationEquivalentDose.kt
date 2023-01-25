@@ -22,9 +22,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose.equivalentDose
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.ErgMultiple
 import com.splendo.kaluga.scientific.unit.Gram
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
 import com.splendo.kaluga.scientific.unit.Sievert
 import com.splendo.kaluga.scientific.unit.Weight
@@ -35,7 +34,7 @@ infix fun ScientificValue<PhysicalQuantity.Energy, Erg>.equivalentDoseBy(gram: S
     RoentgenEquivalentMan.equivalentDose(this, gram)
 
 @JvmName("ergMultipleEquivalentDoseByGram")
-infix fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.equivalentDoseBy(gram: ScientificValue<PhysicalQuantity.Weight, Gram>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.equivalentDoseBy(gram: ScientificValue<PhysicalQuantity.Weight, Gram>) =
     RoentgenEquivalentMan.equivalentDose(this, gram)
 
 @JvmName("energyEquivalentDoseByWeight")

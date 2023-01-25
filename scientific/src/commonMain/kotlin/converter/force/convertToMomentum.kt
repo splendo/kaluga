@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.momentum.momentum
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.Grain
@@ -32,10 +33,8 @@ import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialTon
 import com.splendo.kaluga.scientific.unit.ImperialTonForce
 import com.splendo.kaluga.scientific.unit.Kilogram
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.MetricForce
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Milligram
 import com.splendo.kaluga.scientific.unit.MilligramForce
 import com.splendo.kaluga.scientific.unit.Ounce
@@ -59,10 +58,9 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, Dyn
     (Gram x (Centimeter per Second)).momentum(this, time)
 
 @JvmName("dyneMultipleTimesTime")
-infix operator fun <DyneUnit, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(
+infix operator fun <DyneUnit : DyneMultiple, TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
-) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    (Gram x (Centimeter per Second)).momentum(this, time)
+) = (Gram x (Centimeter per Second)).momentum(this, time)
 
 @JvmName("tonneForceTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Force, TonneForce>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =

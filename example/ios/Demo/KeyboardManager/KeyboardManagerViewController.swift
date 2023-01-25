@@ -18,14 +18,19 @@
 import UIKit
 import KalugaExampleShared
 
-class KeyboardManagerViewController : UIViewController {
+class KeyboardManagerViewController: UIViewController {
     
     @IBOutlet private var editField: UITextField!
+    @IBOutlet private var showButton: UIButton!
+    @IBOutlet private var hideButton: UIButton!
     
     private lazy var editFieldFocusHandler = {
-        return UIKitFocusHandler(view: self.editField)
+        UIKitFocusHandler(view: self.editField)
     }()
-    lazy var viewModel = KeyboardViewModel(keyboardManagerBuilder: KeyboardManager.Builder(application: UIApplication.shared), editFieldFocusHandler: editFieldFocusHandler)
+    lazy var viewModel = KeyboardViewModel(
+        keyboardManagerBuilder: UIKitKeyboardManager.Builder(application: UIApplication.shared),
+        editFieldFocusHandler: editFieldFocusHandler
+    )
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -35,16 +40,10 @@ class KeyboardManagerViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self) { return [] }
-    }
+        title = "feature_keyboard".localized()
 
-    @IBAction
-    func showButtonPressed() {
-        viewModel.onShowPressed()
-    }
-
-    @IBAction
-    func hideButtonPressed() {
-        viewModel.onHidePressed()
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
+        ButtonStyleKt.bindButton(showButton, button: viewModel.showButton)
+        ButtonStyleKt.bindButton(hideButton, button: viewModel.hideButton)
     }
 }

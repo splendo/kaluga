@@ -25,6 +25,7 @@ import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.converter.ScientificConverterException
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.convert
 import kotlinx.serialization.Serializable
@@ -297,7 +298,11 @@ fun <
     > Decimal.div(
     factor: ScientificValue<Quantity, Unit>,
     factory: (Decimal, Unit) -> Value
-) = factory(this / factor.decimalValue, factor.unit)
+) = if (factor.value != 0.0) {
+    factory(this / factor.decimalValue, factor.unit)
+} else {
+    throw ScientificConverterException("Dividing by zero")
+}
 
 fun <
     Quantity : PhysicalQuantity,
@@ -306,7 +311,11 @@ fun <
     > ScientificValue<Quantity, Unit>.div(
     factor: Decimal,
     factory: (Decimal, Unit) -> Value
-) = factory(decimalValue / factor, unit)
+) = if (factor.toDouble() != 0.0) {
+    factory(decimalValue / factor, unit)
+} else {
+    throw ScientificConverterException("Dividing by zero")
+}
 
 infix operator fun <
     Quantity : PhysicalQuantity,
@@ -366,7 +375,11 @@ internal fun <
     nominator: ScientificValue<NominatorQuantity, NominatorUnit>,
     divider: ScientificValue<DividerQuantity, DividerUnit>,
     factory: (Decimal, Unit) -> Value
-) = fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this, factory)
+) = if (divider.value != 0.0) {
+    fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this, factory)
+} else {
+    throw ScientificConverterException("Dividing by zero")
+}
 
 internal fun <
     TargetQuantity : PhysicalQuantity,
@@ -391,4 +404,8 @@ internal fun <
     > Unit.byInverting(
     inverse: ScientificValue<InverseQuantity, InverseUnit>,
     factory: (Decimal, Unit) -> Value
-) = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)
+) = if (inverse.value != 0.0) {
+    fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)
+} else {
+    throw ScientificConverterException("Inverting by zero")
+}

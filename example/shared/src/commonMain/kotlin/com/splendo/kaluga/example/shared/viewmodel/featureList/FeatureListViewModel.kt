@@ -27,6 +27,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Location : FeatureListNavigationAction()
     object Permissions : FeatureListNavigationAction()
     object Alerts : FeatureListNavigationAction()
+    object DateTime : FeatureListNavigationAction()
     object DateTimePicker : FeatureListNavigationAction()
     object LoadingIndicator : FeatureListNavigationAction()
     object Architecture : FeatureListNavigationAction()
@@ -36,6 +37,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object System : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
     object Resources : FeatureListNavigationAction()
+    object Scientific : FeatureListNavigationAction()
     object PlatformSpecific : FeatureListNavigationAction()
 }
 
@@ -43,6 +45,7 @@ sealed class Feature(val title: String) {
     object Alerts : Feature("feature_alerts".localized())
     object Architecture : Feature("feature_architecture".localized())
     object Bluetooth : Feature("feature_bluetooth".localized())
+    object DateTime : Feature("feature_date_time".localized())
     object DateTimePicker : Feature("feature_date_time_picker".localized())
     object Keyboard : Feature("feature_keyboard".localized())
     object LoadingIndicator : Feature("feature_hud".localized())
@@ -52,6 +55,7 @@ sealed class Feature(val title: String) {
     object System : Feature("feature_system".localized())
     object Beacons : Feature("feature_beacons".localized())
     object Resource : Feature("feature_resources".localized())
+    object Scientific : Feature("feature_scientific".localized())
     object PlatformSpecific : Feature("feature_platform_specific".localized())
 }
 
@@ -62,6 +66,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Alerts,
             Feature.Architecture,
             Feature.Bluetooth,
+            Feature.DateTime,
             Feature.DateTimePicker,
             Feature.Keyboard,
             Feature.Links,
@@ -71,6 +76,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.System,
             Feature.Beacons,
             Feature.Resource,
+            Feature.Scientific,
             Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures }
         )
     )
@@ -81,6 +87,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.Alerts -> FeatureListNavigationAction.Alerts
                 is Feature.Architecture -> FeatureListNavigationAction.Architecture
                 is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
+                is Feature.DateTime -> FeatureListNavigationAction.DateTime
                 is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
                 is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
                 is Feature.Links -> FeatureListNavigationAction.Links
@@ -90,6 +97,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.System -> FeatureListNavigationAction.System
                 is Feature.Beacons -> FeatureListNavigationAction.Beacons
                 is Feature.Resource -> FeatureListNavigationAction.Resources
+                is Feature.Scientific -> FeatureListNavigationAction.Scientific
                 is Feature.PlatformSpecific -> FeatureListNavigationAction.PlatformSpecific
             }
         )

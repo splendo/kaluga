@@ -77,26 +77,30 @@ object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricA
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
+
 @Serializable
-object Nanowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Nano(Watt)
+sealed class WattMultiple : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt>
+
 @Serializable
-object Microwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Micro(Watt)
+object Nanowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Nano(Watt)
 @Serializable
-object Milliwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Milli(Watt)
+object Microwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Micro(Watt)
 @Serializable
-object Centiwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Centi(Watt)
+object Milliwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Milli(Watt)
 @Serializable
-object Deciwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deci(Watt)
+object Centiwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Centi(Watt)
 @Serializable
-object Decawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deca(Watt)
+object Deciwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deci(Watt)
 @Serializable
-object Hectowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Hecto(Watt)
+object Decawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deca(Watt)
 @Serializable
-object Kilowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Kilo(Watt)
+object Hectowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Hecto(Watt)
 @Serializable
-object Megawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Mega(Watt)
+object Kilowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Kilo(Watt)
 @Serializable
-object Gigawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Giga(Watt)
+object Megawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Mega(Watt)
+@Serializable
+object Gigawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Giga(Watt)
 
 @Serializable
 object ErgPerSecond : MetricPower(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Power> {

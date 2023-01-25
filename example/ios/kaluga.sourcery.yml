@@ -1,0 +1,20 @@
+project:
+  file: ./Demo.xcodeproj
+  target:
+    name: Demo
+templates:
+  - Kaluga-SwiftUI/stencils/
+output:
+  path: ./Generated/KalugaSwiftUI
+  link: 
+     project: ./Demo.xcodeproj
+     targets: [Demo]
+     group: Generated/KalugaSwiftUI
+args:
+  sharedFrameworkName: KalugaExampleShared
+  includeResources: true
+  includeAlerts: true
+  includeHud: true
+  includeDatePicker: true
+  includeKeyboard: true
+  includePartialSheet: true

@@ -19,17 +19,20 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.shared.viewmodel.hud
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HUDStyle
 import com.splendo.kaluga.hud.build
 import com.splendo.kaluga.hud.dismissAfter
 import com.splendo.kaluga.hud.presentDuring
+import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HudViewModel(val builder: BaseHUD.Builder) : BaseLifecycleViewModel() {
 
-    fun onShowSystemPressed() {
+    val showSystemButton = KalugaButton.Plain("show_loading_indicator_system".localized(), ButtonStyles.default) {
         // SYSTEM style by default
         // No title by default
         coroutineScope.launch {
@@ -37,7 +40,7 @@ class HudViewModel(val builder: BaseHUD.Builder) : BaseLifecycleViewModel() {
         }
     }
 
-    fun onShowCustomPressed() {
+    val showCustomButton = KalugaButton.Plain("show_loading_indicator_custom".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             builder.build(this) {
                 setStyle(HUDStyle.CUSTOM)

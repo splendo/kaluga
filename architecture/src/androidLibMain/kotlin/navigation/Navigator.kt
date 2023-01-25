@@ -21,9 +21,9 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
-import android.provider.Settings
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
@@ -48,10 +48,12 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         when (spec) {
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
-            is NavigationSpec.Fragment -> navigateToFragment(spec)
-            is NavigationSpec.RemoveFragment -> removeFragment(spec)
-            is NavigationSpec.Dialog -> navigateToDialog(spec)
-            is NavigationSpec.DismissDialog -> dismissDialog(spec)
+            is NavigationSpec.Fragment -> navigateToFragment(spec, bundle)
+            is NavigationSpec.RemoveFragment -> removeFragment(spec, bundle)
+            is NavigationSpec.PopFragment -> popFragment(spec, bundle)
+            is NavigationSpec.PopFragmentTo -> popFragmentTo(spec, bundle)
+            is NavigationSpec.Dialog -> navigateToDialog(spec, bundle)
+            is NavigationSpec.DismissDialog -> dismissDialog(spec, bundle)
             is NavigationSpec.Camera -> navigateToCamera(spec)
             is NavigationSpec.Email -> navigateToEmail(spec)
             is NavigationSpec.FileSelector -> navigateToFileSelector(spec)
@@ -99,9 +101,9 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         activity.finish()
     }
 
-    private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+    private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment, bundle: NavigationBundle<*>?) {
+        assert(manager != null)
+        val fragmentManager = fragmentSpec.getFragmentManager(manager!!)
         val transaction = fragmentManager.beginTransaction().let {
             when (val backtrackSettings = fragmentSpec.backStackSettings) {
                 is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
@@ -120,7 +122,9 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             )
         }
 
-        val fragment = fragmentSpec.createFragment()
+        val fragment = fragmentSpec.createFragment().apply {
+            arguments = bundle?.toBundle()
+        }
         when (fragmentSpec.type) {
             is NavigationSpec.Fragment.Type.Add -> transaction.add(
                 fragmentSpec.containerId,
@@ -137,9 +141,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         transaction.commit()
     }
 
-    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment, bundle: NavigationBundle<*>?) {
+        assert(manager != null)
+        val fragmentManager = removeFragmentSpec.getFragmentManager(manager!!).apply {
+            removeFragmentSpec.fragmentRequestKey?.let { key ->
+                bundle?.let { setFragmentResult(key, it.toBundle()) }
+            }
+        }
         val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
 
         val transaction = fragmentManager.beginTransaction()
@@ -147,15 +155,51 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         transaction.commit()
     }
 
-    private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
-        dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
+    private fun popFragment(popFragmentSpec: NavigationSpec.PopFragment, bundle: NavigationBundle<*>?) {
+        assert(manager != null)
+        val fragmentManager = popFragmentSpec.getFragmentManager(manager!!).apply {
+            popFragmentSpec.fragmentRequestKey?.let { key ->
+                bundle?.let { setFragmentResult(key, it.toBundle()) }
+            }
+        }
+        if (popFragmentSpec.immediate) {
+            fragmentManager.popBackStackImmediate()
+        } else {
+            fragmentManager.popBackStack()
+        }
     }
 
-    private fun dismissDialog(spec: NavigationSpec.DismissDialog) {
-        assert(manager?.fragmentManager != null)
-        val fragmentManager = manager?.fragmentManager ?: return
+    private fun popFragmentTo(popToFragmentSpec: NavigationSpec.PopFragmentTo, bundle: NavigationBundle<*>?) {
+        assert(manager != null)
+        val fragmentManager = popToFragmentSpec.getFragmentManager(manager!!).apply {
+            popToFragmentSpec.fragmentRequestKey?.let { key ->
+                bundle?.let { setFragmentResult(key, it.toBundle()) }
+            }
+        }
+        val flags = if (popToFragmentSpec.inclusive) FragmentManager.POP_BACK_STACK_INCLUSIVE else 0
+        if (popToFragmentSpec.immediate) {
+            fragmentManager.popBackStackImmediate(popToFragmentSpec.name, flags)
+        } else {
+            fragmentManager.popBackStack(popToFragmentSpec.name, flags)
+        }
+    }
+
+    private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog, bundle: NavigationBundle<*>?) {
+        assert(manager != null)
+        val fragmentManager = dialogSpec.getFragmentManager(manager!!)
+        dialogSpec.createDialog().apply {
+            arguments = bundle?.toBundle()
+            show(fragmentManager, dialogSpec.tag)
+        }
+    }
+
+    private fun dismissDialog(spec: NavigationSpec.DismissDialog, bundle: NavigationBundle<*>?) {
+        assert(manager != null)
+        val fragmentManager = spec.getFragmentManager(manager!!).apply {
+            spec.fragmentRequestKey?.let { key ->
+                bundle?.let { setFragmentResult(key, it.toBundle()) }
+            }
+        }
         val dialog = fragmentManager.findFragmentByTag(spec.tag) as? DialogFragment ?: return
         dialog.dismiss()
     }
@@ -180,41 +224,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     private fun navigateToEmail(emailSpec: NavigationSpec.Email) {
         assert(manager?.activity != null)
         val activity = manager?.activity ?: return
-        val settings = emailSpec.emailSettings
-        val intent = when (settings.attachments.size) {
-            0 -> Intent(Intent.ACTION_SEND)
-            1 -> Intent(Intent.ACTION_SEND).apply {
-                putExtra(
-                    Intent.EXTRA_STREAM,
-                    settings.attachments[0]
-                )
-            }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-                putExtra(
-                    Intent.EXTRA_STREAM,
-                    ArrayList(
-                        settings.attachments
-                    )
-                )
-            }
-        }.apply {
-            data = Uri.parse("mailto:")
-            type = when (settings.type) {
-                is NavigationSpec.Email.Type.Plain -> "text/plain"
-                is NavigationSpec.Email.Type.Stylized -> "*/*"
-            }
-            if (settings.to.isNotEmpty()) {
-                putExtra(Intent.EXTRA_EMAIL, settings.to.toTypedArray())
-            }
-            if (settings.cc.isNotEmpty()) {
-                putExtra(Intent.EXTRA_CC, settings.cc.toTypedArray())
-            }
-            if (settings.bcc.isNotEmpty()) {
-                putExtra(Intent.EXTRA_BCC, settings.bcc.toTypedArray())
-            }
-            settings.subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
-            settings.body?.let { putExtra(Intent.EXTRA_TEXT, it) }
-        }
+        val intent = emailSpec.emailSettings.intent
 
         intent.resolveActivity(activity.packageManager)?.let {
             activity.startActivity(intent)
@@ -255,26 +265,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     private fun navigateToSettings(settingsSpec: NavigationSpec.Settings) {
         assert(manager?.activity != null)
         val activity = manager?.activity ?: return
-        val intent = when (settingsSpec.type) {
-            is NavigationSpec.Settings.Type.General -> Intent(Settings.ACTION_SETTINGS)
-            is NavigationSpec.Settings.Type.Wireless -> Intent(Settings.ACTION_WIRELESS_SETTINGS)
-            is NavigationSpec.Settings.Type.AirplaneMode -> Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS)
-            is NavigationSpec.Settings.Type.Wifi -> Intent(Settings.ACTION_WIFI_SETTINGS)
-            is NavigationSpec.Settings.Type.Apn -> Intent(Settings.ACTION_APN_SETTINGS)
-            is NavigationSpec.Settings.Type.Bluetooth -> Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
-            is NavigationSpec.Settings.Type.Date -> Intent(Settings.ACTION_DATE_SETTINGS)
-            is NavigationSpec.Settings.Type.Locale -> Intent(Settings.ACTION_LOCALE_SETTINGS)
-            is NavigationSpec.Settings.Type.InputMethod -> Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
-            is NavigationSpec.Settings.Type.Display -> Intent(Settings.ACTION_DISPLAY_SETTINGS)
-            is NavigationSpec.Settings.Type.Security -> Intent(Settings.ACTION_SECURITY_SETTINGS)
-            is NavigationSpec.Settings.Type.LocationSource -> Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            is NavigationSpec.Settings.Type.InternalStorage -> Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
-            is NavigationSpec.Settings.Type.MemoryCard -> Intent(Settings.ACTION_MEMORY_CARD_SETTINGS)
-            is NavigationSpec.Settings.Type.AppDetails -> {
-                val uri = Uri.fromParts("package", activity.packageName, null)
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
-            }
-        }
+        val intent = settingsSpec.type.intent(activity)
 
         intent.resolveActivity(activity.packageManager)?.let {
             activity.startActivity(intent)
@@ -284,34 +275,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger) {
         assert(manager?.activity != null)
         val activity = manager?.activity ?: return
-        val settings = messengerSpec.settings
-        val intent = when (settings.attachments.size) {
-            0 -> Intent(Intent.ACTION_SEND)
-            1 -> Intent(Intent.ACTION_SEND).apply {
-                putExtra(
-                    Intent.EXTRA_STREAM,
-                    settings.attachments[0]
-                )
-            }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-                putExtra(
-                    Intent.EXTRA_STREAM,
-                    ArrayList(
-                        settings.attachments
-                    )
-                )
-            }
-        }.apply {
-            val recipients = settings.recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
-            data = Uri.parse("smsto:$recipients")
-            type = when (settings.type) {
-                is NavigationSpec.TextMessenger.Type.Plain -> "text/plain"
-                is NavigationSpec.TextMessenger.Type.Image -> "image/*"
-                is NavigationSpec.TextMessenger.Type.Video -> "video/*"
-            }
-            settings.subject?.let { putExtra("subject", it) }
-            settings.body?.let { putExtra("sms_body", it) }
-        }
+        val intent = messengerSpec.settings.intent
 
         intent.resolveActivity(activity.packageManager)?.let {
             activity.startActivity(intent)

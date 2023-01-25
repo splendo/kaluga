@@ -22,13 +22,12 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.ErgMultiple
 import com.splendo.kaluga.scientific.unit.ImperialEnergy
 import com.splendo.kaluga.scientific.unit.ImperialSurfaceTension
 import com.splendo.kaluga.scientific.unit.InchOunceForce
 import com.splendo.kaluga.scientific.unit.InchPoundForce
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricSurfaceTension
 import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import com.splendo.kaluga.scientific.unit.SquareFoot
@@ -44,7 +43,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(surfaceTens
     SquareCentimeter.area(this, surfaceTension)
 
 @JvmName("ergMultipleDivMetricSurfaceTension")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>) =
     SquareCentimeter.area(this, surfaceTension)
 
 @JvmName("metricAndImperialEnergyDivMetricSurfaceTension")

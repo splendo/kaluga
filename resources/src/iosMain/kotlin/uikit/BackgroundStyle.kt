@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.resources.stylable.BackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
@@ -42,9 +42,9 @@ import platform.UIKit.UIRectCornerTopLeft
 import platform.UIKit.UIRectCornerTopRight
 import platform.UIKit.UIView
 
-fun UIView.applyBackgroundStyle(style: BackgroundStyle) = layer.applyBackgroundStyle(style, bounds)
+fun UIView.applyBackgroundStyle(style: KalugaBackgroundStyle) = layer.applyBackgroundStyle(style, bounds)
 
-fun CALayer.applyBackgroundStyle(style: BackgroundStyle, bounds: CValue<CGRect>) = apply {
+fun CALayer.applyBackgroundStyle(style: KalugaBackgroundStyle, bounds: CValue<CGRect>) = apply {
     val maskPath = pathForShape(style.shape, bounds)
     mask = CAShapeLayer(this).apply {
         frame = bounds
@@ -54,16 +54,16 @@ fun CALayer.applyBackgroundStyle(style: BackgroundStyle, bounds: CValue<CGRect>)
     applyStroke(style.strokeStyle, maskPath, bounds)
 }
 
-private fun pathForShape(shape: BackgroundStyle.Shape, bounds: CValue<CGRect>): CGPathRef? =
+private fun pathForShape(shape: KalugaBackgroundStyle.Shape, bounds: CValue<CGRect>): CGPathRef? =
     when (shape) {
-        is BackgroundStyle.Shape.Rectangle -> UIBezierPath.bezierPathWithRoundedRect(
+        is KalugaBackgroundStyle.Shape.Rectangle -> UIBezierPath.bezierPathWithRoundedRect(
             bounds,
             shape.roundedCorners.fold(0U) { acc, corner ->
                 acc or when (corner) {
-                    BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT -> UIRectCornerTopLeft
-                    BackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT -> UIRectCornerTopRight
-                    BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT -> UIRectCornerBottomLeft
-                    BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT -> UIRectCornerBottomRight
+                    KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT -> UIRectCornerTopLeft
+                    KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT -> UIRectCornerTopRight
+                    KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT -> UIRectCornerBottomLeft
+                    KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT -> UIRectCornerBottomRight
                 }
             },
             CGSizeMake(
@@ -71,22 +71,22 @@ private fun pathForShape(shape: BackgroundStyle.Shape, bounds: CValue<CGRect>): 
                 shape.cornerRadiusY.toDouble()
             )
         )
-        is BackgroundStyle.Shape.Oval -> UIBezierPath.bezierPathWithOvalInRect(bounds)
+        is KalugaBackgroundStyle.Shape.Oval -> UIBezierPath.bezierPathWithOvalInRect(bounds)
     }.CGPath
 
-private fun CALayer.applyFillStyle(fillStyle: BackgroundStyle.FillStyle, bounds: CValue<CGRect>) {
+private fun CALayer.applyFillStyle(fillStyle: KalugaBackgroundStyle.FillStyle, bounds: CValue<CGRect>) {
     addSublayer(
         CAGradientLayer(this).apply {
             frame = bounds
             when (fillStyle) {
-                is BackgroundStyle.FillStyle.Solid -> {
+                is KalugaBackgroundStyle.FillStyle.Solid -> {
                     type = kCAGradientLayerAxial
                     colors = listOfNotNull(
                         fillStyle.color.uiColor.CGColor,
                         fillStyle.color.uiColor.CGColor
                     ).mapToCGColor()
                 }
-                is BackgroundStyle.FillStyle.Gradient -> {
+                is KalugaBackgroundStyle.FillStyle.Gradient -> {
                     val sortedColorPoints =
                         fillStyle.gradientStyle.colorPoints.sortedBy { it.offset }
                     colors =
@@ -165,7 +165,7 @@ private fun CAGradientLayer.applyGradientStyle(
 }
 
 private fun CALayer.applyStroke(
-    strokeStyle: BackgroundStyle.StrokeStyle,
+    strokeStyle: KalugaBackgroundStyle.StrokeStyle,
     path: CGPathRef?,
     bounds: CValue<CGRect>
 ) {
@@ -174,11 +174,11 @@ private fun CALayer.applyStroke(
             frame = bounds
             this.path = path
             when (strokeStyle) {
-                is BackgroundStyle.StrokeStyle.Stroke -> {
+                is KalugaBackgroundStyle.StrokeStyle.Stroke -> {
                     lineWidth = strokeStyle.width.toDouble()
                     strokeColor = strokeStyle.color.uiColor.CGColor
                 }
-                is BackgroundStyle.StrokeStyle.None -> {
+                is KalugaBackgroundStyle.StrokeStyle.None -> {
                     lineWidth = 0.0
                     strokeColor = UIColor.clearColor.CGColor
                 }
