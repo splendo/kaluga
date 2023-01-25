@@ -24,7 +24,6 @@ public final class com/splendo/kaluga/scientific/DefaultScientificArray : com/sp
 }
 
 public final class com/splendo/kaluga/scientific/DefaultScientificArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
@@ -58,7 +57,6 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 }
 
 public final class com/splendo/kaluga/scientific/DefaultScientificValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -4820,7 +4818,6 @@ public final class com/splendo/kaluga/scientific/unit/AngularAcceleration : com/
 
 public final class com/splendo/kaluga/scientific/unit/AngularAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/AngularAcceleration$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/AngularAcceleration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -4864,7 +4861,6 @@ public final class com/splendo/kaluga/scientific/unit/AngularVelocity : com/sple
 
 public final class com/splendo/kaluga/scientific/unit/AngularVelocity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/AngularVelocity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/AngularVelocity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -7008,7 +7004,6 @@ public final class com/splendo/kaluga/scientific/unit/DefaultDimensionlessScient
 }
 
 public final class com/splendo/kaluga/scientific/unit/DefaultDimensionlessScientificValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;)V
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/DefaultDimensionlessScientificValue;
@@ -8643,7 +8638,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialAcceleration : com
 
 public final class com/splendo/kaluga/scientific/unit/ImperialAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialAcceleration$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAcceleration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8678,7 +8672,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialAction : com/splen
 
 public final class com/splendo/kaluga/scientific/unit/ImperialAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialAction$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAction;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8726,7 +8719,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialAreaDensity : com/
 
 public final class com/splendo/kaluga/scientific/unit/ImperialAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8764,7 +8756,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialDensity : com/sple
 
 public final class com/splendo/kaluga/scientific/unit/ImperialDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8801,7 +8792,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialDynamicViscosity :
 
 public final class com/splendo/kaluga/scientific/unit/ImperialDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8894,7 +8884,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialJolt : com/splendo
 
 public final class com/splendo/kaluga/scientific/unit/ImperialJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialJolt$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialJolt;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8929,7 +8918,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity
 
 public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -8983,7 +8971,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialLinearMassDensity 
 
 public final class com/splendo/kaluga/scientific/unit/ImperialLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9028,7 +9015,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialLuminousExposure :
 
 public final class com/splendo/kaluga/scientific/unit/ImperialLuminousExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9065,7 +9051,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMassFlowRate : com
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9102,7 +9087,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialE
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9139,7 +9123,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialP
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9176,7 +9159,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolality : com/spl
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolality$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9211,7 +9193,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarEnergy : com/
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9248,7 +9229,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarMass : com/sp
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9285,7 +9265,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarVolume : com/
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9322,7 +9301,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarity : com/spl
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9360,7 +9338,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMomentum : com/spl
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMomentum$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9441,7 +9418,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy : c
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9479,7 +9455,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSpecificVolume : c
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9514,7 +9489,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSpeed : com/splend
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSpeed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSpeed$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9552,7 +9526,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSurfaceTension : c
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9630,7 +9603,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlow : c
 
 public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9668,7 +9640,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlux : c
 
 public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -9721,7 +9692,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialYank : com/splendo
 
 public final class com/splendo/kaluga/scientific/unit/ImperialYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialYank$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -10614,7 +10584,6 @@ public final class com/splendo/kaluga/scientific/unit/LuminousEnergy : com/splen
 
 public final class com/splendo/kaluga/scientific/unit/LuminousEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/LuminousEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11371,7 +11340,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAcceleration : com/s
 
 public final class com/splendo/kaluga/scientific/unit/MetricAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAcceleration$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAcceleration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11406,7 +11374,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAction : com/splendo
 
 public final class com/splendo/kaluga/scientific/unit/MetricAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAction$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAction;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11443,7 +11410,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialAction : 
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndImperialAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11490,7 +11456,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialMolarEner
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11541,7 +11506,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCap
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11596,7 +11560,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermal
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11642,7 +11605,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAreaDensity : com/sp
 
 public final class com/splendo/kaluga/scientific/unit/MetricAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11690,7 +11652,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricDensity : com/splend
 
 public final class com/splendo/kaluga/scientific/unit/MetricDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11725,7 +11686,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricDynamicViscosity : c
 
 public final class com/splendo/kaluga/scientific/unit/MetricDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11781,7 +11741,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricHeatCapacity : com/s
 
 public final class com/splendo/kaluga/scientific/unit/MetricHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11838,7 +11797,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricJolt : com/splendo/k
 
 public final class com/splendo/kaluga/scientific/unit/MetricJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricJolt$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricJolt;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11873,7 +11831,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity :
 
 public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11919,7 +11876,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricLinearMassDensity : 
 
 public final class com/splendo/kaluga/scientific/unit/MetricLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11964,7 +11920,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricLuminousExposure : c
 
 public final class com/splendo/kaluga/scientific/unit/MetricLuminousExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -11999,7 +11954,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMassFlowRate : com/s
 
 public final class com/splendo/kaluga/scientific/unit/MetricMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12036,7 +11990,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialEne
 
 public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12073,7 +12026,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialPow
 
 public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12108,7 +12060,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolality : com/splen
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolality$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12143,7 +12094,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarEnergy : com/sp
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12178,7 +12128,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarMass : com/sple
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarMass$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12213,7 +12162,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarVolume : com/sp
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12248,7 +12196,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarity : com/splen
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12284,7 +12231,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMomentum : com/splen
 
 public final class com/splendo/kaluga/scientific/unit/MetricMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMomentum$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12346,7 +12292,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy : com
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12382,7 +12327,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12418,7 +12362,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpecificVolume : com
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12453,7 +12396,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpeed : com/splendo/
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpeed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpeed$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpeed;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12489,7 +12431,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricSurfaceTension : com
 
 public final class com/splendo/kaluga/scientific/unit/MetricSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12525,7 +12466,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricThermalResistance : 
 
 public final class com/splendo/kaluga/scientific/unit/MetricThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12570,7 +12510,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlow : com
 
 public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12606,7 +12545,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlux : com
 
 public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -12651,7 +12589,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricYank : com/splendo/k
 
 public final class com/splendo/kaluga/scientific/unit/MetricYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricYank$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15557,7 +15494,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialAreaDensity : co
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15593,7 +15529,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialDensity : com/sp
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15628,7 +15563,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15678,7 +15612,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialHeatCapacity : c
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15711,7 +15644,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialImperialForceWra
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15744,7 +15676,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWr
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15776,7 +15707,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialImperialWeightWr
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15812,7 +15742,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialLinearMassDensit
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15847,7 +15776,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMassFlowRate : c
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15882,7 +15810,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolality : com/s
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolality$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15917,7 +15844,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolarMass : com/
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15952,7 +15878,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolarVolume : co
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -15987,7 +15912,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolarity : com/s
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16023,7 +15947,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMomentum : com/s
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16070,7 +15993,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper 
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16109,7 +16031,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy :
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16145,7 +16066,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapa
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16181,7 +16101,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificVolume :
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16217,7 +16136,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSurfaceTension :
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16253,7 +16171,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialThermalResistanc
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16302,7 +16219,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow :
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16338,7 +16254,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux :
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16389,7 +16304,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialYank : com/splen
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialYank$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16425,7 +16339,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryAreaDensity : c
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16461,7 +16374,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryDensity : com/s
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16496,7 +16408,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosit
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16546,7 +16457,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity : 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16579,7 +16489,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialForceWr
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16612,7 +16521,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialPressur
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16645,7 +16553,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeW
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16677,7 +16584,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialWeightW
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16713,7 +16619,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensi
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16748,7 +16653,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate : 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16783,7 +16687,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolality : com/
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16818,7 +16721,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarMass : com
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16853,7 +16755,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarVolume : c
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16888,7 +16789,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarity : com/
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16924,7 +16824,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMomentum : com/
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -16977,7 +16876,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17013,7 +16911,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCap
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17049,7 +16946,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificVolume 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17085,7 +16981,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySurfaceTension 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17135,7 +17030,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistan
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17184,7 +17078,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17220,7 +17113,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux 
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -17271,7 +17163,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryYank : com/sple
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryYank$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;

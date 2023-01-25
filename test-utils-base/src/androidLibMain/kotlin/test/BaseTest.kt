@@ -76,7 +76,8 @@ actual open class BaseTest {
     actual open fun beforeTest() {
 
         if (isUnitTest) {
-            DebugProbes.install() // coroutine debugging
+            // Disabled as it gives issues as of Kotlin 1.8
+            // DebugProbes.install() // coroutine debugging
 
             Dispatchers.setMain(mainDispatcher)
 

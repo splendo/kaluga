@@ -110,6 +110,7 @@ fun <VM : BaseLifecycleViewModel> store(provider: @Composable () -> VM): VM =
     "Does not work for configuration changes (e.g. rotation).",
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
+@Suppress("Deprecation")
 fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> VM): VM = store {
     remember(provider)
 }
@@ -124,6 +125,7 @@ fun <VM : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposable
     "Does not work for configuration changes (e.g. rotation).",
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel")
 )
+@Suppress("Deprecation")
 fun <VM : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> VM): VM = store {
     remember(key, provider)
 }

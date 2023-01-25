@@ -50,9 +50,9 @@ actual fun Decimal.minus(
     roundingMode: RoundingMode
 ) = this.subtract(value).setScale(scale, roundingMode.android)
 
-actual operator fun Decimal.div(value: Decimal) = if (value != Decimal.ZERO) this.divide(value, MathContext.DECIMAL128) else throw DecimalException("Divide by zero")
+actual operator fun Decimal.div(value: Decimal) = if ((value.compareTo(Decimal.ZERO)) != 0) this.divide(value, MathContext.DECIMAL128) else throw DecimalException("Divide by zero")
 
-actual fun Decimal.div(value: Decimal, scale: Int) = if (value != Decimal.ZERO)
+actual fun Decimal.div(value: Decimal, scale: Int) = if ((value.compareTo(Decimal.ZERO)) != 0)
     this.divide(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 else throw DecimalException("Divide by zero")
 
@@ -60,7 +60,7 @@ actual fun Decimal.div(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-) = if (value != Decimal.ZERO)
+) = if ((value.compareTo(Decimal.ZERO)) != 0)
     this.divide(
         value,
         MathContext(
@@ -108,7 +108,7 @@ actual fun Decimal.pow(
     )
 ).setScale(scale, roundingMode.android)
 
-actual fun Number.toDecimal() = BigDecimal(this.toString())
+actual fun Number.toDecimal() = BigDecimal(toString())
 actual fun String.toDecimal() = BigDecimal(this)
 
 actual fun Decimal.toDouble() = this.toDouble()

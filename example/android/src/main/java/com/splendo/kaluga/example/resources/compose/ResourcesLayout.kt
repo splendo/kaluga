@@ -34,7 +34,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.composable
-import com.google.android.material.composethemeadapter.MdcTheme
+import com.google.accompanist.themeadapter.material.MdcTheme
 import com.splendo.kaluga.architecture.compose.navigation.RootNavHostComposableNavigator
 import com.splendo.kaluga.architecture.compose.navigation.next
 import com.splendo.kaluga.architecture.compose.navigation.route

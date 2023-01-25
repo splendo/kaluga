@@ -36,7 +36,7 @@ internal sealed class ParsingCharacter(val char: Char) {
 internal class FormatSpecifier(private val out: StringBuilder, matchResult: MatchResult) : FormatString {
 
     companion object {
-        val formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z@%])".toRegex()
+        val formatSpecifier = "%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z@%])".toRegex()
     }
     override var index: Int = -1
         private set

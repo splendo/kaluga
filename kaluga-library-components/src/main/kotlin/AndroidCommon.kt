@@ -33,6 +33,7 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
         testImplementationDependency(Dependencies.Kotlin.Test)
         testImplementationDependency(Dependencies.Kotlin.JUnit)
 
+        androidTestImplementationDependency(Dependencies.Mockito.Core)
         androidTestImplementationDependency(Dependencies.Mockito.Android)
         androidTestImplementationDependency(Dependencies.ByteBuddy.Android)
         androidTestImplementationDependency(Dependencies.ByteBuddy.Agent)
@@ -55,7 +56,6 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
 
     defaultConfig {
         minSdk = LibraryImpl.Android.minSdk
-        targetSdk = LibraryImpl.Android.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,30 +63,6 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
     buildTypes {
         release {
             isMinifyEnabled = false
-        }
-    }
-
-    project.logger.lifecycle("Android sourcesets for this project module are configured as a library")
-    sourceSets {
-        getByName("main") {
-            manifest.srcFile("src/androidLibMain/AndroidManifest.xml")
-            res.srcDir("src/androidLibMain/res")
-            when (componentType) {
-                is ComponentType.Compose,
-                is ComponentType.DataBinding -> {
-                    java.srcDir("src/androidLibMain/kotlin")
-                }
-                is ComponentType.Default -> {}
-            }
-        }
-        getByName("androidTest") {
-            manifest.srcFile("src/androidLibAndroidTest/AndroidManifest.xml")
-            java.srcDir("src/androidLibAndroidTest/kotlin")
-            res.srcDir("src/androidLibAndroidTest/res")
-        }
-
-        getByName("test") {
-            java.srcDir("src/androidLibUnitTest/kotlin")
         }
     }
 

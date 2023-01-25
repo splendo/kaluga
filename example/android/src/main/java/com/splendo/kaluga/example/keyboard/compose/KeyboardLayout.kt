@@ -41,7 +41,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import com.google.android.material.composethemeadapter.MdcTheme
+import com.google.accompanist.themeadapter.material.MdcTheme
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
@@ -71,12 +71,13 @@ class ComposeKeyboardActivity : AppCompatActivity() {
 fun KeyboardLayout() {
     MdcTheme {
         val focusHandler = LocalFocusManager.current
-        val viewModel = koinViewModel<KeyboardViewModel<ComposeFocusHandler>>(named(composeKeyboardViewModel)) {
-            parametersOf(
-                ComposeKeyboardManager.Builder(),
-                ComposeFocusHandler(FocusRequester.Default)
-            )
-        }
+        val viewModel =
+            koinViewModel<KeyboardViewModel<ComposeFocusHandler>>(named(composeKeyboardViewModel)) {
+                parametersOf(
+                    ComposeKeyboardManager.Builder(),
+                    ComposeFocusHandler(FocusRequester.Default)
+                )
+            }
 
         ViewModelComposable(viewModel) {
             Column(

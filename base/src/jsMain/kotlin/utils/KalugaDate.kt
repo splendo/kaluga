@@ -29,52 +29,52 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
 
     override var timeZone: TimeZone
         get() = TimeZone()
-        set(value) { }
+        set(_) { }
 
     override var era: Int
         get() = 0
-        set(value) { }
+        set(_) { }
     override var year: Int
         get() = date.getFullYear()
-        set(value) { }
+        set(_) { }
     override var month: Int
         get() = date.getMonth()
-        set(value) { }
+        set(_) { }
     override val daysInMonth: Int = 0
     override var weekOfYear: Int
         get() = 0
-        set(value) { }
+        set(_) { }
     override var weekOfMonth: Int
         get() = 0
-        set(value) { }
+        set(_) { }
     override var day: Int
         get() = 0
-        set(value) { }
+        set(_) { }
     override var dayOfYear: Int
         get() = date.getDay()
-        set(value) { }
+        set(_) { }
     override var weekDay: Int
         get() = date.getDate() + 1
-        set(value) { }
+        set(_) { }
     override var firstWeekDay: Int
         get() = 1
-        set(value) { }
+        set(_) { }
 
     override var hour: Int
         get() = date.getHours()
-        set(value) { }
+        set(_) { }
     override var minute: Int
         get() = date.getMinutes()
-        set(value) { }
+        set(_) { }
     override var second: Int
         get() = date.getSeconds()
-        set(value) { }
+        set(_) { }
     override var millisecond: Int
         get() = date.getMilliseconds()
-        set(value) { }
+        set(_) { }
     override var millisecondSinceEpoch: Long
         get() = date.getTime().toLong()
-        set(value) { }
+        set(_) { }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getMilliseconds()))
 
