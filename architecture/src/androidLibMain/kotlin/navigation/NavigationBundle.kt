@@ -82,16 +82,6 @@ fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationB
 }
 
 /**
- * Converts a [Bundle] to a property associated with a [NavigationBundleSpecType]
- * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType]
- * @return The type stored in the bundle
- * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
- */
-fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
-    return toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
-}
-
-/**
  * Error indicating a [Bundle] could not be converted to a [NavigationBundle]
  */
 class BundleConversionError : Exception()

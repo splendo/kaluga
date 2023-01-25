@@ -20,9 +20,8 @@ package com.splendo.kaluga.example.architecture.xml
 
 import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureDetailsBinding
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
@@ -38,8 +37,7 @@ class ArchitectureDetailsActivity : KalugaViewModelActivity<ArchitectureDetailsV
     }
 
     override val viewModel: ArchitectureDetailsViewModel by viewModel {
-        val type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
-        intent.extras?.toTypedProperty(type)?.let { details ->
+        parseTypeOfOrNull(InputDetails.serializer())?.let { details ->
             parametersOf(
                 details,
                 ActivityNavigator<ArchitectureDetailsNavigationAction<*>> { action ->

@@ -24,9 +24,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelDialogFragment
 import com.splendo.kaluga.example.databinding.DialogScientificUnitSelectionBinding
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificUnitSelectionAction
@@ -48,7 +47,7 @@ abstract class ScientificUnitSelectionDialogFragment : KalugaViewModelDialogFrag
 
     override val viewModel: ScientificUnitSelectionViewModel by viewModel {
         parametersOf(
-            requireArguments().toTypedProperty(NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer())),
+            parseTypeOfOrNull(PhysicalQuantity.serializer()),
             ActivityNavigator<ScientificUnitSelectionAction<*>> { action ->
                 when (action) {
                     is ScientificUnitSelectionAction.Cancelled -> NavigationSpec.DismissDialog(TAG)
