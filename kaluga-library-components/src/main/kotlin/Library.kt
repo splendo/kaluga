@@ -23,14 +23,14 @@ import org.jetbrains.kotlin.konan.properties.loadProperties
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.IOException
 
-private val libraries: MutableMap<Project, Library> = mutableMapOf()
+private val libraries: MutableMap<Project, LibraryImpl> = mutableMapOf()
 
 /**
- * Gets a [Library] for the [Project]. Only creates a new instance of the Library if none exist yet, to speed up the build process
+ * Gets a [LibraryImpl] for the [Project]. Only creates a new instance of the Library if none exist yet, to speed up the build process
  */
-val Project.Library get() = libraries.getOrPut(this) { Library(this) }
+val Project.Library get() = libraries.getOrPut(this) { LibraryImpl(this) }
 
-class Library(project: Project) {
+class LibraryImpl(project: Project) {
 
     private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").let { file ->
         if (file.exists) {
@@ -57,8 +57,8 @@ class Library(project: Project) {
         const val minSdk = 21
         const val compileSdk = 33
         const val targetSdk = 33
-        const val buildTools = "33.0.0"
-        const val composeCompiler = "1.3.2"
+        const val buildTools = "33.0.1"
+        const val composeCompiler = "1.4.0"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {
@@ -106,37 +106,6 @@ class Library(project: Project) {
         }
     }
     val IOS = IOSLibrary(props, logger)
-
-    val exampleEmbeddingMethod by lazy {
-        if (System.getenv().containsKey("EXAMPLE_EMBEDDING_METHOD")) {
-            System.getenv()["EXAMPLE_EMBEDDING_METHOD"].also {
-                logger.lifecycle("System env EXAMPLE_EMBEDDING_METHOD set to ${System.getenv()["EXAMPLE_EMBEDDING_METHOD"]}, using $it")
-            }!!
-        } else {
-            val exampleEmbeddingMethodLocalProperties = props["kaluga.exampleEmbeddingMethod"] as? String
-            (exampleEmbeddingMethodLocalProperties ?: "composite").also {
-                logger.lifecycle("local.properties read (kaluga.exampleEmbeddingMethod=$exampleEmbeddingMethodLocalProperties, using $it)")
-            }
-        }
-    }
-
-    val exampleMavenRepo by lazy {
-        if (System.getenv().containsKey("EXAMPLE_MAVEN_REPO")) {
-            System.getenv()["EXAMPLE_MAVEN_REPO"].also {
-                logger.lifecycle("System env EXAMPLE_MAVEN_REPO set to ${System.getenv()["EXAMPLE_MAVEN_REPO"]}, using $it")
-            }!!
-        } else {
-            // load some more from local.properties or set defaults.
-            val exampleMavenRepoLocalProperties: String? =
-                props["kaluga.exampleMavenRepo"] as? String
-            exampleMavenRepoLocalProperties?.also {
-                logger.lifecycle("local.properties read (kaluga.exampleMavenRepo=$exampleMavenRepoLocalProperties, using $it)")
-            }
-                ?: "local".also {
-                    logger.lifecycle("local.properties not found, using default value ($it)")
-                }
-        }
-    }
 
     val connectCheckExpansion = (System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") or System.getenv().containsKey("CI")).also {
         if (it) {

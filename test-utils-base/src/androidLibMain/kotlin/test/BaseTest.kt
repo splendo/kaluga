@@ -28,7 +28,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.debug.DebugProbes
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import java.util.concurrent.ExecutorService
@@ -76,7 +75,8 @@ actual open class BaseTest {
     actual open fun beforeTest() {
 
         if (isUnitTest) {
-            DebugProbes.install() // coroutine debugging
+            // Disabled as it gives issues as of Kotlin 1.8
+            // DebugProbes.install() // coroutine debugging
 
             Dispatchers.setMain(mainDispatcher)
 

@@ -29,18 +29,18 @@ import kotlinx.coroutines.CoroutineScope
  * Mock implementation of [BaseKeyboardManager]
  * @param setupMocks If `true` configure mocks to display the keyboard
  */
-class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
+class MockKeyboardManager<FH : FocusHandler>(setupMocks: Boolean = true) : BaseKeyboardManager<FH> {
 
     /**
      * Mock implementation of [BaseKeyboardManager.Builder]
      * @param setupMocks If `true` sets up [createMock] to build [MockKeyboardManager]
      */
-    class Builder(setupMocks: Boolean = true) : BaseKeyboardManager.Builder {
+    class Builder<FH : FocusHandler>(setupMocks: Boolean = true) : BaseKeyboardManager.Builder<FH> {
 
         /**
          * List of created [MockKeyboardManager]
          */
-        val builtKeyboardManagers = concurrentMutableListOf<MockKeyboardManager>()
+        val builtKeyboardManagers = concurrentMutableListOf<MockKeyboardManager<FH>>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -50,20 +50,20 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         init {
             if (setupMocks) {
                 createMock.on().doExecute { _ ->
-                    MockKeyboardManager(setupMocks).also {
+                    MockKeyboardManager<FH>(setupMocks).also {
                         builtKeyboardManagers.add(it)
                     }
                 }
             }
         }
 
-        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager = createMock.call(coroutineScope)
+        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager<FH> = createMock.call(coroutineScope)
     }
 
     /**
      * Gets the current [FocusHandler]
      */
-    var focusHandler: FocusHandler? = null
+    var focusHandler: FH? = null
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [show]
@@ -79,16 +79,16 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         if (setupMocks) {
             showMock.on().doExecute { (focusHandler) ->
                 this.focusHandler = focusHandler
-                (focusHandler as? MockFocusHandler)?.simulateGiveFocus()
+                (focusHandler as? MockFocusHandler)?.giveFocus()
             }
             hideMock.on().doExecute {
-                (focusHandler as? MockFocusHandler)?.simulateRemoveFocus()
+                (focusHandler as? MockFocusHandler)?.removeFocus()
                 focusHandler = null
             }
         }
     }
 
-    override fun show(focusHandler: FocusHandler): Unit = showMock.call(focusHandler)
+    override fun show(focusHandler: FH): Unit = showMock.call(focusHandler)
 
     override fun hide(): Unit = hideMock.call()
 }

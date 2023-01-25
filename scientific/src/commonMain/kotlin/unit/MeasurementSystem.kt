@@ -54,7 +54,7 @@ interface MetricBaseUnit<System, Quantity : PhysicalQuantity> : SystemScientific
     override val quantity: Quantity
 }
 
-interface MetricMultipleUnit<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>> : SystemScientificUnit<System, Quantity> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric
+sealed interface MetricMultipleUnit<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>> : SystemScientificUnit<System, Quantity> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric
 
 class Giga<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) : MetricMultipleUnit<System, Quantity, Unit> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric {
     override val symbol: String = "G${unit.symbol}"

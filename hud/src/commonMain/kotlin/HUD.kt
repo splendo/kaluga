@@ -18,7 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -42,7 +42,7 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
     /**
      * Builder class for creating a [BaseHUD]
      */
-    abstract class Builder : LifecycleSubscribableMarker {
+    abstract class Builder : LifecycleSubscribable {
 
         /** */
         /**

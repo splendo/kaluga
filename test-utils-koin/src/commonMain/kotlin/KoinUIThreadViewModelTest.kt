@@ -23,14 +23,14 @@ import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel> :
-    KoinUIThreadTest<KVMC>() {
+abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
+    KoinUIThreadTest<Context>() {
 
-    abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
+    abstract class KoinViewModelTestContext<ViewModel : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
-        UIThreadViewModelTest.ViewModelTestContext<VM> {
+        UIThreadViewModelTest.ViewModelTestContext<ViewModel> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
@@ -39,14 +39,14 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
     }
 }
 
-abstract class BaseKoinUIThreadViewModelTest<C, KVMC : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : LifecycleViewModel> :
-    BaseKoinUIThreadTest<C, KVMC>() {
+abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
+    BaseKoinUIThreadTest<Configuration, Context>() {
 
-    abstract class KoinViewModelTestContext<VM : LifecycleViewModel>(
+    abstract class KoinViewModelTestContext<ViewModel : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
         koinModules: List<Module>
     ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
-        BaseUIThreadViewModelTest.ViewModelTestContext<VM> {
+        BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,

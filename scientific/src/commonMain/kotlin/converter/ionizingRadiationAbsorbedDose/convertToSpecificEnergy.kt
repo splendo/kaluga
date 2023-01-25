@@ -25,9 +25,8 @@ import com.splendo.kaluga.scientific.unit.Gram
 import com.splendo.kaluga.scientific.unit.IonizingRadiationAbsorbedDose
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilogram
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Rad
+import com.splendo.kaluga.scientific.unit.RadMultiple
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
@@ -36,7 +35,7 @@ fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>.asSpeci
     (Erg per Gram).specificEnergy(this)
 
 @JvmName("specificEnergyFromRadMultiple")
-fun <RadUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.asSpecificEnergy() where RadUnit : IonizingRadiationAbsorbedDose, RadUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> =
+fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.asSpecificEnergy() =
     (Erg per Gram).specificEnergy(this)
 
 @JvmName("specificEnergyFromAbsorbedDose")

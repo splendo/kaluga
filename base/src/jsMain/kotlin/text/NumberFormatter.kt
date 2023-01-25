@@ -21,27 +21,27 @@ import com.splendo.kaluga.base.utils.Locale
 
 // TODO Implement with proper number formatter solution for Java Script
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
-    actual var percentSymbol: Char = Char.MIN_VALUE
-    actual var perMillSymbol: Char = Char.MIN_VALUE
-    actual var minusSign: Char = Char.MIN_VALUE
-    actual var exponentSymbol: String = ""
-    actual var zeroSymbol: Char = Char.MIN_VALUE
-    actual var notANumberSymbol: String = ""
-    actual var infinitySymbol: String = ""
+    actual var percentSymbol: Char = '%'
+    actual var perMillSymbol: Char = '\u2030'
+    actual var minusSign: Char = '-'
+    actual var exponentSymbol: String = "E"
+    actual var zeroSymbol: Char = '0'
+    actual var notANumberSymbol: String = "NaN"
+    actual var infinitySymbol: String = "\u221E"
     actual var currencySymbol: String = ""
     actual var currencyCode: String = ""
     actual var positivePrefix: String = ""
     actual var positiveSuffix: String = ""
-    actual var negativePrefix: String = ""
+    actual var negativePrefix: String = "-"
     actual var negativeSuffix: String = ""
-    actual var groupingSeparator: Char = Char.MIN_VALUE
+    actual var groupingSeparator: Char = ','
     actual var usesGroupingSeparator: Boolean = false
-    actual var decimalSeparator: Char = Char.MIN_VALUE
+    actual var decimalSeparator: Char = '.'
     actual var alwaysShowsDecimalSeparator: Boolean = false
-    actual var currencyDecimalSeparator: Char = Char.MIN_VALUE
+    actual var currencyDecimalSeparator: Char = '.'
     actual var groupingSize: Int = 0
     actual var multiplier: Int = 1
 
-    actual fun format(number: Number): String = ""
-    actual fun parse(string: String): Number? = null
+    actual fun format(number: Number): String = "$number"
+    actual fun parse(string: String): Number? = string.toFloatOrNull()
 }

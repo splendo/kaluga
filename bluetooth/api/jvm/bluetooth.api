@@ -800,9 +800,14 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceInfoImpl : com/sple
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/bluetooth/device/DeviceInfoKt {
+public final class com/splendo/kaluga/bluetooth/device/DeviceInfoJVM {
 	public static final fun getStringValue (Lcom/splendo/kaluga/bluetooth/UUID;)Ljava/lang/String;
+	public static final fun identifierFromString (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/UUID;
 	public static final fun randomIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
+}
+
+public final class com/splendo/kaluga/bluetooth/device/DeviceInfoKt {
+	public static final fun getSerializable (Lcom/splendo/kaluga/bluetooth/UUID;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceState {
@@ -813,11 +818,36 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceWrappe
 	public abstract fun getName ()Ljava/lang/String;
 }
 
+public class com/splendo/kaluga/bluetooth/device/IdentifierSerializer : kotlinx/serialization/KSerializer {
+	public fun <init> ()V
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
 public abstract interface class com/splendo/kaluga/bluetooth/device/NotConnectableDeviceState : com/splendo/kaluga/bluetooth/device/DeviceState {
 }
 
 public final class com/splendo/kaluga/bluetooth/device/NotConnectableDeviceStateImpl : com/splendo/kaluga/bluetooth/device/NotConnectableDeviceState {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/NotConnectableDeviceStateImpl;
+}
+
+public final class com/splendo/kaluga/bluetooth/device/SerializableIdentifier {
+	public static final field Companion Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier$Companion;
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/UUID;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/UUID;
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/UUID;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;Lcom/splendo/kaluga/bluetooth/UUID;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/SerializableIdentifier;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/device/SerializableIdentifier$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/splendo/kaluga/bluetooth/scanner/Scanner, kotlinx/coroutines/CoroutineScope {

@@ -136,26 +136,30 @@ object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physi
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
+
 @Serializable
-object Nanopascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Nano(Pascal)
+sealed class PascalMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal>
+
 @Serializable
-object Micropascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Micro(Pascal)
+object Nanopascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Nano(Pascal)
 @Serializable
-object Millipascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Milli(Pascal)
+object Micropascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Micro(Pascal)
 @Serializable
-object Centipascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Centi(Pascal)
+object Millipascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Milli(Pascal)
 @Serializable
-object Decipascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deci(Pascal)
+object Centipascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Centi(Pascal)
 @Serializable
-object Decapascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deca(Pascal)
+object Decipascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deci(Pascal)
 @Serializable
-object Hectopascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Hecto(Pascal)
+object Decapascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Deca(Pascal)
 @Serializable
-object Kilopascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Kilo(Pascal)
+object Hectopascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Hecto(Pascal)
 @Serializable
-object Megapascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Mega(Pascal)
+object Kilopascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Kilo(Pascal)
 @Serializable
-object Gigapascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Giga(Pascal)
+object Megapascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Mega(Pascal)
+@Serializable
+object Gigapascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Giga(Pascal)
 @Serializable
 object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
     private const val BAR_PER_PASCAL = 0.00001
@@ -167,25 +171,28 @@ object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 }
 
 @Serializable
-object Nanobar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Nano(Bar)
+sealed class BarMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar>
+
 @Serializable
-object Microbar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Micro(Bar)
+object Nanobar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Nano(Bar)
 @Serializable
-object Millibar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Milli(Bar)
+object Microbar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Micro(Bar)
 @Serializable
-object Centibar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Centi(Bar)
+object Millibar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Milli(Bar)
 @Serializable
-object Decibar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Deci(Bar)
+object Centibar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Centi(Bar)
 @Serializable
-object Decabar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Deca(Bar)
+object Decibar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Deci(Bar)
 @Serializable
-object Hectobar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Hecto(Bar)
+object Decabar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Deca(Bar)
 @Serializable
-object Kilobar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Kilo(Bar)
+object Hectobar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Hecto(Bar)
 @Serializable
-object Megabar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Mega(Bar)
+object Kilobar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Kilo(Bar)
 @Serializable
-object Gigabar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Giga(Bar)
+object Megabar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Mega(Bar)
+@Serializable
+object Gigabar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Giga(Bar)
 
 @Serializable
 object Barye : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
@@ -198,25 +205,28 @@ object Barye : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physic
 }
 
 @Serializable
-object Nanobarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Nano(Barye)
+sealed class BaryeMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye>
+
 @Serializable
-object Microbarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Micro(Barye)
+object Nanobarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Nano(Barye)
 @Serializable
-object Millibarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Milli(Barye)
+object Microbarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Micro(Barye)
 @Serializable
-object Centibarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Centi(Barye)
+object Millibarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Milli(Barye)
 @Serializable
-object Decibarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Deci(Barye)
+object Centibarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Centi(Barye)
 @Serializable
-object Decabarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Deca(Barye)
+object Decibarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Deci(Barye)
 @Serializable
-object Hectobarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Hecto(Barye)
+object Decabarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Deca(Barye)
 @Serializable
-object Kilobarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Kilo(Barye)
+object Hectobarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Hecto(Barye)
 @Serializable
-object Megabarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Mega(Barye)
+object Kilobarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Kilo(Barye)
 @Serializable
-object Gigabarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Giga(Barye)
+object Megabarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Mega(Barye)
+@Serializable
+object Gigabarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Giga(Barye)
 
 @Serializable
 object Atmosphere : MetricPressure() {
@@ -238,25 +248,28 @@ object Torr : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Physica
 }
 
 @Serializable
-object Nanotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Nano(Torr)
+sealed class TorrMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr>
+
 @Serializable
-object Microtorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Micro(Torr)
+object Nanotorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Nano(Torr)
 @Serializable
-object Millitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Milli(Torr)
+object Microtorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Micro(Torr)
 @Serializable
-object Centitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Centi(Torr)
+object Millitorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Milli(Torr)
 @Serializable
-object Decitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Deci(Torr)
+object Centitorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Centi(Torr)
 @Serializable
-object Decatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Deca(Torr)
+object Decitorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Deci(Torr)
 @Serializable
-object Hectotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Hecto(Torr)
+object Decatorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Deca(Torr)
 @Serializable
-object Kilotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Kilo(Torr)
+object Hectotorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Hecto(Torr)
 @Serializable
-object Megatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Mega(Torr)
+object Kilotorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Kilo(Torr)
 @Serializable
-object Gigatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Giga(Torr)
+object Megatorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Mega(Torr)
+@Serializable
+object Gigatorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Giga(Torr)
 
 @Serializable
 object MillimeterOfMercury : MetricPressure() {

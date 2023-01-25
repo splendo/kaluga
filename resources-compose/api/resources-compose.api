@@ -1,9 +1,9 @@
 public final class com/splendo/kaluga/resources/compose/BackgroundStyleKt {
 	public static final fun PreviewBackgroundStyle (Landroidx/compose/runtime/Composer;I)V
-	public static final fun backgroundStyle (Landroidx/compose/ui/Modifier;Lcom/splendo/kaluga/resources/stylable/BackgroundStyle;)Landroidx/compose/ui/Modifier;
-	public static final fun getBorderStroke (Lcom/splendo/kaluga/resources/stylable/BackgroundStyle$StrokeStyle;)Landroidx/compose/foundation/BorderStroke;
-	public static final fun getBrush (Lcom/splendo/kaluga/resources/stylable/BackgroundStyle$FillStyle;)Landroidx/compose/ui/graphics/Brush;
-	public static final fun getShape (Lcom/splendo/kaluga/resources/stylable/BackgroundStyle$Shape;)Landroidx/compose/ui/graphics/Shape;
+	public static final fun backgroundStyle (Landroidx/compose/ui/Modifier;Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)Landroidx/compose/ui/Modifier;
+	public static final fun getBorderStroke (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$StrokeStyle;)Landroidx/compose/foundation/BorderStroke;
+	public static final fun getBrush (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$FillStyle;)Landroidx/compose/ui/graphics/Brush;
+	public static final fun getShape (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)Landroidx/compose/ui/graphics/Shape;
 }
 
 public final class com/splendo/kaluga/resources/compose/ColorKt {
@@ -30,6 +30,7 @@ public final class com/splendo/kaluga/resources/compose/KalugaLabelKt {
 }
 
 public final class com/splendo/kaluga/resources/compose/RelativeRadialGradient : androidx/compose/ui/graphics/ShaderBrush {
+	public static final field $stable I
 	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FI[Lkotlin/Pair;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FI[Lkotlin/Pair;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/util/List;Ljava/util/List;Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FIILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -40,6 +41,7 @@ public final class com/splendo/kaluga/resources/compose/RelativeRadialGradient :
 }
 
 public final class com/splendo/kaluga/resources/compose/RelativeSweepGradient : androidx/compose/ui/graphics/ShaderBrush {
+	public static final field $stable I
 	public fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;[Lkotlin/Pair;)V
 	public fun createShader-uvyYCjk (J)Landroid/graphics/Shader;
 	public fun equals (Ljava/lang/Object;)Z
@@ -62,6 +64,6 @@ public final class com/splendo/kaluga/resources/compose/RoundedCornerRadiusShape
 }
 
 public final class com/splendo/kaluga/resources/compose/TextAlignmentKt {
-	public static final fun getComposable (Lcom/splendo/kaluga/resources/stylable/TextAlignment;)I
+	public static final fun getComposable (Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)I
 }
 

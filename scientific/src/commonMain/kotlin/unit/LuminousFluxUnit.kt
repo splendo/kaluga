@@ -48,22 +48,25 @@ object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperia
 }
 
 @Serializable
-object Nanolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Nano(Lumen)
+sealed class LumenMultiple : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen>
+
 @Serializable
-object Microlumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Micro(Lumen)
+object Nanolumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Nano(Lumen)
 @Serializable
-object Millilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Milli(Lumen)
+object Microlumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Micro(Lumen)
 @Serializable
-object Centilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Centi(Lumen)
+object Millilumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Milli(Lumen)
 @Serializable
-object Decilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Deci(Lumen)
+object Centilumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Centi(Lumen)
 @Serializable
-object Decalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Deca(Lumen)
+object Decilumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Deci(Lumen)
 @Serializable
-object Hectolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Hecto(Lumen)
+object Decalumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Deca(Lumen)
 @Serializable
-object Kilolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Kilo(Lumen)
+object Hectolumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Hecto(Lumen)
 @Serializable
-object Megalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Mega(Lumen)
+object Kilolumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Kilo(Lumen)
 @Serializable
-object Gigalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Giga(Lumen)
+object Megalumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Mega(Lumen)
+@Serializable
+object Gigalumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Giga(Lumen)

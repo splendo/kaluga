@@ -51,25 +51,28 @@ object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
 }
 
 @Serializable
-object Nanohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Nano(Hertz)
+sealed class HertzMultiple : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz>
+
 @Serializable
-object Microhertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Micro(Hertz)
+object Nanohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Nano(Hertz)
 @Serializable
-object Millihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Milli(Hertz)
+object Microhertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Micro(Hertz)
 @Serializable
-object Centihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Centi(Hertz)
+object Millihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Milli(Hertz)
 @Serializable
-object Decihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deci(Hertz)
+object Centihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Centi(Hertz)
 @Serializable
-object Decahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deca(Hertz)
+object Decihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deci(Hertz)
 @Serializable
-object Hectohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Hecto(Hertz)
+object Decahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deca(Hertz)
 @Serializable
-object Kilohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Kilo(Hertz)
+object Hectohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Hecto(Hertz)
 @Serializable
-object Megahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Mega(Hertz)
+object Kilohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Kilo(Hertz)
 @Serializable
-object Gigahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Giga(Hertz)
+object Megahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Mega(Hertz)
+@Serializable
+object Gigahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Giga(Hertz)
 @Serializable
 object BeatsPerMinute : Frequency() {
     override val symbol: String = "bpm"

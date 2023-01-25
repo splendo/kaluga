@@ -25,8 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BluetoothDescriptorItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDescriptorViewModel
 
-object DescriptorsBinding {
-
+object DescriptorBinding {
     @BindingAdapter("descriptors")
     @JvmStatic
     fun bindDescriptors(view: RecyclerView, descriptors: List<BluetoothDescriptorViewModel>?) {

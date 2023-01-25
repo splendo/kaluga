@@ -9,7 +9,7 @@ public abstract class com/splendo/kaluga/hud/BaseHUD : kotlinx/coroutines/Corout
 	public static synthetic fun present$default (Lcom/splendo/kaluga/hud/BaseHUD;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public abstract class com/splendo/kaluga/hud/BaseHUD$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract class com/splendo/kaluga/hud/BaseHUD$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/hud/BaseHUD;
 }

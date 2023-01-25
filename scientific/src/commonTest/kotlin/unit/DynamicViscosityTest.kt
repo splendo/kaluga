@@ -19,6 +19,8 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
+import com.splendo.kaluga.scientific.converter.density.times
+import com.splendo.kaluga.scientific.converter.kinematicViscosity.times
 import com.splendo.kaluga.scientific.converter.momentum.div
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.converter.time.times
@@ -37,6 +39,24 @@ class DynamicViscosityTest {
             PoundSquareInch x Millisecond,
             7
         )
+    }
+
+    @Test
+    fun dynamicViscosityFromKinematicViscosityAndDensity() {
+        assertEquals(4(Pascal x Second), 2(SquareMeter per Second) * 2(Kilogram per CubicMeter))
+        assertEquals(4(Pascal x Second), 2(Kilogram per CubicMeter) * 2(SquareMeter per Second))
+
+        assertEqualScientificValue(4(PoundSquareInch x Second), 2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound per CubicInch), 5)
+        assertEqualScientificValue(4(PoundSquareInch x Second), (24 * ImperialStandardGravityAcceleration.value)(Pound per CubicInch) * 2(SquareInch per Second), 5)
+
+        assertEqualScientificValue(4(PoundSquareInch.ukImperial x Second), 2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial per CubicInch), 5)
+        assertEqualScientificValue(4(PoundSquareInch.ukImperial x Second), (24 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial per CubicInch) * 2(SquareInch per Second), 5)
+
+        assertEqualScientificValue(4(PoundSquareInch.usCustomary x Second), 2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary per CubicInch), 5)
+        assertEqualScientificValue(4(PoundSquareInch.usCustomary x Second), (24 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary per CubicInch) * 2(SquareInch per Second), 5)
+
+        assertEquals(4(Pascal x Second), 2(SquareMeter per Second) * 2(Kilogram per CubicMeter).convert(Pound per CubicFoot))
+        assertEquals(4(Pascal x Second), 2(Kilogram per CubicMeter).convert(Pound per CubicFoot) * 2(SquareMeter per Second))
     }
 
     @Test

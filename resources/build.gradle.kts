@@ -16,7 +16,6 @@ kotlin {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
                 apiDependency(Dependencies.KotlinX.Serialization.Core)
-                apiDependency(Dependencies.KotlinX.Serialization.Json)
             }
         }
 

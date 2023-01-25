@@ -17,41 +17,4 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.featureList
 
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.resources.localized
-
-actual val showPlatformSpecificFeatures: Boolean = true
-
-sealed class PlatformFeatureListNavigationAction : NavigationAction<Nothing>(null) {
-    object ComposeNavigation : PlatformFeatureListNavigationAction()
-    object ComposeBottomSheet : PlatformFeatureListNavigationAction()
-}
-
-sealed class PlatformFeature(val title: String) {
-    object ComposeNavigation : PlatformFeature("feature_platform_specific_compose_navigation".localized())
-    object ComposeBottomSheet : PlatformFeature("feature_platform_specific_compose_bottom_sheet".localized())
-}
-
-class PlatformSpecificFeaturesViewModel(
-    navigator: Navigator<PlatformFeatureListNavigationAction>
-) : NavigatingViewModel<PlatformFeatureListNavigationAction>(navigator) {
-
-    val feature = observableOf(
-        listOf(
-            PlatformFeature.ComposeNavigation,
-            PlatformFeature.ComposeBottomSheet
-        )
-    )
-
-    fun onFeaturePressed(feature: PlatformFeature) {
-        navigator.navigate(
-            when (feature) {
-                is PlatformFeature.ComposeNavigation -> PlatformFeatureListNavigationAction.ComposeNavigation
-                is PlatformFeature.ComposeBottomSheet -> PlatformFeatureListNavigationAction.ComposeBottomSheet
-            }
-        )
-    }
-}
+actual val showPlatformSpecificFeatures: Boolean = false

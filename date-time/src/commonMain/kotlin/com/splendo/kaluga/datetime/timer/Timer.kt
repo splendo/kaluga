@@ -18,7 +18,6 @@ package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.utils.firstInstance
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.transformWhile
 import kotlin.time.Duration
@@ -28,7 +27,9 @@ interface Timer {
     /** Timer duration. */
     val duration: Duration
     /** Current state of the timer. */
-    val state: StateFlow<State>
+    val state: Flow<State>
+    /** The current [State] of the timer. */
+    val currentState: State
 
     sealed interface State {
         val elapsed: Flow<Duration>

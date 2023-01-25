@@ -22,17 +22,27 @@ import kotlinx.coroutines.CoroutineScope
 import platform.UIKit.UIApplication
 import platform.darwin.sel_registerName
 
-actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
+class UIKitKeyboardManager(private val application: UIApplication) : BaseKeyboardManager<UIKitFocusHandler> {
 
-    actual class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
+    class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder<UIKitFocusHandler> {
+        override fun create(coroutineScope: CoroutineScope) = UIKitKeyboardManager(application)
     }
 
-    override fun show(focusHandler: FocusHandler) {
+    override fun show(focusHandler: UIKitFocusHandler) {
         focusHandler.requestFocus()
     }
 
     override fun hide() {
         application.sendAction(sel_registerName("resignFirstResponder"), null, null, null)
+    }
+}
+
+open class ValueKeyboardManager<Value>(private val onFocusOnValue: (Value?) -> Unit) : BaseKeyboardManager<ValueFocusHandler<Value>> {
+    override fun show(focusHandler: ValueFocusHandler<Value>) {
+        onFocusOnValue(focusHandler.value)
+    }
+
+    override fun hide() {
+        onFocusOnValue(null)
     }
 }

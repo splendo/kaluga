@@ -21,27 +21,27 @@ import org.gradle.api.tasks.Copy
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
+import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
-import org.jetbrains.kotlin.konan.file.File
+import java.util.Locale
 
 sealed class ComponentType {
-    abstract val isApp: Boolean
-
-    data class Default(override val isApp: Boolean = false) : ComponentType()
-    data class Compose(override val isApp: Boolean = false) : ComponentType()
+    object Default : ComponentType()
+    object Compose : ComponentType()
+    object DataBinding : ComponentType()
 }
 
-fun Project.commonComponent() {
+fun Project.commonComponent(iosExport: (Framework.() -> Unit)? = null) {
     group = Library.group
     version = Library.version
     kotlinMultiplatform {
-        commonMultiplatformComponent(this@commonComponent)
+        commonMultiplatformComponent(this@commonComponent, iosExport)
     }
 
     commonAndroidComponent()
-    android {
-        commonMultiplatformComponentAndroid(this@commonComponent)
+    androidLibrary {
+        commonMultiplatformComponentAndroid()
     }
 
     task("printConfigurations") {
@@ -53,15 +53,15 @@ fun Project.commonComponent() {
     afterEvaluate {
         Library.IOS.targets.forEach {
             val targetName = it.sourceSetName
-            if (tasks.names.contains("linkDebugTest${targetName.capitalize() }")) {
+            if (tasks.names.contains("linkDebugTest${targetName.capitalize(Locale.ENGLISH) }")) {
                 // creating copy task for the target
-                val copyTask = tasks.create("copy${targetName.capitalize() }TestResources", Copy::class.java) {
+                val copyTask = tasks.create("copy${targetName.capitalize(Locale.ENGLISH) }TestResources", Copy::class.java) {
                     from("src/iosTest/resources/.")
                     into("$buildDir/bin/$targetName/debugTest")
                 }
 
                 // apply copy task to the target
-                tasks.named("linkDebugTest${targetName.capitalize()}") {
+                tasks.named("linkDebugTest${targetName.capitalize(Locale.ENGLISH)}") {
                     dependsOn(copyTask)
                 }
             }
@@ -83,7 +83,7 @@ fun Project.commonComponent() {
     }
 }
 
-fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Project) {
+fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Project, iosExport: (Framework.() -> Unit)? = null) {
     targets {
         configureEach {
             compilations.configureEach {
@@ -96,6 +96,11 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
     val target: KotlinNativeTarget.() -> Unit =
         {
             binaries {
+                iosExport?.let { iosExport ->
+                    framework {
+                        iosExport()
+                    }
+                }
                 getTest("DEBUG").apply {
                     freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
                 }
@@ -112,9 +117,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
 
     jvm()
     js(KotlinJsCompilerType.IR) {
-        // Disable JS browser tests for now
-        // See https://github.com/splendo/kaluga/issues/97
-        // browser()
+        browser()
         nodejs()
         compilations.configureEach {
             kotlinOptions {
@@ -123,6 +126,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
                 moduleKind = "umd"
             }
         }
+        binaries.executable()
     }
 
     val commonMain = sourceSets.getByName("commonMain").apply {
@@ -202,7 +206,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
     }
 }
 
-fun LibraryExtension.commonMultiplatformComponentAndroid(project: Project) {
+fun LibraryExtension.commonMultiplatformComponentAndroid() {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }

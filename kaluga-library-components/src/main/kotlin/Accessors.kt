@@ -15,13 +15,19 @@
 
  */
 
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-fun Project.android(action: LibraryExtension.() -> Unit) {
+fun Project.androidApp(action: BaseAppModuleExtension.() -> Unit) {
+    configureAction("android", action)
+}
+
+fun Project.androidLibrary(action: LibraryExtension.() -> Unit) {
     configureAction("android", action)
 }
 
@@ -41,7 +47,7 @@ fun Project.publishing(action: org.gradle.api.publish.PublishingExtension.() -> 
     configureAction("publishing", action)
 }
 
-fun LibraryExtension.kotlinOptions(action: org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions.() -> Unit) {
+fun CommonExtension<*, *, *, *>.kotlinOptions(action: org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions.() -> Unit) {
     (this as org.gradle.api.plugins.ExtensionAware).configureAction("kotlinOptions", action)
 }
 

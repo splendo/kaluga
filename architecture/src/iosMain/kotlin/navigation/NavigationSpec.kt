@@ -62,15 +62,17 @@ sealed class NavigationSpec {
      * Navigates to a new view controller by pushing it on top of the parents [UINavigationController]
      * @param animated Specifies whether transition should be animated
      * @param push Function to create the [UIViewController] to push
+     * @param completion Optional function to call when push has completed
      */
-    data class Push(val animated: Boolean = true, val push: () -> UIViewController) : NavigationSpec()
+    data class Push(val animated: Boolean = true, val push: () -> UIViewController, val completion: (() -> Unit)? = null) : NavigationSpec()
 
     /**
      * Pops the viewController on the parents [UINavigationController].
      * @param to Optional [UIViewController] to pop to. If not provided the viewcontroller on top is popped.
      * @param animated Specifies whether transition should be animated
+     * @param completion Optional function to call when pop has completed
      */
-    data class Pop(val to: UIViewController? = null, val animated: Boolean = true) : NavigationSpec()
+    data class Pop(val to: UIViewController? = null, val animated: Boolean = true, val completion: (() -> Unit)? = null) : NavigationSpec()
 
     /**
      * Lets the parent present a [UIViewController] using [UIViewController.presentViewController].

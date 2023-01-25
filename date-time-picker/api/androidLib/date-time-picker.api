@@ -9,7 +9,7 @@ public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresen
 	public static synthetic fun showDateTimePicker$default (Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
-public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter;
 }
@@ -82,14 +82,14 @@ public final class com/splendo/kaluga/datetimepicker/DateTimePickerPresenter : c
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 }
 
-public final class com/splendo/kaluga/datetimepicker/DateTimePickerPresenter$Builder : com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder, com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+public final class com/splendo/kaluga/datetimepicker/DateTimePickerPresenter$Builder : com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder, com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable {
 	public fun <init> ()V
 	public fun <init> (ILcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;)V
 	public synthetic fun <init> (ILcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter;
 	public fun create (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/datetimepicker/DateTimePickerPresenter;
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 

@@ -9,7 +9,7 @@ public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresen
 	public static synthetic fun showDateTimePicker$default (Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
-public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter;
 }

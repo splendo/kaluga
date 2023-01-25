@@ -25,8 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BluetoothCharacteristicItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothCharacteristicViewModel
 
-object CharacteristicsBinding {
-
+object CharacteristicBinding {
     @BindingAdapter("characteristics")
     @JvmStatic
     fun bindCharacteristics(view: RecyclerView, characteristics: List<BluetoothCharacteristicViewModel>?) {

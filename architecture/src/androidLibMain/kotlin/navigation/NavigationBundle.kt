@@ -24,7 +24,7 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
  * Converts a [NavigationBundle] to a [Bundle]
  * @return The converted [Bundle]
  */
-fun <R : NavigationBundleSpecRow<*>> NavigationBundle<R>.toBundle(): Bundle {
+fun <Row : NavigationBundleSpecRow<*>> NavigationBundle<Row>.toBundle(): Bundle {
     val bundle = Bundle()
 
     values.entries.forEach { (key, value) ->
@@ -70,7 +70,7 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
  * @param spec The [NavigationBundleSpec] used to create the [NavigationBundle]
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
-fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<R>): NavigationBundle<R> {
+fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<Row>): NavigationBundle<Row> {
     return NavigationBundle(
         spec,
         spec.rows.associate { row ->
@@ -79,16 +79,6 @@ fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationB
             } ?: throw BundleConversionError()
         }
     )
-}
-
-/**
- * Converts a [Bundle] to a property associated with a [NavigationBundleSpecType]
- * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType]
- * @return The type stored in the bundle
- * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
- */
-fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
-    return toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
 }
 
 /**

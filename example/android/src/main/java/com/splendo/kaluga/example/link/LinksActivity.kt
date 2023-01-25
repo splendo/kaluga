@@ -22,23 +22,21 @@ import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityLinkBinding
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
-import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.net.URL
 
-class LinksActivity : KalugaViewModelActivity<LinksViewModel>(R.layout.activity_link) {
+class LinksActivity : KalugaViewModelActivity<LinksViewModel>() {
 
     override val viewModel: LinksViewModel by viewModel {
         parametersOf(
-            ActivityNavigator<BrowserNavigationActions<BrowserSpecRow>> {
+            ActivityNavigator<BrowserNavigationActions<*>> {
                 when (it) {
                     is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
-                        URL(it.bundle!!.get(BrowserSpecRow.UrlSpecRow)),
+                        URL(it.value),
                         NavigationSpec.Browser.Type.Normal
                     )
                 }

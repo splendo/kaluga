@@ -71,34 +71,37 @@ object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 }
 
 @Serializable
-object Nanometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Nano(Meter)
+sealed class MeterMultiple : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter>
 
 @Serializable
-object Micrometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Micro(Meter)
+object Nanometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Nano(Meter)
 
 @Serializable
-object Millimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Milli(Meter)
+object Micrometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Micro(Meter)
 
 @Serializable
-object Centimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Centi(Meter)
+object Millimeter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Milli(Meter)
 
 @Serializable
-object Decimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deci(Meter)
+object Centimeter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Centi(Meter)
 
 @Serializable
-object Decameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deca(Meter)
+object Decimeter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deci(Meter)
 
 @Serializable
-object Hectometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Hecto(Meter)
+object Decameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deca(Meter)
 
 @Serializable
-object Kilometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Kilo(Meter)
+object Hectometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Hecto(Meter)
 
 @Serializable
-object Megameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Mega(Meter)
+object Kilometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Kilo(Meter)
 
 @Serializable
-object Gigameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Giga(Meter)
+object Megameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Mega(Meter)
+
+@Serializable
+object Gigameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Giga(Meter)
 
 @Serializable
 object NauticalMile : MetricLength() {

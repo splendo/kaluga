@@ -24,14 +24,10 @@ import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 
-actual interface FocusHandler {
-    fun requestFocus(activity: Activity?)
-}
-
 class ViewFocusHandler(
     @IdRes private val id: Int
 ) : FocusHandler {
-    override fun requestFocus(activity: Activity?) {
+    fun requestFocus(activity: Activity?) {
         if (activity == null)
             return
         val view = activity.findViewById<View>(id) ?: return

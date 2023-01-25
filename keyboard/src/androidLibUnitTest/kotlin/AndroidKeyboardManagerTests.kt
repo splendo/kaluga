@@ -21,24 +21,24 @@ import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 
-class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestContext>() {
+class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, AndroidKeyboardTestContext>() {
 
     companion object {
         private const val viewId = 1
     }
 
-    inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
+    inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext<ViewFocusHandler>(), CoroutineScope by coroutineScope {
         override val focusHandler get() = ViewFocusHandler(viewId)
-        override lateinit var builder: KeyboardManager.Builder
+        override lateinit var builder: ViewKeyboardManager.Builder
 
         val mockActivity: Activity = mock(Activity::class.java)
         var mockView: View = mock(View::class.java)
@@ -70,10 +70,10 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
             `when`(mockDecorView.windowToken).thenReturn(mockWindowToken)
             `when`(mockInputMethodManager.isAcceptingText).thenReturn(true)
 
-            builder = KeyboardManager.Builder()
+            builder = ViewKeyboardManager.Builder()
 
             builder.subscribe(
-                LifecycleSubscribable.LifecycleManager(
+                ActivityLifecycleSubscribable.LifecycleManager(
                     mockActivity,
                     mockLifecycleOwner,
                     mockFragmentManager

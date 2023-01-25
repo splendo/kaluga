@@ -21,13 +21,12 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.power.power
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.ErgPerSecond
 import com.splendo.kaluga.scientific.unit.FootPoundForcePerSecond
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricSpeed
 import com.splendo.kaluga.scientific.unit.Speed
 import com.splendo.kaluga.scientific.unit.UKImperialForce
@@ -40,8 +39,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(speed: Sc
     ErgPerSecond.power(this, speed)
 
 @JvmName("dyneMultipleTimesMetricSpeed")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    ErgPerSecond.power(this, speed)
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) = ErgPerSecond.power(this, speed)
 
 @JvmName("imperialForceTimesImperialSpeed")
 infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(

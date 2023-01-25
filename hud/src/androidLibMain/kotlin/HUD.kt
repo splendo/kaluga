@@ -37,7 +37,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.mainHandler
@@ -51,7 +51,7 @@ import kotlin.coroutines.suspendCoroutine
 
 actual class HUD private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
-    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUD.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUD.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             R.layout.loading_indicator_view,

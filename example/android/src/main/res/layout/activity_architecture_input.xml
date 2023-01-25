@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel" />
+            type="com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureViewModel" />
         <import type="com.splendo.kaluga.architecture.observable.BaseSubject"/>
 
     </data>
@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@{viewModel.nameHeader.liveData}"
+            android:hint="@{viewModel.namePlaceholder}"
             app:errorEnabled="@{viewModel.isNameValid.liveData}">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@id/name_input_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@{viewModel.numberHeader.stateFlow}"
+            android:hint="@{viewModel.numberPlaceholder}"
             app:errorEnabled="@{viewModel.isNumberValid.stateFlow}">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -51,13 +51,22 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/show_details_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{view -> viewModel.onShowDetailsPressed()}"
+            app:kalugaButton="@{viewModel.showDetailsButton}"
             app:layout_constraintTop_toBottomOf="@id/number_input_layout"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:kalugaButton="@{viewModel.showBottomSheetButton}"
+            app:layout_constraintTop_toBottomOf="@id/show_details_button"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/architecture_details"/>
+            android:layout_marginTop="10dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

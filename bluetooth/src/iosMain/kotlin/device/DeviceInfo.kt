@@ -23,5 +23,7 @@ actual typealias Identifier = NSUUID
 
 actual fun randomIdentifier() = Identifier.UUID()
 
+actual fun identifierFromString(stringValue: String): Identifier? = NSUUID(stringValue)
+
 actual val Identifier.stringValue: String
     get() = UUIDString

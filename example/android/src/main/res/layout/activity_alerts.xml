@@ -1,39 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.appcompat.widget.LinearLayoutCompat
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel" />
+    </data>
+    <androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_simple_alert"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/show_alert"/>
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_dismissible_alert"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/dismissible_alert"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_simple_alert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:kalugaButton="@{viewModel.showAlertButton}"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_alert_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/alert_list"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_dismissible_alert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:kalugaButton="@{viewModel.showAndDismissAfter3SecondsButton}"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_alert_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/alert_input"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_alert_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:kalugaButton="@{viewModel.showAlertWithInputButton}"/>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_alert_input_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:kalugaButton="@{viewModel.showAlertWithListButton}"/>
 
-</androidx.core.widget.NestedScrollView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

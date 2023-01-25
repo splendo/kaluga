@@ -1,65 +1,212 @@
-public final class com/splendo/kaluga/architecture/lifecycle/GetOrPutAndRemoveOnDestroyFromCacheKt {
-	public static final fun getLifecycleAwareActivityCache ()Ljava/util/Map;
-}
-
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscriber {
-	public fun <init> ()V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public final fun getManagerState ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-}
-
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserverKt {
-	public static final fun lifecycleManagerObserver (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;
-}
-
-public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
-	public abstract fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public abstract fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+public abstract interface class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+	public abstract fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public abstract fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public abstract fun unsubscribe ()V
 }
 
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager {
-	public fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)V
+public final class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager {
+	public fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public synthetic fun <init> (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Landroid/app/Activity;
 	public final fun component2 ()Landroidx/lifecycle/LifecycleOwner;
 	public final fun component3 ()Landroidx/fragment/app/FragmentManager;
-	public final fun copy (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
+	public final fun component4 ()Landroidx/fragment/app/FragmentManager;
+	public final fun copy (Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getActivity ()Landroid/app/Activity;
+	public final fun getChildFragmentManager ()Landroidx/fragment/app/FragmentManager;
 	public final fun getFragmentManager ()Landroidx/fragment/app/FragmentManager;
 	public final fun getLifecycleOwner ()Landroidx/lifecycle/LifecycleOwner;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableKt {
-	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)V
-	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;Landroidx/appcompat/app/AppCompatActivity;)V
+public final class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribableKt {
+	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroid/app/Activity;Landroidx/lifecycle/LifecycleOwner;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public static final fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable;Landroidx/appcompat/app/AppCompatActivity;)V
 }
 
-public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
-}
-
-public class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+public class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable {
 	public fun <init> ()V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 
-public final class com/splendo/kaluga/architecture/navigation/ActivityNavigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable, com/splendo/kaluga/architecture/navigation/Navigator {
+public final class com/splendo/kaluga/architecture/lifecycle/GetOrPutAndRemoveOnDestroyFromCacheKt {
+	public static final fun getLifecycleAwareActivityCache ()Ljava/util/Map;
+}
+
+public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscriber {
+	public fun <init> ()V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public final fun getManagerState ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+}
+
+public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserverKt {
+	public static final fun lifecycleManagerObserver (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;
+}
+
+public abstract interface class com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+}
+
+public final class com/splendo/kaluga/architecture/navigation/ActivityNavigator : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable, com/splendo/kaluga/architecture/navigation/Navigator {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
+}
+
+public final class com/splendo/kaluga/architecture/navigation/ActivityParseExtraKt {
+	public static final fun parseBoolean (Landroid/app/Activity;)Z
+	public static final fun parseBooleanArray (Landroid/app/Activity;)[Z
+	public static final fun parseBooleanArrayOrNull (Landroid/app/Activity;)[Z
+	public static final fun parseBooleanOrNull (Landroid/app/Activity;)Ljava/lang/Boolean;
+	public static final fun parseByte (Landroid/app/Activity;)B
+	public static final fun parseByteArray (Landroid/app/Activity;)[B
+	public static final fun parseByteArrayOrNull (Landroid/app/Activity;)[B
+	public static final fun parseByteOrNull (Landroid/app/Activity;)Ljava/lang/Byte;
+	public static final fun parseChar (Landroid/app/Activity;)C
+	public static final fun parseCharArray (Landroid/app/Activity;)[C
+	public static final fun parseCharArrayOrNull (Landroid/app/Activity;)[C
+	public static final fun parseCharOrNull (Landroid/app/Activity;)Ljava/lang/Character;
+	public static final fun parseCharSequenceOrNull (Landroid/app/Activity;)Ljava/lang/CharSequence;
+	public static final fun parseDate (Landroid/app/Activity;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDateArray (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseDateArrayOrNull (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseDateOrNull (Landroid/app/Activity;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDouble (Landroid/app/Activity;)D
+	public static final fun parseDoubleArray (Landroid/app/Activity;)[D
+	public static final fun parseDoubleArrayOrNull (Landroid/app/Activity;)[D
+	public static final fun parseDoubleOrNull (Landroid/app/Activity;)Ljava/lang/Double;
+	public static final fun parseFloat (Landroid/app/Activity;)F
+	public static final fun parseFloatArray (Landroid/app/Activity;)[F
+	public static final fun parseFloatArrayOrNull (Landroid/app/Activity;)[F
+	public static final fun parseFloatOrNull (Landroid/app/Activity;)Ljava/lang/Float;
+	public static final fun parseInt (Landroid/app/Activity;)I
+	public static final fun parseIntArray (Landroid/app/Activity;)[I
+	public static final fun parseIntArrayOrNull (Landroid/app/Activity;)[I
+	public static final fun parseIntOrNull (Landroid/app/Activity;)Ljava/lang/Integer;
+	public static final fun parseLong (Landroid/app/Activity;)J
+	public static final fun parseLongArray (Landroid/app/Activity;)[J
+	public static final fun parseLongArrayOrNull (Landroid/app/Activity;)[J
+	public static final fun parseLongOrNull (Landroid/app/Activity;)Ljava/lang/Long;
+	public static final fun parseShort (Landroid/app/Activity;)S
+	public static final fun parseShortArray (Landroid/app/Activity;)[S
+	public static final fun parseShortArrayOrNull (Landroid/app/Activity;)[S
+	public static final fun parseShortOrNull (Landroid/app/Activity;)Ljava/lang/Short;
+	public static final fun parseString (Landroid/app/Activity;)Ljava/lang/String;
+	public static final fun parseStringList (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseStringListOrNull (Landroid/app/Activity;)Ljava/util/List;
+	public static final fun parseStringOrNull (Landroid/app/Activity;)Ljava/lang/String;
+	public static final fun parseTypeOf (Landroid/app/Activity;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun parseTypeOfOrNull (Landroid/app/Activity;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/BundleConversionError : java/lang/Exception {
 	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/architecture/navigation/BundleToTypedPropertyKt {
+	public static final fun asBoolean (Landroid/os/Bundle;)Z
+	public static final fun asBooleanArray (Landroid/os/Bundle;)[Z
+	public static final fun asBooleanArrayOrNull (Landroid/os/Bundle;)[Z
+	public static final fun asBooleanOrNull (Landroid/os/Bundle;)Ljava/lang/Boolean;
+	public static final fun asByte (Landroid/os/Bundle;)B
+	public static final fun asByteArray (Landroid/os/Bundle;)[B
+	public static final fun asByteArrayOrNull (Landroid/os/Bundle;)[B
+	public static final fun asByteOrNull (Landroid/os/Bundle;)Ljava/lang/Byte;
+	public static final fun asChar (Landroid/os/Bundle;)C
+	public static final fun asCharArray (Landroid/os/Bundle;)[C
+	public static final fun asCharArrayOrNull (Landroid/os/Bundle;)[C
+	public static final fun asCharOrNull (Landroid/os/Bundle;)Ljava/lang/Character;
+	public static final fun asCharSequence (Landroid/os/Bundle;)Ljava/lang/CharSequence;
+	public static final fun asCharSequenceOrNull (Landroid/os/Bundle;)Ljava/lang/CharSequence;
+	public static final fun asDate (Landroid/os/Bundle;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun asDateArray (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asDateArrayOrNull (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asDateOrNull (Landroid/os/Bundle;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun asDouble (Landroid/os/Bundle;)D
+	public static final fun asDoubleArray (Landroid/os/Bundle;)[D
+	public static final fun asDoubleArrayOrNull (Landroid/os/Bundle;)[D
+	public static final fun asDoubleOrNull (Landroid/os/Bundle;)Ljava/lang/Double;
+	public static final fun asFloat (Landroid/os/Bundle;)F
+	public static final fun asFloatArray (Landroid/os/Bundle;)[F
+	public static final fun asFloatArrayOrNull (Landroid/os/Bundle;)[F
+	public static final fun asFloatOrNull (Landroid/os/Bundle;)Ljava/lang/Float;
+	public static final fun asInt (Landroid/os/Bundle;)I
+	public static final fun asIntArray (Landroid/os/Bundle;)[I
+	public static final fun asIntArrayOrNull (Landroid/os/Bundle;)[I
+	public static final fun asIntOrNull (Landroid/os/Bundle;)Ljava/lang/Integer;
+	public static final fun asLong (Landroid/os/Bundle;)J
+	public static final fun asLongArray (Landroid/os/Bundle;)[J
+	public static final fun asLongArrayOrNull (Landroid/os/Bundle;)[J
+	public static final fun asLongOrNull (Landroid/os/Bundle;)Ljava/lang/Long;
+	public static final fun asShort (Landroid/os/Bundle;)S
+	public static final fun asShortArray (Landroid/os/Bundle;)[S
+	public static final fun asShortArrayOrNull (Landroid/os/Bundle;)[S
+	public static final fun asShortOrNull (Landroid/os/Bundle;)Ljava/lang/Short;
+	public static final fun asString (Landroid/os/Bundle;)Ljava/lang/String;
+	public static final fun asStringList (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asStringListOrNull (Landroid/os/Bundle;)Ljava/util/List;
+	public static final fun asStringOrNull (Landroid/os/Bundle;)Ljava/lang/String;
+	public static final fun asTypeOf (Landroid/os/Bundle;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun asTypeOfOrNull (Landroid/os/Bundle;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun toTypedProperty (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
+	public static final fun toTypedPropertyOrNull (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/FragmentParseArgumentsKt {
+	public static final fun parseBoolean (Landroidx/fragment/app/Fragment;)Z
+	public static final fun parseBooleanArray (Landroidx/fragment/app/Fragment;)[Z
+	public static final fun parseBooleanArrayOrNull (Landroidx/fragment/app/Fragment;)[Z
+	public static final fun parseBooleanOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Boolean;
+	public static final fun parseByte (Landroidx/fragment/app/Fragment;)B
+	public static final fun parseByteArray (Landroidx/fragment/app/Fragment;)[B
+	public static final fun parseByteArrayOrNull (Landroidx/fragment/app/Fragment;)[B
+	public static final fun parseByteOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Byte;
+	public static final fun parseChar (Landroidx/fragment/app/Fragment;)C
+	public static final fun parseCharArray (Landroidx/fragment/app/Fragment;)[C
+	public static final fun parseCharArrayOrNull (Landroidx/fragment/app/Fragment;)[C
+	public static final fun parseCharOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Character;
+	public static final fun parseCharSequenceOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/CharSequence;
+	public static final fun parseDate (Landroidx/fragment/app/Fragment;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDateArray (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseDateArrayOrNull (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseDateOrNull (Landroidx/fragment/app/Fragment;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDouble (Landroidx/fragment/app/Fragment;)D
+	public static final fun parseDoubleArray (Landroidx/fragment/app/Fragment;)[D
+	public static final fun parseDoubleArrayOrNull (Landroidx/fragment/app/Fragment;)[D
+	public static final fun parseDoubleOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Double;
+	public static final fun parseExtra (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseExtraOrNull (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseFloat (Landroidx/fragment/app/Fragment;)F
+	public static final fun parseFloatArray (Landroidx/fragment/app/Fragment;)[F
+	public static final fun parseFloatArrayOrNull (Landroidx/fragment/app/Fragment;)[F
+	public static final fun parseFloatOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Float;
+	public static final fun parseInt (Landroidx/fragment/app/Fragment;)I
+	public static final fun parseIntArray (Landroidx/fragment/app/Fragment;)[I
+	public static final fun parseIntArrayOrNull (Landroidx/fragment/app/Fragment;)[I
+	public static final fun parseIntOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Integer;
+	public static final fun parseLong (Landroidx/fragment/app/Fragment;)J
+	public static final fun parseLongArray (Landroidx/fragment/app/Fragment;)[J
+	public static final fun parseLongArrayOrNull (Landroidx/fragment/app/Fragment;)[J
+	public static final fun parseLongOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Long;
+	public static final fun parseShort (Landroidx/fragment/app/Fragment;)S
+	public static final fun parseShortArray (Landroidx/fragment/app/Fragment;)[S
+	public static final fun parseShortArrayOrNull (Landroidx/fragment/app/Fragment;)[S
+	public static final fun parseShortOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/Short;
+	public static final fun parseString (Landroidx/fragment/app/Fragment;)Ljava/lang/String;
+	public static final fun parseStringList (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseStringListOrNull (Landroidx/fragment/app/Fragment;)Ljava/util/List;
+	public static final fun parseStringOrNull (Landroidx/fragment/app/Fragment;)Ljava/lang/String;
+	public static final fun parseTypeOf (Landroidx/fragment/app/Fragment;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun parseTypeOfOrNull (Landroidx/fragment/app/Fragment;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/IntentFlag {
@@ -235,6 +382,62 @@ public final class com/splendo/kaluga/architecture/navigation/IntentFlagKt {
 	public static final fun toFlags (Ljava/util/Set;)I
 }
 
+public final class com/splendo/kaluga/architecture/navigation/IntentParseExtraKt {
+	public static final fun parseBoolean (Landroid/content/Intent;)Z
+	public static final fun parseBooleanArray (Landroid/content/Intent;)[Z
+	public static final fun parseBooleanArrayOrNull (Landroid/content/Intent;)[Z
+	public static final fun parseBooleanOrNull (Landroid/content/Intent;)Ljava/lang/Boolean;
+	public static final fun parseByte (Landroid/content/Intent;)B
+	public static final fun parseByteArray (Landroid/content/Intent;)[B
+	public static final fun parseByteArrayOrNull (Landroid/content/Intent;)[B
+	public static final fun parseByteOrNull (Landroid/content/Intent;)Ljava/lang/Byte;
+	public static final fun parseChar (Landroid/content/Intent;)C
+	public static final fun parseCharArray (Landroid/content/Intent;)[C
+	public static final fun parseCharArrayOrNull (Landroid/content/Intent;)[C
+	public static final fun parseCharOrNull (Landroid/content/Intent;)Ljava/lang/Character;
+	public static final fun parseCharSequenceOrNull (Landroid/content/Intent;)Ljava/lang/CharSequence;
+	public static final fun parseDate (Landroid/content/Intent;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDateArray (Landroid/content/Intent;)Ljava/util/List;
+	public static final fun parseDateArrayOrNull (Landroid/content/Intent;)Ljava/util/List;
+	public static final fun parseDateOrNull (Landroid/content/Intent;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun parseDouble (Landroid/content/Intent;)D
+	public static final fun parseDoubleArray (Landroid/content/Intent;)[D
+	public static final fun parseDoubleArrayOrNull (Landroid/content/Intent;)[D
+	public static final fun parseDoubleOrNull (Landroid/content/Intent;)Ljava/lang/Double;
+	public static final fun parseExtra (Landroid/content/Intent;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseExtraOrNull (Landroid/content/Intent;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun parseFloat (Landroid/content/Intent;)F
+	public static final fun parseFloatArray (Landroid/content/Intent;)[F
+	public static final fun parseFloatArrayOrNull (Landroid/content/Intent;)[F
+	public static final fun parseFloatOrNull (Landroid/content/Intent;)Ljava/lang/Float;
+	public static final fun parseInt (Landroid/content/Intent;)I
+	public static final fun parseIntArray (Landroid/content/Intent;)[I
+	public static final fun parseIntArrayOrNull (Landroid/content/Intent;)[I
+	public static final fun parseIntOrNull (Landroid/content/Intent;)Ljava/lang/Integer;
+	public static final fun parseLong (Landroid/content/Intent;)J
+	public static final fun parseLongArray (Landroid/content/Intent;)[J
+	public static final fun parseLongArrayOrNull (Landroid/content/Intent;)[J
+	public static final fun parseLongOrNull (Landroid/content/Intent;)Ljava/lang/Long;
+	public static final fun parseShort (Landroid/content/Intent;)S
+	public static final fun parseShortArray (Landroid/content/Intent;)[S
+	public static final fun parseShortArrayOrNull (Landroid/content/Intent;)[S
+	public static final fun parseShortOrNull (Landroid/content/Intent;)Ljava/lang/Short;
+	public static final fun parseString (Landroid/content/Intent;)Ljava/lang/String;
+	public static final fun parseStringList (Landroid/content/Intent;)Ljava/util/List;
+	public static final fun parseStringListOrNull (Landroid/content/Intent;)Ljava/util/List;
+	public static final fun parseStringOrNull (Landroid/content/Intent;)Ljava/lang/String;
+	public static final fun parseTypeOf (Landroid/content/Intent;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun parseTypeOfOrNull (Landroid/content/Intent;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/MissingActivityNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/MissingActivityNavigationException;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/MissingLifecycleManagerNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/MissingLifecycleManagerNavigationException;
+}
+
 public class com/splendo/kaluga/architecture/navigation/NavigationAction {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)V
 	public final fun getBundle ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
@@ -254,7 +457,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleGe
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleKt {
 	public static final fun toBundle (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)Landroid/os/Bundle;
 	public static final fun toNavigationBundle (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
-	public static final fun toTypedProperty (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
 }
 
 public class com/splendo/kaluga/architecture/navigation/NavigationBundleSpec {
@@ -722,6 +924,10 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 	public fun getValue ()Lkotlin/Unit;
 }
 
+public class com/splendo/kaluga/architecture/navigation/NavigationException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec {
 	public static final field Companion Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Companion;
 }
@@ -851,25 +1057,32 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Cus
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog : com/splendo/kaluga/architecture/navigation/NavigationSpec {
-	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Lkotlin/jvm/functions/Function0;
-	public final fun copy (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog;
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun component3 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Dialog;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCreateDialog ()Lkotlin/jvm/functions/Function0;
+	public final fun getGetFragmentManager ()Lkotlin/jvm/functions/Function1;
 	public final fun getTag ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog : com/splendo/kaluga/architecture/navigation/NavigationSpec {
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$DismissDialog;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFragmentRequestKey ()Ljava/lang/String;
+	public final fun getGetFragmentManager ()Lkotlin/jvm/functions/Function1;
 	public final fun getTag ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -904,6 +1117,7 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Ema
 	public final fun getBcc ()Ljava/util/List;
 	public final fun getBody ()Ljava/lang/String;
 	public final fun getCc ()Ljava/util/List;
+	public final fun getIntent ()Landroid/content/Intent;
 	public final fun getSubject ()Ljava/lang/String;
 	public final fun getTo ()Ljava/util/List;
 	public final fun getType ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type;
@@ -952,21 +1166,23 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fil
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment : com/splendo/kaluga/architecture/navigation/NavigationSpec {
-	public fun <init> (ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function0;)V
-	public synthetic fun <init> (ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()I
 	public final fun component2 ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;
 	public final fun component5 ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;
-	public final fun component6 ()Lkotlin/jvm/functions/Function0;
-	public final fun copy (ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment;ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment;
+	public final fun component6 ()Lkotlin/jvm/functions/Function1;
+	public final fun component7 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment;ILcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;Ljava/lang/String;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAnimationSettings ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$AnimationSettings;
 	public final fun getBackStackSettings ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings;
 	public final fun getContainerId ()I
 	public final fun getCreateFragment ()Lkotlin/jvm/functions/Function0;
+	public final fun getGetFragmentManager ()Lkotlin/jvm/functions/Function1;
 	public final fun getTag ()Ljava/lang/String;
 	public final fun getType ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type;
 	public fun hashCode ()I
@@ -1047,12 +1263,54 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Pho
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type$Dial;
 }
 
-public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment : com/splendo/kaluga/architecture/navigation/NavigationSpec {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment;
+public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragment : com/splendo/kaluga/architecture/navigation/NavigationSpec {
+	public fun <init> ()V
+	public fun <init> (ZLjava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (ZLjava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (ZLjava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragment;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragment;ZLjava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragment;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFragmentRequestKey ()Ljava/lang/String;
+	public final fun getGetFragmentManager ()Lkotlin/jvm/functions/Function1;
+	public final fun getImmediate ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragmentTo : com/splendo/kaluga/architecture/navigation/NavigationSpec {
+	public fun <init> (Ljava/lang/String;ZZLjava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;ZZLjava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Ljava/lang/String;ZZLjava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragmentTo;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragmentTo;Ljava/lang/String;ZZLjava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragmentTo;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFragmentRequestKey ()Ljava/lang/String;
+	public final fun getGetFragmentManager ()Lkotlin/jvm/functions/Function1;
+	public final fun getImmediate ()Z
+	public final fun getInclusive ()Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment : com/splendo/kaluga/architecture/navigation/NavigationSpec {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$RemoveFragment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFragmentRequestKey ()Ljava/lang/String;
+	public final fun getGetFragmentManager ()Lkotlin/jvm/functions/Function1;
 	public final fun getTag ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1070,66 +1328,82 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Set
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
+	public abstract fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AirplaneMode : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AirplaneMode;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Apn : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Apn;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AppDetails : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AppDetails;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Bluetooth : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Bluetooth;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Date : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Date;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Display : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Display;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$General : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$General;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InputMethod : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InputMethod;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InternalStorage : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InternalStorage;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Locale : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Locale;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$LocationSource : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$LocationSource;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$MemoryCard : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$MemoryCard;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Security : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Security;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wifi : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wifi;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wireless : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wireless;
+	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1156,6 +1430,7 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Tex
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getBody ()Ljava/lang/String;
+	public final fun getIntent ()Landroid/content/Intent;
 	public final fun getRecipients ()Ljava/util/List;
 	public final fun getSubject ()Ljava/lang/String;
 	public final fun getType ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type;
@@ -1200,8 +1475,13 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Thi
 	public static fun values ()[Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$ThirdPartyApp$OpenMode;
 }
 
-public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract interface class com/splendo/kaluga/architecture/navigation/Navigator : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public abstract fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public final class com/splendo/kaluga/architecture/navigation/NavigatorKt {
+	public static final fun navigateOrElse (Lcom/splendo/kaluga/architecture/navigation/Navigator;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;Lkotlin/jvm/functions/Function0;)V
+	public static final fun navigateWithSuccess (Lcom/splendo/kaluga/architecture/navigation/Navigator;Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)Z
 }
 
 public class com/splendo/kaluga/architecture/navigation/SingleValueNavigationAction : com/splendo/kaluga/architecture/navigation/NavigationAction {
@@ -1736,11 +2016,14 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithS
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ()V
+	public fun <init> ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
+	protected final fun addLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 	public final fun didPause ()V
 	public final fun didResume ()V
+	public final fun getActiveLifecycleSubscribables ()Lkotlinx/coroutines/flow/StateFlow;
 	protected fun onPause ()V
 	protected fun onResume (Lkotlinx/coroutines/CoroutineScope;)V
+	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
@@ -1753,6 +2036,12 @@ public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelA
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
 	protected fun onCreate (Landroid/os/Bundle;)V
+}
+
+public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelBottomSheetDialogFragment : com/google/android/material/bottomsheet/BottomSheetDialogFragment {
+	public fun <init> ()V
+	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
+	public fun onViewCreated (Landroid/view/View;Landroid/os/Bundle;)V
 }
 
 public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelDialogFragment : androidx/fragment/app/DialogFragment {
@@ -1776,6 +2065,13 @@ public final class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelLife
 	public fun onResume (Landroidx/lifecycle/LifecycleOwner;)V
 }
 
+public final class com/splendo/kaluga/architecture/viewmodel/LifecycleSubscribableManager {
+	public fun <init> (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroid/app/Activity;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroid/app/Activity;Landroidx/fragment/app/FragmentManager;Landroidx/fragment/app/FragmentManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun onCreate (Landroidx/lifecycle/LifecycleOwner;)V
+	public final fun onDestroy ()V
+}
+
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel : androidx/lifecycle/ViewModel {
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	protected fun onCleared ()V
@@ -1787,8 +2083,8 @@ public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelK
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;)V
-	public final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
+	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
 }
 
 public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
