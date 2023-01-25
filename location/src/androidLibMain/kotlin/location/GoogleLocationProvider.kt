@@ -33,17 +33,42 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
-class GoogleLocationProvider(private val context: Context) : LocationProvider {
+/**
+ * A [LocationProvider] using the Google Location Services
+ * @param context The [Context] to run this [LocationProvider] in.
+ * @param settings The [GoogleLocationProvider.Settings] to use to configure this location provider.
+ */
+class GoogleLocationProvider(private val context: Context, private val settings: Settings = Settings.default) : LocationProvider {
 
-    sealed class FusedLocationProviderClientType(
+    /**
+     * Settings for a [GoogleLocationProvider]
+     * @param interval The desired interval of location updates.
+     * @param maxUpdateDelay The longest a location update may be delayed.
+     * @param minUpdateInterval The fastest allowed interval of location updates.
+     */
+    data class Settings(
+        val interval: Duration,
+        val maxUpdateDelay: Duration,
+        val minUpdateInterval: Duration
+    ) {
+        companion object {
+            val default = Settings(interval = 1.milliseconds, maxUpdateDelay = 1.seconds, minUpdateInterval = 1.milliseconds)
+        }
+    }
+
+    internal sealed class FusedLocationProviderClientType(
         permission: LocationPermission,
-        protected val context: Context
+        context: Context,
+        settings: Settings
     ) {
         protected val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-        protected val locationRequest = LocationRequest.Builder(1)
-            .setMaxUpdateDelayMillis(1000)
-            .setMinUpdateIntervalMillis(1)
+        protected val locationRequest = LocationRequest.Builder(settings.interval.inWholeMilliseconds)
+            .setMaxUpdateDelayMillis(settings.maxUpdateDelay.inWholeMilliseconds)
+            .setMinUpdateIntervalMillis(settings.minUpdateInterval.inWholeMilliseconds)
             .setPriority(
                 if (permission.precise)
                     Priority.PRIORITY_HIGH_ACCURACY
@@ -57,7 +82,7 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
         abstract fun startRequestingUpdates()
         abstract fun stopRequestingUpdates()
 
-        class Foreground(permission: LocationPermission, context: Context) : FusedLocationProviderClientType(permission, context) {
+        class Foreground(permission: LocationPermission, context: Context, settings: Settings) : FusedLocationProviderClientType(permission, context, settings) {
 
             private val locationCallback = object : LocationCallback() {
 
@@ -78,7 +103,7 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
             }
         }
 
-        class Background(permission: LocationPermission, context: Context) : FusedLocationProviderClientType(permission, context) {
+        class Background(permission: LocationPermission, context: Context, settings: Settings) : FusedLocationProviderClientType(permission, context, settings) {
 
             private val identifier = hashCode().toString()
 
@@ -122,9 +147,9 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
     private fun getLocationProviderForPermission(permission: LocationPermission): FusedLocationProviderClientType {
         return fusedLocationProviderClients.value[permission] ?: run {
             val fusedLocationProviderClient = if (permission.background) {
-                FusedLocationProviderClientType.Background(permission, context)
+                FusedLocationProviderClientType.Background(permission, context, settings)
             } else {
-                FusedLocationProviderClientType.Foreground(permission, context)
+                FusedLocationProviderClientType.Foreground(permission, context, settings)
             }
 
             fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply {

@@ -23,9 +23,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.toTypedProperty
+import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureInputBinding
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureNavigationAction
@@ -44,7 +43,7 @@ class XMLArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>()
             resultCode: Int,
             intent: Intent?
         ): InputDetails? {
-            return intent?.extras?.toTypedProperty(NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
+            return intent.parseTypeOfOrNull(InputDetails.serializer())
         }
     }
 

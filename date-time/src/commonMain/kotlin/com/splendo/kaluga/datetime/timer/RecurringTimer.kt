@@ -53,7 +53,7 @@ class RecurringTimer(
 ) : ControllableTimer {
     private val stateRepo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)
     override val state: Flow<Timer.State> = stateRepo.stateFlow.map { it.timerState }
-    override val defaultState: Timer.State = stateRepo.stateFlow.value.timerState
+    override val currentState: Timer.State get() = stateRepo.stateFlow.value.timerState
 
     override suspend fun start() = stateRepo.start()
 

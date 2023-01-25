@@ -81,16 +81,16 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
     }
 }
 
-class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<InfoAdapter.InfoViewHolder>() {
-
-    companion object {
-        @BindingAdapter("infoButtons")
-        @JvmStatic
-        fun bindInfoButtons(view: RecyclerView, infoButtons: List<InfoViewModel.Button>?) {
-            val adapter = (view.adapter as? InfoAdapter) ?: return
-            adapter.buttons = infoButtons.orEmpty()
-        }
+object InfoButtonBinding {
+    @BindingAdapter("infoButtons")
+    @JvmStatic
+    fun bindInfoButtons(view: RecyclerView, infoButtons: List<InfoViewModel.Button>?) {
+        val adapter = (view.adapter as? InfoAdapter) ?: return
+        adapter.buttons = infoButtons.orEmpty()
     }
+}
+
+class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<InfoAdapter.InfoViewHolder>() {
 
     class InfoViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
 

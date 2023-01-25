@@ -25,16 +25,16 @@ import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.bindButton
 
-class ButtonAdapter : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
-
-    companion object {
-        @BindingAdapter("buttons")
-        @JvmStatic
-        fun bindButtons(view: RecyclerView, buttons: List<KalugaButton>?) {
-            val adapter = (view.adapter as? ButtonAdapter) ?: return
-            adapter.buttons = buttons.orEmpty()
-        }
+object ButtonsBinding {
+    @BindingAdapter("buttons")
+    @JvmStatic
+    fun bindButtons(view: RecyclerView, buttons: List<KalugaButton>?) {
+        val adapter = (view.adapter as? ButtonAdapter) ?: return
+        adapter.buttons = buttons.orEmpty()
     }
+}
+
+class ButtonAdapter : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
 
     class ButtonViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button
