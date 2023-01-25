@@ -65,7 +65,7 @@ open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscr
 
     /**
      * A [StateFlow] of the set of [LifecycleSubscribable] that are currently in use.
-     * Hook up your lifecycle to these markers where required.
+     * Hook up your lifecycle to these [LifecycleSubscribable]s where required.
      */
     val activeLifecycleSubscribables = _activeLifecycleSubscribables.asStateFlow()
     private val resumedJobs = SupervisorJob()
