@@ -16,6 +16,7 @@
 
 package com.splendo.kaluga.test.system.network
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.state.BaseNetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
@@ -37,7 +38,7 @@ class MockNetworkStateRepoBuilder<NMB : BaseNetworkManager.Builder>(
     /**
      * List of built [NetworkStateRepo]
      */
-    val builtNetworkStateRepo = mutableListOf<NetworkStateRepo>()
+    val builtNetworkStateRepo = concurrentMutableListOf<NetworkStateRepo>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

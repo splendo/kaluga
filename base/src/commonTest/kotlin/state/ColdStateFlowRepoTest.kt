@@ -15,13 +15,12 @@
 
  */
 
-package com.splendo.kaluga.state
+package com.splendo.kaluga.base.state
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

@@ -1,8 +1,3 @@
-package com.splendo.kaluga.base
-
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-
 /*
 
 Copyright 2022 Splendo Consulting B.V. The Netherlands
@@ -20,6 +15,11 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.base
+
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 @Deprecated("Use Dispatchers.Main")
 actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main

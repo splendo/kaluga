@@ -16,9 +16,9 @@
  */
 package com.splendo.kaluga.datetime.timer
 
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.HotStateFlowRepo
+import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.base.state.HotStateFlowRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
-import com.splendo.kaluga.state.KalugaState as KalugaState
+import com.splendo.kaluga.base.state.KalugaState as KalugaState
 
 /** A coroutine delay function. */
 typealias DelayFunction = suspend (Duration) -> Unit

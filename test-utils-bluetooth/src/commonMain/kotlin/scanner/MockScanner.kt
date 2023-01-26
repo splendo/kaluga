@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth.scanner
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
@@ -91,7 +92,7 @@ class MockBaseScanner(
         /**
          * List of created [MockScanner]
          */
-        val createdScanners = mutableListOf<MockBaseScanner>()
+        val createdScanners = concurrentMutableListOf<MockBaseScanner>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

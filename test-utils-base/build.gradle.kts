@@ -47,9 +47,7 @@ android {
         apiDependency(Dependencies.AndroidX.ArchCore)
 
         implementationDependency(Dependencies.Mockito.Core)
-        implementationDependency(Dependencies.Mockito.Android)
         implementationDependency(Dependencies.ByteBuddy.Agent)
-        implementationDependency(Dependencies.ByteBuddy.Android)
 
         apiDependency(Dependencies.KotlinX.Coroutines.Test)
         apiDependency(Dependencies.KotlinX.Coroutines.Debug)

@@ -19,9 +19,9 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.KalugaState
+import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.base.state.KalugaState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull

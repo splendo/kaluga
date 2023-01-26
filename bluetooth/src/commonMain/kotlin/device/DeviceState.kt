@@ -18,8 +18,8 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
-import com.splendo.kaluga.state.KalugaState
+import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
+import com.splendo.kaluga.base.state.KalugaState
 import kotlinx.coroutines.CompletableDeferred
 
 sealed class DeviceAction {

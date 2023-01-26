@@ -23,7 +23,7 @@ public final class com/splendo/kaluga/test/location/MockBaseLocationManager$Buil
 	public fun <init> (ZZ)V
 	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/location/BaseLocationManager;
-	public final fun getBuiltLocationManagers ()Ljava/util/List;
+	public final fun getBuiltLocationManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getInitialLocationEnabled ()Z
 }
@@ -146,7 +146,7 @@ public final class com/splendo/kaluga/test/location/MockLocationStateRepoBuilder
 	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;Z)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/location/BaseLocationManager$Builder;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
-	public final fun getBuiltLocationStateRepo ()Ljava/util/List;
+	public final fun getBuiltLocationStateRepo ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getLocationManagerBuilder ()Lcom/splendo/kaluga/location/BaseLocationManager$Builder;
 }

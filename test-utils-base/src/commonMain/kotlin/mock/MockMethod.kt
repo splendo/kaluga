@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.base.mock
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
@@ -86,8 +88,8 @@ sealed class BaseMethodMock<
         fun doThrow(throwable: Throwable) = doExecute { throw throwable }
     }
 
-    private val stubs = mutableMapOf<M, S>()
-    private val callParameters = mutableListOf<V>()
+    private val stubs = concurrentMutableMapOf<M, S>()
+    private val callParameters = concurrentMutableListOf<V>()
     protected abstract val ParametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
@@ -100,9 +102,12 @@ sealed class BaseMethodMock<
     protected fun getStubFor(values: V): S {
         callParameters.add(values)
         // First find all the stubs whose matchers match the values received and sort their matchers per parameter in order of strongest constraint.
-        val matchingStubs = stubs.keys.mapNotNull { matchers ->
-            val stub = stubs[matchers]
-            if (ParametersSpec.run { matchers.matches(values) } && stub != null) matchers.asList().sorted() to stub else null
+        val matchingStubs = stubs.synchronized {
+            keys.mapNotNull { matchers ->
+                val stub = this[matchers]
+                if (ParametersSpec.run { matchers.matches(values) } && stub != null) matchers.asList()
+                    .sorted() to stub else null
+            }
         }
         // Ensure there is at least one stub. Otherwise fail
         if (matchingStubs.isEmpty()) { fail { "No matching stubs found for $values" } }

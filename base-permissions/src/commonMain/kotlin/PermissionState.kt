@@ -19,9 +19,9 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.KalugaState
+import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.base.state.KalugaState
 import kotlin.time.Duration
 
 /**

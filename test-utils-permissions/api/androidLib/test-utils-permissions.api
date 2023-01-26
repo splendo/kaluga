@@ -45,7 +45,7 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionManager$Bui
 	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;JLcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun create (Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/permissions/MockPermissionManager;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getCreatedManagers ()Ljava/util/List;
+	public final fun getCreatedManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getInitialState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
 	public final fun getMonitoringInterval-UwyO8pc ()J
 	public final fun getPermission ()Lcom/splendo/kaluga/permissions/base/Permission;
@@ -114,14 +114,14 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionsBuilder : 
 	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBluetoothStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getBuildBluetoothStateRepos ()Ljava/util/List;
-	public final fun getBuildCalendarStateRepos ()Ljava/util/List;
-	public final fun getBuildCameraStateRepos ()Ljava/util/List;
-	public final fun getBuildContactsStateRepos ()Ljava/util/List;
-	public final fun getBuildLocationStateRepos ()Ljava/util/List;
-	public final fun getBuildMicrophoneStateRepos ()Ljava/util/List;
-	public final fun getBuildNotificationsStateRepos ()Ljava/util/List;
-	public final fun getBuildStorageStateRepos ()Ljava/util/List;
+	public final fun getBuildBluetoothStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildCalendarStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildCameraStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildContactsStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildLocationStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildMicrophoneStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildNotificationsStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildStorageStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCalendarStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getCameraStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getContactsStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;

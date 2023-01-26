@@ -18,9 +18,9 @@
 package com.splendo.kaluga.system.network.state
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.KalugaState
+import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.NetworkManager
 import com.splendo.kaluga.system.network.unknown

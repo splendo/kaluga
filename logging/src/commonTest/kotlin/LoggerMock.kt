@@ -18,29 +18,22 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.logging
 
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 
-class LoggerMock : SynchronizedObject(), Logger {
+class LoggerMock : Logger {
 
-    val throwableList = mutableListOf<Throwable?>()
-    val messageList = mutableListOf<String?>()
-    val tagList = mutableListOf<String?>()
-    val levelList = mutableListOf<LogLevel?>()
+    private data class Log(val logLevel: LogLevel, val tag: String?, val throwable: Throwable?, val message: (() -> String)?)
 
-    fun clear() = synchronized(this) {
-        levelList.clear()
-        messageList.clear()
-        tagList.clear()
-        throwableList.clear()
-    }
+    private val logList = concurrentMutableListOf<Log>()
+
+    val throwableList get() = logList.map { it.throwable }
+    val messageList get() = logList.map { it.message }
+    val tagList get() = logList.map { it.tag }
+    val levelList get() = logList.map { it.logLevel }
+
+    fun clear() = logList.clear()
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-        synchronized(this) {
-            levelList.add(level)
-            tagList.add(tag)
-            throwableList.add(throwable)
-            messageList.add(message?.invoke())
-        }
+        logList.add(Log(level, tag, throwable, message))
     }
 }

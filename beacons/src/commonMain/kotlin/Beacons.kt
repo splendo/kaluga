@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
@@ -41,7 +42,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 private typealias BeaconJob = Pair<BeaconInfo, Job>
-private typealias BeaconsMap = MutableMap<BeaconID, BeaconJob>
 
 class Beacons(
     private val bluetooth: BluetoothService,
@@ -52,7 +52,7 @@ class Beacons(
 
     private val monitoringLock = Mutex()
     private val updateLock = Mutex()
-    private val cache = mutableMapOf<BeaconID, BeaconJob>()
+    private val cache = concurrentMutableMapOf<BeaconID, BeaconJob>()
     private val cacheJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
     private var monitoringJob: MutableStateFlow<Job?> = MutableStateFlow(null)
@@ -90,19 +90,21 @@ class Beacons(
     private suspend fun updateBeacons(discovered: List<BeaconInfo>) = updateLock.withLock {
         debug(TAG, "Total Beacons discovered: ${discovered.size}")
         discovered.forEach { beacon ->
-            if (cache.containsKey(beacon.beaconID)) {
-                debug(TAG, "[Found] $beacon")
-                cache.remove(beacon.beaconID)?.second?.cancel()
-                debug(TAG, "[Removed] $beacon")
-            } else {
-                debug(TAG, "[New] $beacon")
-            }
-            cache[beacon.beaconID] = beacon to coroutineScope.launch {
-                debug(TAG, "[Added] $beacon")
-                delay(beacon.lastSeen.millisecondSinceEpoch + timeout.inWholeMilliseconds - DefaultKalugaDate.now().millisecondSinceEpoch)
-                debug(TAG, "[Lost] $beacon")
-                cache.remove(beacon.beaconID)
-                updateList()
+            cache.synchronized {
+                if (containsKey(beacon.beaconID)) {
+                    debug(TAG, "[Found] $beacon")
+                    remove(beacon.beaconID)?.second?.cancel()
+                    debug(TAG, "[Removed] $beacon")
+                } else {
+                    debug(TAG, "[New] $beacon")
+                }
+                this[beacon.beaconID] = beacon to coroutineScope.launch {
+                    debug(TAG, "[Added] $beacon")
+                    delay(beacon.lastSeen.millisecondSinceEpoch + timeout.inWholeMilliseconds - DefaultKalugaDate.now().millisecondSinceEpoch)
+                    debug(TAG, "[Lost] $beacon")
+                    cache.remove(beacon.beaconID)
+                    updateList()
+                }
             }
         }
         updateList()

@@ -20,6 +20,7 @@ package com.splendo.kaluga.architecture.lifecycle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import kotlin.reflect.KClass
 
 /**
@@ -27,7 +28,7 @@ import kotlin.reflect.KClass
  *
  * Do not use directly, but use through [AppCompatActivity.getOrPutAndRemoveOnDestroyFromCache]
  */
-val lifecycleAwareActivityCache = mutableMapOf<Pair<AppCompatActivity, KClass<*>>, Any>()
+val lifecycleAwareActivityCache = concurrentMutableMapOf<Pair<AppCompatActivity, KClass<*>>, Any>()
 
 /**
  * Lifecycle aware caching on the activity level

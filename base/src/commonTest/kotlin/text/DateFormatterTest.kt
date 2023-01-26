@@ -15,12 +15,8 @@
 
  */
 
-package com.splendo.kaluga.base.test.text
+package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.text.DateFormatStyle
-import com.splendo.kaluga.base.text.KalugaDateFormatter
-import com.splendo.kaluga.base.text.dateFormat
-import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.createLocale

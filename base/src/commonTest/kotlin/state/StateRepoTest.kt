@@ -16,7 +16,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.state
+package com.splendo.kaluga.base.state
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete

@@ -20,9 +20,9 @@ package com.splendo.kaluga.location
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.ColdStateRepo
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.base.state.ColdStateFlowRepo
+import com.splendo.kaluga.base.state.ColdStateRepo
+import com.splendo.kaluga.base.state.StateRepo
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

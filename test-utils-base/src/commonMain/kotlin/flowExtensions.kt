@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.base
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -29,7 +30,7 @@ import kotlin.time.Duration
  * @return a list of flow items captured for [duration]
  */
 suspend fun <T> Flow<T>.captureFor(duration: Duration): List<T> {
-    val output = mutableListOf<T>()
+    val output = concurrentMutableListOf<T>()
 
     try {
         withTimeout(duration) {

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base
+package com.splendo.kaluga.base.utils
 
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer

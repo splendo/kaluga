@@ -15,7 +15,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
-package com.splendo.kaluga.state
+package com.splendo.kaluga.base.state
 
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.FirstCollection
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections

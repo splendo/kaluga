@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.keyboard
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.test.base.mock.call
@@ -39,7 +40,7 @@ class MockKeyboardManager<FH : FocusHandler>(setupMocks: Boolean = true) : BaseK
         /**
          * List of created [MockKeyboardManager]
          */
-        val builtKeyboardManagers = mutableListOf<MockKeyboardManager<FH>>()
+        val builtKeyboardManagers = concurrentMutableListOf<MockKeyboardManager<FH>>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

@@ -16,6 +16,7 @@
 
 package com.splendo.kaluga.test.system.network
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.NetworkManager
@@ -50,7 +51,7 @@ class MockBaseNetworkManager(initialNetworkConnectionType: NetworkConnectionType
         /**
          * List of built [BaseNetworkManager]
          */
-        val builtNetworkManagers = mutableListOf<BaseNetworkManager>()
+        val builtNetworkManagers = concurrentMutableListOf<BaseNetworkManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

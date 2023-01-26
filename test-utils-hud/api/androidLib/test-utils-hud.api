@@ -23,7 +23,7 @@ public final class com/splendo/kaluga/test/hud/MockHUD$Builder : com/splendo/kal
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/hud/BaseHUD;
 	public fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/hud/MockHUD;
-	public final fun getBuiltHUDs ()Ljava/util/List;
+	public final fun getBuiltHUDs ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 

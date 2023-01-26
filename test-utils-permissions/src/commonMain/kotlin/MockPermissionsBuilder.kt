@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.permissions
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.permissions.base.BasePermissionStateRepo
 import com.splendo.kaluga.permissions.base.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.base.Permission
@@ -54,7 +55,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [CameraPermission]
      */
-    val buildCameraStateRepos = mutableListOf<MockBasePermissionStateRepo<CameraPermission>>()
+    val buildCameraStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<CameraPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CameraPermission]
@@ -65,7 +66,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [ContactsPermission]
      */
-    val buildContactsStateRepos = mutableListOf<MockBasePermissionStateRepo<ContactsPermission>>()
+    val buildContactsStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<ContactsPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [ContactsPermission]
@@ -76,7 +77,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [MicrophonePermission]
      */
-    val buildMicrophoneStateRepos = mutableListOf<MockBasePermissionStateRepo<MicrophonePermission>>()
+    val buildMicrophoneStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<MicrophonePermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [MicrophonePermission]
@@ -87,7 +88,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [NotificationsPermission]
      */
-    val buildNotificationsStateRepos = mutableListOf<MockBasePermissionStateRepo<NotificationsPermission>>()
+    val buildNotificationsStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<NotificationsPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [NotificationsPermission]
@@ -98,7 +99,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [BluetoothPermission]
      */
-    val buildBluetoothStateRepos = mutableListOf<MockBasePermissionStateRepo<BluetoothPermission>>()
+    val buildBluetoothStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<BluetoothPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [BluetoothPermission]
@@ -109,7 +110,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [LocationPermission]
      */
-    val buildLocationStateRepos = mutableListOf<MockBasePermissionStateRepo<LocationPermission>>()
+    val buildLocationStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<LocationPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [LocationPermission]
@@ -120,7 +121,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [CalendarPermission]
      */
-    val buildCalendarStateRepos = mutableListOf<MockBasePermissionStateRepo<CalendarPermission>>()
+    val buildCalendarStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<CalendarPermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CalendarPermission]
@@ -131,7 +132,7 @@ class MockPermissionsBuilder(
     /**
      * List of created [PermissionStateRepo] for [StoragePermission]
      */
-    val buildStorageStateRepos = mutableListOf<MockBasePermissionStateRepo<StoragePermission>>()
+    val buildStorageStateRepos = concurrentMutableListOf<MockBasePermissionStateRepo<StoragePermission>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [StoragePermission]

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.location
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.BaseLocationStateRepoBuilder
 import com.splendo.kaluga.location.LocationStateRepo
@@ -42,7 +43,7 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     /**
      * List of built [LocationStateRepo]
      */
-    val builtLocationStateRepo = mutableListOf<LocationStateRepo>()
+    val builtLocationStateRepo = concurrentMutableListOf<LocationStateRepo>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

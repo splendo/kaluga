@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.toNSData
+import com.splendo.kaluga.base.utils.toNSData
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID

@@ -23,7 +23,7 @@ public final class com/splendo/kaluga/test/keyboard/MockKeyboardManager$Builder 
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
 	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/keyboard/MockKeyboardManager;
-	public final fun getBuiltKeyboardManagers ()Ljava/util/List;
+	public final fun getBuiltKeyboardManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 

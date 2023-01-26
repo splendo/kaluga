@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.hud
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
 import com.splendo.kaluga.test.base.mock.call
@@ -45,7 +46,7 @@ class MockHUD(
         /**
          * List of built [MockHUD]
          */
-        val builtHUDs = mutableListOf<MockHUD>()
+        val builtHUDs = concurrentMutableListOf<MockHUD>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

@@ -107,7 +107,7 @@ public abstract interface class com/splendo/kaluga/system/network/ReachableNetwo
 	public abstract fun isExpensive ()Z
 }
 
-public abstract class com/splendo/kaluga/system/network/state/BaseNetworkStateRepo : com/splendo/kaluga/state/ColdStateFlowRepo {
+public abstract class com/splendo/kaluga/system/network/state/BaseNetworkStateRepo : com/splendo/kaluga/base/state/ColdStateFlowRepo {
 	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;)V
 }
 
@@ -116,7 +116,7 @@ public abstract interface class com/splendo/kaluga/system/network/state/BaseNetw
 	public static synthetic fun create$default (Lcom/splendo/kaluga/system/network/state/BaseNetworkStateRepoBuilder;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/NetworkStateRepo;
 }
 
-public abstract interface class com/splendo/kaluga/system/network/state/NetworkState : com/splendo/kaluga/state/KalugaState {
+public abstract interface class com/splendo/kaluga/system/network/state/NetworkState : com/splendo/kaluga/base/state/KalugaState {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 }
 
@@ -166,10 +166,10 @@ public abstract class com/splendo/kaluga/system/network/state/NetworkStateImpl {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 }
 
-public abstract class com/splendo/kaluga/system/network/state/NetworkStateImpl$Active : com/splendo/kaluga/system/network/state/NetworkStateImpl, com/splendo/kaluga/state/HandleAfterNewStateIsSet, com/splendo/kaluga/state/HandleBeforeOldStateIsRemoved {
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public abstract class com/splendo/kaluga/system/network/state/NetworkStateImpl$Active : com/splendo/kaluga/system/network/state/NetworkStateImpl, com/splendo/kaluga/base/state/HandleAfterNewStateIsSet, com/splendo/kaluga/base/state/HandleBeforeOldStateIsRemoved {
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterNewStateIsSet (Lcom/splendo/kaluga/system/network/state/NetworkState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/system/network/state/NetworkState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getDeinitialize ()Lkotlin/jvm/functions/Function1;
 	public abstract fun getNetworkManager ()Lcom/splendo/kaluga/system/network/NetworkManager;

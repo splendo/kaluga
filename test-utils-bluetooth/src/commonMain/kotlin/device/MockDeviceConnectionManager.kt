@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth.device
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
@@ -58,7 +59,7 @@ class MockDeviceConnectionManager(
         /**
          * List of created [MockDeviceConnectionManager]
          */
-        val createdDeviceConnectionManager = mutableListOf<MockDeviceConnectionManager>()
+        val createdDeviceConnectionManager = concurrentMutableListOf<MockDeviceConnectionManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

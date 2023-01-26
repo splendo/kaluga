@@ -32,8 +32,12 @@ fun KotlinDependencyHandler.implementationDependency(dependency: Dependency, han
     handler?.invoke(this)
 }
 
-fun DependencyHandler.apiDependency(dependency: Dependency) {
-    add("api", dependency.notation)
+fun DependencyHandler.apiDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) {
+    add("api", dependency.notation).apply {
+        (this as? ModuleDependency)?.let {
+            handler?.invoke(it)
+        }
+    }
 }
 fun DependencyHandler.implementationDependency(dependency: Dependency, handler: ModuleDependencyHandler? = null) {
     add("implementation", dependency.notation).apply {
