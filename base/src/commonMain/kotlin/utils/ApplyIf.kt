@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base.utils
 /*
 
 Copyright 2022 Splendo Consulting B.V. The Netherlands
@@ -16,6 +15,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.base.utils
 
 /**
  * Applies a given code block if a given condition is met

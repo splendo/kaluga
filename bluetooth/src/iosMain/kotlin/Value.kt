@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.toByteArray
+import com.splendo.kaluga.base.utils.toByteArray
 import platform.Foundation.NSData
 
 actual typealias Value = NSData

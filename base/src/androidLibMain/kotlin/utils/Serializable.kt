@@ -15,6 +15,7 @@
 
  */
 package com.splendo.kaluga.base.utils
+
 import java.io.Serializable
 
 actual typealias Serializable = Serializable

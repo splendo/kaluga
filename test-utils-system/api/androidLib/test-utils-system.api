@@ -19,7 +19,7 @@ public final class com/splendo/kaluga/test/system/network/MockBaseNetworkManager
 	public fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/NetworkConnectionType;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create ()Lcom/splendo/kaluga/system/network/BaseNetworkManager;
-	public final fun getBuiltNetworkManagers ()Ljava/util/List;
+	public final fun getBuiltNetworkManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 
@@ -117,7 +117,7 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkStateRepoBu
 	public fun <init> (Lcom/splendo/kaluga/system/network/BaseNetworkManager$Builder;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/system/network/BaseNetworkManager$Builder;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/system/network/state/NetworkStateRepo;
-	public final fun getBuiltNetworkStateRepo ()Ljava/util/List;
+	public final fun getBuiltNetworkStateRepo ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getNetworkManagerBuilder ()Lcom/splendo/kaluga/system/network/BaseNetworkManager$Builder;
 }

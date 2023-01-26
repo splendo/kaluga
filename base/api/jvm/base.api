@@ -42,6 +42,123 @@ public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
 	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMutableIterator {
+	public fun hasNext ()Z
+	public fun next ()Ljava/lang/Object;
+	public fun remove ()V
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableList : java/util/List, kotlin/jvm/internal/markers/KMutableList {
+	public fun <init> ()V
+	public fun add (ILjava/lang/Object;)V
+	public fun add (Ljava/lang/Object;)Z
+	public fun addAll (ILjava/util/Collection;)Z
+	public fun addAll (Ljava/util/Collection;)Z
+	public fun clear ()V
+	public fun contains (Ljava/lang/Object;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun get (I)Ljava/lang/Object;
+	public fun getSize ()I
+	public fun hashCode ()I
+	public fun indexOf (Ljava/lang/Object;)I
+	public fun isEmpty ()Z
+	public fun iterator ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableIterator;
+	public synthetic fun iterator ()Ljava/util/Iterator;
+	public fun lastIndexOf (Ljava/lang/Object;)I
+	public fun listIterator ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableListIterator;
+	public synthetic fun listIterator ()Ljava/util/ListIterator;
+	public fun listIterator (I)Lcom/splendo/kaluga/base/collections/ConcurrentMutableListIterator;
+	public synthetic fun listIterator (I)Ljava/util/ListIterator;
+	public final fun remove (I)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun removeAt (I)Ljava/lang/Object;
+	public fun retainAll (Ljava/util/Collection;)Z
+	public fun set (ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun size ()I
+	public fun subList (II)Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public synthetic fun subList (II)Ljava/util/List;
+	public final fun synchronized (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun toArray ()[Ljava/lang/Object;
+	public fun toArray ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableListIterator : java/util/Iterator, java/util/ListIterator, kotlin/jvm/internal/markers/KMutableIterator, kotlin/jvm/internal/markers/KMutableListIterator {
+	public fun add (Ljava/lang/Object;)V
+	public fun hasNext ()Z
+	public fun hasPrevious ()Z
+	public fun next ()Ljava/lang/Object;
+	public fun nextIndex ()I
+	public fun previous ()Ljava/lang/Object;
+	public fun previousIndex ()I
+	public fun remove ()V
+	public fun set (Ljava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableListKt {
+	public static final fun concurrentMutableListOf ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public static final fun concurrentMutableListOf ([Ljava/lang/Object;)Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableMap : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
+	public fun <init> ()V
+	public fun clear ()V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getEntries ()Ljava/util/Set;
+	public fun getKeys ()Ljava/util/Set;
+	public fun getSize ()I
+	public fun getValues ()Ljava/util/Collection;
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun size ()I
+	public final fun synchronized (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+	public final fun values ()Ljava/util/Collection;
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableMapKt {
+	public static final fun concurrentMutableMapOf ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+	public static final fun concurrentMutableMapOf ([Lkotlin/Pair;)Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableSet : java/util/Set, kotlin/jvm/internal/markers/KMutableSet {
+	public fun <init> ()V
+	public fun add (Ljava/lang/Object;)Z
+	public fun addAll (Ljava/util/Collection;)Z
+	public fun clear ()V
+	public fun contains (Ljava/lang/Object;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSize ()I
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun iterator ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableIterator;
+	public synthetic fun iterator ()Ljava/util/Iterator;
+	public fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun retainAll (Ljava/util/Collection;)Z
+	public final fun size ()I
+	public final fun synchronized (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun toArray ()[Ljava/lang/Object;
+	public fun toArray ([Ljava/lang/Object;)[Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/collections/ConcurrentMutableSetKt {
+	public static final fun concurrentMutableSetOf ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableSet;
+	public static final fun concurrentMutableSetOf ([Ljava/lang/Object;)Lcom/splendo/kaluga/base/collections/ConcurrentMutableSet;
+}
+
 public final class com/splendo/kaluga/base/flow/FlowKt {
 	public static final fun collectImportant (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun collectImportantUntilLast (Lkotlinx/coroutines/flow/Flow;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -87,6 +204,127 @@ public abstract interface class com/splendo/kaluga/base/monitor/ServiceMonitor {
 	public abstract fun isServiceEnabled ()Z
 	public abstract fun startMonitoring ()V
 	public abstract fun stopMonitoring ()V
+}
+
+public abstract class com/splendo/kaluga/base/state/BaseColdStateRepo : com/splendo/kaluga/base/state/StateRepo {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun firstCollection (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getLazyMutableFlow ()Lkotlin/Lazy;
+	protected fun getMutableFlow ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public abstract fun laterCollections (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun noMoreCollections (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/base/state/BaseHotStateRepo : com/splendo/kaluga/base/state/StateRepo {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getLazyMutableSharedFlow ()Lkotlin/Lazy;
+	protected fun getMutableFlow ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+}
+
+public class com/splendo/kaluga/base/state/ColdStateFlowRepo : com/splendo/kaluga/base/state/BaseColdStateRepo, com/splendo/kaluga/base/state/StateFlowRepo {
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun firstCollection (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getDeinitChangeStateWithRepo ()Lkotlin/jvm/functions/Function3;
+	public final fun getFirstState ()Lkotlin/jvm/functions/Function0;
+	public final fun getInitChangeStateWithRepo ()Lkotlin/jvm/functions/Function3;
+	public fun getLazyMutableFlow ()Lkotlin/Lazy;
+	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun initialValue (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun laterCollections (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun noMoreCollections (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/base/state/ColdStateRepo : com/splendo/kaluga/base/state/BaseColdStateRepo {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/Lazy;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/Lazy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun deinitialize (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun firstCollection (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getLazyMutableFlow ()Lkotlin/Lazy;
+	public final fun laterCollections (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun noMoreCollections (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/HandleAfterCreating {
+	public abstract fun afterCreatingNewState (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/HandleAfterNewStateIsSet {
+	public abstract fun afterNewStateIsSet (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/HandleAfterOldStateIsRemoved {
+	public abstract fun afterOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/HandleBeforeCreating {
+	public abstract fun beforeCreatingNewState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/HandleBeforeOldStateIsRemoved {
+	public abstract fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/base/state/HotStateFlowRepo : com/splendo/kaluga/base/state/BaseHotStateRepo, com/splendo/kaluga/base/state/StateFlowRepo {
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getInitialState ()Lkotlin/jvm/functions/Function1;
+	public fun getLazyMutableSharedFlow ()Lkotlin/Lazy;
+	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun initialValue (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/base/state/HotStateRepo : com/splendo/kaluga/base/state/BaseHotStateRepo {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getLazyMutableSharedFlow ()Lkotlin/Lazy;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/KalugaState {
+	public abstract fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/base/state/KalugaState$DefaultImpls {
+	public static fun remain (Lcom/splendo/kaluga/base/state/KalugaState;)Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/base/state/KalugaStateKt {
+	public static final fun defaultLazySharedFlow ()Lkotlin/Lazy;
+}
+
+public abstract interface class com/splendo/kaluga/base/state/StateFlowRepo {
+	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
+}
+
+public abstract class com/splendo/kaluga/base/state/StateRepo : kotlinx/coroutines/CoroutineScope, kotlinx/coroutines/flow/Flow {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun collect (Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	protected abstract fun getMutableFlow ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public final fun getSubscriptionCount ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun initialValue (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun launchTakeAndChangeState (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public final fun launchTakeAndChangeState (Lkotlin/coroutines/CoroutineContext;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static synthetic fun launchTakeAndChangeState$default (Lcom/splendo/kaluga/base/state/StateRepo;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+	public static synthetic fun launchTakeAndChangeState$default (Lcom/splendo/kaluga/base/state/StateRepo;Lkotlin/coroutines/CoroutineContext;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+	public final fun launchUseState (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static synthetic fun launchUseState$default (Lcom/splendo/kaluga/base/state/StateRepo;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+	public final fun peekState ()Lcom/splendo/kaluga/base/state/KalugaState;
+	public final fun takeAndChangeState (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun takeAndChangeState (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun useState (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/base/text/DateFormatStyle : java/lang/Enum {

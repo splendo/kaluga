@@ -56,7 +56,7 @@ public final class com/splendo/kaluga/permissions/base/BasePermissionManager$Set
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class com/splendo/kaluga/permissions/base/BasePermissionStateRepo : com/splendo/kaluga/state/ColdStateFlowRepo {
+public abstract class com/splendo/kaluga/permissions/base/BasePermissionStateRepo : com/splendo/kaluga/base/state/ColdStateFlowRepo {
 	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
@@ -119,7 +119,7 @@ public final class com/splendo/kaluga/permissions/base/PermissionManager$Event$P
 	public static final field INSTANCE Lcom/splendo/kaluga/permissions/base/PermissionManager$Event$PermissionGranted;
 }
 
-public abstract interface class com/splendo/kaluga/permissions/base/PermissionState : com/splendo/kaluga/state/KalugaState {
+public abstract interface class com/splendo/kaluga/permissions/base/PermissionState : com/splendo/kaluga/base/state/KalugaState {
 }
 
 public abstract interface class com/splendo/kaluga/permissions/base/PermissionState$Active : com/splendo/kaluga/permissions/base/PermissionState {
@@ -163,11 +163,11 @@ public abstract interface class com/splendo/kaluga/permissions/base/PermissionSt
 public abstract class com/splendo/kaluga/permissions/base/PermissionStateImpl {
 }
 
-public abstract class com/splendo/kaluga/permissions/base/PermissionStateImpl$Active : com/splendo/kaluga/permissions/base/PermissionStateImpl, com/splendo/kaluga/state/HandleAfterNewStateIsSet, com/splendo/kaluga/state/HandleBeforeOldStateIsRemoved {
+public abstract class com/splendo/kaluga/permissions/base/PermissionStateImpl$Active : com/splendo/kaluga/permissions/base/PermissionStateImpl, com/splendo/kaluga/base/state/HandleAfterNewStateIsSet, com/splendo/kaluga/base/state/HandleBeforeOldStateIsRemoved {
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterNewStateIsSet (Lcom/splendo/kaluga/permissions/base/PermissionState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/permissions/base/PermissionState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getDeinitialize ()Lkotlin/jvm/functions/Function1;
 	public abstract fun getMonitoringInterval-UwyO8pc ()J
 	public abstract fun getPermissionManager ()Lcom/splendo/kaluga/permissions/base/PermissionManager;
@@ -275,7 +275,7 @@ public final class com/splendo/kaluga/permissions/base/Permissions {
 	public fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun clean ()V
-	public final fun get (Lcom/splendo/kaluga/permissions/base/Permission;)Lcom/splendo/kaluga/state/StateRepo;
+	public final fun get (Lcom/splendo/kaluga/permissions/base/Permission;)Lcom/splendo/kaluga/base/state/StateRepo;
 	public final fun request (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

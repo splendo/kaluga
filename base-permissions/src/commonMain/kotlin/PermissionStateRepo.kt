@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.permissions.base
 
-import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.base.state.ColdStateFlowRepo
+import com.splendo.kaluga.base.state.StateRepo
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

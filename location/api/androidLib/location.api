@@ -45,7 +45,7 @@ public final class com/splendo/kaluga/location/BaseLocationManager$Settings {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class com/splendo/kaluga/location/BaseLocationStateRepo : com/splendo/kaluga/state/ColdStateFlowRepo {
+public abstract class com/splendo/kaluga/location/BaseLocationStateRepo : com/splendo/kaluga/base/state/ColdStateFlowRepo {
 	public fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
@@ -306,7 +306,7 @@ public abstract interface class com/splendo/kaluga/location/LocationProvider {
 	public abstract fun stopMonitoringLocation (Lcom/splendo/kaluga/permissions/location/LocationPermission;)V
 }
 
-public abstract interface class com/splendo/kaluga/location/LocationState : com/splendo/kaluga/state/KalugaState {
+public abstract interface class com/splendo/kaluga/location/LocationState : com/splendo/kaluga/base/state/KalugaState {
 	public abstract fun getLocation ()Lcom/splendo/kaluga/location/Location;
 }
 
@@ -355,11 +355,11 @@ public abstract class com/splendo/kaluga/location/LocationStateImpl {
 	public abstract fun getLocation ()Lcom/splendo/kaluga/location/Location;
 }
 
-public abstract class com/splendo/kaluga/location/LocationStateImpl$Active : com/splendo/kaluga/location/LocationStateImpl, com/splendo/kaluga/state/HandleAfterNewStateIsSet, com/splendo/kaluga/state/HandleBeforeOldStateIsRemoved {
+public abstract class com/splendo/kaluga/location/LocationStateImpl$Active : com/splendo/kaluga/location/LocationStateImpl, com/splendo/kaluga/base/state/HandleAfterNewStateIsSet, com/splendo/kaluga/base/state/HandleBeforeOldStateIsRemoved {
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getDeinitialized ()Lkotlin/jvm/functions/Function1;
 	protected abstract fun getLocationManager ()Lcom/splendo/kaluga/location/LocationManager;
 }
@@ -381,10 +381,10 @@ public abstract class com/splendo/kaluga/location/LocationStateImpl$Disabled : c
 
 public final class com/splendo/kaluga/location/LocationStateImpl$Disabled$NoGPS : com/splendo/kaluga/location/LocationStateImpl$Disabled, com/splendo/kaluga/location/LocationState$Disabled$NoGPS {
 	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getEnable ()Lkotlin/jvm/functions/Function1;
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
@@ -398,10 +398,10 @@ public final class com/splendo/kaluga/location/LocationStateImpl$Disabled$NotPer
 
 public final class com/splendo/kaluga/location/LocationStateImpl$Enabled : com/splendo/kaluga/location/LocationStateImpl$Active, com/splendo/kaluga/location/LocationState$Enabled {
 	public fun <init> (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)V
+	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterNewStateIsSet (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun afterNewStateIsSet (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/base/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/location/LocationState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun beforeOldStateIsRemoved (Lcom/splendo/kaluga/state/KalugaState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun component1 ()Lcom/splendo/kaluga/location/Location;
 	public final fun copy (Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;)Lcom/splendo/kaluga/location/LocationStateImpl$Enabled;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/location/LocationStateImpl$Enabled;Lcom/splendo/kaluga/location/Location;Lcom/splendo/kaluga/location/LocationManager;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateImpl$Enabled;

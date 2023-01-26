@@ -22,11 +22,11 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.state.HandleAfterCreating
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
-import com.splendo.kaluga.state.KalugaState
+import com.splendo.kaluga.base.state.HandleAfterCreating
+import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
+import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.base.state.KalugaState
 
 typealias Filter = Set<UUID>
 

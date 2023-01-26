@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.test.text
+package com.splendo.kaluga.base.text
 
 // your IDE might not understand having multiple actuals in the android test sets is actually ok (even though this is fine for compiling)
 // close the file and restart to clear the error.

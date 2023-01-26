@@ -15,12 +15,14 @@
 
  */
 
-package collections
+package com.splendo.kaluga.base.collections
 
-import com.splendo.kaluga.base.collections.concurrentMutableSetOf
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -53,5 +55,21 @@ class ConcurrentMutableSetTest : BaseTest() {
 
         set.clear()
         assertTrue(set.isEmpty())
+    }
+
+    @Test
+    fun testConcurrency() = runBlocking {
+        val dispatchers = List(10) { singleThreadDispatcher("Thread $it") }
+        val set = concurrentMutableSetOf<Int>()
+        val jobs = dispatchers.mapIndexed { index, dispatcher ->
+            launch(coroutineContext + dispatcher) {
+                repeat(1000) {
+                    set.add(index * 1000 + it)
+                }
+            }
+        }
+        jobs.joinAll()
+        assertEquals(10000, set.size)
+        dispatchers.forEach { it.close() }
     }
 }

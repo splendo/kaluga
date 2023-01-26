@@ -18,8 +18,8 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.state.HotStateFlowRepo
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.base.state.HotStateFlowRepo
+import com.splendo.kaluga.base.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

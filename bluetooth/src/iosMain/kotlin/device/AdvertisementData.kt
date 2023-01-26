@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.toByteArray
+import com.splendo.kaluga.base.utils.toByteArray
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.UUID

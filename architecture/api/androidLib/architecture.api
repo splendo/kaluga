@@ -37,7 +37,7 @@ public class com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscrib
 }
 
 public final class com/splendo/kaluga/architecture/lifecycle/GetOrPutAndRemoveOnDestroyFromCacheKt {
-	public static final fun getLifecycleAwareActivityCache ()Ljava/util/Map;
+	public static final fun getLifecycleAwareActivityCache ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
 }
 
 public final class com/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscriber {

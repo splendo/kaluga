@@ -18,8 +18,8 @@
 package com.splendo.kaluga.system.network.state
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.base.state.ColdStateFlowRepo
+import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.NetworkManager

@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.test.text
+package com.splendo.kaluga.base.text
 
 actual val usdForNL: String = "US$"
 actual val jpyForUS: String = "¥"

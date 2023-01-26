@@ -30,6 +30,7 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
 
         testImplementationDependency(Dependencies.JUnit)
         testImplementationDependency(Dependencies.Mockito.Core)
+        testImplementationDependency(Dependencies.ByteBuddy.Agent)
         testImplementationDependency(Dependencies.Kotlin.Test)
         testImplementationDependency(Dependencies.Kotlin.JUnit)
 

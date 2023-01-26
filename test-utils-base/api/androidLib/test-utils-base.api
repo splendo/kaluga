@@ -77,10 +77,6 @@ public abstract class com/splendo/kaluga/test/base/FlowTest : com/splendo/kaluga
 	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
 }
 
-public final class com/splendo/kaluga/test/base/FlowTestKt {
-	public static final fun getContextMap ()Ljava/util/Map;
-}
-
 public abstract class com/splendo/kaluga/test/base/FlowableTest : com/splendo/kaluga/test/base/BaseTest {
 	public fun <init> ()V
 	public abstract fun mutableSharedFlow ()Lkotlinx/coroutines/flow/MutableSharedFlow;

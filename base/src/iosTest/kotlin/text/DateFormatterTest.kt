@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,8 @@
 
  */
 
-package com.splendo.kaluga.base
+package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.test.base.BaseTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-
-class DataUtilsTest : BaseTest() {
-
-    @Test
-    fun testByteArrayConverter() {
-        val byteArray = byteArrayOf(0x2F, 0x4A, 0x0, 0x01)
-        val byteData = byteArray.toNSData()
-        assertEquals(byteArray.size.toULong(), byteData.length)
-        assertEquals(true, byteData.toByteArray().contentEquals(byteArray))
-    }
-}
+actual val usdForNL: String = "US$"
+actual val jpyForUS: String = "¥"
+actual val jpyForNL: String = "JP¥"
