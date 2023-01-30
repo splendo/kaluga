@@ -17,31 +17,44 @@
 
 package com.splendo.kaluga.resources
 
+external fun require(name: String): dynamic
+external val __dirname: dynamic
+
 actual class DefaultKalugaFile actual constructor(
     override val path: KalugaFile.Path,
     override val mode: Set<KalugaFile.Mode>
 ) : KalugaFile {
 
-    override fun open() {
-        TODO("Not yet implemented")
-    }
+    private val fs = require("fs")
+    private var lineIterator: Iterator<String>? = null
+    private var byteIterator: ByteIterator? = null
+
+    override fun open() = Unit
 
     override fun nextLine(): String? {
-        TODO("Not yet implemented")
+        if (lineIterator == null) {
+            lineIterator = fs.readFileSync(path.filepath, "utf8").toString()
+                .splitToSequence("\n")
+                .iterator()
+        }
+        if (!lineIterator!!.hasNext()) return null
+        return lineIterator!!.next()
     }
 
     override fun nextByte(): Byte? {
-        TODO("Not yet implemented")
+        if (byteIterator == null) {
+            byteIterator = fs.readFileSync(path.filepath).toString().encodeToByteArray().iterator()
+        }
+        if (!byteIterator!!.hasNext()) return null
+        return byteIterator!!.next()
     }
 
-    override fun close() {
-        TODO("Not yet implemented")
-    }
+    override fun close() = Unit
 }
 
 actual class DefaultFilePath actual constructor(
     name: String,
     path: String
 ) : KalugaFile.Path {
-    override val filepath = "$path/$name"
+    override val filepath = "$__dirname/$name"
 }
