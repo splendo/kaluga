@@ -362,7 +362,7 @@ fun <T> Intent?.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
-fun <T> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
+fun <T : Any> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
         NavigationBundleSpecType.SerializedType(serializer)
     )

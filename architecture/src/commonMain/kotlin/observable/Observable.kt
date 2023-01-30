@@ -35,6 +35,11 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
+/**
+ * Casts the value of an [ObservableOptional] to its subtype [R] or returns [defaultValue] if no such casting is possible.
+ * @param defaultValue The default [R] to be returned if [ObservableOptional.valueOrNull] is not [R] or `null`.
+ * @return The current value [R] if it exists or [defaultValue]
+ */
 inline fun <reified R : T, T> ObservableOptional<T>.resultValueOrDefault(defaultValue: R): R =
     try {
         valueOrNull?.let { it as? R } ?: defaultValue
@@ -42,6 +47,11 @@ inline fun <reified R : T, T> ObservableOptional<T>.resultValueOrDefault(default
         defaultValue
     }
 
+/**
+ * Casts an [ObservableOptional] to an [ObservableOptional] its subtype [R] or returns [defaultValue] if no such casting is possible.
+ * @param defaultValue The default [Value] of [R] to be returned if [ObservableOptional] is not a [Value] of [R] or `null`.
+ * @return An [ObservableOptional] containing the current [Value] of [R] if it exists or [defaultValue]
+ */
 fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): ObservableOptional<R> =
     try {
         if (this is Value<*> && (this.value != null || defaultValue == null))
@@ -54,14 +64,20 @@ fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): Observab
     }
 
 /**
- * Result type for an [BaseObservable]. Used to allow for the distinction between `null` and optional values
+ * Result type for an [BaseObservable]. Used to allow for the distinction between `null` and optional values.
+ * @param T the type this [ObservableOptional] represents. Can be a nullable.
  */
 sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
 
+    /**
+     * The value of [T] or `null` if this result is [Nothing].
+     */
     abstract val valueOrNull: T?
 
     /**
-     * The [BaseObservable] has a result, this result could be `null`
+     * The [BaseObservable] has a result, this result could be `null`.
+     * @param T the type of the [Value]
+     * @property value the value of this result. Can be `null`.
      */
     data class Value<T>(val value: T) : ObservableOptional<T>() {
 
@@ -71,7 +87,8 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
     }
 
     /**
-     * The Observable does not have a result
+     * The Observable does not have a result.
+     * @param T the type of [Value] that corresponds to this empty result.
      */
     class Nothing<T> : ObservableOptional<T>() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
@@ -91,12 +108,17 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
     }
 }
 
-open class ObservationDefault<R : T?, T>(
+/**
+ * An [Observation] that implements [MutableDefaultInitialized]
+ * @param T the type of value to expect.
+ * @param R the type of result to expect. Must be a subclass of [T].
+ */
+open class ObservationDefault<R : T?, T : Any>(
     override val defaultValue: Value<R>,
     override val initialValue: Value<T?>
 ) : Observation<R, T?, Value<R>>(initialValue),
     ReadWriteProperty<Any?, R>,
-    MutableDefaultInitialized<R, T?> {
+    MutableDefaultInitialized<R, T> {
 
     constructor(
         defaultValue: R,
@@ -128,6 +150,9 @@ open class ObservationDefault<R : T?, T>(
     }
 }
 
+/**
+ * An [Observation] that implements [MutableUninitialized]
+ */
 class ObservationUninitialized<T> :
     Observation<T, T, ObservableOptional<T>>(Nothing()),
     MutableUninitialized<T>,
@@ -205,12 +230,6 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
 
     var beforeObservedValueGet: ((OO) -> ObservableOptional<T>)? = null
 
-    // alternate implementation with freezing references
-
-    // This implementation's withContext below should freeze this reference if it's accessed from another thread
-    // but if all access is from the main thread it should not be frozen.
-    // if it does get frozen, instead the atomic reference is used to update into.
-
     @Suppress("SENSELESS_COMPARISON") // if not initialized this can still happen
     private var backingInternalValue: ObservableOptional<R>? = null
         get() =
@@ -227,7 +246,6 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
      *  set the value of this Observable from a suspended context.
      */
     suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> =
-        // this avoids unneeded freezing that sometimes occurs in the runtime anyway
         if (isOnMainThread) {
             setValueUnconfined(value)
         } else withContext(Dispatchers.Main) {
@@ -396,18 +414,23 @@ interface InitializedSubject<T> :
     InitializedObservable<T>,
     MutableInitialized<T, T>
 
-interface DefaultObservable<R : T?, T> :
+interface DefaultObservable<R : T?, T : Any> :
     BasicObservable<R, T?, Value<R>>,
-    DefaultInitialized<R, T?>
+    DefaultInitialized<R, T>
 
-interface DefaultSubject<R : T?, T> :
+interface DefaultSubject<R : T?, T : Any> :
     BasicSubject<R, T?, Value<R>>,
     DefaultObservable<R, T>,
-    MutableDefaultInitialized<R, T?>
+    MutableDefaultInitialized<R, T>
 
+/**
+ * Interface indicating an observable has a state of [T]
+ * @param T the type of the state.
+ */
 expect interface WithState<T> {
+
     /**
-     * Stateflow that expresses the content from the observable.
+     * [StateFlow] that expresses the content from the observable.
      *
      * This can be initialized lazily.
      *
@@ -416,41 +439,114 @@ expect interface WithState<T> {
      *
      */
     val stateFlow: StateFlow<T>
+
+    /**
+     * A [ReadOnlyProperty] of [T]
+     */
     val valueDelegate: ReadOnlyProperty<Any?, T>
 }
 
+/**
+ * A [WithState] where [stateFlow] is mutable
+ */
 interface WithMutableState<T> : WithState<T> {
+
+    /**
+     * [MutableStateFlow] that expresses the content from the observable.
+     *
+     * This can be initialized lazily.
+     *
+     * Accessing this from property outside the main thread might cause a race condition,
+     * since observing the initial value needed for the stateflow has to happen on the main thread.
+     *
+     */
     override val stateFlow: MutableStateFlow<T>
+
+    /**
+     * A [ReadWriteProperty] of [T]
+     */
     override val valueDelegate: ReadWriteProperty<Any?, T>
 }
 
-interface MutableDefaultInitialized<R : T?, T> : DefaultInitialized<R, T?>, WithMutableState<R>
+/**
+ * A [DefaultInitialized] that implements [WithMutableState]
+ * @param T the type of value to expect.
+ * @param R the type of result to expect. Must be a subclass of [T].
+ */
+interface MutableDefaultInitialized<R : T?, T : Any> : DefaultInitialized<R, T>, WithMutableState<R>
 
-interface DefaultInitialized<R : T?, T> : Initialized<R, T?>, WithState<R> {
+/**
+ * An [Initialized] that has a [defaultValue]
+ * @param T the type of value to expect.
+ * @param R the type of result to expect. Must be a subclass of [T]
+ */
+interface DefaultInitialized<R : T?, T : Any> : Initialized<R, T?> {
+    /**
+     * The default [Value] of [R]. Can be used in case [Nothing] is [Initial.initialValue]
+     */
     val defaultValue: Value<R>
 }
 
 interface MutableUninitialized<T> : Uninitialized<T>, WithMutableState<T?>
+
+/**
+ * An [Initial] that has [Nothing] as its [initialValue]
+ * @param T the type of value to expect.
+ * @param R the type of result to expect. Must be a subclass of [T]
+ */
 interface Uninitialized<T> : Initial<T, T>, WithState<T?> {
     override val initialValue: Nothing<T>
 }
 
+/**
+ * An [Initialized] that implements [WithMutableState].
+ */
 interface MutableInitialized<R : T, T> : Initialized<R, T>, WithMutableState<R>
+
+/**
+ * An [Initial] that has [Value] as its [initialValue]
+ * @param T the type of value to expect.
+ * @param R the type of result to expect. Must be a subclass of [T]
+ */
 interface Initialized<R : T, T> : Initial<R, T>, WithState<R> {
     override val initialValue: Value<T>
+
+    /**
+     * The current value of [R]
+     */
     val current: R
     fun observeInitialized(onNext: (R) -> Unit): Disposable
 }
 
+/**
+ * Marks a class that has an initial [ObservableOptional] value, where [T] is the expected input value and [R] is its result.
+ * @param T the type of value to expect.
+ * @param R the type of result to expect. Must be a subclass of [T]
+ */
 interface Initial<R : T, T> {
+    /**
+     * The initial [ObservableOptional] value of [T].
+     */
     val initialValue: ObservableOptional<T>
+
+    /**
+     * The current value [T] or `null` being observed
+     */
     val currentOrNull: T?
+
+    /**
+     * Creates an observation that calls [onNext] each time a new value is observed until the resulting [Disposable] is [disposed][Disposable.dispose]
+     */
     fun observe(onNext: (R?) -> Unit): Disposable
 }
 
+/**
+ * A [Postable] that can be set in a suspended manner.
+ * @param T the type of value that can be posted.
+ */
 interface SuspendableSetter<T> : Postable<T> {
     /**
-     * Updates the value of this [Postable]
+     * Updates the value of this [Postable] in a suspended manner.
      * @param newValue The new value of the postable
      */
     suspend fun set(newValue: T)
@@ -458,6 +554,7 @@ interface SuspendableSetter<T> : Postable<T> {
 
 /**
  * A Postable can handle values being posted to it.
+ * @param T the type of value that can be posted.
  */
 interface Postable<T> {
     /**
@@ -469,16 +566,16 @@ interface Postable<T> {
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // we want our delegate to override
-abstract class BaseDefaultObservable<R : T?, T>(
-    override val observation: ObservationDefault<R, T?>
+abstract class BaseDefaultObservable<R : T?, T : Any>(
+    override val observation: ObservationDefault<R, T>
 ) :
     BaseObservable<R, T?, Value<R>>(observation),
-    DefaultObservable<R, T?>,
-    DefaultInitialized<R, T?> by observation {
+    DefaultObservable<R, T>,
+    DefaultInitialized<R, T> by observation {
     constructor(
         defaultValue: R,
         initialValue: Value<T?>
-    ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
+    ) : this(ObservationDefault<R, T>(Value<R>(defaultValue), initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
@@ -593,11 +690,11 @@ class SimpleInitializedSubject<T>(
     }
 }
 
-class SimpleDefaultSubject<R : T?, T>(
+class SimpleDefaultSubject<R : T?, T : Any>(
     defaultValue: R,
     initialValue: T? = defaultValue
 ) :
-    BaseDefaultSubject<R, T?>(
+    BaseDefaultSubject<R, T>(
         Value(defaultValue),
         Value(initialValue)
     ) {
@@ -612,25 +709,25 @@ class SimpleDefaultSubject<R : T?, T>(
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate
-abstract class AbstractBaseDefaultSubject<R : T?, T>(
-    override val observation: ObservationDefault<R, T?>
+abstract class AbstractBaseDefaultSubject<R : T?, T : Any>(
+    override val observation: ObservationDefault<R, T>
 ) : BaseSubject<R, T?, Value<R>>(
     observation,
     { observation.stateFlow }
 ),
     DefaultSubject<R, T>,
-    MutableDefaultInitialized<R, T?> by observation {
+    MutableDefaultInitialized<R, T> by observation {
     constructor(
         defaultValue: Value<R>,
         initialValue: Value<T?>
-    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
+    ) : this(observation = ObservationDefault<R, T>(defaultValue, initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
 }
 
-expect abstract class BaseDefaultSubject<R : T?, T>(
-    observation: ObservationDefault<R, T?>
+expect abstract class BaseDefaultSubject<R : T?, T : Any>(
+    observation: ObservationDefault<R, T>
 ) : AbstractBaseDefaultSubject<R, T> {
 
     constructor(

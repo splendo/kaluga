@@ -36,11 +36,13 @@ fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
  * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType] either directly or wrapped in [NavigationBundleSpecType.OptionalType]
  * @return The [R] value stored in the bundle.
  */
-fun <R> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
+fun <R : Any> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
     toTypedProperty(type)
 } catch (e: BundleConversionError) {
     try {
-        toTypedProperty(NavigationBundleSpecType.OptionalType(type))
+        (type as? NavigationBundleSpecType.NonNullableNavigationBundleSpecType)?.let {
+            toTypedProperty(NavigationBundleSpecType.OptionalType(it))
+        }
     } catch (e: BundleConversionError) {
         null
     }
@@ -354,4 +356,4 @@ fun <T> Bundle.asTypeOf(serializer: KSerializer<T>): T = toTypedProperty(Navigat
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
-fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))
+fun <T : Any> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))

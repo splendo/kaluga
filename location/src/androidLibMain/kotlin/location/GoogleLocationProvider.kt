@@ -47,9 +47,9 @@ class GoogleLocationProvider(private val context: Context, private val settings:
 
     /**
      * Settings for a [GoogleLocationProvider]
-     * @param interval The desired interval of location updates.
-     * @param maxUpdateDelay The longest a location update may be delayed.
-     * @param minUpdateInterval The fastest allowed interval of location updates.
+     * @property interval The desired interval of location updates.
+     * @property maxUpdateDelay The longest a location update may be delayed.
+     * @property minUpdateInterval The fastest allowed interval of location updates.
      */
     data class Settings(
         val interval: Duration,

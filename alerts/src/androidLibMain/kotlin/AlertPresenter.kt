@@ -37,12 +37,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+/**
+ * Class for presenting an [Alert].
+ * @param alert The [Alert] being presented.
+ * @param lifecycleManagerObserver The [LifecycleManagerObserver]
+ */
 actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
 ) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
 
+    /**
+     * Builder for creating an [AlertPresenter]
+     * @param lifecycleManagerObserver The [LifecycleManagerObserver]
+     */
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {

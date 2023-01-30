@@ -20,15 +20,17 @@ package com.splendo.kaluga.architecture.navigation
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
 /**
- * Action that describes the intent to navigate
- * @param bundle The [NavigationBundle] containing data used to configure navigation
+ * Action that describes the intent to navigate.
+ * @param B the type of [NavigationBundleSpecRow] associated with this action.
+ * @property bundle The [NavigationBundle] containing rows of [B] used to configure navigation.
  */
 open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
 
 /**
- * A [NavigationAction] that has a [SingleValueNavigationSpec] bundle
- * @param value The value passed by the action
- * @param type The [NavigationBundleSpecType] describing the object passed by the action
+ * A [NavigationAction] that has a [SingleValueNavigationSpec] bundle.
+ * @param T the value type to be passed when navigating using this action.
+ * @property value The value passed by the action
+ * @property type The [NavigationBundleSpecType] associated with [T].
  */
 open class SingleValueNavigationAction<T>(
     val value: T,
@@ -41,16 +43,18 @@ open class SingleValueNavigationAction<T>(
 
 /**
  * Exception thrown by a [Navigator]
+ * @param message The message of this exception.
  */
 open class NavigationException(message: String?) : RuntimeException(message)
 
 /**
  * Class that can trigger a given [NavigationAction]
+ * @param A the type of [NavigationAction] this navigator should respond to.
  */
 expect interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
     /**
      * Triggers a given [NavigationAction]
-     * @param action The [NavigationAction] to trigger
+     * @param action The [A] to trigger
      * @throws [NavigationException] if navigation fails.
      */
     fun navigate(action: A)
@@ -58,7 +62,8 @@ expect interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
 
 /**
  * Triggers a given [NavigationAction] and returns `true` if it succeeded.
- * @param action The [NavigationAction] to trigger.
+ * @param A The type of [NavigationAction] to be given.
+ * @param action The [A] to trigger.
  * @return `true` if the navigation succeeded, false otherwise
  */
 fun <A : NavigationAction<*>> Navigator<A>.navigateWithSuccess(action: A): Boolean = try {
@@ -69,8 +74,9 @@ fun <A : NavigationAction<*>> Navigator<A>.navigateWithSuccess(action: A): Boole
 }
 
 /**
- * Triggers a given [NavigationAction] or executes a closure if the navigation failed to complete
- * @param action The [NavigationAction] to trigger.
+ * Triggers a given [NavigationAction] or executes a closure if the navigation failed to complete.
+ * @param A The type of [NavigationAction] to be given.
+ * @param action The [A] to trigger.
  * @param onFailure Closure for handling case when navigation failed.
  */
 fun <A : NavigationAction<*>> Navigator<A>.navigateOrElse(action: A, onFailure: () -> Unit) {

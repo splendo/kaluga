@@ -343,4 +343,4 @@ fun <T> Activity.parseTypeOf(serializer: KSerializer<T>): T = intent.parseTypeOf
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
-fun <T> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)
+fun <T : Any> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)

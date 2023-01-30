@@ -47,12 +47,12 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
     ) : this (ObservationInitialized(initialValue))
 }
 
-actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
-    observation: ObservationDefault<R, T?>
+actual abstract class BaseDefaultSubject<R : T?, T : Any> actual constructor(
+    observation: ObservationDefault<R, T>
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 
     actual constructor(
         defaultValue: ObservableOptional.Value<R>,
         initialValue: ObservableOptional.Value<T?>
-    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
+    ) : this(observation = ObservationDefault<R, T>(defaultValue, initialValue))
 }

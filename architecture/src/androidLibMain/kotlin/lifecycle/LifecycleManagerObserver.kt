@@ -21,7 +21,10 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LifecycleManagerObserver : ActivityLifecycleSubscriber() {
+/**
+ * A [ActivityLifecycleSubscribable] that provides [ActivityLifecycleSubscribable.manager] as a [StateFlow]
+ */
+class LifecycleManagerObserver : DefaultActivityLifecycleSubscribable() {
 
     override var manager: ActivityLifecycleSubscribable.LifecycleManager?
         get() = super.manager
@@ -31,6 +34,10 @@ class LifecycleManagerObserver : ActivityLifecycleSubscriber() {
         }
 
     private val _managerState = MutableStateFlow<ActivityLifecycleSubscribable.LifecycleManager?>(null)
+
+    /**
+     * A [StateFlow] of the current [manager]
+     */
     val managerState: StateFlow<ActivityLifecycleSubscribable.LifecycleManager?> = _managerState
 }
 
