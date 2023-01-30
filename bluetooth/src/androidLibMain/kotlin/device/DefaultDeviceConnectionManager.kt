@@ -104,11 +104,6 @@ internal actual class DefaultDeviceConnectionManager(
             }
         }
 
-        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            descriptor ?: return
-            handleUpdatedDescriptor(descriptor.uuid, status == GATT_SUCCESS)
-        }
-
         @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             characteristic ?: return
@@ -136,9 +131,19 @@ internal actual class DefaultDeviceConnectionManager(
             value: ByteArray
         ) = updateDescriptor(descriptor, value, status)
 
+        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+            descriptor ?: return
+            val succeeded = status == GATT_SUCCESS
+            // Notification enable/disable done by client configuration descriptor write
+            if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
+                handleCurrentActionCompleted(succeeded)
+            }
+            handleUpdatedDescriptor(descriptor.uuid, succeeded)
+        }
+
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             lastKnownState = newState
-            launch() {
+            launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         handleDisconnect {
@@ -292,10 +297,6 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
         val succeeded = status == GATT_SUCCESS
-        // Notification enable/disable done by client configuration descriptor write
-        if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
-            handleCurrentActionCompleted(succeeded)
-        }
         handleUpdatedDescriptor(descriptor.uuid, succeeded) {
             it.wrapper.updateValue(value)
         }
