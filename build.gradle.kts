@@ -45,6 +45,35 @@ allprojects {
     }
 }
 
+task("mainModules") {
+    outputs.upToDateWhen { false }
+
+    val file = project.file("ci_projects.env")
+    file.delete()
+    file.appendText("MODULES=[")
+    var firstProject = true
+
+    subprojects.forEach { thisProject ->
+
+        val dependsOnOtherProject = subprojects.any {  otherProject -> thisProject != otherProject && (thisProject.name.startsWith(otherProject.name) || thisProject.name.endsWith(otherProject.name))}
+        val otherProjectsDependOn = subprojects.any {  otherProject -> thisProject != otherProject && (otherProject.name.startsWith(thisProject.name) || otherProject.name.endsWith(thisProject.name))}
+
+        if (!dependsOnOtherProject || otherProjectsDependOn) {
+            logger.debug("main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
+
+            if (firstProject)
+                firstProject = false
+            else
+                file.appendText(",")
+            file.appendText('"'+thisProject.name+'"')
+        } else {
+            logger.debug("not a main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
+        }
+    }
+
+    file.appendText("]")
+}
+
 apiValidation {
 
     subprojects.forEach {
