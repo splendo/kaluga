@@ -107,9 +107,15 @@ class LibraryImpl(project: Project) {
     }
     val IOS = IOSLibrary(props, logger)
 
-    val connectCheckExpansion = (System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") or System.getenv().containsKey("CI")).also {
+    private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
+    private val testDependentProjects = System.getenv().containsKey(testDependentProjectsEnvName)
+
+    private val onCiEnvName = "CI"
+    private val onCI = System.getenv().containsKey(onCiEnvName)
+
+    val enableDependentProjects = (testDependentProjects or onCI).also {
         if (it) {
-            logger.lifecycle("Adding extra dependend task to connected checks of similarly named modules (CONNECTED_CHECK_EXPANSION env present: ${ System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") })")
+            logger.info("Adding extra dependent tasks to test tasks of similarly named modules ($testDependentProjectsEnvName env present: $testDependentProjects $onCiEnvName env present: $onCI)")
         }
     }
 }

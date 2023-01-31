@@ -45,12 +45,12 @@ allprojects {
     }
 }
 
-task("mainModules") {
+task("generateNonDependentProjectsFile") {
     outputs.upToDateWhen { false }
 
-    val file = project.file("ci_projects.env")
+    val file = project.file("non_dependent_projects.properties")
     file.delete()
-    file.appendText("MODULES=[")
+    file.appendText("projects=[")
     var firstProject = true
 
     subprojects.forEach { thisProject ->

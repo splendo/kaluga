@@ -74,5 +74,5 @@ projectFilesBackup*/
 # for now supply your own
 google-services.json
 
-# generated on CI
-/ci_projects.env
+# generated for CI
+/non_dependent_projects.properties

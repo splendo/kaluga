@@ -70,7 +70,7 @@ fun Project.commonComponent(iosExport: (Framework.() -> Unit)? = null) {
 
     ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
 
-    if (Library.connectCheckExpansion) {
+    if (Library.enableDependentProjects) {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
         }?.forEach { module ->
