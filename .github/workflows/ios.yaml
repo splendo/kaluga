@@ -9,6 +9,7 @@ jobs:
     runs-on: macos-12
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
+      kotlinVersion: ${{ steps.kalugaKotlinVersionProperty.outputs.kaluga.kotlinVersion }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -16,11 +17,17 @@ jobs:
       # remove VM settings as defined for using the IDE
       - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
 
-      - name : set up JDK 11
+      - name : set up JDK 17
         uses : actions/setup-java@v3
         with :
           distribution : 'temurin'
-          java-version : 11
+          java-version : 17
+
+      - uses: cardinalby/export-env-action@v2
+        id: kalugaKotlinVersionProperty
+        with:
+          envFile: gradle.properties
+          export: false
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
@@ -35,8 +42,10 @@ jobs:
         uses: actions/cache@v3
         id: konan-cache
         with:
-          path: ~/.konan/*
-          key: konan
+          path: |
+            ~/.konan/cache/*
+            ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ steps.kalugaKotlinVersionProperty.outputs.kaluga.kotlinVersion }}/*
+          key: konan-${{ steps.kalugaKotlinVersionProperty.outputs.kaluga.kotlinVersion }}
 
       - run: ./gradlew generateNonDependentProjectsFile
 
@@ -94,8 +103,10 @@ jobs:
         uses: actions/cache@v3
         id: konan-cache
         with:
-          path: ~/.konan/*
-          key: konan
+          path: |
+            ~/.konan/cache/*
+            ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ needs.build.outputs.kotlinVersion }}/*
+          key: konan-${{ needs.build.outputs.kotlinVersion }}
 
       - name: run tests
         run: ./gradlew :${{ matrix.module }}:iosX64Test
