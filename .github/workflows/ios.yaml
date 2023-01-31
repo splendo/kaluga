@@ -9,7 +9,7 @@ jobs:
     runs-on: macos-12
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
-      kotlinVersion: ${{ steps.kalugaKotlinVersionProperty.outputs.kaluga.kotlinVersion }}
+      kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -23,11 +23,9 @@ jobs:
           distribution : 'temurin'
           java-version : 17
 
-      - uses: cardinalby/export-env-action@v2
-        id: kalugaKotlinVersionProperty
-        with:
-          envFile: gradle.properties
-          export: false
+      - name: get Kotlin version
+        id: kotlinVersion
+        run: grep kaluga.kotlinVersion= gradle.properties | sed s/"kaluga."// >> $GITHUB_OUTPUT
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
@@ -44,8 +42,8 @@ jobs:
         with:
           path: |
             ~/.konan/cache/*
-            ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ steps.kalugaKotlinVersionProperty.outputs.kaluga.kotlinVersion }}/*
-          key: konan-${{ steps.kalugaKotlinVersionProperty.outputs.kaluga.kotlinVersion }}
+            ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ steps.kotlinVersion.outputs.kotlinVersion }}/*
+          key: konan-${{ steps.kotlinVersion.outputs.kotlinVersion }}
 
       - run: ./gradlew generateNonDependentProjectsFile
 
