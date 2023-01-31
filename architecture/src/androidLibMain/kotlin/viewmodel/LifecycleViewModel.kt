@@ -20,11 +20,22 @@ package com.splendo.kaluga.architecture.viewmodel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Simple ViewModel class that is to be bound to a View lifecycle
+ */
 actual open class LifecycleViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
 
+    /**
+     * [CoroutineScope] of the ViewModel.
+     * This scope is active until the ViewModel lifecycle is cleared.
+     */
     actual val coroutineScope = viewModelScope
 
+    /**
+     * Called when the ViewModel lifecycle is cleared
+     */
     actual override fun onCleared() {
         super.onCleared()
     }

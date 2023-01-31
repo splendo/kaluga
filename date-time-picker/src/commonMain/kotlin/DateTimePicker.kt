@@ -44,7 +44,7 @@ data class DateTimePicker(
          * Selects a Date
          * A range can be provided to limit the dates selectable
          */
-        class DateType(
+        data class DateType(
             val earliestDate: KalugaDate? = null,
             val latestDate: KalugaDate? = null
         ) : Type()

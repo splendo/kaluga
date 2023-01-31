@@ -344,3 +344,11 @@ fun <T> Activity.parseTypeOf(serializer: KSerializer<T>): T = intent.parseTypeOf
  * @return The [T] stored in the bundle or null if no such value was found.
  */
 fun <T : Any> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)
+
+/**
+ * Parses the [Bundle] of [android.app.Activity.getIntent] into [T] if is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.SerializedType] with [serializer] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
+ * @param serializer The [KSerializer] to deserialize [T] from the bundle.
+ * @return The [T] stored in the bundle or null if no such value was found.
+ */
+@JvmName("parseNullableTypeOfOrNull")
+fun <T> Activity.parseTypeOfOrNull(serializer: KSerializer<T>): T? = intent.parseTypeOfOrNull(serializer)

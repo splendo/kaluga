@@ -60,12 +60,16 @@ import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSObject
 import kotlin.native.ref.WeakReference
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
-    actual fun navigate(action: A)
+/**
+ * Class that can trigger a given [NavigationAction]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ */
+actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: Action)
 }
 
-class DefaultNavigator<A : NavigationAction<*>>(val onAction: (A) -> Unit) : Navigator<A> {
-    override fun navigate(action: A) {
+class DefaultNavigator<Action : NavigationAction<*>>(val onAction: (Action) -> Unit) : Navigator<Action> {
+    override fun navigate(action: Action) {
         onAction(action)
     }
 }
@@ -78,10 +82,10 @@ object MissingViewControllerNavigationException : NavigationException("Missing P
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-class ViewControllerNavigator<A : NavigationAction<*>>(
+class ViewControllerNavigator<Action : NavigationAction<*>>(
     parentVC: UIViewController,
-    private val navigationMapper: (A) -> NavigationSpec
-) : Navigator<A> {
+    private val navigationMapper: (Action) -> NavigationSpec
+) : Navigator<Action> {
 
     private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
 
@@ -93,7 +97,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     private val parent = WeakReference(parentVC)
     private val storeKitDelegate: StoreKitDelegate by lazy { StoreKitDelegate() }
 
-    override fun navigate(action: A) {
+    override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 

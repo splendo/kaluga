@@ -49,24 +49,24 @@ open class NavigationException(message: String?) : RuntimeException(message)
 
 /**
  * Class that can trigger a given [NavigationAction]
- * @param A the type of [NavigationAction] this navigator should respond to.
+ * @param Action the type of [NavigationAction] this navigator should respond to.
  */
-expect interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+expect interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
     /**
      * Triggers a given [NavigationAction]
-     * @param action The [A] to trigger
+     * @param action The [Action] to trigger
      * @throws [NavigationException] if navigation fails.
      */
-    fun navigate(action: A)
+    fun navigate(action: Action)
 }
 
 /**
  * Triggers a given [NavigationAction] and returns `true` if it succeeded.
- * @param A The type of [NavigationAction] to be given.
- * @param action The [A] to trigger.
+ * @param Action The type of [NavigationAction] to be given.
+ * @param action The [Action] to trigger.
  * @return `true` if the navigation succeeded, false otherwise
  */
-fun <A : NavigationAction<*>> Navigator<A>.navigateWithSuccess(action: A): Boolean = try {
+fun <Action : NavigationAction<*>> Navigator<Action>.navigateWithSuccess(action: Action): Boolean = try {
     navigate(action)
     true
 } catch (e: NavigationException) {
@@ -75,11 +75,11 @@ fun <A : NavigationAction<*>> Navigator<A>.navigateWithSuccess(action: A): Boole
 
 /**
  * Triggers a given [NavigationAction] or executes a closure if the navigation failed to complete.
- * @param A The type of [NavigationAction] to be given.
- * @param action The [A] to trigger.
+ * @param Action The type of [NavigationAction] to be given.
+ * @param action The [Action] to trigger.
  * @param onFailure Closure for handling case when navigation failed.
  */
-fun <A : NavigationAction<*>> Navigator<A>.navigateOrElse(action: A, onFailure: () -> Unit) {
+fun <Action : NavigationAction<*>> Navigator<Action>.navigateOrElse(action: Action, onFailure: () -> Unit) {
     if (!navigateWithSuccess(action))
         onFailure()
 }

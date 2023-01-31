@@ -22,11 +22,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
-import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.uses24HourClock
 import kotlinx.coroutines.CoroutineScope
@@ -147,17 +144,3 @@ actual class DateTimePickerPresenter(
         alertDialog.show()
     }
 }
-
-/**
- * @return The [DateTimePickerPresenter.Builder] which can be used to present alerts while this Activity is active
- * Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.datePickerPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder =
-    getOrPutAndRemoveOnDestroyFromCache {
-        DateTimePickerPresenter.Builder(themeResourceId, lifecycleManagerObserver())
-    }

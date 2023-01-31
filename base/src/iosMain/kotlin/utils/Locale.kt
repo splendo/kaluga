@@ -35,7 +35,7 @@ import platform.Foundation.quotationEndDelimiter
 import platform.Foundation.scriptCode
 import platform.Foundation.variantCode
 
-actual class Locale internal constructor(val nsLocale: NSLocale) {
+actual data class Locale internal constructor(val nsLocale: NSLocale) {
 
     actual companion object {
         actual fun createLocale(language: String): Locale = Locale(NSLocale(language))

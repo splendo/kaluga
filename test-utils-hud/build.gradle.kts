@@ -12,14 +12,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":test-utils-base"))
-                implementation(project(":architecture"))
-                api(project(":hud"))
-            }
-        }
-        commonTest {
-            dependencies {
                 api(project(":test-utils-architecture"))
+                api(project(":hud"))
             }
         }
     }

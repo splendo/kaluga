@@ -16,11 +16,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.alerts
 
-import com.splendo.kaluga.alerts.AlertPresenter
-import com.splendo.kaluga.alerts.buildActionSheet
-import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -190,6 +190,10 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
         }
     }
 
+    sourceSets.maybeCreate("androidLibInstrumentedTest").apply {
+        dependsOn(commonTest)
+    }
+
     sourceSets.all {
         languageSettings {
             optIn("kotlinx.coroutines.DelicateCoroutinesApi")

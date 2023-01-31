@@ -19,7 +19,11 @@ package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+/**
+ * Class that can trigger a given [NavigationAction]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ */
+actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
 
-    actual fun navigate(action: A)
+    actual fun navigate(action: Action)
 }

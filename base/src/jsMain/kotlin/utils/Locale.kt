@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper locale solution for Java Script
-actual class Locale internal constructor(
+actual data class Locale internal constructor(
     actual val languageCode: String,
     actual val countryCode: String = "",
     actual val variantCode: String = "",

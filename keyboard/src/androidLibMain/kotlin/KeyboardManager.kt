@@ -19,11 +19,8 @@ package com.splendo.kaluga.keyboard
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
 
 class ViewKeyboardManager(
@@ -53,17 +50,4 @@ class ViewKeyboardManager(
             }
         }
     }
-}
-
-/**
- * @return A [KeyboardManager.Builder] which can be used to manipulate the soft keyboard while this Activity is active.
- * Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.keyboardManagerBuilder(): ViewKeyboardManager.Builder = getOrPutAndRemoveOnDestroyFromCache {
-    ViewKeyboardManager.Builder(lifecycleManagerObserver())
 }

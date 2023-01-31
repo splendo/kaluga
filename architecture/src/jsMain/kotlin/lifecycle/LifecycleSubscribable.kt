@@ -17,4 +17,10 @@
 
 package com.splendo.kaluga.architecture.lifecycle
 
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+
+/**
+ * This interface can be provided to a [BaseLifecycleViewModel] to bind to platform specific lifecycle.
+ * Extend this on classes that need to have some setup during lifecycle events.
+ */
 actual interface LifecycleSubscribable

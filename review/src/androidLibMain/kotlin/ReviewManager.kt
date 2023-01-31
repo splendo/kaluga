@@ -17,16 +17,13 @@
 package com.splendo.kaluga.review
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.ktx.launchReview
 import com.google.android.play.core.ktx.requestReview
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.testing.FakeReviewManager
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.ApplicationHolder
 
 actual class ReviewManager(
@@ -58,17 +55,4 @@ actual class ReviewManager(
             reviewManager.launchReview(it, info)
         }
     }
-}
-
-/**
- * @return A [ReviewManager.Builder] which can be used to show a Review Dialog while this Activity is active.
- *  Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.reviewManager(): ReviewManager.Builder = getOrPutAndRemoveOnDestroyFromCache {
-    ReviewManager.Builder(lifecycleManagerObserver = lifecycleManagerObserver())
 }

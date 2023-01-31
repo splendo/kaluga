@@ -23,7 +23,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 
+/**
+ * This interface can be provided to a [BaseLifecycleViewModel] to bind to platform specific lifecycle.
+ * Extend this on classes that need to have some setup during lifecycle events.
+ */
 actual interface LifecycleSubscribable
 
 /**
