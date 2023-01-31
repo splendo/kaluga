@@ -57,7 +57,7 @@ jobs:
           key: build-iOS-${{ github.sha }}
 
       - name: Compile the modules main source sets to be cached for the tests
-        run: ./gradlew --parallel compileKotlinIosX64
+        run: ./gradlew compileKotlinIosX64
 
   test:
     needs: build
@@ -98,4 +98,4 @@ jobs:
           key: konan
 
       - name: run tests
-        run: ./gradlew --parallel :${{ matrix.module }}:iosX64Test
+        run: ./gradlew :${{ matrix.module }}:iosX64Test
