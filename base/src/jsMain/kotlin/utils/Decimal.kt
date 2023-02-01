@@ -34,7 +34,7 @@ private const val ROUNDING_MODE = "half-even"
 private const val CEIL = "ceil"
 private const val FLOOR = "floor"
 
-private data class Rounding(
+internal data class Rounding(
     val maximumFractionDigits: Int? = null,
     val roundingMode: String = ROUNDING_MODE,
     val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS
