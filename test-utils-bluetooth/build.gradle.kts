@@ -13,6 +13,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":test-utils-permissions"))
+                api(project(":test-utils-service"))
                 api(project(":bluetooth"))
             }
         }
