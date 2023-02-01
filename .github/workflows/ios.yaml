@@ -25,6 +25,13 @@ jobs:
     - name: ktLint
       run: ./gradlew ktlintCheck
 
+    - name: ktLint report
+      uses: actions/upload-artifact@v3
+      with:
+        name: ktLint report
+        path: build/reports/ktlint
+      if: ${{ failure() }}
+
   test:
     needs: build
     runs-on: macos-12
