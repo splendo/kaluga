@@ -1,7 +1,3 @@
-public final class com/splendo/kaluga/hud/AndroidHUD {
-	public static final fun hudBuilder (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/hud/HUD$Builder;
-}
-
 public abstract class com/splendo/kaluga/hud/BaseHUD : kotlinx/coroutines/CoroutineScope {
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
 	public abstract fun dismiss (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
