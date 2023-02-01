@@ -5,10 +5,10 @@ inputs:
     required: true
     description: Kotlin version
   gradle-cache-read-only:
-    default: "true"
+    default: 'true'
     description: Updates gradle cache after actions if not read-only
   restore-workspace-cache:
-    default: "true"
+    default: 'true'
     description: Whether to restore the workspace cache
 runs:
   using: "composite"
@@ -39,7 +39,7 @@ runs:
 
     - name: Make cache of workspace
       uses: actions/cache/restore@v3
-      if: ${{ inputs.restore-workspace-cache }}
+      if: ${{ inputs.restore-workspace-cache != 'false' }}
       id: restore-build
       with:
         path: |

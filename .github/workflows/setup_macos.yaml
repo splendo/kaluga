@@ -40,8 +40,8 @@ jobs:
       - name: setup tools and enable Gradle cache writing
         uses: ./.github/workflows/setup_tools_macos/
         with:
-          gradle-cache-read-only: false
-          restore-workspace-cache: false
+          gradle-cache-read-only: 'false'
+          restore-workspace-cache: 'false'
           kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
 
       - name: generate file with projects for build matrix
