@@ -37,7 +37,10 @@ pluginManagement {
 }
 
 val props = Properties()
-props.load(FileInputStream(File("$rootDir/local.properties")))
+val file = File("$rootDir/local.properties")
+if (file.exists()) {
+    props.load(FileInputStream(file))
+}
 
 val exampleEmbeddingMethod = if (System.getenv().containsKey("EXAMPLE_EMBEDDING_METHOD")) {
     System.getenv()["EXAMPLE_EMBEDDING_METHOD"].also {
