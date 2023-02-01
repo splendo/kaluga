@@ -1,0 +1,37 @@
+name: "restore macOS workspace from cache"
+inputs:
+  kotlinVersion:
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Gradle cache
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-home-cache-includes: |
+          caches
+          notifications
+
+    - name: Get cache of workspace
+      uses: actions/cache@v3
+      id: restore-build
+      with:
+        path: |
+          ./*
+          !/.gradle
+        key: build-iOS-${{ github.sha }}
+
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 11
+
+    - name: Konan cache
+      uses: actions/cache@v3
+      id: konan-cache
+      with:
+        path: |
+          ~/.konan/cache/*
+          ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ needs.build.outputs.kotlinVersion }}/*
+        key: konan-${{ inputs.kotlinVersion }}
