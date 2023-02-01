@@ -34,7 +34,13 @@ private const val ROUNDING_MODE = "half-even"
 private const val CEIL = "ceil"
 private const val FLOOR = "floor"
 
-internal data class Rounding(
+/**
+ * Rounding for [BigDecimal]
+ * @property maximumFractionDigits The maximum number of digits as part of the fraction.
+ * @property roundingMode Describes the rounding mode. Can be either `half-even`, `ceil`, or `floor`
+ * @property maximumSignificantDigits The maximum number of significant digits
+ */
+data class Rounding(
     val maximumFractionDigits: Int? = null,
     val roundingMode: String = ROUNDING_MODE,
     val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS
