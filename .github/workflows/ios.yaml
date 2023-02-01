@@ -10,6 +10,21 @@ jobs:
     with:
       gradleTask: compileKotlinIosX64
 
+  lint:
+    needs: build
+    runs-on: macos-12
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+
+    - name: Setup tools and cache for workspace
+      uses: ./.github/workflows/setup_tools_macos/
+      with:
+        kotlinVersion: needs.build.outputs.kotlinVersion
+
+    - name: ktLint
+      run: ./gradlew ktlintCheck
+
   test:
     needs: build
     runs-on: macos-12
