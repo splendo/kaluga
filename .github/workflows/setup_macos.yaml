@@ -1,4 +1,4 @@
-name: 'Setup macOS reusable workflow'
+name: 'Setup macOS workspace reusable workflow'
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
@@ -33,50 +33,25 @@ jobs:
       # remove VM settings as defined for using the IDE
       - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
 
-      - name : set up JDK 17
-        uses : actions/setup-java@v3
-        with :
-          distribution : 'temurin'
-          java-version : 17
-
       - name: get Kotlin version
         id: kotlinVersion
         run: grep kaluga.kotlinVersion= gradle.properties | sed s/"kaluga."// >> $GITHUB_OUTPUT
 
-      - name: Gradle cache
-        uses: gradle/gradle-build-action@v2
+      - name: setup tools and enable Gradle cache writing
+        uses: ./.github/workflows/setup_tools_macos/
         with:
-          cache-read-only: false
-          gradle-home-cache-includes: |
-            caches
-            notifications
+          gradle-cache-read-only: false
+          kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
 
-      - name: Konan cache
-        uses: actions/cache@v3
-        id: konan-cache
-        with:
-          path: |
-            ~/.konan/cache/*
-            ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ steps.kotlinVersion.outputs.kotlinVersion }}/*
-          key: konan-${{ steps.kotlinVersion.outputs.kotlinVersion }}
+      - name: generate file with projects for build matrix
+        run: ./gradlew generateNonDependentProjectsFile
 
-      - run: ./gradlew generateNonDependentProjectsFile
-
-      - name: Load projects for build matrix
+      - name: load projects for build matrix
         uses: cardinalby/export-env-action@v2
         id: envFile
         with:
           envFile: 'non_dependent_projects.properties'
           export: 'false'
 
-      - name: Make cache of workspace
-        uses: actions/cache@v3
-        id: restore-build
-        with:
-          path: |
-            ./*
-            !/.gradle
-          key: build-iOS-${{ github.sha }}
-
-      - name: Gradle task
+      - name: run custom Gradle task
         run: ./gradlew ${{ inputs.gradleTask }}
