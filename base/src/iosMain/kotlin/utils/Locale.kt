@@ -37,8 +37,9 @@ import platform.Foundation.variantCode
 
 /**
  * Default implementation of [BaseLocale]
+ * @property nsLocale the internal [NSLocale] tracking this locale.
  */
-actual data class Locale internal constructor(internal val nsLocale: NSLocale) : BaseLocale() {
+actual data class Locale internal constructor(val nsLocale: NSLocale) : BaseLocale() {
 
     actual companion object {
 

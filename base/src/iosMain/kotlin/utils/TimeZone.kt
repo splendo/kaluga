@@ -32,8 +32,9 @@ import platform.Foundation.timeZoneWithName
 
 /**
  * A default implementation of [BaseTimeZone].
+ * @property timeZone the internal [NSTimeZone] tracking this timezone.
  */
-actual class TimeZone internal constructor(internal val timeZone: NSTimeZone) : BaseTimeZone() {
+actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZone() {
 
     actual companion object {
 
