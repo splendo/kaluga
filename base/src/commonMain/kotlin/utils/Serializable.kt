@@ -17,4 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
+/**
+ * Interface that indicates that the implementing object can be serialized using platform specific serialization.
+ */
 expect interface Serializable

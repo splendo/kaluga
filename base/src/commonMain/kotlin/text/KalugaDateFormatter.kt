@@ -49,9 +49,70 @@ enum class DateFormatStyle {
 }
 
 /**
- * Class for parsing and formatting a [KalugaDate] from/to a [String].
+ * Interface for parsing and formatting a [KalugaDate] from/to a [String].
  */
-expect class KalugaDateFormatter {
+interface BaseDateFormatter {
+
+    var pattern: String
+
+    /**
+     * The [TimeZone] this [KalugaDateFormatter] formats its dates to.
+     */
+    var timeZone: TimeZone
+
+    /**
+     * A list containing the names of all eras used by this date formatter.
+     */
+    var eras: List<String>
+
+    /**
+     * A list containing the names of all months used by this date formatter.
+     */
+    var months: List<String>
+
+    /**
+     * A list containing the shortened names of all months used by this date formatter.
+     */
+    var shortMonths: List<String>
+
+    /**
+     * A list containing the names of all weekdays used by this date formatter.
+     */
+    var weekdays: List<String>
+    /**
+     * A list containing the shortened names of all weekdays used by this date formatter.
+     */
+    var shortWeekdays: List<String>
+
+    /**
+     * The name used to describe A.M. when using a twelve hour clock.
+     */
+    var amString: String
+
+    /**
+     * The name used to describe P.M. when using a twelve hour clock.
+     */
+    var pmString: String
+
+    /**
+     * Formats a given [KalugaDate] to a [String] using the format described by this [KalugaDateFormatter].
+     * @param date The [KalugaDate] to format.
+     * @return The formatted [KalugaDate] as a [String]
+     */
+    fun format(date: KalugaDate): String
+
+    /**
+     * Attempts to parse a given [String] into a [KalugaDate] using the format described.
+     * @param string The [String] to parse.
+     * @return A [KalugaDate] matching the format described by [string] or `null` if no such match could be made.
+     */
+    fun parse(string: String): KalugaDate?
+}
+
+/**
+ * Default implementation of [BaseDateFormatter]
+ */
+expect class KalugaDateFormatter : BaseDateFormatter {
 
     companion object {
         /**
@@ -108,60 +169,6 @@ expect class KalugaDateFormatter {
         ): KalugaDateFormatter
     }
 
-    var pattern: String
-
-    /**
-     * The [TimeZone] this [KalugaDateFormatter] formats its dates to.
-     */
-    var timeZone: TimeZone
-
-    /**
-     * A list containing the names of all eras used by this date formatter.
-     */
-    var eras: List<String>
-
-    /**
-     * A list containing the names of all months used by this date formatter.
-     */
-    var months: List<String>
-
-    /**
-     * A list containing the shortened names of all months used by this date formatter.
-     */
-    var shortMonths: List<String>
-
-    /**
-     * A list containing the names of all weekdays used by this date formatter.
-     */
-    var weekdays: List<String>
-    /**
-     * A list containing the shortened names of all weekdays used by this date formatter.
-     */
-    var shortWeekdays: List<String>
-
-    /**
-     * The name used to describe A.M. when using a twelve hour clock.
-     */
-    var amString: String
-
-    /**
-     * The name used to describe P.M. when using a twelve hour clock.
-     */
-    var pmString: String
-
-    /**
-     * Formats a given [KalugaDate] to a [String] using the format described by this [KalugaDateFormatter].
-     * @param date The [KalugaDate] to format.
-     * @return The formatted [KalugaDate] as a [String]
-     */
-    fun format(date: KalugaDate): String
-
-    /**
-     * Attempts to parse a given [String] into a [KalugaDate] using the format described.
-     * @param string The [String] to parse.
-     * @return A [KalugaDate] matching the format described by [string] or `null` if no such match could be made.
-     */
-    fun parse(string: String): KalugaDate?
 }
 
 @Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))

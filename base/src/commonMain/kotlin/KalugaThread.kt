@@ -16,15 +16,31 @@
 
 package com.splendo.kaluga.base
 
+/**
+ * `true` if called from the main thread.
+ */
 val isOnMainThread: Boolean
     get() = KalugaThread.currentThread.isMainThread
 
+/**
+ * The thread of execution
+ */
 expect class KalugaThread {
 
     companion object {
+        /**
+         * The [KalugaThread] the calling method is running on
+         */
         val currentThread: KalugaThread
     }
 
+    /**
+     * Name of the thread
+     */
     var name: String
+
+    /**
+     * When `true` this thread is the main thread.
+     */
     val isMainThread: Boolean
 }

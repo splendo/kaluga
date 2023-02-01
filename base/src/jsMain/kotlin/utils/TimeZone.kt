@@ -18,11 +18,29 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper timezone solution for Java Script
+/**
+ * A default implementation of [BaseTimeZone].
+ */
 actual class TimeZone internal constructor() : BaseTimeZone() {
 
     actual companion object {
+
+        /**
+         * Gets a [TimeZone] based on a given Identifier
+         * @param identifier The identifier to create a [TimeZone] for
+         * @return The [TimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
+         */
         actual fun get(identifier: String): TimeZone? = TimeZone()
+
+        /**
+         * Gets the current [TimeZone] configured by the user
+         * @return The current [TimeZone] of the user
+         */
         actual fun current(): TimeZone = TimeZone()
+
+        /**
+         * List of available identifiers associated with [TimeZone]s. All elements in this list can be used for creating a [TimeZone] using [TimeZone.get]
+         */
         actual val availableIdentifiers: List<String> = emptyList()
     }
 

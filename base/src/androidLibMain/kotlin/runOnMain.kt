@@ -23,6 +23,10 @@ import android.os.Looper
 
 var mainHandler = Handler(Looper.getMainLooper())
 
+/**
+ * Runs the provided [block] on the main thread
+ * @param block the code to run on the main thread.
+ */
 actual fun runOnMain(block: () -> Unit) {
     mainHandler.post(block)
 }

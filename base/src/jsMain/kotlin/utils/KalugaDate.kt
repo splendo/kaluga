@@ -20,10 +20,29 @@ package com.splendo.kaluga.base.utils
 actual typealias KalugaDateHolder = kotlin.js.Date
 
 // TODO Implement with proper date solution for Java Script
+/**
+ * Default implementation of [KalugaDate]
+ */
 actual class DefaultKalugaDate internal constructor(override val date: KalugaDateHolder) : KalugaDate() {
 
     actual companion object {
+
+        /**
+         * Creates a [KalugaDate] relative to the current time
+         * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
+         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
+
+        /**
+         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
+         * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
+         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
         actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offsetInMilliseconds))
     }
 

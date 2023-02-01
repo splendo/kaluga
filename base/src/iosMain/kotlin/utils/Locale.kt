@@ -35,38 +35,69 @@ import platform.Foundation.quotationEndDelimiter
 import platform.Foundation.scriptCode
 import platform.Foundation.variantCode
 
-actual data class Locale internal constructor(val nsLocale: NSLocale) {
+/**
+ * Default implementation of [BaseLocale]
+ */
+actual data class Locale internal constructor(internal val nsLocale: NSLocale) : BaseLocale() {
 
     actual companion object {
+
+        /**
+         * Creates a [Locale] based on a `language` ISO 639 alpha-2 or alpha-3 code
+         * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
+         * @return The [Locale] for the given [language]
+         */
         actual fun createLocale(language: String): Locale = Locale(NSLocale(language))
+
+        /**
+         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
+         * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
+         * @param country a ISO 3166 alpha-2 `country` code.
+         * @return The [Locale] for the given [language] and [country]
+         */
         actual fun createLocale(language: String, country: String): Locale = Locale(NSLocale("${language}_$country"))
+
+        /**
+         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
+         * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
+         * @param country a ISO 3166 alpha-2 `country` code.
+         * @param variant Arbitrary value used to indicate a variation of a [Locale]
+         * @return The [Locale] for the given [language], [country], and [variant]
+         */
         actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(NSLocale("${language}_${country}_$variant"))
 
+        /**
+         * The default [Locale] of the user
+         */
         actual val defaultLocale: Locale get() = Locale(NSLocale.currentLocale)
+
+        /**
+         * A list of [Locale] available to the user.
+         */
         actual val availableLocales: List<Locale> = NSLocale.availableLocaleIdentifiers.typedList<String>().map { Locale(NSLocale(it)) }
     }
 
-    actual val countryCode: String
+    override val countryCode: String
         get() = nsLocale.countryCode ?: ""
-    actual val languageCode: String
+    override val languageCode: String
         get() = nsLocale.languageCode
-    actual val scriptCode: String
+    override val scriptCode: String
         get() = nsLocale.scriptCode ?: ""
-    actual val variantCode: String
+    override val variantCode: String
         get() = nsLocale.variantCode ?: ""
-    actual val unitSystem: UnitSystem
+    override val unitSystem: UnitSystem
         get() = (nsLocale.objectForKey("kCFLocaleMeasurementSystemKey") as? String)?.let {
             UnitSystem.withRawValue(it)
         } ?: UnitSystem.METRIC
 
-    actual fun name(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
-    actual fun countryName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""
-    actual fun languageName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLanguageCode(languageCode) ?: ""
-    actual fun variantName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForVariantCode(variantCode) ?: ""
-    actual fun scriptName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForScriptCode(scriptCode) ?: ""
+    override fun name(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
+    override fun countryName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""
+    override fun languageName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLanguageCode(languageCode) ?: ""
+    override fun variantName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForVariantCode(variantCode) ?: ""
+    override fun scriptName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForScriptCode(scriptCode) ?: ""
 
-    actual val quotationStart: String = nsLocale.quotationBeginDelimiter
-    actual val quotationEnd: String = nsLocale.quotationEndDelimiter
-    actual val alternateQuotationStart: String = nsLocale.alternateQuotationBeginDelimiter
-    actual val alternateQuotationEnd: String = nsLocale.alternateQuotationEndDelimiter
+    override val quotationStart: String = nsLocale.quotationBeginDelimiter
+    override val quotationEnd: String = nsLocale.quotationEndDelimiter
+    override val alternateQuotationStart: String = nsLocale.alternateQuotationBeginDelimiter
+    override val alternateQuotationEnd: String = nsLocale.alternateQuotationEndDelimiter
 }
