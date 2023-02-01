@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import platform.CoreBluetooth.CBCentralManager

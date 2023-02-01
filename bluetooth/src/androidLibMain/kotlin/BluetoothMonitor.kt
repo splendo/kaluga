@@ -23,8 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
 actual interface BluetoothMonitor : ServiceMonitor {
 

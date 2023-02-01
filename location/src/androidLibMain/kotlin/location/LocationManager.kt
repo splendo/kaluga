@@ -21,12 +21,12 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
+import com.splendo.kaluga.service.EnableServiceActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

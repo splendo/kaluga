@@ -104,7 +104,7 @@ public final class com/splendo/kaluga/location/DefaultLocationManager$Builder : 
 	public fun create (Lcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/location/BaseLocationManager;
 }
 
-public final class com/splendo/kaluga/location/DefaultLocationMonitor : com/splendo/kaluga/base/monitor/DefaultServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
+public final class com/splendo/kaluga/location/DefaultLocationMonitor : com/splendo/kaluga/service/DefaultServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
 	public fun <init> ()V
 	public fun isServiceEnabled ()Z
 	public fun monitoringDidStart ()V
@@ -248,7 +248,7 @@ public final class com/splendo/kaluga/location/LocationManager$Event$PermissionC
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/location/LocationMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
+public abstract interface class com/splendo/kaluga/location/LocationMonitor : com/splendo/kaluga/service/ServiceMonitor {
 }
 
 public final class com/splendo/kaluga/location/LocationMonitor$Builder {

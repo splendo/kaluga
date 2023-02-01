@@ -20,6 +20,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":service"))
                 api(project(":bluetooth-permissions", ""))
                 apiDependency(Dependencies.KotlinX.Serialization.Core)
             }

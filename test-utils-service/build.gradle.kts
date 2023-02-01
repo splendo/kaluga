@@ -6,15 +6,17 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
+/* Multiplatform component */
 publishableComponent()
+
+dependencies { }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":location"))
-                api(project(":test-utils-permissions"))
-                api(project(":test-utils-service"))
+                api(project(":service"))
+                api(project(":test-utils-base"))
             }
         }
         commonTest {

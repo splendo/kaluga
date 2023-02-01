@@ -19,6 +19,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":service"))
                 api(project(":location-permissions", ""))
             }
         }

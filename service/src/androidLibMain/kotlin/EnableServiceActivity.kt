@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.base.monitor
+package com.splendo.kaluga.service
 
 import android.app.Activity
 import android.content.Context
@@ -28,13 +28,24 @@ import com.splendo.kaluga.base.collections.ConcurrentMutableMap
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import kotlinx.coroutines.CompletableDeferred
 
+/**
+ * An [AppCompatActivity] for requesting the user to enable a service.
+ * Do not create directly, instead launch using [showEnableServiceActivity].
+ */
 class EnableServiceActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_CALLBACK_ID = "EXTRA_CALLBACK_ID"
         private const val EXTRA_SETTING_ID = "EXTRA_CALLBACK_ID"
-        val enablingHandlers: ConcurrentMutableMap<Pair<String, String>, CompletableDeferred<Boolean>> = concurrentMutableMapOf()
+        private val enablingHandlers: ConcurrentMutableMap<Pair<String, String>, CompletableDeferred<Boolean>> = concurrentMutableMapOf()
 
+        /**
+         * Shows an [EnableServiceActivity] that launches a given [Intent] and waits for it to return.
+         * @param context The [Context] in which to launch the [EnableServiceActivity]
+         * @param identifier Unique identifier used to ensure the [Intent] returns to the right result.
+         * @param settingsIntent An [Intent] that requests the user to enable a service. Should work with [ActivityResultContracts.StartActivityForResult] to get a proper result.
+         * @return A [CompletableDeferred] that completes when [settingsIntent] has completed. `true` indicates that the service was successfully enabled.
+         */
         fun showEnableServiceActivity(context: Context, identifier: String, settingsIntent: Intent): CompletableDeferred<Boolean> {
             val settingKey = settingsIntent.action.orEmpty()
             val intent = Intent(context, EnableServiceActivity::class.java).apply {

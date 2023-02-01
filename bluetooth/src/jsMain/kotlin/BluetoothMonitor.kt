@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
 actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder {

@@ -8,13 +8,14 @@ plugins {
 
 publishableComponent()
 
+dependencies { }
+
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":location"))
-                api(project(":test-utils-permissions"))
-                api(project(":test-utils-service"))
+                implementation(project(":logging"))
+                implementation(project(":base"))
             }
         }
         commonTest {

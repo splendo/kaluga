@@ -31,7 +31,6 @@ import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -43,6 +42,7 @@ import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.service.EnableServiceActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
