@@ -6,20 +6,19 @@ env:
 
 jobs:
   test:
-    needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: 17
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
 
-    - name: run Android unit tests
-      run: ./gradlew testDebugUnitTest
+      - name: run Android unit tests
+        run: ./gradlew testDebugUnitTest
 
-    - name: run apiCheck
-      run: ./gradlew apiCheck
+      - name: run apiCheck
+        run: ./gradlew apiCheck
