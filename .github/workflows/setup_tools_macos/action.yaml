@@ -7,6 +7,9 @@ inputs:
   gradle-cache-read-only:
     default: "true"
     description: Updates gradle cache after actions if not read-only
+  restore-workspace-cache:
+    default: "true"
+    description: Whether to restore the workspace cache
 runs:
   using: "composite"
   steps:
@@ -35,7 +38,8 @@ runs:
         key: konan-${{ inputs.kotlinVersion }}
 
     - name: Make cache of workspace
-      uses: actions/cache@v3
+      uses: actions/cache/restore@v3
+      if: ${{ inputs.restore-workspace-cache }}
       id: restore-build
       with:
         path: |

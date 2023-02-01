@@ -41,6 +41,7 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           gradle-cache-read-only: false
+          restore-workspace-cache: false
           kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
 
       - name: generate file with projects for build matrix
@@ -55,3 +56,13 @@ jobs:
 
       - name: run custom Gradle task
         run: ./gradlew ${{ inputs.gradleTask }}
+
+      - name: Make cache of workspace
+        uses: actions/cache/save@v3
+        id: store-build
+        with:
+          path: |
+            ./*
+            !/.gradle
+          key: build-iOS-${{ github.sha }}
+
