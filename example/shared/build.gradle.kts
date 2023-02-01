@@ -28,7 +28,6 @@ val modules = listOf(
 )
 
 commonComponent {
-    logger.lifecycle("Configure framework")
     baseName = "KalugaExampleShared"
     isStatic = false
     transitiveExport = true

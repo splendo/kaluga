@@ -45,7 +45,7 @@ class LibraryImpl(project: Project) {
     val version: String by lazy {
         val libraryVersionLocalProperties: String? = props["kaluga.libraryVersion"] as? String
         (libraryVersionLocalProperties ?: "$baseVersion${project.GitBranch.kalugaBranchPostfix}").also {
-            println("Library version $it")
+            logger.info("Library version $it")
         }
     }
     val kotlinVersion = project.extra["kaluga.kotlinVersion"] as? String ?: kotlin.run {
@@ -65,17 +65,17 @@ class LibraryImpl(project: Project) {
         // based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
-            logger.lifecycle("Run on real ios device: $it from sdk: $sdkName")
+            logger.info("Run on real ios device: $it from sdk: $sdkName")
         }
 
         // Run on IntelliJ
         val ideaActive = (System.getProperty("idea.active") == "true").also {
-            logger.lifecycle("Run on IntelliJ: $it")
+            logger.info("Run on IntelliJ: $it")
         }
 
         // Run on apple silicon
         val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
-            logger.lifecycle("Run on apple silicon: $it")
+            logger.info("Run on apple silicon: $it")
         }
 
         val targets = when {
@@ -84,7 +84,7 @@ class LibraryImpl(project: Project) {
             isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
             else -> setOf(IOSTarget.X64)
         }.also { targets ->
-            logger.lifecycle("Run on ios targets: ${targets.joinToString(" ") { it.name }}")
+            logger.info("Run on ios targets: ${targets.joinToString(" ") { it.name }}")
         }
 
         val TestRunnerDeviceId by lazy {
@@ -100,7 +100,7 @@ class LibraryImpl(project: Project) {
                     logger.lifecycle("local.properties read (kaluga.iosTestRunnerDeviceIdLocalProperty=$iosTestRunnerDeviceIdLocalProperty, using $it)")
                 }
                     ?: "iPhone 14".also {
-                        logger.lifecycle("local.properties not found, using default value ($it)")
+                        logger.info("local.properties not found, using default value ($it)")
                     }
             }
         }
