@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.example.location
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.splendo.kaluga.example.R
@@ -47,7 +50,13 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
         super.onCreate()
 
         viewModel.location.observeInitialized { message ->
-            NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
+            }
         }
 
         startForeground(notificationId, getNotification(""))
