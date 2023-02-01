@@ -17,7 +17,11 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import android.Manifest
+import android.content.Context
+import android.os.Build
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
+import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
@@ -27,27 +31,53 @@ import kotlin.time.Duration
 actual class NotificationOptions
 
 actual class DefaultNotificationsPermissionManager(
+    context: Context,
     notificationsPermission: NotificationsPermission,
     settings: Settings,
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
+    private val permissionsManager =
+        AndroidPermissionsManager(
+            context,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+               emptyArray()
+           },
+            coroutineScope,
+            logTag,
+            logger,
+            permissionHandler
+        )
 
     override fun requestPermissionDidStart() {
-        permissionHandler.status(AndroidPermissionState.GRANTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsManager.requestPermissions()
+        } else {
+            permissionHandler.status(AndroidPermissionState.GRANTED)
+        }
     }
 
     override fun monitoringDidStart(interval: Duration) {
-        permissionHandler.status(AndroidPermissionState.GRANTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsManager.startMonitoring(interval)
+        } else {
+            permissionHandler.status(AndroidPermissionState.GRANTED)
+        }
     }
 
-    override fun monitoringDidStop() {}
+    override fun monitoringDidStop() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsManager.stopMonitoring()
+        }
+    }
 }
 
-actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
-        return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
+        return DefaultNotificationsPermissionManager(context.context, notificationsPermission, settings, coroutineScope)
     }
 }
