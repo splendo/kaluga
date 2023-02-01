@@ -60,7 +60,7 @@ public final class com/splendo/kaluga/test/location/MockLocationManager : com/sp
 	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class com/splendo/kaluga/test/location/MockLocationMonitor : com/splendo/kaluga/test/base/monitor/MockServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
+public final class com/splendo/kaluga/test/location/MockLocationMonitor : com/splendo/kaluga/test/service/MockServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
 	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
 	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
 	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;

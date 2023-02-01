@@ -9,7 +9,7 @@ public final class com/splendo/kaluga/test/bluetooth/Jvm_mocksKt {
 	public static final fun randomIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
 }
 
-public final class com/splendo/kaluga/test/bluetooth/MockBluetoothMonitor : com/splendo/kaluga/test/base/monitor/MockServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
+public final class com/splendo/kaluga/test/bluetooth/MockBluetoothMonitor : com/splendo/kaluga/test/service/MockServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
 	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
 	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
 	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;

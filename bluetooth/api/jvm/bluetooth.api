@@ -68,7 +68,7 @@ public final class com/splendo/kaluga/bluetooth/BluetoothKt {
 	public static final fun value (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
 }
 
-public abstract interface class com/splendo/kaluga/bluetooth/BluetoothMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
+public abstract interface class com/splendo/kaluga/bluetooth/BluetoothMonitor : com/splendo/kaluga/service/ServiceMonitor {
 }
 
 public final class com/splendo/kaluga/bluetooth/BluetoothMonitor$Builder {
@@ -157,7 +157,7 @@ public final class com/splendo/kaluga/bluetooth/CommonUUID {
 	public static final fun uuidFrom (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/UUID;
 }
 
-public final class com/splendo/kaluga/bluetooth/DefaultBluetoothMonitor : com/splendo/kaluga/base/monitor/DefaultServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
+public final class com/splendo/kaluga/bluetooth/DefaultBluetoothMonitor : com/splendo/kaluga/service/DefaultServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
 	public fun <init> ()V
 	public fun isServiceEnabled ()Z
 	public fun monitoringDidStart ()V
