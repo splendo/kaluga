@@ -1,0 +1,78 @@
+name: 'Setup macOS reusable workflow'
+
+on:
+  workflow_call:
+    inputs:
+      gradleTask:
+        required: false
+        type: string
+    outputs:
+      kotlinVersion:
+        description: "kaluga.kotlinVersion property from gradle.propertoes"
+        value: ${{ jobs.setup.outputs.kotlinVersion }}
+      projects:
+        description: "Gradle projects that do not depenent on another module or have other modules dependent on them"
+        value: ${{ jobs.setup.outputs.projects }}
+jobs:
+  setup:
+
+    runs-on: macos-12
+
+    outputs:
+      projects: ${{ steps.envFile.outputs.projects }}
+      kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      # remove VM settings as defined for using the IDE
+      - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
+
+      - name : set up JDK 17
+        uses : actions/setup-java@v3
+        with :
+          distribution : 'temurin'
+          java-version : 17
+
+      - name: get Kotlin version
+        id: kotlinVersion
+        run: grep kaluga.kotlinVersion= gradle.properties | sed s/"kaluga."// >> $GITHUB_OUTPUT
+
+      - name: Gradle cache
+        uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: false
+          gradle-home-cache-includes: |
+            caches
+            notifications
+
+      - name: Konan cache
+        uses: actions/cache@v3
+        id: konan-cache
+        with:
+          path: |
+            ~/.konan/cache/*
+            ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ steps.kotlinVersion.outputs.kotlinVersion }}/*
+          key: konan-${{ steps.kotlinVersion.outputs.kotlinVersion }}
+
+      - run: ./gradlew generateNonDependentProjectsFile
+
+      - name: Load projects for build matrix
+        uses: cardinalby/export-env-action@v2
+        id: envFile
+        with:
+          envFile: 'non_dependent_projects.properties'
+          export: 'false'
+
+      - name: Make cache of workspace
+        uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./*
+            !/.gradle
+          key: build-iOS-${{ github.sha }}
+
+      - name: Gradle task
+        run: ./gradlew ${{ inputs.gradleTask }}
