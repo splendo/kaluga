@@ -20,6 +20,10 @@ package com.splendo.kaluga.base.collections
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
+/**
+ * A [MutableSet] that ensures all calls to is happen in a concurrent way.
+ * @param E the type of elements contained in the set. The mutable set is invariant in its element type.
+ */
 class ConcurrentMutableSet<E> internal constructor(private val internal: MutableSet<E> = mutableSetOf()) : MutableSet<E> {
     private val lock = reentrantLock()
 
@@ -52,8 +56,21 @@ class ConcurrentMutableSet<E> internal constructor(private val internal: Mutable
     override fun hashCode(): Int = internal.hashCode()
     override fun toString(): String = internal.toString()
 
+    /**
+     * Synchronizes an action block on the [MutableSet]
+     * @param action The action block to execute concurrently
+     * @return The result of the [action] block
+     */
     fun <T> synchronized(action: MutableSet<E>.() -> T): T = lock.withLock { internal.action() }
 }
 
+/**
+ * Creates an empty [ConcurrentMutableSet]
+ */
 fun <E> concurrentMutableSetOf() = ConcurrentMutableSet<E>(mutableSetOf())
+
+/**
+ * Creates a [ConcurrentMutableSet] containing [elements].
+ * @param elements The elements to add to the [ConcurrentMutableList]
+ */
 fun <E> concurrentMutableSetOf(vararg elements: E) = ConcurrentMutableSet(mutableSetOf(*elements))

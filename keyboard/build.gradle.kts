@@ -3,6 +3,7 @@ plugins {
     id("jacoco")
     id("com.android.library")
     id("convention.publication")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
