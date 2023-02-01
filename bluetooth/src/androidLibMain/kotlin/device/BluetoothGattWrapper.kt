@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
+import android.bluetooth.BluetoothStatusCodes
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 
@@ -80,26 +81,26 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
 
     override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
-        // TODO update implementation to call non deprecated gatt.writeCharacteristic(characteristic, value, writeType)
-        //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on characteristic.value
-        // https://github.com/splendo/kaluga/issues/609
-        // https://developer.android.com/reference/android/bluetooth/BluetoothGatt#writeCharacteristic(android.bluetooth.BluetoothGattCharacteristic)
-        @Suppress("DEPRECATION")
-        characteristic.value = value
-        @Suppress("DEPRECATION")
-        return gatt.writeCharacteristic(characteristic)
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            gatt.writeCharacteristic(characteristic, value, characteristic.writeType) == BluetoothStatusCodes.SUCCESS
+        } else {
+            @Suppress("DEPRECATION")
+            characteristic.value = value
+            @Suppress("DEPRECATION")
+            gatt.writeCharacteristic(characteristic)
+        }
     }
 
     override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
-        // TODO update implementation to call non deprecated gatt.writeDescriptor(descriptor, value)
-        //  if version >= TIRAMISU after DefaultDeviceConnectionManager is updated and is no longer dependent on descriptor.value
-        // https://github.com/splendo/kaluga/issues/609
-        // https://developer.android.com/reference/android/bluetooth/BluetoothGatt#writeDescriptor(android.bluetooth.BluetoothGattDescriptor)
-        @Suppress("DEPRECATION")
-        descriptor.value = value
-        @Suppress("DEPRECATION")
-        return gatt.writeDescriptor(descriptor)
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            gatt.writeDescriptor(descriptor, value) == BluetoothStatusCodes.SUCCESS
+        } else {
+            @Suppress("DEPRECATION")
+            descriptor.value = value
+            @Suppress("DEPRECATION")
+            gatt.writeDescriptor(descriptor)
+        }
     }
 
     override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {

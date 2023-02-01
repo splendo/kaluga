@@ -15,6 +15,7 @@ kotlin {
             dependencies {
                 api(project(":location"))
                 api(project(":test-utils-permissions"))
+                api(project(":test-utils-service"))
             }
         }
         commonTest {

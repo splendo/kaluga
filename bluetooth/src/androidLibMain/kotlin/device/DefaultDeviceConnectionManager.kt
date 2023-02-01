@@ -94,11 +94,7 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            // TODO update implementation so it doesn't depend on characteristic.value which is deprecated
-            // https://github.com/splendo/kaluga/issues/609
-            // https://developer.android.com/reference/android/bluetooth/BluetoothGattCharacteristic#getValue()
-            @Suppress("DEPRECATION")
-            updateCharacteristic(characteristic, characteristic.value, status)
+            handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS)
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -106,15 +102,6 @@ internal actual class DefaultDeviceConnectionManager(
                 val services = gatt?.services?.map { DefaultGattServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
-        }
-
-        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            descriptor ?: return
-            // TODO update implementation so it doesn't depend on descriptor.value which is deprecated
-            // https://github.com/splendo/kaluga/issues/609
-            // https://developer.android.com/reference/android/bluetooth/BluetoothGattDescriptor#getValue()
-            @Suppress("DEPRECATION")
-            updateDescriptor(descriptor, descriptor.value, status)
         }
 
         @Deprecated("Deprecated in Java")
@@ -144,9 +131,19 @@ internal actual class DefaultDeviceConnectionManager(
             value: ByteArray
         ) = updateDescriptor(descriptor, value, status)
 
+        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+            descriptor ?: return
+            val succeeded = status == GATT_SUCCESS
+            // Notification enable/disable done by client configuration descriptor write
+            if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
+                handleCurrentActionCompleted(succeeded)
+            }
+            handleUpdatedDescriptor(descriptor.uuid, succeeded)
+        }
+
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             lastKnownState = newState
-            launch() {
+            launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         handleDisconnect {
@@ -300,10 +297,6 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
         val succeeded = status == GATT_SUCCESS
-        // Notification enable/disable done by client configuration descriptor write
-        if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
-            handleCurrentActionCompleted(succeeded)
-        }
         handleUpdatedDescriptor(descriptor.uuid, succeeded) {
             it.wrapper.updateValue(value)
         }

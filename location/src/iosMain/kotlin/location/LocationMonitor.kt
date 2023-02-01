@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject

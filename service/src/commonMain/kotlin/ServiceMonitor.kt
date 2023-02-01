@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,29 +15,54 @@
 
  */
 
-package com.splendo.kaluga.base.monitor
+package com.splendo.kaluga.service
 
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
+/**
+ * Interface to monitor whether a given service is enabled
+ */
 interface ServiceMonitor {
+    /**
+     * If `true` the service is currently enabled.
+     */
     val isServiceEnabled: Boolean
+
+    /**
+     * A [Flow] representing the enabled status of the service
+     */
     val isEnabled: Flow<Boolean>
+
+    /**
+     * When called, the [ServiceMonitor] will start monitoring for changes to [isServiceEnabled]
+     */
     fun startMonitoring()
+
+    /**
+     * When called, the [ServiceMonitor] will stop monitoring for changes to [isServiceEnabled]
+     */
     fun stopMonitoring()
 }
 
-abstract class DefaultServiceMonitor : ServiceMonitor {
+/**
+ * Default implementation of [ServiceMonitor].
+ * @param logger The [Logger] to log and changes to.
+ */
+abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)) : ServiceMonitor {
 
-    protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
+    protected open val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
     private val _isEnabled = MutableStateFlow<Boolean?>(null)
     override val isEnabled get() = _isEnabled.filterNotNull()
 
     final override fun startMonitoring() {
-        debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
+        logger.debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
         updateState()
         monitoringDidStart()
     }
@@ -45,7 +70,7 @@ abstract class DefaultServiceMonitor : ServiceMonitor {
     abstract fun monitoringDidStart()
 
     final override fun stopMonitoring() {
-        debug(TAG) { "Stop monitoring service state" }
+        logger.debug(TAG) { "Stop monitoring service state" }
         _isEnabled.value = null
         monitoringDidStop()
     }
@@ -53,7 +78,7 @@ abstract class DefaultServiceMonitor : ServiceMonitor {
     abstract fun monitoringDidStop()
 
     protected fun updateState() {
-        debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
+        logger.debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
         _isEnabled.value = isServiceEnabled
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 
  */
 
-package com.splendo.kaluga.test.base.monitor
+package com.splendo.kaluga.test.service
 
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.StateFlow
