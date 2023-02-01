@@ -126,6 +126,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [resources-databinding](resources-databinding/)         | Databinding extensions for resources                                               | com.splendo.kaluga:resources-databinding     |
 | [review](review/)                                       | Used for requesting the user to review the app                                     | com.splendo.kaluga:review                    |
 | [scientific](scientific/)                               | Scientific units and conversions                                                   | com.splendo.kaluga:scientific                |
+| [service](service/)                                     | Used for adding services to Kaluga                                                 | com.splendo.kaluga:service                   |
 | [system](system/)                                       | System APIs such as network, audio, battery                                        | com.splendo.kaluga:system                    |
 | [test-utils](test-utils/)                               | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils                |
 | [test-utils-base](test-utils-base/)                     | Enables easier testing of Kaluga components                                        | com.splendo.kaluga:test-utils-base           |
@@ -138,6 +139,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [test-utils-location](test-utils-location/)             | Enables easier testing of Location module                                          | com.splendo.kaluga:test-utils-location       |
 | [test-utils-permissions](test-utils-permissions/)       | Enables easier testing of Permissions modules                                      | com.splendo.kaluga:test-utils-permissions    |
 | [test-utils-resources](test-utils-resources/)           | Enables easier testing of Resources module                                         | com.splendo.kaluga:test-utils-resources      |
+| [test-utils-service](test-utils-service/)               | Enables easier testing of Service module                                           | com.splendo.kaluga:test-utils-service        |
 | [test-utils-system](test-utils-system/)                 | Enables easier testing of System module                                            | com.splendo.kaluga:test-utils-system         |
 
 ### Friends of kaluga
