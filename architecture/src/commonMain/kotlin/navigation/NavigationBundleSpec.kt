@@ -268,7 +268,7 @@ sealed class NavigationBundleSpecType<T> {
      * A [NonNullableNavigationBundleSpecType] that represents a [String]
      */
     object StringType : NonNullableNavigationBundleSpecType<String>() {
-        override fun convertValue(value: String): NavigationBundleValue.StringValue{
+        override fun convertValue(value: String): NavigationBundleValue.StringValue {
             return NavigationBundleValue.StringValue(value)
         }
     }

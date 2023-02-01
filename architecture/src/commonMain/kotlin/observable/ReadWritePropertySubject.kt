@@ -22,9 +22,7 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext
-import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 
 private class ReadWritePropertyObservableHelper<R : T, T>(

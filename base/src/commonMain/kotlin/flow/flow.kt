@@ -116,8 +116,7 @@ suspend inline fun <T> Flow<T>.collectUntilLast(
  * Collects all elements not implementing [SpecialFlowValue.NotImportant] from a [Flow].
  * @param collector The [FlowCollector] to collect the values.
  */
-suspend inline fun <T> Flow<T>.collectImportant(
-    collector: FlowCollector<T>) =
+suspend inline fun <T> Flow<T>.collectImportant(collector: FlowCollector<T>) =
     filterOnlyImportant().collect(collector)
 
 /**

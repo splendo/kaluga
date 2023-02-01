@@ -91,7 +91,8 @@ open class StateFlowDefaultSubject<R : T?, T>(
     val context: CoroutineContext = coroutineScope.coroutineContext,
     private val observedStateFlow: MutableStateFlow<T?>,
     autoBind: Boolean = true,
-    observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue,
+    observation: ObservationDefault<R, T?> = ObservationDefault(
+        defaultValue,
         ObservableOptional.Value(observedStateFlow.value)
     ),
 ) : BaseDefaultSubject<R, T?>(observation),
@@ -188,7 +189,8 @@ open class SharedFlowDefaultSubject<R : T?, T>(
     context: CoroutineContext = coroutineScope.coroutineContext,
     sharedFlow: MutableSharedFlow<T?>,
     autoBind: Boolean = true,
-    observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue,
+    observation: ObservationDefault<R, T?> = ObservationDefault(
+        defaultValue,
         ObservableOptional.Value(initialValue)
     ),
 ) : BaseDefaultSubject<R, T?>(

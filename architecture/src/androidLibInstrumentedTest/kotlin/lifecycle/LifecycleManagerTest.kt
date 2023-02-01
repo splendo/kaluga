@@ -51,7 +51,8 @@ class LifecycleManagerTest {
                 activity,
                 activity,
                 activity.supportFragmentManager
-            ), observer.managerState.value
+            ),
+            observer.managerState.value
         )
 
         withContext(Dispatchers.Default) {

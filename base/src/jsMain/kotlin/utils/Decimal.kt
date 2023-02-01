@@ -206,7 +206,6 @@ actual fun Decimal.times(
     roundingMode: RoundingMode
 ): Decimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
 
-
 /**
  * Raises two [Decimal].
  * @param n the [Decimal] to raise to

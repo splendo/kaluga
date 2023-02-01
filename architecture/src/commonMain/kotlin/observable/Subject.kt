@@ -49,7 +49,7 @@ interface BasicSubject<R : T, T, OO : ObservableOptional<R>> :
  * Convenience method for [BasicSubject] that calls [BasicSubject.bind] using the [CoroutineContext] of the provided [CoroutineScope]
  * @param coroutineScope The [CoroutineScope] to bind to.
  */
-fun <R :  T, T, OO : ObservableOptional<R>> BasicSubject<R, T, OO>.bind(coroutineScope: CoroutineScope) = bind(coroutineScope, coroutineScope.coroutineContext)
+fun <R : T, T, OO : ObservableOptional<R>> BasicSubject<R, T, OO>.bind(coroutineScope: CoroutineScope) = bind(coroutineScope, coroutineScope.coroutineContext)
 
 /**
  * A [BasicSubject] that is [Initialized]
