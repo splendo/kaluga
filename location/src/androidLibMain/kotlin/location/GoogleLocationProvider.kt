@@ -171,7 +171,7 @@ class GoogleLocationUpdatesBroadcastReceiver : BroadcastReceiver() {
                 action = ACTION_NAME
                 addCategory(locationManagerId)
             }
-            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            return PendingIntent.getBroadcast(context, 0, intent, if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT)
         }
     }
 

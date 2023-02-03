@@ -44,8 +44,8 @@ actual class DefaultNotificationsPermissionManager(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS)
             } else {
-               emptyArray()
-           },
+                emptyArray()
+            },
             coroutineScope,
             logTag,
             logger,
