@@ -26,28 +26,20 @@ actual class DefaultKalugaFile actual constructor(
 ) : KalugaFile {
 
     private val fs = require("fs")
-    private var lineIterator: Iterator<String>? = null
-    private var byteIterator: ByteIterator? = null
+
+    private fun KalugaFile.Encoding.toCharset() = when (this) {
+        KalugaFile.Encoding.UTF8 -> "utf8"
+    }
 
     override fun open() = Unit
 
-    override fun nextLine(): String? {
-        if (lineIterator == null) {
-            lineIterator = fs.readFileSync(path.filepath, "utf8").toString()
-                .splitToSequence("\n")
-                .iterator()
-        }
-        if (!lineIterator!!.hasNext()) return null
-        return lineIterator!!.next()
-    }
+    override fun readLines(encoding: KalugaFile.Encoding) = fs.readFileSync(path.filepath, "utf8")
+        .toString()
+        .split(KalugaFile.NEW_LINE_REGEX)
 
-    override fun nextByte(): Byte? {
-        if (byteIterator == null) {
-            byteIterator = fs.readFileSync(path.filepath).toString().encodeToByteArray().iterator()
-        }
-        if (!byteIterator!!.hasNext()) return null
-        return byteIterator!!.next()
-    }
+    override fun readBytes() = fs.readFileSync(path.filepath)
+        .toString()
+        .encodeToByteArray()
 
     override fun close() = Unit
 }

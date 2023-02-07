@@ -23,11 +23,10 @@ import kotlin.test.assertEquals
 class KalugaFileTest {
 
     companion object {
-        private const val PATH_SEPARATOR = "/"
         private val COMMON_TEST_RESOURCES_PATH = listOf(
             ".", "src", "commonTest", "resources"
         )
-        private fun List<String>.toPath() = joinToString(PATH_SEPARATOR)
+        private fun List<String>.toPath() = joinToString(KalugaFile.PATH_SEPARATOR)
     }
 
     @Test

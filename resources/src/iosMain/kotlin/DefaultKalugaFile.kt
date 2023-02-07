@@ -17,13 +17,11 @@
 
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.get
 import kotlinx.cinterop.reinterpret
 import platform.Foundation.NSBundle
-import platform.Foundation.NSData
 import platform.Foundation.NSFileHandle
 import platform.Foundation.NSString
 import platform.Foundation.closeFile
@@ -45,62 +43,40 @@ actual class DefaultKalugaFile actual constructor(
     override val mode: Set<KalugaFile.Mode>
 ) : KalugaFile {
 
-    private companion object {
-        const val TAG = "DefaultKalugaFile"
+    private var file: NSFileHandle? = null
+
+    private fun Set<KalugaFile.Mode>.toFileHandle(path: String) = when {
+        canUpdate() -> NSFileHandle.fileHandleForUpdatingAtPath(path)
+        canWrite() -> NSFileHandle.fileHandleForWritingAtPath(path)
+        canRead() -> NSFileHandle.fileHandleForReadingAtPath(path)
+        else -> throw KalugaFile.Exception.UnsupportedMode(this)
     }
 
-    private var file: NSFileHandle? = null
-    private var data: NSData? = null
-    private var byteIterator: ByteIterator? = null
-    private var lineIterator: Iterator<String>? = null
+    private fun bytesPointer(): Pair<CPointer<ByteVar>, Int> {
+        val file = file ?: throw KalugaFile.Exception.CantOpenFile(path)
+        val data = file.readDataToEndOfFile()
+        val bytes = data.bytes?.reinterpret<ByteVar>() ?: throw KalugaFile.Exception.CantReadFile(path)
+        return bytes to data.length.toInt()
+    }
 
     override fun open() {
-
-        file = when {
-            mode.canUpdate() -> NSFileHandle.fileHandleForUpdatingAtPath(path.filepath)
-            mode.canWrite() -> NSFileHandle.fileHandleForWritingAtPath(path.filepath)
-            mode.canRead() -> NSFileHandle.fileHandleForReadingAtPath(path.filepath)
-            else -> throw KalugaFile.Exception.UnsupportedMode(mode)
-        }
-
-        if (file == null) {
-            throw KalugaFile.Exception.CantOpenFile(path)
-        }
+        file = mode.toFileHandle(path.filepath) ?: throw KalugaFile.Exception.CantOpenFile(path)
     }
 
-    override fun nextLine(): String? {
-        readIfNeeded()
-        val iterator = lineIterator ?: return null
-        if (!iterator.hasNext()) return null
-        return iterator.next()
+    override fun readLines(encoding: KalugaFile.Encoding): List<String> {
+        val (bytes, _) = bytesPointer()
+        return when (encoding) {
+            KalugaFile.Encoding.UTF8 -> NSString.stringWithUTF8String(bytes)
+                ?.split(KalugaFile.NEW_LINE_REGEX)
+        } ?: emptyList()
     }
 
-    override fun nextByte(): Byte? {
-        readIfNeeded()
-        val iterator = byteIterator ?: return null
-        if (!iterator.hasNext()) return null
-        return iterator.next()
+    override fun readBytes(): ByteArray {
+        val (bytes, size) = bytesPointer()
+        return ByteArray(size, init = bytes::get)
     }
 
     override fun close() {
-        if (file != null) {
-            file?.closeFile()
-        } else {
-            // already closed or never opened
-            debug(TAG, "Already closed: $path")
-        }
-    }
-
-    private fun readIfNeeded() {
-        if (data == null) {
-            val file = file ?: throw KalugaFile.Exception.CantOpenFile(path)
-            data = file.readDataToEndOfFile()
-            if (data != null) {
-                val bytes: CPointer<ByteVar> = data!!.bytes!!.reinterpret()
-                byteIterator = ByteArray(data!!.length.toInt(), init = bytes::get).iterator()
-                val string = NSString.stringWithUTF8String(bytes) ?: ""
-                lineIterator = string.splitToSequence(Regex("\\r\\n|\\n")).iterator()
-            }
-        }
+        file?.closeFile()
     }
 }

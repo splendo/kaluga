@@ -19,6 +19,11 @@ package com.splendo.kaluga.resources
 
 interface KalugaFile {
 
+    companion object {
+        val NEW_LINE_REGEX = Regex("\\r\\n|\\n|\\r")
+        const val PATH_SEPARATOR = "/"
+    }
+
     interface Path {
         val filepath: String
     }
@@ -26,6 +31,9 @@ interface KalugaFile {
     sealed class Exception(override val message: String?) : Throwable(message) {
         data class CantOpenFile(val filepath: Path) : Exception(
             message = "File couldn't be opened at: (${filepath.filepath})"
+        )
+        data class CantReadFile(val filepath: Path) : Exception(
+            message = "File couldn't be read at: (${filepath.filepath})"
         )
         data class UnsupportedMode(val mode: Set<Mode>) : Exception(
             message = "Given mode ($mode) is not supported!"
@@ -41,15 +49,19 @@ interface KalugaFile {
         }
     }
 
+    enum class Encoding {
+        UTF8
+    }
+
     val path: Path
     val mode: Set<Mode>
 
     /** Opens file in [mode] mode */
     fun open()
     /** Returns next line in the file */
-    fun nextLine(): String?
+    fun readLines(encoding: Encoding): List<String>
     /** Returns next byte in the file */
-    fun nextByte(): Byte?
+    fun readBytes(): ByteArray
     /** Closes file */
     fun close()
 }
@@ -78,10 +90,12 @@ private fun <T> sequence(next: () -> T?) = Sequence {
 }
 
 /** Returns sequence of the lines from the file */
-fun KalugaFile.lineSequence() = sequence(this::nextLine)
+fun KalugaFile.lineSequence(
+    encoding: KalugaFile.Encoding = KalugaFile.Encoding.UTF8
+) = readLines(encoding).asSequence()
 
 /** Returns sequence of the bytes from the file */
-fun KalugaFile.byteSequence() = sequence(this::nextByte)
+fun KalugaFile.byteSequence() = readBytes().asSequence()
 
 private fun <T, R> KalugaFile.useElements(sequence: () -> Sequence<T>, block: (Sequence<T>) -> R): R {
     open()
