@@ -41,29 +41,40 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
         protected val context: Context
     ) {
         protected val fusedLocationProviderClient = FusedLocationProviderClient(context)
-        protected val locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-            if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        )
-        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> = MutableStateFlow(emptyList())
+        protected val locationRequest = LocationRequest.Builder(1)
+            .setPriority(
+                if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY
+            )
+            .setMinUpdateIntervalMillis(100)
+            .setMaxUpdateDelayMillis(1000)
+            .setMaxUpdateAgeMillis(0)
+            .build()
+
+        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> =
+            MutableStateFlow(emptyList())
         val locations: Flow<List<Location.KnownLocation>> = locationsState
 
         abstract fun startRequestingUpdates()
         abstract fun stopRequestingUpdates()
 
-        class Foreground(permission: LocationPermission, context: Context) : FusedLocationProviderClientType(permission, context) {
+        class Foreground(permission: LocationPermission, context: Context) :
+            FusedLocationProviderClientType(permission, context) {
 
             private val locationCallback = object : LocationCallback() {
 
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
-
                     locationsState.value = locationResult.toKnownLocations()
                 }
             }
 
             @SuppressLint("MissingPermission")
             override fun startRequestingUpdates() {
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+                fusedLocationProviderClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    Looper.getMainLooper()
+                )
             }
 
             override fun stopRequestingUpdates() {
@@ -71,20 +82,26 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
             }
         }
 
-        class Background(permission: LocationPermission, context: Context) : FusedLocationProviderClientType(permission, context) {
+        class Background(permission: LocationPermission, context: Context) :
+            FusedLocationProviderClientType(permission, context) {
 
             private val identifier = hashCode().toString()
 
             companion object {
-                val updatingLocationInBackgroundManagers: MutableMap<String, MutableStateFlow<List<Location.KnownLocation>>> = mutableMapOf()
+                val updatingLocationInBackgroundManagers: MutableMap<String, MutableStateFlow<List<Location.KnownLocation>>> =
+                    mutableMapOf()
             }
 
-            private val locationUpdatedPendingIntent = GoogleLocationUpdatesBroadcastReceiver.intent(context, identifier)
+            private val locationUpdatedPendingIntent =
+                GoogleLocationUpdatesBroadcastReceiver.intent(context, identifier)
 
             @SuppressLint("MissingPermission")
             override fun startRequestingUpdates() {
                 updatingLocationInBackgroundManagers[identifier] = locationsState
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationUpdatedPendingIntent)
+                fusedLocationProviderClient.requestLocationUpdates(
+                    locationRequest,
+                    locationUpdatedPendingIntent
+                )
             }
 
             override fun stopRequestingUpdates() {
@@ -94,13 +111,15 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
         }
     }
 
-    private val fusedLocationProviderClients: MutableStateFlow<Map<LocationPermission, FusedLocationProviderClientType>> = MutableStateFlow(
-        mapOf()
-    )
+    private val fusedLocationProviderClients: MutableStateFlow<Map<LocationPermission, FusedLocationProviderClientType>> =
+        MutableStateFlow(
+            mapOf()
+        )
 
-    override fun location(permission: LocationPermission): Flow<List<Location.KnownLocation>> = fusedLocationProviderClients.flatMapLatest {
-        it[permission]?.locations ?: flowOf(emptyList())
-    }
+    override fun location(permission: LocationPermission): Flow<List<Location.KnownLocation>> =
+        fusedLocationProviderClients.flatMapLatest {
+            it[permission]?.locations ?: flowOf(emptyList())
+        }
 
     override fun startMonitoringLocation(permission: LocationPermission) {
         val fusedLocationProviderClient = getLocationProviderForPermission(permission)
@@ -109,7 +128,8 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
 
     override fun stopMonitoringLocation(permissions: LocationPermission) {
         fusedLocationProviderClients.value[permissions]?.startRequestingUpdates()
-        fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply { remove(permissions) }
+        fusedLocationProviderClients.value =
+            fusedLocationProviderClients.value.toMutableMap().apply { remove(permissions) }
     }
 
     private fun getLocationProviderForPermission(permission: LocationPermission): FusedLocationProviderClientType {
@@ -120,9 +140,10 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
                 FusedLocationProviderClientType.Foreground(permission, context)
             }
 
-            fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply {
-                put(permission, fusedLocationProviderClient)
-            }
+            fusedLocationProviderClients.value =
+                fusedLocationProviderClients.value.toMutableMap().apply {
+                    put(permission, fusedLocationProviderClient)
+                }
             fusedLocationProviderClient
         }
     }
@@ -146,7 +167,8 @@ class GoogleLocationUpdatesBroadcastReceiver : BroadcastReceiver() {
         if (intent == null) return
         val locationResult = LocationResult.extractResult(intent) ?: return
         intent.categories.forEach { category ->
-            GoogleLocationProvider.FusedLocationProviderClientType.Background.updatingLocationInBackgroundManagers[category]?.value = locationResult.toKnownLocations()
+            GoogleLocationProvider.FusedLocationProviderClientType.Background.updatingLocationInBackgroundManagers[category]?.value =
+                locationResult.toKnownLocations()
         }
     }
 }
