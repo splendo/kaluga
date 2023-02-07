@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.resources
 
-import android.content.res.Resources
 import java.io.File
 
 actual class DefaultKalugaFile actual constructor(
@@ -25,7 +24,7 @@ actual class DefaultKalugaFile actual constructor(
     override val mode: Set<KalugaFile.Mode>
 ) : KalugaFile {
 
-    private val file = Resources.getSystem().assets.open(path.filepath)
+    private val file = File(path.filepath)
 
     private fun KalugaFile.Encoding.toCharset() = when (this) {
         KalugaFile.Encoding.UTF8 -> Charsets.UTF_8
@@ -41,5 +40,5 @@ actual class DefaultFilePath actual constructor(
     name: String,
     path: String
 ) : KalugaFile.Path {
-    override val filepath = "resources/$name"
+    override val filepath = "$path/$name"
 }
