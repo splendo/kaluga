@@ -313,6 +313,11 @@ public final class com/splendo/kaluga/resources/DefaultColors {
 	public final fun getYellowGreen ()I
 }
 
+public final class com/splendo/kaluga/resources/DefaultFilePath : com/splendo/kaluga/resources/KalugaFile$Path {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun getFilepath ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/resources/DefaultFontLoader : com/splendo/kaluga/resources/FontLoader {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function2;)V
@@ -323,6 +328,16 @@ public final class com/splendo/kaluga/resources/DefaultImageLoader : com/splendo
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun loadImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/Image;)Lcom/splendo/kaluga/resources/Image;
+}
+
+public final class com/splendo/kaluga/resources/DefaultKalugaFile : com/splendo/kaluga/resources/KalugaFile {
+	public fun <init> (Lcom/splendo/kaluga/resources/KalugaFile$Path;Ljava/util/Set;)V
+	public fun close ()V
+	public fun getMode ()Ljava/util/Set;
+	public fun getPath ()Lcom/splendo/kaluga/resources/KalugaFile$Path;
+	public fun open ()V
+	public fun readBytes ()[B
+	public fun readLines (Lcom/splendo/kaluga/resources/KalugaFile$Encoding;)Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/resources/DefaultStringLoader : com/splendo/kaluga/resources/StringLoader {
@@ -420,6 +435,96 @@ public final class com/splendo/kaluga/resources/JvmKalugaColor {
 
 public abstract interface class com/splendo/kaluga/resources/KalugaColorLoader {
 	public abstract fun loadColor (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;
+}
+
+public abstract interface class com/splendo/kaluga/resources/KalugaFile {
+	public static final field Companion Lcom/splendo/kaluga/resources/KalugaFile$Companion;
+	public static final field PATH_SEPARATOR Ljava/lang/String;
+	public abstract fun close ()V
+	public abstract fun getMode ()Ljava/util/Set;
+	public abstract fun getPath ()Lcom/splendo/kaluga/resources/KalugaFile$Path;
+	public abstract fun open ()V
+	public abstract fun readBytes ()[B
+	public abstract fun readLines (Lcom/splendo/kaluga/resources/KalugaFile$Encoding;)Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Companion {
+	public static final field PATH_SEPARATOR Ljava/lang/String;
+	public final fun getNEW_LINE_REGEX ()Lkotlin/text/Regex;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Encoding : java/lang/Enum {
+	public static final field UTF8 Lcom/splendo/kaluga/resources/KalugaFile$Encoding;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/KalugaFile$Encoding;
+	public static fun values ()[Lcom/splendo/kaluga/resources/KalugaFile$Encoding;
+}
+
+public abstract class com/splendo/kaluga/resources/KalugaFile$Exception : java/lang/RuntimeException {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Exception$CantOpenFile : com/splendo/kaluga/resources/KalugaFile$Exception {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/resources/KalugaFile$Exception$CantOpenFile;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/KalugaFile$Exception$CantOpenFile;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/KalugaFile$Exception$CantOpenFile;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFilepath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Exception$CantReadFile : com/splendo/kaluga/resources/KalugaFile$Exception {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/resources/KalugaFile$Exception$CantReadFile;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/KalugaFile$Exception$CantReadFile;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/KalugaFile$Exception$CantReadFile;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFilepath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Exception$UnsupportedMode : com/splendo/kaluga/resources/KalugaFile$Exception {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/resources/KalugaFile$Exception$UnsupportedMode;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/KalugaFile$Exception$UnsupportedMode;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/KalugaFile$Exception$UnsupportedMode;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMode ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Mode : java/lang/Enum {
+	public static final field Binary Lcom/splendo/kaluga/resources/KalugaFile$Mode;
+	public static final field Companion Lcom/splendo/kaluga/resources/KalugaFile$Mode$Companion;
+	public static final field Read Lcom/splendo/kaluga/resources/KalugaFile$Mode;
+	public static final field Write Lcom/splendo/kaluga/resources/KalugaFile$Mode;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/KalugaFile$Mode;
+	public static fun values ()[Lcom/splendo/kaluga/resources/KalugaFile$Mode;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFile$Mode$Companion {
+	public final fun getReadBinary ()Ljava/util/Set;
+	public final fun getReadOnly ()Ljava/util/Set;
+}
+
+public abstract interface class com/splendo/kaluga/resources/KalugaFile$Path {
+	public abstract fun getFilepath ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFileKt {
+	public static final fun byteSequence (Lcom/splendo/kaluga/resources/KalugaFile;)Lkotlin/sequences/Sequence;
+	public static final fun canRead (Ljava/util/Set;)Z
+	public static final fun canUpdate (Ljava/util/Set;)Z
+	public static final fun canWrite (Ljava/util/Set;)Z
+	public static final fun isBinary (Ljava/util/Set;)Z
+	public static final fun lineSequence (Lcom/splendo/kaluga/resources/KalugaFile;Lcom/splendo/kaluga/resources/KalugaFile$Encoding;)Lkotlin/sequences/Sequence;
+	public static synthetic fun lineSequence$default (Lcom/splendo/kaluga/resources/KalugaFile;Lcom/splendo/kaluga/resources/KalugaFile$Encoding;ILjava/lang/Object;)Lkotlin/sequences/Sequence;
+	public static final fun useBytes (Lcom/splendo/kaluga/resources/KalugaFile;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun useLines (Lcom/splendo/kaluga/resources/KalugaFile;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/resources/LinkStyle {
