@@ -31,13 +31,6 @@ import platform.Foundation.fileHandleForWritingAtPath
 import platform.Foundation.readDataToEndOfFile
 import platform.Foundation.stringWithUTF8String
 
-actual class DefaultFilePath actual constructor(
-    name: String,
-    path: String
-) : KalugaFile.Path {
-    override val filepath = NSBundle.mainBundle.pathForResource(name, ofType = "") ?: ""
-}
-
 actual class DefaultKalugaFile actual constructor(
     override val path: KalugaFile.Path,
     override val mode: Set<KalugaFile.Mode>
@@ -53,14 +46,15 @@ actual class DefaultKalugaFile actual constructor(
     }
 
     private fun bytesPointer(): Pair<CPointer<ByteVar>, Int> {
-        val file = file ?: throw KalugaFile.Exception.CantOpenFile(path)
+        val file = file ?: throw KalugaFile.Exception.CantOpenFile(path.filepath)
         val data = file.readDataToEndOfFile()
-        val bytes = data.bytes?.reinterpret<ByteVar>() ?: throw KalugaFile.Exception.CantReadFile(path)
+        val bytes = data.bytes?.reinterpret<ByteVar>() ?: throw KalugaFile.Exception.CantReadFile(path.filepath)
         return bytes to data.length.toInt()
     }
 
     override fun open() {
-        file = mode.toFileHandle(path.filepath) ?: throw KalugaFile.Exception.CantOpenFile(path)
+        file = mode.toFileHandle(path.filepath)
+            ?: throw KalugaFile.Exception.CantOpenFile(path.filepath)
     }
 
     override fun readLines(encoding: KalugaFile.Encoding): List<String> {
@@ -79,4 +73,12 @@ actual class DefaultKalugaFile actual constructor(
     override fun close() {
         file?.closeFile()
     }
+}
+
+actual class DefaultFilePath actual constructor(
+    name: String,
+    path: String
+) : KalugaFile.Path {
+    override val filepath = NSBundle.mainBundle.pathForResource(name, ofType = "")
+        ?: throw KalugaFile.Exception.CantOpenFile(name)
 }

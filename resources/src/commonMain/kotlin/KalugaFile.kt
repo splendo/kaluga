@@ -28,12 +28,12 @@ interface KalugaFile {
         val filepath: String
     }
 
-    sealed class Exception(override val message: String?) : Throwable(message) {
-        data class CantOpenFile(val filepath: Path) : Exception(
-            message = "File couldn't be opened at: (${filepath.filepath})"
+    sealed class Exception(override val message: String?) : RuntimeException(message) {
+        data class CantOpenFile(val filepath: String) : Exception(
+            message = "File couldn't be opened at: (${filepath})"
         )
-        data class CantReadFile(val filepath: Path) : Exception(
-            message = "File couldn't be read at: (${filepath.filepath})"
+        data class CantReadFile(val filepath: String) : Exception(
+            message = "File couldn't be read at: (${filepath})"
         )
         data class UnsupportedMode(val mode: Set<Mode>) : Exception(
             message = "Given mode ($mode) is not supported!"
