@@ -20,4 +20,8 @@ package com.splendo.kaluga.keyboard.compose
 import androidx.compose.ui.focus.FocusRequester
 import com.splendo.kaluga.keyboard.FocusHandler
 
+/**
+ * A [FocusHandler] that focuses using a given [FocusRequester]
+ * @param focusRequester the [FocusRequester] to handle focusing.
+ */
 class ComposeFocusHandler(val focusRequester: FocusRequester) : FocusHandler

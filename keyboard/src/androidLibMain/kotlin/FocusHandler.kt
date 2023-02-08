@@ -24,6 +24,10 @@ import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 
+/**
+ * A [FocusHandler] that focuses on a view with a given ID.
+ * @param id the ID of the View to focus on
+ */
 class ViewFocusHandler(
     @IdRes private val id: Int
 ) : FocusHandler {

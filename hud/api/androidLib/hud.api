@@ -38,6 +38,8 @@ public final class com/splendo/kaluga/hud/HUDKt {
 	public static synthetic fun build$default (Lcom/splendo/kaluga/hud/BaseHUD$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/hud/BaseHUD;
 	public static final fun dismissAfter (Lcom/splendo/kaluga/hud/BaseHUD;JZ)Lcom/splendo/kaluga/hud/BaseHUD;
 	public static synthetic fun dismissAfter$default (Lcom/splendo/kaluga/hud/BaseHUD;JZILjava/lang/Object;)Lcom/splendo/kaluga/hud/BaseHUD;
+	public static final fun dismissAfter-8Mi8wO0 (Lcom/splendo/kaluga/hud/BaseHUD;JZ)Lcom/splendo/kaluga/hud/BaseHUD;
+	public static synthetic fun dismissAfter-8Mi8wO0$default (Lcom/splendo/kaluga/hud/BaseHUD;JZILjava/lang/Object;)Lcom/splendo/kaluga/hud/BaseHUD;
 	public static final fun getStyle (Lcom/splendo/kaluga/hud/BaseHUD;)Lcom/splendo/kaluga/hud/HUDStyle;
 	public static final fun getTitle (Lcom/splendo/kaluga/hud/BaseHUD;)Ljava/lang/String;
 	public static final fun presentDuring (Lcom/splendo/kaluga/hud/BaseHUD;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

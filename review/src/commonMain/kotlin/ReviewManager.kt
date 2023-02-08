@@ -25,12 +25,19 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
  */
 expect class ReviewManager {
 
+    /**
+     * Builder for creating a [ReviewManager]
+     */
     class Builder : LifecycleSubscribable {
+
+        /**
+         * Creates a [ReviewManager]
+         */
         fun create(): ReviewManager
     }
 
     /**
-     * Attemps to show a dialog that asks the user to submit a review of the app.
+     * Attempts to show a dialog that asks the user to submit a review of the app.
      * This method does not guarantee such a dialog will be shown as the OS may block it.
      */
     suspend fun attemptToRequestReview()

@@ -46,10 +46,23 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Default [BaseHUD] implementation.
+ */
 actual class HUD private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
+    /**
+     * Builder class for creating a [HUD]
+     * @param lifecycleManagerObserver the [LifecycleManagerObserver] to observe lifecycle changes.
+     */
     actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUD.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
+        /**
+         * Creates a [HUD] based on [hudConfig].
+         * @param hudConfig The [HudConfig] to apply to the [HUD].
+         * @param coroutineScope The [CoroutineScope] managing the lifecycle of the HUD.
+         * @return the created [HUD]
+         */
         actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             R.layout.loading_indicator_view,
             hudConfig,

@@ -26,8 +26,15 @@ import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import kotlinx.coroutines.CoroutineScope
 import java.util.WeakHashMap
 
+/**
+ * A [BaseKeyboardManager] that takes a [ComposeFocusHandler]. Uses for managing the keyboard in Compose views.
+ * @param currentFocusManager The initial [FocusManager] to manage the focus.
+ */
 class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = null) : BaseKeyboardManager<ComposeFocusHandler> {
 
+    /**
+     * A [BaseKeyboardManager.Builder] for creating a [ComposeKeyboardManager]
+     */
     class Builder : BaseKeyboardManager.Builder<ComposeFocusHandler>, ComposableLifecycleSubscribable {
 
         private val builtManagers = WeakHashMap<Int, ComposeKeyboardManager>()

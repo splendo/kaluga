@@ -60,7 +60,7 @@ abstract class BaseTimeZone {
      * @param locale The [Locale] used for naming the [TimeZone]. Defaults to [Locale.defaultLocale]
      */
     abstract fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean = usesDaylightSavingsTime(), locale: Locale = defaultLocale): String
-    
+
     /**
      * The [Duration] this timezone differs from GMT when daylight savings time is not active
      */
