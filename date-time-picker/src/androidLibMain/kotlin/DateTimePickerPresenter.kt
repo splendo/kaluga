@@ -31,17 +31,37 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+/**
+ * A [BaseDateTimePickerPresenter] for presenting an [DateTimePicker].
+ * @param dateTimePicker The [DateTimePicker] being presented.
+ * @param themeResourceId the resource ID of the theme to apply to the date-time picker dialog
+ * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
+ * @param coroutineScope The [CoroutineScope] managing changes to the alert presentation.
+ */
 actual class DateTimePickerPresenter(
-    private val dateTimePicker: DateTimePicker,
+    dateTimePicker: DateTimePicker,
     private val themeResourceId: Int,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
 ) : BaseDateTimePickerPresenter(dateTimePicker), CoroutineScope by coroutineScope {
 
+    /**
+     * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
+     * @param themeResourceId the resource ID of the theme to apply to the date-time picker dialog
+     * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
+     */
     actual class Builder(
         private val themeResourceId: Int = 0,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseDateTimePickerPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+
+        /**
+         * Creates a [DateTimePickerPresenter]
+         *
+         * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [DateTimePickerPresenter]
+         */
         actual override fun create(
             dateTimePicker: DateTimePicker,
             coroutineScope: CoroutineScope
@@ -112,10 +132,10 @@ actual class DateTimePickerPresenter(
                     dateTimePicker.selectedDate.day
                 ).apply {
                     type.earliestDate?.let {
-                        datePicker.minDate = it.millisecondSinceEpoch
+                        datePicker.minDate = it.durationSinceEpoch.inWholeMilliseconds
                     }
                     type.latestDate?.let {
-                        datePicker.maxDate = it.millisecondSinceEpoch
+                        datePicker.maxDate = it.durationSinceEpoch.inWholeMilliseconds
                     }
                 }
             }

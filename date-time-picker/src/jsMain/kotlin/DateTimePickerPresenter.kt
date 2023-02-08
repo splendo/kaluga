@@ -21,12 +21,29 @@ package com.splendo.kaluga.datetimepicker
 import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * A [DateTimePickerPresenter] for presenting a [DateTimePicker].
+ *
+ * This is not yet fully implemented on JVM
+ *
+ * @param dateTimePicker The [DateTimePicker] being presented.
+ */
 actual class DateTimePickerPresenter(
     dateTimePicker: DateTimePicker
 ) : BaseDateTimePickerPresenter(dateTimePicker) {
 
+    /**
+     * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
+     */
     actual class Builder : BaseDateTimePickerPresenter.Builder() {
 
+        /**
+         * Creates a [DateTimePickerPresenter]
+         *
+         * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [DateTimePickerPresenter]
+         */
         actual override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): DateTimePickerPresenter {
             return DateTimePickerPresenter(dateTimePicker)
         }

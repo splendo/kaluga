@@ -20,10 +20,20 @@ package com.splendo.kaluga.alerts
 
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * A [BaseAlertPresenter] for presenting an [Alert].
+ *
+ * This is not yet fully implemented on JVM
+ *
+ * @param alert The [Alert] being presented.
+ */
 actual class AlertPresenter(
     alert: Alert
 ) : BaseAlertPresenter(alert) {
 
+    /**
+     * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
+     */
     actual class Builder : BaseAlertPresenter.Builder() {
 
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter {
