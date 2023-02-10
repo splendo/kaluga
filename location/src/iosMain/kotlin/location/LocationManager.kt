@@ -77,6 +77,7 @@ actual class DefaultLocationManager(
     override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
+        distanceFilter = settings.minUpdateDistanceMeters.toDouble()
     }
 
     private val locationUpdateDelegate: Delegate

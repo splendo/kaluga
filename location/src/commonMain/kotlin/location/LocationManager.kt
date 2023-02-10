@@ -38,6 +38,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 interface LocationManager {
 
@@ -71,12 +73,24 @@ abstract class BaseLocationManager(
         private const val LOG_TAG = "Location Manager"
     }
 
+    /**
+     * @param locationPermission If passing your own settings pass LocationPermission returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
+     * @param permissions If passing your own settings pass permissions returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
+     * @param autoRequestPermission Set to true to request permissions right away
+     * @param autoEnableLocations Set to true to enable location if disabled right away
+     * @param locationBufferCapacity Max location that can be buffered, if exceed oldest is dropped
+     * @param updateIntervalMillis Controls Android only emission rate, iOS does not expose this but makes it depend on set accuracy and [minUpdateDistanceMeters]
+     * @param minUpdateDistanceMeters Min update distance for a location update to trigger
+     * @param logger Pass your own [RestrictedLogger] to enable logging while debugging
+     */
     data class Settings(
         val locationPermission: LocationPermission,
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableLocations: Boolean = true,
         val locationBufferCapacity: Int = 16,
+        val updateIntervalMillis: Duration = 100.milliseconds,
+        val minUpdateDistanceMeters: Float = 0f,
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
@@ -152,6 +166,7 @@ abstract class BaseLocationManager(
             }
         }
     }
+
     override suspend fun stopMonitoringLocationEnabled() = enabledLock.withLock {
         locationMonitor.stopMonitoring()
         monitoringLocationEnabledJob?.cancel()

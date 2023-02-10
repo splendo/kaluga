@@ -22,9 +22,15 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * State of a [LocationStateRepo]
@@ -45,18 +51,22 @@ sealed interface LocationState : KalugaState {
     interface Initializing : Active, SpecialFlowValue.NotImportant {
         fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
     }
+
     sealed interface Initialized : Active
     sealed interface Permitted : Initialized {
         val revokePermission: suspend () -> Disabled.NotPermitted
     }
+
     sealed interface Disabled : Initialized {
         interface NoGPS : Disabled, Permitted {
             val enable: suspend () -> Enabled
         }
+
         interface NotPermitted : Disabled {
             fun permit(enabled: Boolean): suspend () -> Permitted
         }
     }
+
     interface Enabled : Permitted {
         val disable: suspend () -> Disabled.NoGPS
         fun updateWithLocation(location: Location.KnownLocation): suspend () -> Enabled
@@ -239,4 +249,32 @@ fun Flow<LocationState>.location(): Flow<Location> {
     return this.filterOnlyImportant().map { it.location }
 }
 
-fun Flow<Location>.known(): Flow<Location.KnownLocation> = mapNotNull { location -> location.known }
+/**
+ * Transforms a [Flow] of [LocationState] into a flow of its associated optional [Location.KnownLocation]
+ *
+ * @param maxAge Controls both the max age of a location by filtering out locations that are older and
+ * is used to set a timeout for the last emission that will emit null when triggered
+ */
+fun Flow<Location>.known(maxAge: Duration = 0.seconds): Flow<Location.KnownLocation?> {
+    fun filterExpired(location: Location.KnownLocation): Location.KnownLocation? {
+        val hasExpired = location.time <= DefaultKalugaDate.now(-maxAge.inWholeMilliseconds)
+        return if (hasExpired) null
+        else location
+    }
+
+    val knownLocation = mapNotNull { location -> location.known }
+    if (maxAge.inWholeMilliseconds == 0L || maxAge.isNegative())
+        return knownLocation
+    return knownLocation.flatMapLatest { location ->
+        flow {
+            emit(filterExpired(location))
+            val locationTimeMillis = location.known?.time?.millisecondSinceEpoch
+                ?: DefaultKalugaDate.now(-maxAge.inWholeMilliseconds).millisecondSinceEpoch
+            val dateDiffMillis =
+                (DefaultKalugaDate.now().millisecondSinceEpoch - locationTimeMillis)
+            val delayMillis = maxAge.inWholeMilliseconds - dateDiffMillis
+            delay(delayMillis)
+            emit(null)
+        }
+    }
+}

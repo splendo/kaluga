@@ -36,48 +36,41 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * A [LocationProvider] using the Google Location Services
  * @param context The [Context] to run this [LocationProvider] in.
  * @param settings The [GoogleLocationProvider.Settings] to use to configure this location provider.
  */
-class GoogleLocationProvider(private val context: Context, private val settings: Settings = Settings.default) : LocationProvider {
+class GoogleLocationProvider(private val context: Context, private val settings: Settings) : LocationProvider {
 
     /**
      * Settings for a [GoogleLocationProvider]
-     * @param interval The desired interval of location updates.
-     * @param maxUpdateDelay The longest a location update may be delayed.
-     * @param minUpdateInterval The fastest allowed interval of location updates.
+     * @param interval The desired interval of location updates. (Best effort)
+     * @param minUpdateDistanceMeters The min distance traversed for a location update to be reported.
      */
     data class Settings(
         val interval: Duration,
-        val maxUpdateDelay: Duration,
-        val minUpdateInterval: Duration
-    ) {
-        companion object {
-            val default = Settings(interval = 1.milliseconds, maxUpdateDelay = 1.seconds, minUpdateInterval = 1.milliseconds)
-        }
-    }
+        val minUpdateDistanceMeters: Float
+    )
 
     internal sealed class FusedLocationProviderClientType(
         permission: LocationPermission,
         context: Context,
         settings: Settings
     ) {
-        protected val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-        protected val locationRequest = LocationRequest.Builder(settings.interval.inWholeMilliseconds)
-            .setMaxUpdateDelayMillis(settings.maxUpdateDelay.inWholeMilliseconds)
-            .setMinUpdateIntervalMillis(settings.minUpdateInterval.inWholeMilliseconds)
-            .setPriority(
-                if (permission.precise)
-                    Priority.PRIORITY_HIGH_ACCURACY
-                else
-                    Priority.PRIORITY_BALANCED_POWER_ACCURACY
-            )
-            .build()
-        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> = MutableStateFlow(emptyList())
+        protected val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+        protected val locationRequest =
+            LocationRequest.Builder(settings.interval.inWholeMilliseconds)
+                .setMinUpdateDistanceMeters(settings.minUpdateDistanceMeters)
+                .setPriority(
+                    if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY
+                    else Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                )
+                .build()
+        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> =
+            MutableStateFlow(emptyList())
         val locations: Flow<List<Location.KnownLocation>> = locationsState
 
         abstract fun startRequestingUpdates()
