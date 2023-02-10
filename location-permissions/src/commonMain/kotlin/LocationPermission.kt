@@ -31,15 +31,23 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [LocationPermission]
  */
 typealias LocationPermissionManager = PermissionManager<LocationPermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [LocationPermission]
+ */
 expect class DefaultLocationPermissionManager : BasePermissionManager<LocationPermission>
 
+/**
+ * A [BasePermissionsBuilder] for [LocationPermission]
+ */
 interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder<LocationPermission> {
 
     /**
      * Creates a [LocationPermissionManager]
-     * @param locationPermission The [LocationPermission] for the PermissionManager to be created
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param locationPermission the [LocationPermission] to manage
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [LocationPermissionManager]
      */
     fun create(
         locationPermission: LocationPermission,
@@ -49,13 +57,17 @@ interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder<Location
 }
 
 /**
- * A builder for creating a [LocationPermissionManager]
+ * A [BaseLocationPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class LocationPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseLocationPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [LocationPermission]
+ * @param locationPermission the [LocationPermission] to manage
  * @param builder The [LocationPermissionManagerBuilder] for creating the [LocationPermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [LocationPermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class LocationPermissionStateRepo(

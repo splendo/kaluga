@@ -16,6 +16,12 @@
  */
 package com.splendo.kaluga.permissions.base
 
+/**
+ * JavaScript context for creating a [BasePermissionsBuilder]
+ */
 actual class PermissionContext
 
+/**
+ * Default [PermissionContext] of the system
+ */
 actual val defaultPermissionContext = PermissionContext()

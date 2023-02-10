@@ -21,6 +21,9 @@ import platform.AVFoundation.AVMediaTypeAudio
 
 const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
 
+/**
+ * The [AVType] of the [MicrophonePermission]
+ */
 class AVTypeMicrophone : AVType() {
     override val avMediaType = AVMediaTypeAudio
     override val declarationName = NSMicrophoneUsageDescription

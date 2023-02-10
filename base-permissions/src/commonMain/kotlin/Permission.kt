@@ -21,9 +21,6 @@ import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.base.singleThreadDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
@@ -123,28 +120,72 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
 
     /**
      * Gets the registered [BasePermissionsBuilder] for a a given type of [Permission].
-     * If no bulder has been registered yet
-     * Make sure to call [unregister] before calling this if a permission has been registered before.
+     * If no builder has been registered yet, [builder] will be registered instead.
      * This method is thread-safe.
      * @param P the type of [Permission] for which to register the builder.
      * @param Builder the type of [BasePermissionsBuilder] to register for this permission
      * @param builder the [Builder] to register for the permission.
-     * @throws [PermissionsBuilderError] if the permission was already registered.
-     * @return the registered [Builder]
+     * @return the registered [BasePermissionsBuilder]
      */
-    inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(builder: B): BasePermissionsBuilder<P> = registerOrGet(P::class, builder)
-    @Suppress("UNCHECKED_CAST")
-    fun <P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(permission: KClass<P>, builder: B): BasePermissionsBuilder<P> = builders.getOrPut(permission::class) { builder } as BasePermissionsBuilder<P>
+    inline fun <reified P : Permission, Builder : BasePermissionsBuilder<P>> registerOrGet(builder: Builder): BasePermissionsBuilder<P> = registerOrGet(P::class, builder)
 
+    /**
+     * Gets the registered [BasePermissionsBuilder] for a a given type of [Permission].
+     * If no builder has been registered yet, [builder] will be registered instead.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param Builder the type of [BasePermissionsBuilder] to register for this permission
+     * @param permission the [KClass] of the [P] to register
+     * @param builder the [Builder] to register for the permission.
+     * @return the registered [BasePermissionsBuilder]
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <P : Permission, Builder : BasePermissionsBuilder<P>> registerOrGet(permission: KClass<P>, builder: Builder): BasePermissionsBuilder<P> = builders.getOrPut(permission::class) { builder } as BasePermissionsBuilder<P>
+
+    /**
+     * Unregisters the [BasePermissionsBuilder] associated with a given [Permission].
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to unregister the builder.
+     * @param permission The [P] for which to unregister the builder.
+     */
     fun <P : Permission> unregister(permission: P) {
         builders.remove(permission::class)
     }
 
+    /**
+     * Gets the [BasePermissionsBuilder] registered for a given [Permission].
+     * Requires a builder to be registered using [register].
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to get the builder
+     * @param permission the [P] for which to get the builder
+     * @return the [BasePermissionsBuilder] registered for [permission]
+     * @throws PermissionsBuilderError if no builder was registered.
+     */
     @Suppress("UNCHECKED_CAST")
     operator fun <P : Permission> get(permission: P): BasePermissionsBuilder<P> =
         builders[permission::class] as? BasePermissionsBuilder<P> ?: throw PermissionsBuilderError("The Builder for $permission was not registered")
 
+    /**
+     * Registers a [PermissionStateRepoBuilder] for a a given type of [Permission].
+     * Only one builder can be registered per type of [Permission].
+     * Make sure to call [unregisterPermissionStateRepoBuilder] before calling this if a permission has been registered before.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param permissionStateRepoBuilder the closure to build a [BasePermissionStateRepo] for a given [P].
+     * @throws [PermissionsBuilderError] if the permission was already registered.
+     */
     inline fun <reified P : Permission> registerPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+
+    /**
+     * Registers a [PermissionStateRepoBuilder] for a a given type of [Permission].
+     * Only one builder can be registered per type of [Permission].
+     * Make sure to call [unregisterPermissionStateRepoBuilder] before calling this if a permission has been registered before.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param permission the [KClass] of the [P] to register
+     * @param permissionStateRepoBuilder the closure to build a [BasePermissionStateRepo] for a given [P].
+     * @throws [PermissionsBuilderError] if the permission was already registered.
+     */
     fun <P : Permission> registerPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) {
         repoBuilders.synchronized {
             if (this[permission] == null) {
@@ -155,14 +196,47 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         }
     }
 
+    /**
+     * Gets the [PermissionStateRepoBuilder] registered for a a given type of [Permission].
+     * If no builder has been registered yet, [permissionStateRepoBuilder] will be registered instead.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param permissionStateRepoBuilder the closure to build a [BasePermissionStateRepo] for a given [P].
+     * @return the [PermissionStateRepoBuilder] registered.
+     */
     inline fun <reified P : Permission> registerOrGetPermissionStateRepoBuilder(noinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = registerOrGetPermissionStateRepoBuilder(P::class, permissionStateRepoBuilder)
+
+    /**
+     * Gets the [PermissionStateRepoBuilder] registered for a a given type of [Permission].
+     * If no builder has been registered yet, [permissionStateRepoBuilder] will be registered instead.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param permission the [KClass] of the [P] to register
+     * @param permissionStateRepoBuilder the closure to build a [BasePermissionStateRepo] for a given [P].
+     * @return the [PermissionStateRepoBuilder] registered.
+     */
     @Suppress("UNCHECKED_CAST")
     fun <P : Permission> registerOrGetPermissionStateRepoBuilder(permission: KClass<P>, permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>) = repoBuilders.getOrPut(permission) { createPermissionStateRepoBuilder(permissionStateRepoBuilder) } as PermissionStateRepoBuilder<P>
 
+    /**
+     * Unregisters the [PermissionStateRepoBuilder] associated with a given [Permission].
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to unregister the builder.
+     * @param permission The [P] for which to unregister the builder.
+     */
     fun <P : Permission> unregisterPermissionStateRepoBuilder(permission: P) {
         repoBuilders.remove(permission::class)
     }
 
+    /**
+     * Creates a [BasePermissionStateRepo] for a given [Permission].
+     * Requires that [registerPermissionStateRepoBuilder] has been called for the [Permission] type
+     * @param P the type of [Permission] for which to get a [BasePermissionStateRepo]
+     * @param permission the [Permission] for which to get a [BasePermissionStateRepo]
+     * @param coroutineContext the [CoroutineContext] managing the [BasePermissionStateRepo]
+     * @return the [BasePermissionStateRepo] created for [permission]
+     * @throws PermissionsBuilderError if [registerPermissionStateRepoBuilder] has not been called for the permission.
+     */
     @Suppress("UNCHECKED_CAST")
     fun <P : Permission> createPermissionStateRepo(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<*> =
         (repoBuilders[permission::class] as? PermissionStateRepoBuilder<P>)?.create(permission, coroutineContext)
@@ -183,7 +257,7 @@ private val defaultPermissionDispatcher by lazy {
 }
 
 /**
- * Manager to request the [PermissionStateRepo] of a given [Permission]
+ * Holder class for all the [PermissionStateFlowRepo] associated with [Permission]
  * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
@@ -200,9 +274,11 @@ class Permissions(
     } as BasePermissionStateRepo<P>
 
     /**
-     * Gets a [Flow] of [PermissionState] for a given [Permission]
-     * @param permission The [Permission] for which the [PermissionState] flow should be provided
-     * @return A [Flow] of [PermissionState] for the given [Permission]
+     * Gets a [PermissionStateFlowRepo] for a given [Permission].
+     * @param P the type of [Permission] for which to get the repo.
+     * @param permission The [Permission] for which to get the repo.
+     * @return A [PermissionStateFlowRepo] for the given [Permission]
+     * @throws PermissionsBuilderError if the provided [PermissionsBuilder] has not registered a [PermissionStateRepoBuilder] for the permission.
      */
     operator fun <P : Permission> get(permission: P): PermissionStateFlowRepo<P> {
         return permissionStateRepo(permission)
@@ -210,35 +286,26 @@ class Permissions(
 
     /**
      * Requests a [Permission]
+     * @param P the type of [Permission] to request.
+     * @param permission the [P] to request
      * @return `true` if the permission was granted, `false` otherwise.
+     * @throws PermissionsBuilderError if the provided [PermissionsBuilder] has not registered a [PermissionStateRepoBuilder] for the permission.
      */
-    suspend fun <P : Permission> request(p: P): Boolean {
-        return get(p).run {
+    suspend fun <P : Permission> request(permission: P): Boolean {
+        return get(permission).run {
             withContext(coroutineContext) {
                 request()
             }
         }
     }
 
+    /**
+     * Removes all [PermissionStateFlowRepo] generated previously.
+     */
     fun clean() {
         permissionStateRepos.synchronized {
             values.forEach { it.cancel() }
             clear()
         }
     }
-}
-
-/**
- * Requests a [Permission] on a [Flow] of [PermissionState]
- * @return `true` if the permission was granted, `false` otherwise.
- */
-suspend fun <P : Permission> Flow<PermissionState<out P>>.request(): Boolean {
-    return this.transformLatest { state ->
-        when (state) {
-            is PermissionState.Allowed -> emit(true)
-            is PermissionState.Denied.Requestable -> state.request()
-            is PermissionState.Denied.Locked -> emit(false)
-            is PermissionState.Inactive, is PermissionState.Active -> {}
-        }
-    }.first()
 }

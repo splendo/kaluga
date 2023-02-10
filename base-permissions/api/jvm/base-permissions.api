@@ -49,10 +49,6 @@ public final class com/splendo/kaluga/permissions/base/PermissionContextKt {
 	public static final fun getDefaultPermissionContext ()Lcom/splendo/kaluga/permissions/base/PermissionContext;
 }
 
-public final class com/splendo/kaluga/permissions/base/PermissionKt {
-	public static final fun request (Lkotlinx/coroutines/flow/Flow;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class com/splendo/kaluga/permissions/base/PermissionManager {
 	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getPermission ()Lcom/splendo/kaluga/permissions/base/Permission;
@@ -264,6 +260,10 @@ public final class com/splendo/kaluga/permissions/base/PermissionStateImpl$Unini
 	public fun <init> ()V
 	public final fun initialize-VtjQ1oo (JLcom/splendo/kaluga/permissions/base/PermissionManager;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/permissions/base/PermissionStateKt {
+	public static final fun request (Lkotlinx/coroutines/flow/Flow;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class com/splendo/kaluga/permissions/base/PermissionStateRepo : com/splendo/kaluga/permissions/base/BasePermissionStateRepo {

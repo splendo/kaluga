@@ -30,14 +30,36 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.time.Duration
 
+/**
+ * Manager for handling and monitoring a given [Permission]
+ * @param P the type of [Permission] to manage
+ */
 interface PermissionManager<P : Permission> {
 
+    /**
+     * Events that can be detected by a [PermissionManager]
+     */
     sealed class Event {
+        /**
+         * An [Event] indicating the permission has been granted by the user.
+         */
         object PermissionGranted : Event()
+
+        /**
+         * An [Event] indicating the permission has been denied by the user
+         * @property locked if `true` the permission can no longer be requested.
+         */
         data class PermissionDenied(val locked: Boolean) : Event()
     }
 
+    /**
+     * The [P] managed by this manager
+     */
     val permission: P
+
+    /**
+     * A [Flow] of [Event] detected by the manager
+     */
     val events: Flow<Event>
 
     /**
@@ -58,8 +80,11 @@ interface PermissionManager<P : Permission> {
 }
 
 /**
- * Manager for maintaining the [PermissionState] of a given [Permission]
- * @param stateRepo The [PermissionStateRepo] managed by this manager.
+ * An abstract [PermissionManager] that ensures [events] wont be missed
+ * @param P the type of [Permission] to manage
+ * @param permission the [P] managed by this manager
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
  */
 abstract class BasePermissionManager<P : Permission>(
     final override val permission: P,
@@ -67,6 +92,10 @@ abstract class BasePermissionManager<P : Permission>(
     coroutineScope: CoroutineScope
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
+    /**
+     * Settings to configure a [BasePermissionManager]
+     * @property logger the [Logger] the [BasePermissionManager] should use for logging
+     */
     data class Settings(
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
@@ -98,6 +127,10 @@ abstract class BasePermissionManager<P : Permission>(
 
     protected abstract fun monitoringDidStop()
 
+    /**
+     * Emits a [PermissionManager.Event]
+     * @param event the [PermissionManager.Event] to emit
+     */
     protected fun emitEvent(event: PermissionManager.Event) {
         eventChannel.trySend(event)
     }

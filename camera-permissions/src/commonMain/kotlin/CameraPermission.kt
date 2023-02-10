@@ -31,26 +31,37 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [CameraPermission]
  */
 typealias CameraPermissionManager = PermissionManager<CameraPermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [CameraPermission]
+ */
 expect class DefaultCameraPermissionManager : BasePermissionManager<CameraPermission>
 
+/**
+ * A [BasePermissionsBuilder] for [CameraPermission]
+ */
 interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder<CameraPermission> {
 
     /**
      * Creates a [CameraPermissionManager]
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [CameraPermissionManager]
      */
     fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): CameraPermissionManager
 }
 
 /**
- * A builder for creating a [CameraPermissionManager]
+ * A [BaseCameraPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class CameraPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCameraPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [CameraPermission]
  * @param builder The [CameraPermissionManagerBuilder] for creating the [CameraPermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [CameraPermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class CameraPermissionStateRepo(

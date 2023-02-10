@@ -25,11 +25,19 @@ import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [BluetoothPermission]
+ * @param context the [Context] the [BluetoothPermission] is to be granted in
+ * @param bluetoothAdapter the [BluetoothAdapter] of the system
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultBluetoothPermissionManager(
     context: Context,
     bluetoothAdapter: BluetoothAdapter?,
@@ -82,11 +90,20 @@ actual class DefaultBluetoothPermissionManager(
     }
 }
 
+/**
+ * A [BaseBluetoothPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ * @param bluetoothAdapter the [BluetoothAdapter] of the system
+ */
 actual class BluetoothPermissionManagerBuilder(
     private val context: PermissionContext,
     private val bluetoothAdapter: BluetoothAdapter?
 ) : BaseBluetoothPermissionManagerBuilder {
 
+    /**
+     * Constructor
+     * @param context the [PermissionContext] this permissions manager builder runs on
+     */
     actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
     override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
