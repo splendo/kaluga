@@ -34,39 +34,85 @@ import kotlin.reflect.KClassifier
  * Each permission component should declare subclass of [Permission]
  */
 abstract class Permission {
+
+    /**
+     * The name of the permission
+     */
     abstract val name: String
 }
 
 /**
- *  Base type for all permissions builders. Each permission component implements a concrete permissions builder
- *  and declares helper methods for registering this builder in the [PermissionsBuilder].
+ *  Base type for all permissions builders.
+ *  Each permission component implements a concrete permissions builder and registers it in [PermissionsBuilder.register].
+ *  @param P the type of [Permission] represented by this permission builder.
  */
 interface BasePermissionsBuilder<P : Permission>
 
 /**
- * Closure that takes permission and coroutine contexts and creates [PermissionStateRepo].
- * Each platform registers [PermissionStateRepoBuilder] in the register permission helper method.
+ * Interface that takes permission and coroutine contexts and creates [BasePermissionStateRepo].
+ * Each platform registers [PermissionStateRepoBuilder] in [PermissionsBuilder.registerPermissionStateRepoBuilder].
+ *  @param P the type of [Permission] represented by this permission state repo builder.
  */
 interface PermissionStateRepoBuilder<P : Permission> {
+
+    /**
+     * Creates a [BasePermissionStateRepo] associated with [permission]
+     * @param permission the [P] the resulting [BasePermissionStateRepo] should manage.
+     * @param coroutineContext the [CoroutineContext] to manage the [BasePermissionStateRepo]
+     */
     fun create(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<P>
 }
 
+/**
+ * Platform specific context for creating a [BasePermissionsBuilder]
+ */
 expect class PermissionContext
+
+/**
+ * Default [PermissionContext] of the system
+ */
 expect val defaultPermissionContext: PermissionContext
 
+/**
+ * Error when [PermissionsBuilder] tries to register or access invalid permissions.
+ */
 class PermissionsBuilderError(message: String) : Error(message)
 
 /**
- * Builder for providing the proper [PermissionManager] for each [Permission]
- * @param context [PermissionContext] an additional parameter platform can pass to the [PermissionsBuilder]. [NSBundle] on iOS and [Contect] on Andoid.
+ * Builder for providing the proper [BasePermissionsBuilder] and [PermissionStateRepoBuilder] for each [Permission]
+ * @param context the [PermissionContext] to be used
  */
 open class PermissionsBuilder(val context: PermissionContext = defaultPermissionContext) {
 
     private val builders = concurrentMutableMapOf<KClassifier, BasePermissionsBuilder<*>>()
     private val repoBuilders = concurrentMutableMapOf<KClassifier, PermissionStateRepoBuilder<*>>()
 
-    inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> register(builder: B): B = register(P::class, builder)
-    fun <P : Permission, B : BasePermissionsBuilder<P>> register(permission: KClass<P>, builder: B): B = builders.synchronized {
+    /**
+     * Registers a [BasePermissionsBuilder] for a a given type of [Permission].
+     * Only one builder can be registered per type of [Permission].
+     * Make sure to call [unregister] before calling this if a permission has been registered before.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param Builder the type of [BasePermissionsBuilder] to register for this permission
+     * @param builder the [Builder] to register for the permission.
+     * @throws [PermissionsBuilderError] if the permission was already registered.
+     * @return the registered [Builder]
+     */
+    inline fun <reified P : Permission, Builder : BasePermissionsBuilder<P>> register(builder: Builder): Builder = register(P::class, builder)
+
+    /**
+     * Registers a [BasePermissionsBuilder] for a a given type of [Permission].
+     * Only one builder can be registered per type of [Permission].
+     * Make sure to call [unregister] before calling this if a permission has been registered before.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param Builder the type of [BasePermissionsBuilder] to register for this permission
+     * @param permission the [KClass] of the [P] to register
+     * @param builder the [Builder] to register for the permission.
+     * @throws [PermissionsBuilderError] if the permission was already registered.
+     * @return the registered [Builder]
+     */
+    fun <P : Permission, Builder : BasePermissionsBuilder<P>> register(permission: KClass<P>, builder: Builder): Builder = builders.synchronized {
         if (this[permission] == null) {
             this[permission] = builder
             builder
@@ -75,6 +121,17 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
         }
     }
 
+    /**
+     * Gets the registered [BasePermissionsBuilder] for a a given type of [Permission].
+     * If no bulder has been registered yet
+     * Make sure to call [unregister] before calling this if a permission has been registered before.
+     * This method is thread-safe.
+     * @param P the type of [Permission] for which to register the builder.
+     * @param Builder the type of [BasePermissionsBuilder] to register for this permission
+     * @param builder the [Builder] to register for the permission.
+     * @throws [PermissionsBuilderError] if the permission was already registered.
+     * @return the registered [Builder]
+     */
     inline fun <reified P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(builder: B): BasePermissionsBuilder<P> = registerOrGet(P::class, builder)
     @Suppress("UNCHECKED_CAST")
     fun <P : Permission, B : BasePermissionsBuilder<P>> registerOrGet(permission: KClass<P>, builder: B): BasePermissionsBuilder<P> = builders.getOrPut(permission::class) { builder } as BasePermissionsBuilder<P>
