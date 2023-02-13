@@ -29,7 +29,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.transformLatest
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -255,26 +258,18 @@ fun Flow<LocationState>.location(): Flow<Location> {
  * @param maxAge Controls both the max age of a location by filtering out locations that are older and
  * is used to set a timeout for the last emission that will emit null when triggered
  */
-fun Flow<Location>.known(maxAge: Duration = 0.seconds): Flow<Location.KnownLocation?> {
-    fun filterExpired(location: Location.KnownLocation): Location.KnownLocation? {
-        val hasExpired = location.time <= DefaultKalugaDate.now(-maxAge.inWholeMilliseconds)
-        return if (hasExpired) null
-        else location
-    }
-
-    val knownLocation = mapNotNull { location -> location.known }
-    if (maxAge.inWholeMilliseconds == 0L || maxAge.isNegative())
-        return knownLocation
-    return knownLocation.flatMapLatest { location ->
-        flow {
-            emit(filterExpired(location))
-            val locationTimeMillis = location.known?.time?.millisecondSinceEpoch
-                ?: DefaultKalugaDate.now(-maxAge.inWholeMilliseconds).millisecondSinceEpoch
-            val dateDiffMillis =
-                (DefaultKalugaDate.now().millisecondSinceEpoch - locationTimeMillis)
-            val delayMillis = maxAge.inWholeMilliseconds - dateDiffMillis
-            delay(delayMillis)
-            emit(null)
+fun Flow<Location>.known(maxAge: Duration = 0.seconds): Flow<Location.KnownLocation?> = transformLatest { location ->
+    location.known?.let { knownLocation ->
+        val expirationTime = knownLocation.time.millisecondSinceEpoch.milliseconds + maxAge
+        val now = DefaultKalugaDate.now().millisecondSinceEpoch.milliseconds
+        when {
+            maxAge <= ZERO -> emit(knownLocation)
+            expirationTime <= now -> emit(null)
+            else -> {
+                emit(knownLocation)
+                delay(expirationTime - now)
+                emit(null)
+            }
         }
-    }
+    } ?: emit(null)
 }

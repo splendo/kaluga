@@ -47,6 +47,7 @@ actual class DefaultLocationManager(
         private val locationManager: android.location.LocationManager? = context.getSystemService(
             Context.LOCATION_SERVICE
         ) as? android.location.LocationManager,
+        private val googleLocationProviderSettings: GoogleLocationProvider.Settings = GoogleLocationProvider.Settings()
     ) : BaseLocationManager.Builder {
 
         override fun create(
@@ -55,10 +56,8 @@ actual class DefaultLocationManager(
         ): BaseLocationManager {
             val locationProvider: LocationProvider = GoogleLocationProvider(
                 context,
-                GoogleLocationProvider.Settings(
-                    interval = settings.updateIntervalMillis,
-                    minUpdateDistanceMeters = settings.minUpdateDistanceMeters
-                )
+                googleLocationProviderSettings,
+                settings.minUpdateDistanceMeters
             )
             return DefaultLocationManager(
                 context,

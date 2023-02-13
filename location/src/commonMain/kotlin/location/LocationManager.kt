@@ -79,7 +79,6 @@ abstract class BaseLocationManager(
      * @param autoRequestPermission Set to true to request permissions right away
      * @param autoEnableLocations Set to true to enable location if disabled right away
      * @param locationBufferCapacity Max location that can be buffered, if exceed oldest is dropped
-     * @param updateIntervalMillis Controls Android only emission rate, iOS does not expose this but makes it depend on set accuracy and [minUpdateDistanceMeters]
      * @param minUpdateDistanceMeters Min update distance for a location update to trigger
      * @param logger Pass your own [RestrictedLogger] to enable logging while debugging
      */
@@ -89,7 +88,6 @@ abstract class BaseLocationManager(
         val autoRequestPermission: Boolean = true,
         val autoEnableLocations: Boolean = true,
         val locationBufferCapacity: Int = 16,
-        val updateIntervalMillis: Duration = 100.milliseconds,
         val minUpdateDistanceMeters: Float = 0f,
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
