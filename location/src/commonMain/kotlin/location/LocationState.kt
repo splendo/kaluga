@@ -23,12 +23,10 @@ import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
@@ -258,10 +256,12 @@ fun Flow<LocationState>.location(): Flow<Location> {
  * @param maxAge Controls both the max age of a location by filtering out locations that are older and
  * is used to set a timeout for the last emission that will emit null when triggered
  */
-fun Flow<Location>.known(maxAge: Duration = 0.seconds): Flow<Location.KnownLocation?> = transformLatest { location ->
+fun Flow<Location>.known(maxAge: Duration = 0.seconds) = known(maxAge) { DefaultKalugaDate.now() }
+
+internal fun Flow<Location>.known(maxAge: Duration, nowProvider: () -> KalugaDate): Flow<Location.KnownLocation?> = transformLatest { location ->
     location.known?.let { knownLocation ->
         val expirationTime = knownLocation.time.millisecondSinceEpoch.milliseconds + maxAge
-        val now = DefaultKalugaDate.now().millisecondSinceEpoch.milliseconds
+        val now = nowProvider().millisecondSinceEpoch.milliseconds
         when {
             maxAge <= ZERO -> emit(knownLocation)
             expirationTime <= now -> emit(null)

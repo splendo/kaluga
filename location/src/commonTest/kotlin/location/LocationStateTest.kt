@@ -52,7 +52,7 @@ class LocationStateTest :
         private val location2 = Location.KnownLocation(
             latitude = 52.079,
             longitude = 4.3413,
-            time =  DefaultKalugaDate.now(),
+            time = DefaultKalugaDate.now(),
             horizontalAccuracy = 2.0,
             verticalAccuracy = 2.0,
             altitude = 2.0,
