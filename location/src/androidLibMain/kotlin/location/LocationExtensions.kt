@@ -20,6 +20,7 @@ package com.splendo.kaluga.location
 
 import android.os.Build
 import com.google.android.gms.location.LocationResult
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 
 fun android.location.Location.toKnownLocation(): Location.KnownLocation {
     return Location.KnownLocation(
@@ -29,7 +30,7 @@ fun android.location.Location.toKnownLocation(): Location.KnownLocation {
         horizontalAccuracy = accuracy.toDouble(),
         verticalAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) verticalAccuracyMeters.toDouble() else 0.0,
         speed = speed.toDouble(),
-        time = Location.Time.MeasuredTime(time)
+        time = DefaultKalugaDate.epoch(time)
     )
 }
 

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 actual typealias KalugaDateHolder = kotlin.js.Date
 
@@ -93,8 +94,8 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
     override var millisecond: Int
         get() = date.getMilliseconds()
         set(_) { }
-    override var millisecondSinceEpoch: Long
-        get() = date.getTime().toLong()
+    override var durationSinceEpoch: Duration
+        get() = date.getTime().milliseconds
         set(_) { }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getMilliseconds()))

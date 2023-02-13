@@ -71,12 +71,22 @@ abstract class BaseLocationManager(
         private const val LOG_TAG = "Location Manager"
     }
 
+    /**
+     * @param locationPermission If passing your own settings pass LocationPermission returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
+     * @param permissions If passing your own settings pass permissions returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
+     * @param autoRequestPermission Set to true to request permissions right away
+     * @param autoEnableLocations Set to true to enable location if disabled right away
+     * @param locationBufferCapacity Max location that can be buffered, if exceed oldest is dropped
+     * @param minUpdateDistanceMeters Min update distance for a location update to trigger
+     * @param logger Pass your own [RestrictedLogger] to enable logging while debugging
+     */
     data class Settings(
         val locationPermission: LocationPermission,
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableLocations: Boolean = true,
         val locationBufferCapacity: Int = 16,
+        val minUpdateDistanceMeters: Float = 0f,
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
@@ -152,6 +162,7 @@ abstract class BaseLocationManager(
             }
         }
     }
+
     override suspend fun stopMonitoringLocationEnabled() = enabledLock.withLock {
         locationMonitor.stopMonitoring()
         monitoringLocationEnabledJob?.cancel()

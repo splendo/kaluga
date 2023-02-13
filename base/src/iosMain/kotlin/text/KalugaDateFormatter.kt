@@ -30,6 +30,7 @@ import platform.Foundation.NSDateFormatterMediumStyle
 import platform.Foundation.NSDateFormatterNoStyle
 import platform.Foundation.NSDateFormatterShortStyle
 import platform.Foundation.NSDateFormatterStyle
+import kotlin.time.Duration
 
 /**
  * Default implementation of [BaseDateFormatter]
@@ -113,7 +114,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
         // default arguments expected from the method signature
         private fun defaultDate(timeZone: TimeZone) =
             DefaultKalugaDate.now(
-                offsetInMilliseconds = 0L,
+                offset = Duration.ZERO,
                 timeZone = timeZone,
                 locale = Locale.defaultLocale
             ).apply {
@@ -121,7 +122,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
                 // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
                 // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
                 val epoch = DefaultKalugaDate.epoch(
-                    offsetInMilliseconds = 0L,
+                    offset = Duration.ZERO,
                     timeZone = TimeZone.get("UTC")!!,
                     locale = Locale.defaultLocale
                 )
