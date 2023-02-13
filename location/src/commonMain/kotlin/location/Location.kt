@@ -18,18 +18,10 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.utils.KalugaDate
 import kotlin.math.absoluteValue
 
 sealed class Location {
-
-    /**
-     * [ms] holds the unixtime (ms since 1970) for when the location was detected. Either a time provided by the location framework,
-     * or a time guessed upon receival by the implementation.
-     */
-    sealed class Time(open val ms: Long) {
-        data class MeasuredTime(override val ms: Long) : Time(ms)
-        data class GuessedTime(override val ms: Long) : Time(ms)
-    }
 
     /**
      * A known location, [latitude], [longitude] and [time] are always available, the rest are optional
@@ -42,7 +34,7 @@ sealed class Location {
         val verticalAccuracy: Double? = null,
         val speed: Double? = null,
         val course: Double? = null,
-        val time: Time
+        val time: KalugaDate
     ) : Location() {
 
         /**

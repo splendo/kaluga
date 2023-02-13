@@ -44,15 +44,28 @@ actual class DefaultLocationManager(
 
     class Builder(
         private val context: Context = ApplicationHolder.applicationContext,
-        private val locationManager: android.location.LocationManager? = context.getSystemService(Context.LOCATION_SERVICE) as? android.location.LocationManager,
-        private val locationProvider: LocationProvider = GoogleLocationProvider(context)
+        private val locationManager: android.location.LocationManager? = context.getSystemService(
+            Context.LOCATION_SERVICE
+        ) as? android.location.LocationManager,
+        private val googleLocationProviderSettings: GoogleLocationProvider.Settings = GoogleLocationProvider.Settings()
     ) : BaseLocationManager.Builder {
 
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope
         ): BaseLocationManager {
-            return DefaultLocationManager(context, locationManager, locationProvider, settings, coroutineScope)
+            val locationProvider: LocationProvider = GoogleLocationProvider(
+                context,
+                googleLocationProviderSettings,
+                settings.minUpdateDistanceMeters
+            )
+            return DefaultLocationManager(
+                context,
+                locationManager,
+                locationProvider,
+                settings,
+                coroutineScope
+            )
         }
     }
 
