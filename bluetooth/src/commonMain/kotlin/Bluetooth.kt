@@ -58,15 +58,53 @@ private val defaultBluetoothDispatcher by lazy {
     singleThreadDispatcher("Bluetooth")
 }
 
+/**
+ * A service for managing Bluetooth [Device]
+ */
 interface BluetoothService {
+
+    /**
+     * Starts scanning for [Device].
+     * To receive the devices, use [devices]
+     * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+     */
     fun startScanning(filter: Set<UUID> = emptySet())
+
+    /**
+     * Stops scanning for [Device]
+     */
     fun stopScanning()
+
+    /**
+     * Gets a [Flow] of the list of [Device] that have been paired to the system
+     * @param filter filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     */
     fun pairedDevices(filter: Set<UUID>): Flow<List<Device>>
+
+    /**
+     * Gets a [Flow] containing a list of [Device] scanned by the service.
+     * Requires that [startScanning] has been called, otherwise no devices will be found
+     */
     fun devices(): Flow<List<Device>>
+
+    /**
+     * Gets a [Flow] that indicates whether the service is actively scanning for [Device]
+     */
     suspend fun isScanning(): Flow<Boolean>
+
+    /**
+     * A [Flow] that indicates whether Bluetooth is currently enabled. When `false`, Bluetooth might be unavailable or permissions may be missing.
+     */
     val isEnabled: Flow<Boolean>
 }
 
+/**
+ * A [BluetoothService] that builds a [BaseScanner] for scanning.
+ * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
+ * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned
+ * @param scannerBuilder the [BaseScanner.Builder] to use to create a [BaseScanner] responsible for scanning.
+ * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+ */
 class Bluetooth internal constructor(
     scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     connectionSettings: ConnectionSettings,
@@ -94,7 +132,7 @@ class Bluetooth internal constructor(
         coroutineContext + CoroutineName("Scanning State Repo")
     )
 
-    sealed class ScanMode {
+    private sealed class ScanMode {
         object Stopped : ScanMode()
         class Scan(val filter: Set<UUID>) : ScanMode()
     }
@@ -179,27 +217,55 @@ class Bluetooth internal constructor(
         .mapLatest { it is ScanningState.Enabled }
 }
 
+/**
+ * Builder class for creating a [Bluetooth] object.
+ */
 interface BaseBluetoothBuilder {
+
+    /**
+     * Creates a [Bluetooth] object
+     * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
+     * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned by the [Bluetooth] service.
+     * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+     */
     fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
         connectionSettings: ConnectionSettings = ConnectionSettings(),
         coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
     ): Bluetooth
 }
+
+/**
+ * A default implementation of [BaseBluetoothBuilder]
+ */
 expect class BluetoothBuilder : BaseBluetoothBuilder
 
+/**
+ * Gets a ([Flow] of) [Device] with a given [Identifier] from a [Flow] of a list of [Device].
+ * @param identifier the [Identifier] of the [Device] to get.
+ * @return the [Flow] of [Device] matching the [identifier]
+ */
 operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     return this.map { devices ->
         devices.firstOrNull { it.identifier == identifier }
     }
 }
 
+/**
+ * Gets a ([Flow] of) [DeviceState] from a [Flow] or [Device]
+ * @return the [Flow] of [DeviceState] associated with the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.state(): Flow<DeviceState> {
     return this.flatMapLatest { device ->
         device?.state ?: emptyFlow()
     }
 }
 
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [Device] in a [Flow]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * @return the [Flow] of the list of [Service] associated with the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.services(): Flow<List<Service>> {
     return state().transformLatest { deviceState ->
         emit(
@@ -221,6 +287,10 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
     }.distinctUntilChanged()
 }
 
+/**
+ * Attempts to connect to the [Device] from a [Flow] of [Device]
+ * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
+ */
 suspend fun Flow<Device?>.connect() {
     transformLatest { device ->
         device?.let {
@@ -229,6 +299,10 @@ suspend fun Flow<Device?>.connect() {
     }.first()
 }
 
+/**
+ * Attempts to disconnect to the [Device] from a [Flow] of [Device]
+ * When this method completes, the devices should be in a [ConnectableDeviceState.Disconnected] state
+ */
 suspend fun Flow<Device?>.disconnect() {
     transformLatest { device ->
         device?.let {
@@ -238,14 +312,30 @@ suspend fun Flow<Device?>.disconnect() {
     }.first()
 }
 
+/**
+ * Gets the ([Flow] of) [DeviceInfo] from a [Flow] of [Device]
+ * @return the [Flow] of [DeviceInfo] associated with the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.info(): Flow<DeviceInfo> = flatMapLatest { device ->
     device?.info ?: emptyFlow()
 }
 
+/**
+ * Gets the ([Flow] of) [BaseAdvertisementData] from a [Flow] of [Device]
+ * @return the [Flow] of [BaseAdvertisementData] associated with the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.advertisement(): Flow<BaseAdvertisementData> = info().map { it.advertisementData }.distinctUntilChanged()
 
+/**
+ * Gets the ([Flow] of) the RSSI value from a [Flow] of [Device]
+ * @return the [Flow] of the RSSI value associated with the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.rssi(): Flow<Int> = info().map { it.rssi }.distinctUntilChanged()
 
+/**
+ * Gets the ([Flow] of) the Maximum Transmission Unit (MTU) from a [Flow] of [Device]
+ * @return the [Flow] of MTU associated with the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.mtu() = state().map { state ->
     if (state is ConnectableDeviceState.Connected) {
         state.mtu
@@ -254,6 +344,13 @@ fun Flow<Device?>.mtu() = state().map { state ->
     }
 }.distinctUntilChanged()
 
+/**
+ * Gets the ([Flow] of) the distance in meters between the scanner and a [Flow] of [Device].
+ * To get a more stable result, this method will average the distance over the last [averageOver] results.
+ * @param environmentalFactor the constant to account for environmental interference. Should usually range between 2.0 and 4.0
+ * @param averageOver averages the calculated distance over this amount of scan results. Always uses the last results.
+ * @return the [Flow] of distance in meters between the scanner and the [Device] in the given [Flow]
+ */
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
     val lastNResults = mutableListOf<Double>()
     return this.info().map { deviceInfo ->
@@ -270,6 +367,10 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
     }
 }
 
+/**
+ * Attempts to request an update to the RSSI of the [Device] from a [Flow] of [Device]
+ * When this method completes, the devices should have had [ConnectableDeviceState.Connected.readRssi] called
+ */
 suspend fun Flow<Device?>.updateRssi() {
     state().transformLatest { deviceState ->
         when (deviceState) {
@@ -282,6 +383,12 @@ suspend fun Flow<Device?>.updateRssi() {
     }.first()
 }
 
+/**
+ * Attempts to request a Maximum Transmission Unit (MTU) size for the [Device] from a [Flow] of [Device]
+ * When this method completes, the devices should have had [ConnectableDeviceState.Connected.requestMtu] called
+ * @param mtu the MTU size to request
+ * @return if `true` the new MTU value has been requested successfully
+ */
 suspend fun Flow<Device?>.requestMtu(mtu: Int): Boolean {
     return state().transformLatest { deviceState ->
         when (deviceState) {
@@ -293,6 +400,11 @@ suspend fun Flow<Device?>.requestMtu(mtu: Int): Boolean {
     }.first()
 }
 
+/**
+ * Gets a ([Flow] of) [Service] of a given [UUID] from a [Flow] of a list of [Service]
+ * @param uuid the [UUID] of the [Service] to get
+ * @return the [Flow] of the [Service] with [uuid] in the list of [Service] in the given [Flow]
+ */
 @JvmName("getService")
 operator fun Flow<List<Service>>.get(uuid: UUID): Flow<Service?> {
     return this.map { services ->
@@ -302,16 +414,32 @@ operator fun Flow<List<Service>>.get(uuid: UUID): Flow<Service?> {
     }
 }
 
+/**
+ * Gets a ([Flow] of) the list [Characteristic] associated with the [Service] in a [Flow]
+ * @return the [Flow] of the list of [Characteristic] associated with the [Service] in the given [Flow]
+ */
 fun Flow<Service?>.characteristics(): Flow<List<Characteristic>> {
     return this.mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
 }
 
+/**
+ * Gets a ([Flow] of) the list [Descriptor] associated with the [Characteristic] in a [Flow]
+ * @return the [Flow] of the list of [Descriptor] associated with the [Characteristic] in the given [Flow]
+ */
 fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> {
     return this.mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
 }
 
+/**
+ * Gets a ([Flow] of) [AttributeType] of a given [UUID] from a [Flow] of a list of [AttributeType]
+ * @param AttributeType the type of [Attribute] to get
+ * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
+ * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]
+ * @param uuid the [UUID] of the [AttributeType] to get
+ * @return the [Flow] of the [AttributeType] with [uuid] in the list of [AttributeType] in the given [Flow]
+ */
 @JvmName("getAttribute")
-operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID): Flow<T?> {
+operator fun <AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write> Flow<List<AttributeType>>.get(uuid: UUID): Flow<AttributeType?> {
     return this.map { attribute ->
         attribute.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
@@ -319,7 +447,14 @@ operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write
     }
 }
 
-fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value(): Flow<ByteArray?> {
+/**
+ * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of a [AttributeType]
+ * @param AttributeType the type of [Attribute] to get the value from
+ * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
+ * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]
+ * @return the [Flow] of the [ByteArray] value of the [AttributeType] in the given [Flow]
+ */
+fun <AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write> Flow<AttributeType?>.value(): Flow<ByteArray?> {
     return this.flatMapLatest { attribute ->
         attribute ?: flowOf(null)
     } // TODO: we probably want to read duplicate values so this is for now disabled: .distinctUntilChanged()

@@ -48,9 +48,9 @@ internal actual class DefaultDeviceConnectionManager(
 
     override suspend fun requestMtu(mtu: Int) = false
 
-    override suspend fun performAction(action: DeviceAction) {}
+    override suspend fun didStartPerformingAction(action: DeviceAction) {}
 
-    override suspend fun unpair() {}
+    override suspend fun didStartPairing() {}
 
-    override suspend fun pair() {}
+    override suspend fun didStartUnpairing() {}
 }

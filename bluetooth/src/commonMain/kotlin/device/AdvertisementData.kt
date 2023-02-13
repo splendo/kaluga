@@ -20,16 +20,49 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 
+/**
+ * Data advertised by a Bluetooth [Device]
+ */
 interface BaseAdvertisementData {
+    /**
+     * The name of the Bluetooth device.
+     */
     val name: String?
+
+    /**
+     * The identifier of the manufacturer of the Bluetooth device
+     */
     val manufacturerId: Int?
+
+    /**
+     * The manufacturer specific data of the Bluetooth device
+     */
     val manufacturerData: ByteArray?
+
+    /**
+     * The list of [UUID] of services advertised by the Bluetooth device
+     */
     val serviceUUIDs: List<UUID>
+
+    /**
+     * A map of all the data of the services as advertised by the Bluetooth device
+     */
     val serviceData: Map<UUID, ByteArray?>
+
+    /**
+     * The transmission power level of the packet in dBm
+     */
     val txPowerLevel: Int
+
+    /**
+     * If `true` the [Device] can be connected to
+     */
     val isConnectable: Boolean
 }
 
+/**
+ * Platform specific implementation of [BaseAdvertisementData]
+ */
 expect class AdvertisementData : BaseAdvertisementData
 
 val BaseAdvertisementData.description: String get() = listOfNotNull(

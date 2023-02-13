@@ -21,6 +21,14 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
 
+/**
+ * An [Attribute] of a Bluetooth Descriptor
+ * @property wrapper the [DescriptorWrapper] to access the platform descriptor
+ * @param initialValue the initial [ByteArray] value of the descriptor
+ * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
+ * @param parentLogTag the log tag used to modify the log tag of this descriptor
+ * @param logger the [Logger] to use for logging.
+ */
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
@@ -49,7 +57,18 @@ open class Descriptor(
     }
 }
 
+/**
+ * Accessor the the platform level Bluetooth Descriptor
+ */
 expect interface DescriptorWrapper {
+
+    /**
+     * The [UUID] of the descriptor
+     */
     val uuid: UUID
+
+    /**
+     * The current [Value] of the descriptor
+     */
     val value: Value?
 }

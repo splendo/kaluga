@@ -28,19 +28,43 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.math.pow
 
+/**
+ * Unique identifier of a Bluetooth [Device]
+ */
 expect class Identifier
 
+/**
+ * Gets a random [Identifier]
+ * @return a random [Identifier]
+ */
 expect fun randomIdentifier(): Identifier
 
+/**
+ * Gets a [Identifier] from a string value
+ * @param stringValue the string value to get the [Identifier] from
+ * @return an [Identifier] matching the string value or `null` if it could not be generated
+ */
 expect fun identifierFromString(stringValue: String): Identifier?
 
+/**
+ * Gets a string representation of an [Identifier]
+ */
 expect val Identifier.stringValue: String
 
+/**
+ * A [Identifier] that can be serialized
+ */
 @Serializable(with = IdentifierSerializer::class)
 data class SerializableIdentifier(val identifier: Identifier)
 
+/**
+ * Converts an [Identifier] into a [SerializableIdentifier]
+ */
 val Identifier.serializable get() = SerializableIdentifier(this)
 
+/**
+ * [KSerializer] for an [SerializableIdentifier]
+ */
 open class IdentifierSerializer :
     KSerializer<SerializableIdentifier> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IdentifierString", PrimitiveKind.STRING)
@@ -56,20 +80,62 @@ open class IdentifierSerializer :
     }
 }
 
+/**
+ * Accessor to the platform level Bluetooth device
+ */
 expect interface DeviceWrapper {
+    /**
+     * Name of the Bluetooth device
+     */
     val name: String?
+
+    /**
+     * [Identifier] of the Bluetooth device
+     */
     val identifier: Identifier
 }
 
+/**
+ * Properties of a Bluetooth Device
+ */
 interface DeviceInfo {
+
+    /**
+     * Name of the Bluetooth device
+     */
     val name: String?
+
+    /**
+     * [Identifier] of the Bluetooth device
+     */
     val identifier: Identifier
+
+    /**
+     * RSSI value of the Bluetooth device
+     */
     val rssi: Int
+
+    /**
+     * Current [BaseAdvertisementData] of the Bluetooth device
+     */
     val advertisementData: BaseAdvertisementData
+
+    /**
+     * The [KalugaDate] at which the device last advertised an update
+     */
     val updatedAt: KalugaDate
+
+    /**
+     * Calculates the distance to the device in meters
+     * @param environmentalFactor the constant to account for environmental interference. Should usually range between 2.0 and 4.0
+     * @return the distance to the device in meters
+     */
     fun distance(environmentalFactor: Double = 2.0): Double
 }
 
+/**
+ * An implementation of [DeviceInfo]
+ */
 data class DeviceInfoImpl(
     override val name: String?,
     override val identifier: Identifier,
@@ -77,6 +143,12 @@ data class DeviceInfoImpl(
     override val advertisementData: BaseAdvertisementData
 ) : DeviceInfo {
 
+    /**
+     * Constructor
+     * @param wrapper the [DeviceWrapper] to the device
+     * @param rssi the current RSSI value
+     * @param advertisementData the [BaseAdvertisementData] last received
+     */
     constructor(
         wrapper: DeviceWrapper,
         rssi: Int,

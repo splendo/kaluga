@@ -19,6 +19,11 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -156,6 +161,10 @@ class MockDeviceConnectionManager(
 
     override fun getCurrentState(): DeviceConnectionManager.State = getCurrentStateMock.call()
 
+    public override fun handleNewRssi(rssi: Int) {
+        super.handleNewRssi(rssi)
+    }
+
     override suspend fun connect(): Unit = connectMock.call()
 
     override suspend fun discoverServices(): Unit = discoverServicesMock.call()
@@ -166,11 +175,11 @@ class MockDeviceConnectionManager(
 
     override suspend fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
 
-    override suspend fun pair(): Unit = pairMock.call()
+    override suspend fun didStartPairing(): Unit = pairMock.call()
 
-    override suspend fun unpair(): Unit = unpairMock.call()
+    override suspend fun didStartUnpairing(): Unit = unpairMock.call()
 
-    override suspend fun performAction(action: DeviceAction): Unit = performActionMock.call(action)
+    override suspend fun didStartPerformingAction(action: DeviceAction): Unit = performActionMock.call(action)
 
     suspend fun handleCurrentAction() {
         currentAction?.let { action ->
@@ -202,9 +211,33 @@ class MockDeviceConnectionManager(
         }
     }
 
+    public override fun handleDiscoverCompleted(services: List<Service>) {
+        super.handleDiscoverCompleted(services)
+    }
+
+    public override fun createService(wrapper: ServiceWrapper): Service {
+        return super.createService(wrapper)
+    }
+
     override fun handleCurrentActionCompleted(succeeded: Boolean) {
         handleCurrentActionCompletedWithAction(succeeded, currentAction)
         return super.handleCurrentActionCompleted(succeeded)
+    }
+
+    public override fun handleUpdatedCharacteristic(
+        uuid: UUID,
+        succeeded: Boolean,
+        onUpdate: ((Characteristic) -> Unit)?
+    ) {
+        super.handleUpdatedCharacteristic(uuid, succeeded, onUpdate)
+    }
+
+    public override fun handleUpdatedDescriptor(
+        uuid: UUID,
+        succeeded: Boolean,
+        onUpdate: ((Descriptor) -> Unit)?
+    ) {
+        super.handleUpdatedDescriptor(uuid, succeeded, onUpdate)
     }
 
     private fun handleCurrentActionCompletedWithAction(succeeded: Boolean, deviceAction: DeviceAction?): Unit = handleCurrentActionCompletedMock.call(succeeded, deviceAction)

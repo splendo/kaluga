@@ -164,7 +164,7 @@ internal actual class DefaultDeviceConnectionManager(
         return false
     }
 
-    override suspend fun performAction(action: DeviceAction) {
+    override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -188,12 +188,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun unpair() {
-        // There is no iOS API to unpair peripheral
+    override suspend fun didStartPairing() {
+        // There is no iOS API to pair peripheral
     }
 
-    override suspend fun pair() {
-        // There is no iOS API to pair peripheral
+    override suspend fun didStartUnpairing() {
+        // There is no iOS API to unpair peripheral
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {

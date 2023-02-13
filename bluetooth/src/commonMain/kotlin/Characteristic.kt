@@ -24,6 +24,14 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
+/**
+ * An [Attribute] of a Bluetooth Characteristic
+ * @property wrapper the [CharacteristicWrapper] to access the platform characteristic
+ * @param initialValue the initial [ByteArray] value of the characteristic
+ * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
+ * @param parentLogTag the log tag used to modify the log tag of this characteristic
+ * @param logger the [Logger] to use for logging.
+ */
 open class Characteristic(
     val wrapper: CharacteristicWrapper,
     initialValue: ByteArray? = null,
@@ -39,6 +47,10 @@ open class Characteristic(
 
     private val isBusy = MutableStateFlow(false)
     private val _isNotifying = atomic(false)
+
+    /**
+     * If `true` this characteristic has been set to automatically provide updates to its value
+     */
     var isNotifying: Boolean
         get() = _isNotifying.value
         set(value) { _isNotifying.value = value }
@@ -103,6 +115,9 @@ open class Characteristic(
 
     override val uuid = wrapper.uuid
 
+    /**
+     * The list of [Descriptor] associated with the characteristic
+     */
     val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logger = logger) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
@@ -122,32 +137,99 @@ open class Characteristic(
         return wrapper.value?.asBytes
     }
 
+    /**
+     * Checks if the characteristic has a given [CharacteristicProperties]
+     */
     fun hasProperty(property: CharacteristicProperties) = hasProperties(listOf(property))
 
     private fun hasProperties(properties: List<CharacteristicProperties>) = wrapper
         .containsAnyOf(*properties.map(CharacteristicProperties::rawValue).toIntArray())
 }
 
+/**
+ * Accessor to the platform level Bluetooth characteristic
+ */
 expect interface CharacteristicWrapper {
+    /**
+     * The [UUID] of the characteristic
+     */
     val uuid: UUID
+
+    /**
+     * The list of [DescriptorWrapper] of associated with the characteristic
+     */
     val descriptors: List<DescriptorWrapper>
+
+    /**
+     * The current [Value] of the characteristic
+     */
     val value: Value?
+
+    /**
+     * The integer representing all [CharacteristicProperties] of the characteristic
+     */
     val properties: Int
 }
 
+/**
+ * Checks whether [CharacteristicWrapper.properties] contains any properties in [property]
+ * @param property the list of properties to check
+ * @return `tre` if [CharacteristicWrapper.properties] contains at least one of [property]
+ */
 fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isNotEmpty()) {
     properties and property.reduce { acc, i -> acc.or(i) } != 0
 } else { false }
 
+/**
+ * The properties associated with a Bluetooth Characteristic
+ * @param rawValue the raw value associated with the property
+ */
 sealed class CharacteristicProperties(val rawValue: Int) {
+
+    /**
+     * Characteristic is broadcastable
+     */
     object Broadcast : CharacteristicProperties(0x01)
+
+    /**
+     * Characteristic is readable
+     */
     object Read : CharacteristicProperties(0x02)
+
+    /**
+     * Characteristic can be written without response
+     */
     object WriteWithoutResponse : CharacteristicProperties(0x04)
+
+    /**
+     * Characteristic can be written
+     */
     object Write : CharacteristicProperties(0x08)
+
+    /**
+     * Characteristic supports notification
+     */
     object Notify : CharacteristicProperties(0x10)
+
+    /**
+     * Characteristic supports indication
+     */
     object Indicate : CharacteristicProperties(0x20)
+
+    /**
+     * Characteristic supports write with signature
+     */
     object SignedWrite : CharacteristicProperties(0x40)
+
+    /**
+     * Characteristic has extended properties
+     */
     object ExtendedProperties : CharacteristicProperties(0x80)
 
+    /**
+     * Gets a [CharacteristicProperties] by combining two [CharacteristicProperties]
+     * @param other the [CharacteristicProperties] to combine with
+     * @return the combined [CharacteristicProperties]
+     */
     infix fun or(other: CharacteristicProperties) = rawValue or other.rawValue
 }

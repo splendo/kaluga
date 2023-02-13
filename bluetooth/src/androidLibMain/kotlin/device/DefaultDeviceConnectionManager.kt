@@ -213,8 +213,7 @@ internal actual class DefaultDeviceConnectionManager(
         return gatt.await().requestMtu(mtu)
     }
 
-    override suspend fun performAction(action: DeviceAction) {
-        super.performAction(action)
+    override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         val succeeded = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
@@ -232,16 +231,16 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun unpair() {
-        if (device.bondState != BluetoothDevice.BOND_NONE) {
-            deviceWrapper.removeBond()
+    override suspend fun didStartPairing() {
+        if (device.bondState == BluetoothDevice.BOND_NONE) {
+            deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun pair() {
-        if (device.bondState == BluetoothDevice.BOND_NONE) {
-            deviceWrapper.createBond()
+    override suspend fun didStartUnpairing() {
+        if (device.bondState != BluetoothDevice.BOND_NONE) {
+            deviceWrapper.removeBond()
         }
     }
 
