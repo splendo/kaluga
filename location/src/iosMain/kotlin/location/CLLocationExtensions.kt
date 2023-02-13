@@ -18,9 +18,11 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocation
 import platform.Foundation.timeIntervalSince1970
+import kotlin.time.Duration.Companion.seconds
 
 val CLLocation.knownLocation
     get() = coordinate.useContents {
@@ -32,6 +34,6 @@ val CLLocation.knownLocation
             verticalAccuracy = verticalAccuracy,
             course = course,
             speed = speed,
-            time = Location.Time.MeasuredTime(timestamp.timeIntervalSince1970.toLong() * 1_000L)
+            time = DefaultKalugaDate.epoch(timestamp.timeIntervalSince1970.seconds)
         )
     }

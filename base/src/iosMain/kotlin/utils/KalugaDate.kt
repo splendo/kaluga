@@ -39,9 +39,9 @@ import platform.Foundation.compare
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.dateWithTimeIntervalSinceNow
 import platform.Foundation.timeIntervalSince1970
-import kotlin.math.round
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
 actual typealias KalugaDateHolder = NSDate
@@ -133,13 +133,9 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
     override var millisecond: Int
         get() = calendar.component(NSCalendarUnitNanosecond, fromDate = date).toInt() / nanoSecondPerMilliSecond
         set(value) { updateDateForComponent(NSCalendarUnitNanosecond, value * nanoSecondPerMilliSecond) }
-    override var millisecondSinceEpoch: Long
-        get() {
-            val time = date.timeIntervalSince1970
-            val decimalDigits = (time % 1.0) * 1000
-            return time.toLong() * 1000L + round(decimalDigits).toLong()
-        }
-        set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble() / 1000.0) }
+    override var durationSinceEpoch: Duration
+        get() = date.timeIntervalSince1970.seconds
+        set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble(DurationUnit.SECONDS)) }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
