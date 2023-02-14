@@ -54,9 +54,10 @@ fun BeaconInfo.fullID() = this.beaconID.asString()
 /**
  * Returns the [kotlin.time.Duration] since the beacon was last seen
  */
-fun BeaconInfo.timeSinceLastSeen() = DefaultKalugaDate.now() - lastSeen
+val BeaconInfo.timeSinceLastSeen get() = DefaultKalugaDate.now() - lastSeen
 
 /**
  * Returns the time in milliseconds since the beacon was last seen
  */
-fun BeaconInfo.seenMS() = timeSinceLastSeen().inWholeMilliseconds
+@Deprecated("Use timeSinceLastSeen", ReplaceWith("BeaconInfo.timeSinceLastSeen"))
+fun BeaconInfo.seenMs() = timeSinceLastSeen.inWholeMilliseconds
