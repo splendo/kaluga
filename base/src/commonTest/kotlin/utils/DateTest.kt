@@ -29,6 +29,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class DateTest {
 
@@ -40,7 +41,7 @@ class DateTest {
         val nearEpoch = DefaultKalugaDate.epoch(1001.milliseconds)
         assertEquals(DefaultKalugaDate.epoch(1001.milliseconds), nearEpoch, "equally created dates should be equal")
 
-        assertEquals(DefaultKalugaDate.epoch(1002.milliseconds), nearEpoch + 1.milliseconds, "Date from addition should be equal")
+        assertEquals(DefaultKalugaDate.epoch(10.seconds).millisecondSinceEpoch, (DefaultKalugaDate.epoch(9.seconds) + 1.seconds).millisecondSinceEpoch, "Date from addition should be equal")
     }
 
     @Test

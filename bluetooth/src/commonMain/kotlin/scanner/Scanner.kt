@@ -215,7 +215,7 @@ abstract class BaseScanner constructor(
     }
 
     /**
-     * Settings to apply to a [BaseScanner]
+     * Settings to configure a [BaseScanner]
      * @property permissions the [Permissions] to manage the bluetooth related permissions
      * @property autoRequestPermission if `true` the scanner should automatically request permissions if not granted
      * @property autoEnableSensors if `true` the scanner should automatically enable the Bluetooth service if disabled
@@ -239,6 +239,7 @@ abstract class BaseScanner constructor(
          * Creates a [BaseScanner]
          * @param settings the [BaseScanner.Settings] to configure the scanner with
          * @param coroutineScope the [CoroutineScope] the scanner will run in
+         * @return the [BaseScanner] created
          */
         fun create(
             settings: Settings,

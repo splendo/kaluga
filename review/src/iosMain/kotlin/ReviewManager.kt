@@ -33,6 +33,7 @@ actual class ReviewManager {
 
         /**
          * Creates a [ReviewManager]
+         * @return the created [ReviewManager]
          */
         actual fun create() = ReviewManager()
     }

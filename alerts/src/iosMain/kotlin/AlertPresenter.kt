@@ -84,6 +84,14 @@ actual class AlertPresenter(
      * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
      */
     actual class Builder(private val viewController: UIViewController) : BaseAlertPresenter.Builder() {
+
+        /**
+         * Creates an [AlertPresenter]
+         *
+         * @param alert The [Alert] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [AlertPresenter]
+         */
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController)
     }
 

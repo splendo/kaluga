@@ -66,7 +66,7 @@ class BeaconsListViewModel : BaseLifecycleViewModel(), KoinComponent {
             if (_isScanning.value) {
                 service.stopMonitoring()
             } else {
-                service.startMonitoring(coroutineScope)
+                service.startMonitoring()
             }
         }
     }

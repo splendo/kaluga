@@ -23,16 +23,32 @@ import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
+/**
+ * A [ServiceMonitor] that monitors whether the location service is enabled
+ */
 actual interface LocationMonitor : ServiceMonitor {
+
+    /**
+     * Builder for creating a [LocationMonitor]
+     */
     actual class Builder(
         val locationManager: CLLocationManager = CLLocationManager()
     ) {
+
+        /**
+         * Creates the [LocationMonitor]
+         * @return the created [LocationMonitor]
+         */
         actual fun create(): LocationMonitor = DefaultLocationMonitor(
             locationManager = locationManager
         )
     }
 }
 
+/**
+ * Default implementation of [LocationMonitor]
+ * @param locationManager the [CLLocationManager] to manage the location
+ */
 class DefaultLocationMonitor(private val locationManager: CLLocationManager) : DefaultServiceMonitor(), LocationMonitor {
 
     internal class LocationManagerDelegate(

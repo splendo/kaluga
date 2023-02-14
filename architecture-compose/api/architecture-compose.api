@@ -46,6 +46,7 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/BottomS
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected final fun SetupNavigationAction (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/compose/runtime/Composer;I)V
 	protected abstract fun getContentModifier ()Lkotlin/jvm/functions/Function4;
+	public synthetic fun getModifier ()Lkotlin/jvm/functions/Function2;
 	public final fun getModifier ()Lkotlin/jvm/functions/Function4;
 	protected abstract fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetRouteController;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
@@ -217,6 +218,7 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/Composa
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected final fun SetupNavigationAction (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/compose/runtime/Composer;I)V
 	protected abstract fun getContentModifier ()Lkotlin/jvm/functions/Function4;
+	public synthetic fun getModifier ()Lkotlin/jvm/functions/Function2;
 	public final fun getModifier ()Lkotlin/jvm/functions/Function4;
 	protected abstract fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V

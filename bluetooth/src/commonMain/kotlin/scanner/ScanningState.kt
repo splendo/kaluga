@@ -136,6 +136,7 @@ sealed interface ScanningState : KalugaState {
          * Transitions into an [Initialized] State
          * @param hasPermission if `true` all permissions related to Bluetooth have been granted
          * @param enabled if `true` the Bluetooth service is enabled
+         * @return method for transitioning into an [Initialized] State
          */
         fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
     }
