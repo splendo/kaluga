@@ -56,6 +56,7 @@ interface PermissionStateRepoBuilder<P : Permission> {
      * Creates a [BasePermissionStateRepo] associated with [permission]
      * @param permission the [P] the resulting [BasePermissionStateRepo] should manage.
      * @param coroutineContext the [CoroutineContext] to manage the [BasePermissionStateRepo]
+     * @return the created [BasePermissionStateRepo]
      */
     fun create(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<P>
 }

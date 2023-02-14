@@ -76,7 +76,7 @@ sealed interface PermissionState<P : Permission> : KalugaState {
     }
 
     /**
-     * A [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
+     * An [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
      * @param P the type of [Permission] associated with the state
      */
     interface Initializing<P : Permission> : Active<P>, SpecialFlowValue.NotImportant {
@@ -85,12 +85,13 @@ sealed interface PermissionState<P : Permission> : KalugaState {
          * Transitions into an [Initialized] state
          * @param allowed if `true` the permission is currently granted
          * @param locked if `true` and [allowed] is `false`, this indicates the permission can not be requested.
+         * @return the method for transitioning into an [Initialized] State
          */
         fun initialize(allowed: Boolean, locked: Boolean): suspend () -> Initialized<P>
     }
 
     /**
-     * A [Active] State indicating observation has started and initialization has completed
+     * An [Active] State indicating observation has started and initialization has completed
      * @param P the type of [Permission] associated with the state
      */
     sealed interface Initialized<P : Permission> : Active<P>
@@ -104,6 +105,7 @@ sealed interface PermissionState<P : Permission> : KalugaState {
         /**
          * Transitions into a [Denied] State
          * @param locked if `true` this indicates the permission can not be requested again
+         * @return the method for transitioning into a [Denied] State
          */
         fun deny(locked: Boolean): suspend () -> Denied<P>
     }
@@ -173,6 +175,7 @@ sealed class PermissionStateImpl<P : Permission> {
          * Transitions into a [Initializing] state
          * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
          * @param permissionManager the [PermissionManager] managing the [P] if this State
+         * @return method for transitioning into an [Initializing] State
          */
         fun initialize(monitoringInterval: Duration, permissionManager: PermissionManager<P>): suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
     }
