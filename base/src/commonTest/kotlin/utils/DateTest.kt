@@ -41,7 +41,7 @@ class DateTest {
         val nearEpoch = DefaultKalugaDate.epoch(1001.milliseconds)
         assertEquals(DefaultKalugaDate.epoch(1001.milliseconds), nearEpoch, "equally created dates should be equal")
 
-        assertEquals(DefaultKalugaDate.epoch(10.seconds).millisecondSinceEpoch, (DefaultKalugaDate.epoch(9.seconds) + 1.seconds).millisecondSinceEpoch, "Date from addition should be equal")
+        assertEquals(DefaultKalugaDate.epoch(10.seconds), (DefaultKalugaDate.epoch(9.seconds) + 1.seconds), "Date from addition should be equal")
     }
 
     @Test
