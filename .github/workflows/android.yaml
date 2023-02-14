@@ -1,5 +1,5 @@
 name: Android tests
-on: [pull_request, push]
+on: pull_request
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
