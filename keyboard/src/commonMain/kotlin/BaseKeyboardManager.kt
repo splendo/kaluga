@@ -43,7 +43,7 @@ interface BaseKeyboardManager<FH : FocusHandler> {
          * Creates KeyboardManager object
          *
          * @param coroutineScope The [CoroutineScope] managing the keyboard lifecycle.
-         * @return The KeyboardManager object
+         * @return The created [BaseKeyboardManager]
          */
         fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<FH>
     }

@@ -15,6 +15,7 @@ public final class com/splendo/kaluga/test/datetimepicker/MockDateTimePickerPres
 	public synthetic fun <init> (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun closeWithDate (Lcom/splendo/kaluga/base/utils/KalugaDate;)V
 	public fun dismiss (Z)V
+	public fun getDateTimePicker ()Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
 	public final fun getDismissMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getShowAsyncMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun isPresented ()Z

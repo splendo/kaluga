@@ -53,6 +53,14 @@ actual class AlertPresenter(
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+
+        /**
+         * Creates an [AlertPresenter]
+         *
+         * @param alert The [Alert] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [AlertPresenter]
+         */
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope) =
             AlertPresenter(alert, lifecycleManagerObserver, coroutineScope)
     }

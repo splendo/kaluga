@@ -33,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class MockDateTimePickerPresenterTest : UIThreadViewModelTest<MockDateTimePickerPresenterTest.TestContext, MockDateTimePickerPresenterTest.ViewModel>() {
@@ -50,7 +51,7 @@ class MockDateTimePickerPresenterTest : UIThreadViewModelTest<MockDateTimePicker
     fun testMockDateTimePickerPresenter() = testOnUIThread {
         val earliest = DefaultKalugaDate.epoch()
         val latest = DefaultKalugaDate.now()
-        val selected = DefaultKalugaDate.epoch(offsetInMilliseconds = 568623600000)
+        val selected = DefaultKalugaDate.epoch(568623600000.milliseconds)
 
         val done = CompletableDeferred<KalugaDate?>()
         withTimeout(2.seconds) {

@@ -36,6 +36,13 @@ actual class AlertPresenter(
      */
     actual class Builder : BaseAlertPresenter.Builder() {
 
+        /**
+         * Creates an [AlertPresenter]
+         *
+         * @param alert The [Alert] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [AlertPresenter]
+         */
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter {
             return AlertPresenter(alert)
         }
