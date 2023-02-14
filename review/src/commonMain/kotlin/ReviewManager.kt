@@ -32,6 +32,7 @@ expect class ReviewManager {
 
         /**
          * Creates a [ReviewManager]
+         * @return the created [ReviewManager]
          */
         fun create(): ReviewManager
     }

@@ -194,7 +194,7 @@ interface DateTimePickerActions {
  *
  * @param dateTimePicker The [DateTimePicker] to present (and dismiss if needed)
  */
-abstract class BaseDateTimePickerPresenter(protected val dateTimePicker: DateTimePicker) : DateTimePickerActions {
+abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: DateTimePicker) : DateTimePickerActions {
 
     /**
      * Abstract alert builder class, used to create an [BaseDateTimePickerPresenter].
