@@ -60,13 +60,14 @@ class NavHostResultHandler<ViewModel : BaseLifecycleViewModel, Result>(
  * @param Row the type of [NavigationBundleSpecRow] associated with this [NavigationBundleSpec]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received result
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel, Row : NavigationBundleSpecRow<*>> NavigationBundleSpec<Row>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(NavigationBundle<Row>) -> Unit
-) {
+): NavHostResultHandler<ViewModel, NavigationBundle<Row>> {
     val spec = this
-    NavHostResultHandler(ViewModel::class, { HandleResult(spec, retain, it) },  onResult)
+    return NavHostResultHandler(ViewModel::class, { HandleResult(spec, retain, it) },  onResult)
 }
 
 /**
@@ -76,13 +77,14 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, Row : NavigationBundleSp
  * @param T the type of result to expect
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received result
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecType<T>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T) -> Unit
-) {
+): NavHostResultHandler<ViewModel, T> {
     val spec = this
-    NavHostResultHandler(ViewModel::class, { HandleResult(spec, retain, it) }, onResult)
+    return NavHostResultHandler(ViewModel::class, { HandleResult(spec, retain, it) }, onResult)
 }
 
 /**
@@ -92,6 +94,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecT
  * @param T the type of result to expect
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received result
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> NavigationBundleSpecType<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -105,6 +108,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> NavigationBundl
  * @param T the type of result to expect
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received result
+ * @return the [NavHostResultHandler]
  */
 @JvmName("NavHostNullableResultOrNullHandler")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecType<T>.NavHostResultOrNullHandler(
@@ -118,13 +122,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T> NavigationBundleSpecT
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received Boolean
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Boolean) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleBooleanResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleBooleanResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of Boolean or `null`
@@ -132,6 +135,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultHand
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received Boolean or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -144,13 +148,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanNavHostResultOrNu
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [BooleanArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(BooleanArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleBooleanArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleBooleanArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [BooleanArray] or `null`
@@ -158,6 +161,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResul
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [BooleanArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -170,13 +174,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> BooleanArrayNavHostResul
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Byte]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Byte) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleByteResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleByteResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Byte] or `null`
@@ -184,6 +187,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultHandler
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Byte] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -196,13 +200,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteNavHostResultOrNullH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [ByteArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(ByteArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleByteArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleByteArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [ByteArray] or `null`
@@ -210,6 +213,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultHa
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [ByteArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -222,13 +226,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ByteArrayNavHostResultOr
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Char]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Char) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleCharResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleCharResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Char] or `null`
@@ -236,6 +239,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultHandler
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Char] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -248,13 +252,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharNavHostResultOrNullH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [CharArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(CharArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleCharArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleCharArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [CharArray] or `null`
@@ -262,6 +265,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultHa
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [CharArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -275,13 +279,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharArrayNavHostResultOr
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [CharSequence]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(CharSequence) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleCharSequenceResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleCharSequenceResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [CharSequence] or `null`
@@ -289,6 +292,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResul
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [CharSequence] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -301,13 +305,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> CharSequenceNavHostResul
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [KalugaDate]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(KalugaDate) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleDateResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleDateResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [KalugaDate] or `null`
@@ -315,6 +318,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultHandler
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [KalugaDate] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -327,13 +331,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateNavHostResultOrNullH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received list of [KalugaDate]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(List<KalugaDate>) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleDateArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleDateArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of a List of [KalugaDate] or `null`
@@ -341,6 +344,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultHa
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received list of [KalugaDate] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -353,13 +357,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DateArrayNavHostResultOr
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Double]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Double) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleDoubleResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleDoubleResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Double] or `null`
@@ -367,6 +370,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultHandl
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Double] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -379,13 +383,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleNavHostResultOrNul
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [DoubleArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(DoubleArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleDoubleArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleDoubleArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [DoubleArray] or `null`
@@ -393,6 +396,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResult
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [DoubleArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -405,13 +409,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> DoubleArrayNavHostResult
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Float]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Float) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleFloatResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleFloatResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Float] or `null`
@@ -419,6 +422,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultHandle
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Float] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -431,13 +435,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatNavHostResultOrNull
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [FloatArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(FloatArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleFloatArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleFloatArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [FloatArray] or `null`
@@ -445,6 +448,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [FloatArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -457,13 +461,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> FloatArrayNavHostResultO
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Int]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Int) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleIntResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleIntResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Int] or `null`
@@ -471,6 +474,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultHandler(
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Int] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -483,13 +487,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntNavHostResultOrNullHa
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [IntArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(IntArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleIntArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleIntArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [IntArray] or `null`
@@ -497,6 +500,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultHan
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [IntArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -509,13 +513,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> IntArrayNavHostResultOrN
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Long]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Long) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleLongResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleLongResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Long] or `null`
@@ -523,6 +526,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultHandler
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Long] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -535,13 +539,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongNavHostResultOrNullH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [LongArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(LongArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleLongArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleLongArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [LongArray] or `null`
@@ -549,6 +552,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultHa
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [LongArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -561,13 +565,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> LongArrayNavHostResultOr
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Short]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(Short) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleShortResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleShortResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [Short] or `null`
@@ -575,6 +578,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultHandle
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [Short] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -587,13 +591,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortNavHostResultOrNull
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [ShortArray]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(ShortArray) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleShortArrayResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleShortArrayResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [ShortArray] or `null`
@@ -601,6 +604,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [ShortArray] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -613,13 +617,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> ShortArrayNavHostResultO
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [String]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(String) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleStringResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleStringResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of [String] or `null`
@@ -627,6 +630,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultHandl
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [String] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -639,13 +643,12 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringNavHostResultOrNul
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received list of [String]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(List<String>) -> Unit
-) {
-    NavHostResultHandler(ViewModel::class, { HandleStringListResult(retain, it) }, onResult)
-}
+) = NavHostResultHandler(ViewModel::class, { HandleStringListResult(retain, it) }, onResult)
 
 /**
  * Creates a [NavHostResultHandler] of a list of [String] or `null`
@@ -653,6 +656,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultH
  * @param ViewModel the type of [BaseLifecycleViewModel] associated with the [NavHostResultHandler]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received list of [String] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultOrNullHandler(
     retain: Boolean = false,
@@ -666,13 +670,14 @@ inline fun <reified ViewModel : BaseLifecycleViewModel> StringListNavHostResultO
  * @param T the type of serialized property stored in the result
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [T]
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> KSerializer<T>.NavHostResultHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T) -> Unit
-) {
+): NavHostResultHandler<ViewModel, T> {
     val serializer = this
-    NavHostResultHandler(ViewModel::class, { HandleResultOfType(serializer, retain, it) }, onResult)
+    return NavHostResultHandler(ViewModel::class, { HandleResultOfType(serializer, retain, it) }, onResult)
 }
 
 /**
@@ -682,13 +687,14 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T> KSerializer<T>.NavHos
  * @param T the type of serialized property stored in the result
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [T] or `null`
+ * @return the [NavHostResultHandler]
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> KSerializer<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T?) -> Unit
-) {
+): NavHostResultHandler<ViewModel, T?> {
     val serializer = this
-    NavHostResultHandler(ViewModel::class, { HandleResultOfTypeOrNull(serializer, retain, it) }, onResult)
+    return NavHostResultHandler(ViewModel::class, { HandleResultOfTypeOrNull(serializer, retain, it) }, onResult)
 }
 
 /**
@@ -698,12 +704,13 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, T : Any> KSerializer<T>.
  * @param T the type of serialized property stored in the result
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received [T] or `null`
+ * @return the [NavHostResultHandler]
  */
 @JvmName("NavHostNullableResultOrNullHandler")
 inline fun <reified ViewModel : BaseLifecycleViewModel, T> KSerializer<T>.NavHostResultOrNullHandler(
     retain: Boolean = false,
     noinline onResult: ViewModel.(T?) -> Unit
-) {
+): NavHostResultHandler<ViewModel, T?> {
     val serializer = this
-    NavHostResultHandler(ViewModel::class, { HandleResultOfTypeOrNull(serializer, retain, it) }, onResult)
+    return NavHostResultHandler(ViewModel::class, { HandleResultOfTypeOrNull(serializer, retain, it) }, onResult)
 }
