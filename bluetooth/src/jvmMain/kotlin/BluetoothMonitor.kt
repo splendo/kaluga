@@ -20,12 +20,27 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 actual interface BluetoothMonitor : ServiceMonitor {
+
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     */
     actual class Builder {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor()
     }
 }
 
+/**
+ * Default implementation of [BluetoothMonitor]
+ */
 class DefaultBluetoothMonitor : DefaultServiceMonitor(), BluetoothMonitor {
 
     override val isServiceEnabled: Boolean

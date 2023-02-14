@@ -22,6 +22,10 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+/**
+ * Android implementation of [BaseAdvertisementData]
+ * @param scanResult the [ScanResult] being advertised
+ */
 actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvertisementData {
 
     private val scanRecord = scanResult?.scanRecord

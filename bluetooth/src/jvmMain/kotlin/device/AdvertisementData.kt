@@ -19,6 +19,9 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.UUID
 
+/**
+ * Java implementation of [BaseAdvertisementData]. Not actually implemented
+ */
 actual class AdvertisementData : BaseAdvertisementData {
 
     override val name: String?

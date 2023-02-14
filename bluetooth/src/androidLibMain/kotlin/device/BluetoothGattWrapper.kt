@@ -25,23 +25,89 @@ import android.bluetooth.BluetoothStatusCodes
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 
+/**
+ * A wrapper to access a [BluetoothGatt]
+ */
 interface BluetoothGattWrapper {
+
+    /**
+     * Connect to the Bluetooth device
+     * @return `true` if the connection attempt was initiated successfully
+     */
     fun connect(): Boolean
+
+    /**
+     * Discovers services offered by a remote device as well as their characteristics and descriptors.
+     * @return `true` if the discovery attempt was initiated successfully
+     */
     fun discoverServices(): Boolean
+
+    /**
+     * Disconnects the current connection or cancels the current attempt if it is in progress
+     */
     fun disconnect()
+
+    /**
+     * Close connection to the Bluetooth Gatt server
+     */
     fun close()
+
+    /**
+     * Reads the RSSI value
+     * @return `true` if the RSSI value has been requested successfully
+     */
     fun readRemoteRssi(): Boolean
 
-    /** Request MTU, returns `true` if the new MTU value has been requested successfully */
+    /**
+     * Request an Maximum Transmission Unit (MTU) size
+     * @param mtu the MTU size
+     * @return `true` if the new MTU value has been requested successfully
+     */
     fun requestMtu(mtu: Int): Boolean
 
+    /**
+     * Reads the value of the [CharacteristicWrapper] from the device
+     * @param wrapper the [CharacteristicWrapper] to read from
+     * @return `true` if the read operation was initiated successfully
+     */
     fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean
+
+    /**
+     * Reads the value of the [DeviceWrapper] from the device
+     * @param wrapper the [DeviceWrapper] to read from
+     * @return `true` if the read operation was initiated successfully
+     */
     fun readDescriptor(wrapper: DescriptorWrapper): Boolean
+
+    /**
+     * Writes a value to the [CharacteristicWrapper] from the device
+     * @param wrapper the [CharacteristicWrapper] to write to
+     * @param value the [ByteArray] to write
+     * @return `true` if the write operation was initiated successfully
+     */
     fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean
+
+    /**
+     * Writes a value to the [DescriptorWrapper] from the device
+     * @param wrapper the [DescriptorWrapper] to write to
+     * @param value the [ByteArray] to write
+     * @return `true` if the write operation was initiated successfully
+     */
     fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean
+
+    /**
+     * Enable or disable notifications for a given [CharacteristicWrapper]
+     * @param wrapper the [CharacteristicWrapper] to enable/disable notifications for
+     * @param enable if `true` notifications should be enabled
+     * @return `true` if the requested notification status was set successfully
+     */
     fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean
 }
 
+/**
+ * Default implementation of [BluetoothGattWrapper]
+ * @param gatt the [BluetoothGatt] being wrapped
+ */
 @SuppressLint("MissingPermission")
 class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGattWrapper {
 

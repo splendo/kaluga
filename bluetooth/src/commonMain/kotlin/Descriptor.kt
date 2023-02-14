@@ -58,7 +58,7 @@ open class Descriptor(
 }
 
 /**
- * Accessor the the platform level Bluetooth Descriptor
+ * Accessor to the platform level Bluetooth Descriptor
  */
 expect interface DescriptorWrapper {
 

@@ -17,7 +17,13 @@
 
 package com.splendo.kaluga.bluetooth
 
+/**
+ * The JavaScript value of a bluetooth attribute
+ */
 actual typealias Value = ByteArray
 
+/**
+ * Gets the [ByteArray] value of a [Value]
+ */
 actual val Value.asBytes: ByteArray
     get() = this

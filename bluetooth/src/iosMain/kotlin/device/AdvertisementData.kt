@@ -31,6 +31,10 @@ import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 import platform.Foundation.NSNumber
 
+/**
+ * iOS implementation of [BaseAdvertisementData]
+ * @param advertisementData a map containing the data being advertised
+ */
 actual class AdvertisementData(private val advertisementData: Map<String, Any>) : BaseAdvertisementData {
 
     override val name: String?

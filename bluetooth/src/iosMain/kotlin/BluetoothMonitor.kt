@@ -26,14 +26,31 @@ import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.darwin.NSObject
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 actual interface BluetoothMonitor : ServiceMonitor {
+
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     * @param centralManagerBuilder a method cor creating a [CBCentralManager] to manage Bluetooth
+     */
     actual class Builder(
         private val centralManagerBuilder: () -> CBCentralManager = { CBCentralManager() }
     ) {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(centralManagerBuilder = centralManagerBuilder)
     }
 }
 
+/**
+ * A default implementation of [BluetoothMonitor]
+ * @param centralManagerBuilder a method cor creating a [CBCentralManager] to manage Bluetooth
+ */
 class DefaultBluetoothMonitor internal constructor(
     private val centralManagerBuilder: () -> CBCentralManager
 ) : DefaultServiceMonitor(), BluetoothMonitor {

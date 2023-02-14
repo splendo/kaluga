@@ -26,12 +26,25 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 actual interface BluetoothMonitor : ServiceMonitor {
 
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     * @param context the [Context] in which Bluetooth should run
+     * @param adapter the [BluetoothAdapter] to use to access Bluetooth
+     */
     actual class Builder(
         private val context: Context = ApplicationHolder.applicationContext,
         private val adapter: BluetoothAdapter
     ) {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         actual fun create(): BluetoothMonitor {
             return DefaultBluetoothMonitor(
                 applicationContext = context,
@@ -41,6 +54,11 @@ actual interface BluetoothMonitor : ServiceMonitor {
     }
 }
 
+/**
+ * A default implementation of [BluetoothMonitor]
+ * @param applicationContext the [Context] in which Bluetooth should run
+ * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
+ */
 class DefaultBluetoothMonitor internal constructor(
     private val applicationContext: Context,
     private val bluetoothAdapter: BluetoothAdapter
