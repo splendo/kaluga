@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.base.utils.toByteArray
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.base.utils.typedMap
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import platform.CoreBluetooth.CBAdvertisementDataIsConnectable
 import platform.CoreBluetooth.CBAdvertisementDataLocalNameKey
@@ -51,7 +52,7 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
         ?.typedMap<CBUUID, NSData>()
         ?.mapNotNull { Pair(it.key, it.value.toByteArray()) }
         ?.toMap() ?: emptyMap()
-    override val txPowerLevel: Int get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
+    override val txPowerLevel: TxPower get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
 
     override val isConnectable: Boolean get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
 }

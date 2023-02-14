@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.MTU
 import kotlinx.coroutines.CoroutineScope
 
 internal actual class DefaultDeviceConnectionManager(
@@ -46,7 +47,7 @@ internal actual class DefaultDeviceConnectionManager(
 
     override suspend fun readRssi() {}
 
-    override suspend fun requestMtu(mtu: Int) = false
+    override suspend fun requestMtu(mtu: MTU) = false
 
     override suspend fun didStartPerformingAction(action: DeviceAction) {}
 

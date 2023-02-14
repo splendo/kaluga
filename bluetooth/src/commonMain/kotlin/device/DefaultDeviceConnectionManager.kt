@@ -20,6 +20,8 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.MTU
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
@@ -120,9 +122,10 @@ interface DeviceConnectionManager {
         data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
 
         /**
-         * [Event] indicating the device has updated its Maximum Transmission Unit (MTU) size
+         * [Event] indicating the device has updated its [MTU] size
+         * @property newMtu the new [MTU] size
          */
-        data class MtuUpdated(val newMtu: Int) : Event()
+        data class MtuUpdated(val newMtu: MTU) : Event()
     }
 
     /**
@@ -133,7 +136,7 @@ interface DeviceConnectionManager {
     /**
      * A [Flow] of the RSSI value of the device
      */
-    val rssi: Flow<Int>
+    val rssi: Flow<RSSI>
 
     /**
      * Gets the current [State] of the device
@@ -161,11 +164,11 @@ interface DeviceConnectionManager {
     suspend fun readRssi()
 
     /**
-     * Requests an update to the Maximum Transmission Unit (MTU) size of the device
-     * @param mtu the size of the MTU to request
+     * Requests an update to the [MTU] size of the device
+     * @param mtu the size of the [MTU] to request
      * @return `true` if the request was successful
      */
-    suspend fun requestMtu(mtu: Int): Boolean
+    suspend fun requestMtu(mtu: MTU): Boolean
 
     /**
      * Starts performing a [DeviceAction]
@@ -258,7 +261,7 @@ abstract class BaseDeviceConnectionManager(
     private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
     override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
 
-    private val sharedRssi = MutableSharedFlow<Int>(0, 1, BufferOverflow.DROP_OLDEST)
+    private val sharedRssi = MutableSharedFlow<RSSI>(0, 1, BufferOverflow.DROP_OLDEST)
     override val rssi = sharedRssi.asSharedFlow()
 
     override suspend fun readRssi() {
@@ -266,12 +269,12 @@ abstract class BaseDeviceConnectionManager(
         // TODO call into abstract function?
     }
 
-    protected open fun handleNewRssi(rssi: Int) {
+    protected open fun handleNewRssi(rssi: RSSI) {
         logger.debug(logTag) { "Updated Rssi $rssi" }
         sharedRssi.tryEmit(rssi)
     }
 
-    protected fun handleNewMtu(mtu: Int) {
+    protected fun handleNewMtu(mtu: MTU) {
         logger.debug(logTag) { "Updated Mtu $mtu" }
         emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }

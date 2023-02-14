@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.bluetooth.RSSI
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -111,9 +112,9 @@ interface DeviceInfo {
     val identifier: Identifier
 
     /**
-     * RSSI value of the Bluetooth device
+     * [RSSI] value of the Bluetooth device
      */
-    val rssi: Int
+    val rssi: RSSI
 
     /**
      * Current [BaseAdvertisementData] of the Bluetooth device
@@ -139,7 +140,7 @@ interface DeviceInfo {
 data class DeviceInfoImpl(
     override val name: String?,
     override val identifier: Identifier,
-    override val rssi: Int,
+    override val rssi: RSSI,
     override val advertisementData: BaseAdvertisementData
 ) : DeviceInfo {
 
@@ -151,7 +152,7 @@ data class DeviceInfoImpl(
      */
     constructor(
         wrapper: DeviceWrapper,
-        rssi: Int,
+        rssi: RSSI,
         advertisementData: BaseAdvertisementData
     ) : this(
         name = wrapper.name,

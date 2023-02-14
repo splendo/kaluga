@@ -19,9 +19,8 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState.Disconnected
-import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState.Reconnecting
 import kotlinx.coroutines.CompletableDeferred
 
 /**
@@ -195,9 +194,9 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
         }
 
         /**
-         * The current Maximum Transmission Unit (MTU) size of the device
+         * The current [MTU] size of the device
          */
-        val mtu: Int?
+        val mtu: MTU?
 
         /**
          * Starts transitioning to a [Disconnected] State
@@ -210,11 +209,11 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
         val reconnect: suspend () -> Reconnecting
 
         /**
-         * Updates the Maximum Transmission Unit (MTU) size of the device
-         * @param mtu the new MTU value
+         * Updates the [MTU] size of the device
+         * @param mtu the new [MTU] value
          * @return a transition into a [Connected] State with the new MTU
          */
-        fun didUpdateMtu(mtu: Int): suspend () -> Connected
+        fun didUpdateMtu(mtu: MTU): suspend () -> Connected
 
         /**
          * Reads the RSSI
@@ -222,11 +221,11 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
         suspend fun readRssi()
 
         /**
-         * Requests an update to the Maximum Transmission Unit (MTU) size of the device
-         * @param mtu the new MTU size to request
+         * Requests an update to the [MTU] size of the device
+         * @param mtu the new [MTU] size to request
          * @return `true` if the MTU update has been requested successfully
          */
-        suspend fun requestMtu(mtu: Int): Boolean
+        suspend fun requestMtu(mtu: MTU): Boolean
 
         /**
          * Attempts to pair this device
@@ -364,11 +363,11 @@ sealed class ConnectableDeviceStateImpl {
 
         /**
          * A [Connected] State where no [Service] have been discovered yet
-         * @param mtu The current Maximum Transmission Unit (MTU) size of the device
+         * @param mtu The current [MTU] size of the device
          * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
          */
         data class NoServices constructor(
-            override val mtu: Int?,
+            override val mtu: MTU?,
             override val deviceConnectionManager: DeviceConnectionManager
         ) : Connected(), ConnectableDeviceState.Connected.NoServices {
 
@@ -380,16 +379,16 @@ sealed class ConnectableDeviceStateImpl {
                 Discovering(mtu, deviceConnectionManager)
             }
 
-            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
+            override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
         }
 
         /**
          * A [Connected] State where [Service] are being discovered
-         * @param mtu The current Maximum Transmission Unit (MTU) size of the device
+         * @param mtu The current [MTU] size of the device
          * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
          */
         data class Discovering constructor(
-            override val mtu: Int?,
+            override val mtu: MTU?,
             override val deviceConnectionManager: DeviceConnectionManager
         ) : Connected(),
             ConnectableDeviceState.Connected.Discovering,
@@ -399,7 +398,7 @@ sealed class ConnectableDeviceStateImpl {
                 return { Idle(mtu, services, deviceConnectionManager) }
             }
 
-            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
+            override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
 
             override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
                 deviceConnectionManager.discoverServices()
@@ -408,38 +407,38 @@ sealed class ConnectableDeviceStateImpl {
 
         /**
          * A [Connected] State where all [Service] have been discovered and no [DeviceAction] is being executed
-         * @param mtu The current Maximum Transmission Unit (MTU) size of the device
+         * @param mtu The current [MTU] size of the device
          * @param services The list of [Service] hat where discovered
          * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
          */
         data class Idle constructor(
-            override val mtu: Int?,
+            override val mtu: MTU?,
             override val services: List<Service>,
             override val deviceConnectionManager: DeviceConnectionManager
         ) : Connected(), ConnectableDeviceState.Connected.Idle {
 
             override fun handleAction(action: DeviceAction) = suspend { HandlingAction(action, emptyList(), mtu, services, deviceConnectionManager) }
-            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
+            override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
         }
 
         /**
          * A [Connected] State where all [Service] have been discovered and a [DeviceAction] is being executed
          * @param action The [DeviceAction] currently being executed
          * @param nextActions The list of [DeviceAction] to be executed when [action] has been handled
-         * @param mtu The current Maximum Transmission Unit (MTU) size of the device
+         * @param mtu The current [MTU] size of the device
          * @param services The list of [Service] hat where discovered
          * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
          */
         data class HandlingAction constructor(
             override val action: DeviceAction,
             override val nextActions: List<DeviceAction>,
-            override val mtu: Int?,
+            override val mtu: MTU?,
             override val services: List<Service>,
             override val deviceConnectionManager: DeviceConnectionManager
         ) : Connected(), ConnectableDeviceState.Connected.HandlingAction, HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
 
             override fun addAction(newAction: DeviceAction) = suspend { HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), mtu, services, deviceConnectionManager) }
-            override fun didUpdateMtu(mtu: Int) = suspend { copy(mtu = mtu) }
+            override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
 
             override val actionCompleted: suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = suspend {
                 when (action) {
@@ -487,11 +486,11 @@ sealed class ConnectableDeviceStateImpl {
         }
 
         /**
-         * Requests an update to the Maximum Transmission Unit (MTU) size of the device
-         * @param mtu the new MTU size to request
+         * Requests an update to the [MTU] size of the device
+         * @param mtu the new [MTU] size to request
          * @return `true` if the MTU update has been requested successfully
          */
-        suspend fun requestMtu(mtu: Int): Boolean {
+        suspend fun requestMtu(mtu: MTU): Boolean {
             return deviceConnectionManager.requestMtu(mtu)
         }
 

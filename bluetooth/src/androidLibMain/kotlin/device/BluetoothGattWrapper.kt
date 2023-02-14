@@ -24,6 +24,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothStatusCodes
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.MTU
 
 /**
  * A wrapper to access a [BluetoothGatt]
@@ -59,11 +60,11 @@ interface BluetoothGattWrapper {
     fun readRemoteRssi(): Boolean
 
     /**
-     * Request an Maximum Transmission Unit (MTU) size
-     * @param mtu the MTU size
+     * Request a [MTU] size
+     * @param mtu the [MTU] size
      * @return `true` if the new MTU value has been requested successfully
      */
-    fun requestMtu(mtu: Int): Boolean
+    fun requestMtu(mtu: MTU): Boolean
 
     /**
      * Reads the value of the [CharacteristicWrapper] from the device
@@ -131,7 +132,7 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return gatt.readRemoteRssi()
     }
 
-    override fun requestMtu(mtu: Int): Boolean {
+    override fun requestMtu(mtu: MTU): Boolean {
         return gatt.requestMtu(mtu)
     }
 

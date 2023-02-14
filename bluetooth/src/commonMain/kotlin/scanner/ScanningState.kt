@@ -27,9 +27,8 @@ import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.Deinitialized
-import com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices
 
 /**
  * A set of [UUID] to apply to a scan result
@@ -214,14 +213,14 @@ sealed interface ScanningState : KalugaState {
             /**
              * Transitions into a [Scanning] state where a [Device] is added or updated
              * @param identifier the [Identifier] of the [Device] discovered
-             * @param rssi the RSSI value of the [Device] discovered
+             * @param rssi the [RSSI] value of the [Device] discovered
              * @param advertisementData the [BaseAdvertisementData] of the [Device] discovered
              * @param deviceCreator Method for creating a [Device] if it had not been scanned previously.
              * @return method for transitioning into a [Scanning] state where the [Device] is discovered
              */
             suspend fun discoverDevice(
                 identifier: Identifier,
-                rssi: Int,
+                rssi: RSSI,
                 advertisementData: BaseAdvertisementData,
                 deviceCreator: () -> Device
             ): suspend () -> Scanning
@@ -556,7 +555,7 @@ sealed class ScanningStateImpl {
 
             override suspend fun discoverDevice(
                 identifier: Identifier,
-                rssi: Int,
+                rssi: RSSI,
                 advertisementData: BaseAdvertisementData,
                 deviceCreator: () -> Device
             ): suspend () -> ScanningState.Enabled.Scanning {

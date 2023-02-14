@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import java.util.UUID
@@ -41,7 +42,7 @@ class AndroidMockCharacteristicWrapper(
     }
     override val permissions: Int
         get() = 0
-    override var writeType = 0
+    override var writeType = CharacteristicWrapper.WriteType.DEFAULT
 
     override fun getDescriptor(uuid: UUID): DescriptorWrapper? {
         return descriptors.firstOrNull { it.uuid == uuid }

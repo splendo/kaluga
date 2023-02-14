@@ -32,6 +32,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
@@ -209,7 +210,7 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().readRemoteRssi()
     }
 
-    override suspend fun requestMtu(mtu: Int): Boolean {
+    override suspend fun requestMtu(mtu: MTU): Boolean {
         return gatt.await().requestMtu(mtu)
     }
 

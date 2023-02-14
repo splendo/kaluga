@@ -32,7 +32,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
         }
 
         action {
-            start(scope)
+            start()
             discoverDevices(
                 BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )

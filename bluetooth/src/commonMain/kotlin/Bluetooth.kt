@@ -59,6 +59,21 @@ private val defaultBluetoothDispatcher by lazy {
 }
 
 /**
+ * The transmission power level in dBm
+ */
+typealias TxPower = Int
+
+/**
+ * The Received signal strength indication (RSSI)
+ */
+typealias RSSI = Int
+
+/**
+ * The Maximum Transmission Unit (MTU)
+ */
+typealias MTU = Int
+
+/**
  * A service for managing Bluetooth [Device]
  */
 interface BluetoothService {
@@ -327,14 +342,14 @@ fun Flow<Device?>.info(): Flow<DeviceInfo> = flatMapLatest { device ->
 fun Flow<Device?>.advertisement(): Flow<BaseAdvertisementData> = info().map { it.advertisementData }.distinctUntilChanged()
 
 /**
- * Gets the ([Flow] of) the RSSI value from a [Flow] of [Device]
+ * Gets the ([Flow] of) the [RSSI] value from a [Flow] of [Device]
  * @return the [Flow] of the RSSI value associated with the [Device] in the given [Flow]
  */
-fun Flow<Device?>.rssi(): Flow<Int> = info().map { it.rssi }.distinctUntilChanged()
+fun Flow<Device?>.rssi(): Flow<RSSI> = info().map { it.rssi }.distinctUntilChanged()
 
 /**
- * Gets the ([Flow] of) the Maximum Transmission Unit (MTU) from a [Flow] of [Device]
- * @return the [Flow] of MTU associated with the [Device] in the given [Flow]
+ * Gets the ([Flow] of) the [MTU] from a [Flow] of [Device]
+ * @return the [Flow] of [MTU] associated with the [Device] in the given [Flow]
  */
 fun Flow<Device?>.mtu() = state().map { state ->
     if (state is ConnectableDeviceState.Connected) {
@@ -384,12 +399,12 @@ suspend fun Flow<Device?>.updateRssi() {
 }
 
 /**
- * Attempts to request a Maximum Transmission Unit (MTU) size for the [Device] from a [Flow] of [Device]
+ * Attempts to request a [MTU] size for the [Device] from a [Flow] of [Device]
  * When this method completes, the devices should have had [ConnectableDeviceState.Connected.requestMtu] called
- * @param mtu the MTU size to request
+ * @param mtu the [MTU] size to request
  * @return if `true` the new MTU value has been requested successfully
  */
-suspend fun Flow<Device?>.requestMtu(mtu: Int): Boolean {
+suspend fun Flow<Device?>.requestMtu(mtu: MTU): Boolean {
     return state().transformLatest { deviceState ->
         when (deviceState) {
             is ConnectableDeviceState.Connected -> {

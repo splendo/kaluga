@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
@@ -153,7 +154,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    override suspend fun requestMtu(mtu: Int): Boolean {
+    override suspend fun requestMtu(mtu: MTU): Boolean {
         val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"

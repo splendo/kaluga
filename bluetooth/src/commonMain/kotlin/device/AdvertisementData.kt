@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 
@@ -50,9 +51,9 @@ interface BaseAdvertisementData {
     val serviceData: Map<UUID, ByteArray?>
 
     /**
-     * The transmission power level of the packet in dBm
+     * The [TxPower] of the packet
      */
-    val txPowerLevel: Int
+    val txPowerLevel: TxPower
 
     /**
      * If `true` the [Device] can be connected to

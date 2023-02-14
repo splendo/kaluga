@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -92,13 +93,13 @@ interface Scanner {
         /**
          * An [Event] indicating a [com.splendo.kaluga.bluetooth.device.Device] was discovered
          * @property identifier the [Identifier] of the device discovered
-         * @property rssi the RSSI value of the device discovered
+         * @property rssi the [RSSI] value of the device discovered
          * @property advertisementData the [BaseAdvertisementData] of the device discovered
          * @property deviceCreator method for creating a device if it had not yet been discovered.
          */
         data class DeviceDiscovered(
             val identifier: Identifier,
-            val rssi: Int,
+            val rssi: RSSI,
             val advertisementData: BaseAdvertisementData,
             val deviceCreator: DeviceCreator
         ) : Event()
@@ -354,7 +355,7 @@ abstract class BaseScanner constructor(
 
     internal fun handleDeviceDiscovered(
         identifier: Identifier,
-        rssi: Int,
+        rssi: RSSI,
         advertisementData: AdvertisementData,
         deviceCreator: DeviceCreator
     ) {

@@ -16,6 +16,7 @@
 
 package com.splendo.kaluga.test.bluetooth.scanner
 
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
@@ -166,7 +167,7 @@ sealed class MockScanningState {
 
             override suspend fun discoverDevice(
                 identifier: Identifier,
-                rssi: Int,
+                rssi: RSSI,
                 advertisementData: BaseAdvertisementData,
                 deviceCreator: () -> Device
             ): suspend () -> ScanningState.Enabled.Scanning {

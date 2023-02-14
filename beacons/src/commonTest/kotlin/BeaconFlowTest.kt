@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.base.SimpleFlowTest
-import kotlinx.coroutines.CoroutineScope
+import com.splendo.kaluga.test.bluetooth.MockBluetoothService
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -27,12 +27,12 @@ abstract class BeaconFlowTest(
     timeout: Duration = 3.seconds
 ) : SimpleFlowTest<Set<BeaconInfo>>() {
 
-    private val bluetooth = BluetoothMock(scope)
-    private val beacons = Beacons(bluetooth, timeout = timeout)
+    private val bluetooth = MockBluetoothService()
+    private val beacons = DefaultBeacons(bluetooth, beaconLifetime = timeout, coroutineContext = scope.coroutineContext)
 
     override val flow = suspend { beacons.beacons }
 
-    suspend fun start(coroutineScope: CoroutineScope) = beacons.startMonitoring(coroutineScope)
+    suspend fun start() = beacons.startMonitoring()
     suspend fun stop() = beacons.stopMonitoring()
-    suspend fun discoverDevices(vararg devices: Device) = bluetooth.discoveredDevices.emit(devices.toList())
+    suspend fun discoverDevices(vararg devices: Device) = bluetooth.discoveredDevicesFlow.emit(devices.toList())
 }

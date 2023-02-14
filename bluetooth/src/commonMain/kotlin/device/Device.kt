@@ -20,6 +20,7 @@ import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.base.state.HotStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
+import com.splendo.kaluga.bluetooth.RSSI
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -85,10 +86,10 @@ interface Device {
     fun handleDisconnected()
 
     /**
-     * Notifies the device that the RSSI has updated
-     * @param rssi the new RSSI value
+     * Notifies the device that the [RSSI] has updated
+     * @param rssi the new [RSSI] value
      */
-    fun rssiDidUpdate(rssi: Int)
+    fun rssiDidUpdate(rssi: RSSI)
 
     /**
      * Notifies the device that the [BaseAdvertisementData] has updated
@@ -204,7 +205,7 @@ class DeviceImpl(
 
     override fun handleDisconnected() = createConnectionManagerIfNotCreated().handleDisconnect()
 
-    override fun rssiDidUpdate(rssi: Int) {
+    override fun rssiDidUpdate(rssi: RSSI) {
         sharedInfo.value = sharedInfo.value.copy(rssi = rssi)
     }
 

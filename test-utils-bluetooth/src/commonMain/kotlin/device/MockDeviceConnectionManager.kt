@@ -21,6 +21,8 @@ import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.MTU
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
@@ -42,7 +44,7 @@ import kotlinx.coroutines.CoroutineScope
  * Mock implementation of [BaseDeviceConnectionManager]
  * @param initialWillActionSucceed Sets the initial status of whether actions will succeed
  * @param deviceWrapper The [DeviceWrapper] to connect to
- * @param bufferCapacity The capacity of the buffer for state transitions
+ * @param connectionSettings The [ConnectionSettings] to apply for connecting
  * @param coroutineScope The [CoroutineScope] of the [BaseDeviceConnectionManager]
  * @param setupMocks If `true` this will automatically configure the mocks to handle connecting
  */
@@ -161,7 +163,7 @@ class MockDeviceConnectionManager(
 
     override fun getCurrentState(): DeviceConnectionManager.State = getCurrentStateMock.call()
 
-    public override fun handleNewRssi(rssi: Int) {
+    public override fun handleNewRssi(rssi: RSSI) {
         super.handleNewRssi(rssi)
     }
 
@@ -173,7 +175,7 @@ class MockDeviceConnectionManager(
 
     override suspend fun readRssi(): Unit = readRssiMock.call()
 
-    override suspend fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
+    override suspend fun requestMtu(mtu: MTU): Boolean = requestMtuMock.call(mtu)
 
     override suspend fun didStartPairing(): Unit = pairMock.call()
 
