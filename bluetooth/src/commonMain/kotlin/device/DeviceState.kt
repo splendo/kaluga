@@ -344,28 +344,14 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
     suspend fun unpair()
 }
 
-/**
- * Implementation of [NotConnectableDeviceState]
- */
-object NotConnectableDeviceStateImpl : NotConnectableDeviceState
+internal object NotConnectableDeviceStateImpl : NotConnectableDeviceState
 
-/**
- * Connection State of a [Device] closely matching [ConnectableDeviceState]
- */
-sealed class ConnectableDeviceStateImpl {
+internal sealed class ConnectableDeviceStateImpl {
 
     protected abstract val deviceConnectionManager: DeviceConnectionManager
 
-    /**
-     * A [ConnectableDeviceStateImpl] where the [Device] is connected
-     */
     sealed class Connected : ConnectableDeviceStateImpl() {
 
-        /**
-         * A [Connected] State where no [Service] have been discovered yet
-         * @param mtu The current [MTU] size of the device
-         * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-         */
         data class NoServices constructor(
             override val mtu: MTU?,
             override val deviceConnectionManager: DeviceConnectionManager
@@ -382,11 +368,6 @@ sealed class ConnectableDeviceStateImpl {
             override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
         }
 
-        /**
-         * A [Connected] State where [Service] are being discovered
-         * @param mtu The current [MTU] size of the device
-         * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-         */
         data class Discovering constructor(
             override val mtu: MTU?,
             override val deviceConnectionManager: DeviceConnectionManager
@@ -405,12 +386,6 @@ sealed class ConnectableDeviceStateImpl {
             }
         }
 
-        /**
-         * A [Connected] State where all [Service] have been discovered and no [DeviceAction] is being executed
-         * @param mtu The current [MTU] size of the device
-         * @param services The list of [Service] hat where discovered
-         * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-         */
         data class Idle constructor(
             override val mtu: MTU?,
             override val services: List<Service>,
@@ -421,14 +396,6 @@ sealed class ConnectableDeviceStateImpl {
             override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
         }
 
-        /**
-         * A [Connected] State where all [Service] have been discovered and a [DeviceAction] is being executed
-         * @param action The [DeviceAction] currently being executed
-         * @param nextActions The list of [DeviceAction] to be executed when [action] has been handled
-         * @param mtu The current [MTU] size of the device
-         * @param services The list of [Service] hat where discovered
-         * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-         */
         data class HandlingAction constructor(
             override val action: DeviceAction,
             override val nextActions: List<DeviceAction>,
@@ -465,45 +432,24 @@ sealed class ConnectableDeviceStateImpl {
             }
         }
 
-        /**
-         * Starts transitioning to a [Disconnected] State
-         */
         fun startDisconnected() = deviceConnectionManager.startDisconnecting()
 
-        /**
-         * Transitions into a [Reconnecting] State
-         */
         val reconnect = suspend {
             // All services, characteristics and descriptors become invalidated after it disconnects
             Reconnecting(0, null, deviceConnectionManager)
         }
 
-        /**
-         * Reads the RSSI
-         */
         suspend fun readRssi() {
             deviceConnectionManager.readRssi()
         }
 
-        /**
-         * Requests an update to the [MTU] size of the device
-         * @param mtu the new [MTU] size to request
-         * @return `true` if the MTU update has been requested successfully
-         */
         suspend fun requestMtu(mtu: MTU): Boolean {
             return deviceConnectionManager.requestMtu(mtu)
         }
 
-        /**
-         * Attempts to pair this device
-         */
         suspend fun pair() = deviceConnectionManager.pair()
     }
 
-    /**
-     * A [ConnectableDeviceStateImpl] where the device is connecting
-     * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-     */
     data class Connecting constructor(
         override val deviceConnectionManager: DeviceConnectionManager
     ) : ConnectableDeviceStateImpl(), ConnectableDeviceState.Connecting, HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
@@ -526,12 +472,6 @@ sealed class ConnectableDeviceStateImpl {
         }
     }
 
-    /**
-     * A [ConnectableDeviceStateImpl] where the [Device] is reconnecting
-     * @param attempt The number of attempts to reconnect that have been made since the disconnect occurred
-     * @param services The list of [Service] discovered
-     * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-     */
     data class Reconnecting constructor(
         override val attempt: Int,
         override val services: List<Service>?,
@@ -555,10 +495,6 @@ sealed class ConnectableDeviceStateImpl {
         }
     }
 
-    /**
-     * A [ConnectableDeviceStateImpl] where the [Device] is disconnected
-     * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-     */
     data class Disconnected constructor(
         override val deviceConnectionManager: DeviceConnectionManager
     ) : ConnectableDeviceStateImpl(), ConnectableDeviceState.Disconnected {
@@ -568,10 +504,6 @@ sealed class ConnectableDeviceStateImpl {
         override val connect = suspend { Connecting(deviceConnectionManager) }
     }
 
-    /**
-     * A [ConnectableDeviceStateImpl] where the [Device] is disconnecting
-     * @param deviceConnectionManager the [DeviceConnectionManager] to manage the connection
-     */
     data class Disconnecting constructor(
         override val deviceConnectionManager: DeviceConnectionManager
     ) : ConnectableDeviceStateImpl(), ConnectableDeviceState.Disconnecting, HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
@@ -584,22 +516,13 @@ sealed class ConnectableDeviceStateImpl {
         }
     }
 
-    /**
-     * Transitions into a [Disconnected] State
-     */
     val didDisconnect = suspend {
         Disconnected(deviceConnectionManager)
     }
 
-    /**
-     * Transitions into a [Disconnecting] State
-     */
     val disconnecting = suspend {
         Disconnecting(deviceConnectionManager)
     }
 
-    /**
-     * Attempts to unpair the [Device]
-     */
     suspend fun unpair() = deviceConnectionManager.unpair()
 }

@@ -157,7 +157,7 @@ sealed interface PermissionState<P : Permission> : KalugaState {
  * State of a [Permission] closely matching [PermissionState]
  * @param P the type of [Permission] associated with the state
  */
-sealed class PermissionStateImpl<P : Permission> {
+internal sealed class PermissionStateImpl<P : Permission> {
 
     /**
      * A [PermissionStateImpl] indicating observation is not active

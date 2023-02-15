@@ -157,35 +157,16 @@ sealed interface LocationState : KalugaState {
     }
 }
 
-/**
- * State of a [Location] closely matching [LocationState]
- */
-sealed class LocationStateImpl {
+internal sealed class LocationStateImpl {
 
-    /**
-     * The [Location] during this state
-     */
     abstract val location: Location
 
-    /**
-     * A [LocationStateImpl] State indicating observation has not started yet
-     */
     object NotInitialized : LocationStateImpl(), LocationState.NotInitialized {
         override val location: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
 
-        /**
-         * Transitions into an [Initializing] State
-         * @param locationManager the [LocationManager] to manage the [Location]
-         * @return method for transitioning into an [Initializing] State
-         */
         fun startInitializing(locationManager: LocationManager): suspend () -> Initializing = { Initializing(location, locationManager) }
     }
 
-    /**
-     * An [LocationStateImpl] State indicating observation has stopped after being started
-     * @param location the [Location] during this state
-     * @param locationManager the [LocationManager] managing the [Location]
-     */
     data class Deinitialized(
         override val location: Location,
         internal val locationManager: LocationManager
@@ -193,16 +174,10 @@ sealed class LocationStateImpl {
         override val reinitialize: suspend () -> LocationState.Initializing = { Initializing(location, locationManager) }
     }
 
-    /**
-     * An [LocationStateImpl] State indicating observation has started
-     */
     sealed class Active : LocationStateImpl(), HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
 
         protected abstract val locationManager: LocationManager
 
-        /**
-         * Transitions into a [Deinitialized] State
-         */
         val deinitialized: suspend () -> Deinitialized = { Deinitialized(location, locationManager) }
 
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
@@ -220,11 +195,6 @@ sealed class LocationStateImpl {
         }
     }
 
-    /**
-     * Handles changes to [com.splendo.kaluga.permissions.location.LocationPermission]
-     * @param location the [Location] during this state
-     * @param locationManager the [LocationManager] managing the [Location]
-     */
     class PermittedHandler(val location: Location, private val locationManager: LocationManager) {
 
         internal val revokePermission: suspend () -> Disabled.NotPermitted = {
@@ -250,11 +220,6 @@ sealed class LocationStateImpl {
         }
     }
 
-    /**
-     * An [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
-     * @param location the [Location] during this state
-     * @param locationManager the [LocationManager] managing the [Location]
-     */
     data class Initializing(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Initializing {
 
         override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized = suspend {
@@ -266,16 +231,8 @@ sealed class LocationStateImpl {
         }
     }
 
-    /**
-     * An [Active] State indicating that location is not being collected
-     */
     sealed class Disabled : Active() {
 
-        /**
-         * A [Disabled] State indicating the [com.splendo.kaluga.permissions.location.LocationPermission] has not been granted
-         * @param lastKnownLocation the previous [Location]
-         * @param locationManager the [LocationManager] managing the [Location]
-         */
         class NotPermitted(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NotPermitted {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED)
@@ -285,11 +242,6 @@ sealed class LocationStateImpl {
             }
         }
 
-        /**
-         * A [Disabled] State indicating the Location service is disabled
-         * @param lastKnownLocation the previous [Location]
-         * @param locationManager the [LocationManager] managing the [Location]
-         */
         class NoGPS(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NoGPS {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)
@@ -313,11 +265,6 @@ sealed class LocationStateImpl {
         }
     }
 
-    /**
-     * An [Active] State indicating location is being collected
-     * @param location the [Location] during this state
-     * @param locationManager the [LocationManager] managing the [Location]
-     */
     data class Enabled(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Enabled {
 
         private val permittedHandler = PermittedHandler(location, locationManager)

@@ -269,32 +269,17 @@ sealed interface ScanningState : KalugaState {
     interface NoHardware : ScanningState
 }
 
-/**
- * State of a scanner closely matching [ScanningState]
- */
-sealed class ScanningStateImpl {
+internal sealed class ScanningStateImpl {
 
     companion object {
-        /**
-         * An empty [Devices]
-         */
         val nothingFound = Devices(filter = emptySet())
     }
 
-    /**
-     * A [ScanningState.Devices] implementation
-     * @param devices The list of [Device] found
-     * @param filter The [Filter] applied during scanning
-     */
     data class Devices(
         override val devices: List<Device>,
         override val filter: Filter,
     ) : ScanningState.Devices {
 
-        /**
-         * Constructor
-         * @param filter the [Filter] to apply
-         */
         constructor(filter: Filter) : this(emptyList(), filter)
 
         override fun copyAndAdd(device: Device): Devices =
@@ -307,16 +292,8 @@ sealed class ScanningStateImpl {
                 Devices(filter)
     }
 
-    /**
-     * A [ScanningStateImpl] indicating observation has not started yet
-     */
     object NotInitialized : ScanningStateImpl(), ScanningState.NotInitialized {
 
-        /**
-         * Transitions into a [Initializing] State
-         * @param scanner the [Scanner] to use for scanning
-         * @return method for transitioning to a [Initializing] or [NoHardware] State
-         */
         fun startInitializing(
             scanner: Scanner
         ): suspend () -> ScanningState {
@@ -328,12 +305,6 @@ sealed class ScanningStateImpl {
         }
     }
 
-    /**
-     * A [ScanningStateImpl] indicating observation has stopped after being started
-     * @param previouslyDiscovered The [Devices] discovered before deinitalizing
-     * @param previouslyPaired The [Devices] paired before deinitalizing
-     * @property scanner the [Scanner] used for scanning
-     */
     data class Deinitialized(
         override val previouslyDiscovered: ScanningState.Devices,
         override val previouslyPaired: ScanningState.Devices,
@@ -343,9 +314,6 @@ sealed class ScanningStateImpl {
         override val reinitialize = suspend { Initializing(previouslyDiscovered, previouslyPaired, scanner) }
     }
 
-    /**
-     * A [ScanningStateImpl] indicating observation has started
-     */
     sealed class Active :
         ScanningStateImpl(),
         HandleBeforeOldStateIsRemoved<ScanningState>,
@@ -369,31 +337,13 @@ sealed class ScanningStateImpl {
             }
         }
 
-        /**
-         * The [Scanner] used for scanning
-         */
         abstract val scanner: Scanner
-
-        /**
-         * The [Devices] discovered
-         */
         abstract val discovered: ScanningState.Devices
-
-        /**
-         * The [Devices] paired
-         */
         abstract val paired: ScanningState.Devices
 
-        /**
-         * Transitions into a [Deinitialized] State
-         */
         val deinitialize: suspend () -> Deinitialized = { Deinitialized(discovered, paired, scanner) }
     }
 
-    /**
-     * Handles changes to Bluetooth permissions
-     * @property scanner the [Scanner] to respond to changes to permissions
-     */
     class PermittedHandler(val scanner: Scanner) {
 
         internal val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
@@ -419,12 +369,6 @@ sealed class ScanningStateImpl {
         }
     }
 
-    /**
-     * An [Active] State indicating the state is transitioning for an inactive state to an initialized state
-     * @param discovered The [Devices] discovered
-     * @param paired The [Devices] paired
-     * @param scanner The [Scanner] used for scanning
-     */
     data class Initializing(
         override val discovered: ScanningState.Devices,
         override val paired: ScanningState.Devices,
@@ -441,23 +385,14 @@ sealed class ScanningStateImpl {
             }
     }
 
-    /**
-     * An [Active] State indicating the Bluetooth service is enabled
-     */
     sealed class Enabled : Active() {
 
         protected abstract val permittedHandler: PermittedHandler
 
-        /**
-         * Transitions into a [NoBluetooth.Disabled] State
-         */
         val disable = suspend {
             NoBluetooth.Disabled(scanner)
         }
 
-        /**
-         * Transitions into a [NoBluetooth.MissingPermissions] State
-         */
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
         override suspend fun afterNewStateIsSet(newState: ScanningState) {
@@ -470,12 +405,6 @@ sealed class ScanningStateImpl {
             permittedHandler.beforeOldStateIsRemoved(oldState)
         }
 
-        /**
-         * An [Enabled] State indicating no active scanning is taking place
-         * @param discovered The [Devices] discovered
-         * @param paired The [Devices] paired
-         * @param scanner The [Scanner] used for scanning
-         */
         class Idle internal constructor(
             override val discovered: ScanningState.Devices,
             override val paired: ScanningState.Devices,
@@ -519,12 +448,6 @@ sealed class ScanningStateImpl {
             }
         }
 
-        /**
-         * An [Enabled] State indicating scanning is taking place
-         * @param discovered The [Devices] discovered
-         * @param paired The [Devices] paired
-         * @param scanner The [Scanner] used for scanning
-         */
         class Scanning internal constructor(
             override val discovered: ScanningState.Devices,
             override val paired: ScanningState.Devices,
@@ -583,18 +506,11 @@ sealed class ScanningStateImpl {
         }
     }
 
-    /**
-     * An [Active] State indicating Bluetooth is not available
-     */
     sealed class NoBluetooth : Active() {
 
         override val discovered: Devices = nothingFound
         override val paired: Devices = nothingFound
 
-        /**
-         * A [NoBluetooth] State indicating the Bluetooth service is disabled
-         * @param scanner The [Scanner] used for scanning
-         */
         class Disabled internal constructor(
             override val scanner: Scanner
         ) : NoBluetooth(), ScanningState.NoBluetooth.Disabled {
@@ -618,10 +534,6 @@ sealed class ScanningStateImpl {
             }
         }
 
-        /**
-         * A [NoBluetooth] State indicating Bluetooth is not available due to missing permissions
-         * @param scanner The [Scanner] used for scanning
-         */
         class MissingPermissions internal constructor(
             override val scanner: Scanner
         ) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
@@ -633,8 +545,5 @@ sealed class ScanningStateImpl {
         }
     }
 
-    /**
-     * A [ScanningStateImpl] indicating the system does not support Bluetooth
-     */
     object NoHardware : ScanningStateImpl(), ScanningState.NoHardware
 }
