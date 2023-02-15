@@ -96,7 +96,9 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
                 NetworkConnectionType.Unknown.WithLastNetwork(
                     NetworkConnectionType.Known.Wifi(),
                     NetworkConnectionType.Unknown.Reason.LOSING
-                ), it.networkConnectionType)
+                ),
+                it.networkConnectionType
+            )
         }
 
         mainAction {

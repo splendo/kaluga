@@ -148,7 +148,8 @@ internal sealed class NetworkStateImpl {
 
     object NotInitialized : NetworkStateImpl(), NetworkState.NotInitialized {
         override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(
-            NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
+        )
         fun startInitializing(networkManager: NetworkManager): suspend () -> NetworkState.Initializing = {
             Initializing(networkConnectionType, networkManager)
         }
@@ -157,7 +158,8 @@ internal sealed class NetworkStateImpl {
     data class Deinitialized(private val previousNetworkConnectionType: NetworkConnectionType, val networkManager: NetworkManager) : NetworkStateImpl(), NetworkState.Deinitialized {
         override val reinitialize: suspend () -> NetworkState.Initializing = { Initializing(previousNetworkConnectionType, networkManager) }
         override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(
-            NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
+        )
     }
 
     sealed class Active : NetworkStateImpl(), HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {

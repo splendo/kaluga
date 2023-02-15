@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertEquals
