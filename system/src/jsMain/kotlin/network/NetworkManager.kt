@@ -20,10 +20,16 @@ package com.splendo.kaluga.system.network
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-actual class DefaultNetworkManager : BaseNetworkManager() {
+/**
+ * Default implementation of [NetworkManager]
+ */
+actual class DefaultNetworkManager : NetworkManager {
 
-    class Builder : BaseNetworkManager.Builder {
-        override fun create(): BaseNetworkManager = DefaultNetworkManager()
+    /**
+     * Builder for creating a [DefaultNetworkManager]
+     */
+    class Builder : NetworkManager.Builder {
+        override fun create(): NetworkManager = DefaultNetworkManager()
     }
 
     override val network: Flow<NetworkConnectionType> = flowOf(NetworkConnectionType.Known.Absent)

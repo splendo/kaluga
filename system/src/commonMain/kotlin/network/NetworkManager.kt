@@ -19,16 +19,39 @@ package com.splendo.kaluga.system.network
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Manages monitoring for [NetworkConnectionType]
+ */
 interface NetworkManager {
+
+    /**
+     * Builder for creating a [NetworkManager]
+     */
+    interface Builder {
+
+        /**
+         * Creates the [NetworkManager]
+         */
+        fun create(): NetworkManager
+    }
+
+    /**
+     * A [Flow] pf the [NetworkConnectionType] detected by the network manager
+     */
     val network: Flow<NetworkConnectionType>
+
+    /**
+     * Starts monitoring for changes to [NetworkConnectionType] that will be emitted on the [network] flow
+     */
     suspend fun startMonitoring()
+
+    /**
+     * Stops monitoring for changes to [NetworkConnectionType]
+     */
     suspend fun stopMonitoring()
 }
 
-abstract class BaseNetworkManager : NetworkManager {
-    interface Builder {
-        fun create(): BaseNetworkManager
-    }
-}
-
-expect class DefaultNetworkManager : BaseNetworkManager
+/**
+ * Default implementation of [NetworkManager]
+ */
+expect class DefaultNetworkManager : NetworkManager

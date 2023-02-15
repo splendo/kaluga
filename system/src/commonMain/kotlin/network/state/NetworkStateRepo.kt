@@ -17,25 +17,30 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
-import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.NetworkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A [StateRepo]/[MutableStateFlow] of [NetworkState]
+ */
 typealias NetworkStateFlowRepo = StateRepo<NetworkState, MutableStateFlow<NetworkState>>
 
+/**
+ * An abstract [ColdStateFlowRepo] for managing [NetworkState]
+ * @param createNotInitializedState method for creating the initial [NetworkState.NotInitialized] State
+ * @param createInitializingState method for transitioning from a [NetworkState.Inactive] into a [NetworkState.Initializing] given an implementation of this [ColdStateFlowRepo]
+ * @param createDeinitializingState method for transitioning from a [NetworkState.Active] into a [NetworkState.Deinitialized] given an implementation of this [ColdStateFlowRepo]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+ */
 abstract class BaseNetworkStateRepo(
     createNotInitializedState: () -> NetworkState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<NetworkState>.(NetworkState.Inactive) -> suspend () -> NetworkState,
@@ -60,6 +65,11 @@ abstract class BaseNetworkStateRepo(
     firstState = createNotInitializedState
 )
 
+/**
+ * A [BaseNetworkStateRepo] managed using a [NetworkManager]
+ * @param createNetworkManager method for creating the [NetworkManager] to manage the [NetworkState]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+ */
 open class NetworkStateImplRepo(
     createNetworkManager: suspend () -> NetworkManager,
     coroutineContext: CoroutineContext
@@ -115,8 +125,13 @@ open class NetworkStateImplRepo(
     }
 }
 
-open class NetworkStateRepo(
-    private val networkManagerBuilder: BaseNetworkManager.Builder,
+/**
+ * A [NetworkStateImplRepo] using a [NetworkManager]
+ * @param networkManagerBuilder the [NetworkManager.Builder] for building a [NetworkManager]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
+ */
+class NetworkStateRepo(
+    private val networkManagerBuilder: NetworkManager.Builder,
     coroutineContext: CoroutineContext,
 ) : NetworkStateImplRepo(
     createNetworkManager = {
@@ -124,13 +139,3 @@ open class NetworkStateRepo(
     },
     coroutineContext
 )
-
-fun Flow<NetworkState>.network(): Flow<NetworkConnectionType> {
-    return filterOnlyImportant().map { it.networkConnectionType }.distinctUntilChanged()
-}
-
-fun Flow<NetworkState>.online(): Flow<Boolean> {
-    return network().map {
-        it is NetworkConnectionType.Known.Wifi || it is NetworkConnectionType.Known.Cellular
-    }
-}

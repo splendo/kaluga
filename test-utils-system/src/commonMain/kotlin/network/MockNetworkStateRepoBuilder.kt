@@ -17,7 +17,7 @@
 package com.splendo.kaluga.test.system.network
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
-import com.splendo.kaluga.system.network.BaseNetworkManager
+import com.splendo.kaluga.system.network.NetworkManager
 import com.splendo.kaluga.system.network.state.BaseNetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.base.mock.call
@@ -27,10 +27,10 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Mock implementation of [BaseNetworkStateRepoBuilder]
- * @param networkManagerBuilder The [BaseNetworkManager.Builder] for building the network manager
+ * @param networkManagerBuilder The [NetworkManager.Builder] for building the network manager
  * @param setupMocks If `true` sets up [createMock] to automatically create a [NetworkStateRepo]
  */
-class MockNetworkStateRepoBuilder<NMB : BaseNetworkManager.Builder>(
+class MockNetworkStateRepoBuilder<NMB : NetworkManager.Builder>(
     val networkManagerBuilder: NMB,
     setupMocks: Boolean = true
 ) : BaseNetworkStateRepoBuilder {

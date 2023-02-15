@@ -18,7 +18,7 @@
 package com.splendo.kaluga.system.network
 
 import com.splendo.kaluga.test.base.BaseFlowTest
-import com.splendo.kaluga.test.system.network.MockBaseNetworkManager
+import com.splendo.kaluga.test.system.network.MockNetworkManager
 import com.splendo.kaluga.test.system.network.MockNetworkStateRepoBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -30,10 +30,10 @@ abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkSt
     )
 
     class Context(configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
-        val networkManagerBuilder = MockBaseNetworkManager.Builder(configuration.initialNetworkConnectionType)
+        val networkManagerBuilder = MockNetworkManager.Builder(configuration.initialNetworkConnectionType)
         val networkStateRepoBuilder = MockNetworkStateRepoBuilder(networkManagerBuilder)
         val networkStateRepo = networkStateRepoBuilder.create(coroutineScope.coroutineContext)
-        val networkManager get() = networkManagerBuilder.builtNetworkManagers.first() as MockBaseNetworkManager
+        val networkManager get() = networkManagerBuilder.builtNetworkManagers.first()
     }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context =

@@ -68,12 +68,12 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
         }
 
         mainAction {
-            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+            networkManager.network.value = NetworkConnectionType.Known.Cellular
         }
 
         test {
             assertIs<NetworkState.Available>(it)
-            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
+            assertEquals(NetworkConnectionType.Known.Cellular, it.networkConnectionType)
         }
     }
 
@@ -102,12 +102,12 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Wifi()
             yield()
-            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+            networkManager.network.value = NetworkConnectionType.Known.Cellular
         }
 
         test(1) {
             assertIs<NetworkState.Available>(it)
-            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
+            assertEquals(NetworkConnectionType.Known.Cellular, it.networkConnectionType)
         }
 
         mainAction {
@@ -126,11 +126,11 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
         }
 
         mainAction {
-            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+            networkManager.network.value = NetworkConnectionType.Known.Cellular
         }
 
         test {
-            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
+            assertEquals(NetworkConnectionType.Known.Cellular, it.networkConnectionType)
         }
 
         mainAction {
@@ -157,11 +157,11 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
         }
 
         mainAction {
-            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+            networkManager.network.value = NetworkConnectionType.Known.Cellular
         }
 
         test {
-            assertEquals(NetworkConnectionType.Known.Cellular(), it.networkConnectionType)
+            assertEquals(NetworkConnectionType.Known.Cellular, it.networkConnectionType)
         }
 
         action {

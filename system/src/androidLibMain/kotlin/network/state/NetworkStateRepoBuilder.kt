@@ -22,6 +22,9 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.system.network.DefaultNetworkManager
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Default implementation of [BaseNetworkStateRepoBuilder]
+ */
 actual class NetworkStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
 ) : BaseNetworkStateRepoBuilder {

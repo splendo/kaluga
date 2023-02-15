@@ -28,7 +28,7 @@ class OnlineTest : BaseNetworkStateTest<Boolean, Flow<Boolean>>() {
     override val flowFromTestContext: suspend Context.() -> Flow<Boolean> = { networkStateRepo.online() }
 
     @Test
-    fun testIsOnOrOffline() = testNetworkState(NetworkConnectionType.Known.Wifi()) { networkStateRepo ->
+    fun testIsOnOrOffline() = testNetworkState(NetworkConnectionType.Known.Wifi()) {
         test {
             assertTrue(it)
         }
@@ -42,7 +42,7 @@ class OnlineTest : BaseNetworkStateTest<Boolean, Flow<Boolean>>() {
         }
 
         mainAction {
-            networkManager.network.value = NetworkConnectionType.Known.Cellular()
+            networkManager.network.value = NetworkConnectionType.Known.Cellular
         }
         test {
             assertTrue(it)

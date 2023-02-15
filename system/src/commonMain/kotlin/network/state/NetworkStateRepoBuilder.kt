@@ -24,8 +24,20 @@ private val defaultNetworkDispatcher by lazy {
     singleThreadDispatcher("Location")
 }
 
+/**
+ * Builder for creating a [BaseNetworkStateRepo]
+ */
 interface BaseNetworkStateRepoBuilder {
-    fun create(coroutineContext: CoroutineContext = defaultNetworkDispatcher): NetworkStateRepo
+
+    /**
+     * Creates the [BaseNetworkStateRepo]
+     * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+     * @return the created [BaseNetworkStateRepo]
+     */
+    fun create(coroutineContext: CoroutineContext = defaultNetworkDispatcher): BaseNetworkStateRepo
 }
 
+/**
+ * Default implementation of [BaseNetworkStateRepoBuilder]
+ */
 expect class NetworkStateRepoBuilder : BaseNetworkStateRepoBuilder

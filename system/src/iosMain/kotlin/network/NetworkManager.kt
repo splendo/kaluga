@@ -63,11 +63,17 @@ import platform.darwin.dispatch_queue_attr_make_with_qos_class
 import platform.darwin.dispatch_queue_create
 import platform.posix.QOS_CLASS_UTILITY
 
+/**
+ * Default implementation of [NetworkManager]
+ */
 actual class DefaultNetworkManager internal constructor(
     private val appleNetworkManager: AppleNetworkManager
-) : BaseNetworkManager() {
+) : NetworkManager {
 
-    class Builder : BaseNetworkManager.Builder {
+    /**
+     * Builder for creating a [DefaultNetworkManager]
+     */
+    class Builder : NetworkManager.Builder {
         override fun create(): BaseNetworkManager {
             val appleNetworkManager = if (IOSVersion.systemVersion >= IOSVersion(12)) {
                 NWPathNetworkManager()

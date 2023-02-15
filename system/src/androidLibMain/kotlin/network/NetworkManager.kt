@@ -29,16 +29,23 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 
+/**
+ * Default implementation of [NetworkManager]
+ */
 actual class DefaultNetworkManager internal constructor(
     private val androidNetworkManager: AndroidNetworkManager
-) : BaseNetworkManager() {
+) : NetworkManager {
 
     override val network: Flow<NetworkConnectionType> get() = androidNetworkManager.network
     override suspend fun startMonitoring() = androidNetworkManager.startMonitoring()
     override suspend fun stopMonitoring() = androidNetworkManager.stopMonitoring()
 
-    class Builder(private val context: Context) : BaseNetworkManager.Builder {
-        override fun create(): BaseNetworkManager {
+    /**
+     * Builder for creating a [DefaultNetworkManager]
+     * @param context the [Context] in which to monitor the network
+     */
+    class Builder(private val context: Context) : NetworkManager.Builder {
+        override fun create(): NetworkManager {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val androidNetworkManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 AndroidConnectivityCallbackManager(
@@ -103,19 +110,11 @@ actual class DefaultNetworkManager internal constructor(
 
         private fun determineNetworkType(): NetworkConnectionType {
             val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            val isCellularDataEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
-            val isWifiEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
-
             return when {
-                isWifiEnabled -> {
-                    NetworkConnectionType.Known.Wifi()
-                }
-                isCellularDataEnabled -> {
-                    NetworkConnectionType.Known.Cellular()
-                }
-                else -> {
-                    NetworkConnectionType.Known.Absent
-                }
+                capabilities == null -> NetworkConnectionType.Known.Absent
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> NetworkConnectionType.Known.Wifi(!capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED))
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> NetworkConnectionType.Known.Cellular
+                else -> NetworkConnectionType.Known.Absent
             }
         }
     }
@@ -149,7 +148,7 @@ actual class DefaultNetworkManager internal constructor(
             return when {
                 connectivityManager.activeNetworkInfo?.isConnectedOrConnecting != true -> NetworkConnectionType.Known.Absent
                 (!isMetered && connectivityManager.isDefaultNetworkActive) -> NetworkConnectionType.Known.Wifi()
-                isMetered -> NetworkConnectionType.Known.Cellular()
+                isMetered -> NetworkConnectionType.Known.Cellular
                 else -> NetworkConnectionType.Known.Absent
             }
         }
