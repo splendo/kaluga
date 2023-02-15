@@ -55,11 +55,11 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         /**
          * Creates a [KalugaDate] relative to the current time
          * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
-         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
          * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate {
+        actual fun now(offsetInMilliseconds: Long, timeZone: KalugaTimeZone, locale: Locale): KalugaDate {
             val calendar = NSCalendar.currentCalendar.apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
@@ -71,11 +71,11 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         /**
          * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
          * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
-         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
          * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate {
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: KalugaTimeZone, locale: Locale): KalugaDate {
             val calendar = NSCalendar.currentCalendar.apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
@@ -87,8 +87,8 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
 
     override var date: NSDate = initialDate
 
-    override var timeZone: TimeZone
-        get() = TimeZone(calendar.timeZone)
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone(calendar.timeZone)
         set(value) { calendar.timeZone = value.timeZone }
     override var era: Int
         get() = calendar.component(NSCalendarUnitEra, fromDate = date).toInt()

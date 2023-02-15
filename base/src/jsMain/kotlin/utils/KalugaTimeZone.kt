@@ -21,25 +21,25 @@ package com.splendo.kaluga.base.utils
 /**
  * A default implementation of [BaseTimeZone].
  */
-actual class TimeZone internal constructor() : BaseTimeZone() {
+actual class KalugaTimeZone internal constructor() : BaseTimeZone() {
 
     actual companion object {
 
         /**
-         * Gets a [TimeZone] based on a given Identifier
-         * @param identifier The identifier to create a [TimeZone] for
-         * @return The [TimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
+         * Gets a [KalugaTimeZone] based on a given Identifier
+         * @param identifier The identifier to create a [KalugaTimeZone] for
+         * @return The [KalugaTimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
          */
-        actual fun get(identifier: String): TimeZone? = TimeZone()
+        actual fun get(identifier: String): KalugaTimeZone? = KalugaTimeZone()
 
         /**
-         * Gets the current [TimeZone] configured by the user
-         * @return The current [TimeZone] of the user
+         * Gets the current [KalugaTimeZone] configured by the user
+         * @return The current [KalugaTimeZone] of the user
          */
-        actual fun current(): TimeZone = TimeZone()
+        actual fun current(): KalugaTimeZone = KalugaTimeZone()
 
         /**
-         * List of available identifiers associated with [TimeZone]s. All elements in this list can be used for creating a [TimeZone] using [TimeZone.get]
+         * List of available identifiers associated with [KalugaTimeZone]s. All elements in this list can be used for creating a [KalugaTimeZone] using [KalugaTimeZone.get]
          */
         actual val availableIdentifiers: List<String> = emptyList()
     }
@@ -50,5 +50,5 @@ actual class TimeZone internal constructor() : BaseTimeZone() {
     override val daylightSavingsOffsetInMilliseconds: Long = 0L
     override fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = 0L
     override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = false
-    override fun copy(): TimeZone = TimeZone()
+    override fun copy(): KalugaTimeZone = KalugaTimeZone()
 }

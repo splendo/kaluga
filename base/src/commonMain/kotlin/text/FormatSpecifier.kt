@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
 import com.splendo.kaluga.base.utils.toHexString
 import kotlin.math.abs
@@ -108,7 +108,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Long,
             is Int,
             is Short -> {
-                DefaultKalugaDate.epoch((arg as Number).toLong(), TimeZone.current(), locale)
+                DefaultKalugaDate.epoch((arg as Number).toLong(), KalugaTimeZone.current(), locale)
             }
             is KalugaDate -> {
                 arg.copy()
@@ -398,7 +398,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.AM_PM -> {
                 // 'p' (am or pm)
                 val isAm = time.hour < 12
-                val dateFormat = KalugaDateFormatter.patternFormat("aa", TimeZone.current(), locale)
+                val dateFormat = KalugaDateFormatter.patternFormat("aa", KalugaTimeZone.current(), locale)
                 sb.append((if (isAm) dateFormat.amString else dateFormat.pmString).lowerCased(locale))
             }
             DateTime.SECONDS_SINCE_EPOCH -> {

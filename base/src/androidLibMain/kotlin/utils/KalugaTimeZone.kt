@@ -20,31 +20,31 @@ package com.splendo.kaluga.base.utils
 /**
  * A default implementation of [BaseTimeZone].
  */
-actual class TimeZone internal constructor(internal val timeZone: java.util.TimeZone) : BaseTimeZone() {
+actual class KalugaTimeZone internal constructor(internal val timeZone: java.util.TimeZone) : BaseTimeZone() {
 
     actual companion object {
 
         /**
-         * Gets a [TimeZone] based on a given Identifier
-         * @param identifier The identifier to create a [TimeZone] for
-         * @return The [TimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
+         * Gets a [KalugaTimeZone] based on a given Identifier
+         * @param identifier The identifier to create a [KalugaTimeZone] for
+         * @return The [KalugaTimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
          */
-        actual fun get(identifier: String): TimeZone? {
+        actual fun get(identifier: String): KalugaTimeZone? {
             return java.util.TimeZone.getTimeZone(identifier)?.let {
-                TimeZone(it)
+                KalugaTimeZone(it)
             }
         }
 
         /**
-         * Gets the current [TimeZone] configured by the user
-         * @return The current [TimeZone] of the user
+         * Gets the current [KalugaTimeZone] configured by the user
+         * @return The current [KalugaTimeZone] of the user
          */
-        actual fun current(): TimeZone {
-            return TimeZone(java.util.TimeZone.getDefault())
+        actual fun current(): KalugaTimeZone {
+            return KalugaTimeZone(java.util.TimeZone.getDefault())
         }
 
         /**
-         * List of available identifiers associated with [TimeZone]s. All elements in this list can be used for creating a [TimeZone] using [TimeZone.get]
+         * List of available identifiers associated with [KalugaTimeZone]s. All elements in this list can be used for creating a [KalugaTimeZone] using [KalugaTimeZone.get]
          */
         actual val availableIdentifiers get() = java.util.TimeZone.getAvailableIDs().asList()
     }
@@ -61,8 +61,8 @@ actual class TimeZone internal constructor(internal val timeZone: java.util.Time
     override val daylightSavingsOffsetInMilliseconds: Long = timeZone.dstSavings.toLong()
     override fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
     override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
-    override fun copy(): TimeZone = TimeZone(timeZone.clone() as java.util.TimeZone)
+    override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.clone() as java.util.TimeZone)
     override fun equals(other: Any?): Boolean {
-        return (other as? TimeZone)?.let { timeZone == other.timeZone } ?: false
+        return (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
     }
 }

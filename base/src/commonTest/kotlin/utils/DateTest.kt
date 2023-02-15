@@ -19,7 +19,7 @@ package com.splendo.kaluga.base.test.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.plus
@@ -46,7 +46,7 @@ class DateTest {
     fun testUTCDate() {
         val utcNow = DefaultKalugaDate.nowUtc(locale = Locale.enUsPosix)
         val epochNow = utcNow.millisecondSinceEpoch
-        val now = DefaultKalugaDate.epoch(epochNow, TimeZone.utc, locale = Locale.enUsPosix)
+        val now = DefaultKalugaDate.epoch(epochNow, KalugaTimeZone.utc, locale = Locale.enUsPosix)
         assertEquals(utcNow.millisecondSinceEpoch, now.millisecondSinceEpoch)
         assertEquals(utcNow, now)
     }
@@ -86,7 +86,7 @@ class DateTest {
 
     @Test
     fun testGet() {
-        val someDay = DefaultKalugaDate.epoch(574695462750, TimeZone.utc, locale = Locale.enUsPosix)
+        val someDay = DefaultKalugaDate.epoch(574695462750, KalugaTimeZone.utc, locale = Locale.enUsPosix)
 
         assertEquals(1, someDay.era)
         assertEquals(1988, someDay.year)
@@ -108,8 +108,8 @@ class DateTest {
         val france = Locale.createLocale("fr", "FR")
         val us = Locale.createLocale("en", "US")
 
-        val frenchNow = DefaultKalugaDate.now(0, TimeZone.utc, france)
-        val usNow = DefaultKalugaDate.now(0, TimeZone.utc, us)
+        val frenchNow = DefaultKalugaDate.now(0, KalugaTimeZone.utc, france)
+        val usNow = DefaultKalugaDate.now(0, KalugaTimeZone.utc, us)
 
         assertEquals(2, frenchNow.firstWeekDay)
         assertEquals(1, usNow.firstWeekDay)
@@ -117,7 +117,7 @@ class DateTest {
 
     @Test
     fun testDaylightSavings() {
-        val dayBeforeDLS = DefaultKalugaDate.epoch(1616828400000, locale = Locale.createLocale("nl", "NL"), timeZone = TimeZone.get("Europe/Amsterdam")!!)
+        val dayBeforeDLS = DefaultKalugaDate.epoch(1616828400000, locale = Locale.createLocale("nl", "NL"), timeZone = KalugaTimeZone.get("Europe/Amsterdam")!!)
         val startOfDayBeforeDLS = dayBeforeDLS.toStartOfDay()
         assertEquals(0, startOfDayBeforeDLS.hour)
         assertEquals(27, startOfDayBeforeDLS.day)

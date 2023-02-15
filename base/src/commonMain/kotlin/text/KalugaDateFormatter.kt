@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.text
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 
 /**
@@ -56,9 +56,9 @@ interface BaseDateFormatter {
     var pattern: String
 
     /**
-     * The [TimeZone] this [KalugaDateFormatter] formats its dates to.
+     * The [KalugaTimeZone] this [KalugaDateFormatter] formats its dates to.
      */
-    var timeZone: TimeZone
+    var timeZone: KalugaTimeZone
 
     /**
      * A list containing the names of all eras used by this date formatter.
@@ -118,24 +118,24 @@ expect class KalugaDateFormatter : BaseDateFormatter {
         /**
          * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
         fun dateFormat(
             style: DateFormatStyle = DateFormatStyle.Medium,
-            timeZone: TimeZone = TimeZone.current(),
+            timeZone: KalugaTimeZone = KalugaTimeZone.current(),
             locale: Locale = defaultLocale
         ): KalugaDateFormatter
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
         fun timeFormat(
             style: DateFormatStyle = DateFormatStyle.Medium,
-            timeZone: TimeZone = TimeZone.current(),
+            timeZone: KalugaTimeZone = KalugaTimeZone.current(),
             locale: Locale = defaultLocale
         ): KalugaDateFormatter
 
@@ -143,13 +143,13 @@ expect class KalugaDateFormatter : BaseDateFormatter {
          * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
          * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
         fun dateTimeFormat(
             dateStyle: DateFormatStyle = DateFormatStyle.Medium,
             timeStyle: DateFormatStyle = DateFormatStyle.Medium,
-            timeZone: TimeZone = TimeZone.current(),
+            timeZone: KalugaTimeZone = KalugaTimeZone.current(),
             locale: Locale = defaultLocale
         ): KalugaDateFormatter
 
@@ -159,12 +159,12 @@ expect class KalugaDateFormatter : BaseDateFormatter {
          * To prevent this, ensure that the provided [locale] is of a `POSIX` type.
          * A convenience [fixedPatternFormat] method exists to default to this behaviour.
          * @param pattern The pattern to apply.
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
         fun patternFormat(
             pattern: String,
-            timeZone: TimeZone = TimeZone.current(),
+            timeZone: KalugaTimeZone = KalugaTimeZone.current(),
             locale: Locale = defaultLocale
         ): KalugaDateFormatter
     }
@@ -177,27 +177,27 @@ typealias DateFormatter = KalugaDateFormatter
  * Creates a fixed [KalugaDateFormatter] using a custom Date format pattern, localized by the [Locale.enUsPosix] [Locale].
  * Use this to ensure that displaying time in 12 or 24 hour format is not overridden by the user.
  * @param pattern The pattern to apply.
- * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
  */
-fun KalugaDateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: TimeZone = TimeZone.current()) = patternFormat(pattern, timeZone, Locale.enUsPosix)
+fun KalugaDateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: KalugaTimeZone = KalugaTimeZone.current()) = patternFormat(pattern, timeZone, Locale.enUsPosix)
 
 /**
  * Creates a [KalugaDateFormatter] that formats time according to the ISo 8601 format.
- * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
  */
-fun KalugaDateFormatter.Companion.iso8601Pattern(timeZone: TimeZone = TimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)
+fun KalugaDateFormatter.Companion.iso8601Pattern(timeZone: KalugaTimeZone = KalugaTimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)
 
 /**
  * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
  * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param excludeYear When [true] the year will not be part of the format.
- * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
  * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
  */
 fun KalugaDateFormatter.Companion.dateFormat(
     style: DateFormatStyle = DateFormatStyle.Medium,
     excludeYear: Boolean,
-    timeZone: TimeZone = TimeZone.current(),
+    timeZone: KalugaTimeZone = KalugaTimeZone.current(),
     locale: Locale = defaultLocale
 ): KalugaDateFormatter {
     val formatWithYear = dateFormat(style, timeZone, locale)
@@ -213,14 +213,14 @@ fun KalugaDateFormatter.Companion.dateFormat(
  * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
  * @param excludeYear When [true] the year will not be part of the format.
  * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
- * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
  * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
  */
 fun KalugaDateFormatter.Companion.dateTimeFormat(
     dateStyle: DateFormatStyle = DateFormatStyle.Medium,
     excludeYear: Boolean,
     timeStyle: DateFormatStyle = DateFormatStyle.Medium,
-    timeZone: TimeZone = TimeZone.current(),
+    timeZone: KalugaTimeZone = KalugaTimeZone.current(),
     locale: Locale = defaultLocale
 ): KalugaDateFormatter {
     val formatWithYear = dateTimeFormat(dateStyle, timeStyle, timeZone, locale)
