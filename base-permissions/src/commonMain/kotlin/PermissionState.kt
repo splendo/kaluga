@@ -153,39 +153,15 @@ sealed interface PermissionState<P : Permission> : KalugaState {
     }
 }
 
-/**
- * State of a [Permission] closely matching [PermissionState]
- * @param P the type of [Permission] associated with the state
- */
 internal sealed class PermissionStateImpl<P : Permission> {
 
-    /**
-     * A [PermissionStateImpl] indicating observation is not active
-     * @param P the type of [Permission] associated with the state
-     */
     sealed class Inactive<P : Permission> : PermissionStateImpl<P>()
 
-    /**
-     * A [Inactive] State indicating observation has not started yet
-     * @param P the type of [Permission] associated with the state
-     */
     class Uninitialized<P : Permission> : Inactive<P>(), PermissionState.Uninitialized<P> {
 
-        /**
-         * Transitions into a [Initializing] state
-         * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-         * @param permissionManager the [PermissionManager] managing the [P] if this State
-         * @return method for transitioning into an [Initializing] State
-         */
         fun initialize(monitoringInterval: Duration, permissionManager: PermissionManager<P>): suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
     }
 
-    /**
-     * A [Inactive] State indicating observation has stopped after being started
-     * @param P the type of [Permission] associated with the state
-     * @property monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-     * @property permissionManager the [PermissionManager] managing the [P] if this State
-     */
     data class Deinitialized<P : Permission>(
         val monitoringInterval: Duration,
         val permissionManager: PermissionManager<P>
@@ -193,25 +169,11 @@ internal sealed class PermissionStateImpl<P : Permission> {
         override val reinitialize: suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
     }
 
-    /**
-     * A [PermissionState] indicating observation has started
-     * @param P the type of [Permission] associated with the state
-     */
     sealed class Active<P : Permission> : PermissionStateImpl<P>(), HandleBeforeOldStateIsRemoved<PermissionState<P>>, HandleAfterNewStateIsSet<PermissionState<P>> {
 
-        /**
-         * The [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-         */
         abstract val monitoringInterval: Duration
-
-        /**
-         * The [PermissionManager] managing the [P] if this State
-         */
         abstract val permissionManager: PermissionManager<P>
 
-        /**
-         * Transitions into a [Deinitialized] State
-         */
         val deinitialize: suspend () -> Deinitialized<P> = { Deinitialized(monitoringInterval, permissionManager) }
 
         override suspend fun afterNewStateIsSet(newState: PermissionState<P>) {
@@ -229,12 +191,6 @@ internal sealed class PermissionStateImpl<P : Permission> {
         }
     }
 
-    /**
-     * A [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
-     * @param P the type of [Permission] associated with the state
-     * @property monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-     * @property permissionManager the [PermissionManager] managing the [P] if this State
-     */
     data class Initializing<P : Permission>(
         override val monitoringInterval: Duration,
         override val permissionManager: PermissionManager<P>
@@ -248,12 +204,6 @@ internal sealed class PermissionStateImpl<P : Permission> {
         }
     }
 
-    /**
-     * A [Active] State indicating the permission has been granted
-     * @param P the type of [Permission] associated with the state
-     * @property monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-     * @property permissionManager the [PermissionManager] managing the [P] if this State
-     */
     data class Allowed<P : Permission>(
         override val monitoringInterval: Duration,
         override val permissionManager: PermissionManager<P>
@@ -264,25 +214,12 @@ internal sealed class PermissionStateImpl<P : Permission> {
         }
     }
 
-    /**
-     * A [Active] State indicating the permission has been denied.
-     * @param P the type of [Permission] associated with the state
-     */
     sealed class Denied<P : Permission> : Active<P>() {
 
-        /**
-         * Transitions into an [Allowed] State
-         */
         val allow: suspend () -> Allowed<P> = {
             Allowed(monitoringInterval, permissionManager)
         }
 
-        /**
-         * A [Denied] State indicating the permission cannot be granted
-         * @param P the type of [Permission] associated with the state
-         * @property monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-         * @property permissionManager the [PermissionManager] managing the [P] if this State
-         */
         data class Locked<P : Permission>(
             override val monitoringInterval: Duration,
             override val permissionManager: PermissionManager<P>
@@ -293,13 +230,6 @@ internal sealed class PermissionStateImpl<P : Permission> {
             }
         }
 
-        /**
-         * A [Denied] State indicating the permission can be granted
-         * Use [request] to request the permission.
-         * @param P the type of [Permission] associated with the state
-         * @property monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
-         * @property permissionManager the [PermissionManager] managing the [P] if this State
-         */
         data class Requestable<P : Permission>(
             override val monitoringInterval: Duration,
             override val permissionManager: PermissionManager<P>
