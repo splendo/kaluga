@@ -47,12 +47,12 @@ data class Rounding(
 )
 
 /**
- * Immutable, arbitrary-precision signed decimal numbers.
- * @param bd the internal [BigDecimal] corresponding to this decimal
+ * Platform specific representation of a finite immutable, arbitrary-precision signed decimal number
+ * @property bd the [BigDecimal] representing the finite decimal number
  */
-actual data class Decimal(val bd: BigDecimal) : Comparable<Decimal> {
-    override fun compareTo(other: Decimal): Int = BigDecimal.compare(bd, other.bd)
-    override fun equals(other: Any?): Boolean = (other as? Decimal)?.let { BigDecimal.equal(bd, it.bd) } ?: false
+actual data class FiniteDecimal(val bd: BigDecimal) : Comparable<FiniteDecimal> {
+    override fun compareTo(other: FiniteDecimal): Int = BigDecimal.compare(bd, other.bd)
+    override fun equals(other: Any?): Boolean = (other as? FiniteDecimal)?.let { BigDecimal.equal(bd, it.bd) } ?: false
     override fun hashCode(): Int {
         return bd.hashCode()
     }
@@ -64,7 +64,7 @@ private fun round(
     a: BigDecimal,
     roundingMode: RoundingMode,
     maximumFractionDigits: Int? = null
-): Decimal {
+): FiniteDecimal {
     val mode = if (BigDecimal.lessThan(a, ZERO)) {
         when (roundingMode) {
             RoundDown -> CEIL
@@ -78,200 +78,85 @@ private fun round(
             RoundUp -> CEIL
         }
     }
-    return Decimal(BigDecimal.round(a, Rounding(maximumFractionDigits, mode)))
+    return FiniteDecimal(BigDecimal.round(a, Rounding(maximumFractionDigits, mode)))
 }
 
-/**
- * Adds two [Decimal] together.
- * @param value the [Decimal] to add
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(BigDecimal.add(bd, value.bd))
+actual operator fun FiniteDecimal.plus(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.add(bd, value.bd))
 
-/**
- * Adds two [Decimal] together scaled to a given precision.
- * @param value the [Decimal] to add
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual fun Decimal.plus(
-    value: Decimal,
+actual fun FiniteDecimal.plus(
+    value: FiniteDecimal,
     scale: Int
-): Decimal = Decimal(BigDecimal.add(bd, value.bd, Rounding(scale)))
+): FiniteDecimal = FiniteDecimal(BigDecimal.add(bd, value.bd, Rounding(scale)))
 
-/**
- * Adds two [Decimal] together scaled to a given precision.
- * @param value the [Decimal] to add
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual fun Decimal.plus(
-    value: Decimal,
+actual fun FiniteDecimal.plus(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.add(bd, value.bd), roundingMode, scale)
+): FiniteDecimal = round(BigDecimal.add(bd, value.bd), roundingMode, scale)
 
-/**
- * Subtracts two [Decimal].
- * @param value the [Decimal] to subtract
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual operator fun Decimal.minus(value: Decimal): Decimal = Decimal(BigDecimal.subtract(bd, value.bd))
+actual operator fun FiniteDecimal.minus(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd))
 
-/**
- * Subtracts two [Decimal] to a given precision.
- * @param value the [Decimal] to subtract
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual fun Decimal.minus(
-    value: Decimal,
+actual fun FiniteDecimal.minus(
+    value: FiniteDecimal,
     scale: Int
-): Decimal = Decimal(BigDecimal.subtract(bd, value.bd, Rounding(scale)))
+): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd, Rounding(scale)))
 
-/**
- * Subtracts two [Decimal] to a given precision.
- * @param value the [Decimal] to subtract
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual fun Decimal.minus(
-    value: Decimal,
+actual fun FiniteDecimal.minus(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.subtract(bd, value.bd), roundingMode, scale)
+): FiniteDecimal = round(BigDecimal.subtract(bd, value.bd), roundingMode, scale)
 
-/**
- * Divides two [Decimal].
- * @param value the [Decimal] to divide
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual operator fun Decimal.div(
-    value: Decimal
-): Decimal = if (!BigDecimal.equal(value.bd, ZERO)) Decimal(BigDecimal.divide(bd, value.bd, Rounding())) else throw DecimalException("Divide by zero")
+actual operator fun FiniteDecimal.div(
+    value: FiniteDecimal
+): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding()))
 
-/**
- * Divides two [Decimal] to a given precision.
- * @param value the [Decimal] to divide
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual fun Decimal.div(
-    value: Decimal,
+actual fun FiniteDecimal.div(
+    value: FiniteDecimal,
     scale: Int
-): Decimal = if (!BigDecimal.equal(value.bd, ZERO)) Decimal(BigDecimal.divide(bd, value.bd, Rounding(scale))) else throw DecimalException("Divide by zero")
+): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding(scale)))
 
-/**
- * Divides two [Decimal] to a given precision.
- * @param value the [Decimal] to divide
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual fun Decimal.div(
-    value: Decimal,
+actual fun FiniteDecimal.div(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = if (!BigDecimal.equal(value.bd, ZERO))
-    round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
-else
-    throw DecimalException("Divide by zero")
+): FiniteDecimal = round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
 
-/**
- * Multiplies two [Decimal].
- * @param value the [Decimal] to multiply
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual operator fun Decimal.times(
-    value: Decimal
-): Decimal = Decimal(BigDecimal.multiply(bd, value.bd, Rounding()))
+actual operator fun FiniteDecimal.times(
+    value: FiniteDecimal
+): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding()))
 
-/**
- * Multiplies two [Decimal] to a given precision.
- * @param value the [Decimal] to multiply
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual fun Decimal.times(
-    value: Decimal,
+actual fun FiniteDecimal.times(
+    value: FiniteDecimal,
     scale: Int
-): Decimal = Decimal(BigDecimal.multiply(bd, value.bd, Rounding(scale)))
+): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding(scale)))
 
-/**
- * Multiplies two [Decimal] to a given precision.
- * @param value the [Decimal] to multiply
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual fun Decimal.times(
-    value: Decimal,
+actual fun FiniteDecimal.times(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
+): FiniteDecimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
 
-/**
- * Raises two [Decimal].
- * @param n the [Decimal] to raise to
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual infix fun Decimal.pow(n: Int): Decimal = Decimal(BigDecimal.BigDecimal(toDouble().pow(n)))
-
-/**
- * Raises two [Decimal] to a given precision.
- * @param n the [Decimal] to raise to
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual fun Decimal.pow(n: Int, scale: Int): Decimal = Decimal(BigDecimal.round((this pow n).bd, Rounding(scale)))
-
-/**
- * Raises two [Decimal] to a given precision.
- * @param n the [Decimal] to raise to
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual fun Decimal.pow(
+actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = FiniteDecimal(BigDecimal.BigDecimal(toDouble().pow(n)))
+actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = FiniteDecimal(BigDecimal.round((this pow n).bd, Rounding(scale)))
+actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = this pow n
+): FiniteDecimal = this pow n
 
-/**
- * Rounds a [Decimal] to a [scale].
- * @param scale The number of digits the rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return A [Decimal] rounded to [scale] digits after the decimal point.
- */
-actual fun Decimal.round(
+actual fun FiniteDecimal.round(
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = round(bd, roundingMode, scale)
+): FiniteDecimal = round(bd, roundingMode, scale)
 
-/**
- * Converts a [Number] to a [Decimal]
- */
-actual fun Number.toDecimal(): Decimal = this.toString().toDecimal()
+actual fun Number.toFiniteDecimal(): FiniteDecimal = this.toString().toFiniteDecimal()!!
+actual fun String.toFiniteDecimal(): FiniteDecimal? = try {
+    FiniteDecimal(BigDecimal.BigDecimal(this))
+} catch (e : dynamic) {
+    null
+}
 
-/**
- * Converts a String to a [Decimal]
- */
-actual fun String.toDecimal(): Decimal = Decimal(BigDecimal.BigDecimal(this))
-
-/**
- * Gets the double value of a [Decimal]
- */
-actual fun Decimal.toDouble(): Double = bd.toString().toDouble()
-
-/**
- * Gets the integer value of a [Decimal]
- */
-actual fun Decimal.toInt(): Int = bd.toFixed(0).toInt()
-
-/**
- * Gets the string value of a [Decimal]
- */
-actual fun Decimal.toString(): String = bd.toString()
+actual fun FiniteDecimal.toDouble(): Double = bd.toString().toDouble()
+actual fun FiniteDecimal.toInt(): Int = bd.toFixed(0).toInt()
+actual fun FiniteDecimal.toString(): String = bd.toString()

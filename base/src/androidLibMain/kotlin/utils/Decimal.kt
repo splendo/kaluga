@@ -26,130 +26,57 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode as NativeRoundingMode
 
-actual typealias Decimal = BigDecimal
-
 /**
- * Adds two [Decimal] together.
- * @param value the [Decimal] to add
- * @return the [Decimal] that is the total of the two provided decimals.
+ * Platform specific representation of a finite immutable, arbitrary-precision signed decimal number
  */
-actual operator fun Decimal.plus(value: Decimal) = this.add(value)
+actual typealias FiniteDecimal = BigDecimal
 
-/**
- * Adds two [Decimal] together scaled to a given precision.
- * @param value the [Decimal] to add
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual fun Decimal.plus(value: Decimal, scale: Int) =
+actual operator fun FiniteDecimal.plus(value: FiniteDecimal) = this.add(value)
+
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int) =
     this.add(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-/**
- * Adds two [Decimal] together scaled to a given precision.
- * @param value the [Decimal] to add
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual fun Decimal.plus(
-    value: Decimal,
+actual fun FiniteDecimal.plus(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
 ) = this.add(value).setScale(scale, roundingMode.android)
 
-/**
- * Subtracts two [Decimal].
- * @param value the [Decimal] to subtract
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual operator fun Decimal.minus(value: Decimal) = this.subtract(value)
+actual operator fun FiniteDecimal.minus(value: FiniteDecimal) = this.subtract(value)
 
-/**
- * Subtracts two [Decimal] to a given precision.
- * @param value the [Decimal] to subtract
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual fun Decimal.minus(value: Decimal, scale: Int) =
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int) =
     this.subtract(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-/**
- * Subtracts two [Decimal] to a given precision.
- * @param value the [Decimal] to subtract
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual fun Decimal.minus(
-    value: Decimal,
+actual fun FiniteDecimal.minus(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
 ) = this.subtract(value).setScale(scale, roundingMode.android)
 
-/**
- * Divides two [Decimal].
- * @param value the [Decimal] to divide
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual operator fun Decimal.div(value: Decimal) = if ((value.compareTo(Decimal.ZERO)) != 0) this.divide(value, MathContext.DECIMAL128) else throw DecimalException("Divide by zero")
+actual operator fun FiniteDecimal.div(value: FiniteDecimal) = this.divide(value, MathContext.DECIMAL128)
 
-/**
- * Divides two [Decimal] to a given precision.
- * @param value the [Decimal] to divide
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual fun Decimal.div(value: Decimal, scale: Int) = if ((value.compareTo(Decimal.ZERO)) != 0)
-    this.divide(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
-else throw DecimalException("Divide by zero")
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int) = this.divide(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-/**
- * Divides two [Decimal] to a given precision.
- * @param value the [Decimal] to divide
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual fun Decimal.div(
-    value: Decimal,
+actual fun FiniteDecimal.div(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
-) = if ((value.compareTo(Decimal.ZERO)) != 0)
-    this.divide(
-        value,
-        MathContext(
-            MathContext.DECIMAL128.precision,
-            roundingMode.android
-        )
-    ).setScale(scale, roundingMode.android)
-else throw DecimalException("Divide by zero")
+) = this.divide(
+    value,
+    MathContext(
+        MathContext.DECIMAL128.precision,
+        roundingMode.android
+    )
+).setScale(scale, roundingMode.android)
 
-/**
- * Multiplies two [Decimal].
- * @param value the [Decimal] to multiply
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual operator fun Decimal.times(value: Decimal) =
+actual operator fun FiniteDecimal.times(value: FiniteDecimal) =
     this.multiply(value, MathContext.DECIMAL128)
 
-/**
- * Multiplies two [Decimal] to a given precision.
- * @param value the [Decimal] to multiply
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual fun Decimal.times(value: Decimal, scale: Int) =
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int) =
     this.multiply(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-/**
- * Multiplies two [Decimal] to a given precision.
- * @param value the [Decimal] to multiply
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual fun Decimal.times(
-    value: Decimal,
+actual fun FiniteDecimal.times(
+    value: FiniteDecimal,
     scale: Int,
     roundingMode: RoundingMode
 ) = this.multiply(
@@ -160,45 +87,19 @@ actual fun Decimal.times(
     )
 ).setScale(scale, roundingMode.android)
 
-/**
- * Rounds a [Decimal] to a [scale].
- * @param scale The number of digits the rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return A [Decimal] rounded to [scale] digits after the decimal point.
- */
-actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
+actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode) =
     this.setScale(
         scale,
         roundingMode.android
     )
 
-/**
- * Raises two [Decimal].
- * @param n the [Decimal] to raise to
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual infix fun Decimal.pow(n: Int): Decimal = this.pow(n, MathContext.DECIMAL128)
-
-/**
- * Raises two [Decimal] to a given precision.
- * @param n the [Decimal] to raise to
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual fun Decimal.pow(n: Int, scale: Int): Decimal = this.pow(n, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
-
-/**
- * Raises two [Decimal] to a given precision.
- * @param n the [Decimal] to raise to
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual fun Decimal.pow(
+actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = this.pow(n, MathContext.DECIMAL128)
+actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = this.pow(n, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = this.pow(
+): FiniteDecimal = this.pow(
     n,
     MathContext(
         MathContext.DECIMAL128.precision,
@@ -206,30 +107,16 @@ actual fun Decimal.pow(
     )
 ).setScale(scale, roundingMode.android)
 
-/**
- * Converts a [Number] to a [Decimal]
- */
-actual fun Number.toDecimal() = BigDecimal(toString())
+actual fun Number.toFiniteDecimal() = BigDecimal(toString())
+actual fun String.toFiniteDecimal() = try {
+    BigDecimal(this)
+} catch (e: NumberFormatException) {
+    null
+}
 
-/**
- * Converts a String to a [Decimal]
- */
-actual fun String.toDecimal() = BigDecimal(this)
-
-/**
- * Gets the double value of a [Decimal]
- */
-actual fun Decimal.toDouble() = this.toDouble()
-
-/**
- * Gets the integer value of a [Decimal]
- */
-actual fun Decimal.toInt() = this.toInt()
-
-/**
- * Gets the string value of a [Decimal]
- */
-actual fun Decimal.toString() = this.stripTrailingZeros().toString()
+actual fun FiniteDecimal.toDouble() = this.toDouble()
+actual fun FiniteDecimal.toInt() = this.toInt()
+actual fun FiniteDecimal.toString() = this.stripTrailingZeros().toString()
 
 private val RoundingMode.android
     get() = when (this) {

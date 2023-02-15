@@ -23,31 +23,20 @@ import platform.Foundation.NSRoundingMode
 import kotlin.math.absoluteValue
 
 /**
- * Immutable, arbitrary-precision signed decimal numbers.
- * @param nsDecimal the internal [NSDecimalNumber] corresponding to this decimal
+ * Platform specific representation of a finite immutable, arbitrary-precision signed decimal number
+ * @property nsDecimal the [NSDecimalNumber] representing the finite decimal number
  */
-actual data class Decimal(val nsDecimal: NSDecimalNumber) : Comparable<Decimal> {
-    override fun compareTo(other: Decimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
-    override fun equals(other: Any?): Boolean = (other as? Decimal)?.let { nsDecimal.isEqualToNumber(it.nsDecimal) } ?: false
+actual data class FiniteDecimal(val nsDecimal: NSDecimalNumber) : Comparable<FiniteDecimal> {
+    override fun compareTo(other: FiniteDecimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
+    override fun equals(other: Any?): Boolean = (other as? FiniteDecimal)?.let { nsDecimal.isEqualToNumber(it.nsDecimal) } ?: false
     override fun hashCode(): Int {
         return nsDecimal.hashCode()
     }
 }
 
-/**
- * Adds two [Decimal] together.
- * @param value the [Decimal] to add
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual operator fun Decimal.plus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByAdding(value.nsDecimal))
+actual operator fun FiniteDecimal.plus(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberByAdding(value.nsDecimal))
 
-/**
- * Adds two [Decimal] together scaled to a given precision.
- * @param value the [Decimal] to add
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual fun Decimal.plus(value: Decimal, scale: Int) = copy(
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int) = copy(
     nsDecimal = nsDecimal.decimalNumberByAdding(
         decimalNumber = value.nsDecimal,
         withBehavior = NSDecimalNumberHandler(
@@ -61,14 +50,7 @@ actual fun Decimal.plus(value: Decimal, scale: Int) = copy(
     )
 )
 
-/**
- * Adds two [Decimal] together scaled to a given precision.
- * @param value the [Decimal] to add
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the total of the two provided decimals.
- */
-actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberByAdding(
         decimalNumber = value.nsDecimal,
         withBehavior = NSDecimalNumberHandler(
@@ -82,20 +64,9 @@ actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) 
     )
 )
 
-/**
- * Subtracts two [Decimal].
- * @param value the [Decimal] to subtract
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual operator fun Decimal.minus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberBySubtracting(value.nsDecimal))
+actual operator fun FiniteDecimal.minus(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberBySubtracting(value.nsDecimal))
 
-/**
- * Subtracts two [Decimal] to a given precision.
- * @param value the [Decimal] to subtract
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual fun Decimal.minus(value: Decimal, scale: Int) = copy(
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int) = copy(
     nsDecimal = nsDecimal.decimalNumberBySubtracting(
         decimalNumber = value.nsDecimal,
         withBehavior = NSDecimalNumberHandler(
@@ -109,14 +80,7 @@ actual fun Decimal.minus(value: Decimal, scale: Int) = copy(
     )
 )
 
-/**
- * Subtracts two [Decimal] to a given precision.
- * @param value the [Decimal] to subtract
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the subtraction of the two provided decimals.
- */
-actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberBySubtracting(
         decimalNumber = value.nsDecimal,
         withBehavior = NSDecimalNumberHandler(
@@ -130,72 +94,39 @@ actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 )
 
-/**
- * Divides two [Decimal].
- * @param value the [Decimal] to divide
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual operator fun Decimal.div(value: Decimal) = if (value.nsDecimal != NSDecimalNumber.zero) copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal)) else throw DecimalException("Divide by zero")
+actual operator fun FiniteDecimal.div(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal))
 
-/**
- * Divides two [Decimal] to a given precision.
- * @param value the [Decimal] to divide
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual fun Decimal.div(value: Decimal, scale: Int) = if (value.nsDecimal != NSDecimalNumber.zero)
-    copy(
-        nsDecimal = nsDecimal.decimalNumberByDividingBy(
-            decimalNumber = value.nsDecimal,
-            withBehavior = NSDecimalNumberHandler(
-                NSRoundingMode.NSRoundBankers,
-                scale.toShort(),
-                raiseOnExactness = true,
-                raiseOnOverflow = true,
-                raiseOnUnderflow = true,
-                raiseOnDivideByZero = true
-            )
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int) = copy(
+    nsDecimal = nsDecimal.decimalNumberByDividingBy(
+        decimalNumber = value.nsDecimal,
+        withBehavior = NSDecimalNumberHandler(
+            NSRoundingMode.NSRoundBankers,
+            scale.toShort(),
+            raiseOnExactness = true,
+            raiseOnOverflow = true,
+            raiseOnUnderflow = true,
+            raiseOnDivideByZero = true
         )
     )
-else throw DecimalException("Divide by zero")
+)
 
-/**
- * Divides two [Decimal] to a given precision.
- * @param value the [Decimal] to divide
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the division of the two provided decimals.
- */
-actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) = if (value.nsDecimal != NSDecimalNumber.zero)
-    copy(
-        nsDecimal = nsDecimal.decimalNumberByDividingBy(
-            decimalNumber = value.nsDecimal,
-            withBehavior = NSDecimalNumberHandler(
-                roundingMode = roundingMode.nsRoundingMode,
-                scale = scale.toShort(),
-                raiseOnExactness = false,
-                raiseOnOverflow = false,
-                raiseOnUnderflow = false,
-                raiseOnDivideByZero = true
-            )
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
+    nsDecimal = nsDecimal.decimalNumberByDividingBy(
+        decimalNumber = value.nsDecimal,
+        withBehavior = NSDecimalNumberHandler(
+            roundingMode = roundingMode.nsRoundingMode,
+            scale = scale.toShort(),
+            raiseOnExactness = false,
+            raiseOnOverflow = false,
+            raiseOnUnderflow = false,
+            raiseOnDivideByZero = true
         )
     )
-else throw DecimalException("Divide by zero")
+)
 
-/**
- * Multiplies two [Decimal].
- * @param value the [Decimal] to multiply
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual operator fun Decimal.times(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
+actual operator fun FiniteDecimal.times(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
 
-/**
- * Multiplies two [Decimal] to a given precision.
- * @param value the [Decimal] to multiply
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual fun Decimal.times(value: Decimal, scale: Int) = copy(
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int) = copy(
     nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(
         decimalNumber = value.nsDecimal,
         NSDecimalNumberHandler(
@@ -209,14 +140,7 @@ actual fun Decimal.times(value: Decimal, scale: Int) = copy(
     )
 )
 
-/**
- * Multiplies two [Decimal] to a given precision.
- * @param value the [Decimal] to multiply
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the multiplication of the two provided decimals.
- */
-actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(
         decimalNumber = value.nsDecimal,
         withBehavior = NSDecimalNumberHandler(
@@ -230,24 +154,13 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 )
 
-/**
- * Raises two [Decimal].
- * @param n the [Decimal] to raise to
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0)
-    1.toDecimal() / pow(n.absoluteValue)
+actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = if (n < 0)
+    1.toFiniteDecimal() / pow(n.absoluteValue)
 else
     copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
 
-/**
- * Raises two [Decimal] to a given precision.
- * @param n the [Decimal] to raise to
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0)
-    1.toDecimal() / pow(n.absoluteValue, scale)
+actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0)
+    1.toFiniteDecimal() / pow(n.absoluteValue, scale)
 else
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
@@ -262,20 +175,12 @@ else
             )
         )
     )
-
-/**
- * Raises two [Decimal] to a given precision.
- * @param n the [Decimal] to raise to
- * @param scale The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return the [Decimal] that is the exponent of the two provided decimals.
- */
-actual fun Decimal.pow(
+actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = if (n < 0)
-    1.toDecimal() / pow(n.absoluteValue, scale, roundingMode)
+): FiniteDecimal = if (n < 0)
+    1.toFiniteDecimal() / pow(n.absoluteValue, scale, roundingMode)
 else
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
@@ -291,39 +196,22 @@ else
         )
     )
 
-/**
- * Converts a [Number] to a [Decimal]
- */
-actual fun Number.toDecimal() = Decimal(NSDecimalNumber(this.toString()))
+actual fun Number.toFiniteDecimal() = FiniteDecimal(NSDecimalNumber(this.toString()))
+actual fun String.toFiniteDecimal(): FiniteDecimal? {
+    val decimal = NSDecimalNumber(this)
+    return if (decimal == NSDecimalNumber.notANumber) {
+        null
+    } else {
+        FiniteDecimal(decimal)
+    }
+}
 
-/**
- * Converts a String to a [Decimal]
- */
-actual fun String.toDecimal() = Decimal(NSDecimalNumber(this))
-
-/**
- * Gets the double value of a [Decimal]
- */
-actual fun Decimal.toDouble() = nsDecimal.toString().toDouble()
-
-/**
- * Gets the integer value of a [Decimal]
- */
-actual fun Decimal.toInt() = nsDecimal.intValue
-
-/**
- * Gets the string value of a [Decimal]
- */
+actual fun FiniteDecimal.toDouble() = nsDecimal.toString().toDouble()
+actual fun FiniteDecimal.toInt() = nsDecimal.intValue
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-actual fun Decimal.toString() = nsDecimal.stringValue
+actual fun FiniteDecimal.toString() = nsDecimal.stringValue
 
-/**
- * Rounds a [Decimal] to a [scale].
- * @param scale The number of digits the rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
- * @return A [Decimal] rounded to [scale] digits after the decimal point.
- */
-actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = copy(
+actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberByRoundingAccordingToBehavior(
         NSDecimalNumberHandler(
             roundingMode = roundingMode.nsRoundingMode,
