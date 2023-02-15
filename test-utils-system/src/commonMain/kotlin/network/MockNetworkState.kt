@@ -26,11 +26,13 @@ sealed class MockNetworkState {
 
     sealed class Inactive : MockNetworkState()
     object NotInitialized : Inactive(), NetworkState.NotInitialized {
-        override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
+        override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
     }
 
     data class Deinitialized(override val previousNetworkConnectionType: NetworkConnectionType) : MockNetworkState(), NetworkState.Deinitialized {
-        override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
+        override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR)
         override val reinitialize: suspend () -> NetworkState.Initializing = { Initializing(networkConnectionType) }
     }
 

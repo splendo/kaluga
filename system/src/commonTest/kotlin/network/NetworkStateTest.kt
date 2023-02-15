@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,7 +35,11 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
     override val filter: (Flow<NetworkState>) -> Flow<NetworkState> = { it.filterOnlyImportant() }
 
     @Test
-    fun testInitialValueUnknown() = testNetworkState(NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)) {
+    fun testInitialValueUnknown() = testNetworkState(
+        NetworkConnectionType.Unknown.WithoutLastNetwork(
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
+        )
+    ) {
         assertInitialValue()
 
         action {
@@ -88,7 +92,11 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
         }
 
         test {
-            assertEquals(NetworkConnectionType.Unknown.WithLastNetwork(NetworkConnectionType.Known.Wifi(), NetworkConnectionType.Unknown.Reason.LOSING), it.networkConnectionType)
+            assertEquals(
+                NetworkConnectionType.Unknown.WithLastNetwork(
+                    NetworkConnectionType.Known.Wifi(),
+                    NetworkConnectionType.Unknown.Reason.LOSING
+                ), it.networkConnectionType)
         }
 
         mainAction {
@@ -138,7 +146,11 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
     }
 
     @Test
-    fun testUnknownTransition() = testNetworkState(NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR)) {
+    fun testUnknownTransition() = testNetworkState(
+        NetworkConnectionType.Unknown.WithoutLastNetwork(
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
+        )
+    ) {
         test {
             assertIs<NetworkState.Unknown>(it)
             assertEquals(NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR), it.networkConnectionType)

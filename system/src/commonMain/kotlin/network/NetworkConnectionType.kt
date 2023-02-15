@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -44,6 +44,11 @@ sealed class NetworkConnectionType {
 
 fun NetworkConnectionType.unknown(reason: NetworkConnectionType.Unknown.Reason) = when (this) {
     is NetworkConnectionType.Known -> NetworkConnectionType.Unknown.WithLastNetwork(this, reason)
-    is NetworkConnectionType.Unknown.WithLastNetwork -> NetworkConnectionType.Unknown.WithLastNetwork(this.lastKnown, reason)
-    is NetworkConnectionType.Unknown.WithoutLastNetwork -> NetworkConnectionType.Unknown.WithoutLastNetwork(reason)
+    is NetworkConnectionType.Unknown.WithLastNetwork -> NetworkConnectionType.Unknown.WithLastNetwork(
+        this.lastKnown,
+        reason
+    )
+    is NetworkConnectionType.Unknown.WithoutLastNetwork -> NetworkConnectionType.Unknown.WithoutLastNetwork(
+        reason
+    )
 }

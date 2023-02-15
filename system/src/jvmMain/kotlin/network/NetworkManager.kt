@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,17 +18,20 @@
 package com.splendo.kaluga.system.network
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-interface NetworkManager {
-    val network: Flow<NetworkConnectionType>
-    suspend fun startMonitoring()
-    suspend fun stopMonitoring()
-}
+actual class DefaultNetworkManager : BaseNetworkManager() {
 
-abstract class BaseNetworkManager : NetworkManager {
-    interface Builder {
-        fun create(): BaseNetworkManager
+    class Builder : BaseNetworkManager.Builder {
+        override fun create(): BaseNetworkManager = DefaultNetworkManager()
+    }
+
+    override val network: Flow<NetworkConnectionType> = flowOf(NetworkConnectionType.Known.Absent)
+    override suspend fun startMonitoring() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun stopMonitoring() {
+        TODO("Not yet implemented")
     }
 }
-
-expect class DefaultNetworkManager : BaseNetworkManager
