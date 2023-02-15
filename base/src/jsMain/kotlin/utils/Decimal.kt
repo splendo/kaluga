@@ -153,7 +153,7 @@ actual fun FiniteDecimal.round(
 actual fun Number.toFiniteDecimal(): FiniteDecimal = this.toString().toFiniteDecimal()!!
 actual fun String.toFiniteDecimal(): FiniteDecimal? = try {
     FiniteDecimal(BigDecimal.BigDecimal(this))
-} catch (e : dynamic) {
+} catch (e: dynamic) {
     null
 }
 
