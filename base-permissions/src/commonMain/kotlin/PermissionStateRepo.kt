@@ -30,8 +30,20 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * A [StateRepo]/[MutableStateFlow] of [PermissionState]
+ * @param P the type of [Permission] of the [PermissionState]
+ */
 typealias PermissionStateFlowRepo<P> = StateRepo<PermissionState<P>, MutableStateFlow<PermissionState<P>>>
 
+/**
+ * An abstract [ColdStateFlowRepo] for managing [PermissionState]
+ * @param P the type of [Permission] of the [PermissionState]
+ * @param createUninitializedState method for creating the initial [PermissionState.Uninitialized] State
+ * @param createInitializingState method for transitioning from a [PermissionState.Inactive] into a [PermissionState.Initializing] given an implementation of this [ColdStateFlowRepo]
+ * @param createDeinitializedState method for transitioning from a [PermissionState.Active] into a [PermissionState.Deinitialized] given an implementation of this [ColdStateFlowRepo]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+ */
 abstract class BasePermissionStateRepo<P : Permission>(
     createUninitializedState: () -> PermissionState.Uninitialized<P>,
     createInitializingState: suspend ColdStateFlowRepo<PermissionState<P>>.(PermissionState.Inactive<P>) -> suspend () -> PermissionState.Initializing<P>,
@@ -54,6 +66,13 @@ abstract class BasePermissionStateRepo<P : Permission>(
     firstState = createUninitializedState
 )
 
+/**
+ * A [BasePermissionStateRepo] for managing [PermissionState]
+ * @param P the type of [Permission] of the [PermissionState]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param createPermissionManager method for creating a [PermissionManager] associated with the [Permission]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+ */
 open class PermissionStateRepo<P : Permission>(
     protected val monitoringInterval: Duration = defaultMonitoringInterval,
     createPermissionManager: (CoroutineScope) -> PermissionManager<P>,

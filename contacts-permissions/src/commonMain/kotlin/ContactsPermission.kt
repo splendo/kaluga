@@ -31,25 +31,39 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [ContactsPermission]
  */
 typealias ContactsPermissionManager = PermissionManager<ContactsPermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [ContactsPermission]
+ */
 expect class DefaultContactsPermissionManager : BasePermissionManager<ContactsPermission>
 
+/**
+ * A [BasePermissionsBuilder] for [ContactsPermission]
+ */
 interface BaseContactsPermissionManagerBuilder : BasePermissionsBuilder<ContactsPermission> {
 
     /**
      * Creates a [ContactsPermissionManager]
-     * @param repo The [ContactsPermissionStateRepo] associated with the [ContactsPermission]
+     * @param contactsPermission the [ContactsPermission] to manage.
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
+     * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [ContactsPermissionManager]
      */
     fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): ContactsPermissionManager
 }
 
 /**
- * A builder for creating a [ContactsPermissionManager]
+ * A [BaseContactsPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class ContactsPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseContactsPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [ContactsPermission]
+ * @param contactsPermission the [ContactsPermission] to manage.
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [ContactsPermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class ContactsPermissionStateRepo(

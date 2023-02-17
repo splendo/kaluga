@@ -24,6 +24,7 @@ import platform.CoreLocation.CLLocationManager
 /**
  * Accessor to ensure a [CLLocationManager] is only managed from the Main Thread.
  * Use [updateLocationManager] to gain access to the LocationManager
+ * @param onInit callback to modify the [CLLocationManager] after it is initialized
  */
 class MainCLLocationManagerAccessor(private val onInit: CLLocationManager.() -> Unit) {
 

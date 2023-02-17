@@ -21,11 +21,19 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [LocationPermission]
+ * @param context the [Context] the [LocationPermission] is to be granted in
+ * @param locationPermission the [LocationPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultLocationPermissionManager(
     context: Context,
     locationPermission: LocationPermission,
@@ -55,6 +63,10 @@ actual class DefaultLocationPermissionManager(
     }
 }
 
+/**
+ * A [BaseLocationPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
     override fun create(

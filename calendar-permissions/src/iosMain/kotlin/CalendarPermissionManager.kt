@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
@@ -39,6 +40,13 @@ import kotlin.time.Duration
 
 const val NSCalendarsUsageDescription = "NSCalendarsUsageDescription"
 
+/**
+ * The [BasePermissionManager] to use as a default for [CalendarPermission]
+ * @param bundle the [NSBundle] the [CalendarPermission] is to be granted in
+ * @param calendarPermission the [CalendarPermission] to manage.
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultCalendarPermissionManager(
     private val bundle: NSBundle,
     calendarPermission: CalendarPermission,
@@ -88,6 +96,10 @@ actual class DefaultCalendarPermissionManager(
     }
 }
 
+/**
+ * A [BaseCalendarPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
     override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {

@@ -23,13 +23,24 @@ import android.os.Build
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * Options for configuring a [NotificationsPermission]
+ */
 actual class NotificationOptions
 
+/**
+ * The [BasePermissionManager] to use as a default for [NotificationsPermission]
+ * @param context the [Context] the [NotificationsPermission] is to be granted in
+ * @param notificationsPermission the [NotificationsPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultNotificationsPermissionManager(
     context: Context,
     notificationsPermission: NotificationsPermission,
@@ -75,6 +86,10 @@ actual class DefaultNotificationsPermissionManager(
     }
 }
 
+/**
+ * A [BaseNotificationsPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class NotificationsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {

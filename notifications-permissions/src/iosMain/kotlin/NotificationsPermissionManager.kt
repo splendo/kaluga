@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
@@ -39,8 +40,18 @@ import platform.UserNotifications.UNAuthorizationStatusProvisional
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.time.Duration
 
+/**
+ * Options for configuring a [NotificationsPermission]
+ * @property options the [UNAuthorizationOptions] of the notification permission
+ */
 actual data class NotificationOptions(val options: UNAuthorizationOptions)
 
+/**
+ * The [BasePermissionManager] to use as a default for [NotificationsPermission]
+ * @param notificationsPermission the [NotificationsPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultNotificationsPermissionManager(
     notificationsPermission: NotificationsPermission,
     settings: Settings,
@@ -98,6 +109,10 @@ actual class DefaultNotificationsPermissionManager(
     }
 }
 
+/**
+ * A [BaseNotificationsPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {

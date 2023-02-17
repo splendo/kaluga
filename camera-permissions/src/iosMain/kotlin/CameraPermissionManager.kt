@@ -19,12 +19,19 @@ package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [CameraPermission]
+ * @param bundle the [NSBundle] the [CameraPermission] is to be granted in
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultCameraPermissionManager(
     bundle: NSBundle,
     settings: Settings,
@@ -47,6 +54,10 @@ actual class DefaultCameraPermissionManager(
     }
 }
 
+/**
+ * A [BaseCameraPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
     override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager {

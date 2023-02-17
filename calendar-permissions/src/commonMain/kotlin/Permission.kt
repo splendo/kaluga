@@ -26,13 +26,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * Permission to access the users Calendar
+ * [Permission] to access the users Calendar
  * @param allowWrite If `true` writing to the calendar is permitted
  */
 data class CalendarPermission(val allowWrite: Boolean = false) : Permission() {
     override val name: String = "Calendar - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
 }
 
+/**
+ * Registers a [BaseCalendarPermissionManagerBuilder] and [PermissionStateRepo] for [CalendarPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param calendarPermissionManagerBuilderBuilder method for creating a [BaseCalendarPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseCalendarPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseCalendarPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerCalendarPermission(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -42,6 +51,14 @@ fun PermissionsBuilder.registerCalendarPermission(
         CalendarPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Registers a [BaseCalendarPermissionManagerBuilder] and [PermissionStateRepo] for [CalendarPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param calendarPermissionManagerBuilderBuilder method for creating a [BaseCalendarPermissionManagerBuilder] from a [PermissionContext]
+ * @param calendarPermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [CalendarPermission] given a [BaseCalendarPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseCalendarPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseCalendarPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerCalendarPermission(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
     calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>
@@ -52,6 +69,14 @@ fun PermissionsBuilder.registerCalendarPermission(
     }
 }
 
+/**
+ * Gets the [BaseCalendarPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseCalendarPermissionManagerBuilder] and [PermissionStateRepo] for [CalendarPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param calendarPermissionManagerBuilderBuilder method for creating a [BaseCalendarPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseCalendarPermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerCalendarPermissionIfNotRegistered(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -61,6 +86,13 @@ fun PermissionsBuilder.registerCalendarPermissionIfNotRegistered(
         CalendarPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Gets the [BaseCalendarPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseCalendarPermissionManagerBuilder] and [PermissionStateRepo] for [CalendarPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param calendarPermissionManagerBuilderBuilder method for creating a [BaseCalendarPermissionManagerBuilder] from a [PermissionContext]
+ * @param calendarPermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [CalendarPermission] given a [BaseCalendarPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseCalendarPermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerCalendarPermissionIfNotRegistered(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
     calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>

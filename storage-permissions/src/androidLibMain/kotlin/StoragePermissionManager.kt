@@ -21,11 +21,19 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [StoragePermission]
+ * @param context the [Context] the [StoragePermission] is to be granted in
+ * @param storagePermission the [StoragePermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultStoragePermissionManager(
     context: Context,
     storagePermission: StoragePermission,
@@ -59,6 +67,10 @@ actual class DefaultStoragePermissionManager(
     }
 }
 
+/**
+ * A [BaseStoragePermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
     override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {

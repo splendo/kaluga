@@ -32,25 +32,37 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [BluetoothPermission]
  */
 typealias BluetoothPermissionManager = PermissionManager<BluetoothPermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [BluetoothPermission]
+ */
 expect class DefaultBluetoothPermissionManager : BasePermissionManager<BluetoothPermission>
 
+/**
+ * A [BasePermissionsBuilder] for [BluetoothPermission]
+ */
 interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<BluetoothPermission> {
+
     /**
      * Creates a [BluetoothPermissionManager]
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [BluetoothPermissionManager]
      */
     fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): BluetoothPermissionManager
 }
 
 /**
- * A builder for creating a [BluetoothPermissionManager]
+ * A [BaseBluetoothPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseBluetoothPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [BluetoothPermission]
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [BluetoothPermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class BluetoothPermissionStateRepo(

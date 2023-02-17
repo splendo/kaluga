@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +45,13 @@ const val NSLocationWhenInUseUsageDescription = "NSLocationWhenInUseUsageDescrip
 const val NSLocationAlwaysAndWhenInUseUsageDescription = "NSLocationAlwaysAndWhenInUseUsageDescription"
 const val NSLocationAlwaysUsageDescription = "NSLocationAlwaysUsageDescription"
 
+/**
+ * The [BasePermissionManager] to use as a default for [LocationPermission]
+ * @param bundle the [NSBundle] the [LocationPermission] is to be granted in
+ * @param locationPermission the [LocationPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultLocationPermissionManager(
     private val bundle: NSBundle,
     locationPermission: LocationPermission,
@@ -108,6 +116,10 @@ actual class DefaultLocationPermissionManager(
     }
 }
 
+/**
+ * A [BaseLocationPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
     override fun create(locationPermission: LocationPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): LocationPermissionManager {
