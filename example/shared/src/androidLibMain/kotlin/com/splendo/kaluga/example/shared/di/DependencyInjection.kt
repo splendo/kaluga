@@ -51,6 +51,7 @@ import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
@@ -110,6 +111,8 @@ internal val androidModule = module {
     viewModel { (permission: Permission) -> PermissionViewModel(permission) }
 
     viewModel { (permission: LocationPermission) -> LocationViewModel(permission) }
+
+    viewModel { NotificationPermissionViewModel() }
 
     viewModel { (navigator: Navigator<ArchitectureNavigationAction<*>>) ->
         ArchitectureViewModel(navigator)
