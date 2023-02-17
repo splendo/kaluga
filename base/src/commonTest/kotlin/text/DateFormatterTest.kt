@@ -29,6 +29,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.time.Duration.Companion.milliseconds
 
 class DateFormatterTest {
 
@@ -37,8 +38,8 @@ class DateFormatterTest {
         private val FranceLocale = createLocale("fr", "FR")
         private val PSTTimeZone = KalugaTimeZone.get("America/Los_Angeles")!!
 
-        private val January81988 = DefaultKalugaDate.epoch(568627200000)
-        private val March181988 = DefaultKalugaDate.epoch(574695462750)
+        private val January81988 = DefaultKalugaDate.epoch(568627200000.milliseconds)
+        private val March181988 = DefaultKalugaDate.epoch(574695462750.milliseconds)
     }
 
     @Test

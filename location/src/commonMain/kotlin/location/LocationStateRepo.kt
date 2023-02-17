@@ -114,10 +114,7 @@ open class LocationStateImplRepo(
                 state.initialize(event.hasPermission, locationManager.isLocationEnabled())
             }
             is LocationState.Permitted -> {
-                if (event.hasPermission)
-                    state.remain()
-                else
-                    state.revokePermission
+                if (event.hasPermission) state.remain() else state.revokePermission
             }
             is LocationState.Disabled.NotPermitted -> if (event.hasPermission) state.permit(locationManager.isLocationEnabled()) else state.remain()
             else -> { state.remain() }

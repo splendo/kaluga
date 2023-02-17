@@ -94,8 +94,7 @@ sealed class MockLocationState {
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED)
 
             override fun permit(enabled: Boolean): suspend () -> LocationState.Permitted = {
-                if (enabled) Enabled(location.known.orUnknown)
-                else NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS))
+                if (enabled) Enabled(location.known.orUnknown) else NoGPS(location.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS))
             }
         }
     }

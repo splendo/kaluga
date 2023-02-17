@@ -105,8 +105,11 @@ sealed class BaseMethodMock<
         val matchingStubs = stubs.synchronized {
             keys.mapNotNull { matchers ->
                 val stub = this[matchers]
-                if (ParametersSpec.run { matchers.matches(values) } && stub != null) matchers.asList()
-                    .sorted() to stub else null
+                if (ParametersSpec.run { matchers.matches(values) } && stub != null) {
+                    matchers.asList().sorted() to stub
+                } else {
+                    null
+                }
             }
         }
         // Ensure there is at least one stub. Otherwise fail

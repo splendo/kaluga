@@ -21,6 +21,9 @@ import platform.AVFoundation.AVMediaTypeVideo
 
 const val NSCameraUsageDescription = "NSCameraUsageDescription"
 
+/**
+ * The [AVType] of the [CameraPermission]
+ */
 class AVTypeCamera : AVType() {
     override val avMediaType = AVMediaTypeVideo
     override val declarationName = NSCameraUsageDescription

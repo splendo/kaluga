@@ -25,19 +25,22 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
 
+/**
+ * Provides the current [IOSPermissionsHelper.AuthorizationStatus] of a given permission.
+ */
 interface CurrentAuthorizationStatusProvider {
     suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus
 }
 
 /**
  * Convenience class for scheduling checks to changes in permission state.
- * @param authorizationStatus Method for requesting a the current [IOSPermissionsHelper.AuthorizationStatus] for the permission associated with the [PermissionManager]
- * @param onPermissionChangedFlow [AuthorizationStatusHandler] that is notified when changes to a permission occurs.
+ * @param currentAuthorizationStatusProvider The [CurrentAuthorizationStatusProvider] used for getting the [IOSPermissionsHelper.AuthorizationStatus] of the permission.
+ * @param authorizationStatusHandler [AuthorizationStatusHandler] that is notified when changes to a permission occurs.
  * @param coroutineScope The [CoroutineScope] on which to run the checks.
  */
 class PermissionRefreshScheduler(
     private val currentAuthorizationStatusProvider: CurrentAuthorizationStatusProvider,
-    private val onPermissionChangedFlow: AuthorizationStatusHandler,
+    private val authorizationStatusHandler: AuthorizationStatusHandler,
     coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
@@ -59,13 +62,13 @@ class PermissionRefreshScheduler(
     }
 
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
-    val waitingLock = Mutex()
+    internal val waitingLock = Mutex()
     private var timerState: TimerJobState = TimerJobState.TimerNotRunning
     private val lock = Mutex()
 
     /**
-     * Starts monitoring for changes to the permission
-     * @param interval The interval in milliseconds between checking for changes to the permission.
+     * Starts monitoring for changes to the [IOSPermissionsHelper.AuthorizationStatus]
+     * @param interval The [Duration] between checking for changes to the permission.
      */
     fun startMonitoring(interval: Duration) {
         launch {
@@ -81,7 +84,7 @@ class PermissionRefreshScheduler(
                     val status = currentAuthorizationStatusProvider.provide()
                     if (!waitingLock.isLocked && lastPermission != status) {
                         lastPermission = currentAuthorizationStatusProvider.provide()
-                        onPermissionChangedFlow.status(status)
+                        authorizationStatusHandler.status(status)
                     }
                 }
             }
@@ -89,7 +92,7 @@ class PermissionRefreshScheduler(
     }
 
     /**
-     * Stops monitoring for changes to the permission.
+     * Stops monitoring for changes to the [IOSPermissionsHelper.AuthorizationStatus].
      */
     fun stopMonitoring() {
         launch {

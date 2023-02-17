@@ -36,6 +36,9 @@ import kotlinx.coroutines.launch
  */
 sealed interface RouteController {
 
+    /**
+     * Adds a list of [NavHostResultHandler] to handles results for this route controller.
+     */
     @Composable
     fun AddResultHandlers(viewModel: BaseLifecycleViewModel, resultHandlers: List<NavHostResultHandler<*, *>>)
 
@@ -58,7 +61,8 @@ sealed interface RouteController {
 
 /**
  * Abstract [RouteController] that navigates on a [NavHostController] provided by a [Provider]
- * @param provider The [Provider] of the [NavHostController]
+ * @param Provider a type of class that can provide a [NavHostController]
+ * @param provider A [StateFlow] of [Provider].
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
 sealed class ProvidingNavHostRouteController<Provider>(

@@ -22,6 +22,7 @@ import com.splendo.kaluga.test.base.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration.Companion.milliseconds
 
 class NavigationBundleTest : BaseTest() {
 
@@ -38,10 +39,10 @@ class NavigationBundleTest : BaseTest() {
         }
         val optionalString: String? = "Some String"
         val optionalFloat: Float? = null
-        val dateValue = DefaultKalugaDate.epoch(offsetInMilliseconds = 1606204800000)
+        val dateValue = DefaultKalugaDate.epoch(1606204800000.milliseconds)
         val dateArray = listOf(
-            DefaultKalugaDate.epoch(offsetInMilliseconds = 1606204800001),
-            DefaultKalugaDate.epoch(offsetInMilliseconds = 1606204800002)
+            DefaultKalugaDate.epoch(1606204800001.milliseconds),
+            DefaultKalugaDate.epoch(1606204800002.milliseconds)
         )
 
         val mockSpec = MockSpec()

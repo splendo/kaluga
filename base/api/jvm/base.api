@@ -865,10 +865,14 @@ public abstract class com/splendo/kaluga/base/utils/BaseTimeZone {
 	public abstract fun copy ()Lcom/splendo/kaluga/base/utils/BaseTimeZone;
 	public abstract fun displayName (Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;ZLcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
 	public static synthetic fun displayName$default (Lcom/splendo/kaluga/base/utils/BaseTimeZone;Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;ZLcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Ljava/lang/String;
-	public abstract fun getDaylightSavingsOffsetInMilliseconds ()J
+	public abstract fun getDaylightSavingsOffset-UwyO8pc ()J
+	public final fun getDaylightSavingsOffsetInMilliseconds ()J
 	public abstract fun getIdentifier ()Ljava/lang/String;
-	public abstract fun getOffsetFromGMTInMilliseconds ()J
-	public abstract fun offsetFromGMTAtDateInMilliseconds (Lcom/splendo/kaluga/base/utils/KalugaDate;)J
+	public abstract fun getOffsetFromGMT-UwyO8pc ()J
+	public final fun getOffsetFromGMTInMilliseconds ()J
+	public abstract fun offsetFromGMTAtDate-5sfh64U (Lcom/splendo/kaluga/base/utils/KalugaDate;)J
+	public static synthetic fun offsetFromGMTAtDate-5sfh64U$default (Lcom/splendo/kaluga/base/utils/BaseTimeZone;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)J
+	public final fun offsetFromGMTAtDateInMilliseconds (Lcom/splendo/kaluga/base/utils/KalugaDate;)J
 	public static synthetic fun offsetFromGMTAtDateInMilliseconds$default (Lcom/splendo/kaluga/base/utils/BaseTimeZone;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)J
 	public fun toString ()Ljava/lang/String;
 	public abstract fun usesDaylightSavingsTime (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
@@ -949,11 +953,11 @@ public final class com/splendo/kaluga/base/utils/DefaultKalugaDate : com/splendo
 	public fun getDay ()I
 	public fun getDayOfYear ()I
 	public fun getDaysInMonth ()I
+	public fun getDurationSinceEpoch-UwyO8pc ()J
 	public fun getEra ()I
 	public fun getFirstWeekDay ()I
 	public fun getHour ()I
 	public fun getMillisecond ()I
-	public fun getMillisecondSinceEpoch ()J
 	public fun getMinute ()I
 	public fun getMonth ()I
 	public fun getSecond ()I
@@ -965,11 +969,11 @@ public final class com/splendo/kaluga/base/utils/DefaultKalugaDate : com/splendo
 	public fun hashCode ()I
 	public fun setDay (I)V
 	public fun setDayOfYear (I)V
+	public fun setDurationSinceEpoch-LRDsOJo (J)V
 	public fun setEra (I)V
 	public fun setFirstWeekDay (I)V
 	public fun setHour (I)V
 	public fun setMillisecond (I)V
-	public fun setMillisecondSinceEpoch (J)V
 	public fun setMinute (I)V
 	public fun setMonth (I)V
 	public fun setSecond (I)V
@@ -981,10 +985,10 @@ public final class com/splendo/kaluga/base/utils/DefaultKalugaDate : com/splendo
 }
 
 public final class com/splendo/kaluga/base/utils/DefaultKalugaDate$Companion {
-	public final fun epoch (JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun epoch$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public final fun now (JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun now$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public final fun epoch-KLykuaI (JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static synthetic fun epoch-KLykuaI$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public final fun now-KLykuaI (JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static synthetic fun now-KLykuaI$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 }
 
 public final class com/splendo/kaluga/base/utils/Deferred_getCompletedOrNullKt {
@@ -1009,11 +1013,12 @@ public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Compa
 	public abstract fun getDay ()I
 	public abstract fun getDayOfYear ()I
 	public abstract fun getDaysInMonth ()I
+	public abstract fun getDurationSinceEpoch-UwyO8pc ()J
 	public abstract fun getEra ()I
 	public abstract fun getFirstWeekDay ()I
 	public abstract fun getHour ()I
 	public abstract fun getMillisecond ()I
-	public abstract fun getMillisecondSinceEpoch ()J
+	public final fun getMillisecondSinceEpoch ()J
 	public abstract fun getMinute ()I
 	public abstract fun getMonth ()I
 	public abstract fun getSecond ()I
@@ -1025,11 +1030,12 @@ public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Compa
 	public abstract fun hashCode ()I
 	public abstract fun setDay (I)V
 	public abstract fun setDayOfYear (I)V
+	public abstract fun setDurationSinceEpoch-LRDsOJo (J)V
 	public abstract fun setEra (I)V
 	public abstract fun setFirstWeekDay (I)V
 	public abstract fun setHour (I)V
 	public abstract fun setMillisecond (I)V
-	public abstract fun setMillisecondSinceEpoch (J)V
+	public final fun setMillisecondSinceEpoch (J)V
 	public abstract fun setMinute (I)V
 	public abstract fun setMonth (I)V
 	public abstract fun setSecond (I)V
@@ -1042,6 +1048,8 @@ public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Compa
 }
 
 public final class com/splendo/kaluga/base/utils/KalugaDateJvm {
+	public static final fun epoch (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static synthetic fun epoch$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static final fun isInSameYear (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
 	public static final fun isLastMonth (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
 	public static final fun isLastYear (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
@@ -1054,10 +1062,16 @@ public final class com/splendo/kaluga/base/utils/KalugaDateJvm {
 	public static final fun isToday (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
 	public static final fun isTomorrow (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
 	public static final fun isYesterday (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun minus (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun minus (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)J
+	public static final fun minus-HG0u8IE (Lcom/splendo/kaluga/base/utils/KalugaDate;J)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun now (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static synthetic fun now$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static final fun nowUtc (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static synthetic fun nowUtc$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun plus (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun nowUtc-8Mi8wO0 (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static synthetic fun nowUtc-8Mi8wO0$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun plus-HG0u8IE (Lcom/splendo/kaluga/base/utils/KalugaDate;J)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public static final fun toEndOfDay (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static final fun toStartOfDay (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static final fun today (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static synthetic fun today$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
@@ -1137,6 +1151,29 @@ public final class com/splendo/kaluga/base/utils/RoundingMode$RoundHalfEven : co
 
 public final class com/splendo/kaluga/base/utils/RoundingMode$RoundUp : com/splendo/kaluga/base/utils/RoundingMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/RoundingMode$RoundUp;
+}
+
+public final class com/splendo/kaluga/base/utils/TimeZone : com/splendo/kaluga/base/utils/BaseTimeZone {
+	public static final field Companion Lcom/splendo/kaluga/base/utils/TimeZone$Companion;
+	public synthetic fun copy ()Lcom/splendo/kaluga/base/utils/BaseTimeZone;
+	public fun copy ()Lcom/splendo/kaluga/base/utils/TimeZone;
+	public fun displayName (Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;ZLcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDaylightSavingsOffset-UwyO8pc ()J
+	public fun getIdentifier ()Ljava/lang/String;
+	public fun getOffsetFromGMT-UwyO8pc ()J
+	public fun offsetFromGMTAtDate-5sfh64U (Lcom/splendo/kaluga/base/utils/KalugaDate;)J
+	public fun usesDaylightSavingsTime (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
+}
+
+public final class com/splendo/kaluga/base/utils/TimeZone$Companion {
+	public final fun current ()Lcom/splendo/kaluga/base/utils/TimeZone;
+	public final fun get (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/TimeZone;
+	public final fun getAvailableIdentifiers ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/base/utils/TimeZoneKt {
+	public static final fun getUtc (Lcom/splendo/kaluga/base/utils/TimeZone$Companion;)Lcom/splendo/kaluga/base/utils/TimeZone;
 }
 
 public final class com/splendo/kaluga/base/utils/TimeZoneNameStyle : java/lang/Enum {

@@ -22,20 +22,18 @@ typealias RouteContentBuilder = NavGraphBuilder.(StateFlow<NavHostController?>) 
 
 /**
  * A Navigator managed by a [RouteController]
- * @param navigationMapper A mapper that converts an [NavigationAction] handled by this navigator into a [Route]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [ComposableNavSpec]
  */
-sealed class ComposableNavigator<A : NavigationAction<*>>(
-    private val navigationMapper: @Composable (A) -> ComposableNavSpec
-) : Navigator<A>, ComposableLifecycleSubscribable {
+sealed class ComposableNavigator<Action : NavigationAction<*>>(
+    private val navigationMapper: @Composable (Action) -> ComposableNavSpec
+) : Navigator<Action>, ComposableLifecycleSubscribable {
 
-    /**
-     * [RouteController] managing the [Route] navigation
-     */
-    abstract val routeController: RouteController?
+    protected abstract val routeController: RouteController?
 
-    private val actionState = MutableStateFlow<A?>(null)
+    private val actionState = MutableStateFlow<Action?>(null)
 
-    override fun navigate(action: A) {
+    override fun navigate(action: Action) {
         actionState.value = action
     }
 
@@ -46,7 +44,7 @@ sealed class ComposableNavigator<A : NavigationAction<*>>(
         contentModifier(content)
     }
 
-    abstract val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
+    protected abstract val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
 
     @Composable
     protected fun BaseLifecycleViewModel.SetupNavigationAction() {
@@ -71,18 +69,19 @@ sealed class ComposableNavigator<A : NavigationAction<*>>(
 }
 
 /**
- * A [ComposableNavigator] that creates and manages a [NavHost]. This should be on top of any [NavHostComposableNavigator]
- * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
+ * A [ComposableNavigator] that creates and manages a [NavHost]. This should be on top of any [NavHostComposableNavigator] in the View-hierarchy
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  * @param parentRouteController A [RouteController] managing the parent layout of the [NavHost].
  * @param rootResultHandlers A list of [NavHostResultHandler] to be added to the root view.
  * @param contentBuilder The [RouteContentBuilder] describing the navigation graph
  */
-class RootNavHostComposableNavigator<A : NavigationAction<*>>(
-    navigationMapper: @Composable (A) -> ComposableNavSpec,
+class RootNavHostComposableNavigator<Action : NavigationAction<*>>(
+    navigationMapper: @Composable (Action) -> ComposableNavSpec,
     parentRouteController: RouteController? = null,
     rootResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     contentBuilder: RouteContentBuilder
-) : ComposableNavigator<A>(navigationMapper) {
+) : ComposableNavigator<Action>(navigationMapper) {
 
     private val navHostController = MutableStateFlow<NavHostController?>(null)
     override val routeController: RouteController = NavHostRouteController(navHostController, parentRouteController)
@@ -110,16 +109,19 @@ class RootNavHostComposableNavigator<A : NavigationAction<*>>(
 }
 
 /**
- * A [ComposableNavigator] that is managed by a [NavHost]
+ * A [ComposableNavigator] that is managed by a [NavHost].
+ * Must have a NavHost set up higher up in the View-hierarchy.
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ * @param Provider the type of provider associated with the [ProvidingNavHostRouteController] controlling the route.
  * @param routeController The [ProvidingNavHostRouteController] controlling the route.
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
- * @param navigationMapper Maps [A] to a [Route] to be navigated to.
+ * @param navigationMapper Maps [Action] to a [Route] to be navigated to.
  */
-sealed class ProvidingNavHostComposableNavigator<A : NavigationAction<*>, Provider>(
+sealed class ProvidingNavHostComposableNavigator<Action : NavigationAction<*>, Provider>(
     override val routeController: ProvidingNavHostRouteController<Provider>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    navigationMapper: @Composable (A) -> ComposableNavSpec
-) : ComposableNavigator<A>(navigationMapper) {
+    navigationMapper: @Composable (Action) -> ComposableNavSpec
+) : ComposableNavigator<Action>(navigationMapper) {
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
         // Add Result Handlers
@@ -129,34 +131,38 @@ sealed class ProvidingNavHostComposableNavigator<A : NavigationAction<*>, Provid
 }
 
 /**
- * A [ComposableNavigator] that navigates for a flow of [NavHostController]
- * @param navHostController The flow of [NavHostController] to manage this navigator
+ * A [ProvidingNavHostComposableNavigator] that navigates for a flow of [NavHostController]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ * @param navHostController The [StateFlow] of [NavHostController] to manage this navigator
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
- * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
+ * @param parentRouteController An optional parent [RouteController] managing the navigation of a view higher in the hierarchy.
+ * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  */
-class NavHostComposableNavigator<A : NavigationAction<*>>(
+class NavHostComposableNavigator<Action : NavigationAction<*>>(
     navHostController: StateFlow<NavHostController?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     parentRouteController: RouteController? = null,
-    navigationMapper: @Composable (A) -> ComposableNavSpec
-) : ProvidingNavHostComposableNavigator<A, NavHostController>(
+    navigationMapper: @Composable (Action) -> ComposableNavSpec
+) : ProvidingNavHostComposableNavigator<Action, NavHostController>(
     NavHostRouteController(navHostController, parentRouteController),
     resultHandlers,
     navigationMapper
 )
 
 /**
- * A [ComposableNavigator] that navigates for the content of a flow of [BottomSheetNavigatorState]
- * @param bottomSheetNavigator The flow of [BottomSheetNavigatorState] to manage this navigator
+ * A [ProvidingNavHostComposableNavigator] that navigates for the [BottomSheetNavigatorState.contentNavHostController] of a flow of [BottomSheetNavigatorState]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ * @param bottomSheetNavigator The [StateFlow] of [BottomSheetNavigatorState] to manage this navigator
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
- * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
+ * @param parentRouteController An optional parent [RouteController] managing the navigation of a view higher in the hierarchy.
+ * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  */
-class BottomSheetContentNavHostComposableNavigator<A : NavigationAction<*>>(
+class BottomSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     parentRouteController: RouteController? = null,
-    navigationMapper: @Composable (A) -> ComposableNavSpec
-) : ProvidingNavHostComposableNavigator<A, BottomSheetNavigatorState>(
+    navigationMapper: @Composable (Action) -> ComposableNavSpec
+) : ProvidingNavHostComposableNavigator<Action, BottomSheetNavigatorState>(
     BottomSheetContentRouteController(bottomSheetNavigator, parentRouteController),
     resultHandlers,
     navigationMapper
@@ -164,15 +170,16 @@ class BottomSheetContentNavHostComposableNavigator<A : NavigationAction<*>>(
 
 /**
  * A [ComposableNavigator] that navigates for the sheet content of a flow of [BottomSheetNavigatorState]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param bottomSheetNavigator The flow of [BottomSheetNavigatorState] to manage this navigator
  * @param resultHandlers The [NavHostResultHandler] to add to this navigator.
- * @param navigationMapper Maps [A] to a [ComposableNavSpec] to be navigated to.
+ * @param navigationMapper Maps [Action] to a [ComposableNavSpec] to be navigated to.
  */
-class BottomSheetSheetContentNavHostComposableNavigator<A : NavigationAction<*>>(
+class BottomSheetSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    navigationMapper: @Composable (A) -> ComposableNavSpec
-) : ComposableNavigator<A>(navigationMapper) {
+    navigationMapper: @Composable (Action) -> ComposableNavSpec
+) : ComposableNavigator<Action>(navigationMapper) {
 
     private val coroutineScopeState = MutableStateFlow<CoroutineScope?>(null)
     override val routeController = BottomSheetSheetContentRouteController(bottomSheetNavigator, coroutineScopeState)
@@ -187,11 +194,12 @@ class BottomSheetSheetContentNavHostComposableNavigator<A : NavigationAction<*>>
 
 /**
  * A [ComposableNavigator] that only supports [ComposableNavSpec.LaunchedNavigation] navigation.
- * @param navigationMapper Maps [A] to a [ComposableNavSpec.LaunchedNavigation] to be navigated to.
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ * @param navigationMapper Maps [Action] to a [ComposableNavSpec.LaunchedNavigation] to be navigated to.
  */
-class LaunchedComposableNavigator<A : NavigationAction<*>>(
-    navigationMapper: @Composable (A) -> ComposableNavSpec.LaunchedNavigation
-) : ComposableNavigator<A>(navigationMapper) {
+class LaunchedComposableNavigator<Action : NavigationAction<*>>(
+    navigationMapper: @Composable (Action) -> ComposableNavSpec.LaunchedNavigation
+) : ComposableNavigator<Action>(navigationMapper) {
     override val routeController: RouteController? = null
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content -> content() }
 }

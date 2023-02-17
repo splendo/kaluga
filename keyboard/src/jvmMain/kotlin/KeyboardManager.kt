@@ -20,8 +20,14 @@ package com.splendo.kaluga.keyboard
 
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * A [BaseKeyboardManager] that takes any [FocusHandler]
+ */
 class KeyboardManager : BaseKeyboardManager<FocusHandler> {
 
+    /**
+     * A [BaseKeyboardManager.Builder] to create a [KeyboardManager]
+     */
     class Builder : BaseKeyboardManager.Builder<FocusHandler> {
         override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
     }

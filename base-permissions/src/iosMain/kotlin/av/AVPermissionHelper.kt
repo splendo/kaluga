@@ -37,15 +37,32 @@ import platform.AVFoundation.requestAccessForMediaType
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
 
+/**
+ * A type of permission associated with an [AVMediaType]
+ */
 abstract class AVType {
+    /**
+     * The [AVMediaType] associated with this permission
+     */
     abstract val avMediaType: AVMediaType
+
+    /**
+     * The declaration name that should be added to the PList in order to request this permission
+     */
     abstract val declarationName: String
 }
 
+/**
+ * A helper for managing the [IOSPermissionsHelper.AuthorizationStatus] of an [AVType] permission.
+ * @param bundle the [NSBundle] for which the permission should be applied
+ * @param type the [AVType] of the permission to manage
+ * @param authorizationStatusHandler the [AuthorizationStatusHandler] to handle changes to the permission
+ * @param coroutineScope the [CoroutineScope] to manage monitoring the permission
+ */
 class AVPermissionHelper(
     private val bundle: NSBundle,
     private val type: AVType,
-    private val onPermissionChangedFlow: AuthorizationStatusHandler,
+    private val authorizationStatusHandler: AuthorizationStatusHandler,
     private val coroutineScope: CoroutineScope
 ) : CoroutineScope by coroutineScope {
 
@@ -54,13 +71,16 @@ class AVPermissionHelper(
     }
 
     private val provider = Provider(type.avMediaType)
-    private val timerHelper = PermissionRefreshScheduler(provider, onPermissionChangedFlow, coroutineScope)
+    private val timerHelper = PermissionRefreshScheduler(provider, authorizationStatusHandler, coroutineScope)
 
+    /**
+     * Attempts to request the [AVType] permission and updates the provided [AuthorizationStatusHandler]
+     */
     fun requestPermission() {
-        val onPermissionChangedFlow = onPermissionChangedFlow
+        val authorizationStatusHandler = authorizationStatusHandler
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
             val mediaType = type.avMediaType
-            onPermissionChangedFlow.requestAuthorizationStatus(timerHelper, coroutineScope) {
+            authorizationStatusHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
                 val deferred = CompletableDeferred<Boolean>()
                 AVCaptureDevice.requestAccessForMediaType(
                     mediaType
@@ -71,19 +91,26 @@ class AVPermissionHelper(
                 if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Denied
             }
         } else {
-            onPermissionChangedFlow.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
+            authorizationStatusHandler.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
         }
     }
 
+    /**
+     * Starts monitoring for changes to the [IOSPermissionsHelper.AuthorizationStatus]
+     * @param interval the [Duration] between checks for changes to the [IOSPermissionsHelper.AuthorizationStatus]
+     */
     fun startMonitoring(interval: Duration) {
         when {
             AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> {
-                onPermissionChangedFlow.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
+                authorizationStatusHandler.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
             }
             else -> timerHelper.startMonitoring(interval)
         }
     }
 
+    /**
+     * Stops monitoring for changes to the [IOSPermissionsHelper.AuthorizationStatus]
+     */
     fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }

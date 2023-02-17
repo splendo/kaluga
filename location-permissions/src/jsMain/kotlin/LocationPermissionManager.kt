@@ -18,11 +18,18 @@
 package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [LocationPermission]
+ * @param locationPermission the [LocationPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultLocationPermissionManager(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
     override fun requestPermissionDidStart() {
@@ -38,6 +45,10 @@ actual class DefaultLocationPermissionManager(locationPermission: LocationPermis
     }
 }
 
+/**
+ * A [BaseLocationPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class LocationPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
     override fun create(locationPermission: LocationPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<LocationPermission> {

@@ -24,13 +24,14 @@ import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.base.utils.minus
+import com.splendo.kaluga.base.utils.plus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -260,8 +261,8 @@ fun Flow<Location>.known(maxAge: Duration = 0.seconds) = known(maxAge) { Default
 
 internal fun Flow<Location>.known(maxAge: Duration, nowProvider: () -> KalugaDate): Flow<Location.KnownLocation?> = transformLatest { location ->
     location.known?.let { knownLocation ->
-        val expirationTime = knownLocation.time.millisecondSinceEpoch.milliseconds + maxAge
-        val now = nowProvider().millisecondSinceEpoch.milliseconds
+        val expirationTime = knownLocation.time + maxAge
+        val now = nowProvider()
         when {
             maxAge <= ZERO -> emit(knownLocation)
             expirationTime <= now -> emit(null)

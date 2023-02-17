@@ -19,12 +19,19 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.av.AVPermissionHelper
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [MicrophonePermission]
+ * @param bundle the [NSBundle] the [MicrophonePermission] is to be granted in
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultMicrophonePermissionManager(
     bundle: NSBundle,
     settings: Settings,
@@ -47,6 +54,10 @@ actual class DefaultMicrophonePermissionManager(
     }
 }
 
+/**
+ * A [BaseMicrophonePermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
     override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {

@@ -336,13 +336,15 @@ sealed class ScanningStateImpl {
             override val stopScanning = suspend { Idle(discovered, paired, scanner) }
 
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                if (oldState !is Scanning)
+                if (oldState !is Scanning) {
                     scanner.scanForDevices(discovered.filter)
+                }
             }
 
             override suspend fun afterCreatingNewState(newState: ScanningState) {
-                if (newState !is Scanning)
+                if (newState !is Scanning) {
                     scanner.stopScanning()
+                }
             }
         }
     }

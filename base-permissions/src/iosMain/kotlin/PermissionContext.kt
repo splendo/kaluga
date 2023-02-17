@@ -19,6 +19,12 @@ package com.splendo.kaluga.permissions.base
 
 import platform.Foundation.NSBundle
 
+/**
+ * iOS context for creating a [BasePermissionsBuilder]. Type-alias for [NSBundle]
+ */
 actual typealias PermissionContext = NSBundle
 
+/**
+ * Default [PermissionContext] of the system
+ */
 actual val defaultPermissionContext get() = NSBundle.mainBundle
