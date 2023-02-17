@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.base.utils
 
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
 // TODO Implement with proper timezone solution for Java Script
 /**
  * A default implementation of [BaseTimeZone].
@@ -46,9 +49,9 @@ actual class TimeZone internal constructor() : BaseTimeZone() {
 
     override val identifier: String = ""
     override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String = ""
-    override val offsetFromGMTInMilliseconds = 0L
-    override val daylightSavingsOffsetInMilliseconds: Long = 0L
-    override fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = 0L
+    override val offsetFromGMT = 0.milliseconds
+    override val daylightSavingsOffset = 0.milliseconds
+    override fun offsetFromGMTAtDate(date: KalugaDate): Duration = 0.milliseconds
     override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = false
     override fun copy(): TimeZone = TimeZone()
 }

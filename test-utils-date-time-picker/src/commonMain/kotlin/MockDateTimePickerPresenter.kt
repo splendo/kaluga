@@ -30,7 +30,7 @@ import kotlinx.coroutines.CoroutineScope
  * Mock implementation of [BaseKeyboardManager]
  * @param setupMocks If `true` configure mocks to display the keyboard
  */
-class MockDateTimePickerPresenter(val dateTimePicker: DateTimePicker, setupMocks: Boolean = true) : BaseDateTimePickerPresenter(dateTimePicker) {
+class MockDateTimePickerPresenter(public override val dateTimePicker: DateTimePicker, setupMocks: Boolean = true) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**
      * Mock implementation of [BaseKeyboardManager.Builder]

@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.base.utils
 
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
 /**
  * A default implementation of [BaseTimeZone].
  */
@@ -57,9 +60,9 @@ actual class TimeZone internal constructor(internal val timeZone: java.util.Time
         }
         return timeZone.getDisplayName(withDaylightSavings, styleJava, locale.locale)
     }
-    override val offsetFromGMTInMilliseconds = timeZone.rawOffset.toLong()
-    override val daylightSavingsOffsetInMilliseconds: Long = timeZone.dstSavings.toLong()
-    override fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
+    override val offsetFromGMT = timeZone.rawOffset.milliseconds
+    override val daylightSavingsOffset = timeZone.dstSavings.milliseconds
+    override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.getOffset(date.durationSinceEpoch.inWholeMilliseconds).milliseconds
     override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
     override fun copy(): TimeZone = TimeZone(timeZone.clone() as java.util.TimeZone)
     override fun equals(other: Any?): Boolean {

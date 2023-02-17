@@ -22,6 +22,9 @@ import android.os.Build
 import io.github.aakira.napier.DebugAntilog
 import java.lang.Integer.min
 
+/**
+ * The default [Logger] to be used if no logger is set.
+ */
 actual val defaultLogger: Logger =
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         TransformLogger(
@@ -41,4 +44,9 @@ actual val defaultLogger: Logger =
         NapierLogger(DebugAntilog())
     }
 
+/**
+ * The standard [Logger] to be used when logging.
+ *
+ * This is used by the package level logging methods, and might be used directly as well
+ */
 actual var logger: Logger = defaultLogger

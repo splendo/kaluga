@@ -1,8 +1,8 @@
 ## Architecture-compose
-This Android library contains composable functions to work with Kaluga states and androidx navigation.
+This Android library contains composable functions to work with Kaluga architecture and androidx navigation.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Base as follows:
+This library is available on Maven Central. You can import Kaluga Architecture Compose as follows:
 
 ```kotlin
 repositories {

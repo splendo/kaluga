@@ -36,6 +36,11 @@ import platform.UIKit.UITextField
 import platform.UIKit.UIViewController
 import platform.objc.sel_registerName
 
+/**
+ * A [BaseAlertPresenter] for presenting an [Alert].
+ * @param alert The [Alert] being presented.
+ * @param parent The [UIViewController] to present the [Alert]
+ */
 actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController
@@ -74,7 +79,19 @@ actual class AlertPresenter(
         }
     }
 
+    /**
+     * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
+     * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
+     */
     actual class Builder(private val viewController: UIViewController) : BaseAlertPresenter.Builder() {
+
+        /**
+         * Creates an [AlertPresenter]
+         *
+         * @param alert The [Alert] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [AlertPresenter]
+         */
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController)
     }
 

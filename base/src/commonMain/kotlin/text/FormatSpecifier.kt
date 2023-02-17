@@ -26,6 +26,7 @@ import com.splendo.kaluga.base.utils.TimeZoneNameStyle
 import com.splendo.kaluga.base.utils.toHexString
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.time.Duration.Companion.milliseconds
 
 internal sealed class ParsingCharacter(val char: Char) {
     data class RegularCharacter(val regular: RegularFormatCharacter) : ParsingCharacter(regular.char)
@@ -109,7 +110,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Long,
             is Int,
             is Short -> {
-                DefaultKalugaDate.epoch((arg as Number).toLong(), TimeZone.current(), locale)
+                DefaultKalugaDate.epoch((arg as Number).toLong().milliseconds, TimeZone.current(), locale)
             }
             is KalugaDate -> {
                 arg.copy()
@@ -382,7 +383,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             }
             DateTime.NANOSECOND -> {
                 // 'N' (000000000 - 999999999)
-                val i: Int = time.millisecond * 1000000
+                val i: Int = time.millisecond.milliseconds.inWholeNanoseconds.toInt()
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 9, locale = locale))
             }
@@ -394,7 +395,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             }
             DateTime.MILLISECOND_SINCE_EPOCH -> {
                 // 'Q' (0 - 99...?)
-                val i: Long = time.millisecondSinceEpoch
+                val i: Long = time.durationSinceEpoch.inWholeMilliseconds
                 sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = emptySet(), width = width, locale = locale))
             }
             DateTime.AM_PM -> {
@@ -405,7 +406,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             }
             DateTime.SECONDS_SINCE_EPOCH -> {
                 // 's' (0 - 99...?)
-                val i: Long = time.millisecondSinceEpoch / 1000
+                val i: Long = time.durationSinceEpoch.inWholeSeconds
                 sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = emptySet(), width = width, locale = locale))
             }
             DateTime.SECOND -> {
@@ -416,7 +417,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             }
             DateTime.ZONE_NUMERIC -> {
                 // 'z' ({-|+}####) - ls minus?
-                var i: Long = time.timeZone.offsetFromGMTAtDateInMilliseconds(time)
+                var i: Long = time.timeZone.offsetFromGMTAtDate(time).inWholeMilliseconds
                 val neg = i < 0
                 sb.append(if (neg) '-' else '+')
                 if (neg) i = -i
