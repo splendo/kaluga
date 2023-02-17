@@ -80,6 +80,7 @@ fun <Action : NavigationAction<*>> Navigator<Action>.navigateWithSuccess(action:
  * @param onFailure Closure for handling case when navigation failed.
  */
 fun <Action : NavigationAction<*>> Navigator<Action>.navigateOrElse(action: Action, onFailure: () -> Unit) {
-    if (!navigateWithSuccess(action))
+    if (!navigateWithSuccess(action)) {
         onFailure()
+    }
 }

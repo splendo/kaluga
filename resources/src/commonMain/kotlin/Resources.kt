@@ -72,7 +72,7 @@ interface ImageLoader {
     fun loadImage(identifier: String, defaultValue: Image?): Image?
 }
 
-/** Default implementation of a [ImageLoader]. */
+/** Default implementation of an [ImageLoader]. */
 expect class DefaultImageLoader() : ImageLoader
 
 /**

@@ -178,10 +178,11 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         }
         if (canSetComponent) {
             // If the new value is lower than the old one, make sure we go backwards as otherwise the next highest component will increase
-            val calendarOptions = if (value.toLong() < calendar.component(component, date))
+            val calendarOptions = if (value.toLong() < calendar.component(component, date)) {
                 NSCalendarMatchPreviousTimePreservingSmallerUnits or NSCalendarSearchBackwards
-            else
+            } else {
                 NSCalendarMatchNextTimePreservingSmallerUnits
+            }
             calendar.dateBySettingUnit(component, value.toLong(), date, calendarOptions)
         } else {
             val previousValue = calendar.component(component, this.date)

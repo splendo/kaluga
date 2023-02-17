@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,13 +15,8 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.example.shared
 
-import com.splendo.kaluga.base.IOSVersion
-import platform.UIKit.UITraitCollection
-import platform.UIKit.UIUserInterfaceStyle
-import platform.UIKit.currentTraitCollection
-
-actual val isInDarkMode: Boolean get() {
-    return IOSVersion.systemVersion >= IOSVersion(12) && UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
+fun helloCommon(): String {
+    return "Hello from the shared module common source"
 }

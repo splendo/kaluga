@@ -23,7 +23,7 @@ import io.github.aakira.napier.DebugAntilog
 import java.lang.Integer.min
 
 actual val defaultLogger: Logger =
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         TransformLogger(
             NapierLogger(DebugAntilog()),
             transformTag = { tag ->
@@ -37,7 +37,8 @@ actual val defaultLogger: Logger =
                 }
             }
         )
-    else
+    } else {
         NapierLogger(DebugAntilog())
+    }
 
 actual var logger: Logger = defaultLogger

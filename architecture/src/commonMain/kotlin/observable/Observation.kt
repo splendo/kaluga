@@ -143,8 +143,9 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
         // adding an observer often happens concurrently with initialization,
         // if we detect a change in the current observed value we re-send it to the added observer
         val newResult = currentObserved
-        if (newResult != lastResult)
+        if (newResult != lastResult) {
             onNext((newResult as? ObservableOptional.Value<*>)?.value as R)
+        }
         SimpleDisposable {
             handleOnMain {
                 removeObserver(this@Observation, onNext)

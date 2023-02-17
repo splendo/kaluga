@@ -42,8 +42,7 @@ expect val UUID.uuidString: String
 
 @Throws(UUIDException::class)
 fun uuidFrom(uuidString: String): UUID =
-    if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString)
-    else throw UUIDException.InvalidFormat(uuidString)
+    if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString) else throw UUIDException.InvalidFormat(uuidString)
 
 expect fun randomUUID(): UUID
 

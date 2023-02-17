@@ -74,10 +74,11 @@ actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZ
         return timeZone.localizedName(nameStyle, locale.nsLocale) ?: ""
     }
     override val offsetFromGMTInMilliseconds: Long get() {
-        val rawOffset = if (timeZone.isDaylightSavingTime())
+        val rawOffset = if (timeZone.isDaylightSavingTime()) {
             timeZone.secondsFromGMT.toDouble() - timeZone.daylightSavingTimeOffset
-        else
+        } else {
             timeZone.secondsFromGMT.toDouble()
+        }
 
         return rawOffset.toLong() * 1000L
     }

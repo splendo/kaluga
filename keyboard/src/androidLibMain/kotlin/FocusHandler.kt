@@ -28,8 +28,7 @@ class ViewFocusHandler(
     @IdRes private val id: Int
 ) : FocusHandler {
     fun requestFocus(activity: Activity?) {
-        if (activity == null)
-            return
+        if (activity == null) return
         val view = activity.findViewById<View>(id) ?: return
         view.requestFocus()
         val inputManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager

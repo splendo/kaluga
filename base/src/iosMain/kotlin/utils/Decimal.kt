@@ -235,10 +235,11 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
  * @param n the [Decimal] to raise to
  * @return the [Decimal] that is the exponent of the two provided decimals.
  */
-actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0)
+actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0) {
     1.toDecimal() / pow(n.absoluteValue)
-else
+} else {
     copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
+}
 
 /**
  * Raises two [Decimal] to a given precision.
@@ -246,9 +247,9 @@ else
  * @param scale The number of digits a rounded value should have after its decimal point.
  * @return the [Decimal] that is the exponent of the two provided decimals.
  */
-actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0)
+actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0) {
     1.toDecimal() / pow(n.absoluteValue, scale)
-else
+} else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
             n.toULong(),
@@ -262,6 +263,7 @@ else
             )
         )
     )
+}
 
 /**
  * Raises two [Decimal] to a given precision.
@@ -274,9 +276,9 @@ actual fun Decimal.pow(
     n: Int,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = if (n < 0)
+): Decimal = if (n < 0) {
     1.toDecimal() / pow(n.absoluteValue, scale, roundingMode)
-else
+} else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
             n.toULong(),
@@ -290,6 +292,7 @@ else
             )
         )
     )
+}
 
 /**
  * Converts a [Number] to a [Decimal]

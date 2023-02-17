@@ -85,16 +85,14 @@ actual class HUD private constructor(private val containerView: ContainerView, p
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
                 HUDStyle.SYSTEM ->
-                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
-                        UIColor.blackColor else UIColor.whiteColor
+                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark) UIColor.blackColor else UIColor.whiteColor
             }
 
         private val foregroundColor: UIColor
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
                 HUDStyle.SYSTEM ->
-                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
-                        UIColor.whiteColor else UIColor.blackColor
+                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark) UIColor.whiteColor else UIColor.blackColor
             }
 
         // NOTES: Cast to CGFloat is needed for Arm32
