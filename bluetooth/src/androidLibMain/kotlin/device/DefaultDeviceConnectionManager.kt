@@ -233,14 +233,14 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun didStartPairing() {
+    override suspend fun requestStartPairing() {
         if (device.bondState == BluetoothDevice.BOND_NONE) {
             deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun didStartUnpairing() {
+    override suspend fun requestStartUnpairing() {
         if (device.bondState != BluetoothDevice.BOND_NONE) {
             deviceWrapper.removeBond()
         }

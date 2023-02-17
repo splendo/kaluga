@@ -189,11 +189,11 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun didStartPairing() {
+    override suspend fun requestStartPairing() {
         // There is no iOS API to pair peripheral
     }
 
-    override suspend fun didStartUnpairing() {
+    override suspend fun requestStartUnpairing() {
         // There is no iOS API to unpair peripheral
     }
 

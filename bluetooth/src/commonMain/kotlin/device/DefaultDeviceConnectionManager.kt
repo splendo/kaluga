@@ -308,17 +308,17 @@ abstract class BaseDeviceConnectionManager(
 
     final override suspend fun pair() {
         logger.info(logTag) { "Pair" }
-        didStartPairing()
+        requestStartPairing()
     }
 
-    protected abstract suspend fun didStartPairing()
+    protected abstract suspend fun requestStartPairing()
 
     final override suspend fun unpair() {
         logger.info(logTag) { "Unpair" }
-        didStartUnpairing()
+        requestStartUnpairing()
     }
 
-    protected abstract suspend fun didStartUnpairing()
+    protected abstract suspend fun requestStartUnpairing()
 
     protected open fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, logTag, logger)
 

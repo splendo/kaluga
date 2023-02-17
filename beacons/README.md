@@ -1,10 +1,10 @@
 ## Beacons
 
-This library provide support for out-of-the-box access to Beacons.
+This library provides support for out-of-the-box access to Beacons.
 Currently only the [Eddystone protocol](https://github.com/google/eddystone/blob/master/protocol-specification.md) is supported
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Base as follows:
+This library is available on Maven Central. You can import Kaluga Beacons as follows:
 
 ```kotlin
 repositories {
@@ -19,7 +19,7 @@ dependencies {
 ```
 
 ### Usage
-Create a `DefaultBeacons` object. This gives you access to a `Flow` of [BeaconInfo]. To monitor for beacons simply call
+Create a `DefaultBeacons` object. This gives you access to a `Flow` of `Set<BeaconInfo>`. To monitor for beacons simply call:
 
 ```kotlin
 val beacons = DefaultBeacons(

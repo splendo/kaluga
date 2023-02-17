@@ -177,9 +177,9 @@ class MockDeviceConnectionManager(
 
     override suspend fun requestMtu(mtu: MTU): Boolean = requestMtuMock.call(mtu)
 
-    override suspend fun didStartPairing(): Unit = pairMock.call()
+    override suspend fun requestStartPairing(): Unit = pairMock.call()
 
-    override suspend fun didStartUnpairing(): Unit = unpairMock.call()
+    override suspend fun requestStartUnpairing(): Unit = unpairMock.call()
 
     override suspend fun didStartPerformingAction(action: DeviceAction): Unit = performActionMock.call(action)
 
