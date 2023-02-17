@@ -45,7 +45,15 @@ sealed class Decimal : Comparable<Decimal> {
      * [Decimal] representing a finite number
      * @param finiteDecimal the [FiniteDecimal] describing the finite number
      */
-    data class Finite(internal val finiteDecimal: FiniteDecimal) : Decimal()
+    data class Finite(internal val finiteDecimal: FiniteDecimal) : Decimal() {
+        override fun equals(other: Any?): Boolean = (other as? Finite)?.let {
+            finiteDecimal == it.finiteDecimal
+        } ?: false
+
+        override fun hashCode(): Int = finiteDecimal.hashCode()
+
+        override fun toString(): String = finiteDecimal.toString()
+    }
 
     override fun compareTo(other: Decimal): Int = if (this is Finite && other is Finite)
         finiteDecimal.compareTo(other.finiteDecimal)
@@ -66,7 +74,7 @@ expect class FiniteDecimal : Comparable<FiniteDecimal>
 operator fun Decimal.plus(value: Decimal): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal + value.finiteDecimal)
 } else {
-    (this.toDouble() + value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::plus)
 }
 
 /**
@@ -78,7 +86,7 @@ operator fun Decimal.plus(value: Decimal): Decimal = if (this is Decimal.Finite 
 fun Decimal.plus(value: Decimal, scale: Int): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.plus(value.finiteDecimal, scale))
 } else {
-    (this.toDouble() + value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::plus)
 }
 
 /**
@@ -95,7 +103,7 @@ fun Decimal.plus(
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.plus(value.finiteDecimal, scale, roundingMode))
 } else {
-    (this.toDouble() + value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::plus)
 }
 
 internal expect operator fun FiniteDecimal.plus(value: FiniteDecimal): FiniteDecimal
@@ -114,7 +122,7 @@ internal expect fun FiniteDecimal.plus(
 operator fun Decimal.minus(value: Decimal): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal - value.finiteDecimal)
 } else {
-    (this.toDouble() - value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::minus)
 }
 
 /**
@@ -126,7 +134,7 @@ operator fun Decimal.minus(value: Decimal): Decimal = if (this is Decimal.Finite
 fun Decimal.minus(value: Decimal, scale: Int): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.minus(value.finiteDecimal, scale))
 } else {
-    (this.toDouble() - value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::minus)
 }
 
 /**
@@ -143,7 +151,7 @@ fun Decimal.minus(
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.minus(value.finiteDecimal, scale, roundingMode))
 } else {
-    (this.toDouble() - value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::minus)
 }
 
 internal expect operator fun FiniteDecimal.minus(value: FiniteDecimal): FiniteDecimal
@@ -166,7 +174,7 @@ operator fun Decimal.div(value: Decimal): Decimal = if (this is Decimal.Finite &
         Decimal.Finite(finiteDecimal / value.finiteDecimal)
     }
 } else {
-    (this.toDouble() / value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::div)
 }
 
 /**
@@ -182,7 +190,7 @@ fun Decimal.div(value: Decimal, scale: Int): Decimal = if (this is Decimal.Finit
         Decimal.Finite(finiteDecimal.div(value.finiteDecimal, scale))
     }
 } else {
-    (this.toDouble() / value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::div)
 }
 
 /**
@@ -203,7 +211,7 @@ fun Decimal.div(
         Decimal.Finite(finiteDecimal.div(value.finiteDecimal, scale, roundingMode))
     }
 } else {
-    (this.toDouble() / value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::div)
 }
 
 internal expect operator fun FiniteDecimal.div(value: FiniteDecimal): FiniteDecimal
@@ -222,7 +230,7 @@ internal expect fun FiniteDecimal.div(
 operator fun Decimal.times(value: Decimal): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal * value.finiteDecimal)
 } else {
-    (this.toDouble() * value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::times)
 }
 
 /**
@@ -234,7 +242,7 @@ operator fun Decimal.times(value: Decimal): Decimal = if (this is Decimal.Finite
 fun Decimal.times(value: Decimal, scale: Int): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.times(value.finiteDecimal, scale))
 } else {
-    (this.toDouble() * value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::times)
 }
 
 /**
@@ -251,7 +259,7 @@ fun Decimal.times(
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.times(value.finiteDecimal, scale, roundingMode))
 } else {
-    (this.toDouble() * value.toDouble()).toDecimal()
+    calculateToDecimal(value, Double::times)
 }
 
 internal expect operator fun FiniteDecimal.times(value: FiniteDecimal): FiniteDecimal
@@ -345,11 +353,16 @@ internal expect fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode =
 /**
  * Converts a [Number] to a [Decimal]
  */
-fun Number.toDecimal(): Decimal = when {
-    toDouble().isFinite() -> Decimal.Finite(toFiniteDecimal())
-    toDouble().isNaN() -> Decimal.NaN
-    toDouble() == Double.POSITIVE_INFINITY -> Decimal.PositiveInfinity
-    else -> Decimal.NegativeInfinity
+fun Number.toDecimal(): Decimal = when (this) {
+    is Long -> Decimal.Finite(toFiniteDecimal())
+    is Int -> Decimal.Finite(toFiniteDecimal())
+    is Short -> Decimal.Finite(toFiniteDecimal())
+    else -> when {
+        toDouble().isFinite() -> Decimal.Finite(toFiniteDecimal())
+        toDouble().isNaN() -> Decimal.NaN
+        toDouble() == Double.POSITIVE_INFINITY -> Decimal.PositiveInfinity
+        else -> Decimal.NegativeInfinity
+    }
 }
 
 /**
@@ -433,9 +446,20 @@ fun Decimal.toInt(): Int = when (this) {
     is Decimal.PositiveInfinity -> Int.MAX_VALUE
 }
 
+/**
+ * Gets the long value of a [Decimal]
+ */
+fun Decimal.toLong(): Long = when (this) {
+    is Decimal.Finite -> finiteDecimal.toLong()
+    is Decimal.NaN -> 0L
+    is Decimal.NegativeInfinity -> Long.MIN_VALUE
+    is Decimal.PositiveInfinity -> Long.MAX_VALUE
+}
+
 internal expect fun FiniteDecimal.toDouble(): Double
 internal expect fun FiniteDecimal.toString(): String
 internal expect fun FiniteDecimal.toInt(): Int
+internal expect fun FiniteDecimal.toLong(): Long
 
 /**
  * Converts a collection of [Decimal] to a [DoubleArray]
@@ -451,3 +475,10 @@ fun Collection<Decimal>.toStringList(): List<String> = map { it.toString() }
  * Converts a collection of [Decimal] to an [IntArray]
  */
 fun Collection<Decimal>.toIntArray(): IntArray = map { it.toInt() }.toIntArray()
+
+/**
+ * Converts a collection of [Decimal] to an [LongArray]
+ */
+fun Collection<Decimal>.toLongArray(): LongArray = map { it.toLong() }.toLongArray()
+
+private fun Decimal.calculateToDecimal(other: Decimal, operator: Double.(Double) -> Double) = this.toDouble().operator(other.toDouble()).toDecimal()

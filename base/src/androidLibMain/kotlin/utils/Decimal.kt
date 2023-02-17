@@ -116,6 +116,7 @@ actual fun String.toFiniteDecimal() = try {
 
 actual fun FiniteDecimal.toDouble() = this.toDouble()
 actual fun FiniteDecimal.toInt() = this.toInt()
+actual fun FiniteDecimal.toLong() = this.toLong()
 actual fun FiniteDecimal.toString() = this.stripTrailingZeros().toString()
 
 private val RoundingMode.android

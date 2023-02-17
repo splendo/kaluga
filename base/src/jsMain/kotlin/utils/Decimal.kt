@@ -159,4 +159,5 @@ actual fun String.toFiniteDecimal(): FiniteDecimal? = try {
 
 actual fun FiniteDecimal.toDouble(): Double = bd.toString().toDouble()
 actual fun FiniteDecimal.toInt(): Int = bd.toFixed(0).toInt()
+actual fun FiniteDecimal.toLong() = bd.toFixed(0).toLong()
 actual fun FiniteDecimal.toString(): String = bd.toString()

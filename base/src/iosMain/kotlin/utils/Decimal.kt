@@ -201,17 +201,14 @@ actual fun FiniteDecimal.pow(
 }
 
 actual fun Number.toFiniteDecimal() = FiniteDecimal(NSDecimalNumber(this.toString()))
-actual fun String.toFiniteDecimal(): FiniteDecimal? {
-    val decimal = NSDecimalNumber(this)
-    return if (decimal == NSDecimalNumber.notANumber) {
-        null
-    } else {
-        FiniteDecimal(decimal)
-    }
+actual fun String.toFiniteDecimal(): FiniteDecimal? = when (val decimal = NSDecimalNumber(this)) {
+    NSDecimalNumber.notANumber -> null
+    else -> FiniteDecimal(decimal)
 }
 
 actual fun FiniteDecimal.toDouble() = nsDecimal.toString().toDouble()
 actual fun FiniteDecimal.toInt() = nsDecimal.intValue
+actual fun FiniteDecimal.toLong() = nsDecimal.longValue
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun FiniteDecimal.toString() = nsDecimal.stringValue
 
