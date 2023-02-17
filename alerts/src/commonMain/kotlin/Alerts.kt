@@ -275,8 +275,8 @@ interface AlertActions {
      * Presents an [Alert] and suspends until completion
      *
      * @param animated Pass `true` to animate the presentation
-     * @return The [Alert.Action] that was performed by button click
-     *         or `null` if the alert was cancelled by the user.
+     * @return The [Alert.Action] that was performed by button click or `null` if the alert was cancelled by the user.
+     * Note that some platforms, such as iOS, may not allow the user to cancel the alert.
      */
     suspend fun show(animated: Boolean = true): Alert.Action?
 
