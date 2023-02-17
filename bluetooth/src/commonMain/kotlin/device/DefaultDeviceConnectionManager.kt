@@ -353,10 +353,11 @@ abstract class BaseDeviceConnectionManager(
         val currentAction = this.currentAction
         this.currentAction = null
         if (currentAction != null) {
-            if (succeeded)
+            if (succeeded) {
                 logger.info(logTag) { "Completed $currentAction successfully" }
-            else
+            } else {
                 logger.error(logTag) { "Failed to complete $currentAction" }
+            }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }

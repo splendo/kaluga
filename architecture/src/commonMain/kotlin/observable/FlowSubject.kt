@@ -70,7 +70,9 @@ open class StateFlowInitializedSubject<T>(
         observation
     ) {
     init {
-        if (autoBind) bind(coroutineScope, context)
+        if (autoBind) {
+            bind(coroutineScope, context)
+        }
     }
 }
 
@@ -105,7 +107,9 @@ open class StateFlowDefaultSubject<R : T?, T>(
         observation
     ) {
     init {
-        if (autoBind) bind(coroutineScope, context)
+        if (autoBind) {
+            bind(coroutineScope, context)
+        }
     }
 }
 
@@ -135,7 +139,9 @@ open class SharedFlowSubject<T>(
         observation = observation
     ) {
     init {
-        if (autoBind) bind(coroutineScope, context)
+        if (autoBind) {
+            bind(coroutineScope, context)
+        }
     }
 }
 
@@ -167,7 +173,9 @@ open class SharedFlowInitializedSubject<T>(
         observation = observation
     ) {
     init {
-        if (autoBind) bind(coroutineScope, context)
+        if (autoBind) {
+            bind(coroutineScope, context)
+        }
     }
 }
 
@@ -204,7 +212,9 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         observation = observation
     ) {
     init {
-        if (autoBind) bind(coroutineScope, context)
+        if (autoBind) {
+            bind(coroutineScope, context)
+        }
     }
 }
 

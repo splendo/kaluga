@@ -43,14 +43,8 @@ actual class DefaultLocationPermissionManager(
 
     private val permissions: Array<String> get() = listOfNotNull(
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        if (permission.precise)
-            Manifest.permission.ACCESS_FINE_LOCATION
-        else
-            null,
-        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        else
-            null
+        if (permission.precise) Manifest.permission.ACCESS_FINE_LOCATION else null,
+        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) Manifest.permission.ACCESS_BACKGROUND_LOCATION else null
     ).toTypedArray()
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)

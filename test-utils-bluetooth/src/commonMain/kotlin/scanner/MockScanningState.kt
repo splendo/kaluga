@@ -39,11 +39,7 @@ sealed class MockScanningState {
         override fun copyAndAdd(device: Device): Devices =
             Devices(listOf(*devices.toTypedArray(), device), filter)
 
-        override fun foundForFilter(filter: Filter) =
-            if (this.filter == filter)
-                this
-            else
-                Devices(filter)
+        override fun foundForFilter(filter: Filter) = if (this.filter == filter) this else Devices(filter)
     }
 
     sealed class Inactive : MockScanningState()
@@ -203,8 +199,7 @@ sealed class MockScanningState {
         class MissingPermissions : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingFound, nothingFound)
-                else Disabled()
+                if (enabled) Enabled.Idle(nothingFound, nothingFound) else Disabled()
             }
         }
     }

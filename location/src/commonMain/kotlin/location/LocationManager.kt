@@ -235,8 +235,7 @@ abstract class BaseLocationManager(
 
     override suspend fun startMonitoringLocationEnabled() = enabledLock.withLock {
         locationMonitor.startMonitoring()
-        if (monitoringLocationEnabledJob != null)
-            return
+        if (monitoringLocationEnabledJob != null) return
         monitoringLocationEnabledJob = coroutineScope.launch {
             locationMonitor.isEnabled.collect {
                 handleLocationEnabledChanged()
@@ -255,9 +254,9 @@ abstract class BaseLocationManager(
     private fun handleLocationEnabledChanged() {
         val isEnabled = isLocationEnabled()
         logger.info(LOG_TAG) { "Location Service now ${if (isEnabled) "enabled" else "disabled"}" }
-        if (isEnabled)
+        if (isEnabled) {
             emitEvent(LocationManager.Event.LocationEnabled)
-        else {
+        } else {
             emitEvent(LocationManager.Event.LocationDisabled)
             if (autoEnableLocations) {
                 launch {

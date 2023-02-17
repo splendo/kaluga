@@ -56,8 +56,8 @@ data class DateTimePicker(
          * Selects a Date
          * A range can be provided to limit the dates selectable
          *
-         * @property earliestDate if provided, no date kan be picked that is before this [KalugaDate]
-         * @property latestDate if provided, no date kan be picked that is after this [KalugaDate]
+         * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
+         * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
          */
         data class DateType(
             val earliestDate: KalugaDate? = null,
@@ -262,8 +262,8 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
  * Builds a date picker using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @property earliestDate if provided, no date kan be picked that is before this [KalugaDate]
- * @property latestDate if provided, no date kan be picked that is after this [KalugaDate]
+ * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
+ * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
  * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.DateType]
  * @return The built alert interface object
  */

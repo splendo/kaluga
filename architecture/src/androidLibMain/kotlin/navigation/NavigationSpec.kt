@@ -236,7 +236,7 @@ sealed class NavigationSpec {
      * Shows the Camera
      * @param type The [Type] of media to capture
      * @param requestCode The request code added to the intent
-     * @param uri Optiona [Uri] indicating where the result should be stored
+     * @param uri Optional [Uri] indicating where the result should be stored
      */
     data class Camera(val type: Type, val requestCode: Int, val uri: Uri?) : NavigationSpec() {
 

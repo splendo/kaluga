@@ -138,10 +138,11 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
                 }
             }
 
-            if (cancelScopeAfterTest)
+            if (cancelScopeAfterTest) {
                 testBlockingAndCancelScope(Dispatchers.Main) { test(this) }
-            else
+            } else {
                 runBlocking(Dispatchers.Main) { test(this) }
+            }
         } catch (c: CancellationException) {
             if (!cancelScopeAfterTest || c !== cancellationException)
                 throw c

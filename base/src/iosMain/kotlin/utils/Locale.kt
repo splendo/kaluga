@@ -48,7 +48,7 @@ actual data class Locale internal constructor(val nsLocale: NSLocale) : BaseLoca
          * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
          * @return The [Locale] for the given [language]
          */
-        actual fun createLocale(language: String): Locale = Locale(NSLocale(language))
+        actual fun createLocale(language: String): Locale = createLocale(language, "")
 
         /**
          * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
@@ -56,7 +56,7 @@ actual data class Locale internal constructor(val nsLocale: NSLocale) : BaseLoca
          * @param country a ISO 3166 alpha-2 `country` code.
          * @return The [Locale] for the given [language] and [country]
          */
-        actual fun createLocale(language: String, country: String): Locale = Locale(NSLocale("${language}_$country"))
+        actual fun createLocale(language: String, country: String): Locale = createLocale(language, country, "")
 
         /**
          * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
@@ -65,7 +65,7 @@ actual data class Locale internal constructor(val nsLocale: NSLocale) : BaseLoca
          * @param variant Arbitrary value used to indicate a variation of a [Locale]
          * @return The [Locale] for the given [language], [country], and [variant]
          */
-        actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(NSLocale("${language}_${country}_$variant"))
+        actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(NSLocale(listOf(language, country, variant).filter { it.isNotEmpty() }.joinToString("_")))
 
         /**
          * The default [Locale] of the user

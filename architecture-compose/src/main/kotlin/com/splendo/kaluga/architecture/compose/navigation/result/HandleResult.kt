@@ -29,7 +29,7 @@ import kotlinx.serialization.KSerializer
 
 /**
  * Handles a [Route.Result.Data] matching a given [NavigationBundleSpec]
- * @param Row the type of [NavigationBundleSpecRow] to .
+ * @param Row the type of [NavigationBundleSpecRow] to.
  * @param spec The [NavigationBundleSpec] used to create the [Route.Result]
  * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
  * @param onResult Method for handling the received result

@@ -89,10 +89,11 @@ actual class DefaultNotificationsPermissionManager(
             }
 
             try {
-                if (deferred.await())
+                if (deferred.await()) {
                     IOSPermissionsHelper.AuthorizationStatus.Authorized
-                else
+                } else {
                     IOSPermissionsHelper.AuthorizationStatus.Restricted
+                }
             } catch (t: Throwable) {
                 IOSPermissionsHelper.AuthorizationStatus.Restricted
             }

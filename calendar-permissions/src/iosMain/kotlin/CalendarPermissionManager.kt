@@ -76,10 +76,7 @@ actual class DefaultCalendarPermissionManager(
                 }
 
                 try {
-                    if (deferred.await())
-                        IOSPermissionsHelper.AuthorizationStatus.Authorized
-                    else
-                        IOSPermissionsHelper.AuthorizationStatus.Restricted
+                    if (deferred.await()) IOSPermissionsHelper.AuthorizationStatus.Authorized else IOSPermissionsHelper.AuthorizationStatus.Restricted
                 } catch (t: Throwable) {
                     IOSPermissionsHelper.AuthorizationStatus.Restricted
                 }
