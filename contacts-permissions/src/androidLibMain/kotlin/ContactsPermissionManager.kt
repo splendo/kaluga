@@ -36,10 +36,10 @@ actual class DefaultContactsPermissionManager(
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
-        if (contactsPermission.allowWrite)
-            arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
-        else
-            arrayOf(Manifest.permission.READ_CONTACTS),
+        listOfNotNull(
+            Manifest.permission.READ_CONTACTS,
+            if (contactsPermission.allowWrite) Manifest.permission.WRITE_CONTACTS else null
+        ).toTypedArray(),
         coroutineScope,
         logTag,
         logger,

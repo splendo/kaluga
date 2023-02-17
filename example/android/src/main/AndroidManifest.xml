@@ -24,6 +24,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <!-- When the app is not using Custom Tabs to open a URL, Android 11 requires a "queries" tag in order to look for apps that can open a given URL.
     In this case the query will go through the apps with an intent that refers to a browser. -->
     <queries>

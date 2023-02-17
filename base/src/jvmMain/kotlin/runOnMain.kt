@@ -20,6 +20,10 @@ package com.splendo.kaluga.base
 
 import javax.swing.SwingUtilities
 
+/**
+ * Runs the provided [block] on the main thread
+ * @param block the code to run on the main thread.
+ */
 actual fun runOnMain(block: () -> Unit) {
     SwingUtilities.invokeLater(block)
 }

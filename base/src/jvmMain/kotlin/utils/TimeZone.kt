@@ -17,17 +17,35 @@
 
 package com.splendo.kaluga.base.utils
 
+/**
+ * A default implementation of [BaseTimeZone].
+ */
 actual class TimeZone internal constructor(internal val timeZone: java.util.TimeZone) : BaseTimeZone() {
 
     actual companion object {
+
+        /**
+         * Gets a [TimeZone] based on a given Identifier
+         * @param identifier The identifier to create a [TimeZone] for
+         * @return The [TimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
+         */
         actual fun get(identifier: String): TimeZone? {
             return java.util.TimeZone.getTimeZone(identifier)?.let {
                 TimeZone(it)
             }
         }
+
+        /**
+         * Gets the current [TimeZone] configured by the user
+         * @return The current [TimeZone] of the user
+         */
         actual fun current(): TimeZone {
             return TimeZone(java.util.TimeZone.getDefault())
         }
+
+        /**
+         * List of available identifiers associated with [TimeZone]s. All elements in this list can be used for creating a [TimeZone] using [TimeZone.get]
+         */
         actual val availableIdentifiers get() = java.util.TimeZone.getAvailableIDs().asList()
     }
 

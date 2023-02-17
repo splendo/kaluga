@@ -39,17 +39,17 @@ actual class DefaultMicrophonePermissionManager(
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 
     override fun requestPermissionDidStart() {
-        if (supported)
+        if (supported) {
             permissionsManager.requestPermissions()
-        else {
+        } else {
             permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
     override fun monitoringDidStart(interval: Duration) {
-        if (supported)
+        if (supported) {
             permissionsManager.startMonitoring(interval)
-        else {
+        } else {
             permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }

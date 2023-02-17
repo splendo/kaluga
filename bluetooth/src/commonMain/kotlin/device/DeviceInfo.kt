@@ -90,8 +90,7 @@ data class DeviceInfoImpl(
     override val updatedAt = DefaultKalugaDate.now()
 
     override fun distance(environmentalFactor: Double): Double {
-        if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN())
-            return Double.NaN
+        if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN()) return Double.NaN
         val difference = advertisementData.txPowerLevel.toDouble() - rssi.toDouble()
         val factor = 10.0 * environmentalFactor
         return 10.0.pow(difference / factor)

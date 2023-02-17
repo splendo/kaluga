@@ -19,35 +19,66 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.text.upperCased
 
-actual class Locale internal constructor(val locale: java.util.Locale) {
+/**
+ * Default implementation of [BaseLocale]
+ */
+actual data class Locale internal constructor(internal val locale: java.util.Locale) : BaseLocale() {
     actual companion object {
+
+        /**
+         * Creates a [Locale] based on a `language` ISO 639 alpha-2 or alpha-3 code
+         * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
+         * @return The [Locale] for the given [language]
+         */
         actual fun createLocale(language: String): Locale = Locale(java.util.Locale(language))
+
+        /**
+         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
+         * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
+         * @param country a ISO 3166 alpha-2 `country` code.
+         * @return The [Locale] for the given [language] and [country]
+         */
         actual fun createLocale(language: String, country: String): Locale = Locale(java.util.Locale(language, country))
+
+        /**
+         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
+         * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
+         * @param country a ISO 3166 alpha-2 `country` code.
+         * @param variant Arbitrary value used to indicate a variation of a [Locale]
+         * @return The [Locale] for the given [language], [country], and [variant]
+         */
         actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(java.util.Locale(language, country, variant))
 
+        /**
+         * The default [Locale] of the user
+         */
         actual val defaultLocale: Locale get() = Locale(java.util.Locale.getDefault())
+
+        /**
+         * A list of [Locale] available to the user.
+         */
         actual val availableLocales: List<Locale> = java.util.Locale.getAvailableLocales().asList().map { Locale(it) }
     }
 
-    actual val countryCode: String
+    override val countryCode: String
         get() = locale.country
-    actual val languageCode: String
+    override val languageCode: String
         get() = locale.language
-    actual val scriptCode: String
+    override val scriptCode: String
         get() = locale.script
-    actual val variantCode: String
+    override val variantCode: String
         get() = locale.variant
-    actual val unitSystem: UnitSystem
+    override val unitSystem: UnitSystem
         get() = UnitSystem.withCountryCode(countryCode.upperCased(this))
 
-    actual fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
-    actual fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)
-    actual fun languageName(forLocale: Locale): String = locale.getDisplayLanguage(forLocale.locale)
-    actual fun variantName(forLocale: Locale): String = locale.getDisplayVariant(forLocale.locale)
-    actual fun scriptName(forLocale: Locale): String = locale.getDisplayScript(forLocale.locale)
+    override fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
+    override fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)
+    override fun languageName(forLocale: Locale): String = locale.getDisplayLanguage(forLocale.locale)
+    override fun variantName(forLocale: Locale): String = locale.getDisplayVariant(forLocale.locale)
+    override fun scriptName(forLocale: Locale): String = locale.getDisplayScript(forLocale.locale)
 
-    actual val quotationStart: String = "\""
-    actual val quotationEnd: String = "\""
-    actual val alternateQuotationStart: String = "\""
-    actual val alternateQuotationEnd: String = "\""
+    override val quotationStart: String = "\""
+    override val quotationEnd: String = "\""
+    override val alternateQuotationStart: String = "\""
+    override val alternateQuotationEnd: String = "\""
 }

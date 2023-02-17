@@ -17,4 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
+/**
+ * NOT SUPPORTED ON iOS
+ */
 actual interface Serializable

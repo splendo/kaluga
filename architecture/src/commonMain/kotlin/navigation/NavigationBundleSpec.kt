@@ -24,7 +24,8 @@ import kotlinx.serialization.json.Json
 
 /**
  * A row within a [NavigationBundleSpec] that is associated with a given [NavigationBundleSpecType]
- * @param associatedType The [NavigationBundleSpecType] associated with this row
+ * @param T the type of the [NavigationBundleSpecType]
+ * @property associatedType The [NavigationBundleSpecType] associated with this row
  */
 open class NavigationBundleSpecRow<T>(val associatedType: NavigationBundleSpecType<T>) {
     /**
@@ -42,127 +43,200 @@ open class NavigationBundleSpecRow<T>(val associatedType: NavigationBundleSpecTy
 }
 
 /**
- * Types of data a [NavigationBundleSpecRow] can be associated with
+ * Types of data a [NavigationBundleSpecRow] can be associated with.
+ * @param T the type of value this [NavigationBundleSpecType] is representing.
  */
 sealed class NavigationBundleSpecType<T> {
 
     /**
-     * Converts a given value to the [NavigationBundleValue] associated with this type
-     * @param value The value to convert
+     * Converts a given value [T] to the [NavigationBundleValue] associated with this type
+     * @param value The value [T] to convert
      * @return The [NavigationBundleValue] associated with the value
      */
     abstract fun convertValue(value: T): NavigationBundleValue<T>
 
-    object UnitType : NavigationBundleSpecType<Unit>() {
-        override fun convertValue(value: Unit): NavigationBundleValue<Unit> {
+    /**
+     * A [NavigationBundleSpecType] that takes a non-nullable [T]
+     * @param T the type of value this [NavigationBundleSpecType] is representing.
+     */
+    sealed class NonNullableNavigationBundleSpecType<T : Any> : NavigationBundleSpecType<T>() {
+        abstract override fun convertValue(value: T): NavigationBundleValue.NonNullableNavigationBundleValue<T>
+    }
+
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Unit]
+     */
+    object UnitType : NonNullableNavigationBundleSpecType<Unit>() {
+        override fun convertValue(value: Unit): NavigationBundleValue.UnitValue {
             return NavigationBundleValue.UnitValue
         }
     }
 
-    object BooleanType : NavigationBundleSpecType<Boolean>() {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Boolean]
+     */
+    object BooleanType : NonNullableNavigationBundleSpecType<Boolean>() {
 
-        override fun convertValue(value: Boolean): NavigationBundleValue<Boolean> {
+        override fun convertValue(value: Boolean): NavigationBundleValue.BooleanValue {
             return NavigationBundleValue.BooleanValue(value)
         }
     }
 
-    object BooleanArrayType : NavigationBundleSpecType<BooleanArray>() {
-        override fun convertValue(value: BooleanArray): NavigationBundleValue<BooleanArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [BooleanArray]
+     */
+    object BooleanArrayType : NonNullableNavigationBundleSpecType<BooleanArray>() {
+        override fun convertValue(value: BooleanArray): NavigationBundleValue.BooleanArrayValue {
             return NavigationBundleValue.BooleanArrayValue(value)
         }
     }
 
-    object ByteType : NavigationBundleSpecType<Byte>() {
-        override fun convertValue(value: Byte): NavigationBundleValue<Byte> {
-            return NavigationBundleValue.ByteValue(value)
-        }
-    }
-    class BundleType<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>) : NavigationBundleSpecType<NavigationBundle<R>>() {
-        override fun convertValue(value: NavigationBundle<R>): NavigationBundleValue<NavigationBundle<R>> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [NavigationBundle] with [NavigationBundleSpecRow] [R].
+     * @param R the type of [NavigationBundleSpecRow] to represent
+     * @property spec The [NavigationBundleSpec] of the [NavigationBundle] to represents.
+     */
+    class BundleType<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>) : NonNullableNavigationBundleSpecType<NavigationBundle<R>>() {
+        override fun convertValue(value: NavigationBundle<R>): NavigationBundleValue.BundleValue<R> {
             return NavigationBundleValue.BundleValue(value)
         }
     }
 
-    object ByteArrayType : NavigationBundleSpecType<ByteArray>() {
-        override fun convertValue(value: ByteArray): NavigationBundleValue<ByteArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Byte]
+     */
+    object ByteType : NonNullableNavigationBundleSpecType<Byte>() {
+        override fun convertValue(value: Byte): NavigationBundleValue.ByteValue {
+            return NavigationBundleValue.ByteValue(value)
+        }
+    }
+
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [ByteArray]
+     */
+    object ByteArrayType : NonNullableNavigationBundleSpecType<ByteArray>() {
+        override fun convertValue(value: ByteArray): NavigationBundleValue.ByteArrayValue {
             return NavigationBundleValue.ByteArrayValue(value)
         }
     }
 
-    object CharType : NavigationBundleSpecType<Char>() {
-        override fun convertValue(value: Char): NavigationBundleValue<Char> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Char]
+     */
+    object CharType : NonNullableNavigationBundleSpecType<Char>() {
+        override fun convertValue(value: Char): NavigationBundleValue.CharValue {
             return NavigationBundleValue.CharValue(value)
         }
     }
 
-    object CharArrayType : NavigationBundleSpecType<CharArray>() {
-        override fun convertValue(value: CharArray): NavigationBundleValue<CharArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [CharArray]
+     */
+    object CharArrayType : NonNullableNavigationBundleSpecType<CharArray>() {
+        override fun convertValue(value: CharArray): NavigationBundleValue.CharArrayValue {
             return NavigationBundleValue.CharArrayValue(value)
         }
     }
 
-    object CharSequenceType : NavigationBundleSpecType<CharSequence>() {
-        override fun convertValue(value: CharSequence): NavigationBundleValue<CharSequence> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [CharSequence]
+     */
+    object CharSequenceType : NonNullableNavigationBundleSpecType<CharSequence>() {
+        override fun convertValue(value: CharSequence): NavigationBundleValue.CharSequenceValue {
             return NavigationBundleValue.CharSequenceValue(value)
         }
     }
 
-    object DoubleType : NavigationBundleSpecType<Double>() {
-        override fun convertValue(value: Double): NavigationBundleValue<Double> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Double]
+     */
+    object DoubleType : NonNullableNavigationBundleSpecType<Double>() {
+        override fun convertValue(value: Double): NavigationBundleValue.DoubleValue {
             return NavigationBundleValue.DoubleValue(value)
         }
     }
 
-    object DoubleArrayType : NavigationBundleSpecType<DoubleArray>() {
-        override fun convertValue(value: DoubleArray): NavigationBundleValue<DoubleArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [DoubleArray]
+     */
+    object DoubleArrayType : NonNullableNavigationBundleSpecType<DoubleArray>() {
+        override fun convertValue(value: DoubleArray): NavigationBundleValue.DoubleArrayValue {
             return NavigationBundleValue.DoubleArrayValue(value)
         }
     }
 
-    object FloatType : NavigationBundleSpecType<Float>() {
-        override fun convertValue(value: Float): NavigationBundleValue<Float> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Float]
+     */
+    object FloatType : NonNullableNavigationBundleSpecType<Float>() {
+        override fun convertValue(value: Float): NavigationBundleValue.FloatValue {
             return NavigationBundleValue.FloatValue(value)
         }
     }
 
-    object FloatArrayType : NavigationBundleSpecType<FloatArray>() {
-        override fun convertValue(value: FloatArray): NavigationBundleValue<FloatArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [FloatArray]
+     */
+    object FloatArrayType : NonNullableNavigationBundleSpecType<FloatArray>() {
+        override fun convertValue(value: FloatArray): NavigationBundleValue.FloatArrayValue {
             return NavigationBundleValue.FloatArrayValue(value)
         }
     }
 
-    object IntegerType : NavigationBundleSpecType<Int>() {
-        override fun convertValue(value: Int): NavigationBundleValue<Int> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents an [Int]
+     */
+    object IntegerType : NonNullableNavigationBundleSpecType<Int>() {
+        override fun convertValue(value: Int): NavigationBundleValue.IntegerValue {
             return NavigationBundleValue.IntegerValue(value)
         }
     }
 
-    object IntegerArrayType : NavigationBundleSpecType<IntArray>() {
-        override fun convertValue(value: IntArray): NavigationBundleValue<IntArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents an [IntArray]
+     */
+    object IntegerArrayType : NonNullableNavigationBundleSpecType<IntArray>() {
+        override fun convertValue(value: IntArray): NavigationBundleValue.IntegerArrayValue {
             return NavigationBundleValue.IntegerArrayValue(value)
         }
     }
 
-    object LongType : NavigationBundleSpecType<Long>() {
-        override fun convertValue(value: Long): NavigationBundleValue<Long> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Long]
+     */
+    object LongType : NonNullableNavigationBundleSpecType<Long>() {
+        override fun convertValue(value: Long): NavigationBundleValue.LongValue {
             return NavigationBundleValue.LongValue(value)
         }
     }
 
-    object LongArrayType : NavigationBundleSpecType<LongArray>() {
-        override fun convertValue(value: LongArray): NavigationBundleValue<LongArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [LongArray]
+     */
+    object LongArrayType : NonNullableNavigationBundleSpecType<LongArray>() {
+        override fun convertValue(value: LongArray): NavigationBundleValue.LongArrayValue {
             return NavigationBundleValue.LongArrayValue(value)
         }
     }
+
+    /**
+     * A [NavigationBundleSpecType] that represents a serializable [T]
+     * @param T the serializable type to represent.
+     * @param serializer The [KSerializer] to (de)serialize [T]
+     */
     data class SerializedType<T>(private val serializer: KSerializer<T>) : NavigationBundleSpecType<T>() {
         companion object {
-            private val json = Json { }
+            private val json = Json
         }
 
         override fun convertValue(value: T): NavigationBundleValue<T> {
             return NavigationBundleValue.SerializedValue(serializer, value)
         }
 
+        /**
+         * Generates a [NavigationBundleValue] from a given string
+         * @param stringValue The string to describe [T]. Must match the provided serializer.
+         */
         fun generateValue(stringValue: String): NavigationBundleValue<T>? {
             return try {
                 NavigationBundleValue.SerializedValue(serializer, json.decodeFromString(serializer, stringValue))
@@ -172,43 +246,66 @@ sealed class NavigationBundleSpecType<T> {
         }
     }
 
-    object ShortType : NavigationBundleSpecType<Short>() {
-        override fun convertValue(value: Short): NavigationBundleValue<Short> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [Short]
+     */
+    object ShortType : NonNullableNavigationBundleSpecType<Short>() {
+        override fun convertValue(value: Short): NavigationBundleValue.ShortValue {
             return NavigationBundleValue.ShortValue(value)
         }
     }
 
-    object ShortArrayType : NavigationBundleSpecType<ShortArray>() {
-        override fun convertValue(value: ShortArray): NavigationBundleValue<ShortArray> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [ShortArray]
+     */
+    object ShortArrayType : NonNullableNavigationBundleSpecType<ShortArray>() {
+        override fun convertValue(value: ShortArray): NavigationBundleValue.ShortArrayValue {
             return NavigationBundleValue.ShortArrayValue(value)
         }
     }
 
-    object StringType : NavigationBundleSpecType<String>() {
-        override fun convertValue(value: String): NavigationBundleValue<String> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [String]
+     */
+    object StringType : NonNullableNavigationBundleSpecType<String>() {
+        override fun convertValue(value: String): NavigationBundleValue.StringValue {
             return NavigationBundleValue.StringValue(value)
         }
     }
 
-    object StringArrayType : NavigationBundleSpecType<List<String>>() {
-        override fun convertValue(value: List<String>): NavigationBundleValue<List<String>> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a List of [String]
+     */
+    object StringArrayType : NonNullableNavigationBundleSpecType<List<String>>() {
+        override fun convertValue(value: List<String>): NavigationBundleValue.StringArrayValue {
             return NavigationBundleValue.StringArrayValue(value)
         }
     }
 
-    object DateType : NavigationBundleSpecType<KalugaDate>() {
-        override fun convertValue(value: KalugaDate): NavigationBundleValue<KalugaDate> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a [KalugaDate]
+     */
+    object DateType : NonNullableNavigationBundleSpecType<KalugaDate>() {
+        override fun convertValue(value: KalugaDate): NavigationBundleValue.DateValue {
             return NavigationBundleValue.DateValue(value)
         }
     }
 
-    object DateArrayType : NavigationBundleSpecType<List<KalugaDate>>() {
-        override fun convertValue(value: List<KalugaDate>): NavigationBundleValue<List<KalugaDate>> {
+    /**
+     * A [NonNullableNavigationBundleSpecType] that represents a List of[KalugaDate]
+     */
+    object DateArrayType : NonNullableNavigationBundleSpecType<List<KalugaDate>>() {
+        override fun convertValue(value: List<KalugaDate>): NavigationBundleValue.DateArrayValue {
             return NavigationBundleValue.DateArrayValue(value)
         }
     }
 
-    data class OptionalType<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecType<T?>() {
+    /**
+     * A [NavigationBundleSpecType] that represents a nullable [T].
+     * @param T the nullable type to represent.
+     * @property type The [NonNullableNavigationBundleSpecType] describing the non-nullable version of [T].
+     */
+    data class OptionalType<T : Any>(val type: NonNullableNavigationBundleSpecType<T>) : NavigationBundleSpecType<T?>() {
         override fun convertValue(value: T?): NavigationBundleValue<T?> {
             return value?.let {
                 NavigationBundleValue.OptionalValue(type.convertValue(it))
@@ -219,19 +316,28 @@ sealed class NavigationBundleSpecType<T> {
 
 /**
  * A set of [NavigationBundleSpecRow]s that can be used to form a [NavigationBundle] using [NavigationBundleSpec.toBundle]
+ * @param R The [NavigationBundleSpecRow] associated with this [NavigationBundleSpec].
+ * @property rows The set of [rows][R] in this [NavigationBundleSpec].
  */
 open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(val rows: Set<R>)
 
 /**
  * A [NavigationBundleSpec] that only provides a single [NavigationBundleSpecRow]
+ * @param T The type of value stored in this spec.
  * @param type The [NavigationBundleSpecType] used for the [NavigationBundleSpecRow]
  */
 class SingleValueNavigationSpec<T>(type: NavigationBundleSpecType<T>) : NavigationBundleSpec<SingleValueNavigationSpec.Row<T>>(setOf(Row(type))) {
+    /**
+     * A [NavigationBundleSpecRow] that contains only a single value.
+     * @param T the type to be stored in this row.
+     * @param type The [NavigationBundleSpecType] used for the [SingleValueNavigationSpec.Row]
+     */
     data class Row<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecRow<T>(type)
 }
 
 /**
  * Creates a [NavigationBundle] from the [NavigationBundleSpec]
+ * @param R The type of [NavigationBundleSpecRow] associated with the [NavigationBundleSpec].
  * @param mapper Function mapping the [NavigationBundleSpecRow] in this spec to their respective [NavigationBundleValue]
  * @return A [NavigationBundle] matching this [NavigationBundleSpec]
  */

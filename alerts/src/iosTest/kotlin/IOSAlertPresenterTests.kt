@@ -1,6 +1,5 @@
-package com.splendo.kaluga.test
+package com.splendo.kaluga.alerts
 
-import com.splendo.kaluga.alerts.AlertPresenter
 import platform.UIKit.UIViewController
 
 class IOSAlertPresenterTests : AlertPresenterTests() {

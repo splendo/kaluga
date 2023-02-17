@@ -17,4 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
+/**
+ * Not supported on JavaScript
+ */
 actual interface Serializable

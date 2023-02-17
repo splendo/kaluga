@@ -10,10 +10,6 @@ public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager$
 public abstract interface class com/splendo/kaluga/keyboard/FocusHandler {
 }
 
-public final class com/splendo/kaluga/keyboard/KeyboardManagerKt {
-	public static final fun keyboardManagerBuilder (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/keyboard/ViewKeyboardManager$Builder;
-}
-
 public final class com/splendo/kaluga/keyboard/ViewFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public fun <init> (I)V
 	public final fun requestFocus (Landroid/app/Activity;)V

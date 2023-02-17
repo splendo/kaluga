@@ -22,14 +22,33 @@ import java.util.Date
 
 actual typealias KalugaDateHolder = Date
 
+/**
+ * Default implementation of [KalugaDate]
+ */
 actual class DefaultKalugaDate internal constructor(internal val calendar: Calendar) : KalugaDate() {
 
     actual companion object {
+
+        /**
+         * Creates a [KalugaDate] relative to the current time
+         * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
+         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 add(Calendar.MILLISECOND, offsetInMilliseconds.toInt())
             }
         )
+
+        /**
+         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
+         * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
+         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
         actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 timeInMillis = offsetInMilliseconds

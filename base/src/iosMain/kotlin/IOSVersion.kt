@@ -21,6 +21,9 @@ import platform.UIKit.UIDevice
 
 /**
  * Wrapper for the iOS OS Version
+ * @property major The major version of the OS
+ * @property minor The minor version of the OS
+ * @property patch The patch version of the OS
  */
 data class IOSVersion(val major: Int, val minor: Int = 0, val patch: Int = 0) : Comparable<IOSVersion> {
 

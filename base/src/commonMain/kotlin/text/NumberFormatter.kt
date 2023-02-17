@@ -190,10 +190,8 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
 
 /**
  * Class for parsing and formatting a [Number] from/to a [String].
- * @param locale The [Locale] used for parsing. Defaults to [Locale.defaultLocale].
- * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-expect class NumberFormatter constructor(locale: Locale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) {
+interface BaseNumberFormatter {
     /**
      * [Locale] used for formatting.
      */
@@ -310,3 +308,10 @@ expect class NumberFormatter constructor(locale: Locale = defaultLocale, style: 
      */
     fun parse(string: String): Number?
 }
+
+/**
+ * Default implementation of [BaseNumberFormatter]
+ * @param locale The [Locale] used for parsing. Defaults to [Locale.defaultLocale].
+ * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
+ */
+expect class NumberFormatter constructor(locale: Locale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter

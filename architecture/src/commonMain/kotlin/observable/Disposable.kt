@@ -52,8 +52,6 @@ interface Disposable {
     fun addTo(disposeBag: DisposeBag)
 }
 
-expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
-
 /**
  * Plain [Disposable] to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
@@ -84,6 +82,12 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : SynchronizedObj
         disposeBag.add(this)
     }
 }
+
+/**
+ * A [Disposable] that has a [DisposeHandler]
+ * @param onDispose Function to call when disposing the object.
+ */
+expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
 
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag].

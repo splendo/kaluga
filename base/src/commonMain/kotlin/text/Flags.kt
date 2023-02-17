@@ -17,19 +17,55 @@
 
 package com.splendo.kaluga.base.text
 
+/**
+ * Modifying flags for a [Formattable] that modify the output
+ */
 enum class Flag(val char: Char) {
+    /**
+     * Left-justifies the result of [Formattable]
+     */
     LEFT_JUSTIFY('-'),
+
+    /**
+     * Upper cases the result of [Formattable]
+     */
     UPPERCASE('^'),
+
+    /**
+     * The result of [Formattable] should use a conversion-dependent alternative form.
+     */
     ALTERNATE('#'),
 
     // numerics
+    /**
+     * Number results of [Formattable] will always include a sign, even when positive.
+     */
     PLUS('+'),
+
+    /**
+     * Number results of [Formattable] will include a leading space when positive.
+     */
     LEADING_SPACE(' '),
+
+    /**
+     * Number results of [Formattable] will be zero-padded.
+     */
     ZERO_PAD('0'),
+
+    /**
+     * Number results of [Formattable] will include locale specific grouping separators.
+     */
     GROUP(','),
+
+    /**
+     * Number results of [Formattable] will enclose negative numbers in parentheses.
+     */
     PARENTHESES('('),
 
     // indexing
+    /**
+     * Causes the arguments of the previous [Formattable] to be used.
+     */
     PREVIOUS('<');
 
     companion object {

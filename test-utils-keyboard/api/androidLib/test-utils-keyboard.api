@@ -5,6 +5,10 @@ public final class com/splendo/kaluga/test/keyboard/BuildConfig {
 	public fun <init> ()V
 }
 
+public final class com/splendo/kaluga/test/keyboard/KeyboardManagerBuilderKt {
+	public static final fun keyboardManagerBuilder (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/keyboard/ViewKeyboardManager$Builder;
+}
+
 public final class com/splendo/kaluga/test/keyboard/MockFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public fun <init> ()V
 	public final fun giveFocus ()V

@@ -17,6 +17,22 @@
 package com.splendo.kaluga.base
 
 import kotlinx.coroutines.CloseableCoroutineDispatcher
+import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.newSingleThreadContext
 
+/**
+ * Creates a coroutine execution context using a single thread.
+ *
+ * **NOTE: The resulting [CloseableCoroutineDispatcher] owns native resources (its thread).
+ * Resources are reclaimed by [CloseableCoroutineDispatcher.close].**
+ * @param name The name of the thread to be created.
+ */
 actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher = newSingleThreadContext(name)
+
+/**
+ * Creates a coroutine execution context using a thread pool.
+ *
+ * **NOTE: The resulting [CloseableCoroutineDispatcher] owns native resources (its thread).
+ * Resources are reclaimed by [CloseableCoroutineDispatcher.close].**
+ */
+actual fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableCoroutineDispatcher = newFixedThreadPoolContext(numberOfThreads.toInt(), name)

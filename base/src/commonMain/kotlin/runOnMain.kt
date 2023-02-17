@@ -18,4 +18,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.base
 
+/**
+ * Runs the provided [block] on the main thread
+ * @param block the code to run on the main thread.
+ */
 expect fun runOnMain(block: () -> Unit)

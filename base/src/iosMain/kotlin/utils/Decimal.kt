@@ -22,6 +22,10 @@ import platform.Foundation.NSDecimalNumberHandler
 import platform.Foundation.NSRoundingMode
 import kotlin.math.absoluteValue
 
+/**
+ * Immutable, arbitrary-precision signed decimal numbers.
+ * @param nsDecimal the internal [NSDecimalNumber] corresponding to this decimal
+ */
 actual data class Decimal(val nsDecimal: NSDecimalNumber) : Comparable<Decimal> {
     override fun compareTo(other: Decimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
     override fun equals(other: Any?): Boolean = (other as? Decimal)?.let { nsDecimal.isEqualToNumber(it.nsDecimal) } ?: false
@@ -30,8 +34,19 @@ actual data class Decimal(val nsDecimal: NSDecimalNumber) : Comparable<Decimal> 
     }
 }
 
+/**
+ * Adds two [Decimal] together.
+ * @param value the [Decimal] to add
+ * @return the [Decimal] that is the total of the two provided decimals.
+ */
 actual operator fun Decimal.plus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByAdding(value.nsDecimal))
 
+/**
+ * Adds two [Decimal] together scaled to a given precision.
+ * @param value the [Decimal] to add
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @return the [Decimal] that is the total of the two provided decimals.
+ */
 actual fun Decimal.plus(value: Decimal, scale: Int) = copy(
     nsDecimal = nsDecimal.decimalNumberByAdding(
         decimalNumber = value.nsDecimal,
@@ -46,6 +61,13 @@ actual fun Decimal.plus(value: Decimal, scale: Int) = copy(
     )
 )
 
+/**
+ * Adds two [Decimal] together scaled to a given precision.
+ * @param value the [Decimal] to add
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @return the [Decimal] that is the total of the two provided decimals.
+ */
 actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberByAdding(
         decimalNumber = value.nsDecimal,
@@ -60,8 +82,19 @@ actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) 
     )
 )
 
+/**
+ * Subtracts two [Decimal].
+ * @param value the [Decimal] to subtract
+ * @return the [Decimal] that is the subtraction of the two provided decimals.
+ */
 actual operator fun Decimal.minus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberBySubtracting(value.nsDecimal))
 
+/**
+ * Subtracts two [Decimal] to a given precision.
+ * @param value the [Decimal] to subtract
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @return the [Decimal] that is the subtraction of the two provided decimals.
+ */
 actual fun Decimal.minus(value: Decimal, scale: Int) = copy(
     nsDecimal = nsDecimal.decimalNumberBySubtracting(
         decimalNumber = value.nsDecimal,
@@ -76,6 +109,13 @@ actual fun Decimal.minus(value: Decimal, scale: Int) = copy(
     )
 )
 
+/**
+ * Subtracts two [Decimal] to a given precision.
+ * @param value the [Decimal] to subtract
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @return the [Decimal] that is the subtraction of the two provided decimals.
+ */
 actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberBySubtracting(
         decimalNumber = value.nsDecimal,
@@ -90,8 +130,19 @@ actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 )
 
+/**
+ * Divides two [Decimal].
+ * @param value the [Decimal] to divide
+ * @return the [Decimal] that is the division of the two provided decimals.
+ */
 actual operator fun Decimal.div(value: Decimal) = if (value.nsDecimal != NSDecimalNumber.zero) copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal)) else throw DecimalException("Divide by zero")
 
+/**
+ * Divides two [Decimal] to a given precision.
+ * @param value the [Decimal] to divide
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @return the [Decimal] that is the division of the two provided decimals.
+ */
 actual fun Decimal.div(value: Decimal, scale: Int) = if (value.nsDecimal != NSDecimalNumber.zero)
     copy(
         nsDecimal = nsDecimal.decimalNumberByDividingBy(
@@ -108,6 +159,13 @@ actual fun Decimal.div(value: Decimal, scale: Int) = if (value.nsDecimal != NSDe
     )
 else throw DecimalException("Divide by zero")
 
+/**
+ * Divides two [Decimal] to a given precision.
+ * @param value the [Decimal] to divide
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @return the [Decimal] that is the division of the two provided decimals.
+ */
 actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) = if (value.nsDecimal != NSDecimalNumber.zero)
     copy(
         nsDecimal = nsDecimal.decimalNumberByDividingBy(
@@ -124,8 +182,19 @@ actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) =
     )
 else throw DecimalException("Divide by zero")
 
+/**
+ * Multiplies two [Decimal].
+ * @param value the [Decimal] to multiply
+ * @return the [Decimal] that is the multiplication of the two provided decimals.
+ */
 actual operator fun Decimal.times(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
 
+/**
+ * Multiplies two [Decimal] to a given precision.
+ * @param value the [Decimal] to multiply
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @return the [Decimal] that is the multiplication of the two provided decimals.
+ */
 actual fun Decimal.times(value: Decimal, scale: Int) = copy(
     nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(
         decimalNumber = value.nsDecimal,
@@ -140,6 +209,13 @@ actual fun Decimal.times(value: Decimal, scale: Int) = copy(
     )
 )
 
+/**
+ * Multiplies two [Decimal] to a given precision.
+ * @param value the [Decimal] to multiply
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @return the [Decimal] that is the multiplication of the two provided decimals.
+ */
 actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(
         decimalNumber = value.nsDecimal,
@@ -154,14 +230,26 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 )
 
-actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0)
+/**
+ * Raises two [Decimal].
+ * @param n the [Decimal] to raise to
+ * @return the [Decimal] that is the exponent of the two provided decimals.
+ */
+actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0) {
     1.toDecimal() / pow(n.absoluteValue)
-else
+} else {
     copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
+}
 
-actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0)
+/**
+ * Raises two [Decimal] to a given precision.
+ * @param n the [Decimal] to raise to
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @return the [Decimal] that is the exponent of the two provided decimals.
+ */
+actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0) {
     1.toDecimal() / pow(n.absoluteValue, scale)
-else
+} else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
             n.toULong(),
@@ -175,13 +263,22 @@ else
             )
         )
     )
+}
+
+/**
+ * Raises two [Decimal] to a given precision.
+ * @param n the [Decimal] to raise to
+ * @param scale The number of digits a rounded value should have after its decimal point.
+ * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @return the [Decimal] that is the exponent of the two provided decimals.
+ */
 actual fun Decimal.pow(
     n: Int,
     scale: Int,
     roundingMode: RoundingMode
-): Decimal = if (n < 0)
+): Decimal = if (n < 0) {
     1.toDecimal() / pow(n.absoluteValue, scale, roundingMode)
-else
+} else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
             n.toULong(),
@@ -195,15 +292,40 @@ else
             )
         )
     )
+}
 
+/**
+ * Converts a [Number] to a [Decimal]
+ */
 actual fun Number.toDecimal() = Decimal(NSDecimalNumber(this.toString()))
+
+/**
+ * Converts a String to a [Decimal]
+ */
 actual fun String.toDecimal() = Decimal(NSDecimalNumber(this))
 
+/**
+ * Gets the double value of a [Decimal]
+ */
 actual fun Decimal.toDouble() = nsDecimal.toString().toDouble()
+
+/**
+ * Gets the integer value of a [Decimal]
+ */
 actual fun Decimal.toInt() = nsDecimal.intValue
+
+/**
+ * Gets the string value of a [Decimal]
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun Decimal.toString() = nsDecimal.stringValue
 
+/**
+ * Rounds a [Decimal] to a [scale].
+ * @param scale The number of digits the rounded value should have after its decimal point.
+ * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @return A [Decimal] rounded to [scale] digits after the decimal point.
+ */
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = copy(
     nsDecimal = nsDecimal.decimalNumberByRoundingAccordingToBehavior(
         NSDecimalNumberHandler(
@@ -217,7 +339,7 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = copy(
     )
 )
 
-val RoundingMode.nsRoundingMode
+private val RoundingMode.nsRoundingMode
     get() = when (this) {
         RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown
         RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers

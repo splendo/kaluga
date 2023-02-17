@@ -242,7 +242,7 @@ interface AlertActions {
  * Abstract alert presenter, used to show and dismiss given [Alert]
  * @see [AlertPresenter]
  *
- * @property alert The alert to present (and dismiss if needed)
+ * @param alert The alert to present (and dismiss if needed)
  */
 abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
@@ -291,7 +291,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 }
 
 /**
- * Class for presenting an [Alert].
+ * Class for presenting an [Alert]. Implementation of [BaseAlertPresenter]
  */
 expect class AlertPresenter : BaseAlertPresenter {
     class Builder : BaseAlertPresenter.Builder {

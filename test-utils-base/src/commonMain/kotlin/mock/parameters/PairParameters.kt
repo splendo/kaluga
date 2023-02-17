@@ -35,8 +35,10 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
 
     /**
      * The [ParametersSpec.Matchers] for two parameters
-     * @param first the first parameters [ParameterMatcher]
-     * @param second the second parameters [ParameterMatcher]
+     * @param T0 the type of the first [ParameterMatcher]
+     * @param T1 the type of the second [ParameterMatcher]
+     * @property first the first parameters [ParameterMatcher]
+     * @property second the second parameters [ParameterMatcher]
      */
     data class Matchers<T0, T1>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>) :
         ParametersSpec.Matchers {
@@ -45,8 +47,10 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
 
     /**
      * The [ParametersSpec.MatchersOrCaptor] for two parameters
-     * @param first the first parameters [ParameterMatcherOrCaptor]
-     * @param second the second parameters [ParameterMatcherOrCaptor]
+     * @param T0 the type of the first [ParameterMatcherOrCaptor]
+     * @param T1 the type of the second [ParameterMatcherOrCaptor]
+     * @property first the first parameters [ParameterMatcherOrCaptor]
+     * @property second the second parameters [ParameterMatcherOrCaptor]
      */
     data class MatchersOrCaptor<T0, T1>(val first: ParameterMatcherOrCaptor<T0>, val second: ParameterMatcherOrCaptor<T1>) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0, T1>> {
@@ -55,6 +59,8 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
 
     /**
      * The [ParametersSpec.Values] for two parameters
+     * @param T0 the type of the first value
+     * @param T1 the type of the second value
      * @property first the first parameter
      * @property second the second parameter
      */

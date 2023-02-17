@@ -33,13 +33,10 @@ import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.mainHandler
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import kotlinx.coroutines.CoroutineScope
@@ -183,17 +180,4 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, override val hud
             dialogState.value = DialogState.Gone
         }
     }
-}
-
-/**
- * @return A [HUD.Builder] which can be used to show an HUD while this Activity is active.
- *  Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.hudBuilder(): HUD.Builder = getOrPutAndRemoveOnDestroyFromCache {
-    HUD.Builder(lifecycleManagerObserver())
 }

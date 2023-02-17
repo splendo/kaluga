@@ -261,12 +261,11 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
             lastNResults.removeAt(0)
         }
         val distance = deviceInfo.distance(environmentalFactor)
-        if (!distance.isNaN())
+        if (!distance.isNaN()) {
             lastNResults.add(distance)
-        if (lastNResults.isNotEmpty())
-            lastNResults.average()
-        else
-            Double.NaN
+        }
+
+        if (lastNResults.isNotEmpty()) lastNResults.average() else Double.NaN
     }
 }
 

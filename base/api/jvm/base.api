@@ -40,12 +40,14 @@ public final class com/splendo/kaluga/base/RunOnMainKt {
 
 public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
 	public static final fun singleThreadDispatcher (Ljava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
+	public static final fun threadPoolDispatcher-qim9Vi0 (ILjava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMutableIterator {
 	public fun hasNext ()Z
 	public fun next ()Ljava/lang/Object;
 	public fun remove ()V
+	public final fun synchronized (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableList : java/util/List, kotlin/jvm/internal/markers/KMutableList {
@@ -95,6 +97,7 @@ public final class com/splendo/kaluga/base/collections/ConcurrentMutableListIter
 	public fun previousIndex ()I
 	public fun remove ()V
 	public fun set (Ljava/lang/Object;)V
+	public final fun synchronized (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableListKt {
@@ -160,11 +163,11 @@ public final class com/splendo/kaluga/base/collections/ConcurrentMutableSetKt {
 }
 
 public final class com/splendo/kaluga/base/flow/FlowKt {
-	public static final fun collectImportant (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun collectImportantUntilLast (Lkotlinx/coroutines/flow/Flow;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun collectImportantUntilLast$default (Lkotlinx/coroutines/flow/Flow;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun collectUntilLast (Lkotlinx/coroutines/flow/Flow;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun collectUntilLast$default (Lkotlinx/coroutines/flow/Flow;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun collectImportant (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun collectImportantUntilLast (Lkotlinx/coroutines/flow/Flow;ZLkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun collectImportantUntilLast$default (Lkotlinx/coroutines/flow/Flow;ZLkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun collectUntilLast (Lkotlinx/coroutines/flow/Flow;ZLkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun collectUntilLast$default (Lkotlinx/coroutines/flow/Flow;ZLkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun filterOnlyImportant (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun onCollectionEvent (Lkotlinx/coroutines/flow/MutableSharedFlow;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun takeUntilLast (Lkotlinx/coroutines/flow/Flow;Z)Lkotlinx/coroutines/flow/Flow;
@@ -186,24 +189,6 @@ public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue$La
 }
 
 public abstract interface class com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant : com/splendo/kaluga/base/flow/SpecialFlowValue {
-}
-
-public abstract class com/splendo/kaluga/base/monitor/DefaultServiceMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
-	public fun <init> ()V
-	protected final fun getTAG ()Ljava/lang/String;
-	public fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun monitoringDidStart ()V
-	public abstract fun monitoringDidStop ()V
-	public final fun startMonitoring ()V
-	public final fun stopMonitoring ()V
-	protected final fun updateState ()V
-}
-
-public abstract interface class com/splendo/kaluga/base/monitor/ServiceMonitor {
-	public abstract fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun isServiceEnabled ()Z
-	public abstract fun startMonitoring ()V
-	public abstract fun stopMonitoring ()V
 }
 
 public abstract class com/splendo/kaluga/base/state/BaseColdStateRepo : com/splendo/kaluga/base/state/StateRepo {
@@ -298,10 +283,6 @@ public final class com/splendo/kaluga/base/state/KalugaState$DefaultImpls {
 	public static fun remain (Lcom/splendo/kaluga/base/state/KalugaState;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/base/state/KalugaStateKt {
-	public static final fun defaultLazySharedFlow ()Lkotlin/Lazy;
-}
-
 public abstract interface class com/splendo/kaluga/base/state/StateFlowRepo {
 	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 }
@@ -325,6 +306,75 @@ public abstract class com/splendo/kaluga/base/state/StateRepo : kotlinx/coroutin
 	public final fun takeAndChangeState (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun takeAndChangeState (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun useState (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/splendo/kaluga/base/text/BaseDateFormatter {
+	public abstract fun format (Lcom/splendo/kaluga/base/utils/KalugaDate;)Ljava/lang/String;
+	public abstract fun getAmString ()Ljava/lang/String;
+	public abstract fun getEras ()Ljava/util/List;
+	public abstract fun getMonths ()Ljava/util/List;
+	public abstract fun getPattern ()Ljava/lang/String;
+	public abstract fun getPmString ()Ljava/lang/String;
+	public abstract fun getShortMonths ()Ljava/util/List;
+	public abstract fun getShortWeekdays ()Ljava/util/List;
+	public abstract fun getTimeZone ()Lcom/splendo/kaluga/base/utils/TimeZone;
+	public abstract fun getWeekdays ()Ljava/util/List;
+	public abstract fun parse (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public abstract fun setAmString (Ljava/lang/String;)V
+	public abstract fun setEras (Ljava/util/List;)V
+	public abstract fun setMonths (Ljava/util/List;)V
+	public abstract fun setPattern (Ljava/lang/String;)V
+	public abstract fun setPmString (Ljava/lang/String;)V
+	public abstract fun setShortMonths (Ljava/util/List;)V
+	public abstract fun setShortWeekdays (Ljava/util/List;)V
+	public abstract fun setTimeZone (Lcom/splendo/kaluga/base/utils/TimeZone;)V
+	public abstract fun setWeekdays (Ljava/util/List;)V
+}
+
+public abstract interface class com/splendo/kaluga/base/text/BaseNumberFormatter {
+	public abstract fun format (Ljava/lang/Number;)Ljava/lang/String;
+	public abstract fun getAlwaysShowsDecimalSeparator ()Z
+	public abstract fun getCurrencyCode ()Ljava/lang/String;
+	public abstract fun getCurrencyDecimalSeparator ()C
+	public abstract fun getCurrencySymbol ()Ljava/lang/String;
+	public abstract fun getDecimalSeparator ()C
+	public abstract fun getExponentSymbol ()Ljava/lang/String;
+	public abstract fun getGroupingSeparator ()C
+	public abstract fun getGroupingSize ()I
+	public abstract fun getInfinitySymbol ()Ljava/lang/String;
+	public abstract fun getLocale ()Lcom/splendo/kaluga/base/utils/Locale;
+	public abstract fun getMinusSign ()C
+	public abstract fun getMultiplier ()I
+	public abstract fun getNegativePrefix ()Ljava/lang/String;
+	public abstract fun getNegativeSuffix ()Ljava/lang/String;
+	public abstract fun getNotANumberSymbol ()Ljava/lang/String;
+	public abstract fun getPerMillSymbol ()C
+	public abstract fun getPercentSymbol ()C
+	public abstract fun getPositivePrefix ()Ljava/lang/String;
+	public abstract fun getPositiveSuffix ()Ljava/lang/String;
+	public abstract fun getUsesGroupingSeparator ()Z
+	public abstract fun getZeroSymbol ()C
+	public abstract fun parse (Ljava/lang/String;)Ljava/lang/Number;
+	public abstract fun setAlwaysShowsDecimalSeparator (Z)V
+	public abstract fun setCurrencyCode (Ljava/lang/String;)V
+	public abstract fun setCurrencyDecimalSeparator (C)V
+	public abstract fun setCurrencySymbol (Ljava/lang/String;)V
+	public abstract fun setDecimalSeparator (C)V
+	public abstract fun setExponentSymbol (Ljava/lang/String;)V
+	public abstract fun setGroupingSeparator (C)V
+	public abstract fun setGroupingSize (I)V
+	public abstract fun setInfinitySymbol (Ljava/lang/String;)V
+	public abstract fun setMinusSign (C)V
+	public abstract fun setMultiplier (I)V
+	public abstract fun setNegativePrefix (Ljava/lang/String;)V
+	public abstract fun setNegativeSuffix (Ljava/lang/String;)V
+	public abstract fun setNotANumberSymbol (Ljava/lang/String;)V
+	public abstract fun setPerMillSymbol (C)V
+	public abstract fun setPercentSymbol (C)V
+	public abstract fun setPositivePrefix (Ljava/lang/String;)V
+	public abstract fun setPositiveSuffix (Ljava/lang/String;)V
+	public abstract fun setUsesGroupingSeparator (Z)V
+	public abstract fun setZeroSymbol (C)V
 }
 
 public final class com/splendo/kaluga/base/text/DateFormatStyle : java/lang/Enum {
@@ -364,33 +414,32 @@ public abstract interface class com/splendo/kaluga/base/text/Formattable {
 	public abstract fun formatFor (Lcom/splendo/kaluga/base/utils/Locale;Ljava/util/Set;II)Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/KalugaDateFormatter {
+public final class com/splendo/kaluga/base/text/KalugaDateFormatter : com/splendo/kaluga/base/text/BaseDateFormatter {
 	public static final field Companion Lcom/splendo/kaluga/base/text/KalugaDateFormatter$Companion;
 	public synthetic fun <init> (Ljava/text/SimpleDateFormat;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun format (Lcom/splendo/kaluga/base/utils/KalugaDate;)Ljava/lang/String;
-	public final fun getAmString ()Ljava/lang/String;
-	public final fun getEras ()Ljava/util/List;
-	public final fun getMonths ()Ljava/util/List;
-	public final fun getPattern ()Ljava/lang/String;
-	public final fun getPmString ()Ljava/lang/String;
-	public final fun getShortMonths ()Ljava/util/List;
-	public final fun getShortWeekdays ()Ljava/util/List;
-	public final fun getTimeZone ()Lcom/splendo/kaluga/base/utils/TimeZone;
-	public final fun getWeekdays ()Ljava/util/List;
-	public final fun parse (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public final fun setAmString (Ljava/lang/String;)V
-	public final fun setEras (Ljava/util/List;)V
-	public final fun setMonths (Ljava/util/List;)V
-	public final fun setPattern (Ljava/lang/String;)V
-	public final fun setPmString (Ljava/lang/String;)V
-	public final fun setShortMonths (Ljava/util/List;)V
-	public final fun setShortWeekdays (Ljava/util/List;)V
-	public final fun setTimeZone (Lcom/splendo/kaluga/base/utils/TimeZone;)V
-	public final fun setWeekdays (Ljava/util/List;)V
+	public fun format (Lcom/splendo/kaluga/base/utils/KalugaDate;)Ljava/lang/String;
+	public fun getAmString ()Ljava/lang/String;
+	public fun getEras ()Ljava/util/List;
+	public fun getMonths ()Ljava/util/List;
+	public fun getPattern ()Ljava/lang/String;
+	public fun getPmString ()Ljava/lang/String;
+	public fun getShortMonths ()Ljava/util/List;
+	public fun getShortWeekdays ()Ljava/util/List;
+	public fun getTimeZone ()Lcom/splendo/kaluga/base/utils/TimeZone;
+	public fun getWeekdays ()Ljava/util/List;
+	public fun parse (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public fun setAmString (Ljava/lang/String;)V
+	public fun setEras (Ljava/util/List;)V
+	public fun setMonths (Ljava/util/List;)V
+	public fun setPattern (Ljava/lang/String;)V
+	public fun setPmString (Ljava/lang/String;)V
+	public fun setShortMonths (Ljava/util/List;)V
+	public fun setShortWeekdays (Ljava/util/List;)V
+	public fun setTimeZone (Lcom/splendo/kaluga/base/utils/TimeZone;)V
+	public fun setWeekdays (Ljava/util/List;)V
 }
 
 public final class com/splendo/kaluga/base/text/KalugaDateFormatter$Companion {
-	public final fun createDateFormatter (Ljava/text/SimpleDateFormat;Lcom/splendo/kaluga/base/utils/TimeZone;)Lcom/splendo/kaluga/base/text/KalugaDateFormatter;
 	public final fun dateFormat (Lcom/splendo/kaluga/base/text/DateFormatStyle;Lcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/text/KalugaDateFormatter;
 	public static synthetic fun dateFormat$default (Lcom/splendo/kaluga/base/text/KalugaDateFormatter$Companion;Lcom/splendo/kaluga/base/text/DateFormatStyle;Lcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/text/KalugaDateFormatter;
 	public final fun dateTimeFormat (Lcom/splendo/kaluga/base/text/DateFormatStyle;Lcom/splendo/kaluga/base/text/DateFormatStyle;Lcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/base/text/KalugaDateFormatter;
@@ -554,53 +603,53 @@ public final class com/splendo/kaluga/base/text/NumberFormatStyle$Scientific : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/text/NumberFormatter {
+public final class com/splendo/kaluga/base/text/NumberFormatter : com/splendo/kaluga/base/text/BaseNumberFormatter {
 	public fun <init> ()V
 	public fun <init> (Lcom/splendo/kaluga/base/utils/Locale;Lcom/splendo/kaluga/base/text/NumberFormatStyle;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/base/utils/Locale;Lcom/splendo/kaluga/base/text/NumberFormatStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun format (Ljava/lang/Number;)Ljava/lang/String;
-	public final fun getAlwaysShowsDecimalSeparator ()Z
-	public final fun getCurrencyCode ()Ljava/lang/String;
-	public final fun getCurrencyDecimalSeparator ()C
-	public final fun getCurrencySymbol ()Ljava/lang/String;
-	public final fun getDecimalSeparator ()C
-	public final fun getExponentSymbol ()Ljava/lang/String;
-	public final fun getGroupingSeparator ()C
-	public final fun getGroupingSize ()I
-	public final fun getInfinitySymbol ()Ljava/lang/String;
-	public final fun getLocale ()Lcom/splendo/kaluga/base/utils/Locale;
-	public final fun getMinusSign ()C
-	public final fun getMultiplier ()I
-	public final fun getNegativePrefix ()Ljava/lang/String;
-	public final fun getNegativeSuffix ()Ljava/lang/String;
-	public final fun getNotANumberSymbol ()Ljava/lang/String;
-	public final fun getPerMillSymbol ()C
-	public final fun getPercentSymbol ()C
-	public final fun getPositivePrefix ()Ljava/lang/String;
-	public final fun getPositiveSuffix ()Ljava/lang/String;
-	public final fun getUsesGroupingSeparator ()Z
-	public final fun getZeroSymbol ()C
-	public final fun parse (Ljava/lang/String;)Ljava/lang/Number;
-	public final fun setAlwaysShowsDecimalSeparator (Z)V
-	public final fun setCurrencyCode (Ljava/lang/String;)V
-	public final fun setCurrencyDecimalSeparator (C)V
-	public final fun setCurrencySymbol (Ljava/lang/String;)V
-	public final fun setDecimalSeparator (C)V
-	public final fun setExponentSymbol (Ljava/lang/String;)V
-	public final fun setGroupingSeparator (C)V
-	public final fun setGroupingSize (I)V
-	public final fun setInfinitySymbol (Ljava/lang/String;)V
-	public final fun setMinusSign (C)V
-	public final fun setMultiplier (I)V
-	public final fun setNegativePrefix (Ljava/lang/String;)V
-	public final fun setNegativeSuffix (Ljava/lang/String;)V
-	public final fun setNotANumberSymbol (Ljava/lang/String;)V
-	public final fun setPerMillSymbol (C)V
-	public final fun setPercentSymbol (C)V
-	public final fun setPositivePrefix (Ljava/lang/String;)V
-	public final fun setPositiveSuffix (Ljava/lang/String;)V
-	public final fun setUsesGroupingSeparator (Z)V
-	public final fun setZeroSymbol (C)V
+	public fun format (Ljava/lang/Number;)Ljava/lang/String;
+	public fun getAlwaysShowsDecimalSeparator ()Z
+	public fun getCurrencyCode ()Ljava/lang/String;
+	public fun getCurrencyDecimalSeparator ()C
+	public fun getCurrencySymbol ()Ljava/lang/String;
+	public fun getDecimalSeparator ()C
+	public fun getExponentSymbol ()Ljava/lang/String;
+	public fun getGroupingSeparator ()C
+	public fun getGroupingSize ()I
+	public fun getInfinitySymbol ()Ljava/lang/String;
+	public fun getLocale ()Lcom/splendo/kaluga/base/utils/Locale;
+	public fun getMinusSign ()C
+	public fun getMultiplier ()I
+	public fun getNegativePrefix ()Ljava/lang/String;
+	public fun getNegativeSuffix ()Ljava/lang/String;
+	public fun getNotANumberSymbol ()Ljava/lang/String;
+	public fun getPerMillSymbol ()C
+	public fun getPercentSymbol ()C
+	public fun getPositivePrefix ()Ljava/lang/String;
+	public fun getPositiveSuffix ()Ljava/lang/String;
+	public fun getUsesGroupingSeparator ()Z
+	public fun getZeroSymbol ()C
+	public fun parse (Ljava/lang/String;)Ljava/lang/Number;
+	public fun setAlwaysShowsDecimalSeparator (Z)V
+	public fun setCurrencyCode (Ljava/lang/String;)V
+	public fun setCurrencyDecimalSeparator (C)V
+	public fun setCurrencySymbol (Ljava/lang/String;)V
+	public fun setDecimalSeparator (C)V
+	public fun setExponentSymbol (Ljava/lang/String;)V
+	public fun setGroupingSeparator (C)V
+	public fun setGroupingSize (I)V
+	public fun setInfinitySymbol (Ljava/lang/String;)V
+	public fun setMinusSign (C)V
+	public fun setMultiplier (I)V
+	public fun setNegativePrefix (Ljava/lang/String;)V
+	public fun setNegativeSuffix (Ljava/lang/String;)V
+	public fun setNotANumberSymbol (Ljava/lang/String;)V
+	public fun setPerMillSymbol (C)V
+	public fun setPercentSymbol (C)V
+	public fun setPositivePrefix (Ljava/lang/String;)V
+	public fun setPositiveSuffix (Ljava/lang/String;)V
+	public fun setUsesGroupingSeparator (Z)V
+	public fun setZeroSymbol (C)V
 }
 
 public final class com/splendo/kaluga/base/text/RoundingMode : java/lang/Enum {
@@ -792,6 +841,25 @@ public final class com/splendo/kaluga/base/utils/ApplyIfKt {
 	public static final fun applyIf (Ljava/lang/Object;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
+public abstract class com/splendo/kaluga/base/utils/BaseLocale {
+	public fun <init> ()V
+	public abstract fun countryName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public abstract fun getAlternateQuotationEnd ()Ljava/lang/String;
+	public abstract fun getAlternateQuotationStart ()Ljava/lang/String;
+	public abstract fun getCountryCode ()Ljava/lang/String;
+	public abstract fun getLanguageCode ()Ljava/lang/String;
+	public abstract fun getQuotationEnd ()Ljava/lang/String;
+	public abstract fun getQuotationStart ()Ljava/lang/String;
+	public abstract fun getScriptCode ()Ljava/lang/String;
+	public abstract fun getUnitSystem ()Lcom/splendo/kaluga/base/utils/UnitSystem;
+	public abstract fun getVariantCode ()Ljava/lang/String;
+	public abstract fun languageName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public abstract fun name (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public abstract fun scriptName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public abstract fun variantName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+}
+
 public abstract class com/splendo/kaluga/base/utils/BaseTimeZone {
 	public fun <init> ()V
 	public abstract fun copy ()Lcom/splendo/kaluga/base/utils/BaseTimeZone;
@@ -833,7 +901,6 @@ public final class com/splendo/kaluga/base/utils/DecimalJVM {
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
 	public static synthetic fun div$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
-	public static final fun getJava (Lcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/RoundingMode;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun minus (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
@@ -867,9 +934,9 @@ public final class com/splendo/kaluga/base/utils/DecimalKt {
 	public static final fun toDecimalList ([I)Ljava/util/List;
 	public static final fun toDecimalList ([J)Ljava/util/List;
 	public static final fun toDecimalList ([S)Ljava/util/List;
-	public static final fun toDoubleArray (Ljava/util/List;)[D
-	public static final fun toIntArray (Ljava/util/List;)[I
-	public static final fun toStringList (Ljava/util/List;)Ljava/util/List;
+	public static final fun toDoubleArray (Ljava/util/Collection;)[D
+	public static final fun toIntArray (Ljava/util/Collection;)[I
+	public static final fun toStringList (Ljava/util/Collection;)Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/base/utils/DefaultKalugaDate : com/splendo/kaluga/base/utils/KalugaDate {
@@ -998,23 +1065,27 @@ public final class com/splendo/kaluga/base/utils/KalugaDateJvm {
 	public static synthetic fun tomorrow$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/TimeZone;Lcom/splendo/kaluga/base/utils/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 }
 
-public final class com/splendo/kaluga/base/utils/Locale {
+public final class com/splendo/kaluga/base/utils/Locale : com/splendo/kaluga/base/utils/BaseLocale {
 	public static final field Companion Lcom/splendo/kaluga/base/utils/Locale$Companion;
-	public final fun countryName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public final fun getAlternateQuotationEnd ()Ljava/lang/String;
-	public final fun getAlternateQuotationStart ()Ljava/lang/String;
-	public final fun getCountryCode ()Ljava/lang/String;
-	public final fun getLanguageCode ()Ljava/lang/String;
-	public final fun getLocale ()Ljava/util/Locale;
-	public final fun getQuotationEnd ()Ljava/lang/String;
-	public final fun getQuotationStart ()Ljava/lang/String;
-	public final fun getScriptCode ()Ljava/lang/String;
-	public final fun getUnitSystem ()Lcom/splendo/kaluga/base/utils/UnitSystem;
-	public final fun getVariantCode ()Ljava/lang/String;
-	public final fun languageName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public final fun name (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public final fun scriptName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public final fun variantName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public final fun copy (Ljava/util/Locale;)Lcom/splendo/kaluga/base/utils/Locale;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/utils/Locale;Ljava/util/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Locale;
+	public fun countryName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAlternateQuotationEnd ()Ljava/lang/String;
+	public fun getAlternateQuotationStart ()Ljava/lang/String;
+	public fun getCountryCode ()Ljava/lang/String;
+	public fun getLanguageCode ()Ljava/lang/String;
+	public fun getQuotationEnd ()Ljava/lang/String;
+	public fun getQuotationStart ()Ljava/lang/String;
+	public fun getScriptCode ()Ljava/lang/String;
+	public fun getUnitSystem ()Lcom/splendo/kaluga/base/utils/UnitSystem;
+	public fun getVariantCode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun languageName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public fun name (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public fun scriptName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun variantName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/Locale$Companion {

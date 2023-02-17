@@ -18,7 +18,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.resources
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert

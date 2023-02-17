@@ -30,9 +30,19 @@ import platform.Foundation.secondsFromGMT
 import platform.Foundation.timeZoneWithAbbreviation
 import platform.Foundation.timeZoneWithName
 
+/**
+ * A default implementation of [BaseTimeZone].
+ * @property timeZone the internal [NSTimeZone] tracking this timezone.
+ */
 actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZone() {
 
     actual companion object {
+
+        /**
+         * Gets a [TimeZone] based on a given Identifier
+         * @param identifier The identifier to create a [TimeZone] for
+         * @return The [TimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
+         */
         actual fun get(identifier: String): TimeZone? {
             return if (NSTimeZone.abbreviationDictionary.typedMap<String, String>().containsKey(identifier)) {
                 NSTimeZone.timeZoneWithAbbreviation(identifier)
@@ -42,7 +52,16 @@ actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZ
                 TimeZone(it)
             }
         }
+
+        /**
+         * Gets the current [TimeZone] configured by the user
+         * @return The current [TimeZone] of the user
+         */
         actual fun current(): TimeZone = TimeZone(NSTimeZone.defaultTimeZone)
+
+        /**
+         * List of available identifiers associated with [TimeZone]s. All elements in this list can be used for creating a [TimeZone] using [TimeZone.get]
+         */
         actual val availableIdentifiers: List<String> = NSTimeZone.knownTimeZoneNames.typedList()
     }
 
@@ -55,10 +74,11 @@ actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZ
         return timeZone.localizedName(nameStyle, locale.nsLocale) ?: ""
     }
     override val offsetFromGMTInMilliseconds: Long get() {
-        val rawOffset = if (timeZone.isDaylightSavingTime())
+        val rawOffset = if (timeZone.isDaylightSavingTime()) {
             timeZone.secondsFromGMT.toDouble() - timeZone.daylightSavingTimeOffset
-        else
+        } else {
             timeZone.secondsFromGMT.toDouble()
+        }
 
         return rawOffset.toLong() * 1000L
     }

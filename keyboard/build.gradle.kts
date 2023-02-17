@@ -3,6 +3,7 @@ plugins {
     id("jacoco")
     id("com.android.library")
     id("convention.publication")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -19,7 +20,7 @@ kotlin {
 
         getByName("commonTest") {
             dependencies {
-                api(project(":test-utils-base", ""))
+                api(project(":test-utils-keyboard", ""))
             }
         }
     }

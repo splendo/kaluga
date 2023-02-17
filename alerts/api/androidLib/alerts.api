@@ -114,10 +114,6 @@ public final class com/splendo/kaluga/alerts/AlertPresenter$Builder : com/splend
 	public fun unsubscribe ()V
 }
 
-public final class com/splendo/kaluga/alerts/AlertPresenterKt {
-	public static final fun alertPresenterBuilder (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/alerts/AlertPresenter$Builder;
-}
-
 public final class com/splendo/kaluga/alerts/AlertsKt {
 	public static final fun buildActionSheet (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
 	public static final fun buildAlert (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;

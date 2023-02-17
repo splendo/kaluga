@@ -362,6 +362,18 @@ fun <T> Intent?.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
+fun <T : Any> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
+    toTypedPropertyOrNull(
+        NavigationBundleSpecType.SerializedType(serializer)
+    )
+}
+
+/**
+ * Parses the [Bundle] of [Intent] into [T] if is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.SerializedType] with [serializer] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
+ * @param serializer The [KSerializer] to deserialize [T] from the bundle.
+ * @return The [T] stored in the bundle or null if no such value was found.
+ */
+@JvmName("parseNullableTypeOfOrNull")
 fun <T> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
         NavigationBundleSpecType.SerializedType(serializer)

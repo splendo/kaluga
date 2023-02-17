@@ -20,6 +20,7 @@ package com.splendo.kaluga.hud
 
 import androidx.activity.viewModels
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
+import com.splendo.kaluga.test.hud.hudBuilder
 
 class TestActivity : KalugaViewModelActivity<HudViewModel>() {
 

@@ -132,11 +132,18 @@ abstract class KalugaDate : Comparable<KalugaDate> {
         return formatter.format(this)
     }
 
+    /**
+     * Reference to the underlying [KalugaDateHolder]
+     */
     abstract val date: KalugaDateHolder
 }
 
+/**
+ * Default implementation of [KalugaDate]
+ */
 expect class DefaultKalugaDate : KalugaDate {
     companion object {
+
         /**
          * Creates a [KalugaDate] relative to the current time
          * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0

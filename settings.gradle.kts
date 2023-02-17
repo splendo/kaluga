@@ -23,6 +23,7 @@ pluginManagement {
             val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
             val kalugaAtomicFuGradlePluginVersion = settings.extra["kaluga.atomicFuGradlePluginVersion"]
             val kalugaBinaryCompatibilityValidatorVersion = settings.extra["kaluga.binaryCompatibilityValidatorVersion"]
+            val kalugaDokkaVersion = settings.extra["kaluga.dokkaVersion"]
 
             when (requested.id.id) {
                 "org.jetbrains.kotlin.multiplatform",
@@ -30,6 +31,8 @@ pluginManagement {
                 "org.jetbrains.kotlin.android",
                 "org.jetbrains.kotlin.kapt",
                 -> useVersion("$kalugaKotlinVersion")
+                "org.jetbrains.dokka"
+                -> useVersion("$kalugaDokkaVersion")
                 "com.android.library",
                 "com.android.application",
                 -> useVersion("$kalugaAndroidGradlePluginVersion")
@@ -90,6 +93,7 @@ include(":test-utils-base")
 include(":test-utils-alerts")
 include(":test-utils-architecture")
 include(":test-utils-bluetooth")
+include(":test-utils-date-time-picker")
 include(":test-utils-hud")
 include(":test-utils-keyboard")
 include(":test-utils-koin")

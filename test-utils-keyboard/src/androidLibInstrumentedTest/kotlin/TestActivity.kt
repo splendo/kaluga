@@ -15,7 +15,7 @@
 
 */
 
-package com.splendo.kaluga.tes.keyboard
+package com.splendo.kaluga.test.keyboard
 
 import androidx.appcompat.app.AppCompatActivity
 

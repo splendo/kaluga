@@ -2,6 +2,7 @@ package com.splendo.kaluga.datetimepicker
 
 import androidx.activity.viewModels
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
+import com.splendo.kaluga.test.datetimepicker.datePickerPresenterBuilder
 
 class TestActivity : KalugaViewModelActivity<DateTimePickerViewModel>() {
 

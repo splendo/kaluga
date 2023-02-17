@@ -21,9 +21,104 @@ import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 
 /**
- * A [Locale] object represents a specific geographical, political, or cultural region.
+ * An object representing a specific geographical, political, or cultural region.
  */
-expect class Locale {
+abstract class BaseLocale {
+    /**
+     *  ISO 3166 alpha-2 country code or UN M.49 numeric-3 area code.
+     *
+     *  Example: "US" (United States), "FR" (France), "029" (Caribbean)
+     */
+    abstract val countryCode: String
+
+    /**
+     * ISO 639 alpha-2 or alpha-3 language code.
+     *
+     * Example: "en" (English), "ja" (Japanese), "kok" (Konkani)
+     */
+    abstract val languageCode: String
+
+    /**
+     * ISO 15924 alpha-4 script code.
+     *
+     * Example: "Latn" (Latin), "Cyrl" (Cyrillic)
+     */
+    abstract val scriptCode: String
+
+    /**
+     * Any arbitrary value used to indicate a variation of a [Locale].
+     * Where there are two or more variant values each indicating its own semantics, these values should be ordered by importance, with most important first, separated by underscore('_').
+     *
+     * Example: "polyton" (Polytonic Greek), "POSIX"
+     */
+    abstract val variantCode: String
+
+    /**
+     * Returns [UnitSystem] for the [Locale].
+     */
+    abstract val unitSystem: UnitSystem
+
+    /**
+     * Gets the name of the [Locale], localized according to a given [Locale]
+     * @param forLocale The [Locale] for which the name should be localized
+     * @return The name of this [Locale]
+     */
+    abstract fun name(forLocale: Locale): String
+
+    /**
+     * Gets the county name of the [Locale], localized according to a given [Locale]
+     * @param forLocale The [Locale] for which the country name should be localized
+     * @return The country name of this [Locale]
+     */
+    abstract fun countryName(forLocale: Locale): String
+
+    /**
+     * Gets the language name of the [Locale], localized according to a given [Locale]
+     * @param forLocale The [Locale] for which the language name should be localized
+     * @return The language name of this [Locale]
+     */
+    abstract fun languageName(forLocale: Locale): String
+
+    /**
+     * Gets the variant name of the [Locale], localized according to a given [Locale]
+     * @param forLocale The [Locale] for which the variant name should be localized
+     * @return The variant name of this [Locale]
+     */
+    abstract fun variantName(forLocale: Locale): String
+
+    /**
+     * Gets the script name of the [Locale], localized according to a given [Locale]
+     * @param forLocale The [Locale] for which the script name should be localized
+     * @return The script name of this [Locale]
+     */
+    abstract fun scriptName(forLocale: Locale): String
+
+    /**
+     * The Character(s) used for indicating the start of a quote
+     */
+    abstract val quotationStart: String
+    /**
+     * The Character(s) used for indicating the end of a quote
+     */
+    abstract val quotationEnd: String
+    /**
+     * The alternative Character(s) used for indicating the start of a quote
+     */
+    abstract val alternateQuotationStart: String
+    /**
+     * The alternative Character(s) used for indicating the end of a quote
+     */
+    abstract val alternateQuotationEnd: String
+
+    override fun toString(): String {
+        return listOf(languageCode, countryCode, variantCode).filterNot { it.isEmpty() }.joinToString("_")
+    }
+}
+
+/**
+ * Default implementation of [BaseLocale]
+ */
+expect class Locale : BaseLocale {
     companion object {
 
         /**
@@ -50,95 +145,16 @@ expect class Locale {
          */
         fun createLocale(language: String, country: String, variant: String): Locale
 
+        /**
+         * The default [Locale] of the user
+         */
         val defaultLocale: Locale
+
+        /**
+         * A list of [Locale] available to the user.
+         */
         val availableLocales: List<Locale>
     }
-
-    /**
-     *  ISO 3166 alpha-2 country code or UN M.49 numeric-3 area code.
-     *
-     *  Example: "US" (United States), "FR" (France), "029" (Caribbean)
-     */
-    val countryCode: String
-
-    /**
-     * ISO 639 alpha-2 or alpha-3 language code.
-     *
-     * Example: "en" (English), "ja" (Japanese), "kok" (Konkani)
-     */
-    val languageCode: String
-
-    /**
-     * ISO 15924 alpha-4 script code.
-     *
-     * Example: "Latn" (Latin), "Cyrl" (Cyrillic)
-     */
-    val scriptCode: String
-
-    /**
-     * Any arbitrary value used to indicate a variation of a [Locale].
-     * Where there are two or more variant values each indicating its own semantics, these values should be ordered by importance, with most important first, separated by underscore('_').
-     *
-     * Example: "polyton" (Polytonic Greek), "POSIX"
-     */
-    val variantCode: String
-
-    /**
-     * Returns [UnitSystem] for the [Locale].
-     */
-    val unitSystem: UnitSystem
-
-    /**
-     * Gets the name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the name should be localized
-     * @return The name of this [Locale]
-     */
-    fun name(forLocale: Locale): String
-
-    /**
-     * Gets the county name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the country name should be localized
-     * @return The country name of this [Locale]
-     */
-    fun countryName(forLocale: Locale): String
-
-    /**
-     * Gets the language name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the language name should be localized
-     * @return The language name of this [Locale]
-     */
-    fun languageName(forLocale: Locale): String
-
-    /**
-     * Gets the variant name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the variant name should be localized
-     * @return The variant name of this [Locale]
-     */
-    fun variantName(forLocale: Locale): String
-
-    /**
-     * Gets the script name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the script name should be localized
-     * @return The script name of this [Locale]
-     */
-    fun scriptName(forLocale: Locale): String
-
-    /**
-     * The Character(s) used for indicating the start of a quote
-     */
-    val quotationStart: String
-    /**
-     * The Character(s) used for indicating the end of a quote
-     */
-    val quotationEnd: String
-    /**
-     * The alternative Character(s) used for indicating the start of a quote
-     */
-    val alternateQuotationStart: String
-    /**
-     * The alternative Character(s) used for indicating the end of a quote
-     */
-    val alternateQuotationEnd: String
 }
 
 /**

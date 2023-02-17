@@ -32,7 +32,12 @@ import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
 import platform.Foundation.numberWithInt
 
-actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
+/**
+ * Default implementation of [BaseNumberFormatter]
+ * @param locale The [Locale] used for parsing. Defaults to [Locale.defaultLocale].
+ * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
+ */
+actual class NumberFormatter actual constructor(override val locale: Locale, style: NumberFormatStyle) : BaseNumberFormatter {
 
     @ExperimentalUnsignedTypes
     private val formatter = NSNumberFormatter().apply {
@@ -105,84 +110,84 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         }
     }
 
-    actual var percentSymbol: Char
+    override var percentSymbol: Char
         get() = formatter.percentSymbol.getOrNull(0) ?: Char.MIN_VALUE
         set(value) { formatter.percentSymbol = charArrayOf(value).concatToString() }
-    actual var perMillSymbol: Char
+    override var perMillSymbol: Char
         get() = formatter.perMillSymbol.getOrNull(0) ?: Char.MIN_VALUE
         set(value) { formatter.perMillSymbol = charArrayOf(value).concatToString() }
-    actual var minusSign: Char
+    override var minusSign: Char
         get() = formatter.minusSign.getOrNull(0) ?: Char.MIN_VALUE
         set(value) { formatter.minusSign = charArrayOf(value).concatToString() }
-    actual var exponentSymbol: String
+    override var exponentSymbol: String
         get() = formatter.exponentSymbol
         set(value) { formatter.exponentSymbol = value }
-    actual var zeroSymbol: Char
+    override var zeroSymbol: Char
         get() = formatter.zeroSymbol?.getOrNull(0) ?: '0'
         set(value) { formatter.zeroSymbol = charArrayOf(value).concatToString() }
-    actual var notANumberSymbol: String
+    override var notANumberSymbol: String
         get() = formatter.notANumberSymbol
         set(value) { formatter.notANumberSymbol = value }
-    actual var infinitySymbol: String
+    override var infinitySymbol: String
         get() = formatter.positiveInfinitySymbol
         set(value) {
             formatter.positiveInfinitySymbol = value
             formatter.negativeInfinitySymbol = value
         }
-    actual var currencySymbol: String
+    override var currencySymbol: String
         get() = formatter.currencySymbol
         set(value) { formatter.currencySymbol = value }
-    actual var currencyCode: String
+    override var currencyCode: String
         get() = formatter.currencyCode
         set(value) { formatter.currencyCode = value }
-    actual var positivePrefix: String
+    override var positivePrefix: String
         get() = formatter.positivePrefix
         set(value) { formatter.positivePrefix = value }
-    actual var positiveSuffix: String
+    override var positiveSuffix: String
         get() = formatter.positiveSuffix
         set(value) { formatter.positiveSuffix = value }
-    actual var negativePrefix: String
+    override var negativePrefix: String
         get() = formatter.negativePrefix
         set(value) { formatter.negativePrefix = value }
-    actual var negativeSuffix: String
+    override var negativeSuffix: String
         get() = formatter.negativeSuffix
         set(value) { formatter.negativeSuffix = value }
-    actual var groupingSeparator: Char
+    override var groupingSeparator: Char
         get() = formatter.groupingSeparator.getOrNull(0) ?: Char.MIN_VALUE
         set(value) {
             val charValue = charArrayOf(value).concatToString()
             formatter.groupingSeparator = charValue
             formatter.currencyGroupingSeparator = charValue
         }
-    actual var usesGroupingSeparator: Boolean
+    override var usesGroupingSeparator: Boolean
         get() = formatter.usesGroupingSeparator
         set(value) { formatter.usesGroupingSeparator = value }
-    actual var decimalSeparator: Char
+    override var decimalSeparator: Char
         get() = formatter.decimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
         set(value) { formatter.decimalSeparator = charArrayOf(value).concatToString() }
-    actual var alwaysShowsDecimalSeparator: Boolean
+    override var alwaysShowsDecimalSeparator: Boolean
         get() = formatter.alwaysShowsDecimalSeparator
         set(value) { formatter.alwaysShowsDecimalSeparator = value }
-    actual var currencyDecimalSeparator: Char
+    override var currencyDecimalSeparator: Char
         get() = formatter.currencyDecimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
         set(value) { formatter.currencyDecimalSeparator = charArrayOf(value).concatToString() }
-    actual var groupingSize: Int
+    override var groupingSize: Int
         get() = formatter.groupingSize.toInt()
         set(value) {
             formatter.groupingSize = value.toULong()
             formatter.secondaryGroupingSize = value.toULong()
         }
-    actual var multiplier: Int
+    override var multiplier: Int
         get() = formatter.multiplier?.intValue ?: 1
         set(value) { formatter.multiplier = NSNumber.numberWithInt(value) }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
-    actual fun format(number: Number): String {
+    override fun format(number: Number): String {
         return (formatter.stringFromNumber(number as NSNumber) ?: "")
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
-    actual fun parse(string: String): Number? {
+    override fun parse(string: String): Number? {
         return formatter.numberFromString(string) as? Number
     }
 }

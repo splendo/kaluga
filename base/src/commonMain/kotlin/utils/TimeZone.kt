@@ -25,12 +25,26 @@ import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
  * Can be either [Short] or [Long]
  */
 enum class TimeZoneNameStyle {
+
+    /**
+     * A style specifier for [TimeZone.displayName] indicating a short name, such as "CET"
+     */
     Short,
+
+    /**
+     * A style specifier for [TimeZone.displayName] indicating a long name, such as "Central European Time"
+     */
     Long
 }
 
+/**
+ * Gets the UTC [TimeZone]
+ */
 val TimeZone.Companion.utc: TimeZone by lazy { TimeZone.get("UTC")!! }
 
+/**
+ * A TimeZone represents a time zone. Accounts for Daylight Savings
+ */
 abstract class BaseTimeZone {
 
     /**
@@ -78,8 +92,12 @@ abstract class BaseTimeZone {
     override fun toString(): String = displayName(TimeZoneNameStyle.Long)
 }
 
+/**
+ * A default implementation of [BaseTimeZone].
+ */
 expect class TimeZone : BaseTimeZone {
     companion object {
+
         /**
          * Gets a [TimeZone] based on a given Identifier
          * @param identifier The identifier to create a [TimeZone] for

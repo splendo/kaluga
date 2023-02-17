@@ -22,10 +22,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 
+/**
+ * Simple ViewModel class that is to be bound to a View lifecycle
+ */
 actual open class LifecycleViewModel internal actual constructor() {
 
     private val lifecycleJob = SupervisorJob()
 
+    /**
+     * [CoroutineScope] of the ViewModel.
+     * This scope is active until the ViewModel lifecycle is cleared.
+     */
     actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob)
 
     /**
@@ -35,6 +42,9 @@ actual open class LifecycleViewModel internal actual constructor() {
         onCleared()
     }
 
+    /**
+     * Called when the ViewModel lifecycle is cleared
+     */
     protected actual open fun onCleared() {
         lifecycleJob.cancelChildren()
     }
