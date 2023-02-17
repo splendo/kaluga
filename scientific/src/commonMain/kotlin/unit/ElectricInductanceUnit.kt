@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [ElectricInductance]
+ */
 val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
     Henry,
     Nanohenry,
@@ -36,6 +39,10 @@ val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
     Abhenry
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricInductance]
+ * SI unit is [Henry]
+ */
 @Serializable
 sealed class ElectricInductance : AbstractScientificUnit<PhysicalQuantity.ElectricInductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricInductance>
 

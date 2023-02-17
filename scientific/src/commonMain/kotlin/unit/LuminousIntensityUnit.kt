@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [LuminousIntensity]
+ */
 val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
     Candela,
     Nanocandela,
@@ -35,6 +38,10 @@ val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
     Gigacandela
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousIntensity]
+ * SI unit is [Candela]
+ */
 @Serializable
 sealed class LuminousIntensity : AbstractScientificUnit<PhysicalQuantity.LuminousIntensity>(), MetricAndImperialScientificUnit<PhysicalQuantity.LuminousIntensity>
 

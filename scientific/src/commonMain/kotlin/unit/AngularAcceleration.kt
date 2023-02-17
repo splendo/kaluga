@@ -21,10 +21,19 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [AngularAcceleration]
+ */
 val AngularAccelerationUnits: Set<AngularAcceleration> get() = AngularVelocityUnits.flatMap { angularVelocity ->
     TimeUnits.map { angularVelocity per it }
 }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.AngularAcceleration]
+ * SI unit is `Radian per Second per Second`
+ * @property angularVelocity the [AngularVelocity] component
+ * @property per the [Time] component
+ */
 @Serializable
 data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<PhysicalQuantity.AngularAcceleration>(), MetricAndImperialScientificUnit<PhysicalQuantity.AngularAcceleration> {
     override val quantity = PhysicalQuantity.AngularAcceleration
@@ -40,4 +49,9 @@ data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Ti
     override fun toSIUnit(value: Decimal): Decimal = angularVelocity.toSIUnit(per.fromSIUnit(value))
 }
 
+/**
+ * Gets a [AngularAcceleration] from a [AngularVelocity] and a [Time]
+ * @param time the [Time] component
+ * @return the [AngularAcceleration] represented by the units
+ */
 infix fun AngularVelocity.per(time: Time) = AngularAcceleration(this, time)

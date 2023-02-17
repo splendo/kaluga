@@ -24,36 +24,102 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * The system in which measurement is used
+ */
 sealed interface MeasurementUsage {
+
+    /**
+     * A measurement that is used in the Metric system
+     */
     interface UsedInMetric
+
+    /**
+     * A measurement that is used in the UK Imperial system
+     */
     interface UsedInUKImperial
+
+    /**
+     * A measurement that is used in the US Customary system
+     */
     interface UsedInUSCustomary
+
+    /**
+     * A measurement that is used in both UK Imperial and US Customary systems
+     */
     interface UsedInImperial : UsedInUKImperial, UsedInUSCustomary
+
+    /**
+     * A measurement that is used in both Metric and UK Imperial systems
+     */
     interface UsedInMetricAndUKImperial : UsedInMetric, UsedInUKImperial
+
+    /**
+     * A measurement that is used in Metric, UK Imperial and US Customary systems
+     */
     interface UsedInMetricAndImperial : UsedInMetric, UsedInImperial
 }
 
+/**
+ * The system of measurement
+ */
 @Serializable
 sealed class MeasurementSystem : MeasurementUsage, com.splendo.kaluga.base.utils.Serializable {
 
+    /**
+     * The metric system
+     */
     @Serializable
     object Metric : MeasurementSystem(), MeasurementUsage.UsedInMetric
+
+    /**
+     * The Imperial system (both UK Imperial and US Customary)
+     */
     @Serializable
     object Imperial : MeasurementSystem(), MeasurementUsage.UsedInImperial
+
+    /**
+     * The US Customary system
+     */
     @Serializable
     object USCustomary : MeasurementSystem(), MeasurementUsage.UsedInUSCustomary
+
+    /**
+     * The UK Imperial system
+     */
     @Serializable
     object UKImperial : MeasurementSystem(), MeasurementUsage.UsedInUKImperial
+
+    /**
+     * System shared between Metric and UK Imperial
+     */
     @Serializable
     object MetricAndUKImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndUKImperial
+
+    /**
+     * A global system
+     */
     @Serializable
     object MetricAndImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndImperial
 }
 
+/**
+ * A base unit of a [PhysicalQuantity] used in a [MeasurementSystem] that has [MeasurementUsage.UsedInMetric]
+ * Base units can be multiplied using [MetricMultipleUnit] to get a derived unit (e.g. Meter to Kilometer)
+ * @param System the type of [MeasurementSystem] to use. Must have [MeasurementUsage.UsedInMetric]
+ * @param Quantity the type of [PhysicalQuantity] of the unit
+ */
 interface MetricBaseUnit<System, Quantity : PhysicalQuantity> : SystemScientificUnit<System, Quantity> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric {
     override val quantity: Quantity
 }
 
+/**
+ * A multiplication of a [MetricBaseUnit].
+ * Example: Kilometer is a multiple of Meter
+ * @param System the type of [MeasurementSystem] to use. Must have [MeasurementUsage.UsedInMetric]
+ * @param Quantity the type of [PhysicalQuantity] of the unit
+ * @param Unit the type of [MetricBaseUnit] to multiply with
+ */
 sealed interface MetricMultipleUnit<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>> : SystemScientificUnit<System, Quantity> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric
 
 class Giga<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) : MetricMultipleUnit<System, Quantity, Unit> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric {

@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [IonizingRadiationEquivalentDose]
+ */
 val IonizingRadiationEquivalentDoseUnits: Set<IonizingRadiationEquivalentDose> get() = setOf(
     Sievert,
     Nanosievert,
@@ -49,6 +52,10 @@ val IonizingRadiationEquivalentDoseUnits: Set<IonizingRadiationEquivalentDose> g
     GigaroentgenEquivalentMan
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.IonizingRadiationEquivalentDose]
+ * SI unit is [Sievert]
+ */
 @Serializable
 sealed class IonizingRadiationEquivalentDose : AbstractScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>
 

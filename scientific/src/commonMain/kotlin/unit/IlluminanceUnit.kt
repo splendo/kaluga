@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricIlluminance]
+ */
 val MetricIlluminanceUnits: Set<MetricIlluminance> get() = setOf(
     Lux,
     Nanolux,
@@ -46,17 +49,34 @@ val MetricIlluminanceUnits: Set<MetricIlluminance> get() = setOf(
     Gigaphot
 )
 
+/**
+ * Set of all [ImperialIlluminance]
+ */
 val ImperialIlluminanceUnits: Set<ImperialIlluminance> get() = setOf(
     FootCandle
 )
 
+/**
+ * Set of all [Illuminance]
+ */
 val IlluminanceUnits: Set<Illuminance> get() = MetricIlluminanceUnits + ImperialIlluminanceUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Illuminance]
+ * SI unit is [Lux]
+ */
 @Serializable
 sealed class Illuminance : AbstractScientificUnit<PhysicalQuantity.Illuminance>()
 
+/**
+ * An [Illuminance] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricIlluminance : Illuminance(), MetricScientificUnit<PhysicalQuantity.Illuminance>
+
+/**
+ * An [Illuminance] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialIlluminance : Illuminance(), ImperialScientificUnit<PhysicalQuantity.Illuminance>
 

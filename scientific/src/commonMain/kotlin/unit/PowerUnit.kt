@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricAndImperialPower]
+ */
 val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
     Watt,
     Nanowatt,
@@ -38,11 +41,18 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
     Gigawatt
 )
 
+/**
+ * Set of all [MetricPower]
+ */
 val MetricPowerUnits: Set<MetricPower> get() = MetricAndImperialPowerUnits.map { it.metric }.toSet() +
     setOf(
         ErgPerSecond,
         MetricHorsepower
     )
+
+/**
+ * Set of all [ImperialPower]
+ */
 val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.map { it.imperial }.toSet() +
     setOf(
         FootPoundForcePerSecond,
@@ -55,17 +65,35 @@ val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.m
         BritishThermalUnitPerHour
     )
 
+/**
+ * Set of all [Power]
+ */
 val PowerUnits: Set<Power> get() = MetricAndImperialPowerUnits +
     MetricPowerUnits.filter { it !is MetricMetricAndImperialPowerWrapper }.toSet() +
     ImperialPowerUnits.filter { it !is ImperialMetricAndImperialPowerWrapper }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Power]
+ * SI unit is [Watt]
+ */
 @Serializable
 sealed class Power : AbstractScientificUnit<PhysicalQuantity.Power>()
 
+/**
+ * A [Power] for [MeasurementSystem.MetricAndImperial]
+ */
 @Serializable
 sealed class MetricAndImperialPower : Power(), MetricAndImperialScientificUnit<PhysicalQuantity.Power>
+
+/**
+ * A [Power] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricPower : Power(), MetricScientificUnit<PhysicalQuantity.Power>
+
+/**
+ * A [Power] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialPower : Power(), ImperialScientificUnit<PhysicalQuantity.Power>
 
@@ -193,6 +221,11 @@ object BritishThermalUnitPerHour : ImperialPower() {
     override fun fromSIUnit(value: Decimal): Decimal = Hour.toSIUnit(BritishThermalUnit.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = BritishThermalUnit.toSIUnit(Hour.fromSIUnit(value))
 }
+
+/**
+ * Wraps a [MetricAndImperialPower] unit to a [MetricPower] unit
+ * @param metricAndImperialPower the [MetricAndImperialPower] to wrap
+ */
 @Serializable
 data class MetricMetricAndImperialPowerWrapper(val metricAndImperialPower: MetricAndImperialPower) : MetricPower() {
     override val system = MeasurementSystem.Metric
@@ -202,8 +235,16 @@ data class MetricMetricAndImperialPowerWrapper(val metricAndImperialPower: Metri
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialPower.toSIUnit(value)
 }
 
+/**
+ * Converts a [MetricAndImperialPower] unit to a [MetricMetricAndImperialPowerWrapper] unit
+ * @param PowerUnit the type of [MetricAndImperialPower] to convert
+ */
 val <PowerUnit : MetricAndImperialPower> PowerUnit.metric get() = MetricMetricAndImperialPowerWrapper(this)
 
+/**
+ * Wraps a [MetricAndImperialPower] unit to an [ImperialPower] unit
+ * @param metricAndImperialPower the [MetricAndImperialPower] to wrap
+ */
 @Serializable
 data class ImperialMetricAndImperialPowerWrapper(val metricAndImperialPower: MetricAndImperialPower) : ImperialPower() {
     override val system = MeasurementSystem.Imperial
@@ -213,4 +254,8 @@ data class ImperialMetricAndImperialPowerWrapper(val metricAndImperialPower: Met
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialPower.toSIUnit(value)
 }
 
+/**
+ * Converts a [MetricAndImperialPower] unit to an [ImperialMetricAndImperialPowerWrapper] unit
+ * @param PowerUnit the type of [MetricAndImperialPower] to convert
+ */
 val <PowerUnit : MetricAndImperialPower> PowerUnit.imperial get() = ImperialMetricAndImperialPowerWrapper(this)

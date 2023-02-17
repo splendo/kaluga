@@ -28,6 +28,8 @@ import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
 
 /**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Dimensionless]
+ *
  * Dimensionless Quantity
  * is a quantity to which no physical dimension is assigned, also known as a bare, pure, or scalar quantity
  * or a quantity of dimension one,
@@ -71,18 +73,11 @@ import kotlinx.serialization.Serializable
  * Source:  "SI Brochure: The International System of Units, 9th Edition".
  */
 @Serializable
-sealed class Dimensionless : AbstractScientificUnit<PhysicalQuantity.Dimensionless>(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless> {
-    companion object {
-        operator fun <
-            Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
-            > Number.invoke(unit: Unit) = this.toDecimal()(unit, ::DefaultDimensionlessScientificValue)
+sealed class Dimensionless : AbstractScientificUnit<PhysicalQuantity.Dimensionless>(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless>
 
-        operator fun <
-            Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
-            > Decimal.invoke(unit: Unit) = this(unit, ::DefaultDimensionlessScientificValue)
-    }
-}
-
+/**
+ * Set of all [Dimensionless]
+ */
 val DimensionlessUnits: Set<Dimensionless> get() = setOf(
     One,
     Percent,
@@ -99,7 +94,7 @@ object One : Dimensionless() {
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
-val One.constant get() = One.UNIT_VALUE.invoke(One, ::DefaultDimensionlessScientificValue)
+val One.constant get() = One.UNIT_VALUE.invoke(One)
 
 @Serializable
 object Percent : Dimensionless() {
@@ -119,25 +114,4 @@ object Permill : Dimensionless() {
     override val quantity = PhysicalQuantity.Dimensionless
     override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_THOUSAND.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_THOUSAND.toDecimal()
-}
-
-interface DimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> : ScientificValue<PhysicalQuantity.Dimensionless, Unit> {
-    /**
-     * Returns the value as a fraction. I.e.
-     * ```
-     val percent = 12(Percent)
-     print(percent.value) // 12
-     print(percent.decimalFraction) // 0.12
-     * ```
-     */
-    val decimalFraction: Decimal
-        get() = unit.toSIUnit(value.toDecimal())
-}
-
-@Serializable
-data class DefaultDimensionlessScientificValue<Unit : ScientificUnit<PhysicalQuantity.Dimensionless>>(
-    override val value: Double,
-    override val unit: Unit
-) : DimensionlessScientificValue<Unit> {
-    constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 }

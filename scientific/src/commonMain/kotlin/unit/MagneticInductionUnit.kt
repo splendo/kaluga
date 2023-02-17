@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MagneticInduction]
+ */
 val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
     Tesla,
     Nanotesla,
@@ -39,6 +42,10 @@ val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
     Gauss
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.MagneticInduction]
+ * SI unit is [Tesla]
+ */
 @Serializable
 sealed class MagneticInduction : AbstractScientificUnit<PhysicalQuantity.MagneticInduction>(), MetricAndImperialScientificUnit<PhysicalQuantity.MagneticInduction>
 

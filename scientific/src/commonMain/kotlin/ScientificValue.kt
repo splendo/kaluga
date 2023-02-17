@@ -409,3 +409,15 @@ internal fun <
 } else {
     throw ScientificConverterException("Inverting by zero")
 }
+
+/**
+ * Returns the value of a [ScientificValue] with [PhysicalQuantity.Dimensionless] as a fraction. I.e.
+ * ```
+val percent = 12(Percent)
+print(percent.value) // 12
+print(percent.decimalFraction) // 0.12
+ * ```
+ * @param Unit the type of [ScientificUnit] with a [PhysicalQuantity.Dimensionless]
+ * @return the dimensionless [Decimal] value as a fraction
+ */
+val <Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> ScientificValue<PhysicalQuantity.Dimensionless, Unit>.decimalFraction: Decimal get() = unit.toSIUnit(value.toDecimal())
