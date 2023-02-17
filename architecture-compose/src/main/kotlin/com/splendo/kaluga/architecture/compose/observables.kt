@@ -24,11 +24,17 @@ import androidx.compose.runtime.remember
 import com.splendo.kaluga.architecture.observable.WithMutableState
 import com.splendo.kaluga.architecture.observable.WithState
 
+/**
+ * Creates a [State] whose value always matches a [WithState] using [WithState.stateFlow]
+ */
 @Suppress("NOTHING_TO_INLINE")
 @Composable
 inline fun <R> WithState<R>.state(): State<R> =
     this.stateFlow.collectAsState()
 
+/**
+ * Creates a [MutableState] that is synchronized with a [WithMutableState].
+ */
 // @Suppress("NOTHING_TO_INLINE") // inlining currently breaks compilation
 @Composable
 fun <R> WithMutableState<R>.mutableState(): MutableState<R> {

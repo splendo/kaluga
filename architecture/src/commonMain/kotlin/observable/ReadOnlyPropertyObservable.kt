@@ -26,11 +26,12 @@ private fun <R : T, T> readOnlyPropertyObservableHelper(readOnlyProperty: ReadOn
 
     observation.beforeObservedValueGet = { current ->
         @Suppress("UnnecessaryVariable") val new = readOnlyValue // variable actually needed due to delegation
-        if (new != current.valueOrNull)
+        if (new != current.valueOrNull) {
             ObservableOptional.Value(new)
-        else
+        } else {
             @Suppress("UNCHECKED_CAST")
             current as ObservableOptional<T>
+        }
     }
 }
 

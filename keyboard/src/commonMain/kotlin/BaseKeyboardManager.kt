@@ -29,26 +29,29 @@ interface FocusHandler
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
+ * @param FH the type of [FocusHandler] to handle focus requests.
  */
 interface BaseKeyboardManager<FH : FocusHandler> {
 
     /**
      * Base KeyboardManager builder class, which used to create a [BaseKeyboardManager]
+     * @param FH the type of [FocusHandler] to handle focus requests.
      */
     interface Builder<FH : FocusHandler> : LifecycleSubscribable {
 
         /**
          * Creates KeyboardManager object
          *
-         * @return The KeyboardManager object
+         * @param coroutineScope The [CoroutineScope] managing the keyboard lifecycle.
+         * @return The created [BaseKeyboardManager]
          */
         fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<FH>
     }
 
     /**
-     * Shows the keyboard for a given [FocusHandler]
+     * Shows the keyboard for a given [FH]
      *
-     * @param focusHandler The [FocusHandler] for which the keyboard will be shown
+     * @param focusHandler The [FH] for which the keyboard will be shown
      */
     fun show(focusHandler: FH)
 

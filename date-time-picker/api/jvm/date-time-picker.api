@@ -3,6 +3,7 @@ public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresen
 	public fun dismiss (Z)V
 	protected abstract fun dismissDateTimePicker (Z)V
 	public static synthetic fun dismissDateTimePicker$default (Lcom/splendo/kaluga/datetimepicker/BaseDateTimePickerPresenter;ZILjava/lang/Object;)V
+	protected fun getDateTimePicker ()Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
 	public fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun showAsync (ZLkotlin/jvm/functions/Function1;)V
 	protected abstract fun showDateTimePicker (ZLkotlin/jvm/functions/Function1;)V

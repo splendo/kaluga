@@ -20,12 +20,18 @@ package com.splendo.kaluga.architecture.compose.navigation
 import androidx.compose.material.ModalBottomSheetLayout
 
 /**
- * A controller that handles the [Route] for a [ModalBottomSheetLayout]
+ * A controller that handles the [BottomSheetRoute] for a [ModalBottomSheetLayout]
+ * @param contentRouteController The [RouteController] managing the content.
+ * @param sheetContentRouteController The [RouteController] managing the sheet content.
  */
 class BottomSheetRouteController(
     internal val contentRouteController: RouteController,
     internal val sheetContentRouteController: BottomSheetSheetContentRouteController
 ) {
+
+    /**
+     * Navigates using a given [BottomSheetRoute]
+     */
     fun navigate(route: BottomSheetRoute) = when (route) {
         is BottomSheetRoute.SheetContent -> sheetContentRouteController.navigate(route.route)
         is BottomSheetRoute.Content -> contentRouteController.navigate(route.route)

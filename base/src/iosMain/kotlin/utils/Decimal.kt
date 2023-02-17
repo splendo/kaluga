@@ -154,14 +154,15 @@ actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: R
     )
 )
 
-actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = if (n < 0)
+actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = if (n < 0) {
     1.toFiniteDecimal() / pow(n.absoluteValue)
-else
+} else {
     copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
+}
 
-actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0)
+actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0) {
     1.toFiniteDecimal() / pow(n.absoluteValue, scale)
-else
+} else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
             n.toULong(),
@@ -175,13 +176,15 @@ else
             )
         )
     )
+}
+
 actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
     roundingMode: RoundingMode
-): FiniteDecimal = if (n < 0)
+): FiniteDecimal = if (n < 0) {
     1.toFiniteDecimal() / pow(n.absoluteValue, scale, roundingMode)
-else
+} else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
             n.toULong(),
@@ -195,6 +198,7 @@ else
             )
         )
     )
+}
 
 actual fun Number.toFiniteDecimal() = FiniteDecimal(NSDecimalNumber(this.toString()))
 actual fun String.toFiniteDecimal(): FiniteDecimal? {

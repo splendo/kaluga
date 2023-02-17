@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.now
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import kotlin.time.Duration
 
 /**
  * Style for writing the name of a [TimeZone]
@@ -61,21 +62,38 @@ abstract class BaseTimeZone {
     abstract fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean = usesDaylightSavingsTime(), locale: Locale = defaultLocale): String
 
     /**
+     * The [Duration] this timezone differs from GMT when daylight savings time is not active
+     */
+    abstract val offsetFromGMT: Duration
+
+    /**
      * The number of milliseconds this timezone differs from GMT when daylight savings time is not active
      */
-    abstract val offsetFromGMTInMilliseconds: Long
+    val offsetFromGMTInMilliseconds: Long get() = offsetFromGMT.inWholeMilliseconds
+
+    /**
+     * The [Duration] this timezone differs from itself during Daylight Savings
+     */
+    abstract val daylightSavingsOffset: Duration
 
     /**
      * The number of milliseconds this timezone differs from itself during Daylight Savings
      */
-    abstract val daylightSavingsOffsetInMilliseconds: Long
+    val daylightSavingsOffsetInMilliseconds: Long get() = daylightSavingsOffset.inWholeMilliseconds
+
+    /**
+     * The [Duration] this [TimeZone] differs from GMT at a given [KalugaDate]
+     * @param date The [KalugaDate] for which to check the offset. Defaults to [DefaultKalugaDate.now]
+     * @return The number of milliseconds this [TimeZone] differs from GMT at [date]
+     */
+    abstract fun offsetFromGMTAtDate(date: KalugaDate = now()): Duration
 
     /**
      * The number of milliseconds this [TimeZone] differs from GMT at a given [KalugaDate]
      * @param date The [KalugaDate] for which to check the offset. Defaults to [DefaultKalugaDate.now]
      * @return The number of milliseconds this [TimeZone] differs from GMT at [date]
      */
-    abstract fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate = now()): Long
+    fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate = now()): Long = offsetFromGMTAtDate(date).inWholeMilliseconds
 
     /**
      * Returns `true` if this [TimeZone] is observing daylight savings at a given [KalugaDate]

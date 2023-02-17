@@ -40,7 +40,7 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         val onPermissionChangedFlow = MutableStateFlow<IOSPermissionsHelper.AuthorizationStatus?>(null)
         val timerHelper = PermissionRefreshScheduler(
             currentAuthorizationStatusProvider = authorizationProvider,
-            onPermissionChangedFlow = object : AuthorizationStatusHandler {
+            authorizationStatusHandler = object : AuthorizationStatusHandler {
                 override fun status(status: IOSPermissionsHelper.AuthorizationStatus) {
                     onPermissionChangedFlow.value = status
                 }

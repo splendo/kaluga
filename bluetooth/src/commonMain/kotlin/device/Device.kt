@@ -194,10 +194,7 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Disconnected)
-            state.connect
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Disconnected) state.connect else state.remain()
 
     private fun DeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: ConnectableDeviceState) =
         when (state) {
@@ -218,10 +215,7 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Disconnecting.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected)
-            state.disconnecting
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Connected) state.disconnecting else state.remain()
 
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) =
         when (state) {
@@ -249,16 +243,10 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Discovering.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected.NoServices)
-            state.discoverServices
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Connected.NoServices) state.discoverServices else state.remain()
 
     private fun DeviceConnectionManager.Event.DiscoveredServices.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected.Discovering)
-            state.didDiscoverServices(services)
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Connected.Discovering) state.didDiscoverServices(services) else state.remain()
 
     private fun DeviceConnectionManager.Event.AddAction.stateTransition(state: ConnectableDeviceState) =
         when (state) {

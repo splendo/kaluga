@@ -36,26 +36,39 @@ expect class NotificationOptions
  * A [PermissionManager] for managing [NotificationsPermission]
  */
 typealias NotificationsPermissionManager = PermissionManager<NotificationsPermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [NotificationsPermission]
+ */
 expect class DefaultNotificationsPermissionManager : BasePermissionManager<NotificationsPermission>
 
+/**
+ * A [BasePermissionsBuilder] for [NotificationsPermission]
+ */
 interface BaseNotificationsPermissionManagerBuilder : BasePermissionsBuilder<NotificationsPermission> {
+
     /**
      * Creates a [NotificationsPermissionManager]
-     * @param notificationsPermission The [NotificationsPermission] for the PermissionManager to be created
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param notificationsPermission the [NotificationsPermission] to be managed.
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [NotificationsPermissionManager]
      */
     fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): NotificationsPermissionManager
 }
 
 /**
- * A builder for creating a [NotificationsPermissionManager]
+ * A [BaseNotificationsPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class NotificationsPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseNotificationsPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [NotificationsPermission]
+ * @param notificationsPermission the [NotificationsPermission] to be managed
  * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [NotificationsPermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class NotificationsPermissionStateRepo(

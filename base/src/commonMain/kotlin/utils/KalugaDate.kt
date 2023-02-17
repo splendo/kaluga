@@ -22,6 +22,8 @@ import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import kotlin.jvm.JvmName
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Class holding the platform value of the desired Date.
@@ -109,9 +111,18 @@ abstract class KalugaDate : Comparable<KalugaDate> {
     abstract var millisecond: Int
 
     /**
+     * The [Duration] passed since epoch time (January 1st 1970 00:00:00:00 GMT)
+     */
+    abstract var durationSinceEpoch: Duration
+
+    /**
      * The number of milliseconds passed since epoch time (January 1st 1970 00:00:00:00 GMT)
      */
-    abstract var millisecondSinceEpoch: Long
+    var millisecondSinceEpoch: Long
+        get() = durationSinceEpoch.inWholeMilliseconds
+        set(value) {
+            durationSinceEpoch = value.milliseconds
+        }
 
     /**
      * Creates a copy of a [KalugaDate]
@@ -120,7 +131,7 @@ abstract class KalugaDate : Comparable<KalugaDate> {
     abstract fun copy(): KalugaDate
 
     /**
-     * Returns whether this Date is in the same [timeZone] and has the same time based on [millisecondSinceEpoch]
+     * Returns whether this Date is in the same [timeZone] and has the same time based on [durationSinceEpoch]
      * @return `true` if the two dates are equal
      */
     abstract override fun equals(other: Any?): Boolean
@@ -146,48 +157,76 @@ expect class DefaultKalugaDate : KalugaDate {
 
         /**
          * Creates a [KalugaDate] relative to the current time
-         * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
+         * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
          * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
          * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        fun now(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = Locale.defaultLocale): KalugaDate
+        fun now(offset: Duration = 0.milliseconds, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate
 
         /**
          * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
-         * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
+         * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
          * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
          * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        fun epoch(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = Locale.defaultLocale): KalugaDate
+        fun epoch(offset: Duration = 0.milliseconds, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate
     }
 }
+
+/**
+ * Creates a [KalugaDate] relative to the current time
+ * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
+ * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+ * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @return A [KalugaDate] relative to the current time
+ */
+fun DefaultKalugaDate.Companion.now(offsetInMilliseconds: Long, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate = now(offsetInMilliseconds.milliseconds, timeZone, locale)
+
+/**
+ * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
+ * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
+ * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+ * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @return A [KalugaDate] relative to the current time
+ */
+fun DefaultKalugaDate.Companion.epoch(offsetInMilliseconds: Long, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate = epoch(offsetInMilliseconds.milliseconds, timeZone, locale)
 
 @Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaDate"))
 typealias Date = KalugaDate
 
 /**
- * Creates a [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
- * @param date The [KalugaDate] of which the millisecondSinceEpoch to subtract should be retrieved
- * @return A new [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
+ * Gets the [Duration] between two [KalugaDate]
+ * @param other the [KalugaDate] to subtract
+ * @return the [Duration] between both dates.
  */
-operator fun KalugaDate.minus(date: KalugaDate): KalugaDate {
-    return copy().apply {
-        millisecondSinceEpoch -= date.millisecondSinceEpoch
-    }
+infix operator fun KalugaDate.minus(other: KalugaDate) = durationSinceEpoch - other.durationSinceEpoch
+
+/**
+ * Gets a [KalugaDate] that is [duration] after this date.
+ * @param duration the [Duration] to add to this date.
+ * @return A [KalugaDate] that is [duration] after this date
+ */
+infix operator fun KalugaDate.plus(duration: Duration) = copy().apply {
+    durationSinceEpoch += duration
 }
 
 /**
- * Creates a [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
- * @param date The [KalugaDate] of which the millisecondSinceEpoch to add should be retrieved
- * @return A new [KalugaDate] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
+ * Gets a [KalugaDate] that is [duration] before this date.
+ * @param duration the [Duration] to subtract from this date.
+ * @return A [KalugaDate] that is [duration] before this date
  */
-operator fun KalugaDate.plus(date: KalugaDate): KalugaDate {
-    return copy().apply {
-        millisecondSinceEpoch += date.millisecondSinceEpoch
-    }
-}
+infix operator fun KalugaDate.minus(duration: Duration) = this + (-duration)
+
+/**
+ * Creates a [KalugaDate] relative to the current time, in the UTC timezone
+ * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
+ * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @return A [KalugaDate] relative to the current time, in the UTC timezone
+ */
+fun DefaultKalugaDate.Companion.nowUtc(offset: Duration = 0.milliseconds, locale: Locale = defaultLocale): KalugaDate =
+    now(offset, TimeZone.utc, locale)
 
 /**
  * Creates a [KalugaDate] relative to the current time, in the UTC timezone
@@ -195,8 +234,7 @@ operator fun KalugaDate.plus(date: KalugaDate): KalugaDate {
  * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
  * @return A [KalugaDate] relative to the current time, in the UTC timezone
  */
-fun DefaultKalugaDate.Companion.nowUtc(offsetInMilliseconds: Long = 0L, locale: Locale = defaultLocale): KalugaDate =
-    now(offsetInMilliseconds, TimeZone.utc, locale)
+fun DefaultKalugaDate.Companion.nowUtc(offsetInMilliseconds: Long, locale: Locale = defaultLocale): KalugaDate = nowUtc(offsetInMilliseconds.milliseconds, locale)
 
 /**
  * Gets a [KalugaDate] equal to midnight on the same day as this Date
@@ -207,6 +245,17 @@ fun KalugaDate.toStartOfDay() = this.copy().apply {
     minute = 0
     second = 0
     millisecond = 0
+}
+
+/**
+ * Gets a [KalugaDate] equal to `23:59:59:999` on the same day as this Date
+ * @return A [KalugaDate] equal to `23:59:59:999` on the same day as this Date
+ */
+fun KalugaDate.toEndOfDay() = this.copy().apply {
+    hour = 23
+    minute = 59
+    second = 59
+    millisecond = 999
 }
 
 /**

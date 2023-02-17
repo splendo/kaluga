@@ -20,6 +20,10 @@ package com.splendo.kaluga.permissions.base
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 
+/**
+ * Android context for creating a [BasePermissionsBuilder]
+ * @property context the [Context] in which the permission is to be granted
+ */
 actual data class PermissionContext(val context: Context)
 
 actual val defaultPermissionContext get() = PermissionContext(ApplicationHolder.applicationContext)

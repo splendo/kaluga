@@ -31,11 +31,11 @@ import org.koin.core.parameter.parametersOf
 class LocationActivity : KalugaViewModelActivity<LocationViewModel>() {
 
     companion object {
-        private val permission = LocationPermission(background = false, precise = true)
+        private val locationPermission = LocationPermission(background = false, precise = true)
     }
 
     override val viewModel: LocationViewModel by viewModel {
-        parametersOf(permission)
+        parametersOf(locationPermission)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,7 +4,7 @@ public abstract interface class com/splendo/kaluga/permissions/notifications/Bas
 }
 
 public final class com/splendo/kaluga/permissions/notifications/DefaultNotificationsPermissionManager : com/splendo/kaluga/permissions/base/BasePermissionManager {
-	public fun <init> (Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
+	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 }
 
 public final class com/splendo/kaluga/permissions/notifications/NotificationOptions {

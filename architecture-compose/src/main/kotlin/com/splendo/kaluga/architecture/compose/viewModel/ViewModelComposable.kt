@@ -23,7 +23,8 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribableManager
 /**
  * Composable which manages [viewModel] lifecycle and binds to all its [BaseLifecycleViewModel.activeLifecycleSubscribables].
  * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
- * @param viewModel [BaseLifecycleViewModel] to manage
+ * @param ViewModel the type of [BaseLifecycleViewModel] to manage.
+ * @param viewModel [ViewModel] to manage
  * @param content content based on [viewModel]
  */
 @Composable
@@ -39,7 +40,8 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
 /**
  * Composable which manages [viewModel] lifecycle and binds to all its [ActivityLifecycleSubscribable] using [fragmentManager].
  * This automatically modifies the content using [ComposableLifecycleSubscribable.modifier].
- * @param viewModel [BaseLifecycleViewModel] to manage
+ * @param ViewModel the type of [BaseLifecycleViewModel] to manage.
+ * @param viewModel [ViewModel] to manage
  * @param fragmentManager The [FragmentManager] to bind to all [ActivityLifecycleSubscribable] in [BaseLifecycleViewModel.activeLifecycleSubscribables].
  * @param content content based on [viewModel]
  */

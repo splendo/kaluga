@@ -47,7 +47,7 @@ class KnownLocationTest {
 
     @Test
     fun testExpiredKnownLocation() = runBlocking {
-        val now = DefaultKalugaDate.epoch(10000)
+        val now = DefaultKalugaDate.epoch(10.seconds)
         val knownLocation = Location.KnownLocation(1.0, 1.0, time = now)
         val locationFlow = flowOf(
             knownLocation.copy(time = DefaultKalugaDate.epoch()),

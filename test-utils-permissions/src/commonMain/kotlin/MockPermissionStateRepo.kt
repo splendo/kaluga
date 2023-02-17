@@ -64,10 +64,14 @@ class MockBasePermissionStateRepo<P : Permission>(
         if (setupMocks) {
             didInitializeMock.on().doExecute { (mockState) ->
                 launchTakeAndChangeState { state ->
-                    if (state is PermissionState.Initializing)
-                        state.initialize(mockState.activeState == MockPermissionState.ActiveState.ALLOWED, mockState.activeState == MockPermissionState.ActiveState.LOCKED)
-                    else
+                    if (state is PermissionState.Initializing) {
+                        state.initialize(
+                            mockState.activeState == MockPermissionState.ActiveState.ALLOWED,
+                            mockState.activeState == MockPermissionState.ActiveState.LOCKED
+                        )
+                    } else {
                         state.remain()
+                    }
                 }
             }
         }

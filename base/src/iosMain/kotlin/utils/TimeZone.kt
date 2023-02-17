@@ -29,6 +29,8 @@ import platform.Foundation.nextDaylightSavingTimeTransition
 import platform.Foundation.secondsFromGMT
 import platform.Foundation.timeZoneWithAbbreviation
 import platform.Foundation.timeZoneWithName
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * A default implementation of [BaseTimeZone].
@@ -73,16 +75,17 @@ actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZ
         }
         return timeZone.localizedName(nameStyle, locale.nsLocale) ?: ""
     }
-    override val offsetFromGMTInMilliseconds: Long get() {
-        val rawOffset = if (timeZone.isDaylightSavingTime())
+    override val offsetFromGMT: Duration get() {
+        val rawOffset = if (timeZone.isDaylightSavingTime()) {
             timeZone.secondsFromGMT.toDouble() - timeZone.daylightSavingTimeOffset
-        else
+        } else {
             timeZone.secondsFromGMT.toDouble()
+        }
 
-        return rawOffset.toLong() * 1000L
+        return rawOffset.seconds
     }
 
-    override val daylightSavingsOffsetInMilliseconds: Long get() {
+    override val daylightSavingsOffset: Duration get() {
         val rawOffset = if (timeZone.isDaylightSavingTime()) {
             timeZone.daylightSavingTimeOffset.toLong()
         } else {
@@ -90,9 +93,9 @@ actual class TimeZone internal constructor(val timeZone: NSTimeZone) : BaseTimeZ
                 timeZone.daylightSavingTimeOffsetForDate(it).toLong()
             } ?: 0L
         }
-        return rawOffset * 1000L
+        return rawOffset.seconds
     }
-    override fun offsetFromGMTAtDateInMilliseconds(date: KalugaDate): Long = (timeZone.secondsFromGMTForDate(date.date) * 1000L)
+    override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.secondsFromGMTForDate(date.date).seconds
     override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
     override fun copy(): TimeZone = TimeZone(timeZone.copy() as NSTimeZone)
     override fun equals(other: Any?): Boolean {

@@ -188,13 +188,13 @@ sealed class NavigationBundleValue<T> {
     }
 
     /**
-     * A [NonNullableNavigationBundleValue] containing a [Int]
+     * A [NonNullableNavigationBundleValue] containing an [Int]
      * @property value The [Int] value of this [NavigationBundleValue]
      */
     data class IntegerValue internal constructor(override val value: Int) : NonNullableNavigationBundleValue<Int>()
 
     /**
-     * A [NonNullableNavigationBundleValue] containing a [IntArray]
+     * A [NonNullableNavigationBundleValue] containing an [IntArray]
      * @property value The [IntArray] value of this [NavigationBundleValue]
      */
     data class IntegerArrayValue internal constructor(override val value: IntArray) : NonNullableNavigationBundleValue<IntArray>() {

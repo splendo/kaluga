@@ -104,10 +104,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
 
     private fun parseServiceUUIDs(uuids: List<UUID>): String {
         val uuidString = uuids.fold("") { result, next ->
-            if (result.isEmpty())
-                next.toString()
-            else
-                "$result, $next"
+            if (result.isEmpty()) next.toString() else "$result, $next"
         }
         return "bluetooth_service_uuids".localized().format(uuidString)
     }
@@ -115,10 +112,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     private fun parseServiceData(data: Map<UUID, ByteArray?>): String {
         val dataString = data.entries.fold("") { result, next ->
             val nextString = "${next.key}: ${next.value?.toHexString() ?: ""}"
-            if (result.isEmpty())
-                nextString
-            else
-                "$result\n$nextString"
+            if (result.isEmpty()) nextString else "$result\n$nextString"
         }
         return "bluetooth_service_data".localized().format(dataString)
     }

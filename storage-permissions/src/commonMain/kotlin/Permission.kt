@@ -26,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * Permission to access the users device storage.
+ * [Permission] to access the users device storage.
  * On iOS this corresponds to the Photos permission
  * @param allowWrite If `true` writing to the storage is permitted
  */
@@ -34,6 +34,15 @@ data class StoragePermission(val allowWrite: Boolean = false) : Permission() {
     override val name: String = "Storage - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
 }
 
+/**
+ * Registers a [BaseStoragePermissionManagerBuilder] and [PermissionStateRepo] for [StoragePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param storagePermissionManagerBuilderBuilder method for creating a [BaseStoragePermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseStoragePermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseStoragePermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerStoragePermission(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -49,6 +58,14 @@ fun PermissionsBuilder.registerStoragePermission(
         )
     }
 
+/**
+ * Registers a [BaseStoragePermissionManagerBuilder] and [PermissionStateRepo] for [StoragePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param storagePermissionManagerBuilderBuilder method for creating a [BaseStoragePermissionManagerBuilder] from a [PermissionContext]
+ * @param storagePermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [StoragePermission] given a [BaseStoragePermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseStoragePermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseStoragePermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerStoragePermission(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>
@@ -59,6 +76,14 @@ fun PermissionsBuilder.registerStoragePermission(
     }
 }
 
+/**
+ * Gets the [BaseStoragePermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseStoragePermissionManagerBuilder] and [PermissionStateRepo] for [StoragePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param storagePermissionManagerBuilderBuilder method for creating a [BaseStoragePermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseStoragePermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -74,6 +99,13 @@ fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
         )
     }
 
+/**
+ * Gets the [BaseStoragePermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseStoragePermissionManagerBuilder] and [PermissionStateRepo] for [StoragePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param storagePermissionManagerBuilderBuilder method for creating a [BaseStoragePermissionManagerBuilder] from a [PermissionContext]
+ * @param storagePermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [StoragePermission] given a [BaseStoragePermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseStoragePermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerStoragePermissionIfNotRegistered(
     storagePermissionManagerBuilderBuilder: (PermissionContext) -> BaseStoragePermissionManagerBuilder = ::StoragePermissionManagerBuilder,
     storagePermissionStateRepoBuilder: (StoragePermission, BaseStoragePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<StoragePermission>

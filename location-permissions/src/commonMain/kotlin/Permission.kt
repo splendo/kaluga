@@ -26,15 +26,29 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * Permission to access the users Location
+ * [Permission] to access the users Location
  * @param background If `true` scanning for location in the background is permitted
  * @param precise If `true` precise location scanning is permitted
  */
 data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) :
     Permission() {
-    override val name: String = listOfNotNull(if (background) "Background" else null, "Location", "-", if (precise) "Precise" else "Coarse").joinToString(" ")
+    override val name: String = listOfNotNull(
+        if (background) "Background" else null,
+        "Location",
+        "-",
+        if (precise) "Precise" else "Coarse"
+    ).joinToString(" ")
 }
 
+/**
+ * Registers a [BaseLocationPermissionManagerBuilder] and [PermissionStateRepo] for [LocationPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param locationPermissionManagerBuilderBuilder method for creating a [BaseLocationPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseLocationPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseLocationPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -44,6 +58,14 @@ fun PermissionsBuilder.registerLocationPermission(
         LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Registers a [BaseLocationPermissionManagerBuilder] and [PermissionStateRepo] for [LocationPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param locationPermissionManagerBuilderBuilder method for creating a [BaseLocationPermissionManagerBuilder] from a [PermissionContext]
+ * @param locationPermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [LocationPermission] given a [BaseLocationPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseLocationPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseLocationPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     locationPermissionStateRepoBuilder: (LocationPermission, BaseLocationPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<LocationPermission>
@@ -54,6 +76,14 @@ fun PermissionsBuilder.registerLocationPermission(
     }
 }
 
+/**
+ * Gets the [BaseLocationPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseLocationPermissionManagerBuilder] and [PermissionStateRepo] for [LocationPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param locationPermissionManagerBuilderBuilder method for creating a [BaseLocationPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseLocationPermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -63,6 +93,13 @@ fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
         LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Gets the [BaseLocationPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseLocationPermissionManagerBuilder] and [PermissionStateRepo] for [LocationPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param locationPermissionManagerBuilderBuilder method for creating a [BaseLocationPermissionManagerBuilder] from a [PermissionContext]
+ * @param locationPermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [LocationPermission] given a [BaseLocationPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseLocationPermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     locationPermissionStateRepoBuilder: (LocationPermission, BaseLocationPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<LocationPermission>

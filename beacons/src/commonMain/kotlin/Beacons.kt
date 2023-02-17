@@ -100,7 +100,7 @@ class Beacons(
                 }
                 this[beacon.beaconID] = beacon to coroutineScope.launch {
                     debug(TAG, "[Added] $beacon")
-                    delay(beacon.lastSeen.millisecondSinceEpoch + timeout.inWholeMilliseconds - DefaultKalugaDate.now().millisecondSinceEpoch)
+                    delay(beacon.lastSeen.durationSinceEpoch + timeout - DefaultKalugaDate.now().durationSinceEpoch)
                     debug(TAG, "[Lost] $beacon")
                     cache.remove(beacon.beaconID)
                     updateList()

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,14 +14,9 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.permissions.base
 
-/**
- * Java context for creating a [BasePermissionsBuilder]
- */
-actual class PermissionContext
+package com.splendo.kaluga.example.shared
 
-/**
- * Default [PermissionContext] of the system
- */
-actual val defaultPermissionContext = PermissionContext()
+fun helloCommon(): String {
+    return "Hello from the shared module common source"
+}
