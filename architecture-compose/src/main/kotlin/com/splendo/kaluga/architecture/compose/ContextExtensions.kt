@@ -21,6 +21,10 @@ import android.content.Context
 import android.content.ContextWrapper
 import androidx.appcompat.app.AppCompatActivity
 
+/**
+ * Gets the [AppCompatActivity] of a [Context] if it exists.
+ * This does a recursive lookup if [Context] is a [ContextWrapper]
+ */
 val Context.activity: AppCompatActivity? get() = when (this) {
     is AppCompatActivity -> this
     is ContextWrapper -> baseContext.activity // recursive lookup

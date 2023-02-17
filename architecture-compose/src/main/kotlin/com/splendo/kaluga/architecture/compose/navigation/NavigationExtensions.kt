@@ -10,15 +10,13 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.architecture.compose.activity
-import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
-import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Current implementation expects [KalugaViewModelComposeActivity] to be a host since it provides [LocalAppCompatActivity].
+ * Binds an [ActivityLifecycleSubscribable] to the lifecycle of the [androidx.appcompat.app.AppCompatActivity] associated with the current [LocalContext]
  */
 @Composable
 fun ActivityLifecycleSubscribable.bind(): ActivityLifecycleSubscribable {
@@ -36,6 +34,7 @@ fun ActivityLifecycleSubscribable.bind(): ActivityLifecycleSubscribable {
 
 /**
  * Adds a handler for a hardware back button
+ * @param onBackButtonClickHandler The handler to execute when the back button is pressed.
  */
 @Composable
 fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {

@@ -26,7 +26,15 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.EmptyCoroutineContext
 
+/**
+ * A [LifecycleSubscribable] that binds to a [Composable] View using [com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable].
+ * This subscribable provides a [modifier] that modifies a [Composable] view builder to wrap it with functionality associated with the [ComposableLifecycleSubscribable].
+ */
 interface ComposableLifecycleSubscribable : LifecycleSubscribable {
+
+    /**
+     * This [Composable] modifier method transforms the View Builder associated with a [BaseLifecycleViewModel] to wrap the functionality of the subscribable.
+     */
     val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
 }
 

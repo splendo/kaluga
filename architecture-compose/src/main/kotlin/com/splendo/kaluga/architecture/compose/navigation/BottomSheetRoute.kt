@@ -19,12 +19,16 @@ package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.compose.material.ModalBottomSheetLayout
 
+/**
+ * The specification for navigating from a [ModalBottomSheetLayout]
+ */
 sealed class BottomSheetComposableNavSpec
 
 /**
- * Route for navigating a [ModalBottomSheetLayout] using a [BottomSheetSheetContentRouteController]
+ * A [BottomSheetComposableNavSpec] for navigating using a [Route]
  */
 sealed class BottomSheetRoute : BottomSheetComposableNavSpec() {
+
     /**
      * Navigates within the sheet content of the [ModalBottomSheetLayout]
      * @param route The [Route] to navigate
@@ -38,6 +42,10 @@ sealed class BottomSheetRoute : BottomSheetComposableNavSpec() {
     data class Content(val route: Route) : BottomSheetRoute()
 }
 
+/**
+ * A [BottomSheetComposableNavSpec] that executes a [ComposableNavSpec.LaunchedNavigation] when navigating.
+ * @property launchedNavigation the [ComposableNavSpec.LaunchedNavigation] to launch when navigating.
+ */
 data class BottomSheetLaunchedNavigation(val launchedNavigation: ComposableNavSpec.LaunchedNavigation) : BottomSheetComposableNavSpec()
 
 /**
