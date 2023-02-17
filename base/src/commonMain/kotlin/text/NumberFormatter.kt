@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 import kotlin.math.max
 
 /**
@@ -193,9 +193,9 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
  */
 interface BaseNumberFormatter {
     /**
-     * [Locale] used for formatting.
+     * [KalugaLocale] used for formatting.
      */
-    val locale: Locale
+    val locale: KalugaLocale
 
     /**
      * The symbol used to represent a percent sign.
@@ -311,7 +311,7 @@ interface BaseNumberFormatter {
 
 /**
  * Default implementation of [BaseNumberFormatter]
- * @param locale The [Locale] used for parsing. Defaults to [Locale.defaultLocale].
+ * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-expect class NumberFormatter constructor(locale: Locale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter
+expect class NumberFormatter constructor(locale: KalugaLocale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter

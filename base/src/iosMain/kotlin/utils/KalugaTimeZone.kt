@@ -68,7 +68,7 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
     }
 
     override val identifier: String = timeZone.name
-    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String {
+    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String {
         val nameStyle = when (style) {
             TimeZoneNameStyle.Short -> if (withDaylightSavings) NSTimeZoneNameStyle.NSTimeZoneNameStyleShortDaylightSaving else NSTimeZoneNameStyle.NSTimeZoneNameStyleShortStandard
             TimeZoneNameStyle.Long -> if (withDaylightSavings) NSTimeZoneNameStyle.NSTimeZoneNameStyleDaylightSaving else NSTimeZoneNameStyle.NSTimeZoneNameStyleStandard

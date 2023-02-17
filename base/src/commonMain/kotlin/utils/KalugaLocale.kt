@@ -46,7 +46,7 @@ abstract class BaseLocale {
     abstract val scriptCode: String
 
     /**
-     * Any arbitrary value used to indicate a variation of a [Locale].
+     * Any arbitrary value used to indicate a variation of a [KalugaLocale].
      * Where there are two or more variant values each indicating its own semantics, these values should be ordered by importance, with most important first, separated by underscore('_').
      *
      * Example: "polyton" (Polytonic Greek), "POSIX"
@@ -54,44 +54,44 @@ abstract class BaseLocale {
     abstract val variantCode: String
 
     /**
-     * Returns [UnitSystem] for the [Locale].
+     * Returns [UnitSystem] for the [KalugaLocale].
      */
     abstract val unitSystem: UnitSystem
 
     /**
-     * Gets the name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the name should be localized
-     * @return The name of this [Locale]
+     * Gets the name of the [KalugaLocale], localized according to a given [KalugaLocale]
+     * @param forLocale The [KalugaLocale] for which the name should be localized
+     * @return The name of this [KalugaLocale]
      */
-    abstract fun name(forLocale: Locale): String
+    abstract fun name(forLocale: KalugaLocale): String
 
     /**
-     * Gets the county name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the country name should be localized
-     * @return The country name of this [Locale]
+     * Gets the county name of the [KalugaLocale], localized according to a given [KalugaLocale]
+     * @param forLocale The [KalugaLocale] for which the country name should be localized
+     * @return The country name of this [KalugaLocale]
      */
-    abstract fun countryName(forLocale: Locale): String
+    abstract fun countryName(forLocale: KalugaLocale): String
 
     /**
-     * Gets the language name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the language name should be localized
-     * @return The language name of this [Locale]
+     * Gets the language name of the [KalugaLocale], localized according to a given [KalugaLocale]
+     * @param forLocale The [KalugaLocale] for which the language name should be localized
+     * @return The language name of this [KalugaLocale]
      */
-    abstract fun languageName(forLocale: Locale): String
+    abstract fun languageName(forLocale: KalugaLocale): String
 
     /**
-     * Gets the variant name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the variant name should be localized
-     * @return The variant name of this [Locale]
+     * Gets the variant name of the [KalugaLocale], localized according to a given [KalugaLocale]
+     * @param forLocale The [KalugaLocale] for which the variant name should be localized
+     * @return The variant name of this [KalugaLocale]
      */
-    abstract fun variantName(forLocale: Locale): String
+    abstract fun variantName(forLocale: KalugaLocale): String
 
     /**
-     * Gets the script name of the [Locale], localized according to a given [Locale]
-     * @param forLocale The [Locale] for which the script name should be localized
-     * @return The script name of this [Locale]
+     * Gets the script name of the [KalugaLocale], localized according to a given [KalugaLocale]
+     * @param forLocale The [KalugaLocale] for which the script name should be localized
+     * @return The script name of this [KalugaLocale]
      */
-    abstract fun scriptName(forLocale: Locale): String
+    abstract fun scriptName(forLocale: KalugaLocale): String
 
     /**
      * The Character(s) used for indicating the start of a quote
@@ -118,55 +118,58 @@ abstract class BaseLocale {
 /**
  * Default implementation of [BaseLocale]
  */
-expect class Locale : BaseLocale {
+expect class KalugaLocale : BaseLocale {
     companion object {
 
         /**
-         * Creates a [Locale] based on a `language` ISO 639 alpha-2 or alpha-3 code
+         * Creates a [KalugaLocale] based on a `language` ISO 639 alpha-2 or alpha-3 code
          * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
-         * @return The [Locale] for the given [language]
+         * @return The [KalugaLocale] for the given [language]
          */
-        fun createLocale(language: String): Locale
+        fun createLocale(language: String): KalugaLocale
 
         /**
-         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
+         * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
          * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
          * @param country a ISO 3166 alpha-2 `country` code.
-         * @return The [Locale] for the given [language] and [country]
+         * @return The [KalugaLocale] for the given [language] and [country]
          */
-        fun createLocale(language: String, country: String): Locale
+        fun createLocale(language: String, country: String): KalugaLocale
 
         /**
-         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
+         * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
          * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
          * @param country a ISO 3166 alpha-2 `country` code.
-         * @param variant Arbitrary value used to indicate a variation of a [Locale]
-         * @return The [Locale] for the given [language], [country], and [variant]
+         * @param variant Arbitrary value used to indicate a variation of a [KalugaLocale]
+         * @return The [KalugaLocale] for the given [language], [country], and [variant]
          */
-        fun createLocale(language: String, country: String, variant: String): Locale
+        fun createLocale(language: String, country: String, variant: String): KalugaLocale
 
         /**
-         * The default [Locale] of the user
+         * The default [KalugaLocale] of the user
          */
-        val defaultLocale: Locale
+        val defaultLocale: KalugaLocale
 
         /**
-         * A list of [Locale] available to the user.
+         * A list of [KalugaLocale] available to the user.
          */
-        val availableLocales: List<Locale>
+        val availableLocales: List<KalugaLocale>
     }
 }
 
 /**
  * Locale for English/US in a POSIX format. Useful shortcut when dealing with fixed locale formats.
  */
-val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
+val KalugaLocale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
 
 /**
  * Indicates whether this locale use a 24 hour clock cycle.
  */
-val Locale.uses24HourClock: Boolean get() {
+val KalugaLocale.uses24HourClock: Boolean get() {
     val formatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, locale = this)
     val formattedDate = formatter.format(DefaultKalugaDate.now())
     return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
 }
+
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaLocale"))
+typealias Locale = KalugaLocale

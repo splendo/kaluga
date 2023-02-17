@@ -53,7 +53,7 @@ actual class KalugaTimeZone internal constructor(internal val timeZone: java.uti
     }
 
     override val identifier: String = timeZone.id
-    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String {
+    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String {
         val styleJava = when (style) {
             TimeZoneNameStyle.Short -> java.util.TimeZone.SHORT
             TimeZoneNameStyle.Long -> java.util.TimeZone.LONG

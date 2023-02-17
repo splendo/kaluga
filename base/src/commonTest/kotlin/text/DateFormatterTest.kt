@@ -18,8 +18,8 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
@@ -112,11 +112,11 @@ class DateFormatterTest {
 
     @Test
     fun testParseDateWithDifferentTimezone() {
-        val utcFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", KalugaTimeZone.utc, Locale.enUsPosix)
-        val pstFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", PSTTimeZone, Locale.enUsPosix)
+        val utcFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", KalugaTimeZone.utc, KalugaLocale.enUsPosix)
+        val pstFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", PSTTimeZone, KalugaLocale.enUsPosix)
 
-        val epochInUtc = DefaultKalugaDate.epoch(timeZone = KalugaTimeZone.utc, locale = Locale.enUsPosix)
-        val epochInPst = DefaultKalugaDate.epoch(timeZone = PSTTimeZone, locale = Locale.enUsPosix)
+        val epochInUtc = DefaultKalugaDate.epoch(timeZone = KalugaTimeZone.utc, locale = KalugaLocale.enUsPosix)
+        val epochInPst = DefaultKalugaDate.epoch(timeZone = PSTTimeZone, locale = KalugaLocale.enUsPosix)
         assertEquals("1970.01.01 AD at 00:00:00 ${KalugaTimeZone.utc.identifier}", utcFormatter.format(epochInUtc))
         assertEquals("1970.01.01 AD at 00:00:00 ${KalugaTimeZone.utc.identifier}", utcFormatter.format(epochInPst))
         assertEquals("1969.12.31 AD at 16:00:00 PST", pstFormatter.format(epochInUtc))

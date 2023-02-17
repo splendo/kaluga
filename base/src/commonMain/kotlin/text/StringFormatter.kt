@@ -18,32 +18,32 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.text.FormatSpecifier.Companion.formatSpecifier
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 
 /**
  * Formats this [String] as a printf-style format String using a variable number of arguments.
  * @param args The list of arguments used for formatting the string.
- * @param locale The [Locale] used for formatting the arguments. This is relevant for number and date formatting, as well as capitalization.
+ * @param locale The [KalugaLocale] used for formatting the arguments. This is relevant for number and date formatting, as well as capitalization.
  * @return The formatted [String]
  * @throws [StringFormatterException] if the string could not be formatted using [args].
  */
-fun String.format(vararg args: Any?, locale: Locale = defaultLocale) = StringFormatter(locale = locale).format(this, *args).toString()
+fun String.format(vararg args: Any?, locale: KalugaLocale = defaultLocale) = StringFormatter(locale = locale).format(this, *args).toString()
 
 /**
  * Interface that adds support for an object to be formatted by [StringFormatter].
  */
 interface Formattable {
     /**
-     * Formats this object to a [String] using a [Locale], [Flags], width, and precision
-     * @param locale The [Locale] used for formatting.
+     * Formats this object to a [String] using a [KalugaLocale], [Flags], width, and precision
+     * @param locale The [KalugaLocale] used for formatting.
      * @param flags A [Set] of [Flag] used for formattting.
      * @param width The expected width of the result.
      * @param precision The precision applied when formatting.
      * @return The formatted [String] representing this [Formattable].
      * @throws [StringFormatterException] when an issue with the formatting occurs.
      */
-    fun formatFor(locale: Locale, flags: Set<Flag>, width: Int, precision: Int): String
+    fun formatFor(locale: KalugaLocale, flags: Set<Flag>, width: Int, precision: Int): String
 }
 
 /**
@@ -51,15 +51,15 @@ interface Formattable {
  * Supports formats for [Number], [String], [Char], [Boolean], and [com.splendo.kaluga.base.utils.KalugaDate].
  * Custom formatting is supported by implementing [Formattable].
  * Flags, precision and width are supported by this formatter as well.
- * Formatting will adjust for a provided [Locale].
+ * Formatting will adjust for a provided [KalugaLocale].
  * May throw an [StringFormatterException] if the incorrect format is applied.
  * @param out he [StringBuilder] used for outputting the result.
- * @param locale The [Locale] used for formatting. This is relevant for number and date formatting, as well as capitalization.
+ * @param locale The [KalugaLocale] used for formatting. This is relevant for number and date formatting, as well as capitalization.
  */
-class StringFormatter(private val out: StringBuilder = StringBuilder(), private val locale: Locale = defaultLocale) {
+class StringFormatter(private val out: StringBuilder = StringBuilder(), private val locale: KalugaLocale = defaultLocale) {
 
     companion object {
-        internal fun getZero(locale: Locale): Char = NumberFormatter(locale).zeroSymbol
+        internal fun getZero(locale: KalugaLocale): Char = NumberFormatter(locale).zeroSymbol
         internal fun checkText(s: String, start: Int, end: Int) {
             val index = s.substring(start, end).indexOf('%')
             if (index >= 0) {
@@ -80,7 +80,7 @@ class StringFormatter(private val out: StringBuilder = StringBuilder(), private 
         return out
     }
 
-    private fun format(locale: Locale, format: String, vararg args: Any?): StringFormatter {
+    private fun format(locale: KalugaLocale, format: String, vararg args: Any?): StringFormatter {
         var last = -1
         var lastOrdinaryIndex = -1
         val formatStrings = parse(format)

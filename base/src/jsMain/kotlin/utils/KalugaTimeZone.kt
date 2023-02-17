@@ -48,7 +48,7 @@ actual class KalugaTimeZone internal constructor() : BaseTimeZone() {
     }
 
     override val identifier: String = ""
-    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String = ""
+    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String = ""
     override val offsetFromGMT = 0.milliseconds
     override val daylightSavingsOffset = 0.milliseconds
     override fun offsetFromGMTAtDate(date: KalugaDate): Duration = 0.milliseconds

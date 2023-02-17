@@ -19,7 +19,7 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.typedList
 import platform.Foundation.NSCalendar
@@ -43,24 +43,24 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
          * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun dateFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: Locale
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(style, null, timeZone, locale)
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun timeFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: Locale
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(null, style, timeZone, locale)
 
         /**
@@ -68,13 +68,13 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
          * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: Locale
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
 
         /**
@@ -84,9 +84,9 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
          * A convenience [fixedPatternFormat] method exists to default to this behaviour.
          * @param pattern The pattern to apply.
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: Locale): KalugaDateFormatter = KalugaDateFormatter(
+        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = KalugaDateFormatter(
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
@@ -99,7 +99,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
             dateStyle: DateFormatStyle?,
             timeStyle: DateFormatStyle?,
             timeZone: KalugaTimeZone,
-            locale: Locale
+            locale: KalugaLocale
         ): KalugaDateFormatter = KalugaDateFormatter(
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
@@ -116,7 +116,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
             DefaultKalugaDate.now(
                 offset = Duration.ZERO,
                 timeZone = timeZone,
-                locale = Locale.defaultLocale
+                locale = KalugaLocale.defaultLocale
             ).apply {
                 // Cannot use .utc since it may not be available when this method is called
                 // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
@@ -124,7 +124,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
                 val epoch = DefaultKalugaDate.epoch(
                     offset = Duration.ZERO,
                     timeZone = KalugaTimeZone.get("UTC")!!,
-                    locale = Locale.defaultLocale
+                    locale = KalugaLocale.defaultLocale
                 )
                 this.era = epoch.era
                 this.year = epoch.year

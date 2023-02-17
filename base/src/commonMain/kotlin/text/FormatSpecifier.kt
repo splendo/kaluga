@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.text
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
 import com.splendo.kaluga.base.utils.toHexString
@@ -74,7 +74,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    override fun print(arg: Any?, locale: Locale) {
+    override fun print(arg: Any?, locale: KalugaLocale) {
         when (val currentChar = currentChar) {
             is ParsingCharacter.DateTime -> printDateTime(arg, currentChar, locale)
             is ParsingCharacter.RegularCharacter -> {
@@ -101,7 +101,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun printDateTime(arg: Any?, currentChar: ParsingCharacter.DateTime, locale: Locale) {
+    private fun printDateTime(arg: Any?, currentChar: ParsingCharacter.DateTime, locale: KalugaLocale) {
         val date = when (arg) {
             null -> {
                 print("null", locale)
@@ -110,7 +110,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Long,
             is Int,
             is Short -> {
-                DefaultKalugaDate.epoch((arg as Number).toLong().milliseconds, TimeZone.current(), locale)
+                DefaultKalugaDate.epoch((arg as Number).toLong().milliseconds, KalugaTimeZone.current(), locale)
             }
             is KalugaDate -> {
                 arg.copy()
@@ -120,7 +120,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         print(date, currentChar, locale)
     }
 
-    private fun printInteger(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun printInteger(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         when (arg) {
             null -> print("null", locale)
             is Int -> print(arg, currentChar, locale)
@@ -131,7 +131,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun printFloat(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun printFloat(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         when (arg) {
             null -> print("null", locale)
             is Float -> print(arg, currentChar, locale)
@@ -140,7 +140,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun printCharacter(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun printCharacter(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         val stringToPrint = when (arg) {
             null -> "null"
             is Char -> arg.toString()
@@ -152,7 +152,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         print(stringToPrint, locale)
     }
 
-    private fun printString(arg: Any?, locale: Locale) {
+    private fun printString(arg: Any?, locale: KalugaLocale) {
         (arg as? Formattable)?.let {
             out.append(it.formatFor(locale, flags, width, precision))
         } ?: run {
@@ -163,11 +163,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun printHashCode(arg: Any?, locale: Locale) {
+    private fun printHashCode(arg: Any?, locale: KalugaLocale) {
         print(arg?.hashCode()?.toByte()?.let { byteArrayOf(it) }?.toHexString() ?: "null", locale)
     }
 
-    private fun printBoolean(arg: Any?, locale: Locale) {
+    private fun printBoolean(arg: Any?, locale: KalugaLocale) {
         print(
             (
                 arg?.let {
@@ -178,24 +178,24 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         )
     }
 
-    private fun print(s: String, locale: Locale) {
+    private fun print(s: String, locale: KalugaLocale) {
         val string = if (precision != -1 && precision < s.length) s.substring(0, precision) else s
         appendJustified(out, if (flags.contains(Flag.UPPERCASE)) string.upperCased(locale) else string)
     }
 
-    private fun print(value: Byte, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun print(value: Byte, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         print(value.toLong(), currentChar, locale)
     }
 
-    private fun print(value: Short, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun print(value: Short, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         print(value.toLong(), currentChar, locale)
     }
 
-    private fun print(value: Int, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun print(value: Int, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         print(value.toLong(), currentChar, locale)
     }
 
-    private fun print(value: Long, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun print(value: Long, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         val sb = StringBuilder()
         when (currentChar.regular) {
             RegularFormatCharacter.DECIMAL_INTEGER -> {
@@ -246,11 +246,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         appendJustified(out, sb)
     }
 
-    private fun print(value: Float, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun print(value: Float, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         print(value.toDouble(), currentChar, locale)
     }
 
-    private fun print(value: Double, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+    private fun print(value: Double, currentChar: ParsingCharacter.RegularCharacter, locale: KalugaLocale) {
         val sb = StringBuilder()
         val neg = value < 0.0
         val numberFormatter = NumberFormatter(locale)
@@ -283,7 +283,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     private fun print(
         sb: StringBuilder,
         value: Double,
-        locale: Locale,
+        locale: KalugaLocale,
         c: ParsingCharacter.RegularCharacter,
         precision: Int,
         neg: Boolean
@@ -351,7 +351,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: Locale) {
+    private fun print(time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: KalugaLocale) {
         val sb = StringBuilder()
         print(sb, time, currentChar, locale)
 
@@ -363,7 +363,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(sb: StringBuilder, time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: Locale): StringBuilder {
+    private fun print(sb: StringBuilder, time: KalugaDate, currentChar: ParsingCharacter.DateTime, locale: KalugaLocale): StringBuilder {
         when (currentChar.dateTime) {
             DateTime.HOUR_OF_DAY_0, DateTime.HOUR_0, DateTime.HOUR_OF_DAY, DateTime.HOUR -> {
                 // 'l' (1 - 12) -- like I
@@ -603,7 +603,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         value: Int,
         flags: Set<Flag>,
         width: Int,
-        locale: Locale
+        locale: KalugaLocale
     ): StringBuilder {
         return localizedMagnitude(sb, value.toString(10), 0, flags, width, locale)
     }
@@ -614,7 +614,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         offset: Int,
         flags: Set<Flag>,
         width: Int,
-        locale: Locale
+        locale: KalugaLocale
     ): StringBuilder {
         val begin: Int = sb.length
         val zero: Char = getZero(locale)

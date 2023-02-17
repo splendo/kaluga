@@ -20,7 +20,7 @@ package com.splendo.kaluga.test.keyboard
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.datetimepicker.DateTimePicker
 import com.splendo.kaluga.datetimepicker.buildDatePicker
@@ -61,7 +61,7 @@ class MockDateTimePickerPresenterTest : UIThreadViewModelTest<MockDateTimePicker
                 setSelectedDate(selected)
                 setConfirmButtonTitle("OK")
                 setCancelButtonTitle("Cancel")
-                setLocale(Locale.enUsPosix)
+                setLocale(KalugaLocale.enUsPosix)
             }.showAsync {
                 done.complete(it)
             }
@@ -73,7 +73,7 @@ class MockDateTimePickerPresenterTest : UIThreadViewModelTest<MockDateTimePicker
             assertEquals("Hello world", captor.lastCaptured?.message)
             assertEquals("OK", captor.lastCaptured?.confirmButtonTitle)
             assertEquals("Cancel", captor.lastCaptured?.cancelButtonTitle)
-            assertEquals(Locale.enUsPosix, captor.lastCaptured?.locale)
+            assertEquals(KalugaLocale.enUsPosix, captor.lastCaptured?.locale)
 
             // **mock**AlertBuilder is available also from our context
             mockDateTimePickerPresenterBuilder.builtDateTimePickerPresenters.first().apply {

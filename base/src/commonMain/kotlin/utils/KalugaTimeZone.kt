@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.now
-import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 import kotlin.time.Duration
 
 /**
@@ -54,12 +54,12 @@ abstract class BaseTimeZone {
     abstract val identifier: String
 
     /**
-     * Gets the display name for this [KalugaTimeZone] formatted for a given [Locale]
+     * Gets the display name for this [KalugaTimeZone] formatted for a given [KalugaLocale]
      * @param style The [TimeZoneNameStyle] of the name. Can be either [TimeZoneNameStyle.Short] or [TimeZoneNameStyle.Long]
      * @param withDaylightSavings If `true` the name for the DaylightSavings version of the [KalugaTimeZone] will be used. Defaults to [KalugaTimeZone.usesDaylightSavingsTime]
-     * @param locale The [Locale] used for naming the [KalugaTimeZone]. Defaults to [Locale.defaultLocale]
+     * @param locale The [KalugaLocale] used for naming the [KalugaTimeZone]. Defaults to [KalugaLocale.defaultLocale]
      */
-    abstract fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean = usesDaylightSavingsTime(), locale: Locale = defaultLocale): String
+    abstract fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean = usesDaylightSavingsTime(), locale: KalugaLocale = defaultLocale): String
 
     /**
      * The [Duration] this timezone differs from GMT when daylight savings time is not active
@@ -82,9 +82,9 @@ abstract class BaseTimeZone {
     val daylightSavingsOffsetInMilliseconds: Long get() = daylightSavingsOffset.inWholeMilliseconds
 
     /**
-     * The [Duration] this [TimeZone] differs from GMT at a given [KalugaDate]
+     * The [Duration] this [KalugaTimeZone] differs from GMT at a given [KalugaDate]
      * @param date The [KalugaDate] for which to check the offset. Defaults to [DefaultKalugaDate.now]
-     * @return The number of milliseconds this [TimeZone] differs from GMT at [date]
+     * @return The number of milliseconds this [KalugaTimeZone] differs from GMT at [date]
      */
     abstract fun offsetFromGMTAtDate(date: KalugaDate = now()): Duration
 

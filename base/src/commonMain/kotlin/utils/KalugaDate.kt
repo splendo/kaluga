@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
-import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,7 +32,7 @@ expect class KalugaDateHolder
 
 /**
  * Class describing a point in time
- * Dates are localized according to a [Locale] and relative to a given [KalugaTimeZone]
+ * Dates are localized according to a [KalugaLocale] and relative to a given [KalugaTimeZone]
  */
 abstract class KalugaDate : Comparable<KalugaDate> {
     /**
@@ -159,39 +159,39 @@ expect class DefaultKalugaDate : KalugaDate {
          * Creates a [KalugaDate] relative to the current time
          * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
          * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
-         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        fun now(offset: Duration = 0.milliseconds, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate
+        fun now(offset: Duration = 0.milliseconds, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate
 
         /**
          * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
          * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
          * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
-         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        fun epoch(offset: Duration = 0.milliseconds, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate
+        fun epoch(offset: Duration = 0.milliseconds, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate
     }
 }
 
 /**
  * Creates a [KalugaDate] relative to the current time
  * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
- * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
- * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+ * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
  * @return A [KalugaDate] relative to the current time
  */
-fun DefaultKalugaDate.Companion.now(offsetInMilliseconds: Long, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate = now(offsetInMilliseconds.milliseconds, timeZone, locale)
+fun DefaultKalugaDate.Companion.now(offsetInMilliseconds: Long, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate = now(offsetInMilliseconds.milliseconds, timeZone, locale)
 
 /**
  * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
  * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
- * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
- * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+ * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
  * @return A [KalugaDate] relative to the current time
  */
-fun DefaultKalugaDate.Companion.epoch(offsetInMilliseconds: Long, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): KalugaDate = epoch(offsetInMilliseconds.milliseconds, timeZone, locale)
+fun DefaultKalugaDate.Companion.epoch(offsetInMilliseconds: Long, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate = epoch(offsetInMilliseconds.milliseconds, timeZone, locale)
 
 @Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaDate"))
 typealias Date = KalugaDate
@@ -222,19 +222,19 @@ infix operator fun KalugaDate.minus(duration: Duration) = this + (-duration)
 /**
  * Creates a [KalugaDate] relative to the current time, in the UTC timezone
  * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
- * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
  * @return A [KalugaDate] relative to the current time, in the UTC timezone
  */
-fun DefaultKalugaDate.Companion.nowUtc(offset: Duration = 0.milliseconds, locale: Locale = defaultLocale): KalugaDate =
-    now(offset, TimeZone.utc, locale)
+fun DefaultKalugaDate.Companion.nowUtc(offset: Duration = 0.milliseconds, locale: KalugaLocale = defaultLocale): KalugaDate =
+    now(offset, KalugaTimeZone.utc, locale)
 
 /**
  * Creates a [KalugaDate] relative to the current time, in the UTC timezone
  * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
- * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
  * @return A [KalugaDate] relative to the current time, in the UTC timezone
  */
-fun DefaultKalugaDate.Companion.nowUtc(offsetInMilliseconds: Long, locale: Locale = defaultLocale): KalugaDate = nowUtc(offsetInMilliseconds.milliseconds, locale)
+fun DefaultKalugaDate.Companion.nowUtc(offsetInMilliseconds: Long, locale: KalugaLocale = defaultLocale): KalugaDate = nowUtc(offsetInMilliseconds.milliseconds, locale)
 
 /**
  * Gets a [KalugaDate] equal to midnight on the same day as this Date
@@ -261,18 +261,18 @@ fun KalugaDate.toEndOfDay() = this.copy().apply {
 /**
  * Gets a [KalugaDate] that is set at midnight on the same day as the current time.
  * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
- * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
  * @return A [KalugaDate] that is set at midnight on the same day as the current time.
  */
-fun DefaultKalugaDate.Companion.today(timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: Locale = defaultLocale) = now(timeZone = timeZone, locale = locale).toStartOfDay()
+fun DefaultKalugaDate.Companion.today(timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale) = now(timeZone = timeZone, locale = locale).toStartOfDay()
 
 /**
  * Gets a [KalugaDate] that is set at midnight on the day after the current time.
  * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
- * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
  * @return A [KalugaDate] that is set at midnight on the day after the current time.
  */
-fun DefaultKalugaDate.Companion.tomorrow(timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: Locale = defaultLocale) = today(timeZone = timeZone, locale = locale).apply { day += 1 }
+fun DefaultKalugaDate.Companion.tomorrow(timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale) = today(timeZone = timeZone, locale = locale).apply { day += 1 }
 
 /**
  * Checks whether a [KalugaDate] is on the same day as a given Date.

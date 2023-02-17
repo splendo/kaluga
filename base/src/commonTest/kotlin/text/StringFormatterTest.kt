@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import kotlin.test.Test
 import kotlin.test.assertEquals
