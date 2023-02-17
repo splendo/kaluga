@@ -76,10 +76,11 @@ actual class DefaultLocationPermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             launch {
                 locationManager.updateLocationManager {
-                    if (permission.background)
+                    if (permission.background) {
                         requestAlwaysAuthorization()
-                    else
+                    } else {
                         requestWhenInUseAuthorization()
+                    }
                 }
             }
         } else {

@@ -26,7 +26,7 @@ import java.lang.Integer.min
  * The default [Logger] to be used if no logger is set.
  */
 actual val defaultLogger: Logger =
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         TransformLogger(
             NapierLogger(DebugAntilog()),
             transformTag = { tag ->
@@ -40,8 +40,9 @@ actual val defaultLogger: Logger =
                 }
             }
         )
-    else
+    } else {
         NapierLogger(DebugAntilog())
+    }
 
 /**
  * The standard [Logger] to be used when logging.

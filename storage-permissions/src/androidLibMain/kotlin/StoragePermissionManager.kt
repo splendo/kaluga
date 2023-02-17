@@ -36,10 +36,10 @@ actual class DefaultStoragePermissionManager(
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
-        if (storagePermission.allowWrite)
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        else
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+        listOfNotNull(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            if (storagePermission.allowWrite) Manifest.permission.WRITE_EXTERNAL_STORAGE else null
+        ).toTypedArray(),
         coroutineScope,
         logTag,
         logger,

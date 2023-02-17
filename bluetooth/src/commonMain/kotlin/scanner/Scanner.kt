@@ -252,9 +252,9 @@ abstract class BaseScanner constructor(
     internal open suspend fun checkHardwareEnabledChanged() {
         val isEnabled = isHardwareEnabled()
         logger.info(LOG_TAG) { "Bluetooth hardware now ${if (isEnabled) "enabled" else "disabled"}" }
-        if (isEnabled)
+        if (isEnabled) {
             emitEvent(Scanner.Event.BluetoothEnabled)
-        else {
+        } else {
             emitEvent(Scanner.Event.BluetoothDisabled)
             if (autoEnableSensors) {
                 logger.info(LOG_TAG) { "Bluetooth disabled. Attempt to automatically enable" }

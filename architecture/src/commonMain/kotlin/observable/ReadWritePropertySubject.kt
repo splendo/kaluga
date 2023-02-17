@@ -35,11 +35,12 @@ private class ReadWritePropertyObservableHelper<R : T, T>(
     init {
         observation.beforeObservedValueGet = { current ->
             val new = readWriteValue
-            if (new != current.valueOrNull)
+            if (new != current.valueOrNull) {
                 Value(new)
-            else
+            } else {
                 @Suppress("UNCHECKED_CAST")
                 current as ObservableOptional<T>
+            }
         }
     }
 
