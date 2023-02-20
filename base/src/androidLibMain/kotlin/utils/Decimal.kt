@@ -107,7 +107,7 @@ actual fun FiniteDecimal.pow(
     )
 ).setScale(scale, roundingMode.android)
 
-actual fun Number.toFiniteDecimal() = BigDecimal(toString())
+actual fun Number.toFiniteDecimal() = toString().toFiniteDecimal()
 actual fun String.toFiniteDecimal() = try {
     BigDecimal(this)
 } catch (e: NumberFormatException) {

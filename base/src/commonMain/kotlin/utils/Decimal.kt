@@ -354,11 +354,11 @@ internal expect fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode =
  * Converts a [Number] to a [Decimal]
  */
 fun Number.toDecimal(): Decimal = when (this) {
-    is Long -> Decimal.Finite(toFiniteDecimal())
-    is Int -> Decimal.Finite(toFiniteDecimal())
-    is Short -> Decimal.Finite(toFiniteDecimal())
+    is Long -> toFiniteDecimalOrNaN()
+    is Int -> toFiniteDecimalOrNaN()
+    is Short -> toFiniteDecimalOrNaN()
     else -> when {
-        toDouble().isFinite() -> Decimal.Finite(toFiniteDecimal())
+        toDouble().isFinite() -> toFiniteDecimalOrNaN()
         toDouble().isNaN() -> Decimal.NaN
         toDouble() == Double.POSITIVE_INFINITY -> Decimal.PositiveInfinity
         else -> Decimal.NegativeInfinity
@@ -377,7 +377,8 @@ fun String.toDecimal(): Decimal = when (lowercase()) {
     else -> toFiniteDecimal()?.let { Decimal.Finite(it) } ?: Decimal.NaN
 }
 
-internal expect fun Number.toFiniteDecimal(): FiniteDecimal
+internal fun Number.toFiniteDecimalOrNaN() = toFiniteDecimal()?.let { Decimal.Finite(it) } ?: Decimal.NaN
+internal expect fun Number.toFiniteDecimal(): FiniteDecimal?
 internal expect fun String.toFiniteDecimal(): FiniteDecimal?
 
 /**

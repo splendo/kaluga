@@ -150,7 +150,7 @@ actual fun FiniteDecimal.round(
     roundingMode: RoundingMode
 ): FiniteDecimal = round(bd, roundingMode, scale)
 
-actual fun Number.toFiniteDecimal(): FiniteDecimal = this.toString().toFiniteDecimal()!!
+actual fun Number.toFiniteDecimal(): FiniteDecimal? = this.toString().toFiniteDecimal()
 actual fun String.toFiniteDecimal(): FiniteDecimal? = try {
     FiniteDecimal(BigDecimal.BigDecimal(this))
 } catch (e: dynamic) {

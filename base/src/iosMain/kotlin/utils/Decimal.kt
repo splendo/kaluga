@@ -155,13 +155,13 @@ actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: R
 )
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = if (n < 0) {
-    1.toFiniteDecimal() / pow(n.absoluteValue)
+    1.toFiniteDecimal()!! / pow(n.absoluteValue)
 } else {
     copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
 }
 
 actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0) {
-    1.toFiniteDecimal() / pow(n.absoluteValue, scale)
+    1.toFiniteDecimal()!! / pow(n.absoluteValue, scale)
 } else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
@@ -183,7 +183,7 @@ actual fun FiniteDecimal.pow(
     scale: Int,
     roundingMode: RoundingMode
 ): FiniteDecimal = if (n < 0) {
-    1.toFiniteDecimal() / pow(n.absoluteValue, scale, roundingMode)
+    1.toFiniteDecimal()!! / pow(n.absoluteValue, scale, roundingMode)
 } else {
     copy(
         nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
@@ -200,7 +200,7 @@ actual fun FiniteDecimal.pow(
     )
 }
 
-actual fun Number.toFiniteDecimal() = FiniteDecimal(NSDecimalNumber(this.toString()))
+actual fun Number.toFiniteDecimal() = toString().toFiniteDecimal()
 actual fun String.toFiniteDecimal(): FiniteDecimal? = when (val decimal = NSDecimalNumber(this)) {
     NSDecimalNumber.notANumber -> null
     else -> FiniteDecimal(decimal)
