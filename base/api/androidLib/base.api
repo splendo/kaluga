@@ -905,6 +905,32 @@ public final class com/splendo/kaluga/base/utils/ContainsAnyKt {
 	public static final fun containsAny (Ljava/lang/Iterable;Ljava/lang/Iterable;)Z
 }
 
+public abstract class com/splendo/kaluga/base/utils/Decimal : java/lang/Comparable {
+	public fun compareTo (Lcom/splendo/kaluga/base/utils/Decimal;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+}
+
+public final class com/splendo/kaluga/base/utils/Decimal$Finite : com/splendo/kaluga/base/utils/Decimal {
+	public fun <init> (Ljava/math/BigDecimal;)V
+	public final fun copy (Ljava/math/BigDecimal;)Lcom/splendo/kaluga/base/utils/Decimal$Finite;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/utils/Decimal$Finite;Ljava/math/BigDecimal;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal$Finite;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/utils/Decimal$NaN : com/splendo/kaluga/base/utils/Decimal {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$NaN;
+}
+
+public final class com/splendo/kaluga/base/utils/Decimal$NegativeInfinity : com/splendo/kaluga/base/utils/Decimal {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$NegativeInfinity;
+}
+
+public final class com/splendo/kaluga/base/utils/Decimal$PositiveInfinity : com/splendo/kaluga/base/utils/Decimal {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$PositiveInfinity;
+}
+
 public final class com/splendo/kaluga/base/utils/DecimalAndroid {
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
@@ -928,18 +954,39 @@ public final class com/splendo/kaluga/base/utils/DecimalAndroid {
 	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
 	public static synthetic fun times$default (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
-	public static final fun toDecimal (Ljava/lang/Number;)Ljava/math/BigDecimal;
-	public static final fun toDecimal (Ljava/lang/String;)Ljava/math/BigDecimal;
 	public static final fun toDouble (Ljava/math/BigDecimal;)D
+	public static final fun toFiniteDecimal (Ljava/lang/Number;)Ljava/math/BigDecimal;
+	public static final fun toFiniteDecimal (Ljava/lang/String;)Ljava/math/BigDecimal;
 	public static final fun toInt (Ljava/math/BigDecimal;)I
+	public static final fun toLong (Ljava/math/BigDecimal;)J
 	public static final fun toString (Ljava/math/BigDecimal;)Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/utils/DecimalException : java/lang/ArithmeticException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
 public final class com/splendo/kaluga/base/utils/DecimalKt {
+	public static final fun div (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun div (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;I)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun div (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static synthetic fun div$default (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun minus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun minus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;I)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun minus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static synthetic fun minus$default (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun plus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun plus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;I)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun plus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static synthetic fun plus$default (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun pow (Lcom/splendo/kaluga/base/utils/Decimal;I)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun pow (Lcom/splendo/kaluga/base/utils/Decimal;II)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun pow (Lcom/splendo/kaluga/base/utils/Decimal;IILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static synthetic fun pow$default (Lcom/splendo/kaluga/base/utils/Decimal;IILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun round (Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static synthetic fun round$default (Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;I)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun times (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static synthetic fun times$default (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/base/utils/Decimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun toDecimal (Ljava/lang/Number;)Lcom/splendo/kaluga/base/utils/Decimal;
+	public static final fun toDecimal (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public static final fun toDecimalList (Ljava/util/Collection;)Ljava/util/List;
 	public static final fun toDecimalList ([B)Ljava/util/List;
 	public static final fun toDecimalList ([D)Ljava/util/List;
@@ -947,8 +994,13 @@ public final class com/splendo/kaluga/base/utils/DecimalKt {
 	public static final fun toDecimalList ([I)Ljava/util/List;
 	public static final fun toDecimalList ([J)Ljava/util/List;
 	public static final fun toDecimalList ([S)Ljava/util/List;
+	public static final fun toDouble (Lcom/splendo/kaluga/base/utils/Decimal;)D
 	public static final fun toDoubleArray (Ljava/util/Collection;)[D
+	public static final fun toInt (Lcom/splendo/kaluga/base/utils/Decimal;)I
 	public static final fun toIntArray (Ljava/util/Collection;)[I
+	public static final fun toLong (Lcom/splendo/kaluga/base/utils/Decimal;)J
+	public static final fun toLongArray (Ljava/util/Collection;)[J
+	public static final fun toString (Lcom/splendo/kaluga/base/utils/Decimal;)Ljava/lang/String;
 	public static final fun toStringList (Ljava/util/Collection;)Ljava/util/List;
 }
 

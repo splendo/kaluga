@@ -19,7 +19,6 @@ package com.splendo.kaluga.base.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -45,9 +44,19 @@ class DecimalTest {
         assertEquals(0.333, 1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundDown).toDouble())
         assertEquals(0.334, 1.toDecimal().div(3.toDecimal(), 3, RoundingMode.RoundUp).toDouble())
 
-        assertFailsWith(DecimalException::class) { 1.0.toDecimal() / 0.0.toDecimal() }
-        assertFailsWith(DecimalException::class) { 1.0.toDecimal().div(0.0.toDecimal(), 3) }
-        assertFailsWith(DecimalException::class) { 1.0.toDecimal().div(0.0.toDecimal(), 3, RoundingMode.RoundDown) }
+        assertEquals(Decimal.PositiveInfinity, 1.0.toDecimal() / 0.0.toDecimal())
+        assertEquals(Decimal.PositiveInfinity, 1.0.toDecimal().div(0.0.toDecimal(), 3))
+        assertEquals(Decimal.PositiveInfinity, 1.0.toDecimal().div(0.0.toDecimal(), 3, RoundingMode.RoundDown))
+
+        assertEquals(Decimal.NegativeInfinity, (-1.0).toDecimal() / 0.0.toDecimal())
+        assertEquals(Decimal.NegativeInfinity, (-1.0).toDecimal().div(0.0.toDecimal(), 3))
+        assertEquals(Decimal.NegativeInfinity, (-1.0).toDecimal().div(0.0.toDecimal(), 3, RoundingMode.RoundDown))
+
+        assertEquals(Decimal.NaN, 0.0.toDecimal() / 0.0.toDecimal())
+        assertEquals(Decimal.NaN, 0.0.toDecimal().div(0.0.toDecimal(), 3))
+        assertEquals(Decimal.NaN, 0.0.toDecimal().div(0.0.toDecimal(), 3, RoundingMode.RoundDown))
+
+        assertEquals(Decimal.NaN, "Test".toDecimal())
     }
 
     @Test
