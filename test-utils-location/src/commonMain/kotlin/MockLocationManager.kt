@@ -175,4 +175,12 @@ class MockBaseLocationManager(
     override suspend fun stopMonitoringLocation() {
         stopMonitoringLocationMock.call()
     }
+
+    public override fun handleLocationChanged(location: Location.KnownLocation) {
+        super.handleLocationChanged(location)
+    }
+
+    public override fun handleLocationChanged(locations: List<Location.KnownLocation>) {
+        super.handleLocationChanged(locations)
+    }
 }

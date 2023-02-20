@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterCurrencyStyle
@@ -34,10 +34,10 @@ import platform.Foundation.numberWithInt
 
 /**
  * Default implementation of [BaseNumberFormatter]
- * @param locale The [Locale] used for parsing. Defaults to [Locale.defaultLocale].
+ * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-actual class NumberFormatter actual constructor(override val locale: Locale, style: NumberFormatStyle) : BaseNumberFormatter {
+actual class NumberFormatter actual constructor(override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
 
     @ExperimentalUnsignedTypes
     private val formatter = NSNumberFormatter().apply {

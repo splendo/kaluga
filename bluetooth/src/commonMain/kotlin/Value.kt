@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.bluetooth
 
+/**
+ * The value of a platform specific bluetooth attribute
+ */
 expect class Value
 
+/**
+ * Gets the [ByteArray] value of a [Value]
+ */
 expect val Value.asBytes: ByteArray

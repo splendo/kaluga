@@ -17,7 +17,18 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+/**
+ * Accessor to the Java Bluetooth device. Not Actually implemented
+ */
 actual interface DeviceWrapper {
+
+    /**
+     * Name of the Bluetooth device
+     */
     actual val name: String?
+
+    /**
+     * [Identifier] of the Bluetooth device
+     */
     actual val identifier: Identifier
 }

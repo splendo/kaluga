@@ -59,9 +59,6 @@ class MockScanner(
     val stopScanningMock = ::stopScanning.mock()
     override suspend fun stopScanning(): Unit = stopScanningMock.call()
 
-    val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
-    override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
-
     val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
     override suspend fun retrievePairedDevices(withServices: Set<UUID>): Unit = retrievePairedDevicesMock.call(withServices)
 }

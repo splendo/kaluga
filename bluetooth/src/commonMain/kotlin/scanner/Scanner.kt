@@ -19,10 +19,13 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.bluetooth.RSSI
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.description
@@ -50,46 +53,158 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 typealias EnableSensorAction = suspend () -> Boolean
+
+/**
+ * Creates a [DeviceWrapper] and [BaseDeviceConnectionManager.Builder] for a discovered device
+ */
 typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
 
+/**
+ * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.Device]
+ */
 interface Scanner {
 
+    /**
+     * Events detected by a [Scanner]
+     */
     sealed class Event {
+
+        /**
+         * An [Event] indicating permissions have changed
+         * @property hasPermission if `true` the permissions required for Bluetooth have been granted
+         */
         data class PermissionChanged(val hasPermission: Boolean) : Event()
+
+        /**
+         * An [Event] indicating the Bluetooth service has become enabled
+         */
         object BluetoothEnabled : Event()
+
+        /**
+         * An [Event] indicating the Bluetooth service has become disabled
+         */
         object BluetoothDisabled : Event()
+
+        /**
+         * An [Event] indicating the Scanner failed to start scanning
+         */
         object FailedScanning : Event()
+
+        /**
+         * An [Event] indicating a [com.splendo.kaluga.bluetooth.device.Device] was discovered
+         * @property identifier the [Identifier] of the device discovered
+         * @property rssi the [RSSI] value of the device discovered
+         * @property advertisementData the [BaseAdvertisementData] of the device discovered
+         * @property deviceCreator method for creating a device if it had not yet been discovered.
+         */
         data class DeviceDiscovered(
             val identifier: Identifier,
-            val rssi: Int,
+            val rssi: RSSI,
             val advertisementData: BaseAdvertisementData,
             val deviceCreator: DeviceCreator
         ) : Event()
+
+        /**
+         * An [Event] indicating a list of [DeviceDiscovered] events are paired to the system
+         * @property filter the set of [UUID] applied to filter for the paired devices
+         * @property devices the list of [DeviceDiscovered] paired to the system
+         */
         data class PairedDevicesRetrieved(
             val filter: Filter,
             val devices: List<DeviceDiscovered>
         ) : Event() {
+
+            /**
+             * The list of [Identifier] discovered
+             */
             val identifiers = devices.map(DeviceDiscovered::identifier)
+
+            /**
+             * The list of [DeviceCreator] to create devices that have not yet been discovered
+             */
             val deviceCreators = devices.map(DeviceDiscovered::deviceCreator)
         }
+
+        /**
+         * An [Event] indicating a [com.splendo.kaluga.bluetooth.device.Device] has changed to a connected state.
+         * @property identifier the [Identifier] of the device connected
+         */
         data class DeviceConnected(val identifier: Identifier) : Event()
+
+        /**
+         * An [Event] indicating a [com.splendo.kaluga.bluetooth.device.Device] has changed to a disconnected state.
+         * @property identifier the [Identifier] of the device disconnected
+         */
         data class DeviceDisconnected(val identifier: Identifier) : Event()
     }
 
+    /**
+     * Indicates whether the system supports Bluetooth scanning
+     */
     val isSupported: Boolean
+
+    /**
+     * The [Flow] of all the [Event] detected by the scanner
+     */
     val events: Flow<Event>
+
+    /**
+     * Starts scanning for changes to permissions related to Bluetooth.
+     * This will result in [Event.PermissionChanged] on the [events] flow.
+     */
     suspend fun startMonitoringPermissions()
+
+    /**
+     * Stops scanning for changes to permissions related to Bluetooth.
+     */
     suspend fun stopMonitoringPermissions()
+
+    /**
+     * Starts scanning for devices.
+     * This will result in [Event.DeviceDiscovered] or [Event.FailedScanning]
+     * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+     */
     suspend fun scanForDevices(filter: Set<UUID>)
+
+    /**
+     * Stops scanning for devices
+     */
     suspend fun stopScanning()
+
+    /**
+     * Starts scanning for changes to the Bluetooth service being enabled
+     * This will result in [Event.BluetoothEnabled] or [Event.BluetoothDisabled] on the [events] flow
+     */
     suspend fun startMonitoringHardwareEnabled()
+
+    /**
+     * Stops scanning for changes to the Bluetooth service being enabled
+     */
     suspend fun stopMonitoringHardwareEnabled()
+
+    /**
+     * Checks whether the Bluetooth service  is currently enabled
+     */
     suspend fun isHardwareEnabled(): Boolean
+
+    /**
+     * Attempts to request the user to enable Bluetooth
+     */
     suspend fun requestEnableHardware()
-    fun generateEnableSensorsActions(): List<EnableSensorAction>
+
+    /**
+     * Retrieves the list of paired [Device]
+     * This will result in [Event.PairedDevicesRetrieved] on the [events] flow
+     * @param withServices filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     */
     suspend fun retrievePairedDevices(withServices: Set<UUID>)
 }
 
+/**
+ * An abstract implementation for [Scanner]
+ * @param settings the [Settings] to configure this scanner
+ * @param coroutineScope the [CoroutineScope] this scanner runs on
+ */
 abstract class BaseScanner constructor(
     settings: Settings,
     private val coroutineScope: CoroutineScope
@@ -99,16 +214,33 @@ abstract class BaseScanner constructor(
         private const val LOG_TAG = "Bluetooth Scanner"
     }
 
+    /**
+     * Settings to configure a [BaseScanner]
+     * @property permissions the [Permissions] to manage the bluetooth related permissions
+     * @property autoRequestPermission if `true` the scanner should automatically request permissions if not granted
+     * @property autoEnableSensors if `true` the scanner should automatically enable the Bluetooth service if disabled
+     * @property discoverBondedDevices If `true` scanned results will include devices bonded to the system.
+     * @property logger the [Logger] to log to
+     */
     data class Settings(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
-        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-        /** If set, will include bonded devices in discovered result list on Android */
         val discoverBondedDevices: Boolean = true,
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
+    /**
+     * Builder for creating a [BaseScanner]
+     */
     interface Builder {
+
+        /**
+         * Creates a [BaseScanner]
+         * @param settings the [BaseScanner.Settings] to configure the scanner with
+         * @param coroutineScope the [CoroutineScope] the scanner will run in
+         * @return the [BaseScanner] created
+         */
         fun create(
             settings: Settings,
             coroutineScope: CoroutineScope
@@ -220,9 +352,11 @@ abstract class BaseScanner constructor(
         }
     }
 
+    protected abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
+
     internal fun handleDeviceDiscovered(
         identifier: Identifier,
-        rssi: Int,
+        rssi: RSSI,
         advertisementData: AdvertisementData,
         deviceCreator: DeviceCreator
     ) {
@@ -269,4 +403,7 @@ abstract class BaseScanner constructor(
     }
 }
 
+/**
+ * A default implementation of [BaseScanner]
+ */
 expect class DefaultScanner : BaseScanner

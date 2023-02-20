@@ -67,7 +67,7 @@ abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLo
         monitoringDidStart()
     }
 
-    abstract fun monitoringDidStart()
+    protected abstract fun monitoringDidStart()
 
     final override fun stopMonitoring() {
         logger.debug(TAG) { "Stop monitoring service state" }
@@ -75,7 +75,7 @@ abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLo
         monitoringDidStop()
     }
 
-    abstract fun monitoringDidStop()
+    protected abstract fun monitoringDidStop()
 
     protected fun updateState() {
         logger.debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }

@@ -39,29 +39,98 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+/**
+ * Manages monitoring for [Location]
+ */
 interface LocationManager {
 
+    /**
+     * Events detected by [LocationManager]
+     */
     sealed class Event {
+
+        /**
+         * An [Event] indicating permissions have changed
+         * @property hasPermission if `true` the permissions required for Location have been granted
+         */
         data class PermissionChanged(val hasPermission: Boolean) : Event()
+
+        /**
+         * An [Event] indicating the location service has become enabled
+         */
         object LocationEnabled : Event()
+
+        /**
+         * An [Event] indicating the location service has become disabled
+         */
         object LocationDisabled : Event()
     }
 
+    /**
+     * A [Flow] of all the [Event] detected by the location manager
+     */
     val events: Flow<Event>
+
+    /**
+     * A [Flow] of the [Location.KnownLocation] detected by the location manager
+     */
     val locations: Flow<Location.KnownLocation>
 
+    /**
+     * The [LocationPermission] used for managing this location.
+     * If [LocationPermission.precise] this will scan location at high accuracy
+     * If [LocationPermission.background] this will monitor location from the background
+     */
     val locationPermission: LocationPermission
 
+    /**
+     * Starts monitoring for changes to permissions related to [locationPermission]
+     * This will result in [Event.PermissionChanged] on the [events] flow
+     */
     suspend fun startMonitoringPermissions()
+
+    /**
+     * Stops monitoring for changes to permissions related to [locationPermission]
+     */
     suspend fun stopMonitoringPermissions()
+
+    /**
+     * Starts monitoring for changes related to the location service being enabled
+     * This will result in [Event.LocationEnabled] and [Event.LocationDisabled] on the [events] flow
+     */
     suspend fun startMonitoringLocationEnabled()
+
+    /**
+     * Stops monitoring for changes related to the location service being enabled
+     */
     suspend fun stopMonitoringLocationEnabled()
+
+    /**
+     * If `true` the location service is currently enabled
+     */
     fun isLocationEnabled(): Boolean
+
+    /**
+     * Attempts to request the user to enable the location service
+     */
     suspend fun requestEnableLocation()
+
+    /**
+     * Starts monitoring for new [Location.KnownLocation] that will be emitted on the [locations] flow
+     */
     suspend fun startMonitoringLocation()
+
+    /**
+     * Stops monitoring for new [Location.KnownLocation]
+     */
     suspend fun stopMonitoringLocation()
 }
 
+/**
+ * An abstract implementation for [LocationManager]
+ * @param settings the [Settings] to configure this location manager
+ * @param coroutineScope the [CoroutineScope] this location manager runs on
+ */
 abstract class BaseLocationManager(
     private val settings: Settings,
     private val coroutineScope: CoroutineScope
@@ -72,13 +141,16 @@ abstract class BaseLocationManager(
     }
 
     /**
-     * @param locationPermission If passing your own settings pass LocationPermission returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
-     * @param permissions If passing your own settings pass permissions returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
-     * @param autoRequestPermission Set to true to request permissions right away
-     * @param autoEnableLocations Set to true to enable location if disabled right away
-     * @param locationBufferCapacity Max location that can be buffered, if exceed oldest is dropped
-     * @param minUpdateDistanceMeters Min update distance for a location update to trigger
-     * @param logger Pass your own [RestrictedLogger] to enable logging while debugging
+     * Settings to configure a [BaseLocationManager]
+     * @property locationPermission The [LocationPermission] to use for monitoring location changes.
+     * If passing your own settings pass LocationPermission returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
+     * @property permissions The [Permissions] managing the location permission.
+     * If passing your own settings pass permissions returned from settingsBuilder when you call [BaseLocationStateRepoBuilder.create]
+     * @property autoRequestPermission if `true` the location manager should automatically request permissions if not granted
+     * @property autoEnableLocations if `true` the location manager should automatically enable the location service if disabled
+     * @param locationBufferCapacity the maximum number of location that can be buffered, if exceed oldest is dropped
+     * @param minUpdateDistanceMeters the minimum distance in meters that a location needs to change compared to the last result for a location update to trigger
+     * @param logger the [Logger] to use for logging
      */
     data class Settings(
         val locationPermission: LocationPermission,
@@ -90,7 +162,16 @@ abstract class BaseLocationManager(
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
+    /**
+     * Builder for creating a [BaseLocationManager]
+     */
     interface Builder {
+
+        /**
+         * Creates a [BaseLocationManager]
+         * @param settings the [Settings] to configure the location manager
+         * @param coroutineScope the [CoroutineScope] the location manager runs on
+         */
         fun create(
             settings: Settings,
             coroutineScope: CoroutineScope
@@ -109,7 +190,7 @@ abstract class BaseLocationManager(
     protected val sharedLocations = MutableSharedFlow<Location.KnownLocation>(replay = 0, extraBufferCapacity = settings.locationBufferCapacity, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     override val locations: Flow<Location.KnownLocation> = sharedLocations.asSharedFlow()
 
-    abstract val locationMonitor: LocationMonitor
+    protected abstract val locationMonitor: LocationMonitor
 
     private val permissionsLock = Mutex()
     private var monitoringPermissionsJob: Job? = null
@@ -186,8 +267,8 @@ abstract class BaseLocationManager(
         }
     }
 
-    fun handleLocationChanged(location: Location.KnownLocation) = handleLocationChanged(listOf(location))
-    fun handleLocationChanged(locations: List<Location.KnownLocation>) {
+    protected open fun handleLocationChanged(location: Location.KnownLocation) = handleLocationChanged(listOf(location))
+    protected open fun handleLocationChanged(locations: List<Location.KnownLocation>) {
         locations.forEach { location ->
             logger.info(LOG_TAG) { "Location changed to $location" }
             sharedLocations.tryEmit(location) // buffer is DROP_OLDEST so this will always return `true`
@@ -201,6 +282,6 @@ abstract class BaseLocationManager(
 }
 
 /**
- * A manager for tracking the user's [Location]
+ * A default implementation of [BaseLocationManager]
  */
 expect class DefaultLocationManager : BaseLocationManager

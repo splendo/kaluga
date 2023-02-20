@@ -26,8 +26,7 @@ import kotlinx.coroutines.flow.transformLatest
 // TODO: consider moving this to commonMain
 
 /**
- * Unpairs Device by calling `removeBond`
- * if bond state != BluetoothDevice.BOND_NONE
+ * Pairs a ([Flow] of) [Device] by waiting for it to become connected and calling `[ConnectableDeviceState.Connected.pair]`
  */
 suspend fun Flow<Device?>.pair() {
     return state().transformLatest { deviceState ->
@@ -41,8 +40,7 @@ suspend fun Flow<Device?>.pair() {
 }
 
 /**
- * Pairs Device by calling `createBond`
- * if bond state == BluetoothDevice.BOND_NONE
+ * Pairs a ([Flow] of) [Device] by calling `[ConnectableDeviceState.unpair]` on the first [ConnectableDeviceState]
  */
 suspend fun Flow<Device?>.unpair() {
     return state().transformLatest { deviceState ->

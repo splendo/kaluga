@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.shared.di
 
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.bluetooth.beacons.Beacons
+import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.location.LocationStateRepoBuilder
@@ -68,7 +68,7 @@ private fun sharedModule(
             connectionSettings = ConnectionSettings(logger = get())
         )
     }
-    single { Beacons(get<Bluetooth>(), timeout = 1.minutes) }
+    single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }
 }
 
 internal fun initKoin(

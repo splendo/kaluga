@@ -36,7 +36,7 @@ class MockServiceWrapper(
         builder.characteristics
     )
 
-    override val type: Int = 0
+    override val type: ServiceWrapper.Type = ServiceWrapper.Type.PRIMARY
     override val instanceId: Int = 0
     private val mutableCharacteristics = concurrentMutableListOf<CharacteristicWrapper>(
         *initialCharacteristics.map {

@@ -24,6 +24,9 @@ import platform.CoreLocation.CLLocation
 import platform.Foundation.timeIntervalSince1970
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * The [Location.KnownLocation] of a [CLLocation]
+ */
 val CLLocation.knownLocation
     get() = coordinate.useContents {
         Location.KnownLocation(

@@ -17,41 +17,26 @@
 package com.splendo.kaluga.test.system.network
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
-import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.NetworkManager
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Mock implementation of [NetworkManager]
- *
- */
-class MockNetworkManager(override val network: MutableSharedFlow<NetworkConnectionType>) : NetworkManager {
-
-    val startMonitoringMock = ::startMonitoring.mock()
-    override suspend fun startMonitoring(): Unit = startMonitoringMock.call()
-
-    val stopMonitoringMock = ::stopMonitoring.mock()
-    override suspend fun stopMonitoring(): Unit = stopMonitoringMock.call()
-}
-
-/**
- * Mock implementation of [BaseNetworkManager]
  * @param initialNetworkConnectionType Sets the initial [NetworkConnectionType]
- * @param setupMocks If `true` sets up [createMock] to build [MockBaseNetworkManager]
+ * @param setupMocks If `true` sets up [createMock] to build [MockNetworkManager]
  */
-class MockBaseNetworkManager(initialNetworkConnectionType: NetworkConnectionType) : BaseNetworkManager() {
+class MockNetworkManager(initialNetworkConnectionType: NetworkConnectionType) : NetworkManager {
 
-    class Builder(initialNetworkConnectionType: NetworkConnectionType, setupMocks: Boolean = true) : BaseNetworkManager.Builder {
+    class Builder(initialNetworkConnectionType: NetworkConnectionType, setupMocks: Boolean = true) : NetworkManager.Builder {
 
         /**
-         * List of built [BaseNetworkManager]
+         * List of built [MockNetworkManager]
          */
-        val builtNetworkManagers = concurrentMutableListOf<BaseNetworkManager>()
+        val builtNetworkManagers = concurrentMutableListOf<MockNetworkManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -62,14 +47,14 @@ class MockBaseNetworkManager(initialNetworkConnectionType: NetworkConnectionType
             if (setupMocks) {
                 createMock.on()
                     .doExecute {
-                        MockBaseNetworkManager(initialNetworkConnectionType).also {
+                        MockNetworkManager(initialNetworkConnectionType).also {
                             builtNetworkManagers.add(it)
                         }
                     }
             }
         }
 
-        override fun create(): BaseNetworkManager = createMock.call()
+        override fun create(): NetworkManager = createMock.call()
     }
 
     override val network = MutableStateFlow(initialNetworkConnectionType)

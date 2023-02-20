@@ -72,6 +72,8 @@ import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewMod
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.location.DefaultLocationManager
+import com.splendo.kaluga.location.GoogleLocationProvider
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.resources.StyledStringBuilder
@@ -210,7 +212,14 @@ internal val androidModule = module {
 
 fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     androidModule,
-    { LocationStateRepoBuilder(permissionsBuilder = it) },
+    {
+        LocationStateRepoBuilder(
+            locationManagerBuilder = DefaultLocationManager.Builder(
+                googleLocationProviderSettings = GoogleLocationProvider.Settings()
+            ),
+            permissionsBuilder = it,
+        )
+    },
     { BluetoothBuilder(permissionsBuilder = it) },
     customModules
 )
