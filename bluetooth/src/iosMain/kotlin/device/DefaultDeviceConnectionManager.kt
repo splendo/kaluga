@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
@@ -153,7 +154,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    override suspend fun requestMtu(mtu: Int): Boolean {
+    override suspend fun requestMtu(mtu: MTU): Boolean {
         val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
@@ -164,7 +165,7 @@ internal actual class DefaultDeviceConnectionManager(
         return false
     }
 
-    override suspend fun performAction(action: DeviceAction) {
+    override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -188,12 +189,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun unpair() {
-        // There is no iOS API to unpair peripheral
+    override suspend fun requestStartPairing() {
+        // There is no iOS API to pair peripheral
     }
 
-    override suspend fun pair() {
-        // There is no iOS API to pair peripheral
+    override suspend fun requestStartUnpairing() {
+        // There is no iOS API to unpair peripheral
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {

@@ -23,6 +23,10 @@ import com.google.android.gms.location.LocationResult
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Converts a [android.location.Location] into a [Location.KnownLocation]
+ * @return the [Location.KnownLocation] matching the location
+ */
 fun android.location.Location.toKnownLocation(): Location.KnownLocation {
     return Location.KnownLocation(
         latitude = latitude,
@@ -31,10 +35,15 @@ fun android.location.Location.toKnownLocation(): Location.KnownLocation {
         horizontalAccuracy = accuracy.toDouble(),
         verticalAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) verticalAccuracyMeters.toDouble() else 0.0,
         speed = speed.toDouble(),
+        course = bearing.toDouble(),
         time = DefaultKalugaDate.epoch(time.milliseconds)
     )
 }
 
+/**
+ * Converts a [LocationResult] to a list of [Location.KnownLocation]
+ * @return the list of [Location.KnownLocation] in the [LocationResult]
+ */
 fun LocationResult.toKnownLocations(): List<Location.KnownLocation> {
     return locations.mapNotNull {
         it.toKnownLocation()

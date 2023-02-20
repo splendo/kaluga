@@ -31,19 +31,44 @@ private object Constants {
     const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }
 
+/**
+ * An [Exception] dealing with issues to the Unique identifier
+ * @param message the message of the exception
+ */
 sealed class UUIDException(message: String?) : Exception(message) {
+
+    /**
+     * A [UUIDException] thrown when [uuidFrom] cannot convert a string to a [UUID]
+     * @param uuidString the string that could not be converted to a [UUID]
+     */
     class InvalidFormat(uuidString: String) :
         UUIDException("String '$uuidString' does not represent a valid UUID")
 }
 
+/**
+ * The Unique Identifier of a Bluetooth property
+ */
 expect class UUID
 
+/**
+ * The string representation of a [UUID]
+ */
 expect val UUID.uuidString: String
 
+/**
+ * Gets the [UUID] from a given string
+ * @param uuidString the string to converter to a [UUID]
+ * @return the [UUID] associated with the string
+ * @throws [UUIDException] if [uuidString] is not a valid [UUID]
+ */
 @Throws(UUIDException::class)
 fun uuidFrom(uuidString: String): UUID =
     if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString) else throw UUIDException.InvalidFormat(uuidString)
 
+/**
+ * Gets a random [UUID]
+ * @return a random [UUID]
+ */
 expect fun randomUUID(): UUID
 
 /**

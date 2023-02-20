@@ -42,7 +42,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * A [LocationProvider] using the Google Location Services
  * @param context The [Context] to run this [LocationProvider] in.
  * @param settings The [GoogleLocationProvider.Settings] to use to configure this location provider.
- * @param minUpdateDistanceMeters The min distance traversed for a location update to be reported.
+ * @param minUpdateDistanceMeters The minimum distance in meters traversed for a location update to be reported.
  */
 class GoogleLocationProvider(
     private val context: Context,
@@ -144,9 +144,9 @@ class GoogleLocationProvider(
         fusedLocationProviderClient.startRequestingUpdates()
     }
 
-    override fun stopMonitoringLocation(permissions: LocationPermission) {
-        fusedLocationProviderClients.value[permissions]?.startRequestingUpdates()
-        fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply { remove(permissions) }
+    override fun stopMonitoringLocation(permission: LocationPermission) {
+        fusedLocationProviderClients.value[permission]?.stopRequestingUpdates()
+        fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply { remove(permission) }
     }
 
     private fun getLocationProviderForPermission(permission: LocationPermission): FusedLocationProviderClientType {
@@ -165,12 +165,15 @@ class GoogleLocationProvider(
     }
 }
 
+/**
+ * A [BroadcastReceiver] for receiving updates to a Google Location from the background
+ */
 class GoogleLocationUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
         private const val ACTION_NAME = "com.splendo.kaluga.location.locationupdates.action"
 
-        fun intent(context: Context, locationManagerId: String): PendingIntent {
+        internal fun intent(context: Context, locationManagerId: String): PendingIntent {
             val intent = Intent(context, GoogleLocationUpdatesBroadcastReceiver::class.java).apply {
                 action = ACTION_NAME
                 addCategory(locationManagerId)

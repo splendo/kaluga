@@ -9,6 +9,13 @@ import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNot
 import platform.Foundation.NSBundle
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A default implementation of [BaseBluetoothBuilder]
+ * @param bundle the [NSBundle] in which Bluetooth should run
+ * @param permissionsBuilder a method for creating the [Permissions] object to manage the Bluetooth permissions.
+ * Needs to have [com.splendo.kaluga.permissions.bluetooth.BluetoothPermission] registered.
+ * @param scannerBuilder the [BaseScanner.Builder] for creating the [BaseScanner] to handle scanning
+ */
 actual class BluetoothBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->

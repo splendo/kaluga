@@ -44,13 +44,23 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_queue_create
 
+/**
+ * A default implementation of [BaseScanner]
+ * @param settings the [BaseScanner.Settings] to configure this scanner
+ * @param scanSettings the [ScanSettings] to configure this scanner
+ * @param coroutineScope the [CoroutineScope] this scanner runs on
+ */
 actual class DefaultScanner internal constructor(
     settings: Settings,
     private val scanSettings: ScanSettings,
     coroutineScope: CoroutineScope
 ) : BaseScanner(settings, coroutineScope) {
 
-    class Builder(private val scanSettings: ScanSettings = defaultScanOptions) : BaseScanner.Builder {
+    /**
+     * Builder for creating a [DefaultScanner]
+     * @param scanSettings the [ScanSettings] to configure the scanner
+     */
+    class Builder(private val scanSettings: ScanSettings = ScanSettings.defaultScanOptions) : BaseScanner.Builder {
 
         override fun create(
             settings: Settings,
@@ -60,8 +70,61 @@ actual class DefaultScanner internal constructor(
         }
     }
 
-    companion object {
-        private val defaultScanOptions = ScanSettings.Builder().build()
+    /**
+     * Settings to configure a [DefaultScanner]
+     * @param allowDuplicateKeys if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
+     * @param solicitedServiceUUIDsKey when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
+     */
+    class ScanSettings private constructor(
+        private val allowDuplicateKeys: Boolean,
+        private val solicitedServiceUUIDsKey: List<UUID>?
+    ) {
+
+        companion object {
+            internal val defaultScanOptions = Builder().build()
+        }
+
+        internal fun parse(): Map<Any?, *> {
+            val result: MutableMap<String, Any> =
+                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
+            solicitedServiceUUIDsKey?.let {
+                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+            }
+            return result.toMap()
+        }
+
+        /**
+         * Builder for creating [ScanSettings]
+         */
+        class Builder {
+
+            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
+            private var allowDuplicateKeys: Boolean = true
+            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionsolicitedserviceuuidskey
+            private var solicitedServiceUUIDsKey: List<UUID>? = null
+
+            /**
+             * Sets whether a new discovery event will be sent each time advertisement data is received.
+             * @param allow if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
+             * @return the [Builder]
+             */
+            fun allowDuplicateKeys(allow: Boolean) =
+                apply { allowDuplicateKeys = allow }
+
+            /**
+             * Sets the list of [UUID] corresponding with services the scanner will also scan for
+             * @param keys when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
+             * @return the [Builder]
+             */
+            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
+                apply { solicitedServiceUUIDsKey = keys }
+
+            /**
+             * Creates [ScanSettings]
+             * @return the created [ScanSettings]
+             */
+            fun build(): ScanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
+        }
     }
 
     @Suppress("CONFLICTING_OVERLOADS")
@@ -190,36 +253,6 @@ actual class DefaultScanner internal constructor(
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
         handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
             deviceWrapper to DefaultDeviceConnectionManager.Builder(central, peripheral)
-        }
-    }
-
-    class ScanSettings private constructor(
-        private val allowDuplicateKeys: Boolean,
-        private val solicitedServiceUUIDsKey: List<UUID>?
-    ) {
-
-        fun parse(): Map<Any?, *> {
-            val result: MutableMap<String, Any> =
-                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
-            solicitedServiceUUIDsKey?.let {
-                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
-            }
-            return result.toMap()
-        }
-
-        data class Builder(
-            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
-            var allowDuplicateKeys: Boolean = true,
-            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionsolicitedserviceuuidskey
-            var solicitedServiceUUIDsKey: List<UUID>? = null,
-        ) {
-            fun allowDuplicateKeys(allow: Boolean) =
-                apply { allowDuplicateKeys = allow }
-
-            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
-                apply { solicitedServiceUUIDsKey = keys }
-
-            fun build(): ScanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
         }
     }
 }

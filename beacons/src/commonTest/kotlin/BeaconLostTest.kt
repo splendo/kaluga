@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,7 +33,7 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
         }
 
         action {
-            start(MainScope())
+            start()
             discoverDevices(
                 BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )
@@ -63,7 +62,7 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
         }
 
         action {
-            start(scope)
+            start()
             discoverDevices(
                 BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )

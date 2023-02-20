@@ -20,13 +20,28 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.Logger
 
+/**
+ * A Bluetooth Service
+ * @param service the [ServiceWrapper] to access the platform service
+ * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
+ * @param parentLogTag the log tag used to modify the log tag of this service
+ * @param logger the [Logger] to use for logging.
+ */
 class Service(
     service: ServiceWrapper,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
     logger: Logger
 ) {
+
+    /**
+     * The [UUID] of the service
+     */
     val uuid = service.uuid
+
+    /**
+     * The list of [Characteristic] associated with the service
+     */
     val characteristics = service.characteristics.map {
         Characteristic(
             it,
@@ -37,7 +52,18 @@ class Service(
     }
 }
 
+/**
+ * Accessor to the platform level Bluetooth service
+ */
 expect interface ServiceWrapper {
+
+    /**
+     * The list of [CharacteristicWrapper] associated with the service
+     */
     val characteristics: List<CharacteristicWrapper>
+
+    /**
+     * The [UUID] of the service
+     */
     val uuid: UUID
 }

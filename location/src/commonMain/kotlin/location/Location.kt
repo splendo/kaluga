@@ -21,10 +21,21 @@ package com.splendo.kaluga.location
 import com.splendo.kaluga.base.utils.KalugaDate
 import kotlin.math.absoluteValue
 
+/**
+ * A Geolocation of the system
+ */
 sealed class Location {
 
     /**
-     * A known location, [latitude], [longitude] and [time] are always available, the rest are optional
+     * A [Location] where the current coordinates are known
+     * @property latitude the latitude of the location
+     * @property longitude the longitude of the location
+     * @property altitude the altitude above mean sea level associated with a location, measured in meters.
+     * @property horizontalAccuracy the estimated horizontal accuracy radius in meters of this location
+     * @property verticalAccuracy the estimated altitude accuracy in meters of this location
+     * @property speed the velocity (measured in meters per second) at which the device is moving
+     * @property course the azimuth that is measured in degrees relative to true north
+     * @property time the [KalugaDate] at which the location was detected
      */
     data class KnownLocation(
         val latitude: Double,
@@ -49,26 +60,37 @@ sealed class Location {
     }
 
     /**
-     * An unknown location.
-     * @param reason The [Reason] the location is unknown.
+     * An [location] where the current coordinates are unknown.
+     * @property reason The [Reason] the location is unknown.
      */
     sealed class UnknownLocation(open val reason: Reason) : Location() {
 
         enum class Reason {
+            /**
+             * Location is unknown because location permissions have not been granted
+             */
             PERMISSION_DENIED,
+
+            /**
+             * Location is unknown because GPS is disabled
+             */
             NO_GPS,
+
+            /**
+             * Location is unknown for an unknown reason
+             */
             NOT_CLEAR
         }
 
         /**
-         * The current location is unknown, and there is no last known location
+         * An [UnknownLocation] where there is no last known location
          * @param reason The [Reason] the location is unknown.
          */
         data class WithoutLastLocation(override val reason: Reason) : UnknownLocation(reason)
 
         /**
-         * The current location is unknown, but there is a last known location
-         * @param lastKnownLocation The [KnownLocation] last received before the location became unknown.
+         * A [UnknownLocation], but there is a last known location
+         * @property lastKnownLocation The [KnownLocation] last received before the location became unknown.
          * @param reason The [Reason] the location is unknown.
          */
         data class WithLastLocation(val lastKnownLocation: KnownLocation, override val reason: Reason) : UnknownLocation(reason)
@@ -77,10 +99,10 @@ sealed class Location {
 
 /**
  * A Location coordinate defined by degrees, minutes and seconds.
- * @param degrees The degrees of the coordinate
- * @param minutes The minutes of the coordinate
- * @param seconds The seconds of the coordinate
- * @param windDirection The [WindDirection] of the coordinate
+ * @property degrees The degrees of the coordinate
+ * @property minutes The minutes of the coordinate
+ * @property seconds The seconds of the coordinate
+ * @property windDirection The [WindDirection] of the coordinate
  */
 data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double, val windDirection: WindDirection) {
 
@@ -119,7 +141,7 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
     }
 
     /**
-     * Decimal representation of this coordinate
+     * Double representation of this coordinate
      */
     val decimalDegrees: Double get() {
         val sign = when (windDirection) {
@@ -134,7 +156,13 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
     }
 }
 
-fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location {
+/**
+ * Converts a [Location] into an [Location.UnknownLocation] given a [Location.UnknownLocation.Reason]
+ * @param reason the [Location.UnknownLocation.Reason] the [Location] became unknown
+ * @return the [Location.UnknownLocation] with [reason].
+ * If the [Location] this method had a [Location.KnownLocation], this will return [Location.UnknownLocation.WithLastLocation], otherwise [Location.UnknownLocation.WithoutLastLocation]
+ */
+fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location.UnknownLocation {
     return when (this) {
         is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(this, reason)
         is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(this.lastKnownLocation, reason)
@@ -142,10 +170,16 @@ fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Locatio
     }
 }
 
+/**
+ * Gets the [Location.KnownLocation] from a [Location] if it exists. Otherwise `null` is returned
+ */
 val Location.known: Location.KnownLocation? get() = when (this) {
     is Location.KnownLocation -> this
     is Location.UnknownLocation.WithLastLocation -> lastKnownLocation
     is Location.UnknownLocation.WithoutLastLocation -> null
 }
 
+/**
+ * Converts a Nullable [Location.KnownLocation] into a [Location], where [Location.UnknownLocation.WithoutLastLocation] is returned if the location was `null`.
+ */
 val Location.KnownLocation?.orUnknown: Location get() = this ?: Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)

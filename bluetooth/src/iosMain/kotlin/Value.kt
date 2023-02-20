@@ -20,8 +20,14 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.utils.toByteArray
 import platform.Foundation.NSData
 
+/**
+ * The value of a bluetooth attribute
+ */
 actual typealias Value = NSData
 
+/**
+ * Gets the [ByteArray] value of a [Value]
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER") // not relevant from Common
 actual val Value.asBytes: ByteArray
     get() = this.toByteArray()

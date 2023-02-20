@@ -1,7 +1,21 @@
-## Permissions
+## Bluetooth
 
-This library provide support for out-of-the-box access to Bluetooth.
+This library provides support for out-of-the-box access to Bluetooth.
 
+## Installing
+This library is available on Maven Central. You can import Kaluga Bluetooth as follows:
+
+```kotlin
+repositories {
+    // ...
+    mavenCentral()
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
+}
+```
 
 ### Usage
 Create a `Bluetooth` object through the `BluetoothBuilder`. This gives you access to a `Flow` of Bluetooth devices. To scan for devices simply call
@@ -41,7 +55,7 @@ bluetooth.devices()[someUUID].disconnect()
 ```
 
 ### Android
-You may notice that when you ask for kaluga's `Permission.Bluetooth` the android request alert will prompt `Location` permission. This behaviour is encountered because Android system requires Location to access the hardware identifiers of nearby external devices via Bluetooth.
+You may notice that when you ask for Kaluga's `Permission.Bluetooth` the android request alert will prompt `Location` permission. This behaviour is encountered because Android system requires Location to access the hardware identifiers of nearby external devices via Bluetooth.
 
 ### Setup
 In order to setup a bluetooth repo you need to do the following:

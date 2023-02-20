@@ -1,6 +1,6 @@
 ## Permissions
 
-This library provide support for out-of-the-box access to device permissions.
+This library provides support for out-of-the-box access to device permissions.
 
 Supported device features:
  - [Bluetooth](../bluetooth-permissions)

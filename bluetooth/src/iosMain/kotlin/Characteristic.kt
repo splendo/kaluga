@@ -25,17 +25,56 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
+/**
+ * Accessor to a [CBCharacteristic]
+ */
 actual interface CharacteristicWrapper {
+
+    /**
+     * The [UUID] of the characteristic
+     */
     actual val uuid: CBUUID
+
+    /**
+     * The list of [DescriptorWrapper] of associated with the characteristic
+     */
     actual val descriptors: List<DescriptorWrapper>
+
+    /**
+     * The current [Value] of the characteristic
+     */
     actual val value: NSData?
+
+    /**
+     * The integer representing all [CharacteristicProperties] of the characteristic
+     */
     actual val properties: Int
 
+    /**
+     * Request a [CBPeripheral] to read the characteristic
+     * @param peripheral the [CBPeripheral] to perform the read operation
+     */
     fun readValue(peripheral: CBPeripheral)
+
+    /**
+     * Request a [CBPeripheral] to write [value] to the characteristic
+     * @param value the [NSData] to write to the characteristic
+     * @param peripheral the [CBPeripheral] to perform the write operation
+     */
     fun writeValue(value: NSData, peripheral: CBPeripheral)
+
+    /**
+     * Request a [CBPeripheral] to update the notifying status of the characteristic
+     * @param enabled if `true` notification should be enabled
+     * @param peripheral the [CBPeripheral] to perform the notifying operation
+     */
     fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral)
 }
 
+/**
+ * Default implementation of [CharacteristicWrapper]
+ * @param characteristic the [CBCharacteristic] to wrap
+ */
 class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic) : CharacteristicWrapper {
 
     override val uuid: CBUUID get() { return characteristic.UUID }

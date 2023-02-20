@@ -5,8 +5,8 @@ public abstract class com/splendo/kaluga/service/DefaultServiceMonitor : com/spl
 	protected final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
 	protected fun getTAG ()Ljava/lang/String;
 	public fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun monitoringDidStart ()V
-	public abstract fun monitoringDidStop ()V
+	protected abstract fun monitoringDidStart ()V
+	protected abstract fun monitoringDidStop ()V
 	public final fun startMonitoring ()V
 	public final fun stopMonitoring ()V
 	protected final fun updateState ()V
