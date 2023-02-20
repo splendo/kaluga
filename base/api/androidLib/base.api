@@ -958,6 +958,7 @@ public final class com/splendo/kaluga/base/utils/DecimalAndroid {
 	public static final fun toFiniteDecimal (Ljava/lang/Number;)Ljava/math/BigDecimal;
 	public static final fun toFiniteDecimal (Ljava/lang/String;)Ljava/math/BigDecimal;
 	public static final fun toInt (Ljava/math/BigDecimal;)I
+	public static final fun toLong (Ljava/math/BigDecimal;)J
 	public static final fun toString (Ljava/math/BigDecimal;)Ljava/lang/String;
 }
 
@@ -997,6 +998,8 @@ public final class com/splendo/kaluga/base/utils/DecimalKt {
 	public static final fun toDoubleArray (Ljava/util/Collection;)[D
 	public static final fun toInt (Lcom/splendo/kaluga/base/utils/Decimal;)I
 	public static final fun toIntArray (Ljava/util/Collection;)[I
+	public static final fun toLong (Lcom/splendo/kaluga/base/utils/Decimal;)J
+	public static final fun toLongArray (Ljava/util/Collection;)[J
 	public static final fun toString (Lcom/splendo/kaluga/base/utils/Decimal;)Ljava/lang/String;
 	public static final fun toStringList (Ljava/util/Collection;)Ljava/util/List;
 }

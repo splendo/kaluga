@@ -368,11 +368,11 @@ fun Number.toDecimal(): Decimal = when (this) {
 /**
  * Converts a String to a [Decimal]
  */
-fun String.toDecimal(): Decimal = when (this) {
-    Double.NaN.toString() -> Decimal.NaN
-    Double.POSITIVE_INFINITY.toString(),
+fun String.toDecimal(): Decimal = when (lowercase()) {
+    Double.NaN.toString().lowercase() -> Decimal.NaN
+    Double.POSITIVE_INFINITY.toString().lowercase(),
     '\u221E'.toString() -> Decimal.PositiveInfinity
-    Double.NEGATIVE_INFINITY.toString(),
+    Double.NEGATIVE_INFINITY.toString().lowercase(),
     "-${'\u221E'}" -> Decimal.NegativeInfinity
     else -> toFiniteDecimal()?.let { Decimal.Finite(it) } ?: Decimal.NaN
 }
