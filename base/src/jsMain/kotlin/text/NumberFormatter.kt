@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 
 // TODO Implement with proper number formatter solution for Java Script
 /**
  * Default implementation of [BaseNumberFormatter]
- * @param locale The [Locale] used for parsing. Defaults to [Locale.defaultLocale].
+ * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-actual class NumberFormatter actual constructor(override val locale: Locale, style: NumberFormatStyle) : BaseNumberFormatter {
+actual class NumberFormatter actual constructor(override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
     override var percentSymbol: Char = '%'
     override var perMillSymbol: Char = '\u2030'
     override var minusSign: Char = '-'
