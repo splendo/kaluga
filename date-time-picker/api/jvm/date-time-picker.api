@@ -16,19 +16,19 @@ public abstract class com/splendo/kaluga/datetimepicker/BaseDateTimePickerPresen
 }
 
 public final class com/splendo/kaluga/datetimepicker/DateTimePicker {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/Locale;Lcom/splendo/kaluga/base/utils/KalugaDate;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/KalugaLocale;Lcom/splendo/kaluga/base/utils/KalugaDate;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;
-	public final fun component5 ()Lcom/splendo/kaluga/base/utils/Locale;
+	public final fun component5 ()Lcom/splendo/kaluga/base/utils/KalugaLocale;
 	public final fun component6 ()Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/Locale;Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/Locale;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/KalugaLocale;Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/datetimepicker/DateTimePicker;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;Lcom/splendo/kaluga/base/utils/KalugaLocale;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCancelButtonTitle ()Ljava/lang/String;
 	public final fun getConfirmButtonTitle ()Ljava/lang/String;
-	public final fun getLocale ()Lcom/splendo/kaluga/base/utils/Locale;
+	public final fun getLocale ()Lcom/splendo/kaluga/base/utils/KalugaLocale;
 	public final fun getMessage ()Ljava/lang/String;
 	public final fun getSelectedDate ()Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public final fun getType ()Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type;
@@ -43,7 +43,7 @@ public final class com/splendo/kaluga/datetimepicker/DateTimePicker$Builder {
 	public final fun build ()Lcom/splendo/kaluga/datetimepicker/DateTimePicker;
 	public final fun setCancelButtonTitle (Ljava/lang/String;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Builder;
 	public final fun setConfirmButtonTitle (Ljava/lang/String;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Builder;
-	public final fun setLocale (Lcom/splendo/kaluga/base/utils/Locale;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Builder;
+	public final fun setLocale (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Builder;
 	public final fun setMessage (Ljava/lang/String;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Builder;
 	public final fun setSelectedDate (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Builder;
 }

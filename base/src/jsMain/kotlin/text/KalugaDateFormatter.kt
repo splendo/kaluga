@@ -18,53 +18,53 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 
 // TODO Implement with proper dateformatter solution for Java Script
 /**
  * Default implementation of [BaseDateFormatter]
  */
-actual class KalugaDateFormatter private constructor(initialTimeZone: TimeZone, private val formatter: (kotlin.js.Date) -> String) : BaseDateFormatter {
+actual class KalugaDateFormatter private constructor(initialTimeZone: KalugaTimeZone, private val formatter: (kotlin.js.Date) -> String) : BaseDateFormatter {
 
     actual companion object {
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun dateFormat(
             style: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun timeFormat(
             style: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         /**
          * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
          * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         /**
@@ -73,15 +73,15 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: TimeZone, 
          * To prevent this, ensure that the provided [locale] is of a `POSIX` type.
          * A convenience [fixedPatternFormat] method exists to default to this behaviour.
          * @param pattern The pattern to apply.
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
     }
 
     override var pattern: String = ""
 
-    override var timeZone: TimeZone = initialTimeZone
+    override var timeZone: KalugaTimeZone = initialTimeZone
     override var eras: List<String> = emptyList()
 
     override var months: List<String> = emptyList()
