@@ -41,11 +41,12 @@ inline fun <reified R : T, T> ObservableOptional<T>.resultValueOrDefault(default
  */
 fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): ObservableOptional<R> =
     try {
-        if (this is Value<*> && (this.value != null || defaultValue == null))
+        if (this is Value<*> && (this.value != null || defaultValue == null)) {
             @Suppress("UNCHECKED_CAST")
             Value(this.value as R)
-        else
+        } else {
             defaultValue ?: Nothing()
+        }
     } catch (e: ClassCastException) {
         defaultValue ?: Nothing()
     }

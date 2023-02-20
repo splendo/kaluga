@@ -308,17 +308,17 @@ abstract class BaseDeviceConnectionManager(
 
     final override suspend fun pair() {
         logger.info(logTag) { "Pair" }
-        didStartPairing()
+        requestStartPairing()
     }
 
-    protected abstract suspend fun didStartPairing()
+    protected abstract suspend fun requestStartPairing()
 
     final override suspend fun unpair() {
         logger.info(logTag) { "Unpair" }
-        didStartUnpairing()
+        requestStartUnpairing()
     }
 
-    protected abstract suspend fun didStartUnpairing()
+    protected abstract suspend fun requestStartUnpairing()
 
     protected open fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, logTag, logger)
 
@@ -353,10 +353,11 @@ abstract class BaseDeviceConnectionManager(
         val currentAction = this.currentAction
         this.currentAction = null
         if (currentAction != null) {
-            if (succeeded)
+            if (succeeded) {
                 logger.info(logTag) { "Completed $currentAction successfully" }
-            else
+            } else {
                 logger.error(logTag) { "Failed to complete $currentAction" }
+            }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }

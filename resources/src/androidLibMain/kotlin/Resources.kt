@@ -40,8 +40,9 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
         }
     }
     override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "plurals", context.packageName)
         return try {
             context.resources.getQuantityString(id, quantity, quantity)
@@ -54,8 +55,9 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
 actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "color", context.packageName)
         return try {
             ContextCompat.getColor(context, id)
@@ -68,8 +70,9 @@ actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoad
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadImage(identifier: String, defaultValue: Image?): Image? {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
         return try {
             ContextCompat.getDrawable(context, id)?.let { Image(it) }
@@ -82,8 +85,9 @@ actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
 actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
     override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "font", context.packageName)
         return try {
             val deferredFont = CompletableDeferred<Typeface?>()

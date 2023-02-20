@@ -1,9 +1,9 @@
-# Test Utils Keyboard
+# Test Utils Date Time Picker
 
-This library adds support for testing the [`keyboard` module](../keyboard) to [`test-utils`](../test-utils-base)
+This library adds support for testing the [`date-time-picker` module](../date-time-picker) to [`test-utils`](../test-utils-base)
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Test Utils Keyboard as follows:
+This library is available on Maven Central. You can import Kaluga Test Utils Date Time Picker as follows:
 
 ```kotlin
 repositories {
@@ -13,9 +13,9 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga:test-utils-keyboard:$kalugaVersion")
+    implementation("com.splendo.kaluga:test-utils-date-time-picker:$kalugaVersion")
 }
 ```
 
 ## Mocks
-This library contains mock classes for `KeyboardManager`, `KeyboardManager.Builder`, and `FocusHandler`.
+This library contains mock classes for `BaseDateTimePickerPresenter` and `BaseDateTimePickerPresenter.Builder`.

@@ -76,11 +76,12 @@ class SpecialFlowValueTest : BaseTest() {
         launch {
             flow().collectImportant {
                 list.add(it)
-                if (it is More)
+                if (it is More) {
                     assertEquals(
                         expected = listOf(Normal, Last, More),
                         actual = list
                     )
+                }
                 cancel()
             }
         }.join()

@@ -21,8 +21,8 @@ package com.splendo.kaluga.datetimepicker
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -34,7 +34,7 @@ import kotlin.coroutines.resume
  * @property cancelButtonTitle the text to show in the button to cancel picking a date
  * @property confirmButtonTitle the text to show in the button to confirm picking a date
  * @property type the [Type] of date time picker
- * @property locale the [Locale] used for representing time in the date-time picker
+ * @property locale the [KalugaLocale] used for representing time in the date-time picker
  * @property selectedDate the [KalugaDate] that the date-time picker will use as a base for picking the date.
  * This will determine the initial time/day to be selected in the picker, depending on the [type].
  * Upon completion, a copy of this date modified with the selected date or time will be provided, keeping timezone and components not selected the same.
@@ -44,7 +44,7 @@ data class DateTimePicker(
     val cancelButtonTitle: String,
     val confirmButtonTitle: String,
     val type: Type,
-    val locale: Locale,
+    val locale: KalugaLocale,
     val selectedDate: KalugaDate
 ) {
 
@@ -56,8 +56,8 @@ data class DateTimePicker(
          * Selects a Date
          * A range can be provided to limit the dates selectable
          *
-         * @property earliestDate if provided, no date kan be picked that is before this [KalugaDate]
-         * @property latestDate if provided, no date kan be picked that is after this [KalugaDate]
+         * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
+         * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
          */
         data class DateType(
             val earliestDate: KalugaDate? = null,
@@ -85,7 +85,7 @@ data class DateTimePicker(
         private var message: String? = null
         private var cancelButtonTitle: String = ""
         private var confirmButtonTitle: String = ""
-        private var locale: Locale = defaultLocale
+        private var locale: KalugaLocale = defaultLocale
         private var selectedDate: KalugaDate = when (type) {
             is Type.DateType -> type.adjustDate(
                 DefaultKalugaDate.now().apply {
@@ -126,11 +126,11 @@ data class DateTimePicker(
         fun setConfirmButtonTitle(confirmButtonTitle: String) = apply { this.confirmButtonTitle = confirmButtonTitle }
 
         /**
-         * Sets the [Locale] for which a Date is selected
+         * Sets the [KalugaLocale] for which a Date is selected
          *
-         * @param locale the [Locale] for which the date is selected
+         * @param locale the [KalugaLocale] for which the date is selected
          */
-        fun setLocale(locale: Locale) = apply { this.locale = locale }
+        fun setLocale(locale: KalugaLocale) = apply { this.locale = locale }
 
         /**
          * Sets the [KalugaDate] that the date-time picker will use as a base for picking the date.
@@ -262,8 +262,8 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
  * Builds a date picker using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @property earliestDate if provided, no date kan be picked that is before this [KalugaDate]
- * @property latestDate if provided, no date kan be picked that is after this [KalugaDate]
+ * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
+ * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
  * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.DateType]
  * @return The built alert interface object
  */

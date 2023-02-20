@@ -33,24 +33,24 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
         /**
          * Creates a [KalugaDate] relative to the current time
          * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
-         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
-         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        actual fun now(offset: Duration, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offset.inWholeMilliseconds))
+        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offset.inWholeMilliseconds))
 
         /**
          * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
          * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
-         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
-         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        actual fun epoch(offset: Duration, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offset.inWholeMilliseconds))
+        actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offset.inWholeMilliseconds))
     }
 
-    override var timeZone: TimeZone
-        get() = TimeZone()
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone()
         set(_) { }
 
     override var era: Int

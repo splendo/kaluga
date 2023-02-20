@@ -88,8 +88,9 @@ sealed interface SpecialFlowValue {
  */
 fun <T> Flow<T>.takeUntilLast(includeLast: Boolean = true): Flow<T> = transformWhile {
     val notLast = it !is SpecialFlowValue.Last
-    if (notLast || includeLast)
+    if (notLast || includeLast) {
         emit(it)
+    }
     notLast
 }
 

@@ -290,9 +290,7 @@ public abstract class com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionMa
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlinx/coroutines/CoroutineScope;)V
 	public final fun cancelConnecting ()V
 	protected fun createService (Lcom/splendo/kaluga/bluetooth/ServiceWrapper;)Lcom/splendo/kaluga/bluetooth/Service;
-	protected abstract fun didStartPairing (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun didStartPerformingAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected abstract fun didStartUnpairing (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	protected final fun getCurrentAction ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction;
 	protected final fun getDeviceWrapper ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
@@ -313,6 +311,8 @@ public abstract class com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionMa
 	public final fun pair (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun performAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun readRssi (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun requestStartPairing (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun requestStartUnpairing (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun setCurrentAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;)V
 	public final fun startConnecting ()V

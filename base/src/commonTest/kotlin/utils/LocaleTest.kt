@@ -24,11 +24,11 @@ class LocaleTest {
 
     @Test
     fun testLocaleUnitSystem() {
-        val usLocale = Locale.createLocale("en", "US")
+        val usLocale = KalugaLocale.createLocale("en", "US")
         assertEquals(UnitSystem.IMPERIAL, usLocale.unitSystem)
-        val ukLocale = Locale.createLocale("en", "GB")
+        val ukLocale = KalugaLocale.createLocale("en", "GB")
         assertEquals(UnitSystem.MIXED, ukLocale.unitSystem)
-        val ruLocale = Locale.createLocale("ru", "RU")
+        val ruLocale = KalugaLocale.createLocale("ru", "RU")
         assertEquals(UnitSystem.METRIC, ruLocale.unitSystem)
     }
 }

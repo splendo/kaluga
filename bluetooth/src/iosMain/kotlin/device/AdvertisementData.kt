@@ -42,9 +42,11 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
         get() = advertisementData[CBAdvertisementDataLocalNameKey] as? String
     override val manufacturerId: Int?
         get() = manufacturerData?.let { manufacturerDataArray ->
-            if (manufacturerDataArray.size >= 2)
+            if (manufacturerDataArray.size >= 2) {
                 (manufacturerDataArray[0].toUInt() + (manufacturerDataArray[1].toUInt() shl 8)).toInt()
-            else null
+            } else {
+                null
+            }
         }
     override val manufacturerData: ByteArray? get() = (advertisementData[CBAdvertisementDataManufacturerDataKey] as? NSData)?.toByteArray()
     override val serviceUUIDs: List<UUID> get() = (advertisementData[CBAdvertisementDataServiceUUIDsKey] as? List<*>)?.typedList() ?: emptyList()

@@ -32,7 +32,7 @@ import com.splendo.kaluga.bluetooth.Service
 
 /**
  * A set of [UUID] to apply to a scan result
- * If not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+ * If not empty, only [Device] that are advertising at least one [Service] matching one of the [UUID] will be scanned.
  */
 typealias Filter = Set<UUID>
 
@@ -495,13 +495,15 @@ internal sealed class ScanningStateImpl {
             override val stopScanning = suspend { Idle(discovered, paired, scanner) }
 
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                if (oldState !is Scanning)
+                if (oldState !is Scanning) {
                     scanner.scanForDevices(discovered.filter)
+                }
             }
 
             override suspend fun afterCreatingNewState(newState: ScanningState) {
-                if (newState !is Scanning)
+                if (newState !is Scanning) {
                     scanner.stopScanning()
+                }
             }
         }
     }

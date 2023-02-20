@@ -25,42 +25,42 @@ import com.splendo.kaluga.base.text.upperCased
 /**
  * Default implementation of [BaseLocale]
  */
-actual data class Locale internal constructor(internal val locale: java.util.Locale) : BaseLocale() {
+actual data class KalugaLocale internal constructor(internal val locale: java.util.Locale) : BaseLocale() {
     actual companion object {
 
         /**
-         * Creates a [Locale] based on a `language` ISO 639 alpha-2 or alpha-3 code
+         * Creates a [KalugaLocale] based on a `language` ISO 639 alpha-2 or alpha-3 code
          * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
-         * @return The [Locale] for the given [language]
+         * @return The [KalugaLocale] for the given [language]
          */
-        actual fun createLocale(language: String): Locale = Locale(java.util.Locale(language))
+        actual fun createLocale(language: String): KalugaLocale = KalugaLocale(java.util.Locale(language))
 
         /**
-         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
+         * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
          * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
          * @param country a ISO 3166 alpha-2 `country` code.
-         * @return The [Locale] for the given [language] and [country]
+         * @return The [KalugaLocale] for the given [language] and [country]
          */
-        actual fun createLocale(language: String, country: String): Locale = Locale(java.util.Locale(language, country))
+        actual fun createLocale(language: String, country: String): KalugaLocale = KalugaLocale(java.util.Locale(language, country))
 
         /**
-         * Creates a [Locale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
+         * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
          * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
          * @param country a ISO 3166 alpha-2 `country` code.
-         * @param variant Arbitrary value used to indicate a variation of a [Locale]
-         * @return The [Locale] for the given [language], [country], and [variant]
+         * @param variant Arbitrary value used to indicate a variation of a [KalugaLocale]
+         * @return The [KalugaLocale] for the given [language], [country], and [variant]
          */
-        actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(java.util.Locale(language, country, variant))
+        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale = KalugaLocale(java.util.Locale(language, country, variant))
 
         /**
-         * The default [Locale] of the user
+         * The default [KalugaLocale] of the user
          */
-        actual val defaultLocale: Locale get() = Locale(java.util.Locale.getDefault())
+        actual val defaultLocale: KalugaLocale get() = KalugaLocale(java.util.Locale.getDefault())
 
         /**
-         * A list of [Locale] available to the user.
+         * A list of [KalugaLocale] available to the user.
          */
-        actual val availableLocales: List<Locale> = java.util.Locale.getAvailableLocales().asList().map { Locale(it) }
+        actual val availableLocales: List<KalugaLocale> = java.util.Locale.getAvailableLocales().asList().map { KalugaLocale(it) }
     }
 
     override val countryCode: String
@@ -82,11 +82,11 @@ actual data class Locale internal constructor(internal val locale: java.util.Loc
             UnitSystem.withCountryCode(countryCode.upperCased(this))
         }
 
-    override fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
-    override fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)
-    override fun languageName(forLocale: Locale): String = locale.getDisplayLanguage(forLocale.locale)
-    override fun variantName(forLocale: Locale): String = locale.getDisplayVariant(forLocale.locale)
-    override fun scriptName(forLocale: Locale): String = locale.getDisplayScript(forLocale.locale)
+    override fun name(forLocale: KalugaLocale): String = locale.getDisplayName(forLocale.locale)
+    override fun countryName(forLocale: KalugaLocale): String = locale.getDisplayCountry(forLocale.locale)
+    override fun languageName(forLocale: KalugaLocale): String = locale.getDisplayLanguage(forLocale.locale)
+    override fun variantName(forLocale: KalugaLocale): String = locale.getDisplayVariant(forLocale.locale)
+    override fun scriptName(forLocale: KalugaLocale): String = locale.getDisplayScript(forLocale.locale)
 
     override val quotationStart: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

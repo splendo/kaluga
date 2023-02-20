@@ -57,10 +57,11 @@ class ColdStateFlowRepoTest : BaseTest() {
         val secondCollect = CompletableDeferred<KalugaState>()
         val job = launch {
             repo.collect {
-                if (!firstCollect.isCompleted)
+                if (!firstCollect.isCompleted) {
                     firstCollect.complete(it)
-                else if (!secondCollect.isCompleted)
+                } else if (!secondCollect.isCompleted) {
                     secondCollect.complete(it) // further calls are ignored
+                }
             }
         }
 

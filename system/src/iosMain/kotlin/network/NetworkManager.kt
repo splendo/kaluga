@@ -74,7 +74,7 @@ actual class DefaultNetworkManager internal constructor(
      * Builder for creating a [DefaultNetworkManager]
      */
     class Builder : NetworkManager.Builder {
-        override fun create(): BaseNetworkManager {
+        override fun create(): NetworkManager {
             val appleNetworkManager = if (IOSVersion.systemVersion >= IOSVersion(12)) {
                 NWPathNetworkManager()
             } else {
@@ -134,7 +134,7 @@ actual class DefaultNetworkManager internal constructor(
                             networkChannel.trySend(NetworkConnectionType.Known.Wifi())
                         }
                     } else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
-                        networkChannel.trySend(NetworkConnectionType.Known.Cellular())
+                        networkChannel.trySend(NetworkConnectionType.Known.Cellular)
                     }
                 }
                 nw_path_status_unsatisfied -> {
@@ -195,7 +195,7 @@ actual class DefaultNetworkManager internal constructor(
             when (flags) {
                 kSCNetworkReachabilityFlagsReachable -> {
                     if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                        scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Cellular())
+                        scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Cellular)
                     } else {
                         scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Wifi())
                     }

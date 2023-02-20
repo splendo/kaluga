@@ -20,8 +20,8 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import java.text.DateFormat
 import java.text.DateFormatSymbols
 import java.text.ParseException
@@ -38,39 +38,39 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         /**
          * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun dateFormat(
             style: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
          * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun timeFormat(
             style: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
          * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
          * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
          * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -79,12 +79,12 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
          * To prevent this, ensure that the provided [locale] is of a `POSIX` type.
          * A convenience [fixedPatternFormat] method exists to default to this behaviour.
          * @param pattern The pattern to apply.
-         * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
-         * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
+        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
-        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: TimeZone): KalugaDateFormatter {
+        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
             return KalugaDateFormatter(simpleDateFormat).apply {
                 this.timeZone = timeZone
             }
@@ -97,8 +97,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         get() = format.toPattern()
         set(value) = format.applyPattern(value)
 
-    override var timeZone: TimeZone
-        get() = TimeZone(format.timeZone)
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone(format.timeZone)
         set(value) { format.timeZone = value.timeZone }
 
     override var eras: List<String>

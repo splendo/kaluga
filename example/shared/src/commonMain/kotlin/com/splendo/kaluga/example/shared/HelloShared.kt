@@ -15,6 +15,8 @@
 
  */
 
-package com.splendo.kaluga.scientific.converter
+package com.splendo.kaluga.example.shared
 
-class ScientificConverterException(message: String? = null) : ArithmeticException(message)
+fun helloCommon(): String {
+    return "Hello from the shared module common source"
+}

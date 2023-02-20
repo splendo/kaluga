@@ -426,8 +426,7 @@ internal sealed class ConnectableDeviceStateImpl {
             }
 
             override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
-                if (oldState is HandlingAction && oldState.action == action)
-                    return
+                if (oldState is HandlingAction && oldState.action == action) return
                 deviceConnectionManager.performAction(action)
             }
         }

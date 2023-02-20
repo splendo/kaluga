@@ -1,9 +1,9 @@
 ## Bluetooth
 
-This library provide support for out-of-the-box access to Bluetooth.
+This library provides support for out-of-the-box access to Bluetooth.
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Base as follows:
+This library is available on Maven Central. You can import Kaluga Bluetooth as follows:
 
 ```kotlin
 repositories {

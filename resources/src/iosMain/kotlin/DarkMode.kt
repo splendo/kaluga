@@ -23,8 +23,5 @@ import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.currentTraitCollection
 
 actual val isInDarkMode: Boolean get() {
-    return if (IOSVersion.systemVersion >= IOSVersion(12))
-        UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
-    else
-        false
+    return IOSVersion.systemVersion >= IOSVersion(12) && UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
 }

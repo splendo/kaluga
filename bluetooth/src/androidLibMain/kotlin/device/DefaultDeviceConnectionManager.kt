@@ -191,12 +191,13 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun disconnect() {
-        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED)
+        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
             gatt.await().disconnect()
-        else
+        } else {
             handleDisconnect {
                 closeGatt()
             }
+        }
     }
 
     private fun closeGatt() {
@@ -232,14 +233,14 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun didStartPairing() {
+    override suspend fun requestStartPairing() {
         if (device.bondState == BluetoothDevice.BOND_NONE) {
             deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun didStartUnpairing() {
+    override suspend fun requestStartUnpairing() {
         if (device.bondState != BluetoothDevice.BOND_NONE) {
             deviceWrapper.removeBond()
         }
@@ -256,10 +257,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     private suspend fun setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
         val uuid = characteristic.uuid.uuidString
-        if (enable)
+        if (enable) {
             notifyingCharacteristics[uuid] = characteristic
-        else
+        } else {
             notifyingCharacteristics.remove(uuid)
+        }
         if (!gatt.await().setCharacteristicNotification(characteristic.wrapper, enable)) {
             return false
         }

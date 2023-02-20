@@ -376,8 +376,9 @@ fun <
     factory: (List<Decimal>, TargetUnit) -> TargetArray,
     transform: ScientificValue<LeftQuantity, LeftUnit>.(ScientificValue<RightQuantity, RightUnit>) -> ScientificValue<TargetQuantity, TargetUnit>
 ): TargetArray {
-    if (size != right.size)
+    if (size != right.size) {
         throw IndexOutOfBoundsException("Cannot combine Scientific Array of unequal size. Left: $size Right: ${right.size}")
+    }
     val newValues = mutableListOf<Decimal>()
     iterator().withIndex().forEach {
         newValues.add(it.value(unit).transform(right[it.index](right.unit)).decimalValue)

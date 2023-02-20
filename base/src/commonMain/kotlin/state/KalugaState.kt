@@ -355,7 +355,7 @@ interface StateFlowRepo<State : KalugaState> {
 }
 
 /**
- * A Hot [StateRepo], using a MutableSharedFlow as it's backing implementation.
+ * A Hot [StateRepo], using a [MutableSharedFlow] as it's backing implementation.
  *
  * The repo will get initialized when the state is first read and remain initialized after.
  *
@@ -420,7 +420,7 @@ abstract class HotStateFlowRepo<State : KalugaState>(
 }
 
 /**
- * A Cold [StateRepo], using a MutableSharedFlow as it's backing implementation.
+ * A Cold [StateRepo], using a [MutableSharedFlow] as it's backing implementation.
  *
  * The repo will get initialized when the state is first read.
  *

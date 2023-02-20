@@ -51,7 +51,7 @@ internal actual class DefaultDeviceConnectionManager(
 
     override suspend fun didStartPerformingAction(action: DeviceAction) {}
 
-    override suspend fun didStartPairing() {}
+    override suspend fun requestStartPairing() {}
 
-    override suspend fun didStartUnpairing() {}
+    override suspend fun requestStartUnpairing() {}
 }

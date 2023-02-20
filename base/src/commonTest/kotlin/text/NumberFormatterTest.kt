@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.test.base.BaseTest
 import kotlin.test.Ignore
 import kotlin.test.Test
