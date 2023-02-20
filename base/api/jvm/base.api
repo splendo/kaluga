@@ -1138,42 +1138,6 @@ public final class com/splendo/kaluga/base/utils/KalugaTimeZoneKt {
 	public static final fun getUtc (Lcom/splendo/kaluga/base/utils/KalugaTimeZone$Companion;)Lcom/splendo/kaluga/base/utils/KalugaTimeZone;
 }
 
-public final class com/splendo/kaluga/base/utils/Locale : com/splendo/kaluga/base/utils/BaseLocale {
-	public static final field Companion Lcom/splendo/kaluga/base/utils/Locale$Companion;
-	public final fun copy (Ljava/util/Locale;)Lcom/splendo/kaluga/base/utils/Locale;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/utils/Locale;Ljava/util/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/Locale;
-	public fun countryName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getAlternateQuotationEnd ()Ljava/lang/String;
-	public fun getAlternateQuotationStart ()Ljava/lang/String;
-	public fun getCountryCode ()Ljava/lang/String;
-	public fun getLanguageCode ()Ljava/lang/String;
-	public fun getQuotationEnd ()Ljava/lang/String;
-	public fun getQuotationStart ()Ljava/lang/String;
-	public fun getScriptCode ()Ljava/lang/String;
-	public fun getUnitSystem ()Lcom/splendo/kaluga/base/utils/UnitSystem;
-	public fun getVariantCode ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun languageName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public fun name (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public fun scriptName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-	public fun toString ()Ljava/lang/String;
-	public fun variantName (Lcom/splendo/kaluga/base/utils/Locale;)Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/base/utils/Locale$Companion {
-	public final fun createLocale (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/Locale;
-	public final fun createLocale (Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/Locale;
-	public final fun createLocale (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/Locale;
-	public final fun getAvailableLocales ()Ljava/util/List;
-	public final fun getDefaultLocale ()Lcom/splendo/kaluga/base/utils/Locale;
-}
-
-public final class com/splendo/kaluga/base/utils/LocaleKt {
-	public static final fun getEnUsPosix (Lcom/splendo/kaluga/base/utils/Locale$Companion;)Lcom/splendo/kaluga/base/utils/Locale;
-	public static final fun getUses24HourClock (Lcom/splendo/kaluga/base/utils/Locale;)Z
-}
-
 public abstract class com/splendo/kaluga/base/utils/RoundingMode {
 }
 
