@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
-
 /**
  * Set of all [MetricAreaDensity]
  */

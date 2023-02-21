@@ -63,7 +63,6 @@ sealed class MetricAndUKImperialTemperature(override val symbol: String) : Tempe
     override val system = MeasurementSystem.MetricAndUKImperial
 }
 
-
 /**
  * A [Temperature] for [MeasurementSystem.USCustomary]
  */
