@@ -19,6 +19,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocation
 import platform.Foundation.timeIntervalSince1970
@@ -37,6 +39,6 @@ val CLLocation.knownLocation
             verticalAccuracy = verticalAccuracy,
             course = course,
             speed = speed,
-            time = DefaultKalugaDate.epoch(timestamp.timeIntervalSince1970.seconds)
+            time = DefaultKalugaDate.epoch(timestamp.timeIntervalSince1970.seconds, KalugaTimeZone.current(), defaultLocale)
         )
     }
