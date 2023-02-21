@@ -299,7 +299,7 @@ fun <
 ) = toScientificArray(unit, ::DefaultScientificArray)
 
 /**
- * Creates a [ArrayType] from a list of [ScientificValue]
+ * Creates an [ArrayType] from a list of [ScientificValue]
  * @param Quantity the type of [PhysicalQuantity] of the unit
  * @param Unit the type of [ScientificUnit] representing all elements in the list of [ScientificValue]
  * @param TargetUnit the type of [ScientificUnit] the array should represent
@@ -772,7 +772,7 @@ fun <
 ) = concat(right, unit)
 
 /**
- * Creates a [Array] containing all values of two [ScientificArray]
+ * Creates an [Array] containing all values of two [ScientificArray]
  * @param Quantity the type of [PhysicalQuantity] of the unit
  * @param NumberType the type of [Number] stored in the array
  * @param Unit the type of [ScientificUnit] of the array

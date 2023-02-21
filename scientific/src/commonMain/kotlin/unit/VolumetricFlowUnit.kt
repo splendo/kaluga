@@ -137,7 +137,7 @@ data class USCustomaryVolumetricFlow(override val volume: USCustomaryVolume, ove
 infix fun MetricVolume.per(time: Time) = MetricVolumetricFlow(this, time)
 
 /**
- * Gets a [ImperialVolumetricFlow] from a [ImperialVolume] and a [Time]
+ * Gets an [ImperialVolumetricFlow] from an [ImperialVolume] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialVolumetricFlow] represented by the units
  */

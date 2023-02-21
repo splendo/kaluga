@@ -144,7 +144,7 @@ infix fun MetricAndUKImperialTemperature.per(power: MetricAndImperialPower) = Me
 infix fun MetricAndUKImperialTemperature.per(power: MetricPower) = MetricThermalResistance(this, power)
 
 /**
- * Gets a [UKImperialThermalResistance] from a [MetricAndUKImperialTemperature] and a [ImperialPower]
+ * Gets a [UKImperialThermalResistance] from a [MetricAndUKImperialTemperature] and an [ImperialPower]
  * @param power the [ImperialPower] component
  * @return the [UKImperialThermalResistance] represented by the units
  */
@@ -158,7 +158,7 @@ infix fun MetricAndUKImperialTemperature.per(power: ImperialPower) = UKImperialT
 infix fun USCustomaryTemperature.per(power: MetricAndImperialPower) = USCustomaryThermalResistance(this, power.imperial)
 
 /**
- * Gets a [USCustomaryThermalResistance] from a [USCustomaryTemperature] and a [ImperialPower]
+ * Gets a [USCustomaryThermalResistance] from a [USCustomaryTemperature] and an [ImperialPower]
  * @param power the [ImperialPower] component
  * @return the [USCustomaryThermalResistance] represented by the units
  */

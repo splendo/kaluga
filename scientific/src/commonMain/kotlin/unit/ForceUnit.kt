@@ -272,7 +272,7 @@ object UsTonForce : USCustomaryForce() {
 }
 
 /**
- * Wraps an [ImperialForce] unit to an [USCustomaryForce] unit
+ * Wraps an [ImperialForce] unit to a [USCustomaryForce] unit
  * @param imperial the [ImperialForce] to wrap
  */
 @Serializable
@@ -283,7 +283,7 @@ data class USCustomaryImperialForceWrapper(val imperial: ImperialForce) : USCust
 }
 
 /**
- * Converts an [ImperialForce] unit to an [USCustomaryImperialForceWrapper] unit
+ * Converts an [ImperialForce] unit to a [USCustomaryImperialForceWrapper] unit
  * @param ForceUnit the type of [ImperialForce] to convert
  */
 val <ForceUnit : ImperialForce> ForceUnit.usCustomary get() = USCustomaryImperialForceWrapper(this)
@@ -296,7 +296,7 @@ object ImperialTonForce : UKImperialForce() {
 }
 
 /**
- * Wraps an [ImperialForce] unit to an [UKImperialForce] unit
+ * Wraps an [ImperialForce] unit to a [UKImperialForce] unit
  * @param imperial the [ImperialForce] to wrap
  */
 @Serializable
@@ -307,7 +307,7 @@ data class UKImperialImperialForceWrapper(val imperial: ImperialForce) : UKImper
 }
 
 /**
- * Converts an [ImperialForce] unit to an [UKImperialImperialForceWrapper] unit
+ * Converts an [ImperialForce] unit to a [UKImperialImperialForceWrapper] unit
  * @param ForceUnit the type of [ImperialForce] to convert
  */
 val <ForceUnit : ImperialForce> ForceUnit.ukImperial get() = UKImperialImperialForceWrapper(this)

@@ -137,21 +137,21 @@ data class UKImperialSpecificVolume(override val volume: UKImperialVolume, overr
 infix fun MetricVolume.per(weight: MetricWeight) = MetricSpecificVolume(this, weight)
 
 /**
- * Gets a [MetricSpecificVolume] from a [ImperialVolume] and a [ImperialWeight]
+ * Gets a [MetricSpecificVolume] from an [ImperialVolume] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [MetricSpecificVolume] represented by the units
  */
 infix fun ImperialVolume.per(weight: ImperialWeight) = ImperialSpecificVolume(this, weight)
 
 /**
- * Gets a [UKImperialSpecificVolume] from a [ImperialVolume] and a [UKImperialWeight]
+ * Gets a [UKImperialSpecificVolume] from an [ImperialVolume] and a [UKImperialWeight]
  * @param weight the [UKImperialWeight] component
  * @return the [UKImperialSpecificVolume] represented by the units
  */
 infix fun ImperialVolume.per(weight: UKImperialWeight) = UKImperialSpecificVolume(this.ukImperial, weight)
 
 /**
- * Gets a [USCustomarySpecificVolume] from a [ImperialVolume] and a [USCustomaryWeight]
+ * Gets a [USCustomarySpecificVolume] from an [ImperialVolume] and a [USCustomaryWeight]
  * @param weight the [USCustomaryWeight] component
  * @return the [USCustomarySpecificVolume] represented by the units
  */
@@ -165,14 +165,14 @@ infix fun ImperialVolume.per(weight: USCustomaryWeight) = USCustomarySpecificVol
 infix fun USCustomaryVolume.per(weight: USCustomaryWeight) = USCustomarySpecificVolume(this, weight)
 
 /**
- * Gets a [USCustomarySpecificVolume] from a [USCustomaryVolume] and a [ImperialWeight]
+ * Gets a [USCustomarySpecificVolume] from a [USCustomaryVolume] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [USCustomarySpecificVolume] represented by the units
  */
 infix fun USCustomaryVolume.per(weight: ImperialWeight) = USCustomarySpecificVolume(this, weight.usCustomary)
 
 /**
- * Gets a [UKImperialSpecificVolume] from a [UKImperialVolume] and a [ImperialWeight]
+ * Gets a [UKImperialSpecificVolume] from a [UKImperialVolume] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [UKImperialSpecificVolume] represented by the units
  */

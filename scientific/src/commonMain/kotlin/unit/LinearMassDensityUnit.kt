@@ -137,21 +137,21 @@ data class UKImperialLinearMassDensity(override val weight: UKImperialWeight, ov
 infix fun MetricWeight.per(length: MetricLength) = MetricLinearMassDensity(this, length)
 
 /**
- * Gets a [ImperialLinearMassDensity] from a [ImperialWeight] and a [ImperialLength]
+ * Gets an [ImperialLinearMassDensity] from an [ImperialWeight] and an [ImperialLength]
  * @param length the [ImperialLength] component
  * @return the [ImperialLinearMassDensity] represented by the units
  */
 infix fun ImperialWeight.per(length: ImperialLength) = ImperialLinearMassDensity(this, length)
 
 /**
- * Gets a [USCustomaryLinearMassDensity] from a [USCustomaryWeight] and a [ImperialLength]
+ * Gets a [USCustomaryLinearMassDensity] from a [USCustomaryWeight] and an [ImperialLength]
  * @param length the [ImperialLength] component
  * @return the [USCustomaryLinearMassDensity] represented by the units
  */
 infix fun USCustomaryWeight.per(length: ImperialLength) = USCustomaryLinearMassDensity(this, length)
 
 /**
- * Gets a [UKImperialLinearMassDensity] from a [UKImperialWeight] and a [ImperialLength]
+ * Gets a [UKImperialLinearMassDensity] from a [UKImperialWeight] and an [ImperialLength]
  * @param length the [ImperialLength] component
  * @return the [UKImperialLinearMassDensity] represented by the units
  */

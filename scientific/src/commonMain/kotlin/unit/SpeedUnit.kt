@@ -92,7 +92,7 @@ data class ImperialSpeed(override val distance: ImperialLength, override val per
 infix fun MetricLength.per(time: Time) = MetricSpeed(this, time)
 
 /**
- * Gets a [ImperialSpeed] from a [ImperialLength] and a [Time]
+ * Gets an [ImperialSpeed] from an [ImperialLength] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialSpeed] represented by the units
  */

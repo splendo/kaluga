@@ -118,7 +118,7 @@ infix fun MetricAndImperialEnergy.x(time: Time) = MetricAndImperialAction(this, 
 infix fun MetricEnergy.x(time: Time) = MetricAction(this, time)
 
 /**
- * Gets a [ImperialAction] from a [ImperialEnergy] and a [Time]
+ * Gets an [ImperialAction] from an [ImperialEnergy] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialAction] represented by the units
  */

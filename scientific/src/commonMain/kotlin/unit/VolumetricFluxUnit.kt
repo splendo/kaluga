@@ -137,21 +137,21 @@ data class USCustomaryVolumetricFlux(override val volumetricFlow: USCustomaryVol
 infix fun MetricVolumetricFlow.per(area: MetricArea) = MetricVolumetricFlux(this, area)
 
 /**
- * Gets a [ImperialVolumetricFlux] from a [MetricVolumetricFlow] and a [ImperialArea]
+ * Gets an [ImperialVolumetricFlux] from a [MetricVolumetricFlow] and an [ImperialArea]
  * @param area the [ImperialArea] component
  * @return the [ImperialVolumetricFlux] represented by the units
  */
 infix fun ImperialVolumetricFlow.per(area: ImperialArea) = ImperialVolumetricFlux(this, area)
 
 /**
- * Gets a [UKImperialVolumetricFlux] from a [MetricVolumetricFlow] and a [ImperialArea]
+ * Gets a [UKImperialVolumetricFlux] from a [MetricVolumetricFlow] and an [ImperialArea]
  * @param area the [ImperialArea] component
  * @return the [UKImperialVolumetricFlux] represented by the units
  */
 infix fun UKImperialVolumetricFlow.per(area: ImperialArea) = UKImperialVolumetricFlux(this, area)
 
 /**
- * Gets a [USCustomaryVolumetricFlux] from a [MetricVolumetricFlow] and a [ImperialArea]
+ * Gets a [USCustomaryVolumetricFlux] from a [MetricVolumetricFlow] and an [ImperialArea]
  * @param area the [ImperialArea] component
  * @return the [USCustomaryVolumetricFlux] represented by the units
  */

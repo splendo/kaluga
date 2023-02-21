@@ -44,7 +44,7 @@ data class AngularVelocity(val angle: Angle, val per: Time) : AbstractScientific
 }
 
 /**
- * Gets a [AngularVelocity] from a [Angle] and a [Time]
+ * Gets an [AngularVelocity] from an [Angle] and a [Time]
  * @param time the [Time] component
  * @return the [Angle] represented by the units
  */

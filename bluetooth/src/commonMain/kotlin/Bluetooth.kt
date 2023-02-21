@@ -463,7 +463,7 @@ operator fun <AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : D
 }
 
 /**
- * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of a [AttributeType]
+ * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [AttributeType]
  * @param AttributeType the type of [Attribute] to get the value from
  * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
  * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]

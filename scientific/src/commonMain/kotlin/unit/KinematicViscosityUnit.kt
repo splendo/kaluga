@@ -91,7 +91,7 @@ data class ImperialKinematicViscosity(override val area: ImperialArea, override 
 infix fun MetricArea.per(time: Time) = MetricKinematicViscosity(this, time)
 
 /**
- * Gets a [ImperialKinematicViscosity] from a [ImperialArea] and a [Time]
+ * Gets an [ImperialKinematicViscosity] from an [ImperialArea] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialKinematicViscosity] represented by the units
  */

@@ -129,21 +129,21 @@ data class UKImperialAreaDensity(override val weight: UKImperialWeight, override
 infix fun MetricWeight.per(area: MetricArea) = MetricAreaDensity(this, area)
 
 /**
- * Gets a [ImperialAreaDensity] from a [ImperialWeight] and a [ImperialArea]
+ * Gets an [ImperialAreaDensity] from an [ImperialWeight] and an [ImperialArea]
  * @param area the [ImperialArea] component
  * @return the [ImperialAreaDensity] represented by the units
  */
 infix fun ImperialWeight.per(area: ImperialArea) = ImperialAreaDensity(this, area)
 
 /**
- * Gets a [USCustomaryAreaDensity] from a [USCustomaryWeight] and a [ImperialArea]
+ * Gets a [USCustomaryAreaDensity] from a [USCustomaryWeight] and an [ImperialArea]
  * @param area the [ImperialArea] component
  * @return the [USCustomaryAreaDensity] represented by the units
  */
 infix fun USCustomaryWeight.per(area: ImperialArea) = USCustomaryAreaDensity(this, area)
 
 /**
- * Gets a [UKImperialAreaDensity] from a [UKImperialWeight] and a [ImperialArea]
+ * Gets a [UKImperialAreaDensity] from a [UKImperialWeight] and an [ImperialArea]
  * @param area the [ImperialArea] component
  * @return the [UKImperialAreaDensity] represented by the units
  */

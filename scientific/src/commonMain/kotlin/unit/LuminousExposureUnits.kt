@@ -89,7 +89,7 @@ data class ImperialLuminousExposure(override val illuminance: ImperialIlluminanc
 infix fun MetricIlluminance.x(time: Time) = MetricLuminousExposure(this, time)
 
 /**
- * Gets a [ImperialLuminousExposure] from a [ImperialIlluminance] and a [Time]
+ * Gets an [ImperialLuminousExposure] from an [ImperialIlluminance] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialLuminousExposure] represented by the units
  */

@@ -35,7 +35,7 @@ actual typealias Identifier = UUID
 actual fun randomIdentifier() = Identifier(randomUUIDString())
 
 /**
- * Gets a [Identifier] from a string value
+ * Gets an [Identifier] from a string value
  * @param stringValue the string value to get the [Identifier] from
  * @return an [Identifier] matching the string value or `null` if it could not be generated
  */

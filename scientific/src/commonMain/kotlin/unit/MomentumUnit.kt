@@ -145,21 +145,21 @@ data class USCustomaryMomentum(override val mass: USCustomaryWeight, override va
 infix fun MetricWeight.x(speed: MetricSpeed) = MetricMomentum(this, speed)
 
 /**
- * Gets a [ImperialMomentum] from a [ImperialWeight] and a [ImperialSpeed]
+ * Gets an [ImperialMomentum] from an [ImperialWeight] and an [ImperialSpeed]
  * @param speed the [ImperialSpeed] component
  * @return the [ImperialMomentum] represented by the units
  */
 infix fun ImperialWeight.x(speed: ImperialSpeed) = ImperialMomentum(this, speed)
 
 /**
- * Gets a [UKImperialMomentum] from a [UKImperialWeight] and a [ImperialSpeed]
+ * Gets a [UKImperialMomentum] from a [UKImperialWeight] and an [ImperialSpeed]
  * @param speed the [ImperialSpeed] component
  * @return the [UKImperialMomentum] represented by the units
  */
 infix fun UKImperialWeight.x(speed: ImperialSpeed) = UKImperialMomentum(this, speed)
 
 /**
- * Gets a [USCustomaryMomentum] from a [USCustomaryWeight] and a [ImperialSpeed]
+ * Gets a [USCustomaryMomentum] from a [USCustomaryWeight] and an [ImperialSpeed]
  * @param speed the [ImperialSpeed] component
  * @return the [USCustomaryMomentum] represented by the units
  */

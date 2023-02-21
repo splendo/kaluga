@@ -247,7 +247,7 @@ object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Impe
 // US Imperial
 
 /**
- * Wraps an [ImperialVolume] unit to an [USCustomaryVolume] unit
+ * Wraps an [ImperialVolume] unit to a [USCustomaryVolume] unit
  * @param imperial the [ImperialVolume] to wrap
  */
 @Serializable
@@ -258,7 +258,7 @@ data class USCustomaryImperialVolumeWrapper(val imperial: ImperialVolume) : USCu
 }
 
 /**
- * Converts an [ImperialVolume] unit to an [USCustomaryImperialVolumeWrapper] unit
+ * Converts an [ImperialVolume] unit to a [USCustomaryImperialVolumeWrapper] unit
  * @param VolumeUnit the type of [ImperialForce] to convert
  */
 val <VolumeUnit : ImperialVolume> VolumeUnit.usCustomary get() = USCustomaryImperialVolumeWrapper(this)
@@ -336,7 +336,7 @@ object UsLiquidGallon : USCustomaryVolume() {
 // UK Imperial
 
 /**
- * Wraps an [ImperialVolume] unit to an [UKImperialVolume] unit
+ * Wraps an [ImperialVolume] unit to a [UKImperialVolume] unit
  * @param imperial the [ImperialVolume] to wrap
  */
 @Serializable
@@ -347,7 +347,7 @@ data class UKImperialImperialVolumeWrapper(val imperial: ImperialVolume) : UKImp
 }
 
 /**
- * Converts an [ImperialVolume] unit to an [UKImperialImperialVolumeWrapper] unit
+ * Converts an [ImperialVolume] unit to a [UKImperialImperialVolumeWrapper] unit
  * @param VolumeUnit the type of [ImperialForce] to convert
  */
 val <VolumeUnit : ImperialVolume> VolumeUnit.ukImperial get() = UKImperialImperialVolumeWrapper(this)

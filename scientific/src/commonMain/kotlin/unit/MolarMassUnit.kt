@@ -130,28 +130,28 @@ data class UKImperialMolarMass(override val weight: UKImperialWeight, override v
 }
 
 /**
- * Gets a [MetricMolarMass] from a [MetricWeight] and a [AmountOfSubstance]
+ * Gets a [MetricMolarMass] from a [MetricWeight] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [MetricMolarMass] represented by the units
  */
 infix fun MetricWeight.per(amountOfSubstance: AmountOfSubstance) = MetricMolarMass(this, amountOfSubstance)
 
 /**
- * Gets a [ImperialMolarMass] from a [ImperialWeight] and a [AmountOfSubstance]
+ * Gets an [ImperialMolarMass] from an [ImperialWeight] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [ImperialMolarMass] represented by the units
  */
 infix fun ImperialWeight.per(amountOfSubstance: AmountOfSubstance) = ImperialMolarMass(this, amountOfSubstance)
 
 /**
- * Gets a [USCustomaryMolarMass] from a [USCustomaryWeight] and a [AmountOfSubstance]
+ * Gets a [USCustomaryMolarMass] from a [USCustomaryWeight] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [USCustomaryMolarMass] represented by the units
  */
 infix fun USCustomaryWeight.per(amountOfSubstance: AmountOfSubstance) = USCustomaryMolarMass(this, amountOfSubstance)
 
 /**
- * Gets a [UKImperialMolarMass] from a [UKImperialWeight] and a [AmountOfSubstance]
+ * Gets a [UKImperialMolarMass] from a [UKImperialWeight] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [UKImperialMolarMass] represented by the units
  */

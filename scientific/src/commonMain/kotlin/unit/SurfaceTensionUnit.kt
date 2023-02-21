@@ -137,21 +137,21 @@ data class UKImperialSurfaceTension(override val force: UKImperialForce, overrid
 infix fun MetricForce.per(length: MetricLength) = MetricSurfaceTension(this, length)
 
 /**
- * Gets a [ImperialSurfaceTension] from a [ImperialForce] and a [ImperialLength]
+ * Gets an [ImperialSurfaceTension] from an [ImperialForce] and an [ImperialLength]
  * @param length the [ImperialLength] component
  * @return the [ImperialSurfaceTension] represented by the units
  */
 infix fun ImperialForce.per(length: ImperialLength) = ImperialSurfaceTension(this, length)
 
 /**
- * Gets a [USCustomarySurfaceTension] from a [USCustomaryForce] and a [ImperialLength]
+ * Gets a [USCustomarySurfaceTension] from a [USCustomaryForce] and an [ImperialLength]
  * @param length the [ImperialLength] component
  * @return the [USCustomarySurfaceTension] represented by the units
  */
 infix fun USCustomaryForce.per(length: ImperialLength) = USCustomarySurfaceTension(this, length)
 
 /**
- * Gets a [UKImperialSurfaceTension] from a [UKImperialForce] and a [ImperialLength]
+ * Gets a [UKImperialSurfaceTension] from a [UKImperialForce] and an [ImperialLength]
  * @param length the [ImperialLength] component
  * @return the [UKImperialSurfaceTension] represented by the units
  */

@@ -112,21 +112,21 @@ data class ImperialMolarEnergy(override val energy: ImperialEnergy, override val
 }
 
 /**
- * Gets a [MetricAndImperialMolarEnergy] from a [MetricAndImperialEnergy] and a [AmountOfSubstance]
+ * Gets a [MetricAndImperialMolarEnergy] from a [MetricAndImperialEnergy] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [MetricAndImperialMolarEnergy] represented by the units
  */
 infix fun MetricAndImperialEnergy.per(amountOfSubstance: AmountOfSubstance) = MetricAndImperialMolarEnergy(this, amountOfSubstance)
 
 /**
- * Gets a [MetricMolarEnergy] from a [MetricEnergy] and a [AmountOfSubstance]
+ * Gets a [MetricMolarEnergy] from a [MetricEnergy] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [MetricMolarEnergy] represented by the units
  */
 infix fun MetricEnergy.per(amountOfSubstance: AmountOfSubstance) = MetricMolarEnergy(this, amountOfSubstance)
 
 /**
- * Gets a [ImperialMolarEnergy] from a [ImperialEnergy] and a [AmountOfSubstance]
+ * Gets an [ImperialMolarEnergy] from an [ImperialEnergy] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [ImperialMolarEnergy] represented by the units
  */

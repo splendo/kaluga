@@ -403,7 +403,7 @@ object USTonSquareFoot : USCustomaryPressure() {
 }
 
 /**
- * Wraps an [ImperialPressure] unit to an [USCustomaryPressure] unit
+ * Wraps an [ImperialPressure] unit to a [USCustomaryPressure] unit
  * @param imperial the [ImperialPressure] to wrap
  */
 @Serializable
@@ -414,7 +414,7 @@ data class USCustomaryImperialPressureWrapper(val imperial: ImperialPressure) : 
 }
 
 /**
- * Converts an [ImperialPressure] unit to an [USCustomaryImperialPressureWrapper] unit
+ * Converts an [ImperialPressure] unit to a [USCustomaryImperialPressureWrapper] unit
  * @param PressureUnit the type of [ImperialPressure] to convert
  */
 val <PressureUnit : ImperialPressure> PressureUnit.usCustomary get() = USCustomaryImperialPressureWrapper(this)
@@ -434,7 +434,7 @@ object ImperialTonSquareFoot : UKImperialPressure() {
 }
 
 /**
- * Wraps an [ImperialPressure] unit to an [UKImperialPressure] unit
+ * Wraps an [ImperialPressure] unit to a [UKImperialPressure] unit
  * @param imperial the [ImperialPressure] to wrap
  */
 @Serializable
@@ -445,7 +445,7 @@ data class UKImperialPressureWrapper(val imperial: ImperialPressure) : UKImperia
 }
 
 /**
- * Converts an [ImperialPressure] unit to an [UKImperialPressureWrapper] unit
+ * Converts an [ImperialPressure] unit to a [UKImperialPressureWrapper] unit
  * @param PressureUnit the type of [ImperialPressure] to convert
  */
 val <PressureUnit : ImperialPressure> PressureUnit.ukImperial get() = UKImperialPressureWrapper(this)

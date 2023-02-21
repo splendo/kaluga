@@ -130,28 +130,28 @@ data class UKImperialMolarVolume(override val volume: UKImperialVolume, override
 }
 
 /**
- * Gets a [MetricMolarVolume] from a [MetricVolume] and a [AmountOfSubstance]
+ * Gets a [MetricMolarVolume] from a [MetricVolume] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [MetricMolarVolume] represented by the units
  */
 infix fun MetricVolume.per(amountOfSubstance: AmountOfSubstance) = MetricMolarVolume(this, amountOfSubstance)
 
 /**
- * Gets a [ImperialMolarVolume] from a [ImperialVolume] and a [AmountOfSubstance]
+ * Gets an [ImperialMolarVolume] from an [ImperialVolume] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [ImperialMolarVolume] represented by the units
  */
 infix fun ImperialVolume.per(amountOfSubstance: AmountOfSubstance) = ImperialMolarVolume(this, amountOfSubstance)
 
 /**
- * Gets a [USCustomaryMolarVolume] from a [USCustomaryVolume] and a [AmountOfSubstance]
+ * Gets a [USCustomaryMolarVolume] from a [USCustomaryVolume] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [USCustomaryMolarVolume] represented by the units
  */
 infix fun USCustomaryVolume.per(amountOfSubstance: AmountOfSubstance) = USCustomaryMolarVolume(this, amountOfSubstance)
 
 /**
- * Gets a [UKImperialMolarVolume] from a [UKImperialVolume] and a [AmountOfSubstance]
+ * Gets a [UKImperialMolarVolume] from a [UKImperialVolume] and an [AmountOfSubstance]
  * @param amountOfSubstance the [AmountOfSubstance] component
  * @return the [UKImperialMolarVolume] represented by the units
  */

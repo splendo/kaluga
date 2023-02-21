@@ -130,28 +130,28 @@ data class UKImperialMolality(override val amountOfSubstance: AmountOfSubstance,
 }
 
 /**
- * Gets a [MetricMolality] from a [AmountOfSubstance] and a [MetricWeight]
+ * Gets a [MetricMolality] from an [AmountOfSubstance] and a [MetricWeight]
  * @param weight the [MetricWeight] component
  * @return the [MetricMolality] represented by the units
  */
 infix fun AmountOfSubstance.per(weight: MetricWeight) = MetricMolality(this, weight)
 
 /**
- * Gets a [ImperialMolality] from a [AmountOfSubstance] and a [ImperialWeight]
+ * Gets an [ImperialMolality] from an [AmountOfSubstance] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [ImperialMolality] represented by the units
  */
 infix fun AmountOfSubstance.per(weight: ImperialWeight) = ImperialMolality(this, weight)
 
 /**
- * Gets a [UKImperialMolality] from a [AmountOfSubstance] and a [UKImperialWeight]
+ * Gets a [UKImperialMolality] from an [AmountOfSubstance] and a [UKImperialWeight]
  * @param weight the [UKImperialWeight] component
  * @return the [UKImperialMolality] represented by the units
  */
 infix fun AmountOfSubstance.per(weight: UKImperialWeight) = UKImperialMolality(this, weight)
 
 /**
- * Gets a [USCustomaryMolality] from a [AmountOfSubstance] and a [USCustomaryWeight]
+ * Gets a [USCustomaryMolality] from an [AmountOfSubstance] and a [USCustomaryWeight]
  * @param weight the [USCustomaryWeight] component
  * @return the [USCustomaryMolality] represented by the units
  */

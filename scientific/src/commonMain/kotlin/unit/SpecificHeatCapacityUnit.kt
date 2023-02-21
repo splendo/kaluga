@@ -109,7 +109,7 @@ data class USCustomarySpecificHeatCapacity(override val heatCapacity: USCustomar
 infix fun MetricAndUKImperialHeatCapacity.per(weight: MetricWeight) = MetricSpecificHeatCapacity(metric, weight)
 
 /**
- * Gets a [UKImperialSpecificHeatCapacity] from a [MetricAndUKImperialHeatCapacity] and a [ImperialWeight]
+ * Gets a [UKImperialSpecificHeatCapacity] from a [MetricAndUKImperialHeatCapacity] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [UKImperialSpecificHeatCapacity] represented by the units
  */
@@ -130,7 +130,7 @@ infix fun MetricAndUKImperialHeatCapacity.per(weight: UKImperialWeight) = UKImpe
 infix fun MetricHeatCapacity.per(weight: MetricWeight) = MetricSpecificHeatCapacity(this, weight)
 
 /**
- * Gets a [UKImperialSpecificHeatCapacity] from a [UKImperialHeatCapacity] and a [ImperialWeight]
+ * Gets a [UKImperialSpecificHeatCapacity] from a [UKImperialHeatCapacity] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [UKImperialSpecificHeatCapacity] represented by the units
  */
@@ -165,14 +165,14 @@ infix fun USCustomaryHeatCapacity.per(weight: USCustomaryWeight) = USCustomarySp
 infix fun MetricSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = MetricSpecificHeatCapacity(energy per temperature, per)
 
 /**
- * Gets a [UKImperialSpecificHeatCapacity] from a [ImperialSpecificEnergy] and a [MetricAndUKImperialTemperature]
+ * Gets a [UKImperialSpecificHeatCapacity] from an [ImperialSpecificEnergy] and a [MetricAndUKImperialTemperature]
  * @param temperature the [MetricAndUKImperialTemperature] component
  * @return the [UKImperialSpecificHeatCapacity] represented by the units
  */
 infix fun ImperialSpecificEnergy.per(temperature: MetricAndUKImperialTemperature) = UKImperialSpecificHeatCapacity(energy per temperature, per.ukImperial)
 
 /**
- * Gets a [USCustomarySpecificHeatCapacity] from a [ImperialSpecificEnergy] and a [USCustomaryTemperature]
+ * Gets a [USCustomarySpecificHeatCapacity] from an [ImperialSpecificEnergy] and a [USCustomaryTemperature]
  * @param temperature the [USCustomaryTemperature] component
  * @return the [USCustomarySpecificHeatCapacity] represented by the units
  */

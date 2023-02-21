@@ -136,7 +136,7 @@ data class UKImperialMassFlowRate(override val weight: UKImperialWeight, overrid
 infix fun MetricWeight.per(time: Time) = MetricMassFlowRate(this, time)
 
 /**
- * Gets a [ImperialMassFlowRate] from a [ImperialWeight] and a [Time]
+ * Gets an [ImperialMassFlowRate] from an [ImperialWeight] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialMassFlowRate] represented by the units
  */

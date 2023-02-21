@@ -137,7 +137,7 @@ data class USCustomarySpecificEnergy(override val energy: ImperialEnergy, overri
 infix fun MetricAndImperialEnergy.per(weight: MetricWeight) = MetricSpecificEnergy(this.metric, weight)
 
 /**
- * Gets a [ImperialSpecificEnergy] from a [MetricAndImperialEnergy] and a [ImperialWeight]
+ * Gets an [ImperialSpecificEnergy] from a [MetricAndImperialEnergy] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [ImperialSpecificEnergy] represented by the units
  */
@@ -165,21 +165,21 @@ infix fun MetricAndImperialEnergy.per(weight: USCustomaryWeight) = USCustomarySp
 infix fun MetricEnergy.per(weight: MetricWeight) = MetricSpecificEnergy(this, weight)
 
 /**
- * Gets a [ImperialSpecificEnergy] from a [ImperialEnergy] and a [ImperialWeight]
+ * Gets an [ImperialSpecificEnergy] from an [ImperialEnergy] and an [ImperialWeight]
  * @param weight the [ImperialWeight] component
  * @return the [ImperialSpecificEnergy] represented by the units
  */
 infix fun ImperialEnergy.per(weight: ImperialWeight) = ImperialSpecificEnergy(this, weight)
 
 /**
- * Gets a [UKImperialSpecificEnergy] from a [ImperialEnergy] and a [UKImperialWeight]
+ * Gets a [UKImperialSpecificEnergy] from an [ImperialEnergy] and a [UKImperialWeight]
  * @param weight the [UKImperialWeight] component
  * @return the [UKImperialSpecificEnergy] represented by the units
  */
 infix fun ImperialEnergy.per(weight: UKImperialWeight) = UKImperialSpecificEnergy(this, weight)
 
 /**
- * Gets a [USCustomarySpecificEnergy] from a [ImperialEnergy] and a [USCustomaryWeight]
+ * Gets a [USCustomarySpecificEnergy] from an [ImperialEnergy] and a [USCustomaryWeight]
  * @param weight the [USCustomaryWeight] component
  * @return the [USCustomarySpecificEnergy] represented by the units
  */

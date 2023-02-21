@@ -144,7 +144,7 @@ infix fun MetricAndImperialEnergy.per(temperature: MetricAndUKImperialTemperatur
 infix fun MetricEnergy.per(temperature: MetricAndUKImperialTemperature) = MetricHeatCapacity(this, temperature)
 
 /**
- * Gets a [UKImperialHeatCapacity] from a [ImperialEnergy] and a [MetricAndUKImperialTemperature]
+ * Gets a [UKImperialHeatCapacity] from an [ImperialEnergy] and a [MetricAndUKImperialTemperature]
  * @param temperature the [MetricAndUKImperialTemperature] component
  * @return the [UKImperialHeatCapacity] represented by the units
  */
@@ -158,7 +158,7 @@ infix fun ImperialEnergy.per(temperature: MetricAndUKImperialTemperature) = UKIm
 infix fun MetricAndImperialEnergy.per(temperature: USCustomaryTemperature) = USCustomaryHeatCapacity(this.imperial, temperature)
 
 /**
- * Gets a [USCustomaryHeatCapacity] from a [ImperialEnergy] and a [USCustomaryTemperature]
+ * Gets a [USCustomaryHeatCapacity] from an [ImperialEnergy] and a [USCustomaryTemperature]
  * @param temperature the [USCustomaryTemperature] component
  * @return the [USCustomaryHeatCapacity] represented by the units
  */

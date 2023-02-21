@@ -137,7 +137,7 @@ data class USCustomaryDynamicViscosity(override val pressure: USCustomaryPressur
 infix fun MetricPressure.x(time: Time) = MetricDynamicViscosity(this, time)
 
 /**
- * Gets a [ImperialDynamicViscosity] from a [ImperialPressure] and a [Time]
+ * Gets an [ImperialDynamicViscosity] from an [ImperialPressure] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialDynamicViscosity] represented by the units
  */

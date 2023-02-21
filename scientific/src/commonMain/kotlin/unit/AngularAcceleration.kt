@@ -50,7 +50,7 @@ data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Ti
 }
 
 /**
- * Gets a [AngularAcceleration] from a [AngularVelocity] and a [Time]
+ * Gets an [AngularAcceleration] from an [AngularVelocity] and a [Time]
  * @param time the [Time] component
  * @return the [AngularAcceleration] represented by the units
  */

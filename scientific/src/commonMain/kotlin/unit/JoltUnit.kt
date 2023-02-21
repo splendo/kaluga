@@ -92,7 +92,7 @@ data class ImperialJolt(override val acceleration: ImperialAcceleration, overrid
 infix fun MetricAcceleration.per(time: Time) = MetricJolt(this, time)
 
 /**
- * Gets a [ImperialJolt] from a [ImperialAcceleration] and a [Time]
+ * Gets an [ImperialJolt] from an [ImperialAcceleration] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialJolt] represented by the units
  */

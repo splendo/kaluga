@@ -254,7 +254,7 @@ object ImperialTon : UKImperialWeight() {
 }
 
 /**
- * Wraps an [ImperialWeight] unit to an [UKImperialWeight] unit
+ * Wraps an [ImperialWeight] unit to a [UKImperialWeight] unit
  * @param imperial the [ImperialWeight] to wrap
  */
 @Serializable
@@ -265,7 +265,7 @@ data class UKImperialImperialWeightWrapper(val imperial: ImperialWeight) : UKImp
 }
 
 /**
- * Converts an [ImperialWeight] unit to an [UKImperialImperialWeightWrapper] unit
+ * Converts an [ImperialWeight] unit to a [UKImperialImperialWeightWrapper] unit
  * @param WeightUnit the type of [ImperialWeight] to convert
  */
 val <WeightUnit : ImperialWeight> WeightUnit.ukImperial get() = UKImperialImperialWeightWrapper(this)
@@ -280,7 +280,7 @@ object UsTon : USCustomaryWeight() {
 }
 
 /**
- * Wraps an [ImperialWeight] unit to an [USCustomaryWeight] unit
+ * Wraps an [ImperialWeight] unit to a [USCustomaryWeight] unit
  * @param imperial the [ImperialWeight] to wrap
  */
 @Serializable
@@ -291,7 +291,7 @@ data class USCustomaryImperialWeightWrapper(val imperial: ImperialWeight) : USCu
 }
 
 /**
- * Converts an [ImperialWeight] unit to an [USCustomaryImperialWeightWrapper] unit
+ * Converts an [ImperialWeight] unit to a [USCustomaryImperialWeightWrapper] unit
  * @param WeightUnit the type of [ImperialWeight] to convert
  */
 val <WeightUnit : ImperialWeight> WeightUnit.usCustomary get() = USCustomaryImperialWeightWrapper(this)

@@ -137,7 +137,7 @@ data class USCustomaryYank(override val force: USCustomaryForce, override val pe
 infix fun MetricForce.per(time: Time) = MetricYank(this, time)
 
 /**
- * Gets a [ImperialYank] from a [ImperialForce] and a [Time]
+ * Gets an [ImperialYank] from an [ImperialForce] and a [Time]
  * @param time the [Time] component
  * @return the [ImperialYank] represented by the units
  */

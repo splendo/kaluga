@@ -129,21 +129,21 @@ data class UKImperialDensity(override val weight: UKImperialWeight, override val
 infix fun MetricWeight.per(volume: MetricVolume) = MetricDensity(this, volume)
 
 /**
- * Gets a [ImperialDensity] from a [ImperialWeight] and a [ImperialVolume]
+ * Gets an [ImperialDensity] from an [ImperialWeight] and an [ImperialVolume]
  * @param volume the [ImperialVolume] component
  * @return the [MetricAreaDensity] represented by the units
  */
 infix fun ImperialWeight.per(volume: ImperialVolume) = ImperialDensity(this, volume)
 
 /**
- * Gets a [UKImperialDensity] from a [ImperialWeight] and a [UKImperialVolume]
+ * Gets a [UKImperialDensity] from an [ImperialWeight] and a [UKImperialVolume]
  * @param volume the [UKImperialVolume] component
  * @return the [UKImperialDensity] represented by the units
  */
 infix fun ImperialWeight.per(volume: UKImperialVolume) = UKImperialDensity(this.ukImperial, volume)
 
 /**
- * Gets a [USCustomaryDensity] from a [ImperialWeight] and a [USCustomaryVolume]
+ * Gets a [USCustomaryDensity] from an [ImperialWeight] and a [USCustomaryVolume]
  * @param volume the [USCustomaryVolume] component
  * @return the [USCustomaryDensity] represented by the units
  */
@@ -157,14 +157,14 @@ infix fun ImperialWeight.per(volume: USCustomaryVolume) = USCustomaryDensity(thi
 infix fun USCustomaryWeight.per(volume: USCustomaryVolume) = USCustomaryDensity(this, volume)
 
 /**
- * Gets a [USCustomaryDensity] from a [USCustomaryWeight] and a [ImperialVolume]
+ * Gets a [USCustomaryDensity] from a [USCustomaryWeight] and an [ImperialVolume]
  * @param volume the [ImperialVolume] component
  * @return the [USCustomaryDensity] represented by the units
  */
 infix fun USCustomaryWeight.per(volume: ImperialVolume) = USCustomaryDensity(this, volume.usCustomary)
 
 /**
- * Gets a [UKImperialDensity] from a [UKImperialWeight] and a [ImperialVolume]
+ * Gets a [UKImperialDensity] from a [UKImperialWeight] and an [ImperialVolume]
  * @param volume the [ImperialVolume] component
  * @return the [UKImperialDensity] represented by the units
  */
