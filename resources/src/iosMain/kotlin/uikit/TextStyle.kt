@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.urlRanges
 import com.splendo.kaluga.resources.view.KalugaLabel
 import platform.Foundation.NSMutableAttributedString
@@ -89,20 +89,20 @@ fun UITextView.bindTextView(label: KalugaLabel) {
     applyTextStyle(label.style)
 }
 
-fun UILabel.applyTextStyle(textStyle: TextStyle) {
+fun UILabel.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
     numberOfLines = 0
 }
 
-fun UITextView.applyTextStyle(textStyle: TextStyle) {
+fun UITextView.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
 
-fun UITextField.applyTextStyle(textStyle: TextStyle) {
+fun UITextField.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment

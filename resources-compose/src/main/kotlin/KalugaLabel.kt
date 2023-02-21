@@ -67,7 +67,7 @@ fun KalugaLabel.Composable(modifier: Modifier) {
 @Preview
 @Composable
 fun PreviewKalugaLabel() {
-    val textStyle = com.splendo.kaluga.resources.stylable.TextStyle(
+    val textStyle = com.splendo.kaluga.resources.stylable.KalugaTextStyle(
         defaultBoldFont,
         DefaultColors.darkRed,
         12.0f

@@ -17,6 +17,17 @@
 
 package com.splendo.kaluga.resources
 
-actual class Image
+/**
+ * Class describing an image.
+ */
+expect class KalugaImage
 
-actual fun Image.tinted(color: KalugaColor): Image? = null
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
+typealias Image = KalugaImage
+
+/**
+ * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
+ * @param color The [KalugaColor] to use for tinting.
+ * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ */
+expect fun KalugaImage.tinted(color: KalugaColor): KalugaImage?

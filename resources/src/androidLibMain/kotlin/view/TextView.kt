@@ -4,7 +4,7 @@ import android.content.res.ColorStateList
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.widget.TextView
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 
 fun TextView.bindLabel(label: KalugaLabel) {
     text = when (label) {
@@ -22,7 +22,7 @@ fun TextView.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
 }
 
-fun TextView.applyTextStyle(textStyle: TextStyle) {
+fun TextView.applyTextStyle(textStyle: KalugaTextStyle) {
     typeface = textStyle.font
     textSize = textStyle.size
     setTextColor(ColorStateList(arrayOf(intArrayOf()), intArrayOf(textStyle.color)))

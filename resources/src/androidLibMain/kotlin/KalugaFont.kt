@@ -15,16 +15,14 @@
 
  */
 
+@file:JvmName("AndroidFont")
 package com.splendo.kaluga.resources
 
-/**
- * Class describing an image.
- */
-expect class Image
+import android.graphics.Typeface
 
-/**
- * Attempts to create a new [Image] that is tinted in a given [KalugaColor]
- * @param color The [KalugaColor] to use for tinting.
- * @return The tinted [Image] or `null` if tinting could not be applied.
- */
-expect fun Image.tinted(color: KalugaColor): Image?
+actual typealias KalugaFont = Typeface
+
+actual val defaultFont: KalugaFont get() = Typeface.DEFAULT
+actual val defaultBoldFont: KalugaFont get() = Typeface.DEFAULT_BOLD
+actual val defaultItalicFont: KalugaFont get() = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+actual val defaultMonospaceFont: KalugaFont get() = Typeface.MONOSPACE

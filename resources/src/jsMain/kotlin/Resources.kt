@@ -42,16 +42,16 @@ actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor
         transformer(identifier) ?: defaultValue
 }
 
-actual class DefaultImageLoader(private val transformer: (String) -> Image?) : ImageLoader {
+actual class DefaultImageLoader(private val transformer: (String) -> KalugaImage?) : ImageLoader {
     actual constructor() : this({ null })
 
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? =
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? =
         transformer(identifier) ?: defaultValue
 }
 
-actual class DefaultFontLoader(private val transformer: suspend (String) -> Font?) : FontLoader {
+actual class DefaultFontLoader(private val transformer: suspend (String) -> KalugaFont?) : FontLoader {
     actual constructor() : this({ null })
 
-    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? =
         transformer(identifier) ?: defaultValue
 }

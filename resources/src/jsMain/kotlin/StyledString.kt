@@ -17,23 +17,26 @@
 
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 
 actual data class StyledString(
     val string: String,
-    actual val defaultTextStyle: TextStyle,
+    actual val defaultTextStyle: KalugaTextStyle,
     actual val linkStyle: LinkStyle?,
     val attributed: List<Pair<StringStyleAttribute, IntRange>>
 )
 
-actual class StyledStringBuilder constructor(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) {
+actual class StyledStringBuilder constructor(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) {
 
     actual class Provider {
-        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
+        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
     }
 
     var styledString = StyledString(string, defaultTextStyle, linkStyle, emptyList())
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
+        if (range.first < 0 || range.last >= styledString.string.length) {
+            throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
+        }
         styledString = styledString.copy(
             attributed = styledString.attributed.toMutableList().apply {
                 add(Pair(attribute, range))

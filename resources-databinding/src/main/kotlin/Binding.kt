@@ -26,9 +26,9 @@ import android.widget.TextView
 import androidx.core.widget.TextViewCompat
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
-import com.splendo.kaluga.resources.Image
+import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.alignment
@@ -53,11 +53,11 @@ object Binding {
     }
 
     /**
-     * Binds an [Image] to an [ImageView].
+     * Binds an [KalugaImage] to an [ImageView].
      */
     @BindingAdapter("image")
     @JvmStatic
-    fun bindImage(view: ImageView, image: Image?) {
+    fun bindImage(view: ImageView, image: KalugaImage?) {
         view.setImageDrawable(image?.drawable)
     }
 
@@ -84,22 +84,22 @@ object Binding {
     }
 
     /**
-     * Binds a [TextStyle] to a [TextView].
+     * Binds a [KalugaTextStyle] to a [TextView].
      */
     @BindingAdapter("textStyle")
     @JvmStatic
-    fun bindTextStyle(textView: TextView, textStyle: TextStyle?) {
+    fun bindTextStyle(textView: TextView, textStyle: KalugaTextStyle?) {
         textStyle?.let {
             textView.applyTextStyle(textStyle)
         }
     }
 
     /**
-     * Binds a [TextStyle] to a  [TextView] using [TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration]
+     * Binds a [KalugaTextStyle] to a  [TextView] using [TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration]
      */
     @BindingAdapter("autoTextStyle", "autoTextMinScalingFactor")
     @JvmStatic
-    fun bindAutoTextStyle(textView: TextView, autoTextStyle: TextStyle?, autoTextMinScalingFactor: Float) {
+    fun bindAutoTextStyle(textView: TextView, autoTextStyle: KalugaTextStyle?, autoTextMinScalingFactor: Float) {
         autoTextStyle?.let {
             textView.applyTextStyle(it)
             TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(textView, max(1, (it.size * autoTextMinScalingFactor).toInt()), it.size.toInt(), 1, TypedValue.COMPLEX_UNIT_SP)
@@ -108,33 +108,33 @@ object Binding {
     }
 
     /**
-     * Binds a [TextStyle] to the [TextInputLayout.getEditText] of a [TextInputLayout]
+     * Binds a [KalugaTextStyle] to the [TextInputLayout.getEditText] of a [TextInputLayout]
      */
     @BindingAdapter("textStyle")
     @JvmStatic
-    fun bindTextInputLayoutTextStyle(textView: TextInputLayout, textStyle: TextStyle?) {
+    fun bindTextInputLayoutTextStyle(textView: TextInputLayout, textStyle: KalugaTextStyle?) {
         textStyle?.let {
             textView.editText?.applyTextStyle(it)
         }
     }
 
     /**
-     * Binds a [TextStyle] to the [TextInputLayout.getPrefixTextView] of a [TextInputLayout]
+     * Binds a [KalugaTextStyle] to the [TextInputLayout.getPrefixTextView] of a [TextInputLayout]
      */
     @BindingAdapter("prefixTextStyle")
     @JvmStatic
-    fun bindPrefixTextStyle(textView: TextInputLayout, textStyle: TextStyle?) {
+    fun bindPrefixTextStyle(textView: TextInputLayout, textStyle: KalugaTextStyle?) {
         textStyle?.let {
             textView.prefixTextView.applyTextStyle(it)
         }
     }
 
     /**
-     * Binds a [TextStyle] to the [TextInputLayout.getSuffixTextView] of a [TextInputLayout]
+     * Binds a [KalugaTextStyle] to the [TextInputLayout.getSuffixTextView] of a [TextInputLayout]
      */
     @BindingAdapter("suffixTextStyle")
     @JvmStatic
-    fun bindSuffixTextStyle(textView: TextInputLayout, textStyle: TextStyle?) {
+    fun bindSuffixTextStyle(textView: TextInputLayout, textStyle: KalugaTextStyle?) {
         textStyle?.let {
             textView.suffixTextView.applyTextStyle(it)
         }

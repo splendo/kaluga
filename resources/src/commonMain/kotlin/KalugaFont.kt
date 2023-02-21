@@ -15,12 +15,17 @@
 
  */
 
-@file:JvmName("JvmFont")
 package com.splendo.kaluga.resources
 
-actual class Font
+/**
+ * Class describing a font
+ */
+expect class KalugaFont
 
-actual val defaultFont: Font get() = Font()
-actual val defaultBoldFont: Font get() = Font()
-actual val defaultItalicFont: Font get() = Font()
-actual val defaultMonospaceFont: Font get() = Font()
+@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
+typealias Font = KalugaFont
+
+expect val defaultFont: KalugaFont
+expect val defaultBoldFont: KalugaFont
+expect val defaultItalicFont: KalugaFont
+expect val defaultMonospaceFont: KalugaFont

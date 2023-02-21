@@ -15,14 +15,17 @@
 
  */
 
-@file:JvmName("AndroidFont")
 package com.splendo.kaluga.resources
 
-import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.DrawableCompat
 
-actual typealias Font = Typeface
+actual data class KalugaImage(val drawable: Drawable)
 
-actual val defaultFont: Font get() = Typeface.DEFAULT
-actual val defaultBoldFont: Font get() = Typeface.DEFAULT_BOLD
-actual val defaultItalicFont: Font get() = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
-actual val defaultMonospaceFont: Font get() = Typeface.MONOSPACE
+actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? {
+    return drawable.constantState?.newDrawable()?.mutate()?.let {
+        val wrapped = DrawableCompat.wrap(it)
+        DrawableCompat.setTint(wrapped, color)
+        KalugaImage(wrapped)
+    }
+}

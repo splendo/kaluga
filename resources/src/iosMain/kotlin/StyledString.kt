@@ -18,7 +18,7 @@
 package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
@@ -39,20 +39,24 @@ import platform.UIKit.NSMutableParagraphStyle
 import platform.UIKit.NSParagraphStyle
 import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
+import platform.UIKit.size
 
-actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: TextStyle, actual val linkStyle: LinkStyle?)
+actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: KalugaTextStyle, actual val linkStyle: LinkStyle?)
 
 actual val StyledString.rawString: String get() = attributeString.string
 
-actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: TextStyle, private val linkStyle: LinkStyle?) {
+actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?) {
 
     actual class Provider {
-        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
+        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
     }
 
     private val attributedString = NSMutableAttributedString.Companion.create(string)
 
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
+        if (range.first < 0 || range.last.toULong() >= attributedString.length) {
+            throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
+        }
         val nsRange = range.nsRange
         when (attribute) {
             is StringStyleAttribute.CharacterStyleAttribute -> {

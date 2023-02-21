@@ -35,9 +35,16 @@ expect class KalugaColor
 @Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
 typealias Color = KalugaColor
 
+/**
+ * A wrapper for [KalugaColor] that allows it to be serialized
+ * @property color the [KalugaColor] to wrap
+ */
 @Serializable(with = ColorSerializer::class)
 data class SerializableColor(val color: KalugaColor)
 
+/**
+ * Gets a [SerializableColor] instance of this color
+ */
 val KalugaColor.serializable get() = SerializableColor(this)
 
 /**
@@ -85,10 +92,10 @@ expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1
 
 /**
  * Creates a [KalugaColor] using red, green, blue, and (optional) alpha, all ranging between `0` and `255`.
- * @param red The red color value ranging between `0` and `255`.
- * @param green The green color value ranging between `0` and `255`.
- * @param blue The blue color value ranging between `0` and `255`.
- * @param alpha The alpha color value ranging between `0` and `255`. Defaults to `255`
+ * @param redInt The red color value ranging between `0` and `255`.
+ * @param greenInt The green color value ranging between `0` and `255`.
+ * @param blueInt The blue color value ranging between `0` and `255`.
+ * @param alphaInt The alpha color value ranging between `0` and `255`. Defaults to `255`
  * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
  */
 expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): KalugaColor
@@ -123,7 +130,14 @@ fun colorFrom(hexString: String): KalugaColor? {
     }
 }
 
+/**
+ * The inverted [KalugaColor]
+ */
 val KalugaColor.inverted: KalugaColor get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
+
+/**
+ * The hex string representing this color
+ */
 val KalugaColor.hexString: String
     get() {
         return "#${alphaInt.toHex(2)}${redInt.toHex(2)}${greenInt.toHex(2)}${blueInt.toHex(2)}"
@@ -135,6 +149,9 @@ private fun Int.toHex(minSize: Int): String {
     return listOf(*prefix.toTypedArray(), hexValue).joinToString("")
 }
 
+/**
+ * A [KSerializer] for [SerializableColor]
+ */
 open class ColorSerializer :
     KSerializer<SerializableColor> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)

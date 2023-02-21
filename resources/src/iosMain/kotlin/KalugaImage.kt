@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.resources
 
-actual class Image
+import platform.UIKit.UIImage
+import platform.UIKit.UIImageRenderingMode
 
-actual fun Image.tinted(color: KalugaColor): Image? = null
+actual typealias KalugaImage = UIImage
+
+actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? = this.imageWithTintColor(color.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)

@@ -21,14 +21,14 @@ import android.text.style.SuperscriptSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.view.alignment
 import kotlin.math.min
 import kotlin.math.roundToInt
 
 actual class StyledString(
     val spannable: Spannable,
-    actual val defaultTextStyle: TextStyle,
+    actual val defaultTextStyle: KalugaTextStyle,
     actual val linkStyle: LinkStyle?
 )
 
@@ -36,13 +36,13 @@ actual val StyledString.rawString: String get() = spannable.toString()
 
 actual class StyledStringBuilder constructor(
     string: String,
-    private val defaultTextStyle: TextStyle,
+    private val defaultTextStyle: KalugaTextStyle,
     private val linkStyle: LinkStyle?,
     private val context: Context
 ) {
 
     actual class Provider(private val context: Context = ApplicationHolder.applicationContext) {
-        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) =
+        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) =
             StyledStringBuilder(string, defaultTextStyle, linkStyle, context)
     }
 
@@ -55,6 +55,9 @@ actual class StyledStringBuilder constructor(
     private val builder = SpannableString(string)
 
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
+        if (range.first < 0 || range.last >= builder.length) {
+            throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
+        }
         builder.setSpan(
             when (attribute) {
                 is StringStyleAttribute.CharacterStyleAttribute -> attribute.characterStyle(range)

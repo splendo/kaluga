@@ -15,17 +15,21 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.resources.stylable
 
-import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.DrawableCompat
+import com.splendo.kaluga.resources.KalugaFont
+import com.splendo.kaluga.resources.KalugaColor
 
-actual data class Image(val drawable: Drawable)
-
-actual fun Image.tinted(color: KalugaColor): Image? {
-    return drawable.constantState?.newDrawable()?.mutate()?.let {
-        val wrapped = DrawableCompat.wrap(it)
-        DrawableCompat.setTint(wrapped, color)
-        Image(wrapped)
-    }
-}
+/**
+ * The style to apply to a text
+ * @property font the [KalugaFont] with which to display the text
+ * @property color the [KalugaColor] with which to display the text
+ * @property size the size of the text in points
+ * @property alignment the [KalugaTextAlignment] of the text
+ */
+data class KalugaTextStyle(
+    val font: KalugaFont,
+    val color: KalugaColor,
+    val size: Float,
+    val alignment: KalugaTextAlignment = KalugaTextAlignment.START
+)

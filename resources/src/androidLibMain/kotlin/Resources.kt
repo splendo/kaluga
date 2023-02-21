@@ -69,13 +69,13 @@ actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoad
 
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? {
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? {
         if (context == null) {
             return defaultValue
         }
         val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
         return try {
-            ContextCompat.getDrawable(context, id)?.let { Image(it) }
+            ContextCompat.getDrawable(context, id)?.let { KalugaImage(it) }
         } catch (e: Resources.NotFoundException) {
             defaultValue
         }
@@ -84,7 +84,7 @@ actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
 
 actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
-    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? {
         if (context == null) {
             return defaultValue
         }

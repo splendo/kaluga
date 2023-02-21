@@ -17,12 +17,9 @@
 
 package com.splendo.kaluga.resources
 
-/**
- * Class describing a font
- */
-expect class Font
+actual class KalugaFont
 
-expect val defaultFont: Font
-expect val defaultBoldFont: Font
-expect val defaultItalicFont: Font
-expect val defaultMonospaceFont: Font
+actual val defaultFont: KalugaFont get() = KalugaFont()
+actual val defaultBoldFont: KalugaFont get() = KalugaFont()
+actual val defaultItalicFont: KalugaFont get() = KalugaFont()
+actual val defaultMonospaceFont: KalugaFont get() = KalugaFont()
