@@ -112,7 +112,6 @@ sealed class Volume : AbstractScientificUnit<PhysicalQuantity.Volume>()
 @Serializable
 sealed class MetricVolume : Volume(), MetricScientificUnit<PhysicalQuantity.Volume>
 
-
 /**
  * A [Volume] for [MeasurementSystem.USCustomary]
  */
@@ -121,7 +120,6 @@ sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQua
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.USCustomary
 }
-
 
 /**
  * A [Volume] for [MeasurementSystem.UKImperial]

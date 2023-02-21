@@ -279,7 +279,6 @@ object UsTon : USCustomaryWeight() {
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_SHORT_TONES.toDecimal()
 }
 
-
 /**
  * Wraps an [ImperialWeight] unit to an [USCustomaryWeight] unit
  * @param imperial the [ImperialWeight] to wrap

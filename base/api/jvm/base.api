@@ -922,10 +922,6 @@ public final class com/splendo/kaluga/base/utils/Decimal$PositiveInfinity : com/
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$PositiveInfinity;
 }
 
-public final class com/splendo/kaluga/base/utils/DecimalException : java/lang/ArithmeticException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
 public final class com/splendo/kaluga/base/utils/DecimalJVM {
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun div (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;

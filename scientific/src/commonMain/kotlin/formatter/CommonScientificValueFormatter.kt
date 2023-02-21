@@ -23,9 +23,23 @@ import kotlin.math.roundToLong
 
 private typealias CustomFormatHandler = (Number) -> String
 
-sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueFormatter {
-    class Builder {
+/**
+ * An implementation of [ScientificValueFormatter]
+ * Use [CommonScientificValueFormatter.Builder] to create an instance that can be customized per [ScientificUnit] type
+ */
+sealed class CommonScientificValueFormatter private constructor(builder: Builder) : ScientificValueFormatter {
+
+    /**
+     * Builder for creating a [CommonScientificValueFormatter]
+     */
+    class Builder internal constructor() {
         companion object {
+
+            /**
+             * Builds a [ScientificValueFormatter] using a [Builder]
+             * @param build method for configuring the [Builder]
+             * @return the built [ScientificValueFormatter]
+             */
             fun build(build: Builder.() -> Unit = {}): ScientificValueFormatter {
                 val builder = Builder()
                 build(builder)
@@ -34,6 +48,13 @@ sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueF
         }
 
         internal val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
+
+        /**
+         * Sets a method for converting a [Number] in a given [ScientificUnit] into a String representation of its value
+         * If not set for a given [ScientificUnit] this will automatically format using [ScientificUnit.symbol]
+         * @param unit the [ScientificUnit] to apply the formatting to
+         * @param format method for formatting a value in the given [ScientificUnit]
+         */
         fun useFormat(unit: ScientificUnit<*>, format: CustomFormatHandler) {
             customFormatters[unit] = format
         }
@@ -56,7 +77,7 @@ sealed class CommonScientificValueFormatter(builder: Builder) : ScientificValueF
     private class Buildable(builder: Builder) : CommonScientificValueFormatter(builder)
 
     /**
-     *   Default formatter with no customisation applied
+     *   Default [CommonScientificValueFormatter] with no customisation applied
      */
     companion object Default : CommonScientificValueFormatter(Builder())
 }

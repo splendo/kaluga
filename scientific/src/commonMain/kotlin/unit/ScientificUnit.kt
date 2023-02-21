@@ -123,8 +123,8 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
  * @param Quantity the type of [PhysicalQuantity] of both units
  * @param value the [Number] value to convert
  * @param to the [ScientificUnit] to convert the value into
- * @param round The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @param round The number of digits a rounded value should have after its decimal point
+ * @param roundingMode The [RoundingMode] to apply when scaling
  * @return the [Double] value in [to] that is equivalent to [value] in this unit
  */
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
@@ -139,8 +139,8 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
  * @param Quantity the type of [PhysicalQuantity] of both units
  * @param value the [Decimal] value to convert
  * @param to the [ScientificUnit] to convert the value into
- * @param round The number of digits a rounded value should have after its decimal point.
- * @param roundingMode The [RoundingMode] to apply when scaling.
+ * @param round The number of digits a rounded value should have after its decimal point
+ * @param roundingMode The [RoundingMode] to apply when scaling
  * @return the [Decimal] value in [to] that is equivalent to [value] in this unit
  */
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(

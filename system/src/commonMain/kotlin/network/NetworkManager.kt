@@ -36,7 +36,7 @@ interface NetworkManager {
     }
 
     /**
-     * A [Flow] pf the [NetworkConnectionType] detected by the network manager
+     * A [Flow] of the [NetworkConnectionType] detected by the network manager
      */
     val network: Flow<NetworkConnectionType>
 
