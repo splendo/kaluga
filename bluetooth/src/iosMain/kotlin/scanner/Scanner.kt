@@ -128,19 +128,23 @@ actual class DefaultScanner internal constructor(
     private val centralManagerMutex = Mutex()
     private suspend fun getCentralManager(): CBCentralManager = centralManagerMutex.withLock {
         if (centralManager.value == null) {
-            debug(TAG) { "Create CBCentralManager" }
-            val manager = CBCentralManager(null, scanQueue)
-            val awaitPoweredOn = EmptyCompletableDeferred()
-            val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
-            manager.delegate = delegate
-            awaitPoweredOn.await()
-            centralManager.set(manager)
-            centralManagerDelegate.set(delegate)
-            manager
+            createCentralManager()
         } else {
             debug(TAG) { "Access CBCentralManager" }
             centralManager.value!!
         }
+    }
+
+    private suspend fun createCentralManager(): CBCentralManager {
+        debug(TAG) { "Create CBCentralManager" }
+        val manager = CBCentralManager(null, scanQueue)
+        val awaitPoweredOn = EmptyCompletableDeferred()
+        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
+        manager.delegate = delegate
+        awaitPoweredOn.await()
+        centralManager.set(manager)
+        centralManagerDelegate.set(delegate)
+        return manager
     }
 
     private suspend fun scan(filter: UUID? = null) {
