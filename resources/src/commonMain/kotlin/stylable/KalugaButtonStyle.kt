@@ -24,7 +24,7 @@ import com.splendo.kaluga.resources.KalugaColor
 /**
  * The style to apply to a button
  * @property font the [KalugaFont] of the button text
- * @property textSize the size of the button text in Points
+ * @property textSize the size of the button text in `points`
  * @property textAlignment the [KalugaTextAlignment] of the text of the button
  * @property defaultStyle the [ButtonStateStyle] when the button is not in a special state
  * @property pressedStyle the [ButtonStateStyle] when the button is pressed

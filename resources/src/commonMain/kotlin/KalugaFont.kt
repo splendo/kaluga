@@ -25,7 +25,22 @@ expect class KalugaFont
 @Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
 typealias Font = KalugaFont
 
+/**
+ * The default system [KalugaFont]
+ */
 expect val defaultFont: KalugaFont
+
+/**
+ * The default bold system [KalugaFont]
+ */
 expect val defaultBoldFont: KalugaFont
+
+/**
+ * The default italic system [KalugaFont]
+ */
 expect val defaultItalicFont: KalugaFont
+
+/**
+ * The default monospace system [KalugaFont]
+ */
 expect val defaultMonospaceFont: KalugaFont

@@ -56,8 +56,8 @@ data class KalugaBackgroundStyle(
 
         /**
          * A rectangular [Shape]
-         * @property cornerRadiusX the radius in pixels applied to the x-dimension of the corner
-         * @property cornerRadiusY the radius in pixels applied to the y-dimension of the corner
+         * @property cornerRadiusX the radius in `scalable pixels` applied to the x-dimension of the corner
+         * @property cornerRadiusY the radius in `scalable pixels` applied to the y-dimension of the corner
          * @property roundedCorners the set of [Corner] that are rounded according to [cornerRadiusX] and [cornerRadiusY]
          */
         data class Rectangle(
@@ -94,7 +94,7 @@ data class KalugaBackgroundStyle(
 
             /**
              * Constructor
-             * @param cornerRadius the radius in pixels to apply to the corners
+             * @param cornerRadius the radius in `scalable pixels` to apply to the corners
              * @param roundedCorners the set of [Corner] that are rounded according to [cornerRadius]
              */
             constructor(cornerRadius: Float = 0.0f, roundedCorners: Set<Corner> = Corner.values().toSet()) : this(cornerRadius, cornerRadius, roundedCorners)
@@ -118,7 +118,7 @@ data class KalugaBackgroundStyle(
 
         /**
          * A [StrokeStyle] with a solid color
-         * @param width the width of the stroke in pixels
+         * @param width the width of the stroke in `scalable pixels`
          * @param color the [KalugaColor] of the stroke
          */
         data class Stroke(val width: Float, val color: KalugaColor) : StrokeStyle()

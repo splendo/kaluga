@@ -40,7 +40,9 @@ interface StringLoader {
     fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String
 }
 
-/** Default implementation of a [StringLoader]. */
+/**
+ * Default implementation of a [StringLoader].
+ */
 expect class DefaultStringLoader() : StringLoader
 
 /**
@@ -56,7 +58,9 @@ interface KalugaColorLoader {
     fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor?
 }
 
-/** Default implementation of a [KalugaColorLoader]. */
+/**
+ * Default implementation of a [KalugaColorLoader].
+ */
 expect class DefaultColorLoader() : KalugaColorLoader
 
 /**
@@ -72,7 +76,9 @@ interface ImageLoader {
     fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage?
 }
 
-/** Default implementation of an [ImageLoader]. */
+/**
+ * Default implementation of an [ImageLoader].
+ */
 expect class DefaultImageLoader() : ImageLoader
 
 /**
@@ -88,7 +94,9 @@ interface FontLoader {
     suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont?
 }
 
-/** Default implementation of a [FontLoader]. */
+/**
+ * Default implementation of a [FontLoader].
+ */
 expect class DefaultFontLoader() : FontLoader
 
 /**

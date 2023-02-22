@@ -20,6 +20,14 @@ package com.splendo.kaluga.resources
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageRenderingMode
 
+/**
+ * Class describing an image.
+ */
 actual typealias KalugaImage = UIImage
 
+/**
+ * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
+ * @param color The [KalugaColor] to use for tinting.
+ * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ */
 actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? = this.imageWithTintColor(color.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)

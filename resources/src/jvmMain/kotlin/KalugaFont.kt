@@ -18,9 +18,27 @@
 @file:JvmName("JvmFont")
 package com.splendo.kaluga.resources
 
+/**
+ * Class describing a font
+ */
 actual class KalugaFont
 
+/**
+ * The default system [KalugaFont]
+ */
 actual val defaultFont: KalugaFont get() = KalugaFont()
+
+/**
+ * The default bold system [KalugaFont]
+ */
 actual val defaultBoldFont: KalugaFont get() = KalugaFont()
+
+/**
+ * The default italic system [KalugaFont]
+ */
 actual val defaultItalicFont: KalugaFont get() = KalugaFont()
+
+/**
+ * The default monospace system [KalugaFont]
+ */
 actual val defaultMonospaceFont: KalugaFont get() = KalugaFont()

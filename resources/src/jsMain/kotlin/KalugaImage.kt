@@ -17,6 +17,14 @@
 
 package com.splendo.kaluga.resources
 
+/**
+ * Class describing an image.
+ */
 actual class KalugaImage
 
+/**
+ * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
+ * @param color The [KalugaColor] to use for tinting.
+ * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ */
 actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? = null

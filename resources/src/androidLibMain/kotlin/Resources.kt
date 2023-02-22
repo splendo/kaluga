@@ -27,6 +27,10 @@ import com.splendo.kaluga.base.ApplicationHolder.Companion.application
 import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
 import kotlinx.coroutines.CompletableDeferred
 
+/**
+ * Default implementation of a [StringLoader].
+ * @param context the [Context] from which to load the string resources
+ */
 actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadString(identifier: String, defaultValue: String): String {
@@ -52,6 +56,10 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     }
 }
 
+/**
+ * Default implementation of a [KalugaColorLoader].
+ * @param context the [Context] from which to load the color resources
+ */
 actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? {
@@ -67,6 +75,10 @@ actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoad
     }
 }
 
+/**
+ * Default implementation of an [ImageLoader].
+ * @param context the [Context] from which to load the image resources
+ */
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? {
@@ -82,6 +94,11 @@ actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     }
 }
 
+/**
+ * Default implementation of a [FontLoader].
+ * @param context the [Context] from which to load the font resources
+ * @param handler a [Handler] for the thread the completion of loading the font should called on. If `null`, the UI thread will be used.
+ */
 actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
     override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? {

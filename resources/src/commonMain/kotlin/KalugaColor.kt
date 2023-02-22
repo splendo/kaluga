@@ -51,30 +51,37 @@ val KalugaColor.serializable get() = SerializableColor(this)
  * Gets the red value of the color in a range between `0.0` and `1.0`
  */
 expect val KalugaColor.red: Double
+
 /**
  * Gets the red value of the color in a range between `0` and `255`
  */
 expect val KalugaColor.redInt: Int
+
 /**
  * Gets the green value of the color in a range between `0.0` and `1.0`
  */
 expect val KalugaColor.green: Double
+
 /**
  * Gets the green value of the color in a range between `0` and `255`
  */
 expect val KalugaColor.greenInt: Int
+
 /**
  * Gets the blue value of the color in a range between `0.0` and `1.0`
  */
 expect val KalugaColor.blue: Double
+
 /**
  * Gets the blue value of the color in a range between `0` and `255`
  */
 expect val KalugaColor.blueInt: Int
+
 /**
  * Gets the alpha value of the color in a range between `0.0` and `1.0`
  */
 expect val KalugaColor.alpha: Double
+
 /**
  * Gets the alpha value of the color in a range between `0` and `255`
  */

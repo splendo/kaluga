@@ -19,6 +19,11 @@ package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.base.text.format
 
+/**
+ * Default implementation of a [StringLoader].
+ * @param transformer method for getting a String from a String identifier
+ * @param formatter method for formatting a String identifier given a quantity
+ */
 actual class DefaultStringLoader(
     private val transformer: (String) -> String?,
     private val formatter: (String, Int) -> String?
@@ -35,6 +40,10 @@ actual class DefaultStringLoader(
     ): String = formatter(identifier, quantity) ?: defaultValue
 }
 
+/**
+ * Default implementation of a [KalugaColorLoader].
+ * @param transformer method for getting a [KalugaColor] from a String identifier
+ */
 actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor?) : KalugaColorLoader {
     actual constructor() : this({ null })
 
@@ -42,6 +51,10 @@ actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor
         transformer(identifier) ?: defaultValue
 }
 
+/**
+ * Default implementation of a [ImageLoader].
+ * @param transformer method for getting a [KalugaImage] from a String identifier
+ */
 actual class DefaultImageLoader(private val transformer: (String) -> KalugaImage?) : ImageLoader {
     actual constructor() : this({ null })
 
@@ -49,6 +62,10 @@ actual class DefaultImageLoader(private val transformer: (String) -> KalugaImage
         transformer(identifier) ?: defaultValue
 }
 
+/**
+ * Default implementation of a [FontLoader].
+ * @param transformer method for getting a [KalugaFont] from a String identifier
+ */
 actual class DefaultFontLoader(private val transformer: suspend (String) -> KalugaFont?) : FontLoader {
     actual constructor() : this({ null })
 

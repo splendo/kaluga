@@ -41,18 +41,62 @@ import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
 import platform.UIKit.size
 
-actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: KalugaTextStyle, actual val linkStyle: LinkStyle?)
+/**
+ * A text configured with [StringStyleAttribute]
+ * @property attributeString the [NSAttributedString] styled according to some [StringStyleAttribute]
+ * @property defaultTextStyle The [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range.
+ * This may be partially overwritten (e.g. [StringStyleAttribute.CharacterStyleAttribute.ForegroundColor] may overwrite [KalugaTextStyle.color])
+ * @property linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
+ * When `null` the Theme default will be used
+ */
+actual data class StyledString(
+    val attributeString: NSAttributedString,
+    actual val defaultTextStyle: KalugaTextStyle,
+    actual val linkStyle: LinkStyle?
+)
 
+/**
+ * Gets the plain string of a [StyledString]
+ */
 actual val StyledString.rawString: String get() = attributeString.string
 
-actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?) {
+/**
+ * Builder for creating a [StyledString]
+ * @param string the String to style
+ * @param defaultTextStyle The [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range.
+ * This may be partially overwritten (e.g. [StringStyleAttribute.CharacterStyleAttribute.ForegroundColor] may overwrite [KalugaTextStyle.color])
+ * @param linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
+ * When `null` the Theme default will be used
+ */
+actual class StyledStringBuilder constructor(
+    string: String,
+    private val defaultTextStyle: KalugaTextStyle,
+    private val linkStyle: LinkStyle?
+) {
 
+    /**
+     * Provider for a [StyledStringBuilder]
+     */
     actual class Provider {
+
+        /**
+         * Provides a [StyledStringBuilder] to build a [StyledString] for a given text
+         * @param string the text for which to build the [StyledString]
+         * @param defaultTextStyle the [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range
+         * @param linkStyle the [LinkStyle] to apply when [StringStyleAttribute.Link] is applied
+         * @return the [StyledStringBuilder] to build a [StyledString] for [string]
+         */
         actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
     }
 
     private val attributedString = NSMutableAttributedString.Companion.create(string)
 
+    /**
+     * Adds a [StringStyleAttribute] for a given range
+     * @param attribute the [StringStyleAttribute] to apply
+     * @param range the [IntRange] at which to apply the style
+     * @throws [IndexOutOfBoundsException] if [range] is out of bounds for the text to span
+     */
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
         if (range.first < 0 || range.last.toULong() >= attributedString.length) {
             throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
@@ -173,10 +217,14 @@ actual class StyledStringBuilder constructor(string: String, private val default
         }
     }
 
+    /**
+     * Creates the [StyledString]
+     * @return the created [StyledString]
+     */
     actual fun create(): StyledString = StyledString(attributedString, defaultTextStyle, linkStyle)
 }
 
-val NSAttributedString.urlRanges: List<Pair<CValue<NSRange>, NSURL>> get() {
+internal val NSAttributedString.urlRanges: List<Pair<CValue<NSRange>, NSURL>> get() {
     val result = mutableListOf<Pair<CValue<NSRange>, NSURL>>()
     enumerateAttribute("NSLink", IntRange(0, length.toInt() - 1).nsRange, 0) { match, matchedRange, _ ->
         if (match is NSURL) {

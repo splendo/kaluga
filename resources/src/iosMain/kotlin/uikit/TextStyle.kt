@@ -33,6 +33,10 @@ import platform.UIKit.UITextView
 import platform.UIKit.addGestureRecognizer
 import platform.darwin.sel_registerName
 
+/**
+ * Makes a [UILabel] look according to a [KalugaLabel]
+ * @param label the [KalugaLabel] that specifies the look of the [UILabel]
+ */
 fun UILabel.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
@@ -68,7 +72,12 @@ fun UILabel.bindLabel(label: KalugaLabel) {
     }
 }
 
-fun UITextView.bindTextView(label: KalugaLabel) {
+/**
+ * Makes a [UITextView] look according to a [KalugaLabel]
+ * @param label the [KalugaLabel] that specifies the look of the [UITextView]
+ */
+
+fun UITextView.bindLabel(label: KalugaLabel) {
     when (label) {
         is KalugaLabel.Plain -> text = label.text
         is KalugaLabel.Styled -> {
@@ -89,6 +98,10 @@ fun UITextView.bindTextView(label: KalugaLabel) {
     applyTextStyle(label.style)
 }
 
+/**
+ * Makes a [UILabel] look as specified by a [KalugaTextStyle]
+ * @param textStyle the [KalugaTextStyle] that specifies the look of the [UILabel]
+ */
 fun UILabel.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
@@ -96,12 +109,20 @@ fun UILabel.applyTextStyle(textStyle: KalugaTextStyle) {
     numberOfLines = 0
 }
 
+/**
+ * Makes a [UITextView] look as specified by a [KalugaTextStyle]
+ * @param textStyle the [KalugaTextStyle] that specifies the look of the [UITextView]
+ */
 fun UITextView.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
 
+/**
+ * Makes a [UITextField] look as specified by a [KalugaTextStyle]
+ * @param textStyle the [KalugaTextStyle] that specifies the look of the [UITextField]
+ */
 fun UITextField.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor

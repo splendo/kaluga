@@ -41,7 +41,7 @@ import platform.UIKit.setFont
 import platform.darwin.NSObject
 import platform.objc.sel_registerName
 
-class UIControlClosure(private val action: () -> Unit) : NSObject() {
+internal class UIControlClosure(private val action: () -> Unit) : NSObject() {
 
     object Registry {
         val registeredUIControl = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
@@ -53,6 +53,10 @@ class UIControlClosure(private val action: () -> Unit) : NSObject() {
     }
 }
 
+/**
+ * Makes a [UIButton] look and behave according to a [KalugaButton]
+ * @param button the [KalugaButton] that specifies the look and behaviour of the [UIButton]
+ */
 fun UIButton.bindButton(button: KalugaButton) {
     applyStyle(button.style)
     when (button) {
@@ -65,6 +69,10 @@ fun UIButton.bindButton(button: KalugaButton) {
     addTarget(wrappedAction, sel_registerName("invoke"), UIControlEventTouchUpInside)
 }
 
+/**
+ * Makes a [UIButton] look as specified by a [KalugaButtonStyle]
+ * @param buttonStyle the [KalugaButtonStyle] that specifies the look of the [UIButton]
+ */
 fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle) {
     setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble()))
     setContentHorizontalAlignment(buttonStyle.textAlignment.contentHorizontalAlignment)

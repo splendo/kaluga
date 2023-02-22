@@ -15,12 +15,10 @@
 
  */
 
-@file:JvmName("AndroidStyledString")
 package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 import com.splendo.kaluga.resources.stylable.KalugaTextStyle
-import kotlin.jvm.JvmName
 
 /**
  * A style to apply to a [StyledString] when [StringStyleAttribute.Link] is applied
@@ -218,24 +216,105 @@ sealed class StringStyleAttribute {
      * A [StringStyleAttribute] that is applied to individual characters
      */
     sealed class CharacterStyleAttribute : StringStyleAttribute() {
+
+        /**
+         * A [CharacterStyleAttribute] that adds a background color to the character
+         * @property color the [KalugaColor] to show in the background
+         */
         data class BackgroundColor(val color: KalugaColor) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that sets the text color of the character
+         * @property color the [KalugaColor] of the character
+         */
         data class ForegroundColor(val color: KalugaColor) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that sets a [KalugaTextStyle] to the character
+         * @property textStyle the [KalugaTextStyle] of the character
+         */
         data class TextStyle(val textStyle: KalugaTextStyle) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that sets a [KalugaFont] to the character
+         * @property font the [KalugaFont] to show the character in
+         * @property size the size of the font in `points`
+         */
         data class Font(val font: KalugaFont, val size: Float) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that adds a stroke to the character
+         * @property width the width of the stroke as a percentage of the font size
+         * @property color the [KalugaColor] of the stroke
+         */
         data class Stroke(val width: Float, val color: KalugaColor) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that adds a shadow to the character
+         * @property color the [KalugaColor] of the shadow
+         * @property xOffset the shadow offset along the x-axis in `points`
+         * @property yOffset the shadow offset along the y-axis in `points`
+         * @property blurRadius the radius at which the shadow is blurred in `points`
+         */
         data class Shadow(val color: KalugaColor, val xOffset: Float, val yOffset: Float, val blurRadius: Float) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that adds kerning to the character
+         * @property kern the kerning size in `EM` units
+         */
         data class Kerning(val kern: Float) : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that adds a strike through to the character
+         */
         object Strikethrough : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that adds an underline to the character
+         */
         object Underline : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that makes the character appear in superscript
+         */
         object SuperScript : CharacterStyleAttribute()
+
+        /**
+         * A [CharacterStyleAttribute] that makes the character appear in subscript
+         */
         object SubScript : CharacterStyleAttribute()
     }
 
+    /**
+     * A [StringStyleAttribute] that is applied to an entire paragraph
+     */
     sealed class ParagraphStyleAttribute : StringStyleAttribute() {
+
+        /**
+         * A [ParagraphStyleAttribute] that adds an indent to the leading side of the paragraph according to the reading direction
+         * @property indent the indent in `points`
+         * @property firstLineIndent the indent to apply to the first line of the paragraph in `points`
+         */
         data class LeadingIndent(val indent: Float, val firstLineIndent: Float = indent) : ParagraphStyleAttribute()
+
+        /**
+         * A [ParagraphStyleAttribute] that adds spacing between the lines
+         * @property spacing the spacing in `points` between the lines of the paragraph
+         * @property paragraphSpacing the space between paragraphs in `points`. The space between paragraphs is determined by adding the previous paragraph’s [paragraphSpacing] and the current paragraph’s [paragraphSpacingBefore]
+         * @property paragraphSpacingBefore the space between the current and previous paragraph in `points`. The space between paragraphs is determined by adding the previous paragraph’s [paragraphSpacing] and the current paragraph’s [paragraphSpacingBefore].
+         */
         data class LineSpacing(val spacing: Float, val paragraphSpacing: Float = 0.0f, val paragraphSpacingBefore: Float = 0.0f) : ParagraphStyleAttribute()
+
+        /**
+         * A [ParagraphStyleAttribute] that aligns the paragraph according to a [KalugaTextAlignment]
+         * @param alignment the [KalugaTextAlignment] to align the paragraph with
+         */
         data class Alignment(val alignment: KalugaTextAlignment) : ParagraphStyleAttribute()
     }
 
+    /**
+     * A [StringStyleAttribute] that makes part of the text clickable to open a URL
+     * @property url the url string to open when the attribute is pressed
+     */
     data class Link(val url: String) : StringStyleAttribute()
 }

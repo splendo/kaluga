@@ -27,6 +27,11 @@ import platform.UIKit.UITraitCollection
 import platform.UIKit.colorNamed
 import platform.UIKit.labelFontSize
 
+/**
+ * Default implementation of a [StringLoader].
+ * @param bundle the [NSBundle] from which to load the string resource
+ * @param table the string table to search in. If tableName is 'null` or is an empty string, the method attempts to use the table in `Localizable.strings`
+ */
 actual class DefaultStringLoader(private val bundle: NSBundle, private val table: String?) : StringLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     override fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
@@ -40,16 +45,31 @@ actual class DefaultStringLoader(private val bundle: NSBundle, private val table
     }
 }
 
+/**
+ * Default implementation of a [KalugaColorLoader].
+ * @param bundle the [NSBundle] from which to load the color resource
+ * @param traitCollection The [UITraitCollection] that specifies the gamut to use when selecting the color.
+ */
 actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : KalugaColorLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { KalugaColor(it) } ?: defaultValue
 }
 
+/**
+ * Default implementation of an [ImageLoader].
+ * @param bundle the [NSBundle] from which to load the image resource
+ * @param traitCollection The [UITraitCollection] associated with the intended environment for the image.
+ * Use this parameter to ensure that the system loads the correct variant of the image.
+ * If you specify `null`, this method uses the traits associated with the main screen.
+ */
 actual class DefaultImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ImageLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
 }
 
+/**
+ * Default implementation of a [FontLoader].
+ */
 actual class DefaultFontLoader actual constructor() : FontLoader {
     override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
 }

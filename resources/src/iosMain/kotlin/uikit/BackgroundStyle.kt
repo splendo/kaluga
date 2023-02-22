@@ -42,8 +42,16 @@ import platform.UIKit.UIRectCornerTopLeft
 import platform.UIKit.UIRectCornerTopRight
 import platform.UIKit.UIView
 
+/**
+ * Sets a [KalugaBackgroundStyle] to a [UIView.layer]
+ * @param style the [KalugaBackgroundStyle] to apply
+ */
 fun UIView.applyBackgroundStyle(style: KalugaBackgroundStyle) = layer.applyBackgroundStyle(style, bounds)
 
+/**
+ * Sets a [KalugaBackgroundStyle] to a [CALayer]
+ * @param style the [KalugaBackgroundStyle] to apply
+ */
 fun CALayer.applyBackgroundStyle(style: KalugaBackgroundStyle, bounds: CValue<CGRect>) = apply {
     val maskPath = pathForShape(style.shape, bounds)
     mask = CAShapeLayer(this).apply {
@@ -99,7 +107,7 @@ private fun CALayer.applyFillStyle(fillStyle: KalugaBackgroundStyle.FillStyle, b
     )
 }
 
-fun List<CGColorRef>.mapToCGColor() = map {
+private fun List<CGColorRef>.mapToCGColor() = map {
     CFBridgingRelease(CFRetain(it))
 }
 

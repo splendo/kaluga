@@ -36,7 +36,7 @@ class ResourcesListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "feature_resource".localized()
+        title = "feature_resources".localized()
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }

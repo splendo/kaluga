@@ -14,14 +14,24 @@
     limitations under the License.
 
  */
+@file:JvmName("KalugaImageAndroidKt")
 
 package com.splendo.kaluga.resources
 
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.DrawableCompat
 
+/**
+ * Class describing an image.
+ * @property drawable the [Drawable] representing the image
+ */
 actual data class KalugaImage(val drawable: Drawable)
 
+/**
+ * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
+ * @param color The [KalugaColor] to use for tinting.
+ * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ */
 actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? {
     return drawable.constantState?.newDrawable()?.mutate()?.let {
         val wrapped = DrawableCompat.wrap(it)

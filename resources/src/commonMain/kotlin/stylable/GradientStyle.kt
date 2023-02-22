@@ -117,7 +117,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
 
     /**
      * A [GradientStyle] that radiates out from a [CenterPoint]
-     * @property radius the radius in pixels at which the gradient stops
+     * @property radius the radius in `scalable pixels` at which the gradient stops
      * @property centerPoint the [CenterPoint] from which the gradient radiates out
      */
     class Radial private constructor(
@@ -130,7 +130,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
             /**
              * Creates a [Radial] gradient style using a list of [KalugaColor], a range, and a [CenterPoint]
              * @param colors the list of [KalugaColor] on the gradient. Will be spread evenly across the gradient
-             * @param radius the radius in pixels at which the gradient stops
+             * @param radius the radius in `scalable pixels` at which the gradient stops
              * @param centerPoint the [CenterPoint] from which the gradient radiates out
              * @return the [Radial] gradient
              * @throws [ColorPointRangeError] if [colors] size is smaller than `2`
@@ -141,7 +141,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
             /**
              * Creates a [Radial] gradient style using a list of [ColorPoint], a range, and a [CenterPoint]
              * @param colorPoints the list of [ColorPoint] on the gradient
-             * @param radius the radius in pixels at which the gradient stops
+             * @param radius the radius in `scalable pixels` at which the gradient stops
              * @param centerPoint the [CenterPoint] from which the gradient radiates out
              * @return the [Radial] gradient
              */
@@ -149,7 +149,6 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
             operator fun invoke(colorPoints: List<ColorPoint>, radius: Float, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Radial(colorPoints, radius, centerPoint)
         }
     }
-
 
     /**
      * A [GradientStyle] that rotates around a [CenterPoint]

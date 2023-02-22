@@ -26,27 +26,48 @@ import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 
 /**
- * Binds kaluga button
- *
- * @throws IllegalArgumentException in case a unknown button type
+ * Makes a [android.widget.Button] look and behave according to a [KalugaButton]
+ * @param button the [KalugaButton] that specifies the look and behaviour of the [android.widget.Button]
+ * @param rippleStyle a [RippleStyle] that is applied when the button is pressed
  */
-fun android.widget.Button.bindButton(button: KalugaButton) {
+fun android.widget.Button.bindButton(button: KalugaButton, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     text = when (button) {
         is KalugaButton.Plain -> button.text
         is KalugaButton.Styled -> button.text.spannable
     }
-    applyButtonStyle(button.style)
+    applyButtonStyle(button.style, rippleStyle)
     isAllCaps = false
     isEnabled = button.isEnabled
     setOnClickListener { button.action() }
 }
 
+/**
+ * Style of Ripple effect to use when a [android.widget.Button] is configured with a [KalugaButtonStyle]
+ */
 sealed class RippleStyle {
+
+    /**
+     * A [RippleStyle] where no Ripple effect is applied
+     */
     object None : RippleStyle()
+
+    /**
+     * A [RippleStyle] where the ripple has the color of the [com.splendo.kaluga.resources.stylable.ButtonStateStyle.textColor] of the [KalugaButtonStyle.pressedStyle]
+     */
     object ForegroundRipple : RippleStyle()
+
+    /**
+     * A [RippleStyle] where the ripple has a custom [KalugaColor]
+     * @property color the [KalugaColor] of the Ripple effect
+     */
     data class CustomRipple(val color: KalugaColor) : RippleStyle()
 }
 
+/**
+ * Makes a [android.widget.Button] look as specified by a [KalugaButtonStyle]
+ * @param style the [KalugaButtonStyle] that specifies the look of the [android.widget.Button]
+ * @param rippleStyle the [RippleStyle] to apply when the button is pressed
+ */
 fun android.widget.Button.applyButtonStyle(style: KalugaButtonStyle, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     typeface = style.font
     isAllCaps = false
