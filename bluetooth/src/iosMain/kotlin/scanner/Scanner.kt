@@ -130,21 +130,23 @@ actual class DefaultScanner internal constructor(
         return centralManager.value ?: centralManagerMutex.withLock {
             centralManager.value ?: createCentralManager().also {
                 centralManager.set(it)
-                debug(TAG) { "➡️ setCentralManager :: value = ${centralManager.value} " }
             }
         }
     }
 
     private suspend fun createCentralManager(): CBCentralManager {
-        debug(TAG) { "🦋 Create CBCentralManager" }
+        debug(TAG) { "Create CBCentralManager" }
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
         centralManagerDelegate.set(delegate)
-        val manager = CBCentralManager(delegate, scanQueue)
+        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
+        val manager = CBCentralManager(delegate, scanQueue, options)
         try {
             awaitPoweredOn.await()
         } catch(e: Throwable) {
+            // Await may throw exception if the child scope was canceled.
             debug(TAG) { "❌ $e" }
+            throw e
         }
         return manager
     }
@@ -176,8 +178,7 @@ actual class DefaultScanner internal constructor(
         return listOfNotNull(
             if (!bluetoothEnabledMonitor.isServiceEnabled) {
                 suspend {
-                    val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
-                    CBCentralManager(null, enabledQueue, options)
+                    getCentralManager()
                     bluetoothEnabledMonitor.isEnabled.first { it }
                 }
             } else null
