@@ -15,10 +15,18 @@
 
  */
 
-package com.splendo.kaluga.links
+package com.splendo.kaluga.links.handler
 
-actual class LinksBuilder : BaseLinksBuilder {
-    override fun create(): Links {
+/**
+ * JavaScript implementation of [LinksHandler].
+ * Not implemented
+ */
+actual class PlatformLinksHandler : LinksHandler {
+    override fun isValid(url: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun extractQueryAsList(url: String): List<Any> {
         TODO("Not yet implemented")
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,16 +15,6 @@
 
  */
 
-package com.splendo.kaluga.links.manager
+package com.splendo.kaluga.links.handler
 
-import kotlinx.serialization.KSerializer
-
-interface LinksManager {
-
-    interface Builder {
-        fun create(): LinksManager
-    }
-
-    fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T?
-    fun validateLink(url: String): String?
-}
+class AndroidLinksHandlerTest : PlatformLinksHandlerTest(PlatformLinksHandler())

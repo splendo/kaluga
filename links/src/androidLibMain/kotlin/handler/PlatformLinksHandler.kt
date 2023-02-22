@@ -15,14 +15,23 @@
 
  */
 
-package com.splendo.kaluga.links.manager
+package com.splendo.kaluga.links.handler
 
+import android.net.UrlQuerySanitizer
+import android.webkit.URLUtil
+
+/**
+ * Android implementation of [LinksHandler]
+ */
 actual class PlatformLinksHandler : LinksHandler {
-    override fun isValid(url: String): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
 
     override fun extractQueryAsList(url: String): List<Any> {
-        TODO("Not yet implemented")
+        val params = UrlQuerySanitizer(url)
+
+        if (params.parameterList == null) {
+            return emptyList()
+        }
+        return params.parameterList.map { it.mValue }
     }
 }

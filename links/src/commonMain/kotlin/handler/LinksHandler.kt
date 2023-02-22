@@ -15,11 +15,24 @@
 
  */
 
-package com.splendo.kaluga.links
+package com.splendo.kaluga.links.handler
 
-import com.splendo.kaluga.links.manager.LinksManagerBuilder
+/**
+ * Handler for processing a link
+ */
+interface LinksHandler {
 
-actual class LinksBuilder : BaseLinksBuilder {
-    override fun create(): Links =
-        Links(LinksManagerBuilder())
+    /**
+     * Checks if a url string is valid
+     * @param url the url string to validate
+     * @return `true` if the url is valid, false otherwise
+     */
+    fun isValid(url: String): Boolean
+
+    /**
+     * Processes the query parameters of a url string into a list
+     * @param url the url string to extract the query parameters from
+     * @return a list containing the values of all query parameters of the [url]
+     */
+    fun extractQueryAsList(url: String): List<Any>
 }

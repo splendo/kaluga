@@ -70,7 +70,7 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.links.DefaultLinksManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.DefaultLocationManager
 import com.splendo.kaluga.location.GoogleLocationProvider
@@ -153,7 +153,7 @@ internal val androidModule = module {
 
     viewModel { (navigator: Navigator<BrowserNavigationActions<*>>) ->
         LinksViewModel(
-            LinksBuilder(),
+            DefaultLinksManager.Builder(),
             AlertPresenter.Builder(),
             navigator
         )

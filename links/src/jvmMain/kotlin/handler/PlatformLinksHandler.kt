@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,11 +15,18 @@
 
  */
 
-package com.splendo.kaluga.links
+package com.splendo.kaluga.links.handler
 
-import com.splendo.kaluga.links.manager.LinksManagerBuilder
+/**
+ * Java implementation of [LinksHandler]
+ * Not implemented
+ */
+actual class PlatformLinksHandler : LinksHandler {
+    override fun isValid(url: String): Boolean {
+        TODO("Not yet implemented")
+    }
 
-actual class LinksBuilder : BaseLinksBuilder {
-    override fun create(): Links =
-        Links(LinksManagerBuilder())
+    override fun extractQueryAsList(url: String): List<Any> {
+        TODO("Not yet implemented")
+    }
 }

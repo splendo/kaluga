@@ -25,7 +25,7 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.links.LinksManager
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -41,7 +41,7 @@ sealed class BrowserNavigationActions<T>(value: T, type: NavigationBundleSpecTyp
 }
 
 class LinksViewModel(
-    linkRepoBuilder: LinksBuilder,
+    linkManagerBuilder: LinksManager.Builder,
     private val alertPresenterBuilder: BaseAlertPresenter.Builder,
     navigator: Navigator<BrowserNavigationActions<*>>
 ) : NavigatingViewModel<BrowserNavigationActions<*>>(navigator, alertPresenterBuilder) {
@@ -49,7 +49,7 @@ class LinksViewModel(
     val browserButtonText = observableOf("browser_button_text".localized())
     val linksInstructions = observableOf("links_instructions".localized())
 
-    private val linksRepo = linkRepoBuilder.create()
+    private val linksRepo = linkManagerBuilder.create()
 
     fun showAlert(title: String, message: String, style: Alert.Action.Style) {
         coroutineScope.launch {

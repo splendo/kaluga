@@ -38,8 +38,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":base", ""))
-                implementation(project(":logging", ""))
-                implementation(project(":architecture", ""))
                 apiDependency(Dependencies.KotlinX.Serialization.Core)
             }
         }

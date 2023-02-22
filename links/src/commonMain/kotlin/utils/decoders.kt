@@ -25,7 +25,7 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
-fun <T> decodeFromList(list: List<Any>, deserializer: DeserializationStrategy<T>): T {
+internal fun <T> decodeFromList(list: List<Any>, deserializer: DeserializationStrategy<T>): T {
     val decoder = LinksDecoder(ArrayDeque(list))
     return decoder.decodeSerializableValue(deserializer)
 }

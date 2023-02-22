@@ -15,10 +15,6 @@
 
  */
 
-package com.splendo.kaluga.links
+package com.splendo.kaluga.links.handler
 
-actual class LinksBuilder : BaseLinksBuilder {
-    override fun create(): Links {
-        TODO("Not yet implemented")
-    }
-}
+class IOSLinksHandlerTest : PlatformLinksHandlerTest(PlatformLinksHandler())

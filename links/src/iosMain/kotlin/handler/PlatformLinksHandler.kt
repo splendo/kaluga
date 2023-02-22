@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.links.manager
+package com.splendo.kaluga.links.handler
 
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
@@ -23,6 +23,9 @@ import platform.Foundation.NSURLConnection
 import platform.Foundation.NSURLQueryItem
 import platform.Foundation.NSURLRequest
 
+/**
+ * iOS implementation of [LinksHandler]
+ */
 actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean {
         val nsUrl = NSURL.URLWithString(url) ?: return false

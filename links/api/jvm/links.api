@@ -1,72 +1,33 @@
-public abstract interface class com/splendo/kaluga/links/BaseLinksBuilder {
-	public abstract fun create ()Lcom/splendo/kaluga/links/Links;
-}
-
-public final class com/splendo/kaluga/links/Links {
-	public fun <init> (Lcom/splendo/kaluga/links/manager/LinksManager$Builder;)V
-	public final fun handleIncomingLink (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
-	public final fun validateLink (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/links/LinksBuilder : com/splendo/kaluga/links/BaseLinksBuilder {
-	public fun <init> ()V
-	public fun create ()Lcom/splendo/kaluga/links/Links;
-}
-
-public final class com/splendo/kaluga/links/manager/DefaultLinksManager : com/splendo/kaluga/links/manager/LinksManager {
-	public fun <init> (Lcom/splendo/kaluga/links/manager/LinksHandler;)V
+public final class com/splendo/kaluga/links/DefaultLinksManager : com/splendo/kaluga/links/LinksManager {
+	public fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;)V
 	public fun handleIncomingLink (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 	public fun validateLink (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/links/manager/LinksHandler {
-	public abstract fun extractQueryAsList (Ljava/lang/String;)Ljava/util/List;
-	public abstract fun isValid (Ljava/lang/String;)Z
+public final class com/splendo/kaluga/links/DefaultLinksManager$Builder : com/splendo/kaluga/links/LinksManager$Builder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create ()Lcom/splendo/kaluga/links/LinksManager;
 }
 
-public abstract interface class com/splendo/kaluga/links/manager/LinksManager {
+public abstract interface class com/splendo/kaluga/links/LinksManager {
 	public abstract fun handleIncomingLink (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 	public abstract fun validateLink (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/links/manager/LinksManager$Builder {
-	public abstract fun create ()Lcom/splendo/kaluga/links/manager/LinksManager;
+public abstract interface class com/splendo/kaluga/links/LinksManager$Builder {
+	public abstract fun create ()Lcom/splendo/kaluga/links/LinksManager;
 }
 
-public final class com/splendo/kaluga/links/manager/LinksManagerBuilder : com/splendo/kaluga/links/manager/LinksManager$Builder {
-	public fun <init> ()V
-	public fun create ()Lcom/splendo/kaluga/links/manager/LinksManager;
+public abstract interface class com/splendo/kaluga/links/handler/LinksHandler {
+	public abstract fun extractQueryAsList (Ljava/lang/String;)Ljava/util/List;
+	public abstract fun isValid (Ljava/lang/String;)Z
 }
 
-public final class com/splendo/kaluga/links/manager/PlatformLinksHandler : com/splendo/kaluga/links/manager/LinksHandler {
+public final class com/splendo/kaluga/links/handler/PlatformLinksHandler : com/splendo/kaluga/links/handler/LinksHandler {
 	public fun <init> ()V
 	public fun extractQueryAsList (Ljava/lang/String;)Ljava/util/List;
 	public fun isValid (Ljava/lang/String;)Z
-}
-
-public final class com/splendo/kaluga/links/utils/DecodersKt {
-	public static final fun decodeFromList (Ljava/util/List;Lkotlinx/serialization/DeserializationStrategy;)Ljava/lang/Object;
-}
-
-public final class com/splendo/kaluga/links/utils/LinksDecoder : kotlinx/serialization/encoding/AbstractDecoder {
-	public fun <init> (Lkotlin/collections/ArrayDeque;I)V
-	public synthetic fun <init> (Lkotlin/collections/ArrayDeque;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun beginStructure (Lkotlinx/serialization/descriptors/SerialDescriptor;)Lkotlinx/serialization/encoding/CompositeDecoder;
-	public fun decodeBoolean ()Z
-	public fun decodeByte ()B
-	public fun decodeChar ()C
-	public fun decodeCollectionSize (Lkotlinx/serialization/descriptors/SerialDescriptor;)I
-	public fun decodeDouble ()D
-	public fun decodeElementIndex (Lkotlinx/serialization/descriptors/SerialDescriptor;)I
-	public fun decodeEnum (Lkotlinx/serialization/descriptors/SerialDescriptor;)I
-	public fun decodeFloat ()F
-	public fun decodeInt ()I
-	public fun decodeLong ()J
-	public fun decodeNotNullMark ()Z
-	public fun decodeSequentially ()Z
-	public fun decodeValue ()Ljava/lang/Object;
-	public final fun getElementsCount ()I
-	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
-	public final fun setElementsCount (I)V
 }
 
