@@ -126,24 +126,26 @@ actual class DefaultScanner internal constructor(
     private val centralManager = AtomicReference<CBCentralManager?>(null)
     private val centralManagerDelegate = AtomicReference<CBCentralManagerDelegateProtocol?>(null)
     private val centralManagerMutex = Mutex()
-    private suspend fun getCentralManager(): CBCentralManager = centralManagerMutex.withLock {
-        if (centralManager.value == null) {
-            createCentralManager()
-        } else {
-            debug(TAG) { "Access CBCentralManager" }
-            centralManager.value!!
+    private suspend fun getCentralManager(): CBCentralManager {
+        return centralManager.value ?: centralManagerMutex.withLock {
+            centralManager.value ?: createCentralManager().also {
+                centralManager.set(it)
+                debug(TAG) { "➡️ setCentralManager :: value = ${centralManager.value} " }
+            }
         }
     }
 
     private suspend fun createCentralManager(): CBCentralManager {
-        debug(TAG) { "Create CBCentralManager" }
-        val manager = CBCentralManager(null, scanQueue)
+        debug(TAG) { "🦋 Create CBCentralManager" }
         val awaitPoweredOn = EmptyCompletableDeferred()
-        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn).freeze()
-        manager.delegate = delegate
-        awaitPoweredOn.await()
-        centralManager.set(manager)
+        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
         centralManagerDelegate.set(delegate)
+        val manager = CBCentralManager(delegate, scanQueue)
+        try {
+            awaitPoweredOn.await()
+        } catch(e: Throwable) {
+            debug(TAG) { "❌ $e" }
+        }
         return manager
     }
 
