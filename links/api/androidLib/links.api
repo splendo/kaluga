@@ -7,7 +7,6 @@ public final class com/splendo/kaluga/links/DefaultLinksManager : com/splendo/ka
 public final class com/splendo/kaluga/links/DefaultLinksManager$Builder : com/splendo/kaluga/links/LinksManager$Builder {
 	public fun <init> ()V
 	public fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/links/handler/LinksHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create ()Lcom/splendo/kaluga/links/LinksManager;
 }
 
