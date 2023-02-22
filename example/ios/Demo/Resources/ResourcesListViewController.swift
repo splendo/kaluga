@@ -89,6 +89,7 @@ private extension ResourcesListNavigationAction {
         switch self {
         case is ResourcesListNavigationAction.Button: return "showButton"
         case is ResourcesListNavigationAction.Color: return "showColor"
+        case is ResourcesListNavigationAction.Image: return "showImage"
         case is ResourcesListNavigationAction.Label: return "showLabel"
         default: return ""
         }

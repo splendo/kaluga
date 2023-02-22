@@ -14,6 +14,7 @@
 "feature_resources" = "Resources";
 "feature_resources_color" = "Color";
 "feature_resources_button" = "Button";
+"feature_resources_image" = "Image";
 "feature_resources_label" = "Label";
 "feature_scientific" = "Scientific";
 
