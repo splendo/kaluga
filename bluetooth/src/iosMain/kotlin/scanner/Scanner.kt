@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -152,7 +151,6 @@ actual class DefaultScanner internal constructor(
     }
 
     private suspend fun scan(filter: UUID? = null) {
-        debug(TAG) { "scan" }
         val centralManager = getCentralManager()
         centralManager.scanForPeripheralsWithServices(
             filter?.let { listOf(filter) },
@@ -169,7 +167,6 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun didStopScanning() {
-        debug(TAG) { "didStopScanning" }
         getCentralManager().stopScan()
     }
 
@@ -186,7 +183,6 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
-        debug(TAG) { "retrievePairedDevices" }
         val centralManager = getCentralManager()
 
         val devices = centralManager
