@@ -72,7 +72,7 @@ class DefaultLinksManager(
     class Builder(
         private val handler: LinksHandler
     ) : LinksManager.Builder {
-        
+
         constructor() : this(PlatformLinksHandler())
 
         override fun create(): LinksManager =
