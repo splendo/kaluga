@@ -137,7 +137,7 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
             /**
              * Discovers a list of [Service] to transition into [Idle]
              * @param services the list of [Service] discovered
-             * @return a transition into a [Idle] State
+             * @return a transition into an [Idle] State
              */
             fun didDiscoverServices(services: List<Service>): suspend () -> Idle
         }

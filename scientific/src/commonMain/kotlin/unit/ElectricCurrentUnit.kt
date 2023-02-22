@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [ElectricCurrent]
+ */
 val ElectricCurrentUnits: Set<ElectricCurrent> get() = setOf(
     Ampere,
     Nanoampere,
@@ -37,6 +40,10 @@ val ElectricCurrentUnits: Set<ElectricCurrent> get() = setOf(
     Abampere
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricCurrent]
+ * SI unit is [Ampere]
+ */
 @Serializable
 sealed class ElectricCurrent : AbstractScientificUnit<PhysicalQuantity.ElectricCurrent>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCurrent>
 

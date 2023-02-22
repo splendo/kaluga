@@ -177,32 +177,32 @@ interface DeviceConnectionManager {
     suspend fun performAction(action: DeviceAction)
 
     /**
-     * Fires a [Event.Connecting]
+     * Fires an [Event.Connecting]
      */
     fun startConnecting()
 
     /**
-     * Fires a [Event.CancelledConnecting]
+     * Fires an [Event.CancelledConnecting]
      */
     fun cancelConnecting()
 
     /**
-     * Fires a [Event.Connected]
+     * Fires an [Event.Connected]
      */
     fun handleConnect()
 
     /**
-     * Fires a [Event.Discovering]
+     * Fires an [Event.Discovering]
      */
     fun startDiscovering()
 
     /**
-     * Fires a [Event.Disconnecting]
+     * Fires an [Event.Disconnecting]
      */
     fun startDisconnecting()
 
     /**
-     * Fires a [Event.Disconnected]
+     * Fires an [Event.Disconnected]
      */
     fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null)
 

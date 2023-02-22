@@ -26,6 +26,9 @@ import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricForce]
+ */
 val MetricForceUnits: Set<MetricForce> get() = setOf(
     Newton,
     Nanonewton,
@@ -55,6 +58,9 @@ val MetricForceUnits: Set<MetricForce> get() = setOf(
     MilligramForce
 )
 
+/**
+ * Set of all [ImperialForce]
+ */
 val ImperialForceUnits: Set<ImperialForce> get() = setOf(
     Poundal,
     PoundForce,
@@ -62,35 +68,60 @@ val ImperialForceUnits: Set<ImperialForce> get() = setOf(
     GrainForce,
 )
 
+/**
+ * Set of all [USCustomaryForce]
+ */
 val USCustomaryForceUnits: Set<USCustomaryForce> get() = setOf(
     Kip,
     UsTonForce
 ) + ImperialForceUnits.map { it.usCustomary }
 
+/**
+ * Set of all [UKImperialForce]
+ */
 val UKImperialForceUnits: Set<UKImperialForce> get() = setOf(
     ImperialTonForce
 ) + ImperialForceUnits.map { it.ukImperial }
 
+/**
+ * Set of all [Force]
+ */
 val ForceUnits: Set<Force> get() = MetricForceUnits + ImperialForceUnits + UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() + USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Force]
+ * SI unit is [Newton]
+ */
 @Serializable
 sealed class Force : AbstractScientificUnit<PhysicalQuantity.Force>()
 
+/**
+ * A [Force] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricForce : Force(), MetricScientificUnit<PhysicalQuantity.Force>
 
+/**
+ * A [Force] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialForce : Force(), ImperialScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Force
 }
 
+/**
+ * A [Force] for [MeasurementSystem.USCustomary]
+ */
 @Serializable
 sealed class USCustomaryForce : Force(), USCustomaryScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.USCustomary
     override val quantity = PhysicalQuantity.Force
 }
 
+/**
+ * A [Force] for [MeasurementSystem.UKImperial]
+ */
 @Serializable
 sealed class UKImperialForce : Force(), UKImperialScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.UKImperial
@@ -240,6 +271,10 @@ object UsTonForce : USCustomaryForce() {
     override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
+/**
+ * Wraps an [ImperialForce] unit to a [USCustomaryForce] unit
+ * @param imperial the [ImperialForce] to wrap
+ */
 @Serializable
 data class USCustomaryImperialForceWrapper(val imperial: ImperialForce) : USCustomaryForce() {
     override val symbol: String = imperial.symbol
@@ -247,6 +282,10 @@ data class USCustomaryImperialForceWrapper(val imperial: ImperialForce) : USCust
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialForce] unit to a [USCustomaryImperialForceWrapper] unit
+ * @param ForceUnit the type of [ImperialForce] to convert
+ */
 val <ForceUnit : ImperialForce> ForceUnit.usCustomary get() = USCustomaryImperialForceWrapper(this)
 
 @Serializable
@@ -256,6 +295,10 @@ object ImperialTonForce : UKImperialForce() {
     override fun toSIUnit(value: Decimal): Decimal = ImperialTon.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
+/**
+ * Wraps an [ImperialForce] unit to a [UKImperialForce] unit
+ * @param imperial the [ImperialForce] to wrap
+ */
 @Serializable
 data class UKImperialImperialForceWrapper(val imperial: ImperialForce) : UKImperialForce() {
     override val symbol: String = imperial.symbol
@@ -263,4 +306,8 @@ data class UKImperialImperialForceWrapper(val imperial: ImperialForce) : UKImper
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialForce] unit to a [UKImperialImperialForceWrapper] unit
+ * @param ForceUnit the type of [ImperialForce] to convert
+ */
 val <ForceUnit : ImperialForce> ForceUnit.ukImperial get() = UKImperialImperialForceWrapper(this)

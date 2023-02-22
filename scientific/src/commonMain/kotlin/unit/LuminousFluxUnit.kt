@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [LuminousFlux]
+ */
 val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
     Lumen,
     Nanolumen,
@@ -35,6 +38,10 @@ val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
     Gigalumen
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousFlux]
+ * SI unit is [Lumen]
+ */
 @Serializable
 sealed class LuminousFlux : AbstractScientificUnit<PhysicalQuantity.LuminousFlux>(), MetricAndImperialScientificUnit<PhysicalQuantity.LuminousFlux>
 

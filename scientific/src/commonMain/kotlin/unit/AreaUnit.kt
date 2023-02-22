@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricArea]
+ */
 val MetricAreaUnits: Set<MetricArea> get() = setOf(
     SquareMeter,
     SquareNanometer,
@@ -37,6 +40,9 @@ val MetricAreaUnits: Set<MetricArea> get() = setOf(
     Hectare
 )
 
+/**
+ * Set of all [ImperialArea]
+ */
 val ImperialAreaUnits: Set<ImperialArea> get() = setOf(
     SquareInch,
     SquareFoot,
@@ -45,18 +51,30 @@ val ImperialAreaUnits: Set<ImperialArea> get() = setOf(
     Acre
 )
 
+/**
+ * Set of all [Area]
+ */
 val AreaUnits: Set<Area> get() = MetricAreaUnits + ImperialAreaUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Area]
+ * SI unit is `SquareMeter`
+ */
 @Serializable
 sealed class Area : AbstractScientificUnit<PhysicalQuantity.Area>()
-
+/**
+ * An [Area] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricArea : Area(), MetricScientificUnit<PhysicalQuantity.Area>
 
+/**
+ * An [Area] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialArea : Area(), ImperialScientificUnit<PhysicalQuantity.Area>
 
-class Square<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Area> {
+internal class Square<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Area> {
     override val symbol: String = "${unit.symbol}2"
     override val system: S = unit.system
     override val quantity = PhysicalQuantity.Area

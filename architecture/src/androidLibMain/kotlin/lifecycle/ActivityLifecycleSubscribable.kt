@@ -32,7 +32,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 actual interface LifecycleSubscribable
 
 /**
- * A [LifecycleSubscribable] bound to a [ActivityLifecycleSubscribable.LifecycleManager]
+ * A [LifecycleSubscribable] bound to an [ActivityLifecycleSubscribable.LifecycleManager]
  */
 interface ActivityLifecycleSubscribable : LifecycleSubscribable {
 

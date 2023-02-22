@@ -22,6 +22,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [AmountOfSubstance]
+ */
 val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
     Mole,
     Nanomole,
@@ -36,6 +39,10 @@ val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
     Gigamole
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.AmountOfSubstance]
+ * SI unit is [Mole]
+ */
 @Serializable
 sealed class AmountOfSubstance : AbstractScientificUnit<PhysicalQuantity.AmountOfSubstance>(), MetricAndImperialScientificUnit<PhysicalQuantity.AmountOfSubstance>
 
@@ -72,4 +79,7 @@ object Megamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAnd
 @Serializable
 object Gigamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Giga(Mole)
 
+/**
+ * The proportionality factor that relates the number of constituent particles (usually molecules, atoms or ions) in a sample with the amount of substance in that sample
+ */
 val AvogadroConstant = 6.02214076e23.toDecimal()

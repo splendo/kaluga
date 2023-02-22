@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricVolume]
+ */
 val MetricVolumeUnits: Set<MetricVolume> get() = setOf(
     CubicMeter,
     CubicNanometer,
@@ -49,6 +52,9 @@ val MetricVolumeUnits: Set<MetricVolume> get() = setOf(
     Gigaliter
 )
 
+/**
+ * Set of all [ImperialVolume]
+ */
 val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
     CubicInch,
     CubicFoot,
@@ -56,6 +62,9 @@ val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
     CubicMile
 )
 
+/**
+ * Set of all [USCustomaryVolume]
+ */
 val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
     setOf(
         AcreFoot,
@@ -69,6 +78,9 @@ val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.m
         UsLiquidGallon
     )
 
+/**
+ * Set of all [UKImperialVolume]
+ */
 val UKImperialVolumeUnits: Set<UKImperialVolume> get() = ImperialVolumeUnits.map { it.ukImperial }.toSet() +
     setOf(
         ImperialFluidDram,
@@ -79,33 +91,52 @@ val UKImperialVolumeUnits: Set<UKImperialVolume> get() = ImperialVolumeUnits.map
         ImperialGallon
     )
 
+/**
+ * Set of all [Volume]
+ */
 val VolumeUnits: Set<Volume> get() = MetricVolumeUnits +
     ImperialVolumeUnits +
     USCustomaryVolumeUnits.filter { it !is USCustomaryImperialVolumeWrapper }.toSet() +
     UKImperialVolumeUnits.filter { it !is UKImperialImperialVolumeWrapper }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Volume]
+ * SI unit is [CubicMeter]
+ */
 @Serializable
 sealed class Volume : AbstractScientificUnit<PhysicalQuantity.Volume>()
 
+/**
+ * A [Volume] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricVolume : Volume(), MetricScientificUnit<PhysicalQuantity.Volume>
 
+/**
+ * A [Volume] for [MeasurementSystem.USCustomary]
+ */
 @Serializable
 sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQuantity.Volume> {
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.USCustomary
 }
 
+/**
+ * A [Volume] for [MeasurementSystem.UKImperial]
+ */
 @Serializable
 sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuantity.Volume> {
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.UKImperial
 }
 
+/**
+ * A [Volume] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialVolume : Volume(), ImperialScientificUnit<PhysicalQuantity.Volume>
 
-class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
+internal class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
     override val symbol: String = "${unit.symbol}3"
     override val system: S = unit.system
     override val quantity = PhysicalQuantity.Volume
@@ -215,6 +246,10 @@ object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Impe
 
 // US Imperial
 
+/**
+ * Wraps an [ImperialVolume] unit to a [USCustomaryVolume] unit
+ * @param imperial the [ImperialVolume] to wrap
+ */
 @Serializable
 data class USCustomaryImperialVolumeWrapper(val imperial: ImperialVolume) : USCustomaryVolume() {
     override val symbol: String = imperial.symbol
@@ -222,6 +257,10 @@ data class USCustomaryImperialVolumeWrapper(val imperial: ImperialVolume) : USCu
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialVolume] unit to a [USCustomaryImperialVolumeWrapper] unit
+ * @param VolumeUnit the type of [ImperialForce] to convert
+ */
 val <VolumeUnit : ImperialVolume> VolumeUnit.usCustomary get() = USCustomaryImperialVolumeWrapper(this)
 
 @Serializable
@@ -295,6 +334,11 @@ object UsLiquidGallon : USCustomaryVolume() {
 }
 
 // UK Imperial
+
+/**
+ * Wraps an [ImperialVolume] unit to a [UKImperialVolume] unit
+ * @param imperial the [ImperialVolume] to wrap
+ */
 @Serializable
 data class UKImperialImperialVolumeWrapper(val imperial: ImperialVolume) : UKImperialVolume() {
     override val symbol: String = imperial.symbol
@@ -302,6 +346,10 @@ data class UKImperialImperialVolumeWrapper(val imperial: ImperialVolume) : UKImp
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialVolume] unit to a [UKImperialImperialVolumeWrapper] unit
+ * @param VolumeUnit the type of [ImperialForce] to convert
+ */
 val <VolumeUnit : ImperialVolume> VolumeUnit.ukImperial get() = UKImperialImperialVolumeWrapper(this)
 
 @Serializable

@@ -23,20 +23,41 @@ import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricAcceleration]
+ */
 val MetricAccelerationUnits: Set<MetricAcceleration> get() = MetricSpeedUnits.flatMap { speed ->
     TimeUnits.map { speed per it }
 }.toSet()
 
+/**
+ * Set of all [ImperialAcceleration]
+ */
 val ImperialAccelerationUnits: Set<ImperialAcceleration> get() = ImperialSpeedUnits.flatMap { speed ->
     TimeUnits.map { speed per it }
 }.toSet()
 
+/**
+ * Set of all [Acceleration]
+ */
 val AccelerationUnits: Set<Acceleration> get() = MetricAccelerationUnits +
     ImperialAccelerationUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Acceleration]
+ * SI unit is `Meter per Second per Second`
+ */
 @Serializable
 sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration>() {
+
+    /**
+     * The [Speed] component
+     */
     abstract val speed: Speed
+
+    /**
+     * The [Time] component
+     */
     abstract val per: Time
     override val quantity = PhysicalQuantity.Acceleration
     override val symbol: String by lazy {
@@ -50,6 +71,11 @@ sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration
     override fun toSIUnit(value: Decimal): Decimal = speed.toSIUnit(per.fromSIUnit(value))
 }
 
+/**
+ * An [Acceleration] for [MeasurementSystem.Metric]
+ * @param speed the [MetricSpeed] component
+ * @param per the [Time] component
+ */
 @Serializable
 data class MetricAcceleration(
     override val speed: MetricSpeed,
@@ -58,6 +84,11 @@ data class MetricAcceleration(
     override val system = MeasurementSystem.Metric
 }
 
+/**
+ * An [Acceleration] for [MeasurementSystem.Imperial]
+ * @param speed the [ImperialSpeed] component
+ * @param per the [Time] component
+ */
 @Serializable
 data class ImperialAcceleration(
     override val speed: ImperialSpeed,
@@ -66,8 +97,25 @@ data class ImperialAcceleration(
     override val system = MeasurementSystem.Imperial
 }
 
+/**
+ * Gets a [MetricAcceleration] from a [MetricSpeed] and a [Time]
+ * @param time the [Time] component
+ * @return the [MetricAcceleration] represented by the units
+ */
 infix fun MetricSpeed.per(time: Time) = MetricAcceleration(this, time)
+/**
+ * Gets an [ImperialAcceleration] from an [ImperialSpeed] and a [Time]
+ * @param time the [Time] component
+ * @return the [ImperialAcceleration] represented by the units
+ */
 infix fun ImperialSpeed.per(time: Time) = ImperialAcceleration(this, time)
 
+/**
+ * The standard [Acceleration] due to gravity in `Meter per Second per Second`
+ */
 val MetricStandardGravityAcceleration = 9.80665(Meter per Second per Second)
+
+/**
+ * The standard [Acceleration] due to gravity in `Foot per Second per Second`
+ */
 val ImperialStandardGravityAcceleration = MetricStandardGravityAcceleration.convert(Foot per Second per Second)
