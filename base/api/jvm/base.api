@@ -1099,38 +1099,6 @@ public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Compa
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/utils/KalugaDateJvm {
-	public static final fun epoch (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun epoch$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun isInSameYear (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isLastMonth (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isLastYear (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isNextMonth (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isNextYear (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isOnSameDay (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isOnSameMonth (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isThisMonth (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isThisYear (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isToday (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isTomorrow (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun isYesterday (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
-	public static final fun minus (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)J
-	public static final fun minus-HG0u8IE (Lcom/splendo/kaluga/base/utils/KalugaDate;J)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun now (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun now$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun nowUtc (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun nowUtc$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun nowUtc-8Mi8wO0 (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun nowUtc-8Mi8wO0$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun plus-HG0u8IE (Lcom/splendo/kaluga/base/utils/KalugaDate;J)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun toEndOfDay (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun toStartOfDay (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun today (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun today$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static final fun tomorrow (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public static synthetic fun tomorrow$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;Lcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
-}
-
 public final class com/splendo/kaluga/base/utils/KalugaDateKt {
 	public static final fun epoch (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static synthetic fun epoch$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;

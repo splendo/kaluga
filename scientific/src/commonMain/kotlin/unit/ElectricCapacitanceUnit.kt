@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [ElectricCapacitance]
+ */
 val ElectricCapacitanceUnits: Set<ElectricCapacitance> get() = setOf(
     Farad,
     Nanofarad,
@@ -35,6 +38,10 @@ val ElectricCapacitanceUnits: Set<ElectricCapacitance> get() = setOf(
     Gigafarad
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricCapacitance]
+ * SI unit is [Farad]
+ */
 @Serializable
 sealed class ElectricCapacitance : AbstractScientificUnit<PhysicalQuantity.ElectricCapacitance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCapacitance>
 

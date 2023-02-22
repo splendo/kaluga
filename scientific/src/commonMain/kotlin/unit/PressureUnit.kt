@@ -26,6 +26,9 @@ import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricPressure]
+ */
 val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     Pascal,
     Nanopascal,
@@ -77,6 +80,9 @@ val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     CentimeterOfWater
 )
 
+/**
+ * Set of all [ImperialPressure]
+ */
 val ImperialPressureUnits: Set<ImperialPressure> get() = setOf(
     PoundSquareInch,
     PoundSquareFoot,
@@ -87,6 +93,9 @@ val ImperialPressureUnits: Set<ImperialPressure> get() = setOf(
     FootOfWater
 )
 
+/**
+ * Set of all [USCustomaryPressure]
+ */
 val USCustomaryPressureUnits: Set<USCustomaryPressure> get() = setOf(
     KipSquareInch,
     KipSquareFoot,
@@ -94,34 +103,56 @@ val USCustomaryPressureUnits: Set<USCustomaryPressure> get() = setOf(
     USTonSquareFoot
 ) + ImperialPressureUnits.map { it.usCustomary }.toSet()
 
+/**
+ * Set of all [UKImperialPressure]
+ */
 val UKImperialPressureUnits: Set<UKImperialPressure> get() = setOf(
     ImperialTonSquareInch,
     ImperialTonSquareFoot
 ) + ImperialPressureUnits.map { it.ukImperial }.toSet()
 
+/**
+ * Set of all [Pressure]
+ */
 val PressureUnits: Set<Pressure> get() = MetricPressureUnits +
     ImperialPressureUnits +
     USCustomaryPressureUnits.filter { it !is USCustomaryImperialPressureWrapper }.toSet() +
     UKImperialPressureUnits.filter { it !is UKImperialPressureWrapper }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Pressure]
+ * SI unit is [Pascal]
+ */
 @Serializable
 sealed class Pressure : AbstractScientificUnit<PhysicalQuantity.Pressure>()
 
+/**
+ * A [Pressure] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricPressure : Pressure(), MetricScientificUnit<PhysicalQuantity.Pressure>
 
+/**
+ * A [Pressure] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialPressure : Pressure(), ImperialScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Pressure
 }
 
+/**
+ * A [Pressure] for [MeasurementSystem.UKImperial]
+ */
 @Serializable
 sealed class UKImperialPressure : Pressure(), UKImperialScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.UKImperial
     override val quantity = PhysicalQuantity.Pressure
 }
 
+/**
+ * A [Pressure] for [MeasurementSystem.USCustomary]
+ */
 @Serializable
 sealed class USCustomaryPressure : Pressure(), USCustomaryScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.USCustomary
@@ -371,6 +402,10 @@ object USTonSquareFoot : USCustomaryPressure() {
     override fun toSIUnit(value: Decimal): Decimal = UsTonForce.toSIUnit(value * SquareFoot.fromSIUnit(1.toDecimal()))
 }
 
+/**
+ * Wraps an [ImperialPressure] unit to a [USCustomaryPressure] unit
+ * @param imperial the [ImperialPressure] to wrap
+ */
 @Serializable
 data class USCustomaryImperialPressureWrapper(val imperial: ImperialPressure) : USCustomaryPressure() {
     override val symbol: String = imperial.symbol
@@ -378,6 +413,10 @@ data class USCustomaryImperialPressureWrapper(val imperial: ImperialPressure) : 
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialPressure] unit to a [USCustomaryImperialPressureWrapper] unit
+ * @param PressureUnit the type of [ImperialPressure] to convert
+ */
 val <PressureUnit : ImperialPressure> PressureUnit.usCustomary get() = USCustomaryImperialPressureWrapper(this)
 
 @Serializable
@@ -394,6 +433,10 @@ object ImperialTonSquareFoot : UKImperialPressure() {
     override fun toSIUnit(value: Decimal): Decimal = ImperialTonForce.toSIUnit(value * SquareFoot.fromSIUnit(1.toDecimal()))
 }
 
+/**
+ * Wraps an [ImperialPressure] unit to a [UKImperialPressure] unit
+ * @param imperial the [ImperialPressure] to wrap
+ */
 @Serializable
 data class UKImperialPressureWrapper(val imperial: ImperialPressure) : UKImperialPressure() {
     override val symbol: String = imperial.symbol
@@ -401,4 +444,8 @@ data class UKImperialPressureWrapper(val imperial: ImperialPressure) : UKImperia
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialPressure] unit to a [UKImperialPressureWrapper] unit
+ * @param PressureUnit the type of [ImperialPressure] to convert
+ */
 val <PressureUnit : ImperialPressure> PressureUnit.ukImperial get() = UKImperialPressureWrapper(this)

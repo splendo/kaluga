@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [Time]
+ */
 val TimeUnits: Set<Time> get() = setOf(
     Second,
     Nanosecond,
@@ -35,6 +38,10 @@ val TimeUnits: Set<Time> get() = setOf(
     Hour
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Time]
+ * SI unit is [Second]
+ */
 @Serializable
 sealed class Time : AbstractScientificUnit<PhysicalQuantity.Time>(), MetricAndImperialScientificUnit<PhysicalQuantity.Time>
 

@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [Voltage]
+ */
 val VoltageUnits: Set<Voltage> get() = setOf(
     Volt,
     Nanovolt,
@@ -39,6 +42,10 @@ val VoltageUnits: Set<Voltage> get() = setOf(
     Abvolt
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Voltage]
+ * SI unit is [Volt]
+ */
 @Serializable
 sealed class Voltage : AbstractScientificUnit<PhysicalQuantity.Voltage>(), MetricAndImperialScientificUnit<PhysicalQuantity.Voltage>
 

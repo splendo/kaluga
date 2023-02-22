@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [CatalysticActivity]
+ */
 val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
     Katal,
     Nanokatal,
@@ -35,6 +38,10 @@ val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
     Gigakatal
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.CatalysticActivity]
+ * SI unit is [Katal]
+ */
 @Serializable
 sealed class CatalysticActivity : AbstractScientificUnit<PhysicalQuantity.CatalysticActivity>(), MetricAndImperialScientificUnit<PhysicalQuantity.CatalysticActivity>
 

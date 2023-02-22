@@ -18,39 +18,39 @@
 package com.splendo.kaluga.scientific.converter.dimensionless
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.DefaultDimensionlessScientificValue
-import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
-import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
+import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.One
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 
 infix operator fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
-    > DimensionlessScientificValue<Unit>.times(
+    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.times(
     decimal: Decimal
-) = convertToOneByMultiplying(decimal, ::DefaultDimensionlessScientificValue)
+) = convertToOneByMultiplying(decimal, ::DefaultScientificValue)
 
 fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    Value : DimensionlessScientificValue<One>
-    > DimensionlessScientificValue<Unit>.convertToOneByMultiplying(
+    Value : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.convertToOneByMultiplying(
     decimal: Decimal,
     factory: (Decimal, One) -> Value
 ) = decimal.invoke(One).let { it.unit.byMultiplying(this, it, factory) }
 
 infix operator fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
-    > DimensionlessScientificValue<Unit>.div(
+    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.div(
     decimal: Decimal
-) = convertToOneByDividing(decimal, ::DefaultDimensionlessScientificValue)
+) = convertToOneByDividing(decimal, ::DefaultScientificValue)
 
 fun <
     Unit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    Value : DimensionlessScientificValue<One>
-    > DimensionlessScientificValue<Unit>.convertToOneByDividing(
+    Value : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.convertToOneByDividing(
     decimal: Decimal,
     factory: (Decimal, One) -> Value
 ) = decimal.invoke(One).let { it.unit.byDividing(this, it, factory) }

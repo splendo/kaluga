@@ -25,6 +25,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
+/**
+ * Set of all [Angle]
+ */
 val AngleUnits: Set<Angle> get() = setOf(
     Radian,
     Nanoradian,
@@ -44,6 +47,10 @@ val AngleUnits: Set<Angle> get() = setOf(
     ArcSecond
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Angle]
+ * SI unit is [Radian]
+ */
 @Serializable
 sealed class Angle : AbstractScientificUnit<PhysicalQuantity.Angle>(), MetricAndImperialScientificUnit<PhysicalQuantity.Angle>
 

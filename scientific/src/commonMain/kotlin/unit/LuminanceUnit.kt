@@ -25,6 +25,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
+/**
+ * Set of all [MetricLuminance]
+ */
 val MetricLuminanceUnits: Set<MetricLuminance> get() = setOf(
     Nit,
     Nanonit,
@@ -44,17 +47,34 @@ val MetricLuminanceUnits: Set<MetricLuminance> get() = setOf(
     Bril
 )
 
+/**
+ * Set of all [ImperialLuminance]
+ */
 val ImperialLuminanceUnits: Set<ImperialLuminance> get() = setOf(
     FootLambert
 )
 
+/**
+ * Set of all [Luminance]
+ */
 val LuminanceUnits: Set<Luminance> get() = MetricLuminanceUnits + ImperialLuminanceUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Luminance]
+ * SI unit is [Nit]
+ */
 @Serializable
 sealed class Luminance : AbstractScientificUnit<PhysicalQuantity.Luminance>()
 
+/**
+ * A [Luminance] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricLuminance : Luminance(), MetricScientificUnit<PhysicalQuantity.Luminance>
+
+/**
+ * A [Luminance] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialLuminance : Luminance(), ImperialScientificUnit<PhysicalQuantity.Luminance>
 

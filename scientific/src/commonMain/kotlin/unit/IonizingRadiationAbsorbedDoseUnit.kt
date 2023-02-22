@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [IonizingRadiationAbsorbedDose]
+ */
 val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get() = setOf(
     Gray,
     Nanogray,
@@ -49,6 +52,10 @@ val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get()
     Gigarad
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.IonizingRadiationAbsorbedDose]
+ * SI unit is [Gray]
+ */
 @Serializable
 sealed class IonizingRadiationAbsorbedDose : AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
 

@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [ElectricResistance]
+ */
 val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
     Ohm,
     Nanoohm,
@@ -36,6 +39,10 @@ val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
     Abohm
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricResistance]
+ * SI unit is [Ohm]
+ */
 @Serializable
 sealed class ElectricResistance : AbstractScientificUnit<PhysicalQuantity.ElectricResistance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricResistance>
 
