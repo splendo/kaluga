@@ -24,7 +24,7 @@ import android.widget.TextView
 import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 
 /**
- * Makes a [TextView] look according to a [KalugaLabel]
+ * Makes a [TextView] look like the specification of a [KalugaLabel]
  * @param label the [KalugaLabel] that specifies the look of the [TextView]
  */
 fun TextView.bindLabel(label: KalugaLabel) {

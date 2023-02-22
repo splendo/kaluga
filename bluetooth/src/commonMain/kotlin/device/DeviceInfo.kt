@@ -64,7 +64,7 @@ data class SerializableIdentifier(val identifier: Identifier)
 val Identifier.serializable get() = SerializableIdentifier(this)
 
 /**
- * [KSerializer] for an [SerializableIdentifier]
+ * [KSerializer] for a [SerializableIdentifier]
  */
 open class IdentifierSerializer :
     KSerializer<SerializableIdentifier> {

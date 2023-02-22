@@ -26,8 +26,15 @@ expect class KalugaImage
 typealias Image = KalugaImage
 
 /**
+ * A [KalugaImage] tinted with a given [KalugaColor]
+ * @property image the [KalugaImage] to tint
+ * @property tint the [KalugaColor] to tint the image with
+ */
+data class TintedImage(val image: KalugaImage, val tint: KalugaColor)
+
+/**
  * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
  * @param color The [KalugaColor] to use for tinting.
- * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ * @return The [TintedImage]
  */
-expect fun KalugaImage.tinted(color: KalugaColor): KalugaImage?
+fun KalugaImage.tinted(color: KalugaColor) = TintedImage(this, color)

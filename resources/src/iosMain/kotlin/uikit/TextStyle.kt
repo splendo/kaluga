@@ -34,7 +34,7 @@ import platform.UIKit.addGestureRecognizer
 import platform.darwin.sel_registerName
 
 /**
- * Makes a [UILabel] look according to a [KalugaLabel]
+ * Makes a [UILabel] look like the specification of a [KalugaLabel]
  * @param label the [KalugaLabel] that specifies the look of the [UILabel]
  */
 fun UILabel.bindLabel(label: KalugaLabel) {
@@ -73,7 +73,7 @@ fun UILabel.bindLabel(label: KalugaLabel) {
 }
 
 /**
- * Makes a [UITextView] look according to a [KalugaLabel]
+ * Makes a [UITextView] look like the specification of a [KalugaLabel]
  * @param label the [KalugaLabel] that specifies the look of the [UITextView]
  */
 

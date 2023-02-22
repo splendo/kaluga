@@ -26,8 +26,6 @@ import platform.UIKit.UIImageRenderingMode
 actual typealias KalugaImage = UIImage
 
 /**
- * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
- * @param color The [KalugaColor] to use for tinting.
- * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ * Gets the tinted [UIImage] of a [TintedImage]
  */
-actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? = this.imageWithTintColor(color.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)
+val TintedImage.uiImage: UIImage get() = image.imageWithTintColor(tint.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)

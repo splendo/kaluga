@@ -28,14 +28,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 actual data class KalugaImage(val drawable: Drawable)
 
 /**
- * Attempts to create a new [KalugaImage] that is tinted in a given [KalugaColor]
- * @param color The [KalugaColor] to use for tinting.
- * @return The tinted [KalugaImage] or `null` if tinting could not be applied.
+ * Gets a [Drawable] of a [TintedImage] or `null` if the [TintedImage] cannot be made into a [Drawable]
  */
-actual fun KalugaImage.tinted(color: KalugaColor): KalugaImage? {
-    return drawable.constantState?.newDrawable()?.mutate()?.let {
-        val wrapped = DrawableCompat.wrap(it)
-        DrawableCompat.setTint(wrapped, color)
-        KalugaImage(wrapped)
+val TintedImage.drawable: Drawable?  get() = image.drawable.constantState?.newDrawable()?.mutate()?.let {
+    DrawableCompat.wrap(it).apply {
+        DrawableCompat.setTint(this, tint)
     }
 }

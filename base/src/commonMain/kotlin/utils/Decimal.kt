@@ -478,7 +478,7 @@ fun Collection<Decimal>.toStringList(): List<String> = map { it.toString() }
 fun Collection<Decimal>.toIntArray(): IntArray = map { it.toInt() }.toIntArray()
 
 /**
- * Converts a collection of [Decimal] to an [LongArray]
+ * Converts a collection of [Decimal] to a [LongArray]
  */
 fun Collection<Decimal>.toLongArray(): LongArray = map { it.toLong() }.toLongArray()
 

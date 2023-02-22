@@ -27,6 +27,8 @@ import androidx.core.widget.TextViewCompat
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
 import com.splendo.kaluga.resources.KalugaImage
+import com.splendo.kaluga.resources.TintedImage
+import com.splendo.kaluga.resources.drawable
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.view.KalugaButton
@@ -53,11 +55,20 @@ object Binding {
     }
 
     /**
-     * Binds an [KalugaImage] to an [ImageView].
+     * Binds a [KalugaImage] to an [ImageView].
      */
     @BindingAdapter("image")
     @JvmStatic
     fun bindImage(view: ImageView, image: KalugaImage?) {
+        view.setImageDrawable(image?.drawable)
+    }
+
+    /**
+     * Binds a [TintedImage] to an [ImageView].
+     */
+    @BindingAdapter("tintedImage")
+    @JvmStatic
+    fun bindImage(view: ImageView, image: TintedImage?) {
         view.setImageDrawable(image?.drawable)
     }
 

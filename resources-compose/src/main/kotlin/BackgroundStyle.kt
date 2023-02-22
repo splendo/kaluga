@@ -34,16 +34,27 @@ import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.stylable.GradientStyle
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 
+/**
+ * Creates a modifier for applying a [KalugaBackgroundStyle] to the background of a view
+ * @param backgroundStyle the [KalugaBackgroundStyle] to modify with
+ * @return a [Modifier] that adds a background according to the [KalugaBackgroundStyle]
+ */
 fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = background(
     backgroundStyle.fillStyle.brush,
     backgroundStyle.shape.shape
 ).border(backgroundStyle.strokeStyle.borderStroke, backgroundStyle.shape.shape)
 
+/**
+ * Gets the [Brush] of a [KalugaBackgroundStyle.FillStyle]
+ */
 val KalugaBackgroundStyle.FillStyle.brush: Brush get() = when (this) {
     is KalugaBackgroundStyle.FillStyle.Solid -> SolidColor(color.composable)
     is KalugaBackgroundStyle.FillStyle.Gradient -> gradientStyle.brush
 }
 
+/**
+ * Gets the [Shape] of a [KalugaBackgroundStyle.Shape]
+ */
 val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
     is KalugaBackgroundStyle.Shape.Rectangle -> RoundedCornerRadiusShape(
         if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),

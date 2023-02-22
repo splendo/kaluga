@@ -64,7 +64,7 @@ interface KalugaColorLoader {
 expect class DefaultColorLoader() : KalugaColorLoader
 
 /**
- * Loads an [KalugaImage] based on a provided identifier.
+ * Loads a [KalugaImage] based on a provided identifier.
  */
 interface ImageLoader {
     /**

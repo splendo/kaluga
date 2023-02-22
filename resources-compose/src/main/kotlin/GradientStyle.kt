@@ -30,6 +30,9 @@ import androidx.compose.ui.graphics.SweepGradientShader
 import androidx.compose.ui.graphics.TileMode
 import com.splendo.kaluga.resources.stylable.GradientStyle
 
+/**
+ * Gets a [Brush] from a [GradientStyle]
+ */
 val GradientStyle.brush: Brush
     get() = when (this) {
         is GradientStyle.Linear -> Brush.linearGradient(
@@ -55,6 +58,7 @@ private val List<GradientStyle.ColorPoint>.colorStops: List<Pair<Float, Color>>
             it.color.composable
         )
     }
+
 private val GradientStyle.Linear.Orientation.offset: Pair<Offset, Offset>
     get() = when (this) {
         GradientStyle.Linear.Orientation.BOTTOM_LEFT_TOP_RIGHT -> Pair(
@@ -92,7 +96,7 @@ private val GradientStyle.Linear.Orientation.offset: Pair<Offset, Offset>
     }
 
 @Immutable
-class RelativeRadialGradient internal constructor(
+internal class RelativeRadialGradient internal constructor(
     private val colors: List<Color>,
     private val stops: List<Float>? = null,
     private val center: GradientStyle.CenterPoint,
@@ -163,7 +167,7 @@ class RelativeRadialGradient internal constructor(
  * Brush implementation used to apply a sweep gradient on a given [Paint]
  */
 @Immutable
-class RelativeSweepGradient internal constructor(
+internal class RelativeSweepGradient internal constructor(
     private val center: GradientStyle.CenterPoint,
     private val colors: List<Color>,
     private val stops: List<Float>? = null

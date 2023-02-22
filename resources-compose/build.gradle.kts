@@ -34,4 +34,5 @@ dependencies {
     implementationDependency(Dependencies.AndroidX.Compose.UI)
     implementationDependency(Dependencies.AndroidX.Compose.UITooling)
     implementationDependency(Dependencies.KotlinX.Coroutines.Core)
+    implementationDependency(Dependencies.Accompanist.DrawablePainter)
 }

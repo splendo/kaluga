@@ -57,6 +57,7 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListNa
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ImagesViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
@@ -187,6 +188,10 @@ internal val androidModule = module {
 
     viewModel {
         ColorViewModel(AlertPresenter.Builder())
+    }
+
+    viewModel {
+        ImagesViewModel()
     }
 
     viewModel {

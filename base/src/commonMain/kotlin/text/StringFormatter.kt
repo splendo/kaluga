@@ -52,7 +52,7 @@ interface Formattable {
  * Custom formatting is supported by implementing [Formattable].
  * Flags, precision and width are supported by this formatter as well.
  * Formatting will adjust for a provided [KalugaLocale].
- * May throw an [StringFormatterException] if the incorrect format is applied.
+ * May throw a [StringFormatterException] if the incorrect format is applied.
  * @param out he [StringBuilder] used for outputting the result.
  * @param locale The [KalugaLocale] used for formatting. This is relevant for number and date formatting, as well as capitalization.
  */

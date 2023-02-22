@@ -29,7 +29,7 @@ import platform.darwin.sel_registerName
 class UIKitKeyboardManager(private val application: UIApplication) : BaseKeyboardManager<UIKitFocusHandler> {
 
     /**
-     * Builder for an [UIKitKeyboardManager]
+     * Builder for a [UIKitKeyboardManager]
      * @param application The [UIApplication] that the keyboard is running in.
      */
     class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder<UIKitFocusHandler> {
