@@ -61,4 +61,3 @@ override val viewModel by lazy { MyViewModel(myArgs) }
 ## Testing flows
 
 `BaseKoinFlowTest` or `KoinFlowTest` can be used to test Flows in a cross thread manner while maintaining access to Koin.
-

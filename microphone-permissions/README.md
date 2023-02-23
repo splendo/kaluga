@@ -1,5 +1,5 @@
-## Microphone Permissions
-Adds a `MicrophonePermission`. Register this permission by calling `PermissionsBuilder.registerMicrophonePermission`.
+# Microphone Permissions
+Adds a `MicrophonePermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerMicrophonePermission`()/`PermissionsBuilder.registerMicrophonePermissionIfNotRegistered()`.
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Microphone Permissions as follows:

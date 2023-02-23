@@ -1,4 +1,4 @@
-## Service
+# Service
 Basic utilities for adding new services to Kaluga. Services are platform features that can be enabled/disabled by the user or OS.
 
 ## Installing

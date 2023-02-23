@@ -1,8 +1,27 @@
-# Resources-compose
+# Resources Compose
 Compose extensions for [Resources](../resources)
 
-## Color
-Convert a Kaluga `Color` to a composable color using `Color.composable()`
+## Installing
+This library is available on Maven Central. You can import Kaluga Resources Compose as follows:
+
+```kotlin
+repositories {
+    // ...
+    mavenCentral()
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:resources-compose:$kalugaVersion")
+}
+```
+
+## KalugaColor
+Convert a `KalugaColor` to a composable color using `KalugaColor.composable`
+
+## KalugaImage
+Convert a `KalugaImage` to a composable image using `KalugaImage.Composable(String?, Modifier, Alignment, ContentScale, Float, ColorFilter?)`
+Convert a `TintedImage` to a composable image using `TintedImage.Composable(String?, Modifier, Alignment, ContentScale, Float)`
 
 ## KalugaLabel
 To use a `KalugaLabel` in compose, simply call `KalugaLabel.Composable(Modifier)` in your UI code.

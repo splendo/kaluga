@@ -1,4 +1,4 @@
-## Beacons
+# Beacons
 
 This library provides support for out-of-the-box access to Beacons.
 Currently only the [Eddystone protocol](https://github.com/google/eddystone/blob/master/protocol-specification.md) is supported
@@ -18,7 +18,7 @@ dependencies {
 }
 ```
 
-### Usage
+## Usage
 Create a `DefaultBeacons` object. This gives you access to a `Flow` of `Set<BeaconInfo>`. To monitor for beacons simply call:
 
 ```kotlin
@@ -34,4 +34,3 @@ launch {
 ///
 beacons.stopMonitoring()
 ```
-

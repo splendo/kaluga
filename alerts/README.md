@@ -1,4 +1,3 @@
-
 # Alerts  
   
 A library allows you to show native alerts.  
@@ -21,7 +20,7 @@ dependencies {
   
 ## Usage  
   
-Using Alerts is very simple. You can show an alert from shared code like this:  
+You can show an alert from shared code like this:  
   
 ```kotlin  
 // Shared code  
@@ -59,9 +58,26 @@ fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().laun
             println("No pressed")
         }
     }
-    // Show alert.show()
+    // Show
+    alert.show()
 }
 ```  
+
+In order to dismiss alert you can use `dismiss()` function:
+
+```kotlin
+MainScope().launch {
+    // Build alert
+    val alert = builder.buildAlert(this) {
+        setTitle("Please wait...")
+        setPositiveButton("OK")
+    }
+    // Show
+    alert.showAsync()
+    // Dismiss
+    alert.dismiss()
+}
+```
   
 ## Builder  
   
@@ -69,11 +85,11 @@ The `AlertPresenter.Builder` class can be used to build Alerts.
   
 ### Build alert  
   
-- `buildAlert(coroutineScope: CoroutineScope, initialize: BaseAlertPresenter.Builder.() -> Unit): AlertPresenter` — builder to create `AlertPresenter`, thread-safe  
+- `buildAlert(coroutineScope: CoroutineScope, initialize: Alert.Builder.() -> Unit): BaseAlertPresenter` — builder to create `BaseAlertPresenter`, thread-safe  
   
 ### Build action sheet  
   
-- `buildActionSheet(coroutineScope: CoroutineScope, initialize: AlertPresenter.Builder.() -> Unit): AlertPresenter` — builder to create `AlertPresenter`, thread-safe  
+- `buildActionSheet(coroutineScope: CoroutineScope, initialize: Alert.Builder.() -> Unit): BaseAlertPresenter` — builder to create `BaseAlertPresenter`, thread-safe  
   
 ### Set title, style and message  
   
@@ -91,7 +107,23 @@ The `AlertPresenter.Builder` class can be used to build Alerts.
 ### Set actions for action sheet  
   
 - `addActions(actions: List<Alert.Action>)` or `addActions(vararg actions: Alert.Action)` — adds a list of actions for the alert  
-  
+
+You can also show action sheet using Actions with handlers:
+
+```kotlin  
+fun showList(builder: AlertPresenter.Builder) = MainScope().launch {
+     builder.buildActionSheet(this) {
+         setTitle("Select an option")
+         addActions(
+             Alert.Action("Option 1") { /* handle option #1 */ },
+             Alert.Action("Option 2") { /* handle option #2 */ },
+             Alert.Action("Option 3") { /* handle option #3 */ },
+             Alert.Action("Option 4") { /* handle option #4 */ }
+         )
+     }.show()
+}
+```
+
 > On iOS you can have only 1 button with type of Action.Style.Cancel / Negative  
   
 #### Action styles  
@@ -107,9 +139,14 @@ On Android the builder is an `ActivityLifecycleSubscribable` (see Architecture) 
 For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
   
 ```kotlin  
-class AlertViewModel: LifecycleViewModel() {  
+class AlertViewModel: BaseLifecycleViewModel() {  
   
     val builder = AlertPresenter.Builder()
+    
+    init {
+        addLifecycleSubscribables(builder)
+    }
+    
     fun show() {
             coroutineScope.launch {
                 builder.build(this) {
@@ -133,7 +170,7 @@ class MyActivity: KalugaViewModelActivity<AlertViewModel>() {
  }
 ```
 
-For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
+For other usages, make sure to call `ActivityLifecycleSubscribable.subscribe` and `ActivityLifecycleSubscribable.unsubscribe` to manage the lifecycle manually.
 
 ```kotlin
 // Android specific
@@ -145,8 +182,6 @@ MainScope().launch {
     }.show()
 }
 ```
-
-You can use the `AppCompatActivity.alertPresenterBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
   
 ### iOS  
 On iOS this builder should be instantiated with `UIViewController`:  
@@ -154,40 +189,10 @@ On iOS this builder should be instantiated with `UIViewController`:
 ```swift
 // iOS specific
 let builder = AlertPresenter.Builder(viewController)
-```  
-  
-You can also show action sheet using Actions with handlers:  
-  
-```kotlin  
-fun showList(builder: AlertPresenter.Builder) = MainScope().launch {
-     builder.buildActionSheet(this) {
-         setTitle("Select an option")
-         addActions(
-             Alert.Action("Option 1") { /* handle option #1 */ },
-             Alert.Action("Option 2") { /* handle option #2 */ },
-             Alert.Action("Option 3") { /* handle option #3 */ },
-             Alert.Action("Option 4") { /* handle option #4 */ }
-         )
-     }.show()
-}
 ```
-> Cancel action will be added automatically on iOS platform  
-  
-In order to dismiss alert you can use `dismiss()` function:  
-  
-```kotlin
-MainScope().launch {
-    // Build alert
-    val alert = builder.buildAlert(this) {
-        setTitle("Please wait...")
-        setPositiveButton("OK")
-    }
-    // Show
-    alert.showAsync()
-    // Dismiss
-    alert.dismiss()
-}
-```
+
+Since a `UIViewController` is required, for SwiftUI the `View` displaying the Alert should have a `UIViewControllerRepresentable` wrapping the `UIViewController` associated with the `AlertPresenter.Builder` attached.
+The [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) provide a `ContainerView` that offers this functionality out of the box (if the `includeAlerts` setting is set to `true`)
 
 ## Testing
 Use the [`test-utils-alerts` module](../test-utils-alerts) to get a mockable Alert Presenter.

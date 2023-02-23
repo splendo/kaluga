@@ -1,4 +1,3 @@
-
 # System
 
 This module aim to cover system APIs such as network, audio, battery etc...
@@ -68,3 +67,6 @@ fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
 	}
 }
 ```
+
+## Testing
+Use the [`test-utils-system` module](../test-utils-system) to get mockable System classes.

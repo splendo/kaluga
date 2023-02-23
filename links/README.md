@@ -17,7 +17,7 @@ dependencies {
 }
 ```
 
-### Usage
+## Usage
 This library can be used to process an incoming URL into an object. This is useful when handling an App Link, Universal Link or Deep Link
 
 ```kotlin
@@ -39,7 +39,7 @@ data class Aliment(val name: String)
 data class Recipe(val name: String, val ingredients: List<Aliment>)
 
 // Somewhere in the code
-val ur = "https://kaluga.splendo.com/?name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
+val url = "https://kaluga.splendo.com/?name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
 
 ```
 

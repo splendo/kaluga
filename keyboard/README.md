@@ -72,7 +72,7 @@ class MyActivity: KalugaViewModelActivity<KeyboardViewModel>() {
 }
 ```
 
-For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
+For other usages, make sure to call `ActivityLifecycleSubscribable.subscribe` and `ActivityLifecycleSubscribable.unsubscribe` to manage the lifecycle manually.
 
 ```kotlin
 // Android specific
@@ -86,26 +86,7 @@ MainScope().launch {
 You can use the `AppCompatActivity.keyboardManagerBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ### Android compose-ui
-
-Use compose's implementation for `FocusHandler`.
-```kotlin
-
-@Composable
-fun SomeLayout() {
-    val focusHandler = ComposeFocusHandler(FocusRequester.Default)
-    TextField (
-        value = numberInput,
-        onValueChange = numberInputDelegate,
-        modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(FocusRequester.Default), // add this line to the TextField Modifier.
-    )
-    
-    Button( { viewModel.show(focusHandler) } ) {
-        Text("Button")
-    }
-}
-```
+Use the [`keyboard-compose` module](../keyboard-compose)
 
 ### iOS
 In iOS the builder is attached to a `UIApplication`. By default this will be ` UIApplication.sharedApplication`, but it can be overwritten by a custom Application. The `KeyboardHostingView` can be any `UIView` that `canBecomeFirstResponder`.
@@ -116,6 +97,43 @@ val customBuilder = KeyboardManagerBuilder(application)
 val keyboardHostingView = UITextField()
 ```
 
+For SwiftUI, the [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) contain a `SwiftUIKeyboardManagerBuilder` if the `includeKeyboard` setting is set to true.
+Use it as follows:
+
+```swift
+struct SomeView: View {
+    
+    // Create a Hashable enum to identify fields to focus on
+    enum Field: String, Hashable {
+        case textField
+    }
+    
+    // Observe a SwiftUIKeyboardManagerBuilder
+    @ObservedObject var keyboardManagerBuilder: SwiftUIKeyboardManagerBuilder<Field>
+    
+    // Expose the current field with an @FocusState
+    @FocusState private var focusedField: Field?
+    
+    init {
+        keyboardManagerBuilder = SwiftUIKeyboardManagerBuilder<Field>()
+        // Provide keyboardManagerBuilder to shared code
+    }
+    
+    var body: some View {
+       // Create View and bind the keyboard manager
+       VStack{
+            TextField("", text: _text.projectedValue)
+                .focused($focusedField, equals: Field.textField)
+        }
+       .bindKeyboardManager(
+            keyboardManagerBuilder: keyboardManagerBuilder,
+            focusState: _focusedField.projectedValue
+        )
+    }
+}
+```
+
+Then create a `ValueFocusHandler` for `Field` using `swiftUIFocusHandler(value: Field.textField)`
+
 ## Testing
 Use the [`test-utils-keyboard` module](../test-utils-keyboard) to get a mockable `KeyboardManager`.
-

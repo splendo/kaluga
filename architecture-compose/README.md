@@ -1,4 +1,4 @@
-## Architecture-compose
+## Architecture Compose
 This Android library contains composable functions to work with Kaluga architecture and androidx navigation.
 
 ## Installing
