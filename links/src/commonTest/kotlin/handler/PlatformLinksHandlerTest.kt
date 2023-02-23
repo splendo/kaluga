@@ -24,17 +24,33 @@ import kotlin.test.assertTrue
 
 abstract class PlatformLinksHandlerTest(private val linksValidator: PlatformLinksHandler) {
 
+    companion object {
+
+        val VALID_URLS = listOf(
+            "https://test.io",
+            "http://test.io",
+            "https://test.io?isValid=true",
+            "https://test.io?list_1=first&list_2=second&list_3=third"
+        )
+
+        val INVALID_URLS = listOf(
+            "notvalid.com",
+            "not valid",
+            "httpss://notvalid.com?/?isValid=false"
+        )
+    }
+
     @Test
     fun testLinksValidatorSucceed() {
-        TestConstants.VALID_URLS.forEach {
-            assertTrue { linksValidator.isValid(it) }
+        VALID_URLS.forEach {
+            assertTrue("Cannot handle $it") { linksValidator.isValid(it) }
         }
     }
 
     @Test
     fun testLinksValidatorFailed() {
-        TestConstants.INVALID_URLS.forEach {
-            assertFalse { linksValidator.isValid(it) }
+        INVALID_URLS.forEach {
+            assertFalse("Can handle $it") { linksValidator.isValid(it) }
         }
     }
 
@@ -51,20 +67,4 @@ abstract class PlatformLinksHandlerTest(private val linksValidator: PlatformLink
 
         assertEquals(emptyList(), linksValidator.extractQueryAsList(url))
     }
-}
-
-object TestConstants {
-
-    val VALID_URLS = listOf(
-        "https://test.io",
-        "http://test.io",
-        "https://test.io?isValid=true",
-        "https://test.io?list_1=first&list_2=second&list_3=third"
-    )
-
-    val INVALID_URLS = listOf(
-        "notvalid.com",
-        "not valid",
-        "httpss://notvalid.com?/?isValid=false"
-    )
 }
