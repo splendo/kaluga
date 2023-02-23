@@ -73,7 +73,7 @@ actual class StyledStringBuilder constructor(
      * @throws [IndexOutOfBoundsException] if [range] is out of bounds for the text to span
      */
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
-        if (range.first < 0 || range.last >= styledString.string.length) {
+        if (range.any { it !in styledString.string.indices }) {
             throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
         }
         styledString = styledString.copy(
