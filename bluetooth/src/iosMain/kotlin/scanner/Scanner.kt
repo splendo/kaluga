@@ -28,7 +28,6 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
@@ -53,7 +52,6 @@ actual class DefaultScanner internal constructor(
 ) : BaseScanner(settings, coroutineScope) {
 
     companion object {
-        private const val TAG = "DefaultScanner"
         private val defaultScanOptions = ScanSettings.Builder().build()
     }
 
@@ -125,7 +123,7 @@ actual class DefaultScanner internal constructor(
     private val centralManager = AtomicReference<CBCentralManager?>(null)
     private val centralManagerDelegate = AtomicReference<CBCentralManagerDelegateProtocol?>(null)
     private val centralManagerMutex = Mutex()
-    private suspend fun getCentralManager(): CBCentralManager {
+    private suspend fun getOrCreateCentralManager(): CBCentralManager {
         return centralManager.value ?: centralManagerMutex.withLock {
             centralManager.value ?: createCentralManager().also {
                 centralManager.set(it)
@@ -134,24 +132,16 @@ actual class DefaultScanner internal constructor(
     }
 
     private suspend fun createCentralManager(): CBCentralManager {
-        debug(TAG) { "Create CBCentralManager" }
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
         centralManagerDelegate.set(delegate)
-        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
-        val manager = CBCentralManager(delegate, scanQueue, options)
-        try {
-            awaitPoweredOn.await()
-        } catch(e: Throwable) {
-            // Await may throw exception if the child scope was canceled.
-            debug(TAG) { "❌ $e" }
-            throw e
-        }
+        val manager = CBCentralManager(delegate, scanQueue)
+        awaitPoweredOn.await()
         return manager
     }
 
     private suspend fun scan(filter: UUID? = null) {
-        val centralManager = getCentralManager()
+        val centralManager = getOrCreateCentralManager()
         centralManager.scanForPeripheralsWithServices(
             filter?.let { listOf(filter) },
             scanSettings.parse()
@@ -167,7 +157,7 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun didStopScanning() {
-        getCentralManager().stopScan()
+        getOrCreateCentralManager().stopScan()
     }
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
@@ -175,7 +165,9 @@ actual class DefaultScanner internal constructor(
         return listOfNotNull(
             if (!bluetoothEnabledMonitor.isServiceEnabled) {
                 suspend {
-                    getCentralManager()
+                    // We want it to ask for permissions when the state machine requests it but NOT if the scanning starts
+                    val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
+                    CBCentralManager(null, scanQueue, options)
                     bluetoothEnabledMonitor.isEnabled.first { it }
                 }
             } else null
@@ -183,7 +175,7 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
-        val centralManager = getCentralManager()
+        val centralManager = getOrCreateCentralManager()
 
         val devices = centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
