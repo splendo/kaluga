@@ -51,6 +51,7 @@ struct ResourcesListView: View {
                 switch navigationState.object {
                 case .buttons: ButtonView().equatable() // For lifecycle subviews it is recommended to use equatable
                 case .labels: LabelView()
+                case .images: ImagesView()
                 case .colors: ColorView().equatable()
                 default: EmptyView()
                 }
@@ -63,6 +64,7 @@ extension ResourcesListView {
     enum Route: Equatable {
         case buttons
         case labels
+        case images
         case colors
     }
 
@@ -80,6 +82,7 @@ extension ResourcesListNavigationAction {
         switch self {
         case is ResourcesListNavigationAction.Button: return .buttons
         case is ResourcesListNavigationAction.Color: return .colors
+        case is ResourcesListNavigationAction.Image: return .images
         case is ResourcesListNavigationAction.Label: return .labels
         default: fatalError("Unknown action \(self)")
         }

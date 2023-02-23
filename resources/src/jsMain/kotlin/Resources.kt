@@ -19,6 +19,11 @@ package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.base.text.format
 
+/**
+ * Default implementation of a [StringLoader].
+ * @param transformer method for getting a String from a String identifier
+ * @param formatter method for formatting a String identifier given a quantity
+ */
 actual class DefaultStringLoader(
     private val transformer: (String) -> String?,
     private val formatter: (String, Int) -> String?
@@ -35,6 +40,10 @@ actual class DefaultStringLoader(
     ): String = formatter(identifier, quantity) ?: defaultValue
 }
 
+/**
+ * Default implementation of a [KalugaColorLoader].
+ * @param transformer method for getting a [KalugaColor] from a String identifier
+ */
 actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor?) : KalugaColorLoader {
     actual constructor() : this({ null })
 
@@ -42,16 +51,24 @@ actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor
         transformer(identifier) ?: defaultValue
 }
 
-actual class DefaultImageLoader(private val transformer: (String) -> Image?) : ImageLoader {
+/**
+ * Default implementation of a [ImageLoader].
+ * @param transformer method for getting a [KalugaImage] from a String identifier
+ */
+actual class DefaultImageLoader(private val transformer: (String) -> KalugaImage?) : ImageLoader {
     actual constructor() : this({ null })
 
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? =
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? =
         transformer(identifier) ?: defaultValue
 }
 
-actual class DefaultFontLoader(private val transformer: suspend (String) -> Font?) : FontLoader {
+/**
+ * Default implementation of a [FontLoader].
+ * @param transformer method for getting a [KalugaFont] from a String identifier
+ */
+actual class DefaultFontLoader(private val transformer: suspend (String) -> KalugaFont?) : FontLoader {
     actual constructor() : this({ null })
 
-    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? =
         transformer(identifier) ?: defaultValue
 }

@@ -14,15 +14,24 @@
     limitations under the License.
 
  */
+@file:JvmName("KalugaImageAndroidKt")
 
-@file:JvmName("AndroidFont")
 package com.splendo.kaluga.resources
 
-import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.DrawableCompat
 
-actual typealias Font = Typeface
+/**
+ * Class describing an image.
+ * @property drawable the [Drawable] representing the image
+ */
+actual data class KalugaImage(val drawable: Drawable)
 
-actual val defaultFont: Font get() = Typeface.DEFAULT
-actual val defaultBoldFont: Font get() = Typeface.DEFAULT_BOLD
-actual val defaultItalicFont: Font get() = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
-actual val defaultMonospaceFont: Font get() = Typeface.MONOSPACE
+/**
+ * Gets a [Drawable] of a [TintedImage] or `null` if the [TintedImage] cannot be made into a [Drawable]
+ */
+val TintedImage.drawable: Drawable? get() = image.drawable.constantState?.newDrawable()?.mutate()?.let {
+    DrawableCompat.wrap(it).apply {
+        DrawableCompat.setTint(this, tint)
+    }
+}

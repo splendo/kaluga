@@ -15,8 +15,32 @@
 
  */
 
+@file:JvmName("AndroidFont")
 package com.splendo.kaluga.resources
 
-actual class Image
+import android.graphics.Typeface
 
-actual fun Image.tinted(color: KalugaColor): Image? = null
+/**
+ * Class describing a font
+ */
+actual typealias KalugaFont = Typeface
+
+/**
+ * The default system [KalugaFont]
+ */
+actual val defaultFont: KalugaFont get() = Typeface.DEFAULT
+
+/**
+ * The default bold system [KalugaFont]
+ */
+actual val defaultBoldFont: KalugaFont get() = Typeface.DEFAULT_BOLD
+
+/**
+ * The default italic system [KalugaFont]
+ */
+actual val defaultItalicFont: KalugaFont get() = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+
+/**
+ * The default monospace system [KalugaFont]
+ */
+actual val defaultMonospaceFont: KalugaFont get() = Typeface.MONOSPACE

@@ -36,7 +36,7 @@ class ResourcesListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "feature_resource".localized()
+        title = "feature_resources".localized()
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
@@ -89,6 +89,7 @@ private extension ResourcesListNavigationAction {
         switch self {
         case is ResourcesListNavigationAction.Button: return "showButton"
         case is ResourcesListNavigationAction.Color: return "showColor"
+        case is ResourcesListNavigationAction.Image: return "showImage"
         case is ResourcesListNavigationAction.Label: return "showLabel"
         default: return ""
         }

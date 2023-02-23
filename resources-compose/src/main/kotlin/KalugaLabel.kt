@@ -20,6 +20,9 @@ import android.widget.TextView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,9 +37,14 @@ import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.styled
+import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.bindLabel
 
+/**
+ * Gets a [Text] that looks like the specification of a [KalugaLabel]
+ * @param modifier the [Modifier] to be applied to this layout node
+ */
 @Composable
 fun KalugaLabel.Composable(modifier: Modifier) {
     when (this) {
@@ -67,7 +75,7 @@ fun KalugaLabel.Composable(modifier: Modifier) {
 @Preview
 @Composable
 fun PreviewKalugaLabel() {
-    val textStyle = com.splendo.kaluga.resources.stylable.TextStyle(
+    val textStyle = com.splendo.kaluga.resources.stylable.KalugaTextStyle(
         defaultBoldFont,
         DefaultColors.darkRed,
         12.0f

@@ -14,14 +14,12 @@
     limitations under the License.
 
  */
-@file:JvmName("KalugaDateJvm")
 
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
-import kotlin.jvm.JvmName
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 

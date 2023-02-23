@@ -13,15 +13,16 @@ public class com/splendo/kaluga/resources/databinding/BR {
 
 public final class com/splendo/kaluga/resources/databinding/Binding {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/databinding/Binding;
-	public static final fun bindAutoTextStyle (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/stylable/TextStyle;F)V
+	public static final fun bindAutoTextStyle (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;F)V
 	public static final fun bindBackground (Landroid/view/View;Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)V
-	public static final fun bindImage (Landroid/widget/ImageView;Lcom/splendo/kaluga/resources/Image;)V
+	public static final fun bindImage (Landroid/widget/ImageView;Lcom/splendo/kaluga/resources/KalugaImage;)V
+	public static final fun bindImage (Landroid/widget/ImageView;Lcom/splendo/kaluga/resources/TintedImage;)V
 	public static final fun bindKalugaButton (Landroid/widget/Button;Lcom/splendo/kaluga/resources/view/KalugaButton;)V
 	public static final fun bindKalugaLabel (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/view/KalugaLabel;)V
-	public static final fun bindPrefixTextStyle (Lcom/google/android/material/textfield/TextInputLayout;Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
-	public static final fun bindSuffixTextStyle (Lcom/google/android/material/textfield/TextInputLayout;Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
-	public static final fun bindTextInputLayoutTextStyle (Lcom/google/android/material/textfield/TextInputLayout;Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
-	public static final fun bindTextStyle (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
+	public static final fun bindPrefixTextStyle (Lcom/google/android/material/textfield/TextInputLayout;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
+	public static final fun bindSuffixTextStyle (Lcom/google/android/material/textfield/TextInputLayout;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
+	public static final fun bindTextInputLayoutTextStyle (Lcom/google/android/material/textfield/TextInputLayout;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
+	public static final fun bindTextStyle (Landroid/widget/TextView;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
 }
 
 public class com/splendo/kaluga/resources/databinding/DataBinderMapperImpl : androidx/databinding/DataBinderMapper {

@@ -52,7 +52,7 @@ fun <R : T, T> ObservableOptional<T>.asResult(defaultValue: Value<R>?): Observab
     }
 
 /**
- * Result type for an [BaseObservable]. Used to allow for the distinction between `null` and optional values.
+ * Result type for a [BaseObservable]. Used to allow for the distinction between `null` and optional values.
  * @param T the type this [ObservableOptional] represents. Can be a nullable.
  */
 sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {

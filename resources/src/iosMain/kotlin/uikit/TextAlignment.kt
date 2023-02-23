@@ -32,6 +32,9 @@ import platform.UIKit.UIControlContentHorizontalAlignmentRight
 import platform.UIKit.UIControlContentHorizontalAlignmentTrailing
 import platform.UIKit.UIUserInterfaceLayoutDirection
 
+/**
+ * Gets the [NSTextAlignment] of a [KalugaTextAlignment]
+ */
 val KalugaTextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
     KalugaTextAlignment.LEFT -> NSTextAlignmentLeft
     KalugaTextAlignment.RIGHT -> NSTextAlignmentRight
@@ -44,6 +47,9 @@ val KalugaTextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
     KalugaTextAlignment.START -> NSTextAlignmentNatural
 }
 
+/**
+ * Gets the [UIControlContentHorizontalAlignment] of a [KalugaTextAlignment]
+ */
 val KalugaTextAlignment.contentHorizontalAlignment: UIControlContentHorizontalAlignment get() = when (this) {
     KalugaTextAlignment.LEFT -> UIControlContentHorizontalAlignmentLeft
     KalugaTextAlignment.RIGHT -> UIControlContentHorizontalAlignmentRight

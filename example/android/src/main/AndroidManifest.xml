@@ -155,6 +155,9 @@
         <activity android:name=".resources.xml.LabelActivity"
             android:label="@string/feature_resources_label"
             android:screenOrientation="fullSensor"/>
+        <activity android:name=".resources.xml.ImagesActivity"
+            android:label="@string/feature_resources_image"
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".resources.xml.ButtonActivity"
             android:label="@string/feature_resources_button"
             android:screenOrientation="fullSensor"/>

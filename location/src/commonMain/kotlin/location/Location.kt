@@ -157,7 +157,7 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
 }
 
 /**
- * Converts a [Location] into an [Location.UnknownLocation] given a [Location.UnknownLocation.Reason]
+ * Converts a [Location] into a [Location.UnknownLocation] given a [Location.UnknownLocation.Reason]
  * @param reason the [Location.UnknownLocation.Reason] the [Location] became unknown
  * @return the [Location.UnknownLocation] with [reason].
  * If the [Location] this method had a [Location.KnownLocation], this will return [Location.UnknownLocation.WithLastLocation], otherwise [Location.UnknownLocation.WithoutLastLocation]

@@ -50,7 +50,7 @@ import platform.darwin.NSUInteger
 import kotlin.math.max
 import kotlin.math.min
 
-class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<Pair<CValue<NSRange>, NSURL>>) : NSObject() {
+internal class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<Pair<CValue<NSRange>, NSURL>>) : NSObject() {
 
     object Registry {
         val registeredGestures = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)

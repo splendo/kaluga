@@ -17,10 +17,33 @@
 
 package com.splendo.kaluga.resources.stylable
 
+/**
+ * Alignment at which a text is located
+ */
 enum class KalugaTextAlignment {
+
+    /**
+     * Alignment at the left side of the view (independent of reading direction)
+     */
     LEFT,
+
+    /**
+     * Alignment at the right side of the view (independent of reading direction)
+     */
     RIGHT,
+
+    /**
+     * Alignment at the start side of the view according to reading direction
+     */
     END,
+
+    /**
+     * Alignment at the end side of the view according to reading direction
+     */
     START,
+
+    /**
+     * Alignment at the center of the view
+     */
     CENTER
 }

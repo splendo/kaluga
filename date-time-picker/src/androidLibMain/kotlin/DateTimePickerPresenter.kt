@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
- * A [BaseDateTimePickerPresenter] for presenting an [DateTimePicker].
+ * A [BaseDateTimePickerPresenter] for presenting a [DateTimePicker].
  * @param dateTimePicker The [DateTimePicker] being presented.
  * @param themeResourceId the resource ID of the theme to apply to the date-time picker dialog
  * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes

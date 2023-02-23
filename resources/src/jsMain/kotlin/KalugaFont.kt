@@ -18,13 +18,26 @@
 package com.splendo.kaluga.resources
 
 /**
- * Class describing an image.
+ * Class describing a font
  */
-expect class Image
+actual class KalugaFont
 
 /**
- * Attempts to create a new [Image] that is tinted in a given [KalugaColor]
- * @param color The [KalugaColor] to use for tinting.
- * @return The tinted [Image] or `null` if tinting could not be applied.
+ * The default system [KalugaFont]
  */
-expect fun Image.tinted(color: KalugaColor): Image?
+actual val defaultFont: KalugaFont get() = KalugaFont()
+
+/**
+ * The default bold system [KalugaFont]
+ */
+actual val defaultBoldFont: KalugaFont get() = KalugaFont()
+
+/**
+ * The default italic system [KalugaFont]
+ */
+actual val defaultItalicFont: KalugaFont get() = KalugaFont()
+
+/**
+ * The default monospace system [KalugaFont]
+ */
+actual val defaultMonospaceFont: KalugaFont get() = KalugaFont()

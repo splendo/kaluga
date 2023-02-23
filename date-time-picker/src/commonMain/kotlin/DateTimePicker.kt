@@ -197,7 +197,7 @@ interface DateTimePickerActions {
 abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: DateTimePicker) : DateTimePickerActions {
 
     /**
-     * Abstract alert builder class, used to create an [BaseDateTimePickerPresenter].
+     * Abstract alert builder class, used to create a [BaseDateTimePickerPresenter].
      *
      * @see [DateTimePickerPresenter.Builder]
      */

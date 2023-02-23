@@ -20,6 +20,9 @@ package com.splendo.kaluga.resources
 import android.content.res.Configuration
 import com.splendo.kaluga.base.ApplicationHolder
 
+/**
+ * When `true` the application is in Dark Mode.
+ */
 actual val isInDarkMode: Boolean get() = when (ApplicationHolder.applicationContext.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
     Configuration.UI_MODE_NIGHT_YES -> true
     else -> false

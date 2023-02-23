@@ -1,7 +1,7 @@
 # Test Utils Base
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Test Utils as follows:
+This library is available on Maven Central. You can import Kaluga Test Utils Base as follows:
 
 ```kotlin
 repositories {

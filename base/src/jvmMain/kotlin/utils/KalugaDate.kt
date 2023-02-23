@@ -15,6 +15,7 @@
 
  */
 
+@file:JvmName("KalugaDateJVMKt")
 package com.splendo.kaluga.base.utils
 
 import java.util.Calendar

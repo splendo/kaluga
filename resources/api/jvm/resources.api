@@ -1,13 +1,3 @@
-public final class com/splendo/kaluga/resources/AndroidStyledString {
-	public static final fun attributeSubstring (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lkotlin/Pair;
-	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/TextStyle;I[Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lcom/splendo/kaluga/resources/StyledString;
-	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/TextStyle;I[Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/StyledString;
-	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;[Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lcom/splendo/kaluga/resources/StyledString;
-	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;[Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/StyledString;
-	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/TextStyle;[Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lcom/splendo/kaluga/resources/StyledString;
-	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/TextStyle;[Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/StyledString;
-}
-
 public abstract class com/splendo/kaluga/resources/BlendMode {
 	public abstract fun blendColor (II)I
 }
@@ -316,13 +306,13 @@ public final class com/splendo/kaluga/resources/DefaultColors {
 public final class com/splendo/kaluga/resources/DefaultFontLoader : com/splendo/kaluga/resources/FontLoader {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function2;)V
-	public fun loadFont (Ljava/lang/String;Lcom/splendo/kaluga/resources/Font;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun loadFont (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaFont;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/resources/DefaultImageLoader : com/splendo/kaluga/resources/ImageLoader {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public fun loadImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/Image;)Lcom/splendo/kaluga/resources/Image;
+	public fun loadImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaImage;)Lcom/splendo/kaluga/resources/KalugaImage;
 }
 
 public final class com/splendo/kaluga/resources/DefaultStringLoader : com/splendo/kaluga/resources/StringLoader {
@@ -332,12 +322,8 @@ public final class com/splendo/kaluga/resources/DefaultStringLoader : com/splend
 	public fun loadString (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/resources/Font {
-	public fun <init> ()V
-}
-
 public abstract interface class com/splendo/kaluga/resources/FontLoader {
-	public abstract fun loadFont (Ljava/lang/String;Lcom/splendo/kaluga/resources/Font;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun loadFont (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaFont;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/resources/HSLColor {
@@ -383,23 +369,15 @@ public final class com/splendo/kaluga/resources/HSLColorKt {
 	public static final fun lightenBy (ID)I
 }
 
-public final class com/splendo/kaluga/resources/Image {
-	public fun <init> ()V
-}
-
-public final class com/splendo/kaluga/resources/ImageKt {
-	public static final fun tinted (Lcom/splendo/kaluga/resources/Image;I)Lcom/splendo/kaluga/resources/Image;
-}
-
 public abstract interface class com/splendo/kaluga/resources/ImageLoader {
-	public abstract fun loadImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/Image;)Lcom/splendo/kaluga/resources/Image;
+	public abstract fun loadImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaImage;)Lcom/splendo/kaluga/resources/KalugaImage;
 }
 
 public final class com/splendo/kaluga/resources/JvmFont {
-	public static final fun getDefaultBoldFont ()Lcom/splendo/kaluga/resources/Font;
-	public static final fun getDefaultFont ()Lcom/splendo/kaluga/resources/Font;
-	public static final fun getDefaultItalicFont ()Lcom/splendo/kaluga/resources/Font;
-	public static final fun getDefaultMonospaceFont ()Lcom/splendo/kaluga/resources/Font;
+	public static final fun getDefaultBoldFont ()Lcom/splendo/kaluga/resources/KalugaFont;
+	public static final fun getDefaultFont ()Lcom/splendo/kaluga/resources/KalugaFont;
+	public static final fun getDefaultItalicFont ()Lcom/splendo/kaluga/resources/KalugaFont;
+	public static final fun getDefaultMonospaceFont ()Lcom/splendo/kaluga/resources/KalugaFont;
 }
 
 public final class com/splendo/kaluga/resources/JvmKalugaColor {
@@ -421,6 +399,18 @@ public abstract interface class com/splendo/kaluga/resources/KalugaColorLoader {
 	public abstract fun loadColor (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;
 }
 
+public final class com/splendo/kaluga/resources/KalugaFont {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/resources/KalugaImage {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/resources/KalugaImageKt {
+	public static final fun tinted (Lcom/splendo/kaluga/resources/KalugaImage;I)Lcom/splendo/kaluga/resources/TintedImage;
+}
+
 public final class com/splendo/kaluga/resources/LinkStyle {
 	public fun <init> (IZ)V
 	public final fun component1 ()I
@@ -437,10 +427,10 @@ public final class com/splendo/kaluga/resources/LinkStyle {
 public final class com/splendo/kaluga/resources/ResourcesKt {
 	public static final fun asColor (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaColorLoader;Ljava/lang/Integer;)Ljava/lang/Integer;
 	public static synthetic fun asColor$default (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaColorLoader;Ljava/lang/Integer;ILjava/lang/Object;)Ljava/lang/Integer;
-	public static final fun asFont (Ljava/lang/String;Lcom/splendo/kaluga/resources/FontLoader;Lcom/splendo/kaluga/resources/Font;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun asFont$default (Ljava/lang/String;Lcom/splendo/kaluga/resources/FontLoader;Lcom/splendo/kaluga/resources/Font;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun asImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/ImageLoader;Lcom/splendo/kaluga/resources/Image;)Lcom/splendo/kaluga/resources/Image;
-	public static synthetic fun asImage$default (Ljava/lang/String;Lcom/splendo/kaluga/resources/ImageLoader;Lcom/splendo/kaluga/resources/Image;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/Image;
+	public static final fun asFont (Ljava/lang/String;Lcom/splendo/kaluga/resources/FontLoader;Lcom/splendo/kaluga/resources/KalugaFont;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun asFont$default (Ljava/lang/String;Lcom/splendo/kaluga/resources/FontLoader;Lcom/splendo/kaluga/resources/KalugaFont;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun asImage (Ljava/lang/String;Lcom/splendo/kaluga/resources/ImageLoader;Lcom/splendo/kaluga/resources/KalugaImage;)Lcom/splendo/kaluga/resources/KalugaImage;
+	public static synthetic fun asImage$default (Ljava/lang/String;Lcom/splendo/kaluga/resources/ImageLoader;Lcom/splendo/kaluga/resources/KalugaImage;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/KalugaImage;
 	public static final fun localized (Ljava/lang/String;Lcom/splendo/kaluga/resources/StringLoader;Ljava/lang/String;)Ljava/lang/String;
 	public static synthetic fun localized$default (Ljava/lang/String;Lcom/splendo/kaluga/resources/StringLoader;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
 	public static final fun quantity (Ljava/lang/String;ILcom/splendo/kaluga/resources/StringLoader;Ljava/lang/String;)Ljava/lang/String;
@@ -486,13 +476,13 @@ public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterSt
 }
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
-	public fun <init> (Lcom/splendo/kaluga/resources/Font;F)V
-	public final fun component1 ()Lcom/splendo/kaluga/resources/Font;
+	public fun <init> (Lcom/splendo/kaluga/resources/KalugaFont;F)V
+	public final fun component1 ()Lcom/splendo/kaluga/resources/KalugaFont;
 	public final fun component2 ()F
-	public final fun copy (Lcom/splendo/kaluga/resources/Font;F)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font;Lcom/splendo/kaluga/resources/Font;FILjava/lang/Object;)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font;
+	public final fun copy (Lcom/splendo/kaluga/resources/KalugaFont;F)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font;Lcom/splendo/kaluga/resources/KalugaFont;FILjava/lang/Object;)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Font;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFont ()Lcom/splendo/kaluga/resources/Font;
+	public final fun getFont ()Lcom/splendo/kaluga/resources/KalugaFont;
 	public final fun getSize ()F
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -563,12 +553,12 @@ public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterSt
 }
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
-	public fun <init> (Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
-	public final fun component1 ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
-	public final fun copy (Lcom/splendo/kaluga/resources/stylable/TextStyle;)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle;Lcom/splendo/kaluga/resources/stylable/TextStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle;
+	public fun <init> (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
+	public final fun component1 ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
+	public final fun copy (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getTextStyle ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public final fun getTextStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -633,16 +623,16 @@ public final class com/splendo/kaluga/resources/StringStyleAttribute$ParagraphSt
 }
 
 public final class com/splendo/kaluga/resources/StyledString {
-	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;Ljava/util/List;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public final fun component2 ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public final fun component3 ()Lcom/splendo/kaluga/resources/LinkStyle;
 	public final fun component4 ()Ljava/util/List;
-	public final fun copy (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;Ljava/util/List;)Lcom/splendo/kaluga/resources/StyledString;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/StyledString;Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/StyledString;
+	public final fun copy (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;Ljava/util/List;)Lcom/splendo/kaluga/resources/StyledString;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/StyledString;Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/StyledString;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttributed ()Ljava/util/List;
-	public final fun getDefaultTextStyle ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public final fun getDefaultTextStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public final fun getLinkStyle ()Lcom/splendo/kaluga/resources/LinkStyle;
 	public final fun getString ()Ljava/lang/String;
 	public fun hashCode ()I
@@ -650,21 +640,42 @@ public final class com/splendo/kaluga/resources/StyledString {
 }
 
 public final class com/splendo/kaluga/resources/StyledStringBuilder {
-	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;)V
+	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;)V
 	public final fun addStyleAttribute (Lcom/splendo/kaluga/resources/StringStyleAttribute;Lkotlin/ranges/IntRange;)V
 	public final fun create ()Lcom/splendo/kaluga/resources/StyledString;
-	public final fun getStyledString ()Lcom/splendo/kaluga/resources/StyledString;
-	public final fun setStyledString (Lcom/splendo/kaluga/resources/StyledString;)V
 }
 
 public final class com/splendo/kaluga/resources/StyledStringBuilder$Provider {
 	public fun <init> ()V
-	public final fun provide (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;)Lcom/splendo/kaluga/resources/StyledStringBuilder;
-	public static synthetic fun provide$default (Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/LinkStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/StyledStringBuilder;
+	public final fun provide (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;)Lcom/splendo/kaluga/resources/StyledStringBuilder;
+	public static synthetic fun provide$default (Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/StyledStringBuilder;
+}
+
+public final class com/splendo/kaluga/resources/StyledStringJVMkt {
+	public static final fun getRawString (Lcom/splendo/kaluga/resources/StyledString;)Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/StyledStringKt {
-	public static final fun getRawString (Lcom/splendo/kaluga/resources/StyledString;)Ljava/lang/String;
+	public static final fun attributeSubstring (Ljava/lang/String;Ljava/lang/String;Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lkotlin/Pair;
+	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;I[Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lcom/splendo/kaluga/resources/StyledString;
+	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;I[Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/StyledString;
+	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;[Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lcom/splendo/kaluga/resources/StyledString;
+	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/LinkStyle;[Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/StyledString;
+	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;[Lcom/splendo/kaluga/resources/StringStyleAttribute;)Lcom/splendo/kaluga/resources/StyledString;
+	public static final fun styled (Ljava/lang/String;Lcom/splendo/kaluga/resources/StyledStringBuilder$Provider;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;[Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/StyledString;
+}
+
+public final class com/splendo/kaluga/resources/TintedImage {
+	public fun <init> (Lcom/splendo/kaluga/resources/KalugaImage;I)V
+	public final fun component1 ()Lcom/splendo/kaluga/resources/KalugaImage;
+	public final fun component2 ()I
+	public final fun copy (Lcom/splendo/kaluga/resources/KalugaImage;I)Lcom/splendo/kaluga/resources/TintedImage;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/TintedImage;Lcom/splendo/kaluga/resources/KalugaImage;IILjava/lang/Object;)Lcom/splendo/kaluga/resources/TintedImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getImage ()Lcom/splendo/kaluga/resources/KalugaImage;
+	public final fun getTint ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/stylable/ButtonStateStyle {
@@ -682,6 +693,10 @@ public final class com/splendo/kaluga/resources/stylable/ButtonStateStyle {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/splendo/kaluga/resources/stylable/ColorPointRangeError : java/lang/Error {
+	public static final field INSTANCE Lcom/splendo/kaluga/resources/stylable/ColorPointRangeError;
+}
+
 public abstract class com/splendo/kaluga/resources/stylable/GradientStyle {
 	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getColorPoints ()Ljava/util/List;
@@ -689,8 +704,7 @@ public abstract class com/splendo/kaluga/resources/stylable/GradientStyle {
 
 public final class com/splendo/kaluga/resources/stylable/GradientStyle$Angular : com/splendo/kaluga/resources/stylable/GradientStyle {
 	public static final field Companion Lcom/splendo/kaluga/resources/stylable/GradientStyle$Angular$Companion;
-	public fun <init> (Ljava/util/List;Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;)V
-	public synthetic fun <init> (Ljava/util/List;Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/util/List;Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getCenterPoint ()Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;
 }
 
@@ -755,8 +769,7 @@ public final class com/splendo/kaluga/resources/stylable/GradientStyle$Linear$Or
 
 public final class com/splendo/kaluga/resources/stylable/GradientStyle$Radial : com/splendo/kaluga/resources/stylable/GradientStyle {
 	public static final field Companion Lcom/splendo/kaluga/resources/stylable/GradientStyle$Radial$Companion;
-	public fun <init> (Ljava/util/List;FLcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;)V
-	public synthetic fun <init> (Ljava/util/List;FLcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/util/List;FLcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getCenterPoint ()Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;
 	public final fun getRadius ()F
 }
@@ -868,25 +881,25 @@ public final class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$S
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle {
-	public fun <init> (Lcom/splendo/kaluga/resources/Font;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/resources/Font;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lcom/splendo/kaluga/resources/Font;
+	public fun <init> (Lcom/splendo/kaluga/resources/KalugaFont;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/resources/KalugaFont;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/resources/KalugaFont;
 	public final fun component2 ()F
 	public final fun component3 ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public final fun component4 ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public final fun component5 ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public final fun component6 ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public final fun copy (Lcom/splendo/kaluga/resources/Font;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;Lcom/splendo/kaluga/resources/Font;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;
+	public final fun copy (Lcom/splendo/kaluga/resources/KalugaFont;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;Lcom/splendo/kaluga/resources/KalugaFont;FLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDefaultStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public final fun getDisabledStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public final fun getFont ()Lcom/splendo/kaluga/resources/Font;
+	public final fun getFont ()Lcom/splendo/kaluga/resources/KalugaFont;
 	public final fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public final fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public final fun getStateTextStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public final fun getStateTextStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public final fun getTextAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public final fun getTextSize ()F
 	public fun hashCode ()I
@@ -903,19 +916,19 @@ public final class com/splendo/kaluga/resources/stylable/KalugaTextAlignment : j
 	public static fun values ()[Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 }
 
-public final class com/splendo/kaluga/resources/stylable/TextStyle {
-	public fun <init> (Lcom/splendo/kaluga/resources/Font;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/resources/Font;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lcom/splendo/kaluga/resources/Font;
+public final class com/splendo/kaluga/resources/stylable/KalugaTextStyle {
+	public fun <init> (Lcom/splendo/kaluga/resources/KalugaFont;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/resources/KalugaFont;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/resources/KalugaFont;
 	public final fun component2 ()I
 	public final fun component3 ()F
 	public final fun component4 ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
-	public final fun copy (Lcom/splendo/kaluga/resources/Font;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)Lcom/splendo/kaluga/resources/stylable/TextStyle;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/stylable/TextStyle;Lcom/splendo/kaluga/resources/Font;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public final fun copy (Lcom/splendo/kaluga/resources/KalugaFont;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;Lcom/splendo/kaluga/resources/KalugaFont;IFLcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public final fun getColor ()I
-	public final fun getFont ()Lcom/splendo/kaluga/resources/Font;
+	public final fun getFont ()Lcom/splendo/kaluga/resources/KalugaFont;
 	public final fun getSize ()F
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -964,31 +977,31 @@ public final class com/splendo/kaluga/resources/view/KalugaButton$Styled : com/s
 }
 
 public abstract class com/splendo/kaluga/resources/view/KalugaLabel {
-	public abstract fun getStyle ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public abstract fun getStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 }
 
 public final class com/splendo/kaluga/resources/view/KalugaLabel$Plain : com/splendo/kaluga/resources/view/KalugaLabel {
-	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
+	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
-	public final fun copy (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Plain;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/view/KalugaLabel$Plain;Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/TextStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Plain;
+	public final fun component2 ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
+	public final fun copy (Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Plain;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/view/KalugaLabel$Plain;Ljava/lang/String;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Plain;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getStyle ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public fun getStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public final fun getText ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/view/KalugaLabel$Styled : com/splendo/kaluga/resources/view/KalugaLabel {
-	public fun <init> (Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/TextStyle;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/TextStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/splendo/kaluga/resources/StyledString;
-	public final fun component2 ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
-	public final fun copy (Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/TextStyle;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Styled;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/view/KalugaLabel$Styled;Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/TextStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Styled;
+	public final fun component2 ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
+	public final fun copy (Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Styled;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/resources/view/KalugaLabel$Styled;Lcom/splendo/kaluga/resources/StyledString;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;ILjava/lang/Object;)Lcom/splendo/kaluga/resources/view/KalugaLabel$Styled;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getStyle ()Lcom/splendo/kaluga/resources/stylable/TextStyle;
+	public fun getStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public final fun getText ()Lcom/splendo/kaluga/resources/StyledString;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

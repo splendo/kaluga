@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.resources
 
-/**
- * Class describing a font
- */
-expect class Font
+import platform.UIKit.UIImage
+import platform.UIKit.UIImageRenderingMode
 
-expect val defaultFont: Font
-expect val defaultBoldFont: Font
-expect val defaultItalicFont: Font
-expect val defaultMonospaceFont: Font
+/**
+ * Class describing an image.
+ */
+actual typealias KalugaImage = UIImage
+
+/**
+ * Gets the tinted [UIImage] of a [TintedImage]
+ */
+val TintedImage.uiImage: UIImage get() = image.imageWithTintColor(tint.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)

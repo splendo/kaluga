@@ -47,7 +47,7 @@ sealed class BaseMethodMock<
     > {
 
     /**
-     * A Stub is a class that provides an [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
+     * A Stub is a class that provides a [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
      */
     abstract class Stub<
         M : ParametersSpec.Matchers,

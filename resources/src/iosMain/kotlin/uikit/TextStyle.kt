@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.urlRanges
 import com.splendo.kaluga.resources.view.KalugaLabel
 import platform.Foundation.NSMutableAttributedString
@@ -33,6 +33,10 @@ import platform.UIKit.UITextView
 import platform.UIKit.addGestureRecognizer
 import platform.darwin.sel_registerName
 
+/**
+ * Makes a [UILabel] look like the specification of a [KalugaLabel]
+ * @param label the [KalugaLabel] that specifies the look of the [UILabel]
+ */
 fun UILabel.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
@@ -68,7 +72,12 @@ fun UILabel.bindLabel(label: KalugaLabel) {
     }
 }
 
-fun UITextView.bindTextView(label: KalugaLabel) {
+/**
+ * Makes a [UITextView] look like the specification of a [KalugaLabel]
+ * @param label the [KalugaLabel] that specifies the look of the [UITextView]
+ */
+
+fun UITextView.bindLabel(label: KalugaLabel) {
     when (label) {
         is KalugaLabel.Plain -> text = label.text
         is KalugaLabel.Styled -> {
@@ -89,20 +98,32 @@ fun UITextView.bindTextView(label: KalugaLabel) {
     applyTextStyle(label.style)
 }
 
-fun UILabel.applyTextStyle(textStyle: TextStyle) {
+/**
+ * Makes a [UILabel] look as specified by a [KalugaTextStyle]
+ * @param textStyle the [KalugaTextStyle] that specifies the look of the [UILabel]
+ */
+fun UILabel.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
     numberOfLines = 0
 }
 
-fun UITextView.applyTextStyle(textStyle: TextStyle) {
+/**
+ * Makes a [UITextView] look as specified by a [KalugaTextStyle]
+ * @param textStyle the [KalugaTextStyle] that specifies the look of the [UITextView]
+ */
+fun UITextView.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
 
-fun UITextField.applyTextStyle(textStyle: TextStyle) {
+/**
+ * Makes a [UITextField] look as specified by a [KalugaTextStyle]
+ * @param textStyle the [KalugaTextStyle] that specifies the look of the [UITextField]
+ */
+fun UITextField.applyTextStyle(textStyle: KalugaTextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment

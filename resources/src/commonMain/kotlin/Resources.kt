@@ -40,7 +40,9 @@ interface StringLoader {
     fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String
 }
 
-/** Default implementation of a [StringLoader]. */
+/**
+ * Default implementation of a [StringLoader].
+ */
 expect class DefaultStringLoader() : StringLoader
 
 /**
@@ -56,39 +58,45 @@ interface KalugaColorLoader {
     fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor?
 }
 
-/** Default implementation of a [KalugaColorLoader]. */
+/**
+ * Default implementation of a [KalugaColorLoader].
+ */
 expect class DefaultColorLoader() : KalugaColorLoader
 
 /**
- * Loads an [Image] based on a provided identifier.
+ * Loads a [KalugaImage] based on a provided identifier.
  */
 interface ImageLoader {
     /**
-     * Attempts to load the [Image] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
-     * @param identifier The identifier to find the [Image] resource for.
-     * @param defaultValue The [Image] to return if no match was found for the identifier.
-     * @return The associated [Image] resources or [defaultValue] if no such resource was found.
+     * Attempts to load the [KalugaImage] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [KalugaImage] resource for.
+     * @param defaultValue The [KalugaImage] to return if no match was found for the identifier.
+     * @return The associated [KalugaImage] resources or [defaultValue] if no such resource was found.
      */
-    fun loadImage(identifier: String, defaultValue: Image?): Image?
+    fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage?
 }
 
-/** Default implementation of an [ImageLoader]. */
+/**
+ * Default implementation of an [ImageLoader].
+ */
 expect class DefaultImageLoader() : ImageLoader
 
 /**
- * Loads a [Font] based on a provided identifier.
+ * Loads a [KalugaFont] based on a provided identifier.
  */
 interface FontLoader {
     /**
-     * Attempts to load the [Font] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
-     * @param identifier The identifier to find the [Font] resource for.
-     * @param defaultValue The [Font] to return if no match was found for the identifier.
-     * @return The associated [Font] resources or [defaultValue] if no such resource was found.
+     * Attempts to load the [KalugaFont] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [KalugaFont] resource for.
+     * @param defaultValue The [KalugaFont] to return if no match was found for the identifier.
+     * @return The associated [KalugaFont] resources or [defaultValue] if no such resource was found.
      */
-    suspend fun loadFont(identifier: String, defaultValue: Font?): Font?
+    suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont?
 }
 
-/** Default implementation of a [FontLoader]. */
+/**
+ * Default implementation of a [FontLoader].
+ */
 expect class DefaultFontLoader() : FontLoader
 
 /**
@@ -128,23 +136,23 @@ fun String.asColor(
 ): KalugaColor? = colorLoader.loadColor(this, defaultValue)
 
 /**
- * Treats this string as a resource identifier for a [KalugaColor] and grabs the associated [Image]
- * @param imageLoader The [ImageLoader] used for loading the associated [Image] resource.
- * @param defaultValue The [Image] to return if no match was found for the identifier. Defaults to `null`.
- * @return The [Image] associated with the identifier represented by this String, or [defaultValue] if no such [Image] could be found.
+ * Treats this string as a resource identifier for a [KalugaColor] and grabs the associated [KalugaImage]
+ * @param imageLoader The [ImageLoader] used for loading the associated [KalugaImage] resource.
+ * @param defaultValue The [KalugaImage] to return if no match was found for the identifier. Defaults to `null`.
+ * @return The [KalugaImage] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaImage] could be found.
  */
 fun String.asImage(
     imageLoader: ImageLoader = DefaultImageLoader(),
-    defaultValue: Image? = null
-): Image? = imageLoader.loadImage(this, defaultValue)
+    defaultValue: KalugaImage? = null
+): KalugaImage? = imageLoader.loadImage(this, defaultValue)
 
 /**
- * Treats this string as a resource identifier for a [Font] and grabs the associated [Font]
- * @param fontLoader The [FontLoader] used for loading the associated [Font] resource.
- * @param defaultValue The [Font] to return if no match was found for the identifier. Defaults to `null`.
- * @return The [Font] associated with the identifier represented by this String, or [defaultValue] if no such [Font] could be found.
+ * Treats this string as a resource identifier for a [KalugaFont] and grabs the associated [KalugaFont]
+ * @param fontLoader The [FontLoader] used for loading the associated [KalugaFont] resource.
+ * @param defaultValue The [KalugaFont] to return if no match was found for the identifier. Defaults to `null`.
+ * @return The [KalugaFont] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaFont] could be found.
  */
 suspend fun String.asFont(
     fontLoader: FontLoader = DefaultFontLoader(),
-    defaultValue: Font? = null
-): Font? = fontLoader.loadFont(this, defaultValue)
+    defaultValue: KalugaFont? = null
+): KalugaFont? = fontLoader.loadFont(this, defaultValue)

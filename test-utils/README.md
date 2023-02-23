@@ -15,7 +15,7 @@ Modules:
  - [Resources](../test-utils-resources) provides support for mocking the [`resources` module](../resources)
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Test Utils Location as follows:
+This library is available on Maven Central. You can import Kaluga Test Utils as follows:
 
 ```kotlin
 repositories {

@@ -15,11 +15,21 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.resources.stylable
 
-import platform.UIKit.UIImage
-import platform.UIKit.UIImageRenderingMode
+import com.splendo.kaluga.resources.KalugaFont
+import com.splendo.kaluga.resources.KalugaColor
 
-actual typealias Image = UIImage
-
-actual fun Image.tinted(color: KalugaColor): Image? = this.imageWithTintColor(color.uiColor, UIImageRenderingMode.UIImageRenderingModeAlwaysOriginal)
+/**
+ * The style to apply to a text
+ * @property font the [KalugaFont] with which to display the text
+ * @property color the [KalugaColor] with which to display the text
+ * @property size the size of the text in points
+ * @property alignment the [KalugaTextAlignment] of the text
+ */
+data class KalugaTextStyle(
+    val font: KalugaFont,
+    val color: KalugaColor,
+    val size: Float,
+    val alignment: KalugaTextAlignment = KalugaTextAlignment.START
+)

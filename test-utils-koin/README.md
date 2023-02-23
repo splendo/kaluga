@@ -3,7 +3,7 @@
 This library adds support for [Koin](https://insert-koin.io/) to the [`test-utils-base` module](../test-utils-base)
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Test Utils as follows:
+This library is available on Maven Central. You can import Kaluga Test Utils Koin as follows:
 
 ```kotlin
 repositories {

@@ -15,14 +15,9 @@
 
  */
 
-package com.splendo.kaluga.resources.stylable
+package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.Font
-import com.splendo.kaluga.resources.KalugaColor
-
-data class TextStyle(
-    val font: Font,
-    val color: KalugaColor,
-    val size: Float,
-    val alignment: KalugaTextAlignment = KalugaTextAlignment.START
-)
+/**
+ * Class describing an image.
+ */
+actual class KalugaImage

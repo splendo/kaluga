@@ -22,6 +22,9 @@ import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.currentTraitCollection
 
+/**
+ * When `true` the application is in Dark Mode.
+ */
 actual val isInDarkMode: Boolean get() {
     return IOSVersion.systemVersion >= IOSVersion(12) && UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark
 }

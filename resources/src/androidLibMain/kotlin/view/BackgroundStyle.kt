@@ -27,6 +27,11 @@ import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
 
+/**
+ * Creates a [Drawable] for a [KalugaBackgroundStyle]
+ * @param context the [Context] of the [Drawable]
+ * @return the [Drawable] to display the [KalugaBackgroundStyle]
+ */
 fun KalugaBackgroundStyle.createDrawable(context: Context): Drawable {
     return GradientDrawable().apply {
         applyShape(this@createDrawable.shape, context)
@@ -113,6 +118,10 @@ private fun GradientDrawable.applyStrokeStyle(strokeStyle: KalugaBackgroundStyle
     }
 }
 
+/**
+ * Sets a [KalugaBackgroundStyle] to a [View.setBackground]
+ * @param backgroundStyle the [KalugaBackgroundStyle] to apply
+ */
 fun View.applyBackgroundStyle(backgroundStyle: KalugaBackgroundStyle) {
     background = backgroundStyle.createDrawable(context)
 }

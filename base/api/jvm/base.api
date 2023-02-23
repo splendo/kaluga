@@ -1099,7 +1099,7 @@ public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Compa
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/utils/KalugaDateJvm {
+public final class com/splendo/kaluga/base/utils/KalugaDateKt {
 	public static final fun epoch (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static synthetic fun epoch$default (Lcom/splendo/kaluga/base/utils/DefaultKalugaDate$Companion;JLcom/splendo/kaluga/base/utils/KalugaTimeZone;Lcom/splendo/kaluga/base/utils/KalugaLocale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public static final fun isInSameYear (Lcom/splendo/kaluga/base/utils/KalugaDate;Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
