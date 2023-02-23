@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
@@ -125,7 +126,7 @@ class Bluetooth internal constructor(
 
     override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
-            .transformLatest { state ->
+            .transform { state ->
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
                     state.retrievePairedDevices(filter)
