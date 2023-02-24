@@ -29,6 +29,7 @@ import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 class MockScanner(
     override val isSupported: Boolean,
@@ -68,12 +69,14 @@ class MockScanner(
  * @param initialBluetoothEnabled Sets the initial enabled state of bluetooth
  * @param settings [BaseScanner.Settings] to configure this scanner
  * @param coroutineScope The [CoroutineScope] to run this Scanner on
+ * @param setupMocks If `true` this will automatically configure the [createMock] to build [MockScanner]
  */
 class MockBaseScanner(
     initialBluetoothEnabled: Boolean,
     settings: Settings,
     coroutineScope: CoroutineScope,
-    override val isSupported: Boolean = true
+    override val isSupported: Boolean = true,
+    setupMocks: Boolean = true
 ) : BaseScanner(
     settings,
     coroutineScope
@@ -99,7 +102,7 @@ class MockBaseScanner(
         init {
             if (setupMocks) {
                 createMock.on().doExecute { (settings, coroutineContext) ->
-                    MockBaseScanner(initialBluetoothEnabled, settings, coroutineContext).also {
+                    MockBaseScanner(initialBluetoothEnabled, settings, coroutineContext, setupMocks).also {
                         createdScanners.add(it)
                     }
                 }
@@ -154,10 +157,20 @@ class MockBaseScanner(
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
+    val pairedDeviceDiscoveredEvents = MutableSharedFlow<List<Scanner.Event.DeviceDiscovered>>()
+
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
      */
-    val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
+    val retrievePairedDeviceDiscoveredEventsMock = ::retrievePairedDeviceDiscoveredEvents.mock()
+
+    init {
+        if (setupMocks) {
+            retrievePairedDeviceDiscoveredEventsMock.on().doExecuteSuspended {
+                pairedDeviceDiscoveredEvents.first()
+            }
+        }
+    }
 
     override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
@@ -185,5 +198,5 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    override suspend fun retrievePairedDevices(withServices: Set<UUID>): Unit = retrievePairedDevicesMock.call(withServices)
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices)
 }
