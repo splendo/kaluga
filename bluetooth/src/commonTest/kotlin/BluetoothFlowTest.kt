@@ -28,7 +28,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
-import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -46,6 +45,7 @@ import com.splendo.kaluga.test.permissions.MockPermissionState
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -214,18 +214,6 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             }
         }
 
-        private suspend fun awaitPairedDevices(
-            filter: Filter,
-            devices: List<Device>
-        ) {
-            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled>()
-            bluetooth.scanningStateRepo.takeAndChangeState(
-                remainIfStateNot = ScanningState.Enabled::class
-            ) { state ->
-                state.pairedDevices(filter, devices.map { it.identifier }.toSet(), devices.map { { it } })
-            }
-        }
-
         fun scanDevice(
             device: Device,
             deviceWrapper: DeviceWrapper,
@@ -234,15 +222,6 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ) {
             coroutineScope.launch {
                 awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
-            }
-        }
-
-        fun retrievePairedDevices(
-            filter: Filter,
-            devices: List<Device>
-        ) {
-            coroutineScope.launch {
-                awaitPairedDevices(filter, devices)
             }
         }
 
@@ -268,6 +247,8 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             device.state.filter { it is ConnectableDeviceState.Connected.Discovering }.first()
             connectionManager.handleDiscoverCompleted(listOf(service))
         }
+
+        val pairedDevicesTimer = MutableSharedFlow<Unit>(1)
     }
 
     class BluetoothContext(configuration: Configuration.Bluetooth, coroutineScope: CoroutineScope) : Context<Configuration.Bluetooth>(configuration, coroutineScope)

@@ -174,16 +174,18 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
-
-        val devices = centralManager
+        return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
             .map { peripheral ->
                 val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
                 val deviceCreator: DeviceCreator = {
-                    deviceWrapper to DefaultDeviceConnectionManager.Builder(centralManager, peripheral)
+                    deviceWrapper to DefaultDeviceConnectionManager.Builder(
+                        centralManager,
+                        peripheral
+                    )
                 }
                 val serviceUUIDs: List<UUID> = peripheral.services
                     ?.filterIsInstance<CBService>()
@@ -197,8 +199,6 @@ actual class DefaultScanner internal constructor(
                     deviceCreator = deviceCreator
                 )
             }
-        // We have to call even with empty list to clean up cached devices
-        handlePairedDevices(withServices, devices)
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {

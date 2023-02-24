@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -47,6 +48,8 @@ import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 typealias EnableSensorAction = suspend () -> Boolean
 typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
@@ -139,6 +142,10 @@ abstract class BaseScanner constructor(
         get() = _monitoringBluetoothEnabledJob.get()
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
 
+    private val isRetrievingPairedDevicesMutex = Mutex()
+    private val isRetrievingPairedDevicesFilter = AtomicReference<Set<UUID>?>(null)
+    private val retrievingPairedDevicesJob = AtomicReference<Job?>(null)
+
     override fun startMonitoringPermissions() {
         logger.debug(LOG_TAG) { "Start monitoring permissions" }
         if (monitoringPermissionsJob != null) return
@@ -224,6 +231,35 @@ abstract class BaseScanner constructor(
         }
     }
 
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
+        if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
+
+        retrievingPairedDevicesJob.compareAndSet(
+            null,
+            this@BaseScanner.launch {
+                // We have to call even with empty list to clean up cached devices
+                val devices = retrievePairedDeviceDiscoveredEvents(withServices)
+                handlePairedDevices(withServices, devices)
+            }
+        )
+    }
+
+    private suspend fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Set<UUID>): Boolean = isRetrievingPairedDevicesMutex.withLock {
+        when (isRetrievingPairedDevicesFilter.value) {
+            withServices -> false
+            null -> true
+            else -> {
+                retrievingPairedDevicesJob.value?.cancel()
+                retrievingPairedDevicesJob.value = null
+                true
+            }
+        }.also {
+            isRetrievingPairedDevicesFilter.value = withServices
+        }
+    }
+
+    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered>
+
     internal fun handleDeviceDiscovered(
         identifier: Identifier,
         rssi: Int,
@@ -235,12 +271,18 @@ abstract class BaseScanner constructor(
         emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
-    internal fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
-        logger.info(LOG_TAG) {
-            val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
-            "Paired Devices retrieved: $identifiers for filter: $filter"
+    internal suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
+        // Only update if actually scanning for this Filter
+        isRetrievingPairedDevicesMutex.withLock {
+            if (isRetrievingPairedDevicesFilter.compareAndSet(filter, null)) {
+                logger.info(LOG_TAG) {
+                    val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
+                    "Paired Devices retrieved: $identifiers for filter: $filter"
+                }
+                emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
+                retrievingPairedDevicesJob.value = null
+            }
         }
-        emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {

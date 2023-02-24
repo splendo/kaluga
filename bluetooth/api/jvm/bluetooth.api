@@ -872,6 +872,8 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/spl
 	protected fun getPermissionsFlow ()Lkotlinx/coroutines/flow/Flow;
 	public fun isHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun requestEnableHardware (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun retrievePairedDeviceDiscoveredEvents (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun scanForDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringHardwareEnabled ()V
 	public fun startMonitoringPermissions ()V
@@ -915,7 +917,6 @@ public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner : com/spl
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 	public fun generateEnableSensorsActions ()Ljava/util/List;
 	public fun isSupported ()Z
-	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner$Builder : com/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder {
