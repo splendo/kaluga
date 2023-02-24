@@ -245,9 +245,9 @@ abstract class BaseScanner constructor(
         retrievingPairedDevicesJob.value = this@BaseScanner.launch {
             // We have to call even with empty list to clean up cached devices
             val devices = retrievePairedDeviceDiscoveredEvents(withServices)
-            handlePairedDevices(withServices, devices)
             isRetrievingPairedDevicesMutex.withLock {
                 if (isRetrievingPairedDevicesFilter.compareAndSet(withServices, null)) {
+                    handlePairedDevices(withServices, devices)
                     retrievingPairedDevicesJob.value = null
                 }
             }
