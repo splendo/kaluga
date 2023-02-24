@@ -89,6 +89,6 @@ class RouteTests {
             }
         }
         val action = TestNavigationAction(bundle)
-        assertEquals("TestNavigationAction/string/true/0.5/{\"value\":\"Mock\"}/{\"value\":\"OptionalMock\"}/${KalugaDateFormatter.iso8601Pattern().format(time)}?OptionalString={optional}", action.route())
+        assertEquals("TestNavigationAction/true/0.5/{\"value\":\"Mock\"}/{\"value\":\"OptionalMock\"}/${KalugaDateFormatter.iso8601Pattern().format(time)}?StringSpecRow=string&OptionalString=optional", action.route())
     }
 }
