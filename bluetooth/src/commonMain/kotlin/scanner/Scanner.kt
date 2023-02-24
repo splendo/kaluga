@@ -232,24 +232,29 @@ abstract class BaseScanner constructor(
     }
 
     override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
-        isRetrievingPairedDevicesMutex.withLock {
-            when (isRetrievingPairedDevicesFilter.value) {
-                withServices -> return
-                null -> {}
-                else -> retrievingPairedDevicesJob.value?.cancel()
-            }
-            isRetrievingPairedDevicesFilter.value = withServices
-        }
+        if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
 
-        retrievingPairedDevicesJob.value = this@BaseScanner.launch {
-            // We have to call even with empty list to clean up cached devices
-            val devices = retrievePairedDeviceDiscoveredEvents(withServices)
-            isRetrievingPairedDevicesMutex.withLock {
-                if (isRetrievingPairedDevicesFilter.compareAndSet(withServices, null)) {
-                    handlePairedDevices(withServices, devices)
-                    retrievingPairedDevicesJob.value = null
-                }
+        retrievingPairedDevicesJob.compareAndSet(
+            null,
+            this@BaseScanner.launch {
+                // We have to call even with empty list to clean up cached devices
+                val devices = retrievePairedDeviceDiscoveredEvents(withServices)
+                handlePairedDevices(withServices, devices)
             }
+        )
+    }
+
+    private suspend fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Set<UUID>): Boolean = isRetrievingPairedDevicesMutex.withLock {
+        when (isRetrievingPairedDevicesFilter.value) {
+            withServices -> false
+            null -> true
+            else -> {
+                retrievingPairedDevicesJob.value?.cancel()
+                retrievingPairedDevicesJob.value = null
+                true
+            }
+        }.also {
+            isRetrievingPairedDevicesFilter.value = withServices
         }
     }
 
@@ -266,12 +271,18 @@ abstract class BaseScanner constructor(
         emitEvent(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
-    internal fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
-        logger.info(LOG_TAG) {
-            val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
-            "Paired Devices retrieved: $identifiers for filter: $filter"
+    internal suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
+        // Only update if actually scanning for this Filter
+        isRetrievingPairedDevicesMutex.withLock {
+            if (isRetrievingPairedDevicesFilter.compareAndSet(filter, null)) {
+                logger.info(LOG_TAG) {
+                    val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
+                    "Paired Devices retrieved: $identifiers for filter: $filter"
+                }
+                emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
+                retrievingPairedDevicesJob.value = null
+            }
         }
-        emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
     }
 
     internal fun handleDeviceConnected(identifier: Identifier) {
