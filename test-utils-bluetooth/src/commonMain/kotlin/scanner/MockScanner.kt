@@ -160,7 +160,7 @@ class MockBaseScanner(
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
      */
-    val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
+    val retrievePairedDeviceDiscoveredEventsMock = ::retrievePairedDeviceDiscoveredEvents.mock()
 
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
@@ -188,5 +188,5 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    override suspend fun retrievePairedDevices(withServices: Set<UUID>): Unit = retrievePairedDevicesMock.call(withServices)
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices)
 }

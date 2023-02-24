@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -47,6 +49,8 @@ import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 typealias EnableSensorAction = suspend () -> Boolean
 typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
@@ -139,6 +143,10 @@ abstract class BaseScanner constructor(
         get() = _monitoringBluetoothEnabledJob.get()
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
 
+    private val isRetrievingPairedDevicesMutex = Mutex()
+    private val isRetrievingPairedDevicesFilter = AtomicReference<Set<UUID>?>(null)
+    private val retrievingPairedDevicesJob = AtomicReference<Job?>(null)
+
     override fun startMonitoringPermissions() {
         logger.debug(LOG_TAG) { "Start monitoring permissions" }
         if (monitoringPermissionsJob != null) return
@@ -223,6 +231,30 @@ abstract class BaseScanner constructor(
             requestEnableHardware()
         }
     }
+
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>) {
+        isRetrievingPairedDevicesMutex.withLock {
+            when (isRetrievingPairedDevicesFilter.value) {
+                withServices -> return
+                null -> {}
+                else -> retrievingPairedDevicesJob.value?.cancel()
+            }
+            isRetrievingPairedDevicesFilter.value = withServices
+        }
+
+        retrievingPairedDevicesJob.value = this@BaseScanner.launch {
+            // We have to call even with empty list to clean up cached devices
+            val devices = retrievePairedDeviceDiscoveredEvents(withServices)
+            handlePairedDevices(withServices, devices)
+            isRetrievingPairedDevicesMutex.withLock {
+                if (isRetrievingPairedDevicesFilter.compareAndSet(withServices, null)) {
+                    retrievingPairedDevicesJob.value = null
+                }
+            }
+        }
+    }
+
+    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered>
 
     internal fun handleDeviceDiscovered(
         identifier: Identifier,
