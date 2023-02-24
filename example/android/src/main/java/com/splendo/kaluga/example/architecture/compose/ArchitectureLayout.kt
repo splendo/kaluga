@@ -94,7 +94,7 @@ fun ArchitectureLayout() {
                     ),
                     contentBuilder = { bottomSheetNavigationState ->
                         composable<InputDetails, ArchitectureNavigationAction.Details>(
-                            type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
+                            InputDetails.serializer()
                         ) { inputDetails ->
                             ArchitectureDetailsLayout(inputDetails, bottomSheetNavigationState)
                         }

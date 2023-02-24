@@ -292,7 +292,7 @@ sealed class NavigationBundleSpecType<T> {
     }
 
     /**
-     * A [NonNullableNavigationBundleSpecType] that represents a List of[KalugaDate]
+     * A [NonNullableNavigationBundleSpecType] that represents a List of [KalugaDate]
      */
     object DateArrayType : NonNullableNavigationBundleSpecType<List<KalugaDate>>() {
         override fun convertValue(value: List<KalugaDate>): NavigationBundleValue.DateArrayValue {
