@@ -39,7 +39,7 @@ Make sure you have the Simulator setup with a working target device. For now you
 
 The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter which tests to run.
 
-Note that for kaluga iOS tests run on a background thread, in order to have a properly working Main dispatchers (and align better with Android). How this works is described in [`test-utils-base`](test-utils-base/)
+Note that for Kaluga iOS tests run on a background thread, in order to have a properly working Main dispatchers (and align better with Android). How this works is described in [`test-utils-base`](test-utils-base/)
 
 ## Architecture
 

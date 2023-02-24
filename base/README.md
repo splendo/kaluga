@@ -16,18 +16,18 @@ dependencies {
 }
 ```
 
-### Threading
+## Threading
 You can run code on the OS Main Thread by using `runOnMain`. Use the `MainQueueDispatcher` to access the Main queue of the OS.
 
-### Data Accessors
+## Data Accessors
 - Use `byOrdinalOrDefault` to get an Enum value by ordinal or the default value if no such value exists.
 - (Android Only) Use the `ApplicationHolder` class to get and set the current `Application`. This is useful for default access to the ApplicationContext
 
-### Data Converters
+## Data Converters
 - Convert a `ByteArray` to a hexadecimal String using `toHexString()`
 - (iOS Only) Convert `NSData` to `ByteArray` and vice versa using `toByteArray()` and `toNSData()` respectively.
 
-### State
+## State
 The Kaluga library offers usage of State Machines.
 
 The `StateRepo` functions as a `Flow` to manage a state machine.
@@ -71,7 +71,7 @@ During transition the following callbacks may be implemented. The callbacks are 
 
 If an atomic action is required on the state `useState()` can be called. When called, the state is guaranteed not to change for the duration of the action.
 
-#### Hot and Cold State Repos
+### Hot and Cold State Repos
 StateRepo may have a variable number of flows observing them.
 Thus they may at some point (temporarily) lose all observers.
 To determine what should happen when no observers are available, both flowable and stateRepo can be marked as either stateful (Hot) or stateless (Cold).
@@ -86,7 +86,7 @@ The initializer will be called if the number of flows observing changes from 0 t
 The deinitializer will be called when the number of flows observing changes drops to 0.
 Use `ColdStateRepo` for this behaviour.
 
-### Date
+## Date
 Kaluga includes a `Date` class to manage and compare time.
 Dates can be created using either `Date.now()` or `Date.epoch()`.
 Dates are mutable be default and can be compared.
@@ -99,14 +99,14 @@ val tomorrow = today.copy().apply {
 assertTrue(today < tomorrow)
 ```
 
-### Decimal
+## Decimal
 
 Kaluga includes a `Decimal` class to manage decimal numbers with high precision.
 Decimal can be created from any `Number` using `toDecimal()` or back to a `Double`/`Int` using `toDouble()`/`toInt()` respectively.
 
 Use Decimals to do standard arithmetic operations. A Rounding mode or scale can be provided for these calculations.
 
-### Formating
+## Formating
 
 It's possible to format to and from some data types using Kaluga.
 

@@ -49,6 +49,7 @@ A running timer automatically changes to a [Finished] state once [duration] elap
 The elapsed time is always within [0, duration] range and equal to [duration] in [Finished] state. 
 
 So the output might look the following way:
+
 ```kotlin
 12 ms  // an initial "warm up delay" 
 1001 ms // overshoot by 1 ms

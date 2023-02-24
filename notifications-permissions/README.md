@@ -1,5 +1,5 @@
-## Notifications Permissions
-Adds a `NotificationsPermission`. Register this permission by calling `PermissionsBuilder.registerNotificationsPermission`.
+# Notifications Permissions
+Adds a `NotificationsPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerNotificationsPermission`()/`PermissionsBuilder.registerNotificationsPermissionIfNotRegistered()`.
 
 On Android this permission will be granted automatically for devices running API 32 or lower.
 

@@ -66,7 +66,7 @@ class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
 
 The `KalugaViewModelLifecycleObserver` will automatically update the `ActivityLifecycleSubscribable.LifecycleManager` context of all `ActivityLifecycleSubscribable` added to `BaseLifecycleViewModel.activeLifecycleSubscribables` of the viewModel.
 Implement this interface if a viewModel has properties that should be lifecycle or context aware.
-It can be delegated using `LifecycleSubscriber`.
+It can be delegated using `LifecycleManagerObserver`.
 The `LifecycleManagerObserver` is a default implementation of `ActivityLifecycleSubscribable` that provides updates to the context as a `Flow`.
 
 ### iOS
@@ -95,7 +95,7 @@ class SomeViewController : UIViewController {
 }
 ```
 
-Automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
+Automatic setup can be achieved by binding a `UIViewController` to the viewModel using `addLifecycleManager`.
 When bound the viewModel lifecycle is automatically matched with the viewControllers `viewDidAppear` and `viewDidDisappear` methods.
 The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound viewModel.
 Automatic binding is achieved by adding an invisible child `UIViewController` to the bound viewController.
@@ -148,9 +148,9 @@ Using observables in viewmodels also has some common problems:
 - repeated updates with equal values.
 
 Kaluga observables deal with this by only allowing specific subtypes:
-- `UnintializedObservable`, these hold a `ObservableOptional` value, which is either an `ObservableOptional.Value` or `ObservableOptional.Nothing`. If the generic type an optional`?`, this means a Value can hold `null`, which is distinguishable from `Nothing`. 
+- `UnintializedObservable`, these hold an `ObservableOptional` value, which is either an `ObservableOptional.Value` or `ObservableOptional.Nothing`. If the generic type an optional`?`, this means a Value can hold `null`, which is distinguishable from `Nothing`. 
 - `IntializedObservable`, these can only hold an `ObservableOptional.Value`. 
-- `DefaultObservable`, a subtype of a `IntializedObservable` where all `null` values of the observed `ObservableOptional.Value` are replaced with a default value.
+- `DefaultObservable`, a subtype of an `IntializedObservable` where all `null` values of the observed `ObservableOptional.Value` are replaced with a default value.
 
 Equivalent subjects also exist.
 
@@ -163,7 +163,7 @@ The easiest way of creating an observable by calling the function `observableOf`
 ```kotlin
 val observable = observableOf(1)
 ```
-This will result in a `InitializedObservable<Int>`. Now it's possible to observe this value in several ways:
+This will result in an `InitializedObservable<Int>`. Now it's possible to observe this value in several ways:
 
 ```kotlin
 
@@ -235,24 +235,8 @@ DisposeBags can be emptied using `dispose()`. To post new data to the Subject th
 #### SwiftUI and Combine
 
 Since Kotlin Native does not have access to pure Swift libraries, no out of the box solution for `SwiftUI`/`Combine` is provided.
-Observables can be mapped to Combine `Published` classes directly from Swift however.
+Use the [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) to add support to your project.
 
-```Swift
-let observable: InitializedObservable<Int>
-let subject: Subject<Int>
-
-let disposeBag = DisposeBag()
-
-init {
-    observable.observe(onNext: { (value) in
-        subject.post(value)
-    }).addTo(disposeBag)
-
-    // do Other stuff
-
-    disposeBag.dispose()
-}
-```
 #### Usage from ViewController
 
 When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
@@ -267,15 +251,19 @@ class SomeViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in
-            guard let observable = self.viewModel.observable else {
-                return []
+        lifecycleManager = viewModel.addLifecycleManager(
+            parent: self,
+            onLifecycle: { [weak self] in
+                guard let observable = self.viewModel.observable else {
+                    return []
+                }
+                return [
+                    observable.observe(onNext: { (value) in
+                       // Handle value
+                   }
+                ]
             }
-            return [
-                observable.observe(onNext: { (value) in
-                   // Handle value
-               }
-            ] }
+        )
     }
 ```
 

@@ -1,4 +1,6 @@
 # Test Utils Base
+This library adds support for testing the [`base` module](../base) and provides functionality for testing on threads.
+The library contains support for mocking methods.
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Test Utils Base as follows:
