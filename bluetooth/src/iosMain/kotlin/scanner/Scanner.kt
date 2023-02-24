@@ -51,8 +51,8 @@ actual class DefaultScanner internal constructor(
     coroutineScope: CoroutineScope
 ) : BaseScanner(settings, coroutineScope) {
 
-    companion object {
-        private val defaultScanOptions = ScanSettings.Builder().build()
+    private companion object {
+        val defaultScanOptions = ScanSettings.Builder().build()
     }
 
     class Builder(private val scanSettings: ScanSettings = defaultScanOptions) :
