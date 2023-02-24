@@ -73,8 +73,7 @@ fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> r
         val key = row.argumentKey
         when (row.associatedType) {
             is NavigationBundleSpecType.UnitType -> null
-            is NavigationBundleSpecType.OptionalType<*> -> RouteArgument(key, "{$key}", false)
-            else -> RouteArgument(key, "{$key}", true)
+            else -> RouteArgument(key, "{$key}", row.associatedType.isRequired)
         }
     }
     return route(actionClass, *arguments.toTypedArray())
@@ -91,21 +90,21 @@ fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): St
             RouteArgument(
                 row.argumentKey,
                 it,
-                value !is NavigationBundleValue.OptionalValue
+                row.associatedType.isRequired
             )
         }
     } ?: emptyList()
     return route(this::class, *arguments.toTypedArray())
 }
 
-private data class RouteArgument(val key: String, val value: String, val isOptional: Boolean)
+private data class RouteArgument(val key: String, val value: String, val isRequired: Boolean)
 
 private fun route(
     navigationActionClass: KClass<out NavigationAction<*>>,
     vararg arguments: RouteArgument
 ): String {
     val allArguments = arguments.toList()
-        .groupBy(keySelector = { it.isOptional }, valueTransform = { it.key to it.value })
+        .groupBy(keySelector = { it.isRequired }, valueTransform = { it.key to it.value })
     val requiredArguments = allArguments[true] ?: emptyList()
     val optionalArguments = allArguments[false] ?: emptyList()
     val baseRoute = navigationActionClass.simpleName!!
@@ -115,7 +114,7 @@ private fun route(
         ?.joinToString(
             "&",
             prefix = "$routeWithRequiredArguments?"
-        ) { "${it.first}={${it.second}}" }
+        ) { "${it.first}=${it.second}" }
         ?: routeWithRequiredArguments
 }
 
@@ -368,3 +367,10 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
     get() = Route.Back(
         bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
     )
+
+internal val <T> NavigationBundleSpecType<T>.isRequired: Boolean get() = when (this) {
+    is NavigationBundleSpecType.CharSequenceType,
+    is NavigationBundleSpecType.OptionalType<*>,
+    is NavigationBundleSpecType.StringType -> false
+    else -> true
+}
