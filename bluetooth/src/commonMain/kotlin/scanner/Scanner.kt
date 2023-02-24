@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant

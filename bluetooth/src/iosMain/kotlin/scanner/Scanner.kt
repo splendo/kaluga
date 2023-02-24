@@ -199,7 +199,7 @@ actual class DefaultScanner internal constructor(
                     deviceCreator = deviceCreator
                 )
             }
-        }
+    }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         val advertisementData = AdvertisementData(advertisementDataMap)
