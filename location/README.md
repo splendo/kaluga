@@ -28,6 +28,7 @@ The `Permission.Location` provided to the `LocationStateRepo` will determine the
 By default the user will be automatically prompted to consent to the required `Permissions` and to enable location services. This can be disabled by setting `autoRequestPermission=false` and `autoEnableLocations=false` respectively.
 
 Sample code:
+
 ```kotlin
 val locationStateRepo = LocationStateRepoBuilder().create(Permissions.Location(background=false, precise=true))
 locationStateRepo.flow().location().collect { location ->

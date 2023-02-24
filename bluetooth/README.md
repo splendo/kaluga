@@ -28,6 +28,7 @@ launch {
 ///
 bluetooth.stopScanning()
 ```
+
 Bluetooth Scanning is managed by a state machine that will keep running as long as it is observed. It will automatically handle Permissions and Enabling/Disabling bluetooth on the device, although this behaviour can be disabled via the `BluetoothBuilder`
 Devices are returned as a flow of `Device` objects, which manages the connection state of each device.
 

@@ -67,7 +67,8 @@ Both methods for showing return the initial selectedDate passed through the buil
 
 ### Build Date Picker
 To create `BaseDateTimePickerPresenter` that selects a Date, thread-safe, use.
-```
+
+```kotlin
 buildDatePicker(coroutineScope: CoroutineScope, earliestDate: Date?, latestDate: Date?, initialize: DateTimePicker.Builder.() -> Unit): BaseDateTimePickerPresenter
 ```
 
@@ -75,7 +76,8 @@ Passing the earliest/latest Date will limit the range of dates to select.
 
 ### Build Time Picker
 To create `BaseDateTimePickerPresenter` that selects a Time, thread-safe
-```
+
+```kotlin
 buildTimePicker(coroutineScope: CoroutineScope, initialize: DateTimePicker.Builder.() -> Unit): BaseDateTimePickerPresenter
 ```
 
