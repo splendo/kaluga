@@ -21,7 +21,6 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
-import android.os.Build
 
 /**
  * Accessor to the [BluetoothDevice]
