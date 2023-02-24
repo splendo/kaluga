@@ -98,11 +98,7 @@ class DefaultDeviceWrapper(override val device: BluetoothDevice) : DeviceWrapper
         }
 
     override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper {
-        val gatt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            device.connectGatt(context, autoConnect, callback, BluetoothDevice.TRANSPORT_LE)
-        } else {
-            device.connectGatt(context, autoConnect, callback)
-        }
+        val gatt = device.connectGatt(context, autoConnect, callback, BluetoothDevice.TRANSPORT_LE)
         return DefaultBluetoothGattWrapper(gatt)
     }
 
