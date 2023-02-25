@@ -431,7 +431,7 @@ class LocationStateTest :
             permissionStateRepo.takeAndChangeState { state ->
                 (state as MockPermissionState<LocationPermission>).lock
             }
-            yieldMultiple(2)
+            yieldMultiple(3)
         }
         test {
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -480,7 +480,7 @@ class LocationStateTest :
         }
         mainAction {
             locationManager.locationEnabled.value = false
-            yieldMultiple(2)
+            yieldMultiple(3)
         }
         test {
             locationManager.requestEnableLocationMock.verify()
