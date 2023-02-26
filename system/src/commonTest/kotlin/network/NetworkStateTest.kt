@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.yield
 import kotlin.test.Test
@@ -44,6 +45,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         action {
             resetFlow()
+            yieldMultiple(4)
         }
 
         mainAction {
@@ -181,6 +183,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         action {
             resetFlow()
+            yield()
         }
 
         test {
@@ -190,6 +193,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Absent
+            yield()
         }
 
         test {
