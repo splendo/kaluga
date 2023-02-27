@@ -42,7 +42,8 @@ android {
         sourceSets {
             main {
                 manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
-                res.srcDir 'src/androidLibMain/res'
+                res.srcDirs += ['src/androidLibMain/res']
+                res.srcDirs += ['src/commonTest/resources']
                 if (gradle.component_type.contains("compose")) {
                     java.srcDir 'src/androidLibMain/kotlin'
                 }
@@ -50,12 +51,15 @@ android {
             androidTest {
                 manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
                 java.srcDir 'src/androidLibAndroidTest/kotlin'
-                res.srcDir 'src/androidLibAndroidTest/res'
+                res.srcDirs += ['src/androidLibAndroidTest/res']
+                res.srcDirs += ['src/commonTest/resources']
             }
 
 
             test {
                 java.srcDir 'src/androidLibUnitTest/kotlin'
+                res.srcDirs += ['src/androidLibMain/res']
+                res.srcDirs += ['src/commonTest/resources']
             }
 
         }
