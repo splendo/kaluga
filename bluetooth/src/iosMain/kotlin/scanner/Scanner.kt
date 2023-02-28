@@ -17,17 +17,16 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
-import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
+import com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
@@ -45,24 +44,86 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_queue_create
 
+/**
+ * A default implementation of [BaseScanner]
+ * @param settings the [BaseScanner.Settings] to configure this scanner
+ * @param scanSettings the [ScanSettings] to configure this scanner
+ * @param coroutineScope the [CoroutineScope] this scanner runs on
+ */
 actual class DefaultScanner internal constructor(
     settings: Settings,
     private val scanSettings: ScanSettings,
     coroutineScope: CoroutineScope
 ) : BaseScanner(settings, coroutineScope) {
 
-    private companion object {
-        val defaultScanOptions = ScanSettings.Builder().build()
-    }
-
-    class Builder(private val scanSettings: ScanSettings = defaultScanOptions) :
-        BaseScanner.Builder {
+    /**
+     * Builder for creating a [DefaultScanner]
+     * @param scanSettings the [ScanSettings] to configure the scanner
+     */
+    class Builder(private val scanSettings: ScanSettings = ScanSettings.defaultScanOptions) : BaseScanner.Builder {
 
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
         ): BaseScanner {
             return DefaultScanner(settings, scanSettings, coroutineScope)
+        }
+    }
+
+    /**
+     * Settings to configure a [DefaultScanner]
+     * @param allowDuplicateKeys if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
+     * @param solicitedServiceUUIDsKey when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
+     */
+    class ScanSettings private constructor(
+        private val allowDuplicateKeys: Boolean,
+        private val solicitedServiceUUIDsKey: List<UUID>?
+    ) {
+
+        companion object {
+            internal val defaultScanOptions = Builder().build()
+        }
+
+        internal fun parse(): Map<Any?, *> {
+            val result: MutableMap<String, Any> =
+                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
+            solicitedServiceUUIDsKey?.let {
+                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+            }
+            return result.toMap()
+        }
+
+        /**
+         * Builder for creating [ScanSettings]
+         */
+        class Builder {
+
+            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
+            private var allowDuplicateKeys: Boolean = true
+            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionsolicitedserviceuuidskey
+            private var solicitedServiceUUIDsKey: List<UUID>? = null
+
+            /**
+             * Sets whether a new discovery event will be sent each time advertisement data is received.
+             * @param allow if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
+             * @return the [Builder]
+             */
+            fun allowDuplicateKeys(allow: Boolean) =
+                apply { allowDuplicateKeys = allow }
+
+            /**
+             * Sets the list of [UUID] corresponding with services the scanner will also scan for
+             * @param keys when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
+             * @return the [Builder]
+             */
+            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
+                apply { solicitedServiceUUIDsKey = keys }
+
+            /**
+             * Creates [ScanSettings]
+             * @return the created [ScanSettings]
+             */
+            fun build(): ScanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
         }
     }
 
@@ -120,13 +181,13 @@ actual class DefaultScanner internal constructor(
         CBCentralManager(null, enabledQueue, emptyMap<Any?, Any>())
     }.create()
 
-    private val centralManager = AtomicReference<CBCentralManager?>(null)
-    private val centralManagerDelegate = AtomicReference<CBCentralManagerDelegateProtocol?>(null)
+    private var centralManager: CBCentralManager? = null
+    private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
     private val centralManagerMutex = Mutex()
     private suspend fun getOrCreateCentralManager(): CBCentralManager {
-        return centralManager.value ?: centralManagerMutex.withLock {
-            centralManager.value ?: createCentralManager().also {
-                centralManager.set(it)
+        return centralManager ?: centralManagerMutex.withLock {
+            centralManager ?: createCentralManager().also {
+                centralManager = it
             }
         }
     }
@@ -134,7 +195,7 @@ actual class DefaultScanner internal constructor(
     private suspend fun createCentralManager(): CBCentralManager {
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
-        centralManagerDelegate.set(delegate)
+        centralManagerDelegate = delegate
         val manager = CBCentralManager(delegate, scanQueue)
         awaitPoweredOn.await()
         return manager
@@ -206,36 +267,6 @@ actual class DefaultScanner internal constructor(
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
         handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
             deviceWrapper to DefaultDeviceConnectionManager.Builder(central, peripheral)
-        }
-    }
-
-    class ScanSettings private constructor(
-        private val allowDuplicateKeys: Boolean,
-        private val solicitedServiceUUIDsKey: List<UUID>?
-    ) {
-
-        fun parse(): Map<Any?, *> {
-            val result: MutableMap<String, Any> =
-                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
-            solicitedServiceUUIDsKey?.let {
-                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
-            }
-            return result.toMap()
-        }
-
-        data class Builder(
-            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
-            var allowDuplicateKeys: Boolean = true,
-            // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionsolicitedserviceuuidskey
-            var solicitedServiceUUIDsKey: List<UUID>? = null,
-        ) {
-            fun allowDuplicateKeys(allow: Boolean) =
-                apply { allowDuplicateKeys = allow }
-
-            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
-                apply { solicitedServiceUUIDsKey = keys }
-
-            fun build(): ScanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
         }
     }
 }

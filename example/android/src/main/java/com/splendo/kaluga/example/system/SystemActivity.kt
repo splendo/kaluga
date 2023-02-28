@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,29 +20,25 @@ package com.splendo.kaluga.example.system
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.appcompat.widget.AppCompatButton
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.databinding.ActivitySystemBinding
+import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
-import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class SystemActivity : KalugaViewModelActivity<SystemViewModel>(R.layout.activity_system) {
+class SystemActivity : KalugaViewModelActivity<SystemViewModel>() {
     override val viewModel: SystemViewModel by viewModel {
         parametersOf(
-            ActivityNavigator<SystemNavigationActions<Unit>> { action ->
+            ActivityNavigator<SystemNavigationActions> { action ->
                 when (action) {
-                    SystemNavigationActions.Network -> NavigationSpec.Fragment(
-                        R.id.system_features_fragment,
-                        createFragment = { NetworkFragment() }
-                    )
+                    SystemNavigationActions.Network -> NavigationSpec.Activity<NetworkActivity>()
                 }
             }
         )
@@ -51,13 +47,20 @@ class SystemActivity : KalugaViewModelActivity<SystemViewModel>(R.layout.activit
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val adapter = SystemFeatureAdapter(viewModel).apply {
-            findViewById<RecyclerView>(R.id.system_features_list).adapter = this
-        }
+        val binding = ActivitySystemBinding.inflate(LayoutInflater.from(this), null, false)
+        binding.systemFeaturesList.adapter = SystemFeatureAdapter(viewModel)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
+    }
+}
 
-        viewModel.modules.observeInitialized {
-            adapter.modules = it
-        }
+object SystemFeaturesBinding {
+    @BindingAdapter("systemFeatures")
+    @JvmStatic
+    fun bindSystemFeatures(view: RecyclerView, resources: List<SystemFeatures>?) {
+        val adapter = (view.adapter as? SystemFeatureAdapter) ?: return
+        adapter.systemFeatures = resources.orEmpty()
     }
 }
 
@@ -65,21 +68,23 @@ class SystemFeatureAdapter(
     private val viewModel: SystemViewModel
 ) : RecyclerView.Adapter<SystemFeatureAdapter.SystemFeatureViewHolder>() {
 
-    inner class SystemFeatureViewHolder(val button: Button) : RecyclerView.ViewHolder(button)
+    inner class SystemFeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
+        val button = binding.button
+    }
 
-    var modules: List<SystemFeatures> = emptyList()
+    var systemFeatures: List<SystemFeatures> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SystemFeatureViewHolder {
-        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_list_button, parent, false) as AppCompatButton
-        return SystemFeatureViewHolder(button)
+        val binding = ViewListButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SystemFeatureViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: SystemFeatureViewHolder, position: Int) {
-        modules.getOrNull(position)?.let { feature ->
+        systemFeatures.getOrNull(position)?.let { feature ->
             holder.button.text = feature.name
             holder.button.setOnClickListener { viewModel.onButtonTapped(feature) }
         } ?: run {
@@ -88,5 +93,5 @@ class SystemFeatureAdapter(
         }
     }
 
-    override fun getItemCount(): Int = modules.size
+    override fun getItemCount(): Int = systemFeatures.size
 }

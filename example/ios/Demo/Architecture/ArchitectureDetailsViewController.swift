@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,26 +16,30 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class ArchitectureDetailsViewController: UIViewController {
     
-    struct Const {
-        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        static let storyboardId = "ArchitectureDetails"
-    }
-    
     static func create(inputDetails: InputDetails, onDismiss: @escaping (InputDetails) -> Void) -> ArchitectureDetailsViewController {
-        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ArchitectureDetailsViewController
+        let viewController = MainStoryboard.instantiateArchitectureDetailsViewController()
         if #available(iOS 13.0, *) {
-            vc.isModalInPresentation = true
+            viewController.isModalInPresentation = true
         }
-        vc.viewModel = KNArchitectureFramework().createArchitectureDetailsViewModel(parent: vc, inputDetails: inputDetails) { inputDetails in
-            onDismiss(inputDetails)
-        }
-        return vc
+        let navigator = ArchitectureDetailsNavigatorKt.ArchitectureDetailsViewControllerNavigator(
+            parent: viewController,
+            onFinishWithDetails: { details in
+                NavigationSpec.Pop(to: nil, animated: true) {
+                    onDismiss(details)
+                }
+            },
+            onClose: {
+                NavigationSpec.Pop(to: nil, animated: true)
+            }
+        )
+        viewController.viewModel = ArchitectureDetailsViewModel(initialDetail: inputDetails, navigator: navigator)
+        return viewController
     }
-    
+
     var viewModel: ArchitectureDetailsViewModel!
     private var lifecycleManager: LifecycleManager!
     
@@ -47,16 +51,20 @@ class ArchitectureDetailsViewController: UIViewController {
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
-            
+
+        navigationItem.hidesBackButton = true
+        let newBackButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(didDismiss))
+        self.navigationItem.leftBarButtonItem = newBackButton
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
+
             guard let viewModel = self?.viewModel else {
                 return []
             }
-            
+
             return [
                 viewModel.name.observe { name in
                     self?.nameLabel.text = name as? String ?? ""
@@ -66,14 +74,12 @@ class ArchitectureDetailsViewController: UIViewController {
                 }
             ]
         }
+
+        ButtonStyleKt.bindButton(inverseButton, button: viewModel.inverseButton)
+        ButtonStyleKt.bindButton(closeButton, button: viewModel.finishButton)
     }
-    
-    @objc @IBAction func onInversePressed(sender: Any?) {
-        viewModel.onInversePressed()
+
+    @objc func didDismiss() {
+        viewModel.onBackPressed()
     }
-    
-    @objc @IBAction func onCloseButtonPressed(sender: Any?) {
-        viewModel.onClosePressed()
-    }
-    
 }

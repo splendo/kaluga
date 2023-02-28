@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.asSpecificEnergy
 import com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose.asSpecificEnergy
+import com.splendo.kaluga.scientific.converter.kinematicViscosity.div
 import com.splendo.kaluga.scientific.converter.molality.times
 import com.splendo.kaluga.scientific.converter.molarEnergy.div
 import com.splendo.kaluga.scientific.converter.molarEnergy.times
@@ -78,6 +79,12 @@ class SpecificEnergyUnitTest {
         assertEquals(200(Erg per Gram), 2(RoentgenEquivalentMan).asSpecificEnergy())
         assertEquals(200(Erg per Gram), 20(DeciroentgenEquivalentMan).asSpecificEnergy())
         assertEquals(2(Joule per Kilogram), 2(Sievert).asSpecificEnergy())
+    }
+
+    @Test
+    fun specificEnergyFromKinematicViscosityAndTimeTest() {
+        assertEqualScientificValue(1(Joule per Kilogram), 2(SquareMeter per Second) / 2(Second))
+        assertEqualScientificValue(1(FootPoundForce per Pound), (2 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second) / 2(Second), 5)
     }
 
     @Test

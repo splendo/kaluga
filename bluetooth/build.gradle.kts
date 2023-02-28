@@ -1,31 +1,29 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 dependencies {
-    val ext = (gradle as ExtensionAware).extra
-    implementation("no.nordicsemi.android.support.v18:scanner:${ext["android_ble_scanner_version"]}")
+    implementationDependency(Dependencies.BLEScanner)
     implementation(project(":location", ""))
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                val ext = (gradle as ExtensionAware).extra
+                implementation(project(":service"))
                 api(project(":bluetooth-permissions", ""))
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
             }
         }
         commonTest {

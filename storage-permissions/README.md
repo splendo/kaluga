@@ -1,5 +1,5 @@
-## Storage Permissions
-Adds a `StoragePermission`. Register this permission by calling `PermissionsBuilder.registerStoragePermission`.
+# Storage Permissions
+Adds a `StoragePermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerStoragePermission()`/`PermissionsBuilder.registerStoragePermissionIfNotRegistered()`.
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Storage Permissions as follows:

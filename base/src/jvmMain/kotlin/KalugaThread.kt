@@ -18,13 +18,27 @@ package com.splendo.kaluga.base
 
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * The thread of execution
+ */
 actual data class KalugaThread(val thread: Thread) {
 
     actual companion object {
+
+        /**
+         * The [KalugaThread] the calling method is running on
+         */
         actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
     }
 
+    /**
+     * Name of the thread
+     */
     actual var name: String by thread::name
+
+    /**
+     * When `true` this thread is the main thread.
+     */
     actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) { // safest way also for synthetic main threads
         thread == Thread.currentThread()
     }

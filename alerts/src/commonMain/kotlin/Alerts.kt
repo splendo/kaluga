@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,12 +18,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 typealias AlertActionHandler = () -> Unit
 typealias AlertTextObserver = (String) -> Unit
@@ -48,14 +45,162 @@ data class Alert(
      * Alert style
      */
     enum class Style {
-        ALERT, ACTION_LIST, TEXT_INPUT
+        /**
+         * Alert that shows only a title/message and positive/neutral/negative actions.
+         */
+        ALERT,
+
+        /**
+         * Alert that shows a list of [Action]
+         */
+        ACTION_LIST,
+
+        /**
+         * Alert that shows some Text Inout
+         */
+        TEXT_INPUT
+    }
+
+    /**
+     * Builder class for creating an [Alert]
+     */
+    class Builder(private var style: Style = Style.ALERT) {
+        private var title: String? = null
+        private var message: String? = null
+        private var actions: MutableList<Action> = mutableListOf()
+        private var textInputAction: TextInputAction? = null
+
+        /**
+         * Sets the [title] displayed in the alert
+         *
+         * @param title The title of the alert
+         * @return The modified [Alert.Builder]
+         */
+        fun setTitle(title: String?) = apply { this.title = title }
+
+        /**
+         * Sets the [message] displayed in the alert
+         *
+         * @param message The message of the alert
+         * @return The modified [Alert.Builder]
+         */
+        fun setMessage(message: String?) = apply { this.message = message }
+
+        /**
+         * Sets an [Action] with [Action.Style.POSITIVE]. If one already exists it will be replaced.
+         *
+         * @param title The title of the button
+         * @param handler The block to execute after user taps a button
+         * @return The modified [Alert.Builder]
+         */
+        fun setPositiveButton(title: String, handler: AlertActionHandler = {}) = apply {
+            this.actions.removeAll { it.style == Action.Style.POSITIVE || it.style == Action.Style.DEFAULT }
+            addAction(Action(title, Action.Style.POSITIVE, handler))
+        }
+
+        /**
+         * Sets an [Action] with [Action.Style.NEGATIVE]. If one already exists it will be replaced.
+         *
+         * @param title The title of the button
+         * @param handler The block to execute after user taps a button
+         * @return The modified [Alert.Builder]
+         */
+        fun setNegativeButton(title: String, handler: AlertActionHandler = {}) = apply {
+            this.actions.removeAll { it.style == Action.Style.NEGATIVE || it.style == Action.Style.CANCEL }
+            addAction(Action(title, Action.Style.NEGATIVE, handler))
+        }
+
+        /**
+         * Sets the [Action] with [Action.Style.NEUTRAL]. If one already exists it will be replaced.
+         *
+         * @param title The title of the button
+         * @param handler The block to execute after user taps a button
+         * @return The modified [Alert.Builder]
+         */
+        fun setNeutralButton(title: String, handler: AlertActionHandler = {}) = apply {
+            this.actions.removeAll { it.style == Action.Style.NEUTRAL || it.style == Action.Style.DESTRUCTIVE }
+            addAction(Action(title, Action.Style.NEUTRAL, handler))
+        }
+
+        /**
+         * Initializes alert's input field
+         *
+         * @param text The initial text of the input field
+         * @param placeholder The input field hint
+         * @param textObserver The callback for text change events of inout field
+         * @return The modified [Alert.Builder]
+         */
+        fun setTextInput(
+            text: String? = null,
+            placeholder: String?,
+            textObserver: AlertTextObserver
+        ) = apply {
+            setTextInputAction(TextInputAction(text, placeholder, textObserver))
+        }
+
+        /**
+         * Adds a list of [Action] to the alert
+         *
+         * @param actions The list of [Action] objects
+         * @return The modified [Alert.Builder]
+         */
+        fun addActions(actions: List<Action>) = apply { this.actions.addAll(actions) }
+
+        /**
+         * Adds a list of [Action] to the alert
+         *
+         * @param actions The list of [Action] objects
+         * @return The modified [Alert.Builder]
+         */
+        fun addActions(vararg actions: Action) = apply { this.actions.addAll(actions) }
+
+        /**
+         * Sets a [Style] of the alert
+         *
+         * @param style The [Style] of an alert
+         * @return The modified [Alert.Builder]
+         */
+        internal fun setStyle(style: Style) = apply { this.style = style }
+
+        /**
+         * Adds an [Action] to the alert
+         *
+         * @param action The action object
+         * @return The modified [Alert.Builder]
+         */
+        private fun addAction(action: Action) = apply { this.actions.add(action) }
+
+        /**
+         * Adds an [Alert.TextInputAction] to the alert
+         *
+         * @param action The action object
+         * @return The modified [Alert.Builder]
+         */
+        private fun setTextInputAction(action: TextInputAction) =
+            apply { this.textInputAction = action }
+
+        /**
+         * Creates an [Alert] based on [title], [message], [actions] and [textInputAction] properties
+         *
+         * @return The [Alert] object
+         * @throws IllegalArgumentException in case missing title and/or message or actions
+         */
+        fun build(): Alert {
+            if (style == Style.ALERT) {
+                require(title != null || message != null) { "Please set title and/or message for the Alert" }
+            } // Action sheet on iOS can be without title and message
+
+            require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
+
+            return Alert(title, message, actions, textInputAction, style)
+        }
     }
 
     /**
      * An action that represents a button in the alert
      *
      * @property title The title of the action's button
-     * @property style The style that is applied to the action's button
+     * @property style The [Style] that is applied to the action's button
      * @property handler The block to execute when the user taps a button
      */
     data class Action(
@@ -63,12 +208,38 @@ data class Alert(
         val style: Style = Style.DEFAULT,
         val handler: AlertActionHandler = {}
     ) {
+        /**
+         * The style of an action. This determines the look of the button when displayed in the alert.
+         */
         enum class Style(val value: Int) {
+            /**
+             * Default button. Synonymous with [POSITIVE]
+             */
             DEFAULT(0),
+
+            /**
+             * Positive button. Synonymous with [DEFAULT]
+             */
             POSITIVE(DEFAULT.value),
+
+            /**
+             * Destructive button. Synonymous with [NEUTRAL]
+             */
             DESTRUCTIVE(1),
+
+            /**
+             * Neutral button. Synonymous with [DESTRUCTIVE]
+             */
             NEUTRAL(DESTRUCTIVE.value),
+
+            /**
+             * Cancel button. Synonymous with [NEGATIVE]
+             */
             CANCEL(2),
+
+            /**
+             * Negative button. Synonymous with [CANCEL]
+             */
             NEGATIVE(CANCEL.value)
         }
     }
@@ -88,11 +259,11 @@ data class Alert(
 }
 
 /**
- * Interface that defines actions that can be applied to the alert.
+ * Interface that defines actions that can be used for presenting an [Alert].
  */
 interface AlertActions {
     /**
-     * Presents an alert
+     * Presents an [Alert]
      *
      * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
@@ -100,16 +271,16 @@ interface AlertActions {
     fun showAsync(animated: Boolean = true, completion: () -> Unit = {})
 
     /**
-     * Presents an alert and suspends
+     * Presents an [Alert] and suspends until completion
      *
-     * @param animated
-     * @return The action that was performed by button click
-     *         or `null` if the alert was cancelled by pressing back (on Android)
+     * @param animated Pass `true` to animate the presentation
+     * @return The [Alert.Action] that was performed by button click or `null` if the alert was cancelled by the user.
+     * Note that some platforms, such as iOS, may not allow the user to cancel the alert.
      */
     suspend fun show(animated: Boolean = true): Alert.Action?
 
     /**
-     * Dismisses the alert, which was presented previously
+     * Dismisses the currently presented [Alert]
      *
      * @param animated Pass `true` to animate the transition
      */
@@ -120,157 +291,25 @@ interface AlertActions {
  * Abstract alert presenter, used to show and dismiss given [Alert]
  * @see [AlertPresenter]
  *
- * @property alert The alert to present (and dismiss if needed)
+ * @param alert The [Alert] to present (and dismiss if needed)
  */
 abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
     /**
-     * Abstract alert builder class, used to create an [Alert].
-     * The resulting Alert that can be shown and dismissed using an [AlertPresenter].
+     * Abstract alert builder class, used to create a [BaseAlertPresenter].
      *
      * @see [AlertPresenter.Builder]
      */
-    abstract class Builder : LifecycleSubscribableMarker {
-
-        private var title: String? = null
-        private var message: String? = null
-        private var actions: MutableList<Alert.Action> = mutableListOf()
-        private var textInputAction: Alert.TextInputAction? = null
-        private var style: Alert.Style = Alert.Style.ALERT
-        internal val lock = Lock()
-
-        /**
-         * Sets the [title] displayed in the alert
-         *
-         * @param title The title of the alert
-         */
-        fun setTitle(title: String?) = apply { this.title = title }
-
-        /**
-         * Sets the [message] displayed in the alert
-         *
-         * @param message The message of the alert
-         */
-        fun setMessage(message: String?) = apply { this.message = message }
-
-        /**
-         * Sets button with the id `BUTTON_POSITIVE` on Android
-         * and action with style `UIAlertActionStyleDefault` on iOS
-         *
-         * @param title The title of the button
-         * @param handler The block to execute after user taps a button
-         */
-        fun setPositiveButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, handler))
-        }
-
-        /**
-         * Sets button with the id `BUTTON_NEGATIVE` on Android
-         * and action with style `UIAlertActionStyleCancel` on iOS
-         *
-         * @param title The title of the button
-         * @param handler The block to execute after user taps a button
-         */
-        fun setNegativeButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, handler))
-        }
-
-        /**
-         * Sets button with the id `BUTTON_NEUTRAL` on Android
-         * and action with style `UIAlertActionStyleDestructive` on iOS
-         *
-         * @param title The title of the button
-         * @param handler The block to execute after user taps a button
-         */
-        fun setNeutralButton(title: String, handler: AlertActionHandler = {}) = apply {
-            addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, handler))
-        }
-
-        /**
-         * Initializes alert's input field
-         *
-         * @param text The initial text of the input field
-         * @param placeholder The input field hint
-         * @param textObserver The callback for text change events of inout field
-         */
-        fun setTextInput(
-            text: String? = null,
-            placeholder: String?,
-            textObserver: AlertTextObserver
-        ) = apply {
-            setTextInputAction(Alert.TextInputAction(text, placeholder, textObserver))
-        }
-
-        /**
-         * Adds a list of [actions] to the alert
-         *
-         * @param actions The list of action objects
-         */
-        fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
-
-        /**
-         * Adds a list of [actions] to the alert
-         *
-         * @param actions The list of action objects
-         */
-        fun addActions(vararg actions: Alert.Action) = apply { this.actions.addAll(actions) }
-
-        /**
-         * Sets a style of the alert
-         *
-         * @param style The style of an alert
-         */
-        internal fun setStyle(style: Alert.Style) = apply { this.style = style }
-
-        /**
-         * Adds an [action] to the alert
-         *
-         * @param action The action object
-         */
-        private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
-
-        /**
-         * Adds an [Alert.TextInputAction] to the alert
-         *
-         * @param action The action object
-         */
-        private fun setTextInputAction(action: Alert.TextInputAction) =
-            apply { this.textInputAction = action }
-
-        /**
-         * Reset builder into initial state
-         */
-        internal fun reset() = apply {
-            this.title = null
-            this.message = null
-            this.actions = mutableListOf()
-            this.textInputAction = null
-            this.style = Alert.Style.ALERT
-        }
-
-        /**
-         * Creates an alert based on [title], [message], [actions] and [textInputAction] properties
-         *
-         * @return The alert object
-         * @throws IllegalArgumentException in case missing title and/or message or actions
-         */
-        protected fun createAlert(): Alert {
-            if (style == Alert.Style.ALERT) {
-                require(title != null || message != null) { "Please set title and/or message for the Alert" }
-            } // Action sheet on iOS can be without title and message
-
-            require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
-
-            return Alert(title, message, actions, textInputAction, style)
-        }
+    abstract class Builder : LifecycleSubscribable {
 
         /**
          * Creates the [BaseAlertPresenter] described by this builder.
          *
+         * @param alert The [Alert] to be presented by the built presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The [BaseAlertPresenter] described by this builder.
          */
-        abstract fun create(coroutineScope: CoroutineScope): BaseAlertPresenter
+        abstract fun create(alert: Alert, coroutineScope: CoroutineScope): BaseAlertPresenter
     }
 
     override fun showAsync(animated: Boolean, completion: () -> Unit) {
@@ -281,9 +320,18 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         suspendCancellableCoroutine { continuation ->
             continuation.invokeOnCancellation {
                 dismissAlert(animated)
-                continuation.resume(null)
+                continuation.tryResume(null)?.let {
+                    continuation.completeResume(it)
+                }
             }
-            showAlert(animated, afterHandler = { continuation.resume(it) })
+            showAlert(
+                animated,
+                afterHandler = { action ->
+                    continuation.tryResume(action)?.let {
+                        continuation.completeResume(it)
+                    }
+                }
+            )
         }
 
     override fun dismiss(animated: Boolean) {
@@ -300,67 +348,72 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 }
 
 /**
- * Class for presenting an [Alert].
+ * Class for presenting an [Alert]. Implementation of [BaseAlertPresenter]
  */
 expect class AlertPresenter : BaseAlertPresenter {
+
+    /**
+     * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
+     */
     class Builder : BaseAlertPresenter.Builder {
         /**
          * Creates an [AlertPresenter]
          *
+         * @param alert The [Alert] to be presented with the built presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        override fun create(coroutineScope: CoroutineScope): AlertPresenter
+        override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter
     }
 }
 
 /**
- * Builds an alert of type [Alert.Style.ALERT] using DSL syntax (thread safe)
+ * Builds a [BaseAlertPresenter] of type [Alert.Style.ALERT] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @param initialize The block to construct an Alert
- * @return The built alert interface object
+ * @param initialize The block to construct an [Alert]
+ * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildAlert(
     coroutineScope: CoroutineScope,
-    initialize: BaseAlertPresenter.Builder.() -> Unit
-): BaseAlertPresenter = lock.withLock {
-    reset()
-    setStyle(Alert.Style.ALERT)
-    initialize()
-    return create(coroutineScope)
-}
+    initialize: Alert.Builder.() -> Unit
+): BaseAlertPresenter = create(
+    Alert.Builder(Alert.Style.ALERT).apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)
 
 /**
- * Builds an alert of type [Alert.Style.ACTION_LIST] using DSL syntax (thread safe)
+ * Builds a [BaseAlertPresenter] of type [Alert.Style.ACTION_LIST] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @param initialize The block to construct an Alert
- * @return The built alert interface object
+ * @param initialize The block to construct an [Alert]
+ * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildActionSheet(
     coroutineScope: CoroutineScope,
-    initialize: BaseAlertPresenter.Builder.() -> Unit
-): BaseAlertPresenter = lock.withLock {
-    reset()
-    setStyle(Alert.Style.ACTION_LIST)
-    initialize()
-    return create(coroutineScope)
-}
+    initialize: Alert.Builder.() -> Unit
+): BaseAlertPresenter = create(
+    Alert.Builder(Alert.Style.ACTION_LIST).apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)
 
 /**
- * Builds an alert of type [Alert.Style.TEXT_INPUT] using DSL syntax (thread safe)
+ * Builds a [BaseAlertPresenter] of type [Alert.Style.TEXT_INPUT] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @param initialize The block to construct an Alert
- * @return The built alert interface object
+ * @param initialize The block to construct an [Alert]
+ * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildAlertWithInput(
     coroutineScope: CoroutineScope,
-    initialize: BaseAlertPresenter.Builder.() -> Unit
-): BaseAlertPresenter = lock.withLock {
-    reset()
-    setStyle(Alert.Style.TEXT_INPUT)
-    initialize()
-    return create(coroutineScope)
-}
+    initialize: Alert.Builder.() -> Unit
+): BaseAlertPresenter = create(
+    Alert.Builder(Alert.Style.TEXT_INPUT).apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)

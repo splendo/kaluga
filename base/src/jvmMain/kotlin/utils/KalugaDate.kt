@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,30 +15,52 @@
 
  */
 
+@file:JvmName("KalugaDateJVMKt")
 package com.splendo.kaluga.base.utils
 
 import java.util.Calendar
 import java.util.Date
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 actual typealias KalugaDateHolder = Date
 
+/**
+ * Default implementation of [KalugaDate]
+ */
 actual class DefaultKalugaDate internal constructor(internal val calendar: Calendar) : KalugaDate() {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(
+
+        /**
+         * Creates a [KalugaDate] relative to the current time
+         * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
+        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
-                add(Calendar.MILLISECOND, offsetInMilliseconds.toInt())
+                add(Calendar.MILLISECOND, offset.inWholeMilliseconds.toInt())
             }
         )
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(
+
+        /**
+         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
+         * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
+        actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
-                timeInMillis = offsetInMilliseconds
+                timeInMillis = offset.inWholeMilliseconds
             }
         )
     }
 
-    override var timeZone: TimeZone
-        get() = TimeZone(calendar.timeZone)
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone(calendar.timeZone)
         set(value) { calendar.timeZone = value.timeZone }
 
     override var era: Int
@@ -82,15 +104,15 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
     override var millisecond: Int
         get() = calendar.get(Calendar.MILLISECOND)
         set(value) { calendar.set(Calendar.MILLISECOND, value) }
-    override var millisecondSinceEpoch: Long
-        get() = calendar.timeInMillis
-        set(value) { calendar.timeInMillis = value }
+    override var durationSinceEpoch: Duration
+        get() = calendar.timeInMillis.milliseconds
+        set(value) { calendar.timeInMillis = value.inWholeMilliseconds }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(calendar.clone() as Calendar)
 
     override fun equals(other: Any?): Boolean {
         return (other as? KalugaDate)?.let {
-            timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
+            timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
         } ?: false
     }
 

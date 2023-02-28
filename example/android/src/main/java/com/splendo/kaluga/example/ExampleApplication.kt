@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,10 +20,17 @@ package com.splendo.kaluga.example
 
 import android.app.Application
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.example.di.utilitiesModule
-import com.splendo.kaluga.example.di.viewModelModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import com.splendo.kaluga.example.keyboard.compose.composeKeyboardViewModel
+import com.splendo.kaluga.example.keyboard.xml.XMLKeyboardActivity
+import com.splendo.kaluga.example.shared.di.initKoin
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.keyboard.ViewFocusHandler
+import com.splendo.kaluga.keyboard.ViewKeyboardManager
+import com.splendo.kaluga.keyboard.compose.ComposeFocusHandler
+import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
 class ExampleApplication : Application() {
 
@@ -31,9 +38,17 @@ class ExampleApplication : Application() {
         super.onCreate()
         ApplicationHolder.application = this
 
-        startKoin {
-            androidContext(this@ExampleApplication)
-            modules(utilitiesModule, viewModelModule)
-        }
+        initKoin(
+            listOf(
+                module {
+                    viewModel(named(composeKeyboardViewModel)) { (keyboardBuilder: ComposeKeyboardManager.Builder, focusHandler: ComposeFocusHandler) ->
+                        KeyboardViewModel(keyboardBuilder, focusHandler)
+                    }
+                    viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder, focusHandler: ViewFocusHandler) ->
+                        KeyboardViewModel(keyboardBuilder, focusHandler)
+                    }
+                }
+            )
+        )
     }
 }

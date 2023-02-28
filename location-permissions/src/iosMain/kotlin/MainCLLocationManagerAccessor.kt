@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.permissions.location
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import platform.CoreLocation.CLLocationManager
@@ -26,13 +24,14 @@ import platform.CoreLocation.CLLocationManager
 /**
  * Accessor to ensure a [CLLocationManager] is only managed from the Main Thread.
  * Use [updateLocationManager] to gain access to the LocationManager
+ * @param onInit callback to modify the [CLLocationManager] after it is initialized
  */
 class MainCLLocationManagerAccessor(private val onInit: CLLocationManager.() -> Unit) {
 
-    private val locationManager = AtomicReference<CLLocationManager?>(null)
+    private var locationManager: CLLocationManager? = null
 
-    private fun createLocationManagerIfNotCreated(): CLLocationManager = locationManager.value ?: CLLocationManager().apply {
-        locationManager.set(this)
+    private fun createLocationManagerIfNotCreated(): CLLocationManager = locationManager ?: CLLocationManager().apply {
+        locationManager = this
         onInit()
     }
 

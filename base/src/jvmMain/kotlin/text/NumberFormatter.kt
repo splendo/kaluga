@@ -1,30 +1,35 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
- 
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
       http://www.apache.org/licenses/LICENSE-2.0
- 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-  
+
  */
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException
 import java.util.Currency
 
 @ExperimentalUnsignedTypes
-actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
+/**
+ * Default implementation of [BaseNumberFormatter]
+ * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
+ * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
+ */
+actual class NumberFormatter actual constructor(override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
 
     private val format: DecimalFormat = when (style) {
         is NumberFormatStyle.Integer -> DecimalFormat.getInstance(locale.locale).apply {
@@ -85,70 +90,70 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         }
     }
 
-    actual var percentSymbol: Char
+    override var percentSymbol: Char
         get() = symbols.percent
         set(value) { applySymbols { it.percent = value } }
-    actual var perMillSymbol: Char
+    override var perMillSymbol: Char
         get() = symbols.perMill
         set(value) { applySymbols { it.perMill = value } }
-    actual var minusSign: Char
+    override var minusSign: Char
         get() = symbols.minusSign
         set(value) { applySymbols { it.minusSign = value } }
-    actual var exponentSymbol: String
+    override var exponentSymbol: String
         get() = symbols.exponentSeparator
         set(value) { applySymbols { it.exponentSeparator = value } }
-    actual var zeroSymbol: Char
+    override var zeroSymbol: Char
         get() = symbols.zeroDigit
         set(value) { applySymbols { it.zeroDigit = value } }
-    actual var notANumberSymbol: String
+    override var notANumberSymbol: String
         get() = symbols.naN
         set(value) { applySymbols { it.naN = value } }
-    actual var infinitySymbol: String
+    override var infinitySymbol: String
         get() = symbols.infinity
         set(value) { applySymbols { it.infinity = value } }
 
-    actual var currencySymbol: String
+    override var currencySymbol: String
         get() = symbols.currencySymbol
         set(value) { applySymbols { it.currencySymbol = value } }
-    actual var currencyCode: String
+    override var currencyCode: String
         get() = symbols.currency.currencyCode
         set(value) { applySymbols { it.currency = Currency.getInstance(value) } }
 
-    actual var positivePrefix: String
+    override var positivePrefix: String
         get() = format.positivePrefix
         set(value) { format.positivePrefix = value }
-    actual var positiveSuffix: String
+    override var positiveSuffix: String
         get() = format.positiveSuffix
         set(value) { format.positiveSuffix = value }
-    actual var negativePrefix: String
+    override var negativePrefix: String
         get() = format.negativePrefix
         set(value) { format.negativePrefix = value }
-    actual var negativeSuffix: String
+    override var negativeSuffix: String
         get() = format.negativeSuffix
         set(value) { format.negativeSuffix = value }
 
-    actual var groupingSeparator: Char
+    override var groupingSeparator: Char
         get() = symbols.groupingSeparator
         set(value) { applySymbols { it.groupingSeparator = value } }
-    actual var usesGroupingSeparator: Boolean
+    override var usesGroupingSeparator: Boolean
         get() = format.isGroupingUsed
         set(value) { format.isGroupingUsed = value }
-    actual var decimalSeparator: Char
+    override var decimalSeparator: Char
         get() = symbols.decimalSeparator
         set(value) { applySymbols { it.decimalSeparator = value } }
-    actual var alwaysShowsDecimalSeparator: Boolean
+    override var alwaysShowsDecimalSeparator: Boolean
         get() = format.isDecimalSeparatorAlwaysShown
         set(value) { format.isDecimalSeparatorAlwaysShown = value }
-    actual var currencyDecimalSeparator: Char
+    override var currencyDecimalSeparator: Char
         get() = symbols.monetaryDecimalSeparator
         set(value) { applySymbols { it.monetaryDecimalSeparator = value } }
-    actual var groupingSize: Int
+    override var groupingSize: Int
         get() = format.groupingSize
         set(value) { format.groupingSize = value }
-    actual var multiplier: Int
+    override var multiplier: Int
         get() = format.multiplier
         set(value) { format.multiplier = value }
 
-    actual fun format(number: Number): String = format.format(number.toDouble())
-    actual fun parse(string: String): Number? = try { format.parse(string) } catch (e: ParseException) { null }
+    override fun format(number: Number): String = format.format(number.toDouble())
+    override fun parse(string: String): Number? = try { format.parse(string) } catch (e: ParseException) { null }
 }

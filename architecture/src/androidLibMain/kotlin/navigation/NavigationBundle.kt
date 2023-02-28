@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@ package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Converts a [NavigationBundle] to a [Bundle]
  * @return The converted [Bundle]
  */
-fun <R : NavigationBundleSpecRow<*>> NavigationBundle<R>.toBundle(): Bundle {
+fun <Row : NavigationBundleSpecRow<*>> NavigationBundle<Row>.toBundle(): Bundle {
     val bundle = Bundle()
 
     values.entries.forEach { (key, value) ->
@@ -59,9 +60,9 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
         is NavigationBundleValue.StringValue -> bundle.putString(key, value.value)
         is NavigationBundleValue.StringArrayValue -> bundle.putStringArrayList(key, ArrayList(value.value))
         is NavigationBundleValue.OptionalValue<*> -> value.optionalValue?.let { mapValue(key, it, bundle) }
-        is NavigationBundleValue.DateValue -> bundle.putLong(key, value.value.millisecondSinceEpoch)
+        is NavigationBundleValue.DateValue -> bundle.putLong(key, value.value.durationSinceEpoch.inWholeMilliseconds)
         is NavigationBundleValue.DateArrayValue ->
-            bundle.putLongArray(key, LongArray(value.value.size) { value.value[it].millisecondSinceEpoch })
+            bundle.putLongArray(key, LongArray(value.value.size) { value.value[it].durationSinceEpoch.inWholeMilliseconds })
     }
 }
 
@@ -70,7 +71,7 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
  * @param spec The [NavigationBundleSpec] used to create the [NavigationBundle]
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
-fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<R>): NavigationBundle<R> {
+fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<Row>): NavigationBundle<Row> {
     return NavigationBundle(
         spec,
         spec.rows.associate { row ->
@@ -79,16 +80,6 @@ fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationB
             } ?: throw BundleConversionError()
         }
     )
-}
-
-/**
- * Converts a [Bundle] to a property associated with a [NavigationBundleSpecType]
- * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType]
- * @return The type stored in the bundle
- * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
- */
-fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
-    return toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
 }
 
 /**
@@ -133,10 +124,10 @@ internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>)
             }
         }
         is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
-            specType.convertValue(DefaultKalugaDate.epoch(value))
+            specType.convertValue(DefaultKalugaDate.epoch(value.milliseconds))
         }
         is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
-            specType.convertValue(array.map { DefaultKalugaDate.epoch(it) })
+            specType.convertValue(array.map { DefaultKalugaDate.epoch(it.milliseconds) })
         }
     }
 }

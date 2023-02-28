@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,11 +22,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
-import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.uses24HourClock
 import kotlinx.coroutines.CoroutineScope
@@ -34,18 +31,41 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+/**
+ * A [BaseDateTimePickerPresenter] for presenting a [DateTimePicker].
+ * @param dateTimePicker The [DateTimePicker] being presented.
+ * @param themeResourceId the resource ID of the theme to apply to the date-time picker dialog
+ * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
+ * @param coroutineScope The [CoroutineScope] managing changes to the alert presentation.
+ */
 actual class DateTimePickerPresenter(
-    private val dateTimePicker: DateTimePicker,
+    dateTimePicker: DateTimePicker,
     private val themeResourceId: Int,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
 ) : BaseDateTimePickerPresenter(dateTimePicker), CoroutineScope by coroutineScope {
 
+    /**
+     * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
+     * @param themeResourceId the resource ID of the theme to apply to the date-time picker dialog
+     * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
+     */
     actual class Builder(
         private val themeResourceId: Int = 0,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : BaseDateTimePickerPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = DateTimePickerPresenter(createDateTimePicker(), themeResourceId, lifecycleManagerObserver, coroutineScope)
+    ) : BaseDateTimePickerPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+
+        /**
+         * Creates a [DateTimePickerPresenter]
+         *
+         * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [DateTimePickerPresenter]
+         */
+        actual override fun create(
+            dateTimePicker: DateTimePicker,
+            coroutineScope: CoroutineScope
+        ) = DateTimePickerPresenter(dateTimePicker, themeResourceId, lifecycleManagerObserver, coroutineScope)
     }
 
     private sealed class DialogPresentation {
@@ -112,10 +132,10 @@ actual class DateTimePickerPresenter(
                     dateTimePicker.selectedDate.day
                 ).apply {
                     type.earliestDate?.let {
-                        datePicker.minDate = it.millisecondSinceEpoch
+                        datePicker.minDate = it.durationSinceEpoch.inWholeMilliseconds
                     }
                     type.latestDate?.let {
-                        datePicker.maxDate = it.millisecondSinceEpoch
+                        datePicker.maxDate = it.durationSinceEpoch.inWholeMilliseconds
                     }
                 }
             }
@@ -144,17 +164,3 @@ actual class DateTimePickerPresenter(
         alertDialog.show()
     }
 }
-
-/**
- * @return The [DateTimePickerPresenter.Builder] which can be used to present alerts while this Activity is active
- * Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.datePickerPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder =
-    getOrPutAndRemoveOnDestroyFromCache {
-        DateTimePickerPresenter.Builder(themeResourceId, lifecycleManagerObserver())
-    }

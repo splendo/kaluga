@@ -23,5 +23,16 @@ import kotlinx.coroutines.CloseableCoroutineDispatcher
  *
  * **NOTE: The resulting [CloseableCoroutineDispatcher] owns native resources (its thread).
  * Resources are reclaimed by [CloseableCoroutineDispatcher.close].**
+ * @param name The name of the thread to be created.
  */
 expect fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher
+
+/**
+ * Creates a coroutine execution context using a thread pool.
+ *
+ * **NOTE: The resulting [CloseableCoroutineDispatcher] owns native resources (its thread).
+ * Resources are reclaimed by [CloseableCoroutineDispatcher.close].**
+ * @param numberOfThreads The number of the threads that the thread pool should consist of.
+ * @param name The name of the thread pool to be created.
+ */
+expect fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableCoroutineDispatcher

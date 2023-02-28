@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,19 +17,60 @@
 
 package com.splendo.kaluga.bluetooth
 
+/**
+ * JavaScript accessor to a Bluetooth characteristic. Not Actually implemented
+ */
 actual interface CharacteristicWrapper {
+
+    /**
+     * The [UUID] of the characteristic
+     */
     actual val uuid: UUID
+
+    /**
+     * The list of [DescriptorWrapper] of associated with the characteristic
+     */
     actual val descriptors: List<DescriptorWrapper>
+
+    /**
+     * The current [Value] of the characteristic
+     */
     actual val value: Value?
+
+    /**
+     * The integer representing all [CharacteristicProperties] of the characteristic
+     */
     actual val properties: Int
 }
 
+/**
+ * JavaScript accessor to a Bluetooth descriptor. Not Actually implemented
+ */
 actual interface DescriptorWrapper {
+
+    /**
+     * The [UUID] of the descriptor
+     */
     actual val uuid: UUID
+
+    /**
+     * The current [Value] of the descriptor
+     */
     actual val value: Value?
 }
 
+/**
+ * JavaScript accessor to a Bluetooth service. Not Actually implemented
+ */
 actual interface ServiceWrapper {
+
+    /**
+     * The list of [CharacteristicWrapper] associated with the service
+     */
     actual val characteristics: List<CharacteristicWrapper>
+
+    /**
+     * The [UUID] of the service
+     */
     actual val uuid: UUID
 }

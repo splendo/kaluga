@@ -1,11 +1,6 @@
-package com.splendo.kaluga.base
-
-import android.app.Application
-import android.content.Context
-
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,13 +16,30 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.base
+
+import android.app.Application
+import android.content.Context
+
+/**
+ * Class holding reference to the [Application] running Kaluga
+ * set [application] to your Application so default constructors work with the proper [Context]
+ */
 class ApplicationHolder {
     companion object {
+
+        /**
+         * The [Application] running Kaluga
+         */
         var application: Application? = null
             set(application) {
                 check(field == null) { "Application object can only be set once." }
                 field = application
             }
+
+        /**
+         * The [Context] of the [application]
+         */
         val applicationContext: Context
             get() {
                 val application = this.application

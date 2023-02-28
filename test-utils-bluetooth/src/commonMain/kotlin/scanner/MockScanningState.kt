@@ -16,6 +16,7 @@
 
 package com.splendo.kaluga.test.bluetooth.scanner
 
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
@@ -38,11 +39,7 @@ sealed class MockScanningState {
         override fun copyAndAdd(device: Device): Devices =
             Devices(listOf(*devices.toTypedArray(), device), filter)
 
-        override fun foundForFilter(filter: Filter) =
-            if (this.filter == filter)
-                this
-            else
-                Devices(filter)
+        override fun foundForFilter(filter: Filter) = if (this.filter == filter) this else Devices(filter)
     }
 
     sealed class Inactive : MockScanningState()
@@ -166,7 +163,7 @@ sealed class MockScanningState {
 
             override suspend fun discoverDevice(
                 identifier: Identifier,
-                rssi: Int,
+                rssi: RSSI,
                 advertisementData: BaseAdvertisementData,
                 deviceCreator: () -> Device
             ): suspend () -> ScanningState.Enabled.Scanning {
@@ -202,8 +199,7 @@ sealed class MockScanningState {
         class MissingPermissions : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingFound, nothingFound)
-                else Disabled()
+                if (enabled) Enabled.Idle(nothingFound, nothingFound) else Disabled()
             }
         }
     }

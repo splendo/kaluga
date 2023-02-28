@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.bluetooth
 
+/**
+ * The value of a platform specific bluetooth attribute
+ */
 expect class Value
 
+/**
+ * Gets the [ByteArray] value of a [Value]
+ */
 expect val Value.asBytes: ByteArray

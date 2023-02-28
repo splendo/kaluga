@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import XCTest
 @testable import Demo
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class DemoTests: XCTestCase {
 
@@ -31,9 +31,7 @@ class DemoTests: XCTestCase {
     }
 
     func testExample() {
-        assert(KotlinNativeFramework().hello() == "Hello from the shared module common source")
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        assert(HelloSharedKt.helloCommon() == "Hello from the shared module common source")
     }
 
     func testPerformanceExample() {
@@ -42,5 +40,4 @@ class DemoTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

@@ -17,8 +17,9 @@
 
 package com.splendo.kaluga.test.location
 
-import co.touchlab.stately.collections.IsoMutableList
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
+import com.splendo.kaluga.location.BaseLocationStateRepoBuilder
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
@@ -28,21 +29,21 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Mock implementation of [LocationStateRepo.Builder]
- * @param permissions The [Permissions] to request permissions from
+ * Mock implementation of [BaseLocationStateRepoBuilder]
+ * @param permissionsBuilder Builds the [Permissions] to request permissions from
  * @param locationManagerBuilder The [BaseLocationManager.Builder] for building the location manager
  * @param setupMocks If `true` sets up [createMock] to automatically create a [LocationStateRepo]
  */
 class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
-    private val permissions: Permissions,
+    private val permissionsBuilder: suspend () -> Permissions,
     val locationManagerBuilder: LMB,
     setupMocks: Boolean = true
-) : LocationStateRepo.Builder {
+) : BaseLocationStateRepoBuilder {
 
     /**
-     * List of build [LocationStateRepo]
+     * List of built [LocationStateRepo]
      */
-    val builtLocationStateRepo = IsoMutableList<LocationStateRepo>()
+    val builtLocationStateRepo = concurrentMutableListOf<LocationStateRepo>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -54,7 +55,7 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
             createMock.on()
                 .doExecute { (locationPermission, settingsBuilder, coroutineContext) ->
                     LocationStateRepo(
-                        { settingsBuilder(locationPermission, permissions) },
+                        { settingsBuilder(locationPermission, permissionsBuilder()) },
                         locationManagerBuilder,
                         coroutineContext
                     ).also {

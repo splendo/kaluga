@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.converter.pressure.pressure
 import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.Barye
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.GrainForce
 import com.splendo.kaluga.scientific.unit.ImperialArea
@@ -33,8 +34,6 @@ import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
 import com.splendo.kaluga.scientific.unit.Kip
 import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.Pascal
@@ -57,11 +56,10 @@ import kotlin.jvm.JvmName
 infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) =
     Barye.pressure(this, area)
 
-@JvmName("dyneMultipleDivSquareCentime")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+@JvmName("dyneMultipleDivSquareCentimeter")
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
-) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    Barye.pressure(this, area)
+) = Barye.pressure(this, area)
 
 @JvmName("poundalDivSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Force, Poundal>.div(area: ScientificValue<PhysicalQuantity.Area, SquareFoot>) =

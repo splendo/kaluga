@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -39,21 +40,21 @@ class RecurringTimerTest {
             interval = 10.milliseconds,
             coroutineScope = this
         )
-        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after creation")
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer was not paused after creation")
         timer.start()
-        assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
+        assertIs<Timer.State.Running>(timer.state.first(), "timer is not running after start")
         timer.pause()
-        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer was not paused after pause")
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer was not paused after pause")
         delay(500)
-        assertIs<Timer.State.NotRunning.Paused>(timer.state.value, "timer pause is not working")
+        assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer pause is not working")
         timer.start()
-        assertIs<Timer.State.Running>(timer.state.value, "timer is not running after start")
+        assertIs<Timer.State.Running>(timer.state.first(), "timer is not running after start")
         delay(500)
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "timer was not finished after time elapsed")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "timer was not finished after time elapsed")
         timer.start()
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to start timer after finish")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "was able to start timer after finish")
         timer.pause()
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.value, "was able to pause timer after finish")
+        assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "was able to pause timer after finish")
     }
 
     @Test
@@ -111,7 +112,7 @@ class RecurringTimerTest {
     /** Provides mock time ticks. */
     private class PredefinedTimeSource(val ticks: List<Duration>) : TimeSource {
         override fun markNow(): TimeMark =
-            object : TimeMark() {
+            object : TimeMark {
                 var index = 0
                 override fun elapsedNow(): Duration =
                     if (index < ticks.size) {

@@ -27,7 +27,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
+/**
+ * A bluetooth attribute conforming to the Attribute Protocol in Bluetooth Low Energy
+ * @param ReadAction the [DeviceAction.Read] associated with the attribute
+ * @param WriteAction the [DeviceAction.Write] associated with the attribute
+ * @param initialValue the initial [ByteArray] value of the attribute
+ * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
+ * @param parentLogTag the log tag used to modify the log tag of this attribute
+ * @param logger the [Logger] to use for logging.
+ */
+abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val parentLogTag: String,
@@ -36,6 +45,9 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
 
     protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
 
+    /**
+     * The [UUID] of the attribute
+     */
     abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) =
@@ -44,22 +56,34 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(
     // TODO make configurable
     private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
 
-    fun readValue(): DeviceAction {
+    /**
+     * Creates and emits a [ReadAction]
+     * @return the [ReadAction] created
+     */
+    fun readValue(): ReadAction {
         val action = createReadAction()
         addAction(action)
         return action
     }
 
-    internal abstract fun createReadAction(): R
+    internal abstract fun createReadAction(): ReadAction
 
-    fun writeValue(newValue: ByteArray): DeviceAction {
+    /**
+     * Creates and emits a [WriteAction] to write a given [ByteArray]
+     * @param newValue the [ByteArray] to write to the attribute
+     * @return the [WriteAction] created
+     */
+    fun writeValue(newValue: ByteArray): WriteAction {
         val action = createWriteAction(newValue)
         addAction(action)
         return action
     }
 
-    internal abstract fun createWriteAction(newValue: ByteArray): W
+    internal abstract fun createWriteAction(newValue: ByteArray): WriteAction
 
+    /**
+     * Notifies the attribute that a new value may be available
+     */
     open fun updateValue() {
         val nextValue = getUpdatedValue()
         logger.debug(logTag) { "Updated value to $nextValue" }

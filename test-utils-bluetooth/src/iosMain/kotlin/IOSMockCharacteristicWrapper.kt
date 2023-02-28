@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.toNSData
+import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
@@ -37,10 +36,7 @@ class IOSMockCharacteristicWrapper(
     val isWriteCompleted = CompletableDeferred<NSData>()
     val isNotificationCompleted = CompletableDeferred<Boolean>()
 
-    val _value = AtomicReference<NSData?>(null)
-    override var value: NSData?
-        get() = _value.get()
-        set(value) { _value.set(value) }
+    override var value: NSData? = null
 
     override val descriptors: List<DescriptorWrapper> = descriptorUUIDs
         .map(::IOSMockDescriptorWrapper)

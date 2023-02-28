@@ -1,7 +1,6 @@
-package com.splendo.kaluga.logging
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,6 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.logging
+
+/**
+ * The different levels at which a [Logger] can log messages.
+ */
 enum class LogLevel {
     /**
      * Debug Log Level. Should be shown only for debugging.

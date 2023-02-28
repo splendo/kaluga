@@ -1,5 +1,5 @@
-## Location Permissions
-Adds a `LocationPermission`. Register this permission by calling `PermissionsBuilder.registerLocationPermission`.
+# Location Permissions
+Adds a `LocationPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerLocationPermission`()/`PermissionsBuilder.registerLocationPermissionIfNotRegistered()`.
 
 The `LocationPermission` can be set to acquire location data more accurately or while the app is the background.
 

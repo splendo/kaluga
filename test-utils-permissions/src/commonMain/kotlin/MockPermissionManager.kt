@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.permissions
 
-import co.touchlab.stately.collections.sharedMutableListOf
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.Permission
@@ -58,7 +58,7 @@ class MockPermissionManager<P : Permission>(
         /**
          * List of built [MockPermissionManager]
          */
-        val createdManagers = sharedMutableListOf<MockPermissionManager<P>>()
+        val createdManagers = concurrentMutableListOf<MockPermissionManager<P>>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]

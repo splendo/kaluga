@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,17 +35,17 @@ infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area
     volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>
 ) = volumetricFlux * this
 
-@JvmName("imperialAreaTimesImperialArea")
+@JvmName("imperialAreaTimesImperialVolumetricFlux")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
     volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>
 ) = volumetricFlux * this
 
-@JvmName("imperialAreaTimesUKImperialArea")
+@JvmName("imperialAreaTimesUKImperialVolumetricFlux")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
     volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, UKImperialVolumetricFlux>
 ) = volumetricFlux * this
 
-@JvmName("imperialAreaTimesUSCustomaryArea")
+@JvmName("imperialAreaTimesUSCustomaryVolumetricFlux")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
     volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, USCustomaryVolumetricFlux>
 ) = volumetricFlux * this

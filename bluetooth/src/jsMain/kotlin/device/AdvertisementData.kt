@@ -17,8 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 
+/**
+ * JavaScript implementation of [BaseAdvertisementData]. Not actually implemented
+ */
 actual class AdvertisementData : BaseAdvertisementData {
 
     override val name: String?
@@ -31,7 +35,7 @@ actual class AdvertisementData : BaseAdvertisementData {
         get() = emptyList()
     override val serviceData: Map<UUID, ByteArray?>
         get() = emptyMap()
-    override val txPowerLevel: Int
+    override val txPowerLevel: TxPower
         get() = Int.MIN_VALUE
     override val isConnectable: Boolean
         get() = false

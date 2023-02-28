@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,8 +20,27 @@ package com.splendo.kaluga.location
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * A provider of [Location.KnownLocation]
+ */
 interface LocationProvider {
+
+    /**
+     * Gets a [Flow] providing updates to the [Location.KnownLocation]
+     * @param permission the [LocationPermission] to use for getting the [Location.KnownLocation]
+     * @return a [Flow] containing the latest [Location.KnownLocation] batched in a List
+     */
     fun location(permission: LocationPermission): Flow<List<Location.KnownLocation>>
+
+    /**
+     * Starts monitoring for [Location.KnownLocation] with a given [LocationPermission]
+     * @param permission the [LocationPermission] to use for monitoring the [Location.KnownLocation]
+     */
     fun startMonitoringLocation(permission: LocationPermission)
-    fun stopMonitoringLocation(permissions: LocationPermission)
+
+    /**
+     * Stops monitoring for [Location.KnownLocation] with a given [LocationPermission]
+     * @param permission the [LocationPermission] to that was used for monitoring the [Location.KnownLocation]
+     */
+    fun stopMonitoringLocation(permission: LocationPermission)
 }

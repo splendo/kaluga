@@ -3,21 +3,12 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
-
-val androidx_arch_core_testing_version = ext["androidx_arch_core_testing_version"]!!
-
-dependencies {
-    api("androidx.arch.core:core-testing:$androidx_arch_core_testing_version")
-}
+publishableComponent()
 
 kotlin {
     sourceSets {
@@ -44,11 +35,9 @@ kotlin {
         }
 
         getByName("jvmMain") {
-            val ext = (gradle as ExtensionAware).extra
-
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:" + ext["kotlinx_coroutines_version"])
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:" + ext["kotlinx_coroutines_version"])
+                apiDependency(Dependencies.KotlinX.Coroutines.Test)
+                apiDependency(Dependencies.KotlinX.Coroutines.Debug)
             }
         }
     }
@@ -56,8 +45,12 @@ kotlin {
 
 android {
     dependencies {
-        val ext = (gradle as ExtensionAware).extra
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:" + ext["kotlinx_coroutines_version"])
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:" + ext["kotlinx_coroutines_version"])
+        apiDependency(Dependencies.AndroidX.ArchCore)
+
+        implementationDependency(Dependencies.Mockito.Core)
+        implementationDependency(Dependencies.ByteBuddy.Agent)
+
+        apiDependency(Dependencies.KotlinX.Coroutines.Test)
+        apiDependency(Dependencies.KotlinX.Coroutines.Debug)
     }
 }

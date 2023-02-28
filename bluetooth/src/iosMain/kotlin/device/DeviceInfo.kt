@@ -19,9 +19,26 @@ package com.splendo.kaluga.bluetooth.device
 
 import platform.Foundation.NSUUID
 
+/**
+ * Unique identifier of a Bluetooth [Device]
+ */
 actual typealias Identifier = NSUUID
 
+/**
+ * Gets a random [Identifier]
+ * @return a random [Identifier]
+ */
 actual fun randomIdentifier() = Identifier.UUID()
 
+/**
+ * Gets an [Identifier] from a string value
+ * @param stringValue the string value to get the [Identifier] from
+ * @return an [Identifier] matching the string value or `null` if it could not be generated
+ */
+actual fun identifierFromString(stringValue: String): Identifier? = NSUUID(stringValue)
+
+/**
+ * Gets a string representation of an [Identifier]
+ */
 actual val Identifier.stringValue: String
     get() = UUIDString

@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,6 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.base
 
+/**
+ * Runs the provided [block] on the main thread.
+ * Since JavaScript does not have any threading, this will just run [block]
+ * @param block the code to run on the main thread.
+ */
 actual fun runOnMain(block: () -> Unit) {
     block()
 }

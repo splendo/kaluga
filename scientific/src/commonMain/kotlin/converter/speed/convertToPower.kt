@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,11 +21,10 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialSpeed
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricSpeed
 import com.splendo.kaluga.scientific.unit.Speed
 import com.splendo.kaluga.scientific.unit.UKImperialForce
@@ -37,7 +36,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(fo
     force * this
 
 @JvmName("metricSpeedTimesDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Speed, MetricSpeed>.times(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) =
     force * this
 
 @JvmName("imperialSpeedTimesImperialForce")

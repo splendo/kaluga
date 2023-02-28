@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.permissions.notifications
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.PermissionRefreshScheduler
@@ -37,12 +37,21 @@ import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
 import platform.UserNotifications.UNAuthorizationStatusProvisional
-import platform.UserNotifications.UNNotificationSettings
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.time.Duration
 
+/**
+ * Options for configuring a [NotificationsPermission]
+ * @property options the [UNAuthorizationOptions] of the notification permission
+ */
 actual data class NotificationOptions(val options: UNAuthorizationOptions)
 
+/**
+ * The [BasePermissionManager] to use as a default for [NotificationsPermission]
+ * @param notificationsPermission the [NotificationsPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultNotificationsPermissionManager(
     notificationsPermission: NotificationsPermission,
     settings: Settings,
@@ -54,13 +63,10 @@ actual class DefaultNotificationsPermissionManager(
             val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
             val notificationCenter = notificationCenter
             coroutineScope.launch {
-                val deferred = CompletableDeferred<UNNotificationSettings?>()
-                val callback = { setting: UNNotificationSettings? ->
-                    deferred.complete(setting)
+                notificationCenter.getNotificationSettingsWithCompletionHandler { setting ->
+                    authorizationStatus.complete(setting?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
                     Unit
-                }.freeze()
-                notificationCenter.getNotificationSettingsWithCompletionHandler(callback)
-                authorizationStatus.complete(deferred.await()?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+                }
             }
             return authorizationStatus.await()
         }
@@ -75,20 +81,19 @@ actual class DefaultNotificationsPermissionManager(
     override fun requestPermissionDidStart() {
         permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
             val deferred = CompletableDeferred<Boolean>()
-            val callback = { authorization: Boolean, error: NSError? ->
+            notificationCenter.requestAuthorizationWithOptions(
+                permission.options?.options ?: UNAuthorizationOptionNone
+            ) { authorization: Boolean, error: NSError? ->
                 error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }
                 Unit
-            }.freeze()
-            notificationCenter.requestAuthorizationWithOptions(
-                permission.options?.options ?: UNAuthorizationOptionNone,
-                callback
-            )
+            }
 
             try {
-                if (deferred.await())
+                if (deferred.await()) {
                     IOSPermissionsHelper.AuthorizationStatus.Authorized
-                else
+                } else {
                     IOSPermissionsHelper.AuthorizationStatus.Restricted
+                }
             } catch (t: Throwable) {
                 IOSPermissionsHelper.AuthorizationStatus.Restricted
             }
@@ -104,6 +109,10 @@ actual class DefaultNotificationsPermissionManager(
     }
 }
 
+/**
+ * A [BaseNotificationsPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {

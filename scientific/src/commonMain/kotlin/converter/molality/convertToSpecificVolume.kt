@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ infix operator fun <MolalityUnit : Molality, MolarVolumeUnit : MolarVolume> Scie
     molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
 ) = molarVolume * this
 
-@JvmName("metricMolalityDivMetricMolality")
+@JvmName("metricMolalityDivMetricMolarity")
 infix operator fun ScientificValue<PhysicalQuantity.Molality, MetricMolality>.div(molarity: ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>) =
     (molarity.unit.per per unit.per).specificVolume(this, molarity)
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,29 +16,27 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
-class LoadingViewController: UITableViewController {
+class LoadingViewController: UIViewController {
+
+    @IBOutlet private var systemButton: UIButton!
+    @IBOutlet private var customButton: UIButton!
 
     private lazy var viewModel = HudViewModel(builder: HUD.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { return [] }
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        switch (indexPath.row) {
-        case 0: viewModel.onShowSystemPressed()
-        case 1: viewModel.onShowCustomPressed()
-        default: ()
-        }
+
+        title = "feature_hud".localized()
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
+        ButtonStyleKt.bindButton(systemButton, button: viewModel.showSystemButton)
+        ButtonStyleKt.bindButton(customButton, button: viewModel.showCustomButton)
     }
 }

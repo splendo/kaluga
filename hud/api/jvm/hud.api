@@ -9,11 +9,9 @@ public abstract class com/splendo/kaluga/hud/BaseHUD : kotlinx/coroutines/Corout
 	public static synthetic fun present$default (Lcom/splendo/kaluga/hud/BaseHUD;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public abstract class com/splendo/kaluga/hud/BaseHUD$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract class com/splendo/kaluga/hud/BaseHUD$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/hud/HudConfig;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/hud/BaseHUD;
-	public final fun setStyle (Lcom/splendo/kaluga/hud/HUDStyle;)Lcom/splendo/kaluga/hud/BaseHUD$Builder;
-	public final fun setTitle (Ljava/lang/String;)Lcom/splendo/kaluga/hud/BaseHUD$Builder;
 }
 
 public final class com/splendo/kaluga/hud/HUD : com/splendo/kaluga/hud/BaseHUD {
@@ -35,6 +33,8 @@ public final class com/splendo/kaluga/hud/HUDKt {
 	public static synthetic fun build$default (Lcom/splendo/kaluga/hud/BaseHUD$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/hud/BaseHUD;
 	public static final fun dismissAfter (Lcom/splendo/kaluga/hud/BaseHUD;JZ)Lcom/splendo/kaluga/hud/BaseHUD;
 	public static synthetic fun dismissAfter$default (Lcom/splendo/kaluga/hud/BaseHUD;JZILjava/lang/Object;)Lcom/splendo/kaluga/hud/BaseHUD;
+	public static final fun dismissAfter-8Mi8wO0 (Lcom/splendo/kaluga/hud/BaseHUD;JZ)Lcom/splendo/kaluga/hud/BaseHUD;
+	public static synthetic fun dismissAfter-8Mi8wO0$default (Lcom/splendo/kaluga/hud/BaseHUD;JZILjava/lang/Object;)Lcom/splendo/kaluga/hud/BaseHUD;
 	public static final fun getStyle (Lcom/splendo/kaluga/hud/BaseHUD;)Lcom/splendo/kaluga/hud/HUDStyle;
 	public static final fun getTitle (Lcom/splendo/kaluga/hud/BaseHUD;)Ljava/lang/String;
 	public static final fun presentDuring (Lcom/splendo/kaluga/hud/BaseHUD;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -61,5 +61,12 @@ public final class com/splendo/kaluga/hud/HudConfig {
 	public final fun getTitle ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/hud/HudConfig$Builder {
+	public fun <init> ()V
+	public final fun build ()Lcom/splendo/kaluga/hud/HudConfig;
+	public final fun setStyle (Lcom/splendo/kaluga/hud/HUDStyle;)Lcom/splendo/kaluga/hud/HudConfig$Builder;
+	public final fun setTitle (Ljava/lang/String;)Lcom/splendo/kaluga/hud/HudConfig$Builder;
 }
 

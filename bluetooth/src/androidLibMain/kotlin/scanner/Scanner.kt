@@ -31,7 +31,6 @@ import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -43,6 +42,7 @@ import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.service.EnableServiceActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -54,6 +54,15 @@ import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
+/**
+ * A default implementation of [BaseScanner]
+ * @param applicationContext the [Context] in which Bluetooth should run
+ * @param bluetoothScanner the [BluetoothLeScannerCompat] to use for scanning
+ * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
+ * @param scanSettings the [ScanSettings] to apply to the scanner
+ * @param settings the [BaseScanner.Settings] to configure this scanner
+ * @param coroutineScope the [CoroutineScope] this scanner runs on
+ */
 actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
     private val bluetoothScanner: BluetoothLeScannerCompat,
@@ -63,6 +72,13 @@ actual class DefaultScanner internal constructor(
     coroutineScope: CoroutineScope,
 ) : BaseScanner(settings, coroutineScope) {
 
+    /**
+     * Builder for creating a [DefaultScanner]
+     * @param applicationContext the [Context] in which Bluetooth should run
+     * @param bluetoothScanner the [BluetoothLeScannerCompat] to use for scanning
+     * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
+     * @param scanSettings the [ScanSettings] to apply to the scanner
+     */
     class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
@@ -79,6 +95,9 @@ actual class DefaultScanner internal constructor(
     }
 
     companion object {
+        /**
+         * Default [ScanSettings]
+         */
         val defaultScanSettings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
             .setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT)
@@ -159,12 +178,12 @@ actual class DefaultScanner internal constructor(
         bluetoothScanner.stopScan(callback)
     }
 
-    override fun startMonitoringHardwareEnabled() {
+    override suspend fun startMonitoringHardwareEnabled() {
         locationEnabledMonitor.startMonitoring()
         super.startMonitoringHardwareEnabled()
     }
 
-    override fun stopMonitoringHardwareEnabled() {
+    override suspend fun stopMonitoringHardwareEnabled() {
         locationEnabledMonitor.stopMonitoring()
         super.stopMonitoringHardwareEnabled()
     }

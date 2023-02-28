@@ -1,4 +1,3 @@
-
 # System
 
 This module aim to cover system APIs such as network, audio, battery etc...
@@ -22,7 +21,7 @@ dependencies {
 ### Usage
 The `NetworkState` is available through a `NetworkStateRepo`.
 `NetworkState` is composed by 3 states and each state contains `Network` objects:
-    - `Available`: it can be of 2 types `Wifi` and `Cellular`. Both of them contains also a flag `isExpensive` that specify if the network is available via hotspot.
+    - `Available`: it can be of 2 types `Wifi` and `Cellular`. Both of them contains also a flag `isExpensive` that specify if the network is estimated to require additional costs.
     - `Unavailable`: the network will be of type `Absent`.
     - `Unknown`: in this case the network could be either `Unknown.WithLastKnownNetwork` or `Unknown.WithoutLastKnownNetwork`. The difference between them is that `WithLastKnownNetwork` contains both a reason and the last known network before the state was Unknown.
 
@@ -68,3 +67,6 @@ fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
 	}
 }
 ```
+
+## Testing
+Use the [`test-utils-system` module](../test-utils-system) to get mockable System classes.

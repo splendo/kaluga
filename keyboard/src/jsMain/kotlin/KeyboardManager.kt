@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,10 +20,16 @@ package com.splendo.kaluga.keyboard
 
 import kotlinx.coroutines.CoroutineScope
 
-actual class KeyboardManager : BaseKeyboardManager {
+/**
+ * A [BaseKeyboardManager] that takes any [FocusHandler]
+ */
+class KeyboardManager : BaseKeyboardManager<FocusHandler> {
 
-    actual class Builder : BaseKeyboardManager.Builder {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
+    /**
+     * A [BaseKeyboardManager.Builder] to create a [KeyboardManager]
+     */
+    class Builder : BaseKeyboardManager.Builder<FocusHandler> {
+        override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
     }
 
     override fun show(focusHandler: FocusHandler) {

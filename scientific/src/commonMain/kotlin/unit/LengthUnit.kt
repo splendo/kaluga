@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricLength]
+ */
 val MetricLengthUnits: Set<MetricLength> get() = setOf(
     Meter,
     Nanometer,
@@ -39,6 +42,9 @@ val MetricLengthUnits: Set<MetricLength> get() = setOf(
     NauticalMile
 )
 
+/**
+ * Set of all [ImperialLength]
+ */
 val ImperialLengthUnits: Set<ImperialLength> get() = setOf(
     Inch,
     Foot,
@@ -46,16 +52,29 @@ val ImperialLengthUnits: Set<ImperialLength> get() = setOf(
     Mile
 )
 
+/**
+ * Set of all [Length]
+ */
 val LengthUnits: Set<Length> get() = MetricLengthUnits + ImperialLengthUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Length]
+ * SI unit is [Meter]
+ */
 @Serializable
 sealed class Length : AbstractScientificUnit<PhysicalQuantity.Length>()
 
+/**
+ * A [Length] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricLength : Length(), MetricScientificUnit<PhysicalQuantity.Length>
 
+/**
+ * A [Length] for [MeasurementSystem.Imperial]
+ */
 @Serializable
-sealed class ImperialLength(override val symbol: String) : Length(), ImperialScientificUnit<PhysicalQuantity.Length> {
+sealed class ImperialLength : Length(), ImperialScientificUnit<PhysicalQuantity.Length> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Length
 }
@@ -71,34 +90,37 @@ object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 }
 
 @Serializable
-object Nanometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Nano(Meter)
+sealed class MeterMultiple : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter>
 
 @Serializable
-object Micrometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Micro(Meter)
+object Nanometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Nano(Meter)
 
 @Serializable
-object Millimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Milli(Meter)
+object Micrometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Micro(Meter)
 
 @Serializable
-object Centimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Centi(Meter)
+object Millimeter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Milli(Meter)
 
 @Serializable
-object Decimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deci(Meter)
+object Centimeter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Centi(Meter)
 
 @Serializable
-object Decameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deca(Meter)
+object Decimeter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deci(Meter)
 
 @Serializable
-object Hectometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Hecto(Meter)
+object Decameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Deca(Meter)
 
 @Serializable
-object Kilometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Kilo(Meter)
+object Hectometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Hecto(Meter)
 
 @Serializable
-object Megameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Mega(Meter)
+object Kilometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Kilo(Meter)
 
 @Serializable
-object Gigameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Giga(Meter)
+object Megameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Mega(Meter)
+
+@Serializable
+object Gigameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Giga(Meter)
 
 @Serializable
 object NauticalMile : MetricLength() {
@@ -112,29 +134,33 @@ object NauticalMile : MetricLength() {
 
 // Imperial Length
 @Serializable
-object Inch : ImperialLength("in") {
+object Inch : ImperialLength() {
     private const val INCHES_IN_FOOT = 12
+    override val symbol: String = "in"
     override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value / INCHES_IN_FOOT.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) * INCHES_IN_FOOT.toDecimal()
 }
 
 @Serializable
-object Foot : ImperialLength("ft") {
+object Foot : ImperialLength() {
     private const val METER_IN_FEET = 0.3048
+    override val symbol: String = "ft"
     override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_FEET.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_FEET.toDecimal()
 }
 
 @Serializable
-object Yard : ImperialLength("yd") {
+object Yard : ImperialLength() {
     private const val FOOT_IN_YARD = 3
+    override val symbol: String = "yd"
     override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value * FOOT_IN_YARD.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) / FOOT_IN_YARD.toDecimal()
 }
 
 @Serializable
-object Mile : ImperialLength("mi") {
+object Mile : ImperialLength() {
     private const val YARDS_IN_MILE = 1760
+    override val symbol: String = "mi"
     override fun toSIUnit(value: Decimal): Decimal = Yard.toSIUnit(value * YARDS_IN_MILE.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Yard.fromSIUnit(value) / YARDS_IN_MILE.toDecimal()
 }

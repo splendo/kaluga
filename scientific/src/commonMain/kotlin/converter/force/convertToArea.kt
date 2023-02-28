@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.BaryeMultiple
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialPressure
@@ -32,8 +34,6 @@ import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
 import com.splendo.kaluga.scientific.unit.Kip
 import com.splendo.kaluga.scientific.unit.KipSquareFoot
 import com.splendo.kaluga.scientific.unit.KipSquareInch
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.PoundForce
@@ -58,22 +58,19 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(pressure: S
     SquareCentimeter.area(this, pressure)
 
 @JvmName("dyneDivBaryeMultiple")
-infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Force, Dyne>.div(
+infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Force, Dyne>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
-    SquareCentimeter.area(this, pressure)
+) = SquareCentimeter.area(this, pressure)
 
 @JvmName("dyneMultipleDivBarye")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>
-) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    SquareCentimeter.area(this, pressure)
+) = SquareCentimeter.area(this, pressure)
 
 @JvmName("dyneMultipleDivBaryeMultiple")
-infix operator fun <DyneUnit, BaryeUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+infix operator fun <DyneUnit : DyneMultiple, BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>, BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
-    SquareCentimeter.area(this, pressure)
+) = SquareCentimeter.area(this, pressure)
 
 @JvmName("poundForcePoundSquareInch")
 infix operator fun ScientificValue<PhysicalQuantity.Force, PoundForce>.div(

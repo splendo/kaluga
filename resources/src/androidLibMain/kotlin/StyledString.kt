@@ -1,3 +1,21 @@
+/*
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+@file:JvmName("StyledStringAndroidkt")
 package com.splendo.kaluga.resources
 
 import android.content.Context
@@ -21,28 +39,60 @@ import android.text.style.SuperscriptSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.view.alignment
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * A text configured with [StringStyleAttribute]
+ * @property spannable the [Spannable] styled according to some [StringStyleAttribute]
+ * @property defaultTextStyle The [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range.
+ * This may be partially overwritten (e.g. [StringStyleAttribute.CharacterStyleAttribute.ForegroundColor] may overwrite [KalugaTextStyle.color])
+ * @property linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
+ * When `null` the Theme default will be used
+ */
 actual class StyledString(
     val spannable: Spannable,
-    actual val defaultTextStyle: TextStyle,
+    actual val defaultTextStyle: KalugaTextStyle,
     actual val linkStyle: LinkStyle?
 )
 
+/**
+ * Gets the plain string of a [StyledString]
+ */
 actual val StyledString.rawString: String get() = spannable.toString()
 
+/**
+ * Builder for creating a [StyledString]
+ * @param string the String to style
+ * @param defaultTextStyle The [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range.
+ * This may be partially overwritten (e.g. [StringStyleAttribute.CharacterStyleAttribute.ForegroundColor] may overwrite [KalugaTextStyle.color])
+ * @param linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
+ * When `null` the Theme default will be used
+ * @param context the [Context] in which the [StyledString] will be displayed
+ */
 actual class StyledStringBuilder constructor(
     string: String,
-    private val defaultTextStyle: TextStyle,
+    private val defaultTextStyle: KalugaTextStyle,
     private val linkStyle: LinkStyle?,
     private val context: Context
 ) {
 
+    /**
+     * Provider for a [StyledStringBuilder]
+     * @param context the [Context] in which any build [StyledString] will be displayed
+     */
     actual class Provider(private val context: Context = ApplicationHolder.applicationContext) {
-        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) =
+
+        /**
+         * Provides a [StyledStringBuilder] to build a [StyledString] for a given text
+         * @param string the text for which to build the [StyledString]
+         * @param defaultTextStyle the [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range
+         * @param linkStyle the [LinkStyle] to apply when [StringStyleAttribute.Link] is applied
+         * @return the [StyledStringBuilder] to build a [StyledString] for [string]
+         */
+        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) =
             StyledStringBuilder(string, defaultTextStyle, linkStyle, context)
     }
 
@@ -54,7 +104,16 @@ actual class StyledStringBuilder constructor(
 
     private val builder = SpannableString(string)
 
+    /**
+     * Adds a [StringStyleAttribute] for a given range
+     * @param attribute the [StringStyleAttribute] to apply
+     * @param range the [IntRange] at which to apply the style
+     * @throws [IndexOutOfBoundsException] if [range] is out of bounds for the text to span
+     */
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
+        if (range.any { it !in builder.indices }) {
+            throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
+        }
         builder.setSpan(
             when (attribute) {
                 is StringStyleAttribute.CharacterStyleAttribute -> attribute.characterStyle(range)
@@ -158,8 +217,8 @@ actual class StyledStringBuilder constructor(
     private val StringStyleAttribute.ParagraphStyleAttribute.paragraphStyle: ParagraphStyle
         get() = when (this) {
             is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> LeadingMarginSpan.Standard(
-                firstLineIndent.toInt(),
-                indent.toInt()
+                firstLineIndent.spToPixel(context).toInt(),
+                indent.spToPixel(context).toInt()
             )
             is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> object : LineHeightSpan {
                 override fun chooseHeight(
@@ -197,6 +256,10 @@ actual class StyledStringBuilder constructor(
             )
         }
 
+    /**
+     * Creates the [StyledString]
+     * @return the created [StyledString]
+     */
     actual fun create(): StyledString {
         return StyledString(builder, defaultTextStyle, linkStyle)
     }

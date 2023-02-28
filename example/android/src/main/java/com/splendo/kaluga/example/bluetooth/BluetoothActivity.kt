@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityBluetoothBinding
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListNavigation
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetails
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -38,7 +38,7 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
 
     override val viewModel: BluetoothListViewModel by viewModel {
         parametersOf(
-            ActivityNavigator<BluetoothListNavigation> {
+            ActivityNavigator<DeviceDetails> {
                 NavigationSpec.Activity<BluetoothMoreActivity>()
             }
         )

@@ -3,26 +3,24 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-atomicfu")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 dependencies {
-    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
-    implementation("com.google.android.gms:play-services-location:$play_services_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9")
+    implementationDependency(Dependencies.Android.PlayServices.Location)
+    implementationDependency(Dependencies.KotlinX.Coroutines.PlayServices)
+    implementationDependency(Dependencies.KotlinX.AtomicFu)
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":service"))
                 api(project(":location-permissions", ""))
             }
         }

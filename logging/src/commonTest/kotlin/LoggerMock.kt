@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,26 +18,22 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.logging
 
-import co.touchlab.stately.collections.IsoMutableList
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 
 class LoggerMock : Logger {
 
-    val throwableList = IsoMutableList<Throwable?>()
-    val messageList = IsoMutableList<String?>()
-    val tagList = IsoMutableList<String?>()
-    val levelList = IsoMutableList<LogLevel?>()
+    private data class Log(val logLevel: LogLevel, val tag: String?, val throwable: Throwable?, val message: (() -> String)?)
 
-    fun clear() {
-        levelList.clear()
-        messageList.clear()
-        tagList.clear()
-        throwableList.clear()
-    }
+    private val logList = concurrentMutableListOf<Log>()
+
+    val throwableList get() = logList.map { it.throwable }
+    val messageList get() = logList.map { it.message }
+    val tagList get() = logList.map { it.tag }
+    val levelList get() = logList.map { it.logLevel }
+
+    fun clear() = logList.clear()
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-        levelList.add(level)
-        tagList.add(tag)
-        throwableList.add(throwable)
-        messageList.add(message?.invoke())
+        logList.add(Log(level, tag, throwable, message))
     }
 }

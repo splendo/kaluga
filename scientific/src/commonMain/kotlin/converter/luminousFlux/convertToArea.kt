@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,9 +23,8 @@ import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.unit.Illuminance
 import com.splendo.kaluga.scientific.unit.ImperialIlluminance
 import com.splendo.kaluga.scientific.unit.LuminousFlux
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.PhotMultiple
 import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
@@ -37,10 +36,9 @@ infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.Lu
 ) = SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivPhotMultiple")
-infix operator fun <FluxUnit : LuminousFlux, PhotUnit> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
+infix operator fun <FluxUnit : LuminousFlux, PhotUnit : PhotMultiple> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
     phot: ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>
-) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> =
-    SquareCentimeter.area(this, phot)
+) = SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivImperialIlluminance")
 infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(

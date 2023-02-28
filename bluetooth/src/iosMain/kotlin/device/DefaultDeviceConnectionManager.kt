@@ -17,14 +17,16 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import co.touchlab.stately.collections.sharedMutableListOf
-import com.splendo.kaluga.base.toNSData
+import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
@@ -69,8 +71,9 @@ internal actual class DefaultDeviceConnectionManager(
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
     }
 
-    private val discoveringServices = sharedMutableListOf<CBUUID>()
-    private val discoveringCharacteristics = sharedMutableListOf<CBUUID>()
+    private val discoveringMutex = Mutex()
+    private val discoveringServices = mutableListOf<CBUUID>()
+    private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
     @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
@@ -80,13 +83,10 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
-            when (val action = currentAction) {
-                is DeviceAction.Notification -> {
-                    if (action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
-                        launch {
-                            handleCurrentActionCompleted(succeeded = error == null)
-                        }
-                    }
+            val action = currentAction
+            if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
+                launch {
+                    handleCurrentActionCompleted(succeeded = error == null)
                 }
             }
         }
@@ -139,9 +139,11 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun discoverServices() {
-        discoveringServices.clear()
-        discoveringCharacteristics.clear()
-        peripheral.discoverServices(null)
+        discoveringMutex.withLock {
+            discoveringServices.clear()
+            discoveringCharacteristics.clear()
+            peripheral.discoverServices(null)
+        }
     }
 
     override suspend fun disconnect() {
@@ -152,7 +154,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    override suspend fun requestMtu(mtu: Int): Boolean {
+    override suspend fun requestMtu(mtu: MTU): Boolean {
         val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
@@ -163,7 +165,7 @@ internal actual class DefaultDeviceConnectionManager(
         return false
     }
 
-    override suspend fun performAction(action: DeviceAction) {
+    override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -187,12 +189,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun unpair() {
-        // There is no iOS API to unpair peripheral
+    override suspend fun requestStartPairing() {
+        // There is no iOS API to pair peripheral
     }
 
-    override suspend fun pair() {
-        // There is no iOS API to pair peripheral
+    override suspend fun requestStartUnpairing() {
+        // There is no iOS API to unpair peripheral
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
@@ -204,30 +206,42 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun didDiscoverServices() {
-        discoveringServices.addAll(
-            peripheral.services?.typedList<CBService>()?.map {
-                peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
-                it.UUID
-            } ?: emptyList()
-        )
+        launch {
+            discoveringMutex.withLock {
+                discoveringServices.addAll(
+                    peripheral.services?.typedList<CBService>()?.map {
+                        peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
+                        it.UUID
+                    } ?: emptyList()
+                )
+            }
 
-        checkScanComplete()
+            checkScanComplete()
+        }
     }
 
     private fun didDiscoverCharacteristic(forService: CBService) {
-        discoveringServices.remove(forService.UUID)
-        discoveringCharacteristics.addAll(
-            forService.characteristics?.typedList<CBCharacteristic>()?.map {
-                peripheral.discoverDescriptorsForCharacteristic(it)
-                it.UUID
-            } ?: emptyList()
-        )
-        checkScanComplete()
+        launch {
+            discoveringMutex.withLock {
+                discoveringServices.remove(forService.UUID)
+                discoveringCharacteristics.addAll(
+                    forService.characteristics?.typedList<CBCharacteristic>()?.map {
+                        peripheral.discoverDescriptorsForCharacteristic(it)
+                        it.UUID
+                    } ?: emptyList()
+                )
+            }
+            checkScanComplete()
+        }
     }
 
     private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
-        discoveringCharacteristics.remove(forCharacteristic.UUID)
-        checkScanComplete()
+        launch {
+            discoveringMutex.withLock {
+                discoveringCharacteristics.remove(forCharacteristic.UUID)
+            }
+            checkScanComplete()
+        }
     }
 
     private fun checkScanComplete() {

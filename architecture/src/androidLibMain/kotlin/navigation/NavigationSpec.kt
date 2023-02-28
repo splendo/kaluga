@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -109,6 +111,7 @@ sealed class NavigationSpec {
      * @param tag Optional tag of the fragment transaction
      * @param backStackSettings The [BackStackSettings] of the transaction. Defaults to [BackStackSettings.DontAdd]
      * @param animationSettings Optional [AnimationSettings] for the transaction
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle showing the [Fragment]
      * @param createFragment Function to create the [androidx.fragment.app.Fragment]
      */
     data class Fragment(
@@ -117,6 +120,7 @@ sealed class NavigationSpec {
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
         val createFragment: () -> androidx.fragment.app.Fragment
     ) : NavigationSpec() {
 
@@ -169,27 +173,70 @@ sealed class NavigationSpec {
     /**
      * Removes a [Fragment] with a given tag
      * @param tag The tag of the [Fragment] to remove
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [Fragment]
      */
-    data class RemoveFragment(val tag: String) : NavigationSpec()
+    data class RemoveFragment(
+        val tag: String,
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
+
+    /**
+     * Pops a [Fragment] from the backstack
+     * @param immediate If `true` the transaction should execute without waiting for pending transactions
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
+     */
+    data class PopFragment(
+        val immediate: Boolean = false,
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
+
+    /**
+     * Pops a [Fragment] from the backstack
+     * @param immediate If `true` the transaction should execute without waiting for pending transactions
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle popping the [Fragment]
+     */
+    data class PopFragmentTo(
+        val name: String,
+        val inclusive: Boolean,
+        val immediate: Boolean = false,
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
 
     /**
      * Shows a [DialogFragment]
      * @param tag Optional tag to add to the Dialog
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle showing the [DialogFragment]
      * @param createDialog Function to create the [DialogFragment] to display
      */
-    data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : NavigationSpec()
+    data class Dialog(
+        val tag: String? = null,
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
+        val createDialog: () -> DialogFragment
+    ) : NavigationSpec()
 
     /**
      * Dismisses a [DialogFragment] with a given Tag
      * @param tag The tag of the [DialogFragment] to remove
+     * @param fragmentRequestKey Optional key to provide to [FragmentManager.setFragmentResult]
+     * @param getFragmentManager Optional getter for the [FragmentManager] to handle removing the [DialogFragment]
      */
-    data class DismissDialog(val tag: String) : NavigationSpec()
+    data class DismissDialog(
+        val tag: String,
+        val fragmentRequestKey: String? = null,
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+    ) : NavigationSpec()
 
     /**
      * Shows the Camera
      * @param type The [Type] of media to capture
      * @param requestCode The request code added to the intent
-     * @param uri Optiona [Uri] indicating where the result should be stored
+     * @param uri Optional [Uri] indicating where the result should be stored
      */
     data class Camera(val type: Type, val requestCode: Int, val uri: Uri?) : NavigationSpec() {
 
@@ -234,7 +281,44 @@ sealed class NavigationSpec {
             val subject: String? = null,
             val body: String? = null,
             val attachments: List<Uri> = emptyList()
-        )
+        ) {
+            val intent get() = when (attachments.size) {
+                0 -> Intent(Intent.ACTION_SEND)
+                1 -> Intent(Intent.ACTION_SEND).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        attachments[0]
+                    )
+                }
+                else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        ArrayList(
+                            attachments
+                        )
+                    )
+                }
+            }.apply {
+                setDataAndType(
+                    Uri.parse("mailto:"),
+                    when (this@EmailSettings.type) {
+                        is Type.Plain -> "text/plain"
+                        is Type.Stylized -> "*/*"
+                    }
+                )
+                if (to.isNotEmpty()) {
+                    putExtra(Intent.EXTRA_EMAIL, to.toTypedArray())
+                }
+                if (cc.isNotEmpty()) {
+                    putExtra(Intent.EXTRA_CC, cc.toTypedArray())
+                }
+                if (bcc.isNotEmpty()) {
+                    putExtra(Intent.EXTRA_BCC, bcc.toTypedArray())
+                }
+                subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
+                body?.let { putExtra(Intent.EXTRA_TEXT, it) }
+            }
+        }
     }
 
     /**
@@ -281,21 +365,68 @@ sealed class NavigationSpec {
      */
     data class Settings(val type: Type) : NavigationSpec() {
         sealed class Type {
-            object General : Type()
-            object Wireless : Type()
-            object AirplaneMode : Type()
-            object Wifi : Type()
-            object Apn : Type()
-            object Bluetooth : Type()
-            object Date : Type()
-            object Locale : Type()
-            object InputMethod : Type()
-            object Display : Type()
-            object Security : Type()
-            object LocationSource : Type()
-            object InternalStorage : Type()
-            object MemoryCard : Type()
-            object AppDetails : Type()
+
+            abstract fun intent(activity: android.app.Activity): Intent
+
+            object General : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_SETTINGS)
+            }
+            object Wireless : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
+            }
+            object AirplaneMode : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_AIRPLANE_MODE_SETTINGS)
+            }
+            object Wifi : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_WIFI_SETTINGS)
+            }
+
+            object Apn : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_APN_SETTINGS)
+            }
+
+            object Bluetooth : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)
+            }
+
+            object Date : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_DATE_SETTINGS)
+            }
+
+            object Locale : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_LOCALE_SETTINGS)
+            }
+
+            object InputMethod : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)
+            }
+
+            object Display : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS)
+            }
+
+            object Security : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+            }
+
+            object LocationSource : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            }
+
+            object InternalStorage : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
+            }
+
+            object MemoryCard : Type() {
+                override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_MEMORY_CARD_SETTINGS)
+            }
+
+            object AppDetails : Type() {
+                override fun intent(activity: android.app.Activity): Intent {
+                    val uri = Uri.fromParts("package", activity.packageName, null)
+                    return Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
+                }
+            }
         }
     }
 
@@ -321,7 +452,37 @@ sealed class NavigationSpec {
          * @param body Optional body of the message
          * @param attachments List of [Uri] pointing to attachments to add
          */
-        data class TextMessengerSettings(val type: Type = Type.Plain, val recipients: List<String>, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList())
+        data class TextMessengerSettings(val type: Type = Type.Plain, val recipients: List<String>, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList()) {
+            val intent: Intent = when (attachments.size) {
+                0 -> Intent(Intent.ACTION_SEND)
+                1 -> Intent(Intent.ACTION_SEND).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        attachments[0]
+                    )
+                }
+                else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                    putExtra(
+                        Intent.EXTRA_STREAM,
+                        ArrayList(
+                            attachments
+                        )
+                    )
+                }
+            }.apply {
+                val recipients = recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
+                setDataAndType(
+                    Uri.parse("smsto:$recipients"),
+                    when (this@TextMessengerSettings.type) {
+                        is Type.Plain -> "text/plain"
+                        is Type.Image -> "image/*"
+                        is Type.Video -> "video/*"
+                    }
+                )
+                subject?.let { putExtra("subject", it) }
+                body?.let { putExtra("sms_body", it) }
+            }
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.createMockDevice
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
@@ -61,6 +62,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             val name = "Watch"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
             pairedDevicesTimer.tryEmit(Unit)
+            yieldMultiple(11)
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
@@ -70,7 +72,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
                 )
             )
             pairedDevicesTimer.tryEmit(Unit)
-            yield()
+            yieldMultiple(4)
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
             completableDeviceWrapper.complete(deviceWrapper)
         }

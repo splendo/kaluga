@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
+/**
+ * Set of all [MetricLuminance]
+ */
 val MetricLuminanceUnits: Set<MetricLuminance> get() = setOf(
     Nit,
     Nanonit,
@@ -44,17 +47,34 @@ val MetricLuminanceUnits: Set<MetricLuminance> get() = setOf(
     Bril
 )
 
+/**
+ * Set of all [ImperialLuminance]
+ */
 val ImperialLuminanceUnits: Set<ImperialLuminance> get() = setOf(
     FootLambert
 )
 
+/**
+ * Set of all [Luminance]
+ */
 val LuminanceUnits: Set<Luminance> get() = MetricLuminanceUnits + ImperialLuminanceUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Luminance]
+ * SI unit is [Nit]
+ */
 @Serializable
 sealed class Luminance : AbstractScientificUnit<PhysicalQuantity.Luminance>()
 
+/**
+ * A [Luminance] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricLuminance : Luminance(), MetricScientificUnit<PhysicalQuantity.Luminance>
+
+/**
+ * A [Luminance] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialLuminance : Luminance(), ImperialScientificUnit<PhysicalQuantity.Luminance>
 
@@ -68,25 +88,28 @@ object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, Physica
 }
 
 @Serializable
-object Nanonit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Nano(Nit)
+sealed class NitMultiple : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit>
+
 @Serializable
-object Micronit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Micro(Nit)
+object Nanonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Nano(Nit)
 @Serializable
-object Millinit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Milli(Nit)
+object Micronit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Micro(Nit)
 @Serializable
-object Centinit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Centi(Nit)
+object Millinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Milli(Nit)
 @Serializable
-object Decinit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deci(Nit)
+object Centinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Centi(Nit)
 @Serializable
-object Decanit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deca(Nit)
+object Decinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deci(Nit)
 @Serializable
-object Hectonit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Hecto(Nit)
+object Decanit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deca(Nit)
 @Serializable
-object Kilonit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Kilo(Nit)
+object Hectonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Hecto(Nit)
 @Serializable
-object Meganit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Mega(Nit)
+object Kilonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Kilo(Nit)
 @Serializable
-object Giganit : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Giga(Nit)
+object Meganit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Mega(Nit)
+@Serializable
+object Giganit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Giga(Nit)
 
 @Serializable
 object Stilb : MetricLuminance() {

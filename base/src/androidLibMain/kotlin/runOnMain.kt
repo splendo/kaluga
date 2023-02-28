@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ import android.os.Looper
 
 var mainHandler = Handler(Looper.getMainLooper())
 
+/**
+ * Runs the provided [block] on the main thread
+ * @param block the code to run on the main thread.
+ */
 actual fun runOnMain(block: () -> Unit) {
     mainHandler.post(block)
 }

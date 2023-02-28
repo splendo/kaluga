@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,8 +19,22 @@ package com.splendo.kaluga.hud
 
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Default [BaseHUD] implementation.
+ */
 actual class HUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
+
+    /**
+     * Builder class for creating a [HUD]
+     */
     actual class Builder : BaseHUD.Builder() {
+
+        /**
+         * Creates a [HUD] based on [hudConfig].
+         * @param hudConfig The [HudConfig] to apply to the [HUD].
+         * @param coroutineScope The [CoroutineScope] managing the lifecycle of the HUD.
+         * @return the created [HUD]
+         */
         actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(hudConfig, coroutineScope)
     }
 

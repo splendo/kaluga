@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -81,37 +81,52 @@ sealed interface SpecialFlowValue {
     interface NotImportant : SpecialFlowValue
 }
 
+/**
+ * Transforms a [Flow] to emit only up to the first [SpecialFlowValue.Last] received.
+ * @param includeLast if `true` the first [SpecialFlowValue.Last] will be emitted before emission stops.
+ * @return A flow that emits up to the first [SpecialFlowValue.Last] emitted by the original flow.
+ */
 fun <T> Flow<T>.takeUntilLast(includeLast: Boolean = true): Flow<T> = transformWhile {
     val notLast = it !is SpecialFlowValue.Last
-    if (notLast || includeLast)
+    if (notLast || includeLast) {
         emit(it)
+    }
     notLast
 }
 
+/**
+ * Filters out all values marked as [SpecialFlowValue.NotImportant] from a given [Flow]
+ * @return A flow that doesn't emit any elements implementing [SpecialFlowValue.NotImportant].
+ */
 @Suppress("NOTHING_TO_INLINE") // copies from filter()
 inline fun <T> Flow<T>.filterOnlyImportant(): Flow<T> =
     filterNot { it is SpecialFlowValue.NotImportant }
 
+/**
+ * Collects all elements from a [Flow] up to the first [SpecialFlowValue.Last] received.
+ * @param includeLast if `true` the first [SpecialFlowValue.Last] will be collected before emission stops.
+ * @param collector The [FlowCollector] to collect the values.
+ */
 suspend inline fun <T> Flow<T>.collectUntilLast(
     includeLast: Boolean = true,
-    crossinline action: suspend (value: T) -> Unit
+    collector: FlowCollector<T>
 ) =
-    takeUntilLast(includeLast).collect(object : FlowCollector<T> {
-        override suspend fun emit(value: T) = action(value)
-    }
-    )
+    takeUntilLast(includeLast).collect(collector)
 
-suspend inline fun <T> Flow<T>.collectImportant(crossinline action: suspend (value: T) -> Unit) =
-    filterOnlyImportant().collect(object : FlowCollector<T> {
-        override suspend fun emit(value: T) = action(value)
-    }
-    )
+/**
+ * Collects all elements not implementing [SpecialFlowValue.NotImportant] from a [Flow].
+ * @param collector The [FlowCollector] to collect the values.
+ */
+suspend inline fun <T> Flow<T>.collectImportant(collector: FlowCollector<T>) =
+    filterOnlyImportant().collect(collector)
 
+/**
+ * Collects all elements not implementing [SpecialFlowValue.NotImportant] from a [Flow] up to the first [SpecialFlowValue.Last] received.
+ * @param includeLast if `true` the first [SpecialFlowValue.Last] will be collected before emission stops.
+ * @param collector The [FlowCollector] to collect the values.
+ */
 suspend inline fun <T> Flow<T>.collectImportantUntilLast(
     includeLast: Boolean = true,
-    crossinline action: suspend (value: T) -> Unit
+    collector: FlowCollector<T>
 ) =
-    takeUntilLast(includeLast).filterOnlyImportant().collect(object : FlowCollector<T> {
-        override suspend fun emit(value: T) = action(value)
-    }
-    )
+    takeUntilLast(includeLast).filterOnlyImportant().collect(collector)

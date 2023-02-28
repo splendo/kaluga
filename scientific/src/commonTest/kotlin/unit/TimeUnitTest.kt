@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.frequency.time
+import com.splendo.kaluga.scientific.converter.kinematicViscosity.div
 import com.splendo.kaluga.scientific.converter.length.div
 import com.splendo.kaluga.scientific.converter.luminousEnergy.div
 import com.splendo.kaluga.scientific.converter.luminousExposure.div
@@ -127,6 +128,11 @@ class TimeUnitTest {
     fun timeFromFrequencyTest() {
         assertEqualScientificValue(0.5(Minute), 2(BeatsPerMinute).time())
         assertEqualScientificValue(2(Second), 5(Decihertz).time())
+    }
+
+    @Test
+    fun timeFromKinematicViscosityAndSpecificEnergyTest() {
+        assertEqualScientificValue(1(Minute), 7200(SquareMeter per Minute) / 2(Joule per Kilogram))
     }
 
     @Test

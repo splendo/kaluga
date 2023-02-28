@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,11 +25,8 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
@@ -37,17 +34,35 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+/**
+ * A [BaseAlertPresenter] for presenting an [Alert].
+ * @param alert The [Alert] being presented.
+ * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
+ * @param coroutineScope The [CoroutineScope] managing changes to the alert presentation.
+ */
 actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
 ) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
 
+    /**
+     * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
+     * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
+     */
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : BaseAlertPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) =
-            AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
+    ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+
+        /**
+         * Creates an [AlertPresenter]
+         *
+         * @param alert The [Alert] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [AlertPresenter]
+         */
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) =
+            AlertPresenter(alert, lifecycleManagerObserver, coroutineScope)
     }
 
     private companion object {
@@ -197,17 +212,3 @@ actual class AlertPresenter(
         return linearLayout
     }
 }
-
-/**
- * @return The [AlertPresenter.Builder] which can be used to present alerts while this Activity is active
- * Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder =
-    getOrPutAndRemoveOnDestroyFromCache {
-        AlertPresenter.Builder(lifecycleManagerObserver())
-    }

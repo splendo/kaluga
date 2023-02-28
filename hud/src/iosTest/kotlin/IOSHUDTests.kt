@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.runBlocking
 import platform.UIKit.UIViewController
-import kotlin.native.concurrent.ensureNeverFrozen
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -41,10 +40,6 @@ class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
     override val createTestContext: suspend (scope: CoroutineScope) -> IOSHUDTestContext = { IOSHUDTestContext(it) }
 
     class HUDViewController : UIViewController(null, null) {
-
-        init {
-            this.ensureNeverFrozen()
-        }
 
         var mockPresentingHUD: MockPresentingHUD? = null
 
@@ -68,10 +63,6 @@ class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
     }
 
     class MockPresentingHUD(val hudViewController: UIViewController) : UIViewController(null, null) {
-
-        init {
-            this.ensureNeverFrozen()
-        }
 
         var parent: UIViewController? = null
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.splendo.kaluga.permissions.base.IOSPermissionsHelper.AuthorizationSta
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.withLock
 import platform.Foundation.NSBundle
 
 /**
@@ -37,9 +38,24 @@ class IOSPermissionsHelper {
      * Type of AuthorizationStatus that can be given by a permission.
      */
     enum class AuthorizationStatus {
+        /**
+         * The status of Authorization has not yet been determined by the user and can thus be requested.
+         */
         NotDetermined,
+
+        /**
+         * The Authorization status cannot be granted because it is restricted
+         */
         Restricted,
+
+        /**
+         * The Authorization status cannot be granted because the user has denied it
+         */
         Denied,
+
+        /**
+         * The Authorization status has been granted
+         */
         Authorized
     }
 
@@ -73,19 +89,20 @@ class IOSPermissionsHelper {
     }
 }
 
-fun AuthorizationStatusHandler.requestAuthorizationStatus(timerHelper: PermissionRefreshScheduler? = null, coroutineScope: CoroutineScope, request: suspend () -> AuthorizationStatus) {
-    coroutineScope.launch {
-        timerHelper?.isWaiting?.value = true
-        val newStatus = request()
-        timerHelper?.isWaiting?.value = false
-        status(newStatus)
-    }
-}
-
+/**
+ * Handles changes to [AuthorizationStatus]
+ */
 interface AuthorizationStatusHandler {
     fun status(status: AuthorizationStatus)
 }
 
+/**
+ * Default implementation of [AuthorizationStatusHandler].
+ * Maps [AuthorizationStatus] to a [PermissionManager.Event] and sends this to a channel
+ * @param eventChannel the [SendChannel] that should emit the [PermissionManager.Event]
+ * @param logTag the tag wto use for logging
+ * @param logger the [Logger] to use for logging
+ */
 class DefaultAuthorizationStatusHandler(
     private val eventChannel: SendChannel<PermissionManager.Event>,
     private val logTag: String,
@@ -111,5 +128,23 @@ class DefaultAuthorizationStatusHandler(
 
     private fun tryAndEmitEvent(event: PermissionManager.Event) {
         eventChannel.trySend(event)
+    }
+}
+
+/**
+ * Pauses a [PermissionRefreshScheduler] while requesting an [AuthorizationStatus] and calls [AuthorizationStatusHandler.status] once the request has been completed.
+ * @param timerHelper the [PermissionRefreshScheduler] to pause.
+ * @param coroutineScope the [CoroutineScope] on which to request the [AuthorizationStatus]
+ * @param request the method for requesting the [AuthorizationStatus]
+ */
+fun AuthorizationStatusHandler.requestAuthorizationStatus(
+    timerHelper: PermissionRefreshScheduler? = null,
+    coroutineScope: CoroutineScope,
+    request: suspend () -> AuthorizationStatus
+) {
+    coroutineScope.launch {
+        timerHelper?.waitingLock?.withLock {
+            request()
+        }?.let { status(it) }
     }
 }

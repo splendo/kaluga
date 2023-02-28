@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
 import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.IonizingRadiationAbsorbedDose
 import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
 import com.splendo.kaluga.scientific.unit.MetricWeight
 import com.splendo.kaluga.scientific.unit.Rad
+import com.splendo.kaluga.scientific.unit.RadMultiple
 import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
+import com.splendo.kaluga.scientific.unit.RoentgenEquivalentManMultiple
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
 import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
 import com.splendo.kaluga.scientific.unit.UKImperialWeight
@@ -47,10 +47,9 @@ infix operator fun ScientificValue<PhysicalQuantity.Weight, Gram>.times(
 ) = absorbedDose * this
 
 @JvmName("gramTimesRadMultiple")
-infix operator fun <AbsorbedDoseUnit> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
+infix operator fun <AbsorbedDoseUnit : RadMultiple> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
-) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> =
-    absorbedDose * this
+) = absorbedDose * this
 
 @JvmName("imperialWeightTimesAbsorbedDose")
 infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
@@ -78,10 +77,9 @@ infix operator fun ScientificValue<PhysicalQuantity.Weight, Gram>.times(
 ) = equivalentDose * this
 
 @JvmName("gramTimesRoentgenEquivalentManMultiple")
-infix operator fun <EquivalentDoseUnit> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
+infix operator fun <EquivalentDoseUnit : RoentgenEquivalentManMultiple> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
     equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
-) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
-    equivalentDose * this
+) = equivalentDose * this
 
 @JvmName("imperialWeightTimesEquivalentDose")
 infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.test.keyboard
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import com.splendo.kaluga.test.base.mock.verify
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +27,7 @@ import kotlin.test.assertTrue
 
 class MockKeyboardManagerTest : UIThreadViewModelTest<MockKeyboardManagerTest.TestContext, MockKeyboardManagerTest.ViewModel>() {
 
-    class ViewModel(keyboardManagerBuilder: MockKeyboardManager.Builder, val focusHandler: FocusHandler) : BaseLifecycleViewModel() {
+    class ViewModel(keyboardManagerBuilder: MockKeyboardManager.Builder<MockFocusHandler>, val focusHandler: MockFocusHandler) : BaseLifecycleViewModel(keyboardManagerBuilder) {
 
         val keyboardManager = keyboardManagerBuilder.create(coroutineScope)
 
@@ -38,7 +37,7 @@ class MockKeyboardManagerTest : UIThreadViewModelTest<MockKeyboardManagerTest.Te
 
     class TestContext : ViewModelTestContext<ViewModel> {
         val mockFocusHandler = MockFocusHandler()
-        val keyboardManagerBuilder = MockKeyboardManager.Builder()
+        val keyboardManagerBuilder = MockKeyboardManager.Builder<MockFocusHandler>()
         override val viewModel: ViewModel = ViewModel(keyboardManagerBuilder, mockFocusHandler)
     }
 

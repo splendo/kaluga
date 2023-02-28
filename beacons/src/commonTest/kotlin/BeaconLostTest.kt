@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.seconds
 
-class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
+class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
 
     @Test
     fun testLostOnTimeout() = testWithFlow {
@@ -33,7 +33,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         }
 
         action {
-            start(MainScope())
+            start()
             discoverDevices(
                 BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )
@@ -62,7 +62,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         }
 
         action {
-            start(scope)
+            start()
             discoverDevices(
                 BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )

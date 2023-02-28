@@ -21,11 +21,19 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [CalendarPermission]
+ * @param context the [Context] the [CalendarPermission] is to be granted in
+ * @param calendarPermission the [CalendarPermission] to manage.
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultCalendarPermissionManager(
     context: Context,
     calendarPermission: CalendarPermission,
@@ -56,6 +64,10 @@ actual class DefaultCalendarPermissionManager(
     }
 }
 
+/**
+ * A [BaseCalendarPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
     override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {

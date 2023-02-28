@@ -22,11 +22,26 @@ import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBService
 import platform.CoreBluetooth.CBUUID
 
+/**
+ * Accessor to a [CBService]
+ */
 actual interface ServiceWrapper {
+
+    /**
+     * The [UUID] of the service
+     */
     actual val uuid: CBUUID
+
+    /**
+     * The list of [CharacteristicWrapper] associated with the service
+     */
     actual val characteristics: List<CharacteristicWrapper>
 }
 
+/**
+ * Default implementation of [ServiceWrapper]
+ * @param service the [CBService] to wrap
+ */
 class DefaultServiceWrapper(service: CBService) : ServiceWrapper {
 
     override val uuid: CBUUID = service.UUID

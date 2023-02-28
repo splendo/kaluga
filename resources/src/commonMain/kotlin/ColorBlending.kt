@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,12 +23,21 @@ import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
- * Blend Modes as defined by https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdf_reference_archive/blend_modes.pdf
+ * Blend Modes as defined by https://helpx.adobe.com/photoshop/using/blending-modes.html
  */
 sealed class BlendMode {
 
+    /**
+     * Blends two [KalugaColor] into a new [KalugaColor] using this [BlendMode]
+     * @param backdrop the [KalugaColor] at the base layer
+     * @param source the [KalugaColor] at the top layer
+     * @return a [KalugaColor] that is the result of [backdrop] and [source] being blended using this Blend mode
+     */
     abstract fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor
 
+    /**
+     * A [BlendMode] where each color channel can be blended independently
+     */
     sealed class SeparableBlendMode : BlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = colorFrom(
             blendColorChannel(backdrop.red, source.red),
@@ -36,9 +45,18 @@ sealed class BlendMode {
             blendColorChannel(backdrop.blue, source.blue)
         )
 
+        /**
+         * Blends the color of a single channel
+         * @param backdrop the value for the color in the channel at the base layer
+         * @param source the value for the color in the channel at the top layer
+         * @return the value for the color in the channel blended using this Blend mode
+         */
         abstract fun blendColorChannel(backdrop: Double, source: Double): Double
     }
 
+    /**
+     * A [BlendMode] where the color channels cannot be blended by changing the Lumination and Saturation
+     */
     sealed class NonSeparableBlendMode : BlendMode() {
         protected data class UnboundColor(val red: Double, val blue: Double, val green: Double) {
             val lumination: Double get() = 0.3 * red + 0.59 * green + 0.11 * blue
@@ -101,34 +119,55 @@ sealed class BlendMode {
         }
     }
 
+    /**
+     * A [SeparableBlendMode] where only the top layer is used
+     */
     object Normal : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = source
     }
 
+    /**
+     * A [SeparableBlendMode] where the top layer is multiplied with the base layer
+     */
     object Multiply : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = backdrop * source
     }
 
+    /**
+     * A [SeparableBlendMode] where the colors are inverted, multiplied and then inverted again
+     */
     object Screen : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double =
             backdrop + source - backdrop * source
     }
 
+    /**
+     * A [SeparableBlendMode] where if the base layer is light, the top layer becomes lighter; where the base layer is dark, the top becomes darker
+     */
     object Overlay : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double =
             HardLight.blendColorChannel(source, backdrop)
     }
 
+    /**
+     * A [SeparableBlendMode] where for each channel the darkest of the base layer and top later is used
+     */
     object Darken : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double =
             min(backdrop, source)
     }
 
+    /**
+     * A [SeparableBlendMode] where for each channel the lightest of the base layer and top later is used
+     */
     object Lighten : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double =
             max(backdrop, source)
     }
 
+    /**
+     * A [SeparableBlendMode] where if the source color is lighter than 50% gray, the color is lightened, as if [Screen] was applied. If the source color is darker than 50% gray, the image is darkened, as if [Multiply] was applied
+     */
     object HardLight : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double {
             return if (source <= 0.5) {
@@ -139,6 +178,9 @@ sealed class BlendMode {
         }
     }
 
+    /**
+     * A [SeparableBlendMode] where if the source color is lighter than 50% gray, the color is lightened, as if [ColorDodge] was applied. If the source color is darker than 50% gray, the image is darkened, as if [ColorBurn] was applied
+     */
     object SoftLight : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double {
             return if (source <= 0.5) {
@@ -153,6 +195,9 @@ sealed class BlendMode {
         }
     }
 
+    /**
+     * A [SeparableBlendMode] where blending looks at the color information in each channel and brightens the base color to reflect the blend color by decreasing contrast between the two
+     */
     object ColorDodge : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = when {
             backdrop == 0.0 -> 0.0
@@ -161,6 +206,9 @@ sealed class BlendMode {
         }
     }
 
+    /**
+     * A [SeparableBlendMode] where blending looks at the color information in each channel and darkens the base color to reflect the blend color by increasing the contrast between the two
+     */
     object ColorBurn : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = when {
             backdrop == 1.0 -> 1.0
@@ -169,34 +217,52 @@ sealed class BlendMode {
         }
     }
 
+    /**
+     * A [SeparableBlendMode] where blending looks at the color information in each channel and subtracts either the source color from the base color or the base color from the source color, depending on which has the greater brightness value
+     */
     object Difference : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double =
             abs(backdrop - source)
     }
 
+    /**
+     * A [SeparableBlendMode] similar to [Difference] but lower in contrast
+     */
     object Exclusion : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double {
             return backdrop + source - 2.0 * backdrop * source
         }
     }
 
+    /**
+     * A [NonSeparableBlendMode] that creates a result color with the luminance and saturation of the base color and the hue of the source color
+     */
     object Hue : NonSeparableBlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = source
             .setSaturation(backdrop.saturation)
             .setLumination(backdrop.lumination)
     }
 
+    /**
+     * A [NonSeparableBlendMode] that creates a result color with the luminance and hue of the base color and the saturation of the source color
+     */
     object Saturation : NonSeparableBlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = backdrop
             .setSaturation(source.saturation)
             .setLumination(backdrop.lumination)
     }
 
+    /**
+     * A [NonSeparableBlendMode] that creates a result color with the luminance of the base color and the hue and saturation of the source color
+     */
     object ColorBlend : NonSeparableBlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor =
             source.setLumination(backdrop.lumination)
     }
 
+    /**
+     * A [NonSeparableBlendMode] that creates a result color with the hue and saturation of the base color and the luminance of the source color
+     */
     object Luminosity : NonSeparableBlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor =
             backdrop.setLumination(source.lumination)
@@ -229,19 +295,114 @@ private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor
     )
 }
 
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Normal]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Normal] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.normal(source: KalugaColor) = blend(source, BlendMode.Normal)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Multiply]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Multiply] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.multiply(source: KalugaColor) = blend(source, BlendMode.Multiply)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Screen]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Screen] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.screen(source: KalugaColor) = blend(source, BlendMode.Screen)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Overlay]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Overlay] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.overlay(source: KalugaColor) = blend(source, BlendMode.Overlay)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Darken]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Darken] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.darken(source: KalugaColor) = blend(source, BlendMode.Darken)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Lighten]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Lighten] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.lighten(source: KalugaColor) = blend(source, BlendMode.Lighten)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.HardLight]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.HardLight] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.hardLight(source: KalugaColor) = blend(source, BlendMode.HardLight)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.SoftLight]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.SoftLight] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.softLight(source: KalugaColor) = blend(source, BlendMode.SoftLight)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.ColorDodge]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.ColorDodge] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.dodge(source: KalugaColor) = blend(source, BlendMode.ColorDodge)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.ColorBurn]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.ColorBurn] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.burn(source: KalugaColor) = blend(source, BlendMode.ColorBurn)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Difference]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Difference] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.difference(source: KalugaColor) = blend(source, BlendMode.Difference)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Exclusion]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Exclusion] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.exclude(source: KalugaColor) = blend(source, BlendMode.Exclusion)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Hue]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Hue] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.hue(source: KalugaColor) = blend(source, BlendMode.Hue)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Saturation]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Saturation] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.saturate(source: KalugaColor) = blend(source, BlendMode.Saturation)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.Luminosity]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.Luminosity] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.luminate(source: KalugaColor) = blend(source, BlendMode.Luminosity)
+
+/**
+ * Blends a [KalugaColor] with another color using [BlendMode.ColorBlend]
+ * @param source the [KalugaColor] that serves as the source color
+ * @return a [KalugaColor] that is the result of [BlendMode.ColorBlend] being applied with this [KalugaColor] as the base color and [source] as the source color
+ */
 infix fun KalugaColor.colorBlend(source: KalugaColor) = blend(source, BlendMode.ColorBlend)

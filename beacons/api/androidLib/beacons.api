@@ -11,35 +11,39 @@ public final class com/splendo/kaluga/bluetooth/beacons/BeaconInfo {
 	public final fun getBeaconID ()Lcom/splendo/kaluga/bluetooth/beacons/Eddystone$UID;
 	public final fun getIdentifier ()Ljava/lang/String;
 	public final fun getLastSeen ()Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public final fun getRSSI ()I
+	public final fun getRssi ()I
 	public final fun getTxPower ()I
 	public fun hashCode ()I
-	public final fun setBeaconID (Lcom/splendo/kaluga/bluetooth/beacons/Eddystone$UID;)V
-	public final fun setIdentifier (Ljava/lang/String;)V
-	public final fun setLastSeen (Lcom/splendo/kaluga/base/utils/KalugaDate;)V
-	public final fun setRSSI (I)V
-	public final fun setTxPower (I)V
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/BeaconInfoKt {
 	public static final fun fullID (Lcom/splendo/kaluga/bluetooth/beacons/BeaconInfo;)Ljava/lang/String;
+	public static final fun getTimeSinceLastSeen (Lcom/splendo/kaluga/bluetooth/beacons/BeaconInfo;)J
 	public static final fun seenMs (Lcom/splendo/kaluga/bluetooth/beacons/BeaconInfo;)J
 }
 
-public final class com/splendo/kaluga/bluetooth/beacons/Beacons {
-	public static final field TAG Ljava/lang/String;
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;J)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getBeacons ()Lkotlinx/coroutines/flow/StateFlow;
-	public final fun isAnyInRange (Ljava/util/List;)Lkotlinx/coroutines/flow/Flow;
-	public final fun isMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun startMonitoring (Lkotlinx/coroutines/CoroutineScope;)V
-	public final fun stopMonitoring ()V
+public abstract interface class com/splendo/kaluga/bluetooth/beacons/Beacons {
+	public abstract fun getBeacons ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun isMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun startMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/BeaconsKt {
 	public static final fun get (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun isAnyInRange (Lcom/splendo/kaluga/bluetooth/beacons/Beacons;Ljava/util/List;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/splendo/kaluga/bluetooth/beacons/DefaultBeacons : com/splendo/kaluga/bluetooth/beacons/Beacons, kotlinx/coroutines/CoroutineScope {
+	public static final field TAG Ljava/lang/String;
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;JLcom/splendo/kaluga/logging/Logger;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/BluetoothService;JLcom/splendo/kaluga/logging/Logger;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getBeacons ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun isMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoring (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/Eddystone {
@@ -48,8 +52,6 @@ public final class com/splendo/kaluga/bluetooth/beacons/Eddystone {
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/Eddystone$Companion {
-	public final fun getSERVICE_UUID ()Ljava/util/UUID;
-	public final fun unpack ([B)Lcom/splendo/kaluga/bluetooth/beacons/Eddystone$Frame;
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/Eddystone$Frame {

@@ -1,7 +1,5 @@
 public abstract class com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest : com/splendo/kaluga/test/base/BaseUIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public class com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$LazyViewModelTestContext : com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$ViewModelTestContext, kotlinx/coroutines/CoroutineScope {
@@ -21,18 +19,37 @@ public final class com/splendo/kaluga/test/architecture/BuildConfig {
 	public fun <init> ()V
 }
 
-public final class com/splendo/kaluga/test/architecture/MockLifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
+public final class com/splendo/kaluga/test/architecture/GetOrPutAndRemoveOnDestroyFromCacheKt {
+	public static final fun getLifecycleAwareActivityCache ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
+}
+
+public final class com/splendo/kaluga/test/architecture/LifecycleManagerObserverKt {
+	public static final fun lifecycleManagerObserver (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;
+}
+
+public final class com/splendo/kaluga/test/architecture/MockActivityLifecycleSubscriber : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable {
 	public fun <init> ()V
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun setManager (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 
+public final class com/splendo/kaluga/test/architecture/MockNavigationException : com/splendo/kaluga/architecture/navigation/NavigationException {
+	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
 public class com/splendo/kaluga/test/architecture/MockNavigator : com/splendo/kaluga/architecture/navigation/Navigator {
+	public static final field Companion Lcom/splendo/kaluga/test/architecture/MockNavigator$Companion;
 	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getNavigateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
+}
+
+public final class com/splendo/kaluga/test/architecture/MockNavigator$Companion {
+	public final fun navigatorThatThrows ()Lcom/splendo/kaluga/test/architecture/MockNavigator;
 }
 
 public abstract class com/splendo/kaluga/test/architecture/SimpleUIThreadViewModelTest : com/splendo/kaluga/test/architecture/UIThreadViewModelTest {
@@ -43,8 +60,6 @@ public abstract class com/splendo/kaluga/test/architecture/SimpleUIThreadViewMod
 
 public abstract class com/splendo/kaluga/test/architecture/UIThreadViewModelTest : com/splendo/kaluga/test/base/UIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public class com/splendo/kaluga/test/architecture/UIThreadViewModelTest$LazyViewModelTestContext : com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$LazyViewModelTestContext, com/splendo/kaluga/test/architecture/UIThreadViewModelTest$ViewModelTestContext {
@@ -57,8 +72,6 @@ public abstract interface class com/splendo/kaluga/test/architecture/UIThreadVie
 public abstract class com/splendo/kaluga/test/architecture/ViewModelTest : com/splendo/kaluga/test/base/BaseTest {
 	public field viewModel Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun beforeTest ()V
 	protected abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public final fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;

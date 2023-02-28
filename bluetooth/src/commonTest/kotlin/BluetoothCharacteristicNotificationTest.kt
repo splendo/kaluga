@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -88,7 +88,11 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
     }
 
     @Test
-    fun testFailedToEnableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic(willActionsSucceed = false)) {
+    fun testFailedToEnableNotification() = testWithFlowAndTestContext(
+        Configuration.DeviceWithCharacteristic(
+            willActionsSucceed = false
+        )
+    ) {
         connect()
         discover()
 

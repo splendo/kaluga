@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,6 +21,13 @@ import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * A color using hue, saturation, and lightness color spaces
+ * @property hue the hue channel in a range between `0.0` and `1.0`
+ * @property saturation the saturation channel in a range between `0.0` and `1.0`
+ * @property lightness the lightness channel in a range between `0.0` and `1.0`
+ * @property alpha the alpha channel in a range between `0.0` and `1.0`
+ */
 @Serializable
 data class HSLColor(
     val hue: Double,
@@ -29,6 +36,9 @@ data class HSLColor(
     val alpha: Double = 1.0
 )
 
+/**
+ * Gets the [HSLColor] equivalent to this [KalugaColor]
+ */
 val KalugaColor.hsl: HSLColor get() {
     val max = max(red, max(green, blue))
     val min = min(red, min(green, blue))
@@ -56,6 +66,9 @@ val KalugaColor.hsl: HSLColor get() {
     }
 }
 
+/**
+ * Gets the [KalugaColor] equivalent to this [HSLColor]
+ */
 val HSLColor.color: KalugaColor get() {
     return if (saturation == 0.0) {
         colorFrom(lightness, lightness, lightness)
@@ -85,10 +98,18 @@ val HSLColor.color: KalugaColor get() {
     }
 }
 
+/**
+ * Increases the lightness of a [KalugaColor] by this factor.
+ * @param value the amount by which to increase the lightness. Should range between `0.0` and `1.0`
+ */
 fun KalugaColor.lightenBy(value: Double): KalugaColor = hsl.let {
     return it.copy(lightness = ((1.0 - it.lightness) * value) + it.lightness).color
 }
 
+/**
+ * Decreases the lightness of a [KalugaColor] by this factor.
+ * @param value the amount by which to decrease the lightness. Should range between `0.0` and `1.0`
+ */
 fun KalugaColor.darkenBy(value: Double): KalugaColor = hsl.let {
     return it.copy(lightness = (it.lightness - (it.lightness) * value)).color
 }

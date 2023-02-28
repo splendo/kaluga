@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ import platform.UIKit.willMoveToParentViewController
  * This convenience class is the result of [BaseLifecycleViewModel.addLifecycleManager].
  * Invoke [unbind] to unbind the Lifecycle from its bound [UIViewController]
  */
-class LifecycleManager internal constructor(allowFreezing: Boolean, clearViewModel: () -> Unit) {
+class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
 
-    internal val disposeBag: DisposeBag = DisposeBag(allowFreezing)
+    internal val disposeBag: DisposeBag = DisposeBag()
     private var onUnbind: (() -> Unit)? = clearViewModel
 
     /**
@@ -53,9 +53,9 @@ class LifecycleManager internal constructor(allowFreezing: Boolean, clearViewMod
  */
 typealias onLifeCycleChanged = () -> List<Disposable>
 
-internal class ViewModelLifecycleManager<VM : BaseLifecycleViewModel>(private val viewModel: VM, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
+internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
 
-    internal val lifecycleManager = LifecycleManager(viewModel.allowFreezing) {
+    internal val lifecycleManager = LifecycleManager {
         viewModel.clear()
         willMoveToParentViewController(null)
         view.removeFromSuperview()
@@ -66,7 +66,9 @@ internal class ViewModelLifecycleManager<VM : BaseLifecycleViewModel>(private va
         super.viewDidAppear(animated)
 
         viewModel.didResume()
-        onLifecycle().forEach { lifecycleManager.disposeBag.add(it) }
+        onLifecycle().forEach {
+            lifecycleManager.disposeBag.add(it)
+        }
     }
 
     override fun viewDidDisappear(animated: Boolean) {
@@ -84,7 +86,7 @@ internal class ViewModelLifecycleManager<VM : BaseLifecycleViewModel>(private va
  * @param onLifecycle This callback is invoked on each start of a new lifecycle.
  * @return The [LifecycleManager] bound to the [BaseLifecycleViewModel]
  */
-fun <VM : BaseLifecycleViewModel> VM.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
+fun <ViewModel : BaseLifecycleViewModel> ViewModel.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
     val lifecycleManager = ViewModelLifecycleManager(this, onLifecycle)
     parent.addChildViewController(lifecycleManager)
     parent.view.addSubview(lifecycleManager.view)

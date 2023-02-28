@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.test.architecture
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.test.base.yieldMultiple
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -35,7 +35,7 @@ import kotlin.test.fail
 class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
-        val isDisposed = AtomicBoolean(false)
+        val isDisposed = atomic(false)
     }
 
     class ViewModel : BaseLifecycleViewModel() {

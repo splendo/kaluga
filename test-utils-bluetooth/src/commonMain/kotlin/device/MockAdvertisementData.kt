@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 
@@ -29,6 +30,6 @@ data class MockAdvertisementData(
     override val manufacturerData: ByteArray? = null,
     override val serviceUUIDs: List<UUID> = emptyList(),
     override val serviceData: Map<UUID, ByteArray?> = emptyMap(),
-    override val txPowerLevel: Int = Int.MIN_VALUE,
+    override val txPowerLevel: TxPower = Int.MIN_VALUE,
     override val isConnectable: Boolean = true
 ) : BaseAdvertisementData

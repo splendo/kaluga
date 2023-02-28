@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.properties.ReadOnlyProperty
@@ -35,8 +34,8 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
 
         val observable = ro.toDefaultObservable("default")
 
-        val observed = AtomicReference("nothing yet")
-        observable.observeInitialized { observed.set(it) }
+        var observed = "nothing yet"
+        observable.observeInitialized { observed = it }
 
         testStringDefaultObservable(
             observable = observable,
@@ -44,7 +43,7 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             shortDelayAfterUpdate = false,
             {
                 nullableString.value = "new"
-                assertEquals("default", observed.get(), "the property will only report the new value upon read")
+                assertEquals("default", observed, "the property will only report the new value upon read")
                 "new"
             }, // when we actually read the property to test this, the new value will propagate
             {

@@ -87,7 +87,7 @@ Add unit tests which should run on a device or emulator
 Example:
 
 ```kotlin
-const val DEFAULT_TIMEOUT = 20_000L
+val DEFAULT_TIMEOUT = 20.seconds.inWholeMilliseconds
 
 fun UiDevice.assertTextAppears(text: String) {
     assertNotNull(this.wait(Until.findObject(By.text(text)), DEFAULT_TIMEOUT))

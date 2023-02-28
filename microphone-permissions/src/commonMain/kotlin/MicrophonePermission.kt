@@ -31,26 +31,37 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [MicrophonePermission]
  */
 typealias MicrophonePermissionManager = PermissionManager<MicrophonePermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [MicrophonePermission]
+ */
 expect class DefaultMicrophonePermissionManager : BasePermissionManager<MicrophonePermission>
 
+/**
+ * A [BasePermissionsBuilder] for [MicrophonePermission]
+ */
 interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder<MicrophonePermission> {
 
     /**
      * Creates a [MicrophonePermissionManager]
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [MicrophonePermissionManager]
      */
     fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): MicrophonePermissionManager
 }
 
 /**
- * A builder for creating a [MicrophonePermissionManager]
+ * A [BaseMicrophonePermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class MicrophonePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseMicrophonePermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [MicrophonePermission]
  * @param builder The [MicrophonePermissionManagerBuilder] for creating the [MicrophonePermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [MicrophonePermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class MicrophonePermissionStateRepo(

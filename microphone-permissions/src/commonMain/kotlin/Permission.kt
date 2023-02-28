@@ -26,12 +26,21 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * Permission to access the users Microphone
+ * [Permission] to access the users Microphone
  */
 object MicrophonePermission : Permission() {
     override val name: String = "Microphone"
 }
 
+/**
+ * Registers a [BaseMicrophonePermissionManagerBuilder] and [PermissionStateRepo] for [MicrophonePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param microphonePermissionManagerBuilderBuilder method for creating a [BaseMicrophonePermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseMicrophonePermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseMicrophonePermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -41,12 +50,54 @@ fun PermissionsBuilder.registerMicrophonePermission(
         MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Registers a [BaseMicrophonePermissionManagerBuilder] and [PermissionStateRepo] for [MicrophonePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param microphonePermissionManagerBuilderBuilder method for creating a [BaseMicrophonePermissionManagerBuilder] from a [PermissionContext]
+ * @param microphonePermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [MicrophonePermission] given a [BaseMicrophonePermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseMicrophonePermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseMicrophonePermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
     microphonePermissionStateRepoBuilder: (BaseMicrophonePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<MicrophonePermission>
 ) = microphonePermissionManagerBuilderBuilder(context).also {
     register(it)
     registerPermissionStateRepoBuilder<MicrophonePermission> { _, coroutineContext ->
+        microphonePermissionStateRepoBuilder(it, coroutineContext)
+    }
+}
+
+/**
+ * Gets the [BaseMicrophonePermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseMicrophonePermissionManagerBuilder] and [PermissionStateRepo] for [MicrophonePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param microphonePermissionManagerBuilderBuilder method for creating a [BaseMicrophonePermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseMicrophonePermissionManagerBuilder] registered
+ */
+fun PermissionsBuilder.registerMicrophonePermissionIfNotRegistered(
+    microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) =
+    registerMicrophonePermissionIfNotRegistered(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
+        MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+    }
+
+/**
+ * Gets the [BaseMicrophonePermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseMicrophonePermissionManagerBuilder] and [PermissionStateRepo] for [MicrophonePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param microphonePermissionManagerBuilderBuilder method for creating a [BaseMicrophonePermissionManagerBuilder] from a [PermissionContext]
+ * @param microphonePermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [MicrophonePermission] given a [BaseMicrophonePermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseMicrophonePermissionManagerBuilder] registered
+ */
+fun PermissionsBuilder.registerMicrophonePermissionIfNotRegistered(
+    microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
+    microphonePermissionStateRepoBuilder: (BaseMicrophonePermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<MicrophonePermission>
+) = microphonePermissionManagerBuilderBuilder(context).also {
+    registerOrGet(it)
+    registerOrGetPermissionStateRepoBuilder<MicrophonePermission> { _, coroutineContext ->
         microphonePermissionStateRepoBuilder(it, coroutineContext)
     }
 }

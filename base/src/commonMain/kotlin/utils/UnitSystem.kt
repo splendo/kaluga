@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,19 +17,35 @@
 
 package com.splendo.kaluga.base.utils
 
+/**
+ * The unit system used by a country.
+ * For more advanced functionality please use Kaluga Scientific
+ */
 enum class UnitSystem {
 
-    METRIC, MIXED, IMPERIAL;
+    /**
+     * Metric Unit system
+     */
+    METRIC,
+
+    /**
+     * Unit system that mixes metric and (UK) Imperial
+     */
+    MIXED,
+
+    /**
+     * Unit system used in the United States.
+     */
+    IMPERIAL;
 
     companion object {
-        // FIXME IMPERIAL and US customary seem reversed
+
         fun withRawValue(value: String): UnitSystem = when (value) {
             "U.S." -> IMPERIAL
             "U.K." -> MIXED
             else -> METRIC
         }
 
-        // FIXME IMPERIAL and US customary seem reversed
         fun withCountryCode(code: String): UnitSystem = when {
             listOf("GB", "MM", "LR").contains(code) -> MIXED
             "US" == code -> IMPERIAL

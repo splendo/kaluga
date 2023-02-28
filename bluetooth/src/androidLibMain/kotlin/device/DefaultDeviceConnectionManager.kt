@@ -32,6 +32,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
@@ -94,11 +95,7 @@ internal actual class DefaultDeviceConnectionManager(
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            // TODO update implementation so it doesn't depend on characteristic.value which is deprecated
-            // https://github.com/splendo/kaluga/issues/609
-            // https://developer.android.com/reference/android/bluetooth/BluetoothGattCharacteristic#getValue()
-            @Suppress("DEPRECATION")
-            updateCharacteristic(characteristic, characteristic.value, status)
+            handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS)
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -106,15 +103,6 @@ internal actual class DefaultDeviceConnectionManager(
                 val services = gatt?.services?.map { DefaultGattServiceWrapper(it) } ?: emptyList()
                 handleDiscoverCompleted(services)
             }
-        }
-
-        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            descriptor ?: return
-            // TODO update implementation so it doesn't depend on descriptor.value which is deprecated
-            // https://github.com/splendo/kaluga/issues/609
-            // https://developer.android.com/reference/android/bluetooth/BluetoothGattDescriptor#getValue()
-            @Suppress("DEPRECATION")
-            updateDescriptor(descriptor, descriptor.value, status)
         }
 
         @Deprecated("Deprecated in Java")
@@ -144,9 +132,19 @@ internal actual class DefaultDeviceConnectionManager(
             value: ByteArray
         ) = updateDescriptor(descriptor, value, status)
 
+        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+            descriptor ?: return
+            val succeeded = status == GATT_SUCCESS
+            // Notification enable/disable done by client configuration descriptor write
+            if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
+                handleCurrentActionCompleted(succeeded)
+            }
+            handleUpdatedDescriptor(descriptor.uuid, succeeded)
+        }
+
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             lastKnownState = newState
-            launch() {
+            launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         handleDisconnect {
@@ -193,12 +191,13 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun disconnect() {
-        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED)
+        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
             gatt.await().disconnect()
-        else
+        } else {
             handleDisconnect {
                 closeGatt()
             }
+        }
     }
 
     private fun closeGatt() {
@@ -212,12 +211,11 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().readRemoteRssi()
     }
 
-    override suspend fun requestMtu(mtu: Int): Boolean {
+    override suspend fun requestMtu(mtu: MTU): Boolean {
         return gatt.await().requestMtu(mtu)
     }
 
-    override suspend fun performAction(action: DeviceAction) {
-        super.performAction(action)
+    override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         val succeeded = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
@@ -235,16 +233,16 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun unpair() {
-        if (device.bondState != BluetoothDevice.BOND_NONE) {
-            deviceWrapper.removeBond()
+    override suspend fun requestStartPairing() {
+        if (device.bondState == BluetoothDevice.BOND_NONE) {
+            deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun pair() {
-        if (device.bondState == BluetoothDevice.BOND_NONE) {
-            deviceWrapper.createBond()
+    override suspend fun requestStartUnpairing() {
+        if (device.bondState != BluetoothDevice.BOND_NONE) {
+            deviceWrapper.removeBond()
         }
     }
 
@@ -259,10 +257,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     private suspend fun setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
         val uuid = characteristic.uuid.uuidString
-        if (enable)
+        if (enable) {
             notifyingCharacteristics[uuid] = characteristic
-        else
+        } else {
             notifyingCharacteristics.remove(uuid)
+        }
         if (!gatt.await().setCharacteristicNotification(characteristic.wrapper, enable)) {
             return false
         }
@@ -300,10 +299,6 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
         val succeeded = status == GATT_SUCCESS
-        // Notification enable/disable done by client configuration descriptor write
-        if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
-            handleCurrentActionCompleted(succeeded)
-        }
         handleUpdatedDescriptor(descriptor.uuid, succeeded) {
             it.wrapper.updateValue(value)
         }

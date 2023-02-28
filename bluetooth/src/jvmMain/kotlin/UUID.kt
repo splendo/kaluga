@@ -15,13 +15,26 @@
 
  */
 
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+
 package com.splendo.kaluga.bluetooth
 
+/**
+ * The Unique Identifier of a Bluetooth property
+ * @property uuidString the String representation of the unique identifier
+ */
 actual data class UUID(val uuidString: String)
 
+/**
+ * The string representation of a [UUID]
+ */
 actual val UUID.uuidString: String
     get() = uuidString
 
 internal actual fun unsafeUUIDFrom(uuidString: String): UUID = UUID(uuidString = uuidString)
 
+/**
+ * Gets a random [UUID]
+ * @return a random [UUID]
+ */
 actual fun randomUUID(): UUID = UUID(randomUUIDString())

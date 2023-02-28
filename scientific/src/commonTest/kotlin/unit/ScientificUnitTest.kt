@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
  */
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.scientific.convert
+import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class ScientificUnitTest {
@@ -24,5 +27,12 @@ class ScientificUnitTest {
     @Test
     fun testUnits() {
         assertFalse(Units.isEmpty())
+    }
+
+    @Test
+    fun testInvalidConverters() {
+        assertEquals(Double.NaN(Inch), Double.NaN(Meter).convert(Inch))
+        assertEquals(Double.POSITIVE_INFINITY(Inch), Double.POSITIVE_INFINITY(Meter).convert(Inch))
+        assertEquals(Double.NEGATIVE_INFINITY(Inch), Double.NEGATIVE_INFINITY(Meter).convert(Inch))
     }
 }

@@ -20,7 +20,6 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectContainsPoint
@@ -51,9 +50,8 @@ import platform.darwin.NSUInteger
 import kotlin.math.max
 import kotlin.math.min
 
-class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<Pair<CValue<NSRange>, NSURL>>) : NSObject() {
+internal class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<Pair<CValue<NSRange>, NSURL>>) : NSObject() {
 
-    @ThreadLocal
     object Registry {
         val registeredGestures = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
     }
@@ -100,7 +98,7 @@ class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<P
         }
         val textContainer = NSTextContainer(labelSize).apply {
             // Configure textContainer
-            lineFragmentPadding = 0.0 as CGFloat
+            lineFragmentPadding = 0.0
             lineBreakMode = label.lineBreakMode.convert()
             maximumNumberOfLines = label.numberOfLines.convert()
             this.size
@@ -118,8 +116,8 @@ class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<P
         val locationOfTouchInLabel = gesture.locationInView(label)
         val textBoundingBox = layoutManager.usedRectForTextContainer(textContainer)
         val textContainerOffset = CGPointMake(
-            (- textBoundingBox.useContents { origin.x }) as CGFloat,
-            (- textBoundingBox.useContents { origin.y }) as CGFloat
+            (- textBoundingBox.useContents { origin.x }),
+            (- textBoundingBox.useContents { origin.y })
         ).useContents { this }
         val locationOfTouchInTextContainer = CGPointMake(
             locationOfTouchInLabel.useContents { x } - textContainerOffset.x,

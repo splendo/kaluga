@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,22 +18,20 @@
 package com.splendo.kaluga.example.bluetooth
 
 import android.os.Bundle
-import com.splendo.kaluga.architecture.navigation.toNavigationBundle
+import com.splendo.kaluga.architecture.navigation.parseTypeOf
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
+import com.splendo.kaluga.bluetooth.device.SerializableIdentifier
 import com.splendo.kaluga.example.databinding.ActivityBluetoothMoreBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpec
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRow
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class BluetoothMoreActivity : KalugaViewModelActivity<BluetoothDeviceDetailViewModel>() {
 
     override val viewModel: BluetoothDeviceDetailViewModel by viewModel {
-        val deviceDetailsSpec = DeviceDetailsSpec()
-        intent.extras?.toNavigationBundle(deviceDetailsSpec)?.let { bundle ->
-            parametersOf(bundle.get(DeviceDetailsSpecRow.UUIDRow))
-        } ?: parametersOf("")
+        parametersOf(
+            parseTypeOf(SerializableIdentifier.serializer()).identifier
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

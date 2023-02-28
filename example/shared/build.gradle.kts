@@ -1,36 +1,59 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("jacoco")
     id("com.android.library")
+    id("jacoco")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-apply(from = "../../gradle/component.gradle")
+val libraryVersion = Library.version
+val modules = listOf(
+    "alerts" to true,
+    "architecture" to true,
+    "base" to false,
+    "bluetooth" to false,
+    "beacons" to false,
+    "date-time" to false,
+    "date-time-picker" to true,
+    "hud" to true,
+    "keyboard" to true,
+    "links" to true,
+    "location" to false,
+    "logging" to false,
+    "resources" to true,
+    "review" to true,
+    "scientific" to false,
+    "system" to true,
+    "permissions" to true
+)
+
+commonComponent {
+    logger.lifecycle("Configure framework")
+    baseName = "KalugaExampleShared"
+    isStatic = false
+    transitiveExport = true
+    modules.forEach { (module, isExportable) ->
+        if (isExportable) {
+            export("com.splendo.kaluga:$module:$libraryVersion")
+        }
+    }
+}
 
 kotlin {
     sourceSets {
-        commonMain {
-            val ext = (gradle as ExtensionAware).extra
-
+        getByName("commonMain") {
             dependencies {
-                val libraryVersion = ext["library_version"]
-                api("com.splendo.kaluga:alerts:$libraryVersion")
-                api("com.splendo.kaluga:architecture:$libraryVersion")
-                api("com.splendo.kaluga:base:$libraryVersion")
-                api("com.splendo.kaluga:bluetooth:$libraryVersion")
-                api("com.splendo.kaluga:beacons:$libraryVersion")
-                api("com.splendo.kaluga:date-time-picker:$libraryVersion")
-                api("com.splendo.kaluga:hud:$libraryVersion")
-                api("com.splendo.kaluga:keyboard:$libraryVersion")
-                api("com.splendo.kaluga:links:$libraryVersion")
-                api("com.splendo.kaluga:location:$libraryVersion")
-                api("com.splendo.kaluga:logging:$libraryVersion")
-                api("com.splendo.kaluga:resources:$libraryVersion")
-                api("com.splendo.kaluga:review:$libraryVersion")
-                api("com.splendo.kaluga:system:$libraryVersion")
-                api("com.splendo.kaluga:permissions:$libraryVersion")
+                modules.forEach { (module, _) ->
+                    api("com.splendo.kaluga:$module:$libraryVersion")
+                }
+                apiDependency(Dependencies.Koin.Core)
             }
         }
+    }
+}
+
+android {
+    dependencies {
+        apiDependency(Dependencies.Koin.Android)
     }
 }

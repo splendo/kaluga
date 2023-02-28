@@ -31,15 +31,23 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [CalendarPermission]
  */
 typealias CalendarPermissionManager = PermissionManager<CalendarPermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [CalendarPermission]
+ */
 expect class DefaultCalendarPermissionManager : BasePermissionManager<CalendarPermission>
 
+/**
+ * A [BasePermissionsBuilder] for [CalendarPermission]
+ */
 interface BaseCalendarPermissionManagerBuilder : BasePermissionsBuilder<CalendarPermission> {
 
     /**
      * Creates a [CalendarPermissionManager]
-     * @param calendarPermission The [CalendarPermission] for the PermissionManager to be created
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param calendarPermission the [CalendarPermission] to manage.
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [CalendarPermissionManager]
      */
     fun create(
         calendarPermission: CalendarPermission,
@@ -49,13 +57,17 @@ interface BaseCalendarPermissionManagerBuilder : BasePermissionsBuilder<Calendar
 }
 
 /**
- * A builder for creating a [CalendarPermissionManager]
+ * A [BaseCalendarPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class CalendarPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCalendarPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [CalendarPermission]
+ * @param calendarPermission the [CalendarPermission] to manage.
  * @param builder The [CalendarPermissionManagerBuilder] for creating the [CalendarPermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [CalendarPermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class CalendarPermissionStateRepo(

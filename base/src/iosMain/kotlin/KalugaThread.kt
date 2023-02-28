@@ -18,13 +18,23 @@ package com.splendo.kaluga.base
 
 import platform.Foundation.NSThread
 
+/**
+ * The thread of execution
+ */
 actual data class KalugaThread(val thread: NSThread) {
 
     actual companion object {
+
+        /**
+         * The [KalugaThread] the calling method is running on
+         */
         actual val currentThread: KalugaThread get() = KalugaThread(NSThread.currentThread)
         private val threadDescriptionRegex = "^.*\\{(.*)}\$".toRegex()
     }
 
+    /**
+     * Name of the thread
+     */
     actual var name: String get() = thread.name.orEmpty().ifEmpty {
         // On iOS the Thread name is not actually always accessible via name (only if set via custom setter)
         // To still grab the name, we should parse the thread description
@@ -40,5 +50,9 @@ actual data class KalugaThread(val thread: NSThread) {
         }
     }
         set(value) { thread.name = value }
+
+    /**
+     * When `true` this thread is the main thread.
+     */
     actual val isMainThread: Boolean get() = thread.isMainThread
 }

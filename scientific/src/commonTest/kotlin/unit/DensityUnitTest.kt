@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.areaDensity.div
+import com.splendo.kaluga.scientific.converter.dynamicViscosity.div
 import com.splendo.kaluga.scientific.converter.linearMassDensity.div
 import com.splendo.kaluga.scientific.converter.molarMass.div
 import com.splendo.kaluga.scientific.converter.molarMass.times
@@ -53,6 +54,15 @@ class DensityUnitTest {
             1(Kilogram per CubicMeter),
             2(Kilogram per SquareMeter) / 2(Meter).convert(Foot)
         )
+    }
+
+    @Test
+    fun densityFromDynamicViscosityAndKinematicViscosityTest() {
+        assertEquals(1(Kilogram per CubicMeter), 2(Pascal x Second) / 2(SquareMeter per Second))
+        assertEquals(ImperialStandardGravityAcceleration.value(Pound per CubicFoot), 2(PoundSquareFoot x Second) / 2(SquareFoot per Second))
+        assertEquals(ImperialStandardGravityAcceleration.value(Pound.ukImperial per CubicFoot), 2(PoundSquareFoot.ukImperial x Second) / 2(SquareFoot per Second))
+        assertEquals(ImperialStandardGravityAcceleration.value(Pound.usCustomary per CubicFoot), 2(PoundSquareFoot.usCustomary x Second) / 2(SquareFoot per Second))
+        assertEquals(1(Kilogram per CubicMeter), 2(Pascal x Second) / 2(SquareMeter per Second).convert(SquareFoot per Second))
     }
 
     @Test

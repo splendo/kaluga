@@ -17,11 +17,16 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+/**
+ * Android implementation of [BaseAdvertisementData]
+ * @param scanResult the [ScanResult] being advertised
+ */
 actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvertisementData {
 
     private val scanRecord = scanResult?.scanRecord
@@ -41,7 +46,7 @@ actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvert
         get() = scanRecord?.serviceUuids?.map { it.uuid } ?: emptyList()
     override val serviceData: Map<UUID, ByteArray?>
         get() = scanRecord?.serviceData?.mapKeys { it.key.uuid } ?: emptyMap()
-    override val txPowerLevel: Int
+    override val txPowerLevel: TxPower
         get() = scanRecord?.txPowerLevel ?: Int.MIN_VALUE
     override val isConnectable: Boolean
         get() = scanResult?.isConnectable == true

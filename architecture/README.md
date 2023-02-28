@@ -17,12 +17,12 @@ dependencies {
 ```
 
 ## ViewModels
-ViewModels can be created by subclassing the `BaseViewModel` class. The viewModel runs within its own coroutine scope that exists for the entire lifetime of the viewModel.
+ViewModels can be created by subclassing the `BaseLifecycleViewModel` class. The viewModel runs within its own coroutine scope that exists for the entire lifetime of the viewModel.
 In addition viewModels have their own lifecycle, allowing them to the paused and resumed by the view. When the viewModel is resumed a `CoroutineScope` with a lifecycle limited to the resumed state is provided.
 Launch any coroutines within this scope to automatically cancel when the viewModel is paused.
 
 ```kotlin
-class SomeViewModel : BaseViewModel() {
+class SomeViewModel : BaseLifecycleViewModel() {
 
     init {
         coroutineScope.launch {
@@ -64,10 +64,10 @@ class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
 }
 ```
 
-The `KalugaViewModelLifecycleObserver` will automatically update the `LifecycleSubscribable.LifecycleManager` context of all **public** `LifecycleSubscribable` properties of the viewModel.
+The `KalugaViewModelLifecycleObserver` will automatically update the `ActivityLifecycleSubscribable.LifecycleManager` context of all `ActivityLifecycleSubscribable` added to `BaseLifecycleViewModel.activeLifecycleSubscribables` of the viewModel.
 Implement this interface if a viewModel has properties that should be lifecycle or context aware.
-It can be delegated using `LifecycleSubscriber`.
-The `LifecycleManagerObserver` is a default implementation of `LifecycleSubscribable` that provides updates to the context as a `Flow`.
+It can be delegated using `LifecycleManagerObserver`.
+The `LifecycleManagerObserver` is a default implementation of `ActivityLifecycleSubscribable` that provides updates to the context as a `Flow`.
 
 ### iOS
 On iOS the viewModel lifecycle should match 'onDidAppear'/`viewDidDisappear`.
@@ -95,7 +95,7 @@ class SomeViewController : UIViewController {
 }
 ```
 
-Automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
+Automatic setup can be achieved by binding a `UIViewController` to the viewModel using `addLifecycleManager`.
 When bound the viewModel lifecycle is automatically matched with the viewControllers `viewDidAppear` and `viewDidDisappear` methods.
 The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound viewModel.
 Automatic binding is achieved by adding an invisible child `UIViewController` to the bound viewController.
@@ -148,9 +148,9 @@ Using observables in viewmodels also has some common problems:
 - repeated updates with equal values.
 
 Kaluga observables deal with this by only allowing specific subtypes:
-- `UnintializedObservable`, these hold a `ObservableOptional` value, which is either an `ObservableOptional.Value` or `ObservableOptional.Nothing`. If the generic type an optional`?`, this means a Value can hold `null`, which is distinguishable from `Nothing`. 
+- `UnintializedObservable`, these hold an `ObservableOptional` value, which is either an `ObservableOptional.Value` or `ObservableOptional.Nothing`. If the generic type an optional`?`, this means a Value can hold `null`, which is distinguishable from `Nothing`. 
 - `IntializedObservable`, these can only hold an `ObservableOptional.Value`. 
-- `DefaultObservable`, a subtype of a `IntializedObservable` where all `null` values of the observed `ObservableOptional.Value` are replaced with a default value.
+- `DefaultObservable`, a subtype of an `IntializedObservable` where all `null` values of the observed `ObservableOptional.Value` are replaced with a default value.
 
 Equivalent subjects also exist.
 
@@ -163,7 +163,7 @@ The easiest way of creating an observable by calling the function `observableOf`
 ```kotlin
 val observable = observableOf(1)
 ```
-This will result in a `InitializedObservable<Int>`. Now it's possible to observe this value in several ways:
+This will result in an `InitializedObservable<Int>`. Now it's possible to observe this value in several ways:
 
 ```kotlin
 
@@ -235,24 +235,8 @@ DisposeBags can be emptied using `dispose()`. To post new data to the Subject th
 #### SwiftUI and Combine
 
 Since Kotlin Native does not have access to pure Swift libraries, no out of the box solution for `SwiftUI`/`Combine` is provided.
-Observables can be mapped to Combine `Published` classes directly from Swift however.
+Use the [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) to add support to your project.
 
-```Swift
-let observable: InitializedObservable<Int>
-let subject: Subject<Int>
-
-let disposeBag = DisposeBag()
-
-init {
-    observable.observe(onNext: { (value) in
-        subject.post(value)
-    }).addTo(disposeBag)
-
-    // do Other stuff
-
-    disposeBag.dispose()
-}
-```
 #### Usage from ViewController
 
 When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
@@ -267,26 +251,21 @@ class SomeViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in
-            guard let observable = self.viewModel.observable else {
-                return []
+        lifecycleManager = viewModel.addLifecycleManager(
+            parent: self,
+            onLifecycle: { [weak self] in
+                guard let observable = self.viewModel.observable else {
+                    return []
+                }
+                return [
+                    observable.observe(onNext: { (value) in
+                       // Handle value
+                   }
+                ]
             }
-            return [
-                observable.observe(onNext: { (value) in
-                   // Handle value
-               }
-            ] }
+        )
     }
 ```
-
-#### Kotlin/Native freezing and memory management
-
-By default observables do not freeze themselves or their values. The internally stored value for the current observation is held in a regular `var`, and it is mutated only from the supplied `CoroutineContext` (`Dispatchers.Main.immidiate` by default).
-Once access is done from another thread than that of the context this `var` gets frozen (due to the context switch), and future updates frozen and stored in an `AtomicReference`. This mean the value in memory at the time of freezing will be held in memory with the Observable.
-
-In practise, when operating in a ViewModel this should suffice. A caveat is that when the `stateFlow` field of an observable is used (which internally is lazily initialized) it will also hold the value and `StateFlow`s always freeze their values regardless of thread access.
-
-Subjects which require a `CoroutineScope` to be created usually `bind` the StateFlow automatically (which will cause it to be initialized, freezing values). This behaviour can be turned off with the `autoBind` paramater. 
 
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.
@@ -322,7 +301,7 @@ val viewModel = SomeNavigatingViewModel(
     ActivityNavigator { action ->
         when (action) {
             is ActionA -> NavigationSpec.Activity(SomeActivity::class.java)
-            is ActionB -> NavigationSpec.Fragment(R.id.some_fragment_container, createFragment = {SomeFragment()})
+            is ActionB -> NavigationSpec.Fragment(R.id.some_fragment_container, createFragment = { SomeFragment() })
         }   
     })
 
@@ -331,7 +310,7 @@ val viewModel = SomeNavigatingViewModel(
     ViewControllerNavigator(viewController) { action ->
         when (action) {
             is ActionA -> NavigationSpec.Present(present = { someViewController() })
-            is ActionB -> NavigationSpec.Nested(containerView = containerView, nested = {someNestedViewController()})
+            is ActionB -> NavigationSpec.Nested(containerView = containerView, nested = { someNestedViewController() })
         }
     }
 )

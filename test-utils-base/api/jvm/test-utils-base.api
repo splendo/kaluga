@@ -1,10 +1,3 @@
-public final class com/splendo/kaluga/test/base/AssertionsKt {
-	public static final fun assertFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
-	public static synthetic fun assertFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
-	public static final fun assertNotFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
-	public static synthetic fun assertNotFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
-}
-
 public final class com/splendo/kaluga/test/base/AwaitAllBlockingKt {
 	public static final fun awaitAllBlocking ([Lkotlinx/coroutines/Deferred;)Ljava/util/List;
 }
@@ -21,7 +14,7 @@ public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/ka
 	public abstract fun getFlowFromTestContext ()Lkotlin/jvm/functions/Function2;
 	public final fun getJob ()Lkotlinx/coroutines/Job;
 	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
-	protected final fun getWaitForTestToSucceed ()J
+	protected final fun getWaitForTestToSucceed-UwyO8pc ()J
 	public final fun mainAction (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun resetFlow (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setFirstTestBlock (Z)V
@@ -40,8 +33,6 @@ public class com/splendo/kaluga/test/base/BaseTest {
 
 public abstract class com/splendo/kaluga/test/base/BaseUIThreadTest : com/splendo/kaluga/test/base/BaseTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
 	public final fun testOnUIThread (Ljava/lang/Object;ZLkotlin/jvm/functions/Function2;)V
 	public static synthetic fun testOnUIThread$default (Lcom/splendo/kaluga/test/base/BaseUIThreadTest;Ljava/lang/Object;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
@@ -65,7 +56,7 @@ public final class com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext$Def
 }
 
 public final class com/splendo/kaluga/test/base/DeliberateCancellationException : java/util/concurrent/CancellationException {
-	public fun <init> (Ljava/lang/Object;Z)V
+	public fun <init> (Ljava/lang/Object;)V
 	public final fun getResult ()Ljava/lang/Object;
 }
 
@@ -81,10 +72,6 @@ public abstract class com/splendo/kaluga/test/base/FlowTest : com/splendo/kaluga
 	public abstract fun getFlow ()Lkotlin/jvm/functions/Function1;
 	public fun getFlowFromTestContext ()Lkotlin/jvm/functions/Function2;
 	public final fun testWithFlow (Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class com/splendo/kaluga/test/base/FlowTestKt {
-	public static final fun getContextMap ()Ljava/util/Map;
 }
 
 public abstract class com/splendo/kaluga/test/base/FlowableTest : com/splendo/kaluga/test/base/BaseTest {
@@ -112,8 +99,6 @@ public final class com/splendo/kaluga/test/base/SimpleUIThreadTest$SimpleTestCon
 
 public abstract class com/splendo/kaluga/test/base/UIThreadTest : com/splendo/kaluga/test/base/BaseUIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;
 	public fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
 	public final fun testOnUIThread (ZLkotlin/jvm/functions/Function2;)V
@@ -160,8 +145,9 @@ public abstract class com/splendo/kaluga/test/base/mock/BaseMethodMock$Stub {
 	public final fun doExecute (Lkotlin/jvm/functions/Function1;)V
 	public final fun doReturn (Ljava/lang/Object;)V
 	public final fun doThrow (Ljava/lang/Throwable;)V
-	protected final fun getAnswer ()Ljava/util/concurrent/atomic/AtomicReference;
+	protected final fun getAnswer ()Lcom/splendo/kaluga/test/base/mock/answer/BaseAnswer;
 	public abstract fun getMatchers ()Lcom/splendo/kaluga/test/base/mock/parameters/ParametersSpec$Matchers;
+	protected final fun setAnswer (Lcom/splendo/kaluga/test/base/mock/answer/BaseAnswer;)V
 }
 
 public final class com/splendo/kaluga/test/base/mock/CallKt {
@@ -1149,15 +1135,5 @@ public final class com/splendo/kaluga/test/base/mock/verification/VerificationRu
 	public fun hashCode ()I
 	public fun matches (I)Z
 	public fun toString ()Ljava/lang/String;
-}
-
-public abstract class com/splendo/kaluga/test/base/monitor/MockServiceMonitor : com/splendo/kaluga/base/monitor/ServiceMonitor {
-	public fun <init> ()V
-	public final fun getStartMonitoringMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public abstract fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun isServiceEnabled ()Z
-	public fun startMonitoring ()V
-	public fun stopMonitoring ()V
 }
 

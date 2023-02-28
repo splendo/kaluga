@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,17 +15,13 @@
 
  */
 
-package com.splendo.kaluga.base
+package com.splendo.kaluga.base.flow
 
-import com.splendo.kaluga.base.SpecialFlowValueTest.Special.Last
-import com.splendo.kaluga.base.SpecialFlowValueTest.Special.More
-import com.splendo.kaluga.base.SpecialFlowValueTest.Special.Normal
-import com.splendo.kaluga.base.SpecialFlowValueTest.Special.NotImportant
-import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.base.flow.collectImportant
-import com.splendo.kaluga.base.flow.collectImportantUntilLast
-import com.splendo.kaluga.base.flow.collectUntilLast
-import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.Last
+import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.More
+import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.Normal
+import com.splendo.kaluga.base.flow.SpecialFlowValueTest.Special.NotImportant
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
@@ -80,11 +76,12 @@ class SpecialFlowValueTest : BaseTest() {
         launch {
             flow().collectImportant {
                 list.add(it)
-                if (it is More)
+                if (it is More) {
                     assertEquals(
                         expected = listOf(Normal, Last, More),
                         actual = list
                     )
+                }
                 cancel()
             }
         }.join()

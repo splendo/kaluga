@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,20 +20,20 @@ import UIKit
 final class FittingWidthAutomaticHeightCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        let layoutAttributesObjects = super.layoutAttributesForElements(in: rect)?.map{ $0.copy() } as? [UICollectionViewLayoutAttributes]
-        layoutAttributesObjects?.forEach({ layoutAttributes in
+        let layoutAttributesObjects = super.layoutAttributesForElements(in: rect)?.map { $0.copy() } as? [UICollectionViewLayoutAttributes]
+        layoutAttributesObjects?.forEach { layoutAttributes in
             if layoutAttributes.representedElementCategory == .cell {
                 if let newFrame = layoutAttributesForItem(at: layoutAttributes.indexPath)?.frame {
                     layoutAttributes.frame = newFrame
                 }
             }
-        })
+        }
         return layoutAttributesObjects
     }
 
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         guard let collectionView = collectionView else {
-            fatalError()
+            fatalError("CollectionView should not be empty when being layed out")
         }
         guard let layoutAttributes = super.layoutAttributesForItem(at: indexPath)?.copy() as? UICollectionViewLayoutAttributes else {
             return nil
@@ -44,8 +44,10 @@ final class FittingWidthAutomaticHeightCollectionViewFlowLayout: UICollectionVie
         return layoutAttributes
     }
 
-    override func shouldInvalidateLayout(forPreferredLayoutAttributes preferredAttributes: UICollectionViewLayoutAttributes,
-             withOriginalAttributes originalAttributes: UICollectionViewLayoutAttributes) -> Bool {
+    override func shouldInvalidateLayout(
+        forPreferredLayoutAttributes preferredAttributes: UICollectionViewLayoutAttributes,
+        withOriginalAttributes originalAttributes: UICollectionViewLayoutAttributes
+    ) -> Bool {
         return true
     }
 }

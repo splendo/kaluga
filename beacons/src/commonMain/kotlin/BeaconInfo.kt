@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,23 +19,45 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.base.utils.minus
+import com.splendo.kaluga.bluetooth.RSSI
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.device.Identifier
 
+/**
+ * Unique identifier of a Beacon
+ */
 typealias BeaconID = Eddystone.UID
-typealias TxPower = Int
-typealias RSSI = Int
 
+/**
+ * Info describing a Beacon
+ * @property identifier the [Identifier] of the beacon. Note this may not be unique when beacons are grouped
+ * @property beaconID the [BeaconID] of the beacon
+ * @property txPower the current [TxPower] of the beacon
+ * @property rssi the current [RSSI] of the beacon
+ * @property lastSeen the [KalugaDate] at which the beacon was last seen
+ */
 data class BeaconInfo(
-    var identifier: Identifier,
-    var beaconID: BeaconID,
-    var txPower: TxPower,
-    var RSSI: RSSI,
-    var lastSeen: KalugaDate
+    val identifier: Identifier,
+    val beaconID: BeaconID,
+    val txPower: TxPower,
+    val rssi: RSSI,
+    val lastSeen: KalugaDate
 )
 
 @Deprecated(
     message = "Replaced with beaconId.asString()",
     replaceWith = ReplaceWith(expression = "beaconID.asString()")
 )
-fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
-fun BeaconInfo.seenMs() = DefaultKalugaDate.now().millisecondSinceEpoch - lastSeen.millisecondSinceEpoch
+fun BeaconInfo.fullID() = this.beaconID.asString()
+
+/**
+ * Returns the [kotlin.time.Duration] since the beacon was last seen
+ */
+val BeaconInfo.timeSinceLastSeen get() = DefaultKalugaDate.now() - lastSeen
+
+/**
+ * Returns the time in milliseconds since the beacon was last seen
+ */
+@Deprecated("Use timeSinceLastSeen", ReplaceWith("BeaconInfo.timeSinceLastSeen"))
+fun BeaconInfo.seenMs() = timeSinceLastSeen.inWholeMilliseconds

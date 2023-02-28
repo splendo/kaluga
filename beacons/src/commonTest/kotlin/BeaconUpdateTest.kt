@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
         }
 
         action {
-            start(scope)
+            start()
             discoverDevices(
                 BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
             )

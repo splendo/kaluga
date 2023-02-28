@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,11 +17,17 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.toByteArray
+import com.splendo.kaluga.base.utils.toByteArray
 import platform.Foundation.NSData
 
+/**
+ * The value of a bluetooth attribute
+ */
 actual typealias Value = NSData
 
+/**
+ * Gets the [ByteArray] value of a [Value]
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER") // not relevant from Common
 actual val Value.asBytes: ByteArray
     get() = this.toByteArray()

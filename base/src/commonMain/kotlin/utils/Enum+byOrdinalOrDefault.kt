@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,8 +28,5 @@ package com.splendo.kaluga.base.utils
  *
  */
 inline fun <reified T : Enum<T>> Enum.Companion.byOrdinalOrDefault(ordinal: Int, defaultValue: T): T {
-    return if (ordinal !in enumValues<T>().indices)
-        defaultValue
-    else
-        enumValues<T>()[ordinal]
+    return if (ordinal !in enumValues<T>().indices) defaultValue else enumValues<T>()[ordinal]
 }

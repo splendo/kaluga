@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.test.hud
 
-import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.concurrency.AtomicBoolean
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
 import com.splendo.kaluga.test.base.mock.call
@@ -45,9 +44,9 @@ class MockHUD(
     class Builder(setupMocks: Boolean = true) : BaseHUD.Builder() {
 
         /**
-         * List of build [MockHUD]
+         * List of built [MockHUD]
          */
-        val builtHUDs = IsoMutableList<MockHUD>()
+        val builtHUDs = concurrentMutableListOf<MockHUD>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -69,16 +68,10 @@ class MockHUD(
         }
     }
 
-    private val _isVisible = AtomicBoolean(false)
-
     /**
      * If `true` the HUD is currently being displayed
      */
-    override var isVisible: Boolean
-        get() = _isVisible.value
-        private set(value) {
-            _isVisible.value = value
-        }
+    override var isVisible: Boolean = false
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [present]

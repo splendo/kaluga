@@ -3,17 +3,11 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
-
-dependencies { }
+publishableComponent()
 
 kotlin {
     sourceSets {
@@ -21,6 +15,7 @@ kotlin {
             dependencies {
                 api(project(":location"))
                 api(project(":test-utils-permissions"))
+                api(project(":test-utils-service"))
             }
         }
         commonTest {

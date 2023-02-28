@@ -17,8 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
+/**
+ * The Unique Identifier of a Bluetooth property
+ */
 actual typealias UUID = java.util.UUID
 
+/**
+ * The string representation of a [UUID]
+ */
 actual val UUID.uuidString: String
     get() = toString()
 
@@ -26,4 +32,8 @@ internal actual fun unsafeUUIDFrom(uuidString: String): UUID =
     if (uuidString.isShortUUID()) uuidFromShort(uuidString)
     else UUID.fromString(uuidString)
 
+/**
+ * Gets a random [UUID]
+ * @return a random [UUID]
+ */
 actual fun randomUUID(): UUID = UUID.randomUUID()

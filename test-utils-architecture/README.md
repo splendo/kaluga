@@ -1,5 +1,4 @@
 # Test Utils Architecture
-
 This library adds support for testing the [`architecture` module](../architecture) to [`test-utils`](../test-utils-base)
 
 ## Installing
@@ -19,13 +18,13 @@ dependencies {
 
 ## Testing a ViewModel when testing from the background
 
-It's also possible use the UI Thread context to create a kaluga ViewModel. 
+It's also possible use the UI Thread context to create a Kaluga ViewModel. 
 This can be done by extending `BaseUIThreadViewModelTest` or `UIThreadViewModelTest`.
 
 ```kotlin
 class CustomUIThreadViewModelTest : UIThreadViewModelTest<CustomViewModelTestContext, MyViewModel>() {
 
-    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+    class MyViewModel(private val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel(alertBuilder)
 
     class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder() // creates on UI thread and can be passed to viewModel

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,17 +21,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlin.native.concurrent.ensureNeverFrozen
 
-actual open class LifecycleViewModel internal actual constructor(val allowFreezing: Boolean) {
-
-    init {
-        if (!allowFreezing)
-            ensureNeverFrozen()
-    }
+/**
+ * Simple ViewModel class that is to be bound to a View lifecycle
+ */
+actual open class LifecycleViewModel internal actual constructor() {
 
     private val lifecycleJob = SupervisorJob()
 
+    /**
+     * [CoroutineScope] of the ViewModel.
+     * This scope is active until the ViewModel lifecycle is cleared.
+     */
     actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob)
 
     /**
@@ -41,6 +42,9 @@ actual open class LifecycleViewModel internal actual constructor(val allowFreezi
         onCleared()
     }
 
+    /**
+     * Called when the ViewModel lifecycle is cleared
+     */
     protected actual open fun onCleared() {
         lifecycleJob.cancelChildren()
     }

@@ -9,10 +9,30 @@ public final class com/splendo/kaluga/test/bluetooth/Jvm_mocksKt {
 	public static final fun randomIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
 }
 
-public final class com/splendo/kaluga/test/bluetooth/MockBluetoothMonitor : com/splendo/kaluga/test/base/monitor/MockServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
+public final class com/splendo/kaluga/test/bluetooth/MockBluetoothMonitor : com/splendo/kaluga/test/service/MockServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
 	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
 	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
 	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;
+}
+
+public final class com/splendo/kaluga/test/bluetooth/MockBluetoothService : com/splendo/kaluga/bluetooth/BluetoothService {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/flow/MutableStateFlow;Z)V
+	public synthetic fun <init> (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/flow/MutableStateFlow;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun devices ()Lkotlinx/coroutines/flow/Flow;
+	public final fun getDevicesMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getDiscoveredDevicesFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public final fun getPairedDevicesFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public final fun getPairedDevicesMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStartScanningMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStopScanningMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
+	public fun isEnabled ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public fun isScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isScanningMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun pairedDevices (Ljava/util/Set;)Lkotlinx/coroutines/flow/Flow;
+	public fun startScanning (Ljava/util/Set;)V
+	public fun stopScanning ()V
 }
 
 public abstract interface annotation class com/splendo/kaluga/test/bluetooth/MockBuilderDsl : java/lang/annotation/Annotation {
@@ -158,6 +178,7 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceConnection
 	public fun <init> (ZLcom/splendo/kaluga/bluetooth/device/DeviceWrapper;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlinx/coroutines/CoroutineScope;Z)V
 	public synthetic fun <init> (ZLcom/splendo/kaluga/bluetooth/device/DeviceWrapper;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlinx/coroutines/CoroutineScope;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun connect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun createService (Lcom/splendo/kaluga/bluetooth/ServiceWrapper;)Lcom/splendo/kaluga/bluetooth/Service;
 	public fun disconnect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun discoverServices (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getConnectMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
@@ -173,13 +194,13 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceConnection
 	public final fun getUnpairMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getWillActionSucceed ()Z
 	public final fun handleCurrentAction (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun handleCurrentActionCompleted (Z)V
-	public fun pair (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun performAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handleDiscoverCompleted (Ljava/util/List;)V
+	public fun handleNewRssi (I)V
+	public fun handleUpdatedCharacteristic (Lcom/splendo/kaluga/bluetooth/UUID;ZLkotlin/jvm/functions/Function1;)V
+	public fun handleUpdatedDescriptor (Lcom/splendo/kaluga/bluetooth/UUID;ZLkotlin/jvm/functions/Function1;)V
 	public fun readRssi (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun requestMtu (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setWillActionSucceed (Z)V
-	public fun unpair (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceConnectionManager$Builder : com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionManager$Builder {
@@ -188,13 +209,12 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceConnection
 	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/device/BaseDeviceConnectionManager;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getCreatedDeviceConnectionManager ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreatedDeviceConnectionManager ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : com/splendo/kaluga/bluetooth/scanner/BaseScanner {
 	public fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;ZZ)V
 	public synthetic fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun generateEnableSensorsActions ()Ljava/util/List;
 	public synthetic fun getBluetoothEnabledMonitor ()Lcom/splendo/kaluga/bluetooth/BluetoothMonitor;
 	public fun getBluetoothEnabledMonitor ()Lcom/splendo/kaluga/test/bluetooth/MockBluetoothMonitor;
 	public final fun getDidStartScanningMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
@@ -202,16 +222,16 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : c
 	public final fun getGenerateEnableSensorsActionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getPairedDeviceDiscoveredEvents ()Lkotlinx/coroutines/flow/MutableSharedFlow;
 	public final fun getRetrievePairedDeviceDiscoveredEventsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStartMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStartMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun isEnabled ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public fun isSupported ()Z
-	public fun startMonitoringHardwareEnabled ()V
-	public fun startMonitoringPermissions ()V
-	public fun stopMonitoringHardwareEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun startMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner$Builder : com/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder {
@@ -219,22 +239,20 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner$Bui
 	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getCreatedScanners ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreatedScanners ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanner : com/splendo/kaluga/bluetooth/scanner/Scanner {
 	public fun <init> (ZLkotlinx/coroutines/flow/MutableSharedFlow;)V
-	public fun generateEnableSensorsActions ()Ljava/util/List;
 	public synthetic fun getEvents ()Lkotlinx/coroutines/flow/Flow;
 	public fun getEvents ()Lkotlinx/coroutines/flow/MutableSharedFlow;
-	public final fun getGenerateEnableSensorsActionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getRequestEnableHardwareMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getRetrievePairedDevicesMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getScanForDevicesMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public final fun getStartMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStartMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStartMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMonitoringHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStopScanningMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public fun isHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun isHardwareEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
@@ -242,10 +260,10 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanner : com/s
 	public fun requestEnableHardware (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun scanForDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun startMonitoringHardwareEnabled ()V
-	public fun startMonitoringPermissions ()V
-	public fun stopMonitoringHardwareEnabled ()V
-	public fun stopMonitoringPermissions ()V
+	public fun startMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun startMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringHardwareEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun stopScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -270,12 +288,10 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$D
 	public final fun copy (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;)Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Deinitialized;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Deinitialized;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;ILjava/lang/Object;)Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Deinitialized;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getPreviouslyDiscovered ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getPreviouslyPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -307,10 +323,8 @@ public abstract class com/splendo/kaluga/test/bluetooth/scanner/MockScanningStat
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled$Idle : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled, com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;)V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getDiscovered ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun pairedDevices (Ljava/util/Set;Ljava/util/Set;Ljava/util/List;)Lkotlin/jvm/functions/Function1;
 	public fun refresh (Ljava/util/Set;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
@@ -321,11 +335,9 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$E
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled$Scanning : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Enabled, com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Scanning {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;)V
 	public fun discoverDevice (Lcom/splendo/kaluga/bluetooth/UUID;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getDiscovered ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getStopScanning ()Lkotlin/jvm/functions/Function1;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun pairedDevices (Ljava/util/Set;Ljava/util/Set;Ljava/util/List;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun retrievePairedDevices (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -344,11 +356,9 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$I
 	public final fun copy (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;)Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Initializing;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Initializing;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;ILjava/lang/Object;)Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Initializing;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getDiscovered ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun getPaired ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun initialized (ZZ)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
@@ -363,25 +373,19 @@ public abstract class com/splendo/kaluga/test/bluetooth/scanner/MockScanningStat
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoBluetooth$Disabled : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoBluetooth, com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$Disabled {
 	public fun <init> ()V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getEnable ()Lkotlin/jvm/functions/Function1;
 	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoBluetooth$MissingPermissions : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoBluetooth, com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$MissingPermissions {
 	public fun <init> ()V
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun permit (Z)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoHardware : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState, com/splendo/kaluga/bluetooth/scanner/ScanningState$NoHardware {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoHardware;
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
@@ -391,9 +395,7 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$N
 	public final fun copy (Z)Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NotInitialized;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NotInitialized;ZILjava/lang/Object;)Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NotInitialized;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun finalState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun hashCode ()I
-	public fun initialState (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun isHardwareSupported ()Z
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public final fun startInitializing ()Lkotlin/jvm/functions/Function0;

@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,14 +20,31 @@ package com.splendo.kaluga.alerts
 
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * A [BaseAlertPresenter] for presenting an [Alert].
+ *
+ * This is not yet fully implemented on JavaScript
+ *
+ * @param alert The [Alert] being presented.
+ */
 actual class AlertPresenter(
     alert: Alert
 ) : BaseAlertPresenter(alert) {
 
+    /**
+     * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
+     */
     actual class Builder : BaseAlertPresenter.Builder() {
 
-        actual override fun create(coroutineScope: CoroutineScope): AlertPresenter {
-            return AlertPresenter(createAlert())
+        /**
+         * Creates an [AlertPresenter]
+         *
+         * @param alert The [Alert] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [AlertPresenter]
+         */
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter {
+            return AlertPresenter(alert)
         }
     }
 

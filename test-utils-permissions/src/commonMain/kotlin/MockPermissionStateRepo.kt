@@ -31,6 +31,7 @@ import kotlin.time.Duration
 /**
  * Mock implementation of [BasePermissionStateRepo]
  */
+@Suppress("UNCHECKED_CAST")
 class MockBasePermissionStateRepo<P : Permission>(
     val permission: P,
     createInitializingState: () -> MockPermissionState.Uninitialized<P>,
@@ -63,10 +64,14 @@ class MockBasePermissionStateRepo<P : Permission>(
         if (setupMocks) {
             didInitializeMock.on().doExecute { (mockState) ->
                 launchTakeAndChangeState { state ->
-                    if (state is PermissionState.Initializing)
-                        state.initialize(mockState.activeState == MockPermissionState.ActiveState.ALLOWED, mockState.activeState == MockPermissionState.ActiveState.LOCKED)
-                    else
+                    if (state is PermissionState.Initializing) {
+                        state.initialize(
+                            mockState.activeState == MockPermissionState.ActiveState.ALLOWED,
+                            mockState.activeState == MockPermissionState.ActiveState.LOCKED
+                        )
+                    } else {
                         state.remain()
+                    }
                 }
             }
         }

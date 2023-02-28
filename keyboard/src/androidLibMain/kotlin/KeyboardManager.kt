@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,35 +19,38 @@ package com.splendo.kaluga.keyboard
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
+import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 
-actual class KeyboardManager(
+/**
+ * A [BaseKeyboardManager] that takes a [ViewFocusHandler]. Used managing the keyboard in XML Views.
+ * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes.
+ * @param coroutineScope The [CoroutineScope] managing the keyboard lifecycle.
+ */
+class ViewKeyboardManager(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    private val clearFocusHandler: ClearFocusHandler,
     coroutineScope: CoroutineScope
-) : BaseKeyboardManager, CoroutineScope by coroutineScope {
+) : BaseKeyboardManager<ViewFocusHandler>, CoroutineScope by coroutineScope {
 
-    actual class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-        private val clearFocusHandler: ClearFocusHandler = ViewClearFocusHandler()
-    ) : BaseKeyboardManager.Builder, LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, clearFocusHandler, coroutineScope)
+    /**
+     * A [BaseKeyboardManager.Builder] for creating a [ViewKeyboardManager]
+     * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes.
+     */
+    class Builder(
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+    ) : BaseKeyboardManager.Builder<ViewFocusHandler>, ActivityLifecycleSubscribable by lifecycleManagerObserver {
+        override fun create(coroutineScope: CoroutineScope) = ViewKeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 
-    override fun show(focusHandler: FocusHandler) {
-        lifecycleManagerObserver.manager?.activity?.let {
-            focusHandler.requestFocus(it)
-        }
+    override fun show(focusHandler: ViewFocusHandler) {
+        focusHandler.requestFocus(lifecycleManagerObserver.manager?.activity)
     }
 
     override fun hide() {
-        lifecycleManagerObserver.manager?.activity?.let { activity ->
-            clearFocusHandler.clearFocus(activity)
+        val managedActivity = lifecycleManagerObserver.manager?.activity
+        managedActivity?.let { activity ->
+            activity.currentFocus?.clearFocus()
             val inputMethodManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.let {
                 if (it.isAcceptingText) {
@@ -56,17 +59,4 @@ actual class KeyboardManager(
             }
         }
     }
-}
-
-/**
- * @return A [KeyboardManager.Builder] which can be used to manipulate the soft keyboard while this Activity is active.
- * Will be created if need but only one instance will exist.
- *
- * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
- * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel],
- * which can automatically track which Activity is active for it.
- *
- */
-fun AppCompatActivity.keyboardManagerBuilder(clearFocusHandler: ClearFocusHandler = ViewClearFocusHandler()): KeyboardManager.Builder = getOrPutAndRemoveOnDestroyFromCache {
-    KeyboardManager.Builder(lifecycleManagerObserver(), clearFocusHandler)
 }

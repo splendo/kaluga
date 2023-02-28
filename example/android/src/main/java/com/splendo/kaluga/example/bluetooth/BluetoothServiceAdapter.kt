@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BluetoothServiceItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothServiceViewModel
 
-object ServicesBinding {
-
+object ServiceBinding {
     @BindingAdapter("services")
     @JvmStatic
     fun bindServices(view: RecyclerView, services: List<BluetoothServiceViewModel>?) {

@@ -3,15 +3,11 @@ plugins {
     id("jacoco")
     id("com.android.library")
     id("convention.publication")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 kotlin {
     sourceSets {
@@ -24,7 +20,7 @@ kotlin {
 
         getByName("commonTest") {
             dependencies {
-                api(project(":test-utils-base", ""))
+                api(project(":test-utils-keyboard", ""))
             }
         }
     }

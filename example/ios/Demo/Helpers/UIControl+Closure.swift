@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
 import UIKit
 
 @objc class UIControlClosure: NSObject {
-    let closure: ()->()
+    let closure: () -> Void
 
-    init (_ closure: @escaping ()->()) {
+    init (_ closure: @escaping () -> Void) {
         self.closure = closure
     }
 
@@ -30,9 +30,9 @@ import UIKit
 }
 
 extension UIControl {
-    func addAction(for controlEvents: UIControl.Event = .touchUpInside, _ closure: @escaping ()->()) {
+    func addAction(for controlEvents: UIControl.Event = .touchUpInside, _ closure: @escaping () -> Void) {
         let sleeve = UIControlClosure(closure)
         addTarget(sleeve, action: #selector(UIControlClosure.invoke), for: controlEvents)
-        objc_setAssociatedObject(self, "[\(arc4random())]", sleeve, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(self, "[\(UInt32.random(in: UInt32.min..<UInt32.max))]", sleeve, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
     }
 }
