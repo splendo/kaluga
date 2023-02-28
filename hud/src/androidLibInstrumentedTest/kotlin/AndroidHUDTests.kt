@@ -31,9 +31,9 @@ import com.splendo.kaluga.hud.AndroidHUDTests.AndroidHUDTestContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.junit.Rule
 import kotlin.test.BeforeTest
@@ -44,7 +44,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
-val DEFAULT_TIMEOUT = 20.seconds.inWholeMilliseconds
+val DEFAULT_TIMEOUT = 30.seconds.inWholeMilliseconds
 
 fun UiDevice.assertTextAppears(text: String) {
     waitForIdle()
@@ -89,7 +89,7 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
     @Test
     fun indicatorShow() = testOnUIThread(cancelScopeAfterTest = true) {
-        val indicator = builder.build(MainScope()) {
+        val indicator = builder.build(this) {
             setTitle(LOADING)
         }
         launch {
@@ -149,22 +149,28 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
         val loading2 = EmptyCompletableDeferred()
         val processing = EmptyCompletableDeferred()
 
-        val indicatorLoading = builder.build(MainScope()) {
-            setTitle(LOADING)
-        }
+        val deferredIndicatorLoading = CompletableDeferred<BaseHUD>()
         val indicatorProcessing = CompletableDeferred<BaseHUD>()
-        launch {
+        val job = launch(Dispatchers.Main.immediate) {
+            val indicatorLoading = builder.build(this) {
+                setTitle(LOADING)
+            }
+            deferredIndicatorLoading.complete(indicatorLoading)
             indicatorLoading.presentDuring {
                 presenting.complete()
                 loading1.await()
-                val processingDialog = builder.build(MainScope()) {
-                    setTitle(PROCESSING)
+                val test = launch {
+                    val processingDialog = builder.build(this) {
+                        setTitle(PROCESSING)
+                    }
+                    indicatorProcessing.complete(processingDialog)
+                    processingDialog.presentDuring {
+                        processing.await()
+                    }
                 }
-                indicatorProcessing.complete(processingDialog)
-                processingDialog.presentDuring {
-                    processing.await()
-                }
+
                 loading2.await()
+                test.cancel()
             }
         }
 
@@ -173,7 +179,7 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
         withContext(Dispatchers.Default) {
             device.assertTextAppears(LOADING)
-            assertTrue(indicatorLoading.isVisible)
+            assertTrue(deferredIndicatorLoading.await().isVisible)
             loading1.complete()
 
             // check the Processing dialog is popped on top
@@ -187,12 +193,13 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
             device.assertTextAppears(LOADING)
             loading2.complete()
         }
+        job.cancel()
     }
 
     @Test
     @Ignore("Rotating in test framework is unstable")
     fun rotateActivity() = testOnUIThread {
-        val indicator = builder.build(MainScope()) {
+        val indicator = builder.build(this) {
             setTitle(LOADING)
         }
         launch {
@@ -226,9 +233,10 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
     }
 
     @Test
-    fun testBuilderFromActivity() {
-        MainScope().launch { activity.showHUD() }
+    fun testBuilderFromActivity() = runBlocking {
+        val job = launch(Dispatchers.Main.immediate) { activity.showHUD() }
         device.assertTextAppears("Activity")
+        job.cancel()
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> AndroidHUDTestContext = { AndroidHUDTestContext(it) }

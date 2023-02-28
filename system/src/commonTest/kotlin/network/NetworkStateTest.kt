@@ -45,10 +45,11 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         action {
             resetFlow()
-            yieldMultiple(4)
+            yield()
         }
 
         mainAction {
+            yieldMultiple(4)
             networkManager.stopMonitoringMock.verify()
         }
     }
@@ -174,6 +175,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Wifi()
+            yieldMultiple(4)
         }
 
         test {
@@ -193,7 +195,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Absent
-            yield()
+            yieldMultiple(4)
         }
 
         test {

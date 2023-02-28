@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [23, 32]
+        api-level: [23, 33]
         # some custom gradle magic makes tests run grouped for `$module-*` and `*-$module` on CI so there is no need to add these to the matrix
         module: [
           "base",

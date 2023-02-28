@@ -21,7 +21,6 @@ package com.splendo.kaluga.alerts
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 typealias AlertActionHandler = () -> Unit
 typealias AlertTextObserver = (String) -> Unit
@@ -321,9 +320,18 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         suspendCancellableCoroutine { continuation ->
             continuation.invokeOnCancellation {
                 dismissAlert(animated)
-                continuation.resume(null)
+                continuation.tryResume(null)?.let {
+                    continuation.completeResume(it)
+                }
             }
-            showAlert(animated, afterHandler = { continuation.resume(it) })
+            showAlert(
+                animated,
+                afterHandler = { action ->
+                    continuation.tryResume(action)?.let {
+                        continuation.completeResume(it)
+                    }
+                }
+            )
         }
 
     override fun dismiss(animated: Boolean) {

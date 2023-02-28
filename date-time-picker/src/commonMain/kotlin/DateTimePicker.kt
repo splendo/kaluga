@@ -25,7 +25,6 @@ import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 /**
  * An object that represents a date-time picker view
@@ -221,9 +220,15 @@ abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: Da
         suspendCancellableCoroutine { continuation ->
             continuation.invokeOnCancellation {
                 dismissDateTimePicker(animated)
-                continuation.resume(null)
+                continuation.tryResume(null)?.let {
+                    continuation.completeResume(it)
+                }
             }
-            showDateTimePicker(animated) { continuation.resume(it) }
+            showDateTimePicker(animated) { pickedDate ->
+                continuation.tryResume(pickedDate)?.let {
+                    continuation.completeResume(it)
+                }
+            }
         }
 
     override fun dismiss(animated: Boolean) {
