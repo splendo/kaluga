@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -26,9 +26,8 @@ import com.splendo.kaluga.scientific.unit.Gram
 import com.splendo.kaluga.scientific.unit.ImperialWeight
 import com.splendo.kaluga.scientific.unit.IonizingRadiationAbsorbedDose
 import com.splendo.kaluga.scientific.unit.Joule
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Rad
+import com.splendo.kaluga.scientific.unit.RadMultiple
 import com.splendo.kaluga.scientific.unit.UKImperialWeight
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
@@ -40,10 +39,9 @@ infix operator fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDos
 ) = Erg.energy(this, weight)
 
 @JvmName("radMultipleTimesGram")
-infix operator fun <AbsorbedDoseUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
+infix operator fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.times(
     weight: ScientificValue<PhysicalQuantity.Weight, Gram>
-) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> =
-    Erg.energy(this, weight)
+) = Erg.energy(this, weight)
 
 @JvmName("absorbedDoseTimesImperialWeight")
 infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(

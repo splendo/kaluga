@@ -19,16 +19,17 @@ package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.dimensionless.div
 import com.splendo.kaluga.scientific.converter.dimensionless.times
-import com.splendo.kaluga.scientific.unit.Dimensionless.Companion.invoke
-import com.splendo.kaluga.scientific.unit.DimensionlessScientificValue
+import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.One
 
 infix operator fun Decimal.div(
-    modifier: DimensionlessScientificValue<*>
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>
 ) = this.invoke(One).div(modifier).value.toDecimal()
 
 infix operator fun Decimal.times(
-    modifier: DimensionlessScientificValue<*>
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>
 ) = this.invoke(One).times(modifier).value.toDecimal()

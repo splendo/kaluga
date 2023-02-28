@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,22 +40,32 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.fixedRateTimer
 import kotlin.time.Duration
 
+/**
+ * The state of a permission according to the Android System
+ */
 enum class AndroidPermissionState {
+
+    /**
+     * Permission has been granted
+     */
     GRANTED,
+
+    /**
+     * Permission is denied
+     */
     DENIED,
+
+    /**
+     * Permission is denied and the user has selected `Do not ask again`
+     */
     DENIED_DO_NOT_ASK;
 
     companion object {
 
         /**
-         * According to my understanding shouldShowRationalePermissionRationale() method
-         * returns false in three cases:
-         * 1. If we call this method very first time before asking permission.
-         * 2. If user selects "Don't ask again" and deny permission.
-         * 3. If the device policy prohibits the app from having that permission.
-         *
-         * That's the reason we utilize shouldShowRationalePermissionRationale()
-         * only from [Activity.onRequestPermissionsResult].
+         * Gets the [AndroidPermissionState] of a [permission] for a given [Activity].
+         * @param activity The [Activity] on which to check for the permission state
+         * @param permission The name of the permission being checked. Should correspond to [android.Manifest.permission].
          */
         fun get(activity: Activity, permission: String): AndroidPermissionState {
             val permissionState = ContextCompat.checkSelfPermission(activity, permission)
@@ -63,6 +73,7 @@ enum class AndroidPermissionState {
                 return GRANTED
             }
 
+            // This returns false if the `do not ask again` checkbox has been checked before.
             return if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
                 DENIED
             } else {
@@ -70,6 +81,12 @@ enum class AndroidPermissionState {
             }
         }
 
+        /**
+         * Gets the [AndroidPermissionState] of a [permission] for a given [Context].
+         * Does not return [DENIED_DO_NOT_ASK].
+         * @param context The [Context] on which to check for the permission state
+         * @param permission The name of the permission being checked. Should correspond to [android.Manifest.permission].
+         */
         fun get(context: Context, permission: String): AndroidPermissionState {
             val permissionState = ContextCompat.checkSelfPermission(context, permission)
 
@@ -81,7 +98,8 @@ enum class AndroidPermissionState {
 /**
  * Convenience class for requesting a [Permission] and monitoring [AndroidPermissionState]
  * @param context The context for which to request the [Permission]
- * @param permissions List of permissions to request. Should correspond to [Manifest.permission].
+ * @param permissions List of permissions to request. Should correspond to [android.Manifest.permission].
+ * @param coroutineScope the [CoroutineScope] to launch permission requests in.
  * @param logTag The tag used for logging
  * @param logger The [Logger] used for logging
  * @param onPermissionChanged A [AndroidPermissionStateHandler] that will be notified of changes to [AndroidPermissionState]
@@ -105,8 +123,8 @@ class AndroidPermissionsManager constructor(
 
     /**
      * Starts to request the permissions.
-     * Use [startMonitoring] to get notified of the permission change.
-     * Calls [PermissionManager.requestPermission] if the permission cannot be granted.
+     * Ensure [startMonitoring] was called to get notified of the permission change.
+     * Sets the state to [AndroidPermissionState.DENIED_DO_NOT_ASK] if the permission cannot be requested.
      */
     fun requestPermissions() {
         if (missingPermissionsInManifest().isEmpty()) {
@@ -133,11 +151,7 @@ class AndroidPermissionsManager constructor(
                 pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
             }
 
-            var declaredPermissions: List<String> = mutableListOf()
-
-            if (packageInfo != null) {
-                declaredPermissions = packageInfo.requestedPermissions.toList()
-            }
+            val declaredPermissions: List<String> = packageInfo?.requestedPermissions?.toList().orEmpty()
 
             if (declaredPermissions.isNotEmpty()) {
                 missingPermissions.toList().forEach { requestedPermissionName ->
@@ -157,10 +171,8 @@ class AndroidPermissionsManager constructor(
     }
 
     /**
-     * Starts monitoring for changes to the permission.
-     * Calls [PermissionManager.grantPermission] if the permission became granted
-     * and [PermissionManager.revokePermission] if it became denied.
-     * @param interval The interval in milliseconds between checks in changes to the permission state.
+     * Starts monitoring for changes to the [AndroidPermissionState].
+     * @param interval The [Duration] between checks in changes to the permission state.
      */
     fun startMonitoring(interval: Duration) {
         updatePermissionsStates()
@@ -185,7 +197,7 @@ class AndroidPermissionsManager constructor(
     }
 
     /**
-     * Stops monitoring for changes to the permission.
+     * Stops monitoring for changes to the [AndroidPermissionState].
      */
     fun stopMonitoring() {
         timer?.cancel()
@@ -202,12 +214,11 @@ class AndroidPermissionsManager constructor(
         permissions.forEach {
             val oldPermissionState = permissionsStates[it]
             val newPermissionState = AndroidPermissionState.get(context, it)
-            /**
-             * Since [AndroidPermissionState.get] doesn't distinguish between
-             * [AndroidPermissionState.DENIED] and [AndroidPermissionState.DENIED_DO_NOT_ASK] states,
-             * we need to prevent [updatePermissionsStates] from over-writing
-             * current [AndroidPermissionState.DENIED_DO_NOT_ASK] state.
-             */
+
+            // Since [AndroidPermissionState.get] doesn't distinguish between
+            // [AndroidPermissionState.DENIED] and [AndroidPermissionState.DENIED_DO_NOT_ASK] states,
+            // we need to prevent [updatePermissionsStates] from over-writing
+            // current [AndroidPermissionState.DENIED_DO_NOT_ASK] state.
             if (oldPermissionState == AndroidPermissionState.DENIED_DO_NOT_ASK &&
                 newPermissionState == AndroidPermissionState.DENIED
             ) {

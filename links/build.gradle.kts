@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,25 +21,24 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 kotlin {
     sourceSets {
+        sourceSets.all {
+            languageSettings {
+                optIn("kotlinx.serialization.ExperimentalSerializationApi")
+            }
+        }
+
         commonMain {
             dependencies {
-                val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))
-                implementation(project(":logging", ""))
-                implementation(project(":architecture", ""))
-                api("org.jetbrains.kotlinx:kotlinx-serialization-core:${ext["serialization_version"]}")
+                apiDependency(Dependencies.KotlinX.Serialization.Core)
             }
         }
         commonTest {

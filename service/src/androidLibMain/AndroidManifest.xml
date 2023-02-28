@@ -1,0 +1,8 @@
+<manifest package="com.splendo.kaluga.service"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name=".EnableServiceActivity"
+            android:theme="@style/Service"/>
+    </application>
+</manifest>

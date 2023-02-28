@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.bluetooth
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DefaultCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
@@ -35,9 +36,9 @@ class MockServiceWrapper(
         builder.characteristics
     )
 
-    override val type: Int = 0
+    override val type: ServiceWrapper.Type = ServiceWrapper.Type.PRIMARY
     override val instanceId: Int = 0
-    private val mutableCharacteristics = mutableListOf<CharacteristicWrapper>(
+    private val mutableCharacteristics = concurrentMutableListOf<CharacteristicWrapper>(
         *initialCharacteristics.map {
             AndroidMockCharacteristicWrapper(
                 uuid = it.uuid,
@@ -49,7 +50,7 @@ class MockServiceWrapper(
     )
     override val characteristics: List<CharacteristicWrapper>
         get() = mutableCharacteristics
-    private val mutableIncludedServices = mutableListOf<ServiceWrapper>()
+    private val mutableIncludedServices = concurrentMutableListOf<ServiceWrapper>()
     override val includedServices: List<ServiceWrapper>
         get() = mutableIncludedServices
 

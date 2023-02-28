@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.test.keyboard
 
-import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.test.base.mock.call
@@ -31,18 +29,18 @@ import kotlinx.coroutines.CoroutineScope
  * Mock implementation of [BaseKeyboardManager]
  * @param setupMocks If `true` configure mocks to display the keyboard
  */
-class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
+class MockKeyboardManager<FH : FocusHandler>(setupMocks: Boolean = true) : BaseKeyboardManager<FH> {
 
     /**
      * Mock implementation of [BaseKeyboardManager.Builder]
      * @param setupMocks If `true` sets up [createMock] to build [MockKeyboardManager]
      */
-    class Builder(setupMocks: Boolean = true) : BaseKeyboardManager.Builder {
+    class Builder<FH : FocusHandler>(setupMocks: Boolean = true) : BaseKeyboardManager.Builder<FH> {
 
         /**
          * List of created [MockKeyboardManager]
          */
-        val builtKeyboardManagers = IsoMutableList<MockKeyboardManager>()
+        val builtKeyboardManagers = concurrentMutableListOf<MockKeyboardManager<FH>>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -52,24 +50,20 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         init {
             if (setupMocks) {
                 createMock.on().doExecute { _ ->
-                    MockKeyboardManager(setupMocks).also {
+                    MockKeyboardManager<FH>(setupMocks).also {
                         builtKeyboardManagers.add(it)
                     }
                 }
             }
         }
 
-        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager = createMock.call(coroutineScope)
+        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager<FH> = createMock.call(coroutineScope)
     }
-
-    val _focusHandler = AtomicReference<FocusHandler?>(null)
 
     /**
      * Gets the current [FocusHandler]
      */
-    var focusHandler: FocusHandler?
-        get() = _focusHandler.value
-        private set(value) = _focusHandler.set(value)
+    var focusHandler: FH? = null
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [show]
@@ -85,16 +79,16 @@ class MockKeyboardManager(setupMocks: Boolean = true) : BaseKeyboardManager {
         if (setupMocks) {
             showMock.on().doExecute { (focusHandler) ->
                 this.focusHandler = focusHandler
-                (focusHandler as? MockFocusHandler)?.simulateGiveFocus()
+                (focusHandler as? MockFocusHandler)?.giveFocus()
             }
             hideMock.on().doExecute {
-                (focusHandler as? MockFocusHandler)?.simulateRemoveFocus()
+                (focusHandler as? MockFocusHandler)?.removeFocus()
                 focusHandler = null
             }
         }
     }
 
-    override fun show(focusHandler: FocusHandler): Unit = showMock.call(focusHandler)
+    override fun show(focusHandler: FH): Unit = showMock.call(focusHandler)
 
     override fun hide(): Unit = hideMock.call()
 }

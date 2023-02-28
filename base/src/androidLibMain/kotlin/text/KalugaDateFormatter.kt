@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,40 +20,71 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import java.text.DateFormat
 import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-actual class KalugaDateFormatter private constructor(private val format: SimpleDateFormat) {
+/**
+ * Default implementation of [BaseDateFormatter]
+ */
+actual class KalugaDateFormatter private constructor(private val format: SimpleDateFormat) : BaseDateFormatter {
 
     actual companion object {
 
+        /**
+         * Creates a [KalugaDateFormatter] that only formats the date components of a [KalugaDate]
+         * @param style The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
+         */
         actual fun dateFormat(
             style: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
+        /**
+         * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
+         * @param style The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
+         */
         actual fun timeFormat(
             style: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
+        /**
+         * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
+         * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
+         * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [KalugaDate]. Defaults to [DateFormatStyle.Medium].
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
+         */
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
-            timeZone: TimeZone,
-            locale: Locale
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
+        /**
+         * Creates a [KalugaDateFormatter] using a custom Date format pattern.
+         * On iOS some user settings may take precedent over the format (i.e. using 12 hour clock).
+         * To prevent this, ensure that the provided [locale] is of a `POSIX` type.
+         * A convenience [fixedPatternFormat] method exists to default to this behaviour.
+         * @param pattern The pattern to apply.
+         * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
+         * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
+         */
+        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
-        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: TimeZone): KalugaDateFormatter {
+        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
             return KalugaDateFormatter(simpleDateFormat).apply {
                 this.timeZone = timeZone
             }
@@ -62,26 +93,26 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
 
     private val symbols: DateFormatSymbols get() = format.dateFormatSymbols
 
-    actual var pattern: String
+    override var pattern: String
         get() = format.toPattern()
         set(value) = format.applyPattern(value)
 
-    actual var timeZone: TimeZone
-        get() = TimeZone(format.timeZone)
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone(format.timeZone)
         set(value) { format.timeZone = value.timeZone }
 
-    actual var eras: List<String>
+    override var eras: List<String>
         get() = symbols.eras.toList()
         set(value) { updateSymbols { it.eras = value.toTypedArray() } }
 
-    actual var months: List<String>
+    override var months: List<String>
         get() = symbols.months.toList()
         set(value) { updateSymbols { it.months = value.toTypedArray() } }
-    actual var shortMonths: List<String>
+    override var shortMonths: List<String>
         get() = symbols.shortMonths.toList()
         set(value) { updateSymbols { it.shortMonths = value.toTypedArray() } }
 
-    actual var weekdays: List<String>
+    override var weekdays: List<String>
         get() {
             val weekdaysWithEmptyFirst = symbols.weekdays.toList()
             return if (weekdaysWithEmptyFirst.size > 1) {
@@ -98,7 +129,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
                 it.weekdays = weekdaysWithEmptyFirst.toTypedArray()
             }
         }
-    actual var shortWeekdays: List<String>
+    override var shortWeekdays: List<String>
         get() {
             val weekdaysWithEmptyFirst = symbols.shortWeekdays.toList()
             return if (weekdaysWithEmptyFirst.size > 1) {
@@ -116,15 +147,15 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             }
         }
 
-    actual var amString: String
+    override var amString: String
         get() = symbols.amPmStrings.toList()[0]
         set(value) { updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[0] = value }.toTypedArray() } }
-    actual var pmString: String
+    override var pmString: String
         get() = symbols.amPmStrings.toList()[1]
         set(value) { updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() } }
 
-    actual fun format(date: KalugaDate): String = format.format(date.date)
-    actual fun parse(string: String): KalugaDate? {
+    override fun format(date: KalugaDate): String = format.format(date.date)
+    override fun parse(string: String): KalugaDate? {
         val currentTimeZone = timeZone
         return try {
             format.parse(string)?.let { date ->

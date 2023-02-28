@@ -3,49 +3,35 @@ public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager 
 	public abstract fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
 }
 
-public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribableMarker {
+public abstract interface class com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public abstract fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
 }
 
-public abstract interface class com/splendo/kaluga/keyboard/ClearFocusHandler {
-	public abstract fun clearFocus (Landroid/app/Activity;)V
-}
-
 public abstract interface class com/splendo/kaluga/keyboard/FocusHandler {
-	public abstract fun requestFocus (Landroid/app/Activity;)V
-}
-
-public final class com/splendo/kaluga/keyboard/KeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager, kotlinx/coroutines/CoroutineScope {
-	public fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lcom/splendo/kaluga/keyboard/ClearFocusHandler;Lkotlinx/coroutines/CoroutineScope;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lcom/splendo/kaluga/keyboard/ClearFocusHandler;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun hide ()V
-	public fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
-}
-
-public final class com/splendo/kaluga/keyboard/KeyboardManager$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable, com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder {
-	public fun <init> ()V
-	public fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lcom/splendo/kaluga/keyboard/ClearFocusHandler;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lcom/splendo/kaluga/keyboard/ClearFocusHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
-	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/KeyboardManager;
-	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;
-	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable$LifecycleManager;)V
-	public fun unsubscribe ()V
-}
-
-public final class com/splendo/kaluga/keyboard/KeyboardManagerKt {
-	public static final fun keyboardManagerBuilder (Landroidx/appcompat/app/AppCompatActivity;Lcom/splendo/kaluga/keyboard/ClearFocusHandler;)Lcom/splendo/kaluga/keyboard/KeyboardManager$Builder;
-	public static synthetic fun keyboardManagerBuilder$default (Landroidx/appcompat/app/AppCompatActivity;Lcom/splendo/kaluga/keyboard/ClearFocusHandler;ILjava/lang/Object;)Lcom/splendo/kaluga/keyboard/KeyboardManager$Builder;
-}
-
-public final class com/splendo/kaluga/keyboard/ViewClearFocusHandler : com/splendo/kaluga/keyboard/ClearFocusHandler {
-	public fun <init> ()V
-	public fun clearFocus (Landroid/app/Activity;)V
 }
 
 public final class com/splendo/kaluga/keyboard/ViewFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public fun <init> (I)V
-	public fun requestFocus (Landroid/app/Activity;)V
+	public final fun requestFocus (Landroid/app/Activity;)V
+}
+
+public final class com/splendo/kaluga/keyboard/ViewKeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager, kotlinx/coroutines/CoroutineScope {
+	public fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun hide ()V
+	public synthetic fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
+	public fun show (Lcom/splendo/kaluga/keyboard/ViewFocusHandler;)V
+}
+
+public final class com/splendo/kaluga/keyboard/ViewKeyboardManager$Builder : com/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable, com/splendo/kaluga/keyboard/BaseKeyboardManager$Builder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
+	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/ViewKeyboardManager;
+	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
+	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
+	public fun unsubscribe ()V
 }
 

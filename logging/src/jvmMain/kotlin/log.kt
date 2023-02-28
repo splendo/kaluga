@@ -1,5 +1,5 @@
 /*
- Copyright 2019 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,5 +19,14 @@ package com.splendo.kaluga.logging
 
 import io.github.aakira.napier.DebugAntilog
 
+/**
+ * The default [Logger] to be used if no logger is set.
+ */
 actual val defaultLogger: Logger = NapierLogger(DebugAntilog())
+
+/**
+ * The standard [Logger] to be used when logging.
+ *
+ * This is used by the package level logging methods, and might be used directly as well
+ */
 actual var logger = defaultLogger

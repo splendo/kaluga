@@ -31,6 +31,10 @@ import kotlin.time.Duration
  * A [PermissionManager] for managing [StoragePermission]
  */
 typealias StoragePermissionManager = PermissionManager<StoragePermission>
+
+/**
+ * The [BasePermissionManager] to use as a default for [StoragePermission]
+ */
 expect class DefaultStoragePermissionManager : BasePermissionManager<StoragePermission>
 
 /**
@@ -38,18 +42,23 @@ expect class DefaultStoragePermissionManager : BasePermissionManager<StoragePerm
  */
 typealias PhotosPermissionManager = StoragePermissionManager
 
+/**
+ * A [BasePermissionsBuilder] for [StoragePermission]
+ */
 interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder<StoragePermission> {
     /**
      * Creates a [StoragePermissionManager]
-     * @param notificationsPermission The [StoragePermission] for the PermissionManager to be created
-     * @param settings [BasePermissionManager.Settings] to configure the manager
+     * @param storagePermission the [StoragePermission] to manage
+     * @param settings [BasePermissionManager.Settings] to apply to the manager
      * @param coroutineScope The [CoroutineScope] the manager runs on
+     * @return a [StoragePermissionManager]
      */
     fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): StoragePermissionManager
 }
 
 /**
- * A builder for creating a [StoragePermissionManager]
+ * A [BaseStoragePermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class StoragePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseStoragePermissionManagerBuilder
 
@@ -60,7 +69,10 @@ typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [StoragePermission]
+ * @param storagePermission the [StoragePermission] to manage
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] used by the [StoragePermissionManager] created by the builder
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class StoragePermissionStateRepo(

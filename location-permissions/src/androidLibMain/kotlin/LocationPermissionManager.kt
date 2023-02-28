@@ -21,11 +21,19 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [LocationPermission]
+ * @param context the [Context] the [LocationPermission] is to be granted in
+ * @param locationPermission the [LocationPermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultLocationPermissionManager(
     context: Context,
     locationPermission: LocationPermission,
@@ -33,14 +41,11 @@ actual class DefaultLocationPermissionManager(
     coroutineScope: CoroutineScope
 ) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
-    private val permissions: Array<String> get() {
-        val result = mutableListOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (permission.precise)
-            result.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
-            result.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        return result.toTypedArray()
-    }
+    private val permissions: Array<String> get() = listOfNotNull(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        if (permission.precise) Manifest.permission.ACCESS_FINE_LOCATION else null,
+        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) Manifest.permission.ACCESS_BACKGROUND_LOCATION else null
+    ).toTypedArray()
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, logTag, logger, permissionHandler)
@@ -58,6 +63,10 @@ actual class DefaultLocationPermissionManager(
     }
 }
 
+/**
+ * A [BaseLocationPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
     override fun create(

@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,22 +18,52 @@
 package com.splendo.kaluga.resources.view
 
 import com.splendo.kaluga.resources.StyledString
-import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 
+/**
+ * A button a [KalugaButtonStyle] applied
+ */
 sealed class KalugaButton {
-    abstract val style: ButtonStyle
+
+    /**
+     * The [KalugaButtonStyle] of the button
+     */
+    abstract val style: KalugaButtonStyle
+
+    /**
+     * If `true` the button can be interacted with
+     */
     abstract val isEnabled: Boolean
+
+    /**
+     * Function to execute when the button is pressed
+     */
     abstract val action: () -> Unit
+
+    /**
+     * A [KalugaButton] that displays a regular text
+     * @property text the text to display on the button
+     * @param style the [KalugaButtonStyle] of the button
+     * @param isEnabled if `true` the button can be interacted with
+     * @param action function to execute when the button is pressed
+     */
     data class Plain(
         val text: String,
-        override val style: ButtonStyle,
+        override val style: KalugaButtonStyle,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
     ) : KalugaButton()
 
+    /**
+     * A [KalugaButton] that displays a [StyledString]
+     * @property text the [StyledString] to display on the button
+     * @param style the [KalugaButtonStyle] of the button
+     * @param isEnabled if `true` the button can be interacted with
+     * @param action function to execute when the button is pressed
+     */
     data class Styled(
         val text: StyledString,
-        override val style: ButtonStyle,
+        override val style: KalugaButtonStyle,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
     ) : KalugaButton()

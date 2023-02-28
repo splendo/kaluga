@@ -3,7 +3,7 @@
 This library adds support for [Koin](https://insert-koin.io/) to the [`test-utils-base` module](../test-utils-base)
 
 ## Installing
-This library is available on Maven Central. You can import Kaluga Test Utils as follows:
+This library is available on Maven Central. You can import Kaluga Test Utils Koin as follows:
 
 ```kotlin
 repositories {
@@ -61,4 +61,3 @@ override val viewModel by lazy { MyViewModel(myArgs) }
 ## Testing flows
 
 `BaseKoinFlowTest` or `KoinFlowTest` can be used to test Flows in a cross thread manner while maintaining access to Koin.
-

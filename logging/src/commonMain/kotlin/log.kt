@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,22 +19,29 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.logging
 
 // the default logger should be set per platform
+/**
+ * The default [Logger] to be used if no logger is set.
+ */
 expect val defaultLogger: Logger
 
 /**
- * The standard logger.
+ * The standard [Logger] to be used when logging.
  *
  * This is used by the package level logging methods, and might be used directly as well
  */
 expect var logger: Logger // how the actual logger is set can also differ per platform (e.g. Atomic references on native) so we expect it
 
 /**
- * Reset the standard logger to the default
+ * Reset [logger] to the default
  */
 fun resetLogger() {
     logger = defaultLogger
 }
 
+/**
+ * Wraps [logger] with a wrapper method
+ * @param wrapper a method for wrapping the standard logger into a different logger.
+ */
 fun wrapLogger(wrapper: (Logger) -> Logger) {
     logger = wrapper(logger)
 }

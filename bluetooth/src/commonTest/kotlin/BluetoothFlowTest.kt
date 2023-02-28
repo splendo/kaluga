@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -44,6 +45,7 @@ import com.splendo.kaluga.test.permissions.MockPermissionState
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -83,7 +85,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         sealed class Device : Configuration() {
             abstract val connectionSettings: ConnectionSettings
             abstract val willActionsSucceed: Boolean
-            abstract val rssi: Int
+            abstract val rssi: RSSI
             abstract val advertisementData: BaseAdvertisementData
         }
 
@@ -97,7 +99,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
-            override val rssi: Int = -100,
+            override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
         ) : Device()
@@ -109,7 +111,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
-            override val rssi: Int = -100,
+            override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
         ) : Device(), Service
@@ -121,7 +123,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
-            override val rssi: Int = -100,
+            override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
         ) : Device(), Characteristic
@@ -133,7 +135,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
-            override val rssi: Int = -100,
+            override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
             override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
         ) : Device(), Descriptor
@@ -148,9 +150,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
             initialActiveState = configuration.initialPermissionState
-        ).apply {
-            registerAllPermissionsBuilders()
-        }
+        )
 
         val permissionStateRepo get() = permissionsBuilder.buildBluetoothStateRepos.first()
 
@@ -159,6 +159,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         val bluetooth = Bluetooth(
             { scannerContext ->
+                permissionsBuilder.registerAllPermissionsBuilders()
                 BaseScanner.Settings(
                     Permissions(
                         permissionsBuilder,
@@ -182,7 +183,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun createDevice(
             connectionSettings: ConnectionSettings,
             deviceWrapper: DeviceWrapper,
-            rssi: Int,
+            rssi: RSSI,
             advertisementData: BaseAdvertisementData,
             deviceConnectionManagerBuilder: (ConnectionSettings) -> BaseDeviceConnectionManager
         ): Device {
@@ -196,15 +197,13 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             )
         }
 
-        suspend fun awaitScanDevice(
+        private suspend fun awaitScanDevice(
             device: Device,
             deviceWrapper: DeviceWrapper,
-            rssi: Int,
+            rssi: RSSI,
             advertisementData: BaseAdvertisementData
         ) {
-            bluetooth.scanningStateRepo.filter {
-                it is ScanningState.Enabled.Scanning
-            }.first()
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
                 state.discoverDevice(
                     deviceWrapper.identifier,
@@ -217,7 +216,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun scanDevice(
             device: Device,
             deviceWrapper: DeviceWrapper,
-            rssi: Int,
+            rssi: RSSI,
             advertisementData: BaseAdvertisementData
         ) {
             coroutineScope.launch {
@@ -247,6 +246,8 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             device.state.filter { it is ConnectableDeviceState.Connected.Discovering }.first()
             connectionManager.handleDiscoverCompleted(listOf(service))
         }
+
+        val pairedDevicesTimer = MutableSharedFlow<Unit>(1)
     }
 
     class BluetoothContext(configuration: Configuration.Bluetooth, coroutineScope: CoroutineScope) : Context<Configuration.Bluetooth>(configuration, coroutineScope)
@@ -262,7 +263,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, ConnectionSettings(), coroutineScope) }
 
         fun scanDevice(
-            rssi: Int = configuration.rssi,
+            rssi: RSSI = configuration.rssi,
             advertisementData: BaseAdvertisementData = configuration.advertisementData
         ) = super.scanDevice(device, deviceWrapper, rssi, advertisementData)
         suspend fun connectDevice() = connectDevice(device, connectionManager)

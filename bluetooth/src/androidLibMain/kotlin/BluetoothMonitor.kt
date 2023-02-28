@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,15 +23,28 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 actual interface BluetoothMonitor : ServiceMonitor {
 
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     * @param context the [Context] in which Bluetooth should run
+     * @param adapter the [BluetoothAdapter] to use to access Bluetooth
+     */
     actual class Builder(
         private val context: Context = ApplicationHolder.applicationContext,
         private val adapter: BluetoothAdapter
     ) {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         actual fun create(): BluetoothMonitor {
             return DefaultBluetoothMonitor(
                 applicationContext = context,
@@ -41,6 +54,11 @@ actual interface BluetoothMonitor : ServiceMonitor {
     }
 }
 
+/**
+ * A default implementation of [BluetoothMonitor]
+ * @param applicationContext the [Context] in which Bluetooth should run
+ * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
+ */
 class DefaultBluetoothMonitor internal constructor(
     private val applicationContext: Context,
     private val bluetoothAdapter: BluetoothAdapter

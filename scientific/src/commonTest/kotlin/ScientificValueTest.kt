@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
 
 package com.splendo.kaluga.scientific
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.length.times
+import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.unit.Decimeter
 import com.splendo.kaluga.scientific.unit.Hectogram
 import com.splendo.kaluga.scientific.unit.Hertz
@@ -52,5 +54,9 @@ class ScientificValueTest {
         assertEquals(0.5(Hertz), 1.0 / 2(Second))
         assertEquals(3(Kilogram), 9(Kilogram) / 30(Hectogram))
         assertEquals(3(Kilogram), 9(Kilogram) / 3)
+
+        assertEquals(Decimal.PositiveInfinity(Kilogram), 1(Kilogram) / 0(Kilogram))
+        assertEquals(Decimal.PositiveInfinity(Kilogram), 1(Kilogram) / 0)
+        assertEquals(Decimal.PositiveInfinity(Hertz), 0(Second).frequency())
     }
 }

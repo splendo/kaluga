@@ -17,21 +17,19 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import android.bluetooth.BluetoothDevice
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.bluetooth.uuidString
 
-const val deviceName = "name"
-const val address = ""
-const val bondState = BluetoothDevice.BOND_NONE
+private val bondState = DeviceWrapper.BondState.NONE
 
 actual fun randomIdentifier(): Identifier = randomUUID().uuidString
 
 actual fun createDeviceWrapper(
-    deviceName: String?
-): DeviceWrapper = MockDeviceWrapper(deviceName, address, bondState)
+    deviceName: String?,
+    identifier: Identifier
+): DeviceWrapper = MockDeviceWrapper(deviceName, identifier, bondState)
 
 actual fun ServiceWrapperBuilder.build(): ServiceWrapper = MockServiceWrapper(builder = this)

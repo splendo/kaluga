@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.weight.mass
 import com.splendo.kaluga.scientific.unit.Acceleration
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.Grain
 import com.splendo.kaluga.scientific.unit.GrainForce
@@ -33,10 +34,8 @@ import com.splendo.kaluga.scientific.unit.ImperialTon
 import com.splendo.kaluga.scientific.unit.ImperialTonForce
 import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.KilogramForce
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricAcceleration
 import com.splendo.kaluga.scientific.unit.MetricForce
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Milligram
 import com.splendo.kaluga.scientific.unit.MilligramForce
 import com.splendo.kaluga.scientific.unit.Ounce
@@ -57,8 +56,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(acceleratio
     Gram.mass(this, acceleration)
 
 @JvmName("dyneMultipleDivAcceleration")
-infix operator fun <DyneUnit> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    Gram.mass(this, acceleration)
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) = Gram.mass(this, acceleration)
 
 @JvmName("kilogramForceDivAcceleration")
 infix operator fun ScientificValue<PhysicalQuantity.Force, KilogramForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =

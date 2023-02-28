@@ -13,8 +13,6 @@ public abstract class com/splendo/kaluga/test/KoinFlowTest : com/splendo/kaluga/
 
 public abstract class com/splendo/kaluga/test/KoinUIThreadTest : com/splendo/kaluga/test/koin/KoinUIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public class com/splendo/kaluga/test/KoinUIThreadTest$KoinTestContext : com/splendo/kaluga/test/koin/KoinUIThreadTest$KoinTestContext {
@@ -24,8 +22,6 @@ public class com/splendo/kaluga/test/KoinUIThreadTest$KoinTestContext : com/sple
 
 public abstract class com/splendo/kaluga/test/KoinUIThreadViewModelTest : com/splendo/kaluga/test/KoinUIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public abstract class com/splendo/kaluga/test/KoinUIThreadViewModelTest$KoinViewModelTestContext : com/splendo/kaluga/test/KoinUIThreadTest$KoinTestContext, com/splendo/kaluga/test/architecture/UIThreadViewModelTest$ViewModelTestContext {
@@ -36,10 +32,6 @@ public abstract class com/splendo/kaluga/test/KoinUIThreadViewModelTest$KoinView
 }
 
 public final class com/splendo/kaluga/test/LegacyKt {
-	public static final fun assertFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
-	public static synthetic fun assertFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
-	public static final fun assertNotFrozen (Ljava/lang/Object;Ljava/lang/String;Z)V
-	public static synthetic fun assertNotFrozen$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)V
 	public static final fun awaitAllBlocking ([Lkotlinx/coroutines/Deferred;)Ljava/util/List;
 	public static final fun captureFor-8Mi8wO0 (Lkotlinx/coroutines/flow/Flow;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -56,8 +48,6 @@ public final class com/splendo/kaluga/test/SimpleUIThreadTest$SimpleTestContext 
 
 public abstract class com/splendo/kaluga/test/UIThreadTest : com/splendo/kaluga/test/base/UIThreadTest {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public abstract interface class com/splendo/kaluga/test/UIThreadTest$TestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext {

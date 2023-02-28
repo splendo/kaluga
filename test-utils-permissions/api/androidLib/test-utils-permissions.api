@@ -45,7 +45,7 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionManager$Bui
 	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;JLcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun create (Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/permissions/MockPermissionManager;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getCreatedManagers ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getCreatedManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getInitialState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
 	public final fun getMonitoringInterval-UwyO8pc ()J
 	public final fun getPermission ()Lcom/splendo/kaluga/permissions/base/Permission;
@@ -114,14 +114,14 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionsBuilder : 
 	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBluetoothStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun getBuildBluetoothStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildCalendarStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildCameraStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildContactsStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildLocationStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildMicrophoneStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildNotificationsStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
-	public final fun getBuildStorageStateRepos ()Lco/touchlab/stately/collections/IsoMutableList;
+	public final fun getBuildBluetoothStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildCalendarStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildCameraStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildContactsStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildLocationStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildMicrophoneStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildNotificationsStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildStorageStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public final fun getCalendarStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getCameraStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getContactsStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
@@ -129,6 +129,6 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionsBuilder : 
 	public final fun getMicrophoneStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getNotificationsStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getStorageStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public final fun registerAllPermissionsBuilders ()V
+	public final fun registerAllPermissionsBuilders (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

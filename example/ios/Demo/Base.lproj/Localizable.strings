@@ -2,6 +2,7 @@
 
 "feature_alerts" = "Alerts";
 "feature_architecture" = "Architecture";
+"feature_date_time"= "Date Time";
 "feature_date_time_picker"= "Date Time Picker";
 "feature_bluetooth" = "Bluetooth";
 "feature_hud" = "Loading Indicator";
@@ -13,11 +14,14 @@
 "feature_resources" = "Resources";
 "feature_resources_color" = "Color";
 "feature_resources_button" = "Button";
+"feature_resources_image" = "Image";
 "feature_resources_label" = "Label";
+"feature_scientific" = "Scientific";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
 "alert_list" = "Show Alert List";
+"alert_input" = "Show Alert with input";
 "show_loading_indicator_system" = "Show Loading Indicator (System)";
 "show_loading_indicator_custom" = "Show Loading Indicator (Custom)";
 
@@ -46,8 +50,11 @@
 "permission_request_success" = "Permission requested successfully";
 "permission_request_failed" = "Permission request failed";
 
+"architecture_name_input_placeholder" = "Enter your Name";
+"architecture_number_input_placeholder" = "Enter a number";
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+"architecture_finish" = "Finish";
 "keyboard_manager" = "Keyboard";
 "show_keyboard" = "Show Keyboard";
 "hide_keyboard" = "Hide Keyboard";
@@ -90,6 +97,12 @@
 "bluetooth_permissions_read_encrypted" = "Read Encrypted";
 "bluetooth_permissions_write_encrypted" = "Write Encrypted";
 
+"bottom_sheet_show_sheet" = "Open Bottom Sheet";
+"bottom_sheet_show_sub_page" = "Open Sub Page";
+"bottom_sheet_sub_page_title" = "Sub Page";
+"bottom_sheet_sheet_content" = "This is a bottom sheet";
+"bottom_sheet_sheet_sub_page_title" = "Sheet Sub Page";
+
 "beacons_start_monitoring" = "Start Monitoring";
 "beacons_stop_monitoring" = "Stop Monitoring";
 
@@ -100,3 +113,7 @@ That query will be deserialized into a object and shown in an alert.";
 
 "feature_system" = "System";
 "network_feature" = "Network";
+
+"ios_ui_type_selector" = "Select UI Type";
+"ios_swift_ui" = "SwiftUI";
+"ios_ui_kit" = "UIKit";

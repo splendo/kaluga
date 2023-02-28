@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,9 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test.base
 
-import co.touchlab.stately.concurrency.AtomicLong
-import co.touchlab.stately.ensureNeverFrozen
-import co.touchlab.stately.freeze
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -29,19 +27,28 @@ import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.test.base.BaseUIThreadTest.EmptyTestContext
 import com.splendo.kaluga.test.base.BaseUIThreadTest.TestContext
-import kotlinx.coroutines.*
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.getAndUpdate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlin.native.concurrent.SharedImmutable
-import kotlin.native.concurrent.ThreadLocal
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlin.test.AfterTest
+import kotlin.time.Duration.Companion.seconds
 
-typealias TestBlock<TC, T> = suspend TC.(T) -> Unit
+typealias TestBlock<Context, T> = suspend Context.(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
-typealias ScopeActionBlock<TC> = suspend TC.() -> Unit
+typealias ScopeActionBlock<Context> = suspend Context.() -> Unit
 
-typealias FlowTestBlockWithContext<C, TC, T, F> = suspend BaseFlowTest<C, TC, T, F>.(F) -> Unit
+typealias FlowTestBlockWithContext<Configuration, Context, T, F> = suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit
 
 typealias FlowTestBlock<T, F> = suspend FlowTest<T, F>.(F) -> Unit
 
@@ -71,47 +78,23 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
         }
 }
 
-/*
-Context for each tests needs to be created and kept on the main thread for iOS.
+abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<Configration, Context>(), CoroutineScope by scope {
 
-Since the class itself is created in the test thread
-*/
-
-@ThreadLocal // thread local on native, global on non-native, but still accessed from only the main thread.
-val contextMap = mutableMapOf<Long, TestContext>()
-
-private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
-    if (!contextMap.containsKey(cookie))
-        contextMap[cookie] = testContext()
-    return contextMap[cookie] as TC
-}
-
-@SharedImmutable
-private val cookieTin = AtomicLong(0L)
-
-abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<C, TC>(), CoroutineScope by scope {
-
-    // used for thread local map access to store the testContext
-    private val cookie = cookieTin.incrementAndGet()
-
-    init {
-        ensureNeverFrozen()
-    }
-
-    abstract val flowFromTestContext: suspend TC.() -> F
+    abstract val flowFromTestContext: suspend Context.() -> F
 
     open val filter: (Flow<T>) -> Flow<T> = { it }
 
-    private val tests: MutableList<EmptyCompletableDeferred> = mutableListOf()
+    private val tests: MutableList<EmptyCompletableDeferred> = concurrentMutableListOf()
 
     var job: Job? = null
 
-    private lateinit var testChannel: Channel<Pair<TestBlock<TC, T>, EmptyCompletableDeferred>>
+    private val testContext = atomic<Context?>(null)
+    private lateinit var testChannel: Channel<Pair<TestBlock<Context, T>, EmptyCompletableDeferred>>
 
     @AfterTest
     override fun afterTest() {
         runBlocking {
-            disposeContext(cookie)
+            disposeContext()
         }
         super.afterTest()
     }
@@ -131,7 +114,7 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         testChannel = Channel(Channel.UNLIMITED)
     }
 
-    protected val waitForTestToSucceed = 6000L * 10
+    protected val waitForTestToSucceed = 60.seconds
 
     private suspend fun awaitTestBlocks() {
 
@@ -153,13 +136,13 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
     }
 
     private var lateflow: F? = null
-    private var lateConfiguration: C? = null
+    private var lateConfiguration: Configration? = null
 
     fun testWithFlowAndTestContext(
-        configuration: C,
+        configuration: Configration,
         createFlowInMainScope: Boolean = true,
         retainContextAfterTest: Boolean = false,
-        blockWithContext: FlowTestBlockWithContext<C, TC, T, F>
+        blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>
     ) {
 
         runBlocking {
@@ -169,24 +152,19 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 // startFlow is only called when the first test block is offered
 
                 val flow = flowFromTestContext
-
-                val cookie = cookie
                 val scope = scope
 
                 val createTestContextWithConfiguration = createTestContextWithConfiguration
 
                 val f =
                     if (createFlowInMainScope) {
-                        flow.freeze()
-                        scope.freeze()
                         withContext(Dispatchers.Main.immediate) {
-                            (flow(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })).freeze()
+                            (flow(getOrCreateContext { createTestContextWithConfiguration(configuration, scope) }))
                         }
                     } else {
-                        createTestContextWithConfiguration.freeze()
                         flow(
                             withContext(Dispatchers.Main.immediate) {
-                                (testContext(cookie) { createTestContextWithConfiguration(configuration, scope) }).freeze()
+                                (getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
                             }
                         )
                     }
@@ -197,27 +175,24 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
                 resetFlow()
             } finally {
                 if (!retainContextAfterTest) {
-                    disposeContext(cookie)
+                    disposeContext()
                 }
             }
         }
     }
 
     @Suppress("SuspendFunctionOnCoroutineScope")
-    private suspend fun startFlow(configuration: C, flow: F) {
-        this.ensureNeverFrozen()
+    private suspend fun startFlow(configuration: Configration, flow: F) {
         debug("launch flow scope...")
         val testChannel = testChannel
         val started = EmptyCompletableDeferred()
         val filter = filter
         val scope = scope
         val createTestContextWithConfiguration = createTestContextWithConfiguration
-        val cookie = cookie
-        createTestContextWithConfiguration.freeze()
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
-                val testContext = testContext(cookie) { createTestContextWithConfiguration(configuration, scope) }
+                val testContext = getOrCreateContext { createTestContextWithConfiguration(configuration, scope) }
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
                 filter(flow).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
@@ -250,18 +225,16 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         debug("waited for main thread to be launched")
     }
 
-    suspend fun mainAction(action: ScopeActionBlock<TC>) {
+    suspend fun mainAction(action: ScopeActionBlock<Context>) {
         debug("start mainAction")
         awaitTestBlocks()
-        val cookie = cookie
         val createTestContextWithConfiguration = createTestContextWithConfiguration
         val scope = scope
         require(lateConfiguration != null) { "Only use mainAction from inside `testWith` methods" }
-        createTestContextWithConfiguration.freeze()
         val configuration = lateConfiguration!!
         withContext(Dispatchers.Main.immediate) {
             debug("in main scope for mainAction")
-            action(testContext(cookie) { createTestContextWithConfiguration(configuration, scope) })
+            action(getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
         }
         debug("did mainAction")
     }
@@ -275,11 +248,9 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
 
     var firstTestBlock = true
 
-    suspend fun test(skip: Int = 0, test: TestBlock<TC, T>) {
-        test.freeze()
+    suspend fun test(skip: Int = 0, test: TestBlock<Context, T>) {
         if (firstTestBlock) {
             firstTestBlock = false
-            tests.ensureNeverFrozen()
             debug("first test offered, starting collection")
             require(lateflow != null && lateConfiguration != null) { "Only use test from inside `testWith` methods" }
             startFlow(lateConfiguration!!, lateflow!!)
@@ -293,10 +264,20 @@ abstract class BaseFlowTest<C, TC : TestContext, T, F : Flow<T>>(val scope: Coro
         testChannel.trySend(Pair(test, completable)).isSuccess
     }
 
-    private suspend fun disposeContext(cookie: Long) {
+    private suspend fun disposeContext() {
         withContext(Dispatchers.Main.immediate) {
-            val testContext = contextMap.remove(cookie)
-            testContext?.dispose()
+            testContext.getAndUpdate { null }?.dispose()
+        }
+    }
+
+    private suspend fun getOrCreateContext(create: suspend () -> Context): Context {
+        // updateAndGet doesnt work properly on JVM so we built it ourselves
+        while (true) {
+            val currentContext = testContext.value
+            val nextContext = currentContext ?: create()
+            if (testContext.compareAndSet(currentContext, nextContext)) {
+                return nextContext
+            }
         }
     }
 }

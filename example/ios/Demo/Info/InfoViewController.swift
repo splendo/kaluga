@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,64 +16,95 @@
  */
 
 import UIKit
-import KotlinNativeFramework
+import MessageUI
+import KalugaExampleShared
 
-class InfoViewController : UITableViewController {
-    
-    private lazy var viewModel: InfoViewModel = KNArchitectureFramework().createInfoViewModel(parent: self)
+class InfoViewController: UITableViewController {
+
+    private lazy var navigator = InfoNavigatorKt.InfoNavigator(
+        parent: self,
+        onDialogSpec: { dialogSpec in
+            NavigationSpec.Present(
+                animated: true,
+                presentationStyle: Int64(UIModalPresentationStyle.automatic.rawValue),
+                transitionStyle: Int64(UIModalTransitionStyle.coverVertical.rawValue)
+            ) {
+                let alert = UIAlertController.init(title: dialogSpec.title, message: dialogSpec.message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                return alert
+            }
+        },
+        onLink: { link in NavigationSpec.Browser(url: URL(string: link)!, viewType: NavigationSpec.BrowserTypeNormal()) },
+        onMailSpec: { mailSpec in
+            let settings = NavigationSpec.Email.EmailEmailSettings(
+                type: NavigationSpec.EmailTypePlain(),
+                to: mailSpec.to,
+                cc: [],
+                bcc: [],
+                subject: mailSpec.subject,
+                body: nil,
+                attachments: []
+            )
+            return NavigationSpec.Email(emailSettings: settings, delegate: nil, animated: true)
+        }
+    )
+    private lazy var viewModel = InfoViewModel(
+        reviewManagerBuilder: ReviewManager.Builder(),
+        navigator: navigator)
 
     private var buttons = [String]()
-    private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
+    private var onSelected: ((Int) -> Void)?
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
-            
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
+
             guard let viewModel = self?.viewModel else {
                 return []
             }
-            
-            return [viewModel.observeButtons() { (buttons: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
-                self?.buttons = buttons
-                self?.onSelected = onSelected
-                self?.tableView.reloadData()
-            }]
+
+            return [
+                viewModel.buttons.observeInitialized { next in
+                    let buttons = next?.compactMap { $0 as? InfoViewModel.Button } ?? []
+                    self?.buttons = buttons.map { $0.title }
+                    self?.onSelected = { (index: Int) in viewModel.onButtonPressed(button: buttons[index]) }
+                    self?.tableView.reloadData()
+                }
+            ]
         }
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return buttons.count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: InfoButtonCell.Const.identifier, for: indexPath) as! InfoButtonCell
-        cell.label.text = buttons[indexPath.row]
-        return cell
+        return tableView.dequeueTypedReusableCell(withIdentifier: InfoButtonCell.Const.identifier, for: indexPath) { (cell: InfoButtonCell) in
+            cell.label.text = buttons[indexPath.row]
+        }
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let _ = onSelected?(KotlinInt.init(int: Int32(indexPath.row)))
+        _ = onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
 }
 
-class InfoButtonCell : UITableViewCell {
+class InfoButtonCell: UITableViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "InfoButtonCell"
     }
     
     @IBOutlet weak var label: UILabel!
-    
 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,6 +20,10 @@ package com.splendo.kaluga.permissions.base
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 
+/**
+ * Android context for creating a [BasePermissionsBuilder]
+ * @property context the [Context] in which the permission is to be granted
+ */
 actual data class PermissionContext(val context: Context)
 
 actual val defaultPermissionContext get() = PermissionContext(ApplicationHolder.applicationContext)

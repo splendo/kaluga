@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,34 +23,71 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.Duration.Companion.milliseconds
 
-class GoogleLocationProvider(private val context: Context) : LocationProvider {
+/**
+ * A [LocationProvider] using the Google Location Services
+ * @param context The [Context] to run this [LocationProvider] in.
+ * @param settings The [GoogleLocationProvider.Settings] to use to configure this location provider.
+ * @param minUpdateDistanceMeters The minimum distance in meters traversed for a location update to be reported.
+ */
+class GoogleLocationProvider(
+    private val context: Context,
+    private val settings: Settings,
+    private val minUpdateDistanceMeters: Float
+) : LocationProvider {
 
-    sealed class FusedLocationProviderClientType(
+    /**
+     * Settings for a [GoogleLocationProvider]
+     * @param interval The desired interval of location updates. (Best effort)
+     * @param maxUpdateDelay The longest a location update may be delayed.
+     * @param minUpdateInterval The fastest allowed interval of location updates.
+     */
+    data class Settings(
+        val interval: Duration = 100.milliseconds,
+        val maxUpdateDelay: Duration = ZERO,
+        val minUpdateInterval: Duration = interval
+    )
+
+    internal sealed class FusedLocationProviderClientType(
         permission: LocationPermission,
-        protected val context: Context
+        context: Context,
+        settings: Settings,
+        minUpdateDistanceMeters: Float
     ) {
-        protected val fusedLocationProviderClient = FusedLocationProviderClient(context)
-        protected val locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-            if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        )
-        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> = MutableStateFlow(emptyList())
+        protected val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+        protected val locationRequest =
+            LocationRequest.Builder(settings.interval.inWholeMilliseconds)
+                .setMaxUpdateDelayMillis(settings.maxUpdateDelay.inWholeMilliseconds)
+                .setMinUpdateIntervalMillis(settings.minUpdateInterval.inWholeMilliseconds)
+                .setMinUpdateDistanceMeters(minUpdateDistanceMeters)
+                .setPriority(
+                    if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY
+                    else Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                )
+                .build()
+        protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> =
+            MutableStateFlow(emptyList())
         val locations: Flow<List<Location.KnownLocation>> = locationsState
 
         abstract fun startRequestingUpdates()
         abstract fun stopRequestingUpdates()
 
-        class Foreground(permission: LocationPermission, context: Context) : FusedLocationProviderClientType(permission, context) {
+        class Foreground(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
 
             private val locationCallback = object : LocationCallback() {
 
@@ -71,12 +108,12 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
             }
         }
 
-        class Background(permission: LocationPermission, context: Context) : FusedLocationProviderClientType(permission, context) {
+        class Background(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
 
             private val identifier = hashCode().toString()
 
             companion object {
-                val updatingLocationInBackgroundManagers: MutableMap<String, MutableStateFlow<List<Location.KnownLocation>>> = mutableMapOf()
+                val updatingLocationInBackgroundManagers: MutableMap<String, MutableStateFlow<List<Location.KnownLocation>>> = concurrentMutableMapOf()
             }
 
             private val locationUpdatedPendingIntent = GoogleLocationUpdatesBroadcastReceiver.intent(context, identifier)
@@ -107,17 +144,17 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
         fusedLocationProviderClient.startRequestingUpdates()
     }
 
-    override fun stopMonitoringLocation(permissions: LocationPermission) {
-        fusedLocationProviderClients.value[permissions]?.startRequestingUpdates()
-        fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply { remove(permissions) }
+    override fun stopMonitoringLocation(permission: LocationPermission) {
+        fusedLocationProviderClients.value[permission]?.stopRequestingUpdates()
+        fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply { remove(permission) }
     }
 
     private fun getLocationProviderForPermission(permission: LocationPermission): FusedLocationProviderClientType {
         return fusedLocationProviderClients.value[permission] ?: run {
             val fusedLocationProviderClient = if (permission.background) {
-                FusedLocationProviderClientType.Background(permission, context)
+                FusedLocationProviderClientType.Background(permission, context, settings, minUpdateDistanceMeters)
             } else {
-                FusedLocationProviderClientType.Foreground(permission, context)
+                FusedLocationProviderClientType.Foreground(permission, context, settings, minUpdateDistanceMeters)
             }
 
             fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply {
@@ -128,17 +165,20 @@ class GoogleLocationProvider(private val context: Context) : LocationProvider {
     }
 }
 
+/**
+ * A [BroadcastReceiver] for receiving updates to a Google Location from the background
+ */
 class GoogleLocationUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
         private const val ACTION_NAME = "com.splendo.kaluga.location.locationupdates.action"
 
-        fun intent(context: Context, locationManagerId: String): PendingIntent {
+        internal fun intent(context: Context, locationManagerId: String): PendingIntent {
             val intent = Intent(context, GoogleLocationUpdatesBroadcastReceiver::class.java).apply {
                 action = ACTION_NAME
                 addCategory(locationManagerId)
             }
-            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            return PendingIntent.getBroadcast(context, 0, intent, if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT)
         }
     }
 

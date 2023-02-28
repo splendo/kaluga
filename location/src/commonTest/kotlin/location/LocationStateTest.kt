@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.test.base.BaseFlowTest
@@ -41,7 +42,7 @@ class LocationStateTest :
         private val location1 = Location.KnownLocation(
             latitude = 52.15,
             longitude = 4.4303,
-            time = Location.Time.MeasuredTime(1000),
+            time = DefaultKalugaDate.now(),
             horizontalAccuracy = 1.0,
             verticalAccuracy = 1.0,
             altitude = 1.0,
@@ -51,7 +52,7 @@ class LocationStateTest :
         private val location2 = Location.KnownLocation(
             latitude = 52.079,
             longitude = 4.3413,
-            time = Location.Time.MeasuredTime(1000),
+            time = DefaultKalugaDate.now(),
             horizontalAccuracy = 2.0,
             verticalAccuracy = 2.0,
             altitude = 2.0,
@@ -72,18 +73,19 @@ class LocationStateTest :
         TestContext {
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
             initialActiveState = configuration.initialPermissionState
-        ).apply {
-            registerAllPermissionsBuilders()
-        }
-        val permissions = Permissions(
-            permissionsBuilder,
-            coroutineContext = coroutineScope.coroutineContext
-        ).apply {
-            // Make sure permissionState has been created as it may break the tests otherwise
-            get(configuration.locationPermission)
-        }
+        )
+
         val locationStateRepoBuilder = MockLocationStateRepoBuilder(
-            permissions,
+            {
+                permissionsBuilder.registerAllPermissionsBuilders()
+                Permissions(
+                    permissionsBuilder,
+                    coroutineContext = coroutineScope.coroutineContext
+                ).apply {
+                    // Make sure permissionState has been created as it may break the tests otherwise
+                    get(configuration.locationPermission)
+                }
+            },
             MockBaseLocationManager.Builder(configuration.locationEnabled)
         )
 
@@ -429,7 +431,7 @@ class LocationStateTest :
             permissionStateRepo.takeAndChangeState { state ->
                 (state as MockPermissionState<LocationPermission>).lock
             }
-            yieldMultiple(2)
+            yieldMultiple(3)
         }
         test {
             locationManager.stopMonitoringLocationEnabledMock.verify()
@@ -478,7 +480,7 @@ class LocationStateTest :
         }
         mainAction {
             locationManager.locationEnabled.value = false
-            yieldMultiple(2)
+            yieldMultiple(3)
         }
         test {
             locationManager.requestEnableLocationMock.verify()

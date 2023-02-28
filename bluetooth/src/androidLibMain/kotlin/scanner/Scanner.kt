@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice.BOND_NONE
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
@@ -30,17 +31,18 @@ import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.core.app.ActivityCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.monitor.EnableServiceActivity
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
+import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.service.EnableServiceActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -52,6 +54,15 @@ import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
 
+/**
+ * A default implementation of [BaseScanner]
+ * @param applicationContext the [Context] in which Bluetooth should run
+ * @param bluetoothScanner the [BluetoothLeScannerCompat] to use for scanning
+ * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
+ * @param scanSettings the [ScanSettings] to apply to the scanner
+ * @param settings the [BaseScanner.Settings] to configure this scanner
+ * @param coroutineScope the [CoroutineScope] this scanner runs on
+ */
 actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
     private val bluetoothScanner: BluetoothLeScannerCompat,
@@ -61,6 +72,13 @@ actual class DefaultScanner internal constructor(
     coroutineScope: CoroutineScope,
 ) : BaseScanner(settings, coroutineScope) {
 
+    /**
+     * Builder for creating a [DefaultScanner]
+     * @param applicationContext the [Context] in which Bluetooth should run
+     * @param bluetoothScanner the [BluetoothLeScannerCompat] to use for scanning
+     * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
+     * @param scanSettings the [ScanSettings] to apply to the scanner
+     */
     class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
@@ -77,6 +95,9 @@ actual class DefaultScanner internal constructor(
     }
 
     companion object {
+        /**
+         * Default [ScanSettings]
+         */
         val defaultScanSettings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
             .setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT)
@@ -115,7 +136,11 @@ actual class DefaultScanner internal constructor(
             }
         }
 
+        @SuppressLint("MissingPermission") // Lint complains even with permissions
         private fun handleScanResult(scanResult: ScanResult) {
+            if (!settings.discoverBondedDevices && scanResult.device.bondState != BOND_NONE)
+                return // ignore bonded devices
+
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
@@ -153,12 +178,12 @@ actual class DefaultScanner internal constructor(
         bluetoothScanner.stopScan(callback)
     }
 
-    override fun startMonitoringHardwareEnabled() {
+    override suspend fun startMonitoringHardwareEnabled() {
         locationEnabledMonitor.startMonitoring()
         super.startMonitoringHardwareEnabled()
     }
 
-    override fun stopMonitoringHardwareEnabled() {
+    override suspend fun stopMonitoringHardwareEnabled() {
         locationEnabledMonitor.stopMonitoring()
         super.stopMonitoringHardwareEnabled()
     }
@@ -192,22 +217,39 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override fun pairedDevices(withServices: Set<UUID>) = when (
-        ActivityCompat.checkSelfPermission(
+    @SuppressLint("MissingPermission") // Lint complains even with permissions
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
+        if (!isSupported) return emptyList()
+        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            Manifest.permission.BLUETOOTH_CONNECT
+        else
+            Manifest.permission.BLUETOOTH
+        val result = ActivityCompat.checkSelfPermission(
             applicationContext,
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) Manifest.permission.BLUETOOTH_CONNECT else Manifest.permission.BLUETOOTH
+            permission
         )
-    ) {
-        PackageManager.PERMISSION_GRANTED -> {
-            bluetoothAdapter
-                ?.bondedDevices
-                ?.filter {
-                    // If no uuids available return this device
-                    // Otherwise check if it constains any of given service uuid
-                    it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+        if (result != PackageManager.PERMISSION_GRANTED) return emptyList()
+        return bluetoothAdapter?.bondedDevices
+            ?.filter {
+                // If no uuids available return this device
+                // Otherwise check if it contains any of given service uuid
+                it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+            }
+            ?.map { device ->
+                val deviceWrapper = DefaultDeviceWrapper(device)
+                val deviceCreator: DeviceCreator = {
+                    deviceWrapper to deviceConnectionManagerBuilder
                 }
-                ?.map { it.address }
-        }
-        else -> null
-    } ?: emptyList()
+                val serviceUUIDs = device.uuids
+                    ?.map(ParcelUuid::getUuid)
+                    ?: withServices.toList() // fallback to filter, as it *must* contain one of them
+
+                Scanner.Event.DeviceDiscovered(
+                    identifier = deviceWrapper.identifier,
+                    rssi = Int.MIN_VALUE,
+                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
+                    deviceCreator = deviceCreator
+                )
+            } ?: emptyList()
+    }
 }

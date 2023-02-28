@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import com.splendo.kaluga.logging.info
 
 /**
  * An [AppCompatActivity] responsible for requesting a [Permission]
+ * Use [PermissionsActivity.Companion.intent] for getting an [Intent] to this activity
  */
-
 class PermissionsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +66,11 @@ class PermissionsActivity : AppCompatActivity() {
         private const val PERMISSIONS_REQUEST_CODE = 32131
         private const val EXTRA_REQUESTED_PERMISSIONS = "EXTRA_REQUESTED_PERMISSIONS"
 
+        /**
+         * Creates the [Intent] to a [PermissionsActivity]
+         * @param context the [Context] of the [Intent]
+         * @param requestedPermissions the list of permissions to request. Should correspond to [android.Manifest.permission].
+         */
         fun intent(context: Context, vararg requestedPermissions: String): Intent {
             val intent = Intent(context, PermissionsActivity::class.java)
 
@@ -76,7 +81,7 @@ class PermissionsActivity : AppCompatActivity() {
             return intent
         }
 
-        fun getRequestedPermissions(intent: Intent): Array<String> {
+        internal fun getRequestedPermissions(intent: Intent): Array<String> {
             return intent.getStringArrayExtra(EXTRA_REQUESTED_PERMISSIONS) ?: emptyArray()
         }
     }

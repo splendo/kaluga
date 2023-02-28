@@ -18,16 +18,20 @@ dependencies {
 ```
 
 ## Usage
-
-Using DateTimePicker ts is very simple. You can show a date Picker from shared code like this:
+You can show a date Picker from shared code like this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
-    // Create an Alert with title, message and actions
-    val datePicker = builder.buildDatePicker(this) {
+fun showDatePicker(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
+    // Create a Date Picker that allows a date to be picked between January 1st 1970 and the current date
+    val datePicker = builder.buildDatePicker(
+        this,
+        earliestDate = DefaultKalugaDate.epoch(),
+        latestDate = DefaultKalugaDate.now(),
+    ) {
         setConfirmButtonTitle("OK")
         setCancelButtonTitle("Cancel")
+        setSelectedDate(DefaultKalugaDate.now())
     }
 
     datePicker.show()?.let {
@@ -40,11 +44,12 @@ fun showAlert(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
 And a Time Picker like this:
 ```kotlin
 // Shared code
-fun showAlert(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
-    // Create an Alert with title, message and actions
+fun showTimePicker(builder: DateTimePickerPresenter.Builder) = MainScope().launch {
+    // Create a Time Picker
     val timePicker = builder.buildTimePicker(this) {
         setConfirmButtonTitle("OK")
         setCancelButtonTitle("Cancel")
+        setSelectedDate(DefaultKalugaDate.now())
     }
 
     timePicker.show()?.let {
@@ -60,14 +65,38 @@ The `DateTimePickerPresenter.Builder` class can be used to build Date and Time P
 The can be shown using either `suspend fun show(animated: Boolean = true): Date?` or `fun showAsync(animated: Boolean = true, completion: (Date?) -> Unit = {})`.
 Both methods for showing return the initial selectedDate passed through the builder, modified by the selected date, or null if the date selection was cancelled.
 
-### Android
-On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
-For `BaseLifecycleViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
+### Build Date Picker
+To create `BaseDateTimePickerPresenter` that selects a Date, thread-safe, use.
 
 ```kotlin
-class DatePickerViewModel: LifecycleViewModel() {
+buildDatePicker(coroutineScope: CoroutineScope, earliestDate: Date?, latestDate: Date?, initialize: DateTimePicker.Builder.() -> Unit): BaseDateTimePickerPresenter
+```
+
+Passing the earliest/latest Date will limit the range of dates to select.
+
+### Build Time Picker
+To create `BaseDateTimePickerPresenter` that selects a Time, thread-safe
+
+```kotlin
+buildTimePicker(coroutineScope: CoroutineScope, initialize: DateTimePicker.Builder.() -> Unit): BaseDateTimePickerPresenter
+```
+
+## Platform Specific Building
+The `DateTimePickerPresenter.Builder` object should be created from the platform side.
+
+### Android
+On Android the builder is an `ActivityLifecycleSubscribable` (see Architecture) that needs an `ActivityLifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
+For `BaseLifecycleViewModel`, the builder should be provided to `BaseLifecycleViewModel.activeLifecycleSubscribables` (using the constructor or `BaseLifecycleViewModel.addLifecycleSubscribables`) and bound to a `KalugaViewModelLifecycleObserver` or `ViewModelComposable`.
+
+```kotlin
+class DatePickerViewModel: BaseLifecycleViewModel() {
 
     val builder = DateTimePickerPresenter.Builder()
+    
+    init {
+        addLifecycleSubscribables(builder)
+    }
+    
     fun show() {
             coroutineScope.launch {
                 val time = builder.buildTimePicker(this) {
@@ -92,7 +121,7 @@ class MyActivity: KalugaViewModelActivity<DatePickerViewModel>() {
  }
 ```
 
-For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
+For other usages, make sure to call `ActivityLifecycleSubscribable.subscribe` and `ActivityLifecycleSubscribable.unsubscribe` to manage the lifecycle manually.
 
 ```kotlin
 // Android specific
@@ -105,8 +134,6 @@ MainScope().launch {
 }
 ```
 
-You can use the `AppCompatActivity.datePickerPresenterBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
-
 The Date/Time Picker shown will use the default theme automatically. Pass the Theme Resource ID in the builder constructor to apply a custom theme.
 
 ### iOS
@@ -116,16 +143,8 @@ On iOS the builder should be passed the `UIViewController` responsible for displ
 let builder = DateTimePickerPresenter.Builder(viewController)
 ```
 
-### Build Date Picker
-To create `DateTimePickerPresenter` that selects a Date, thread-safe, use.
-```
-buildDatePicker(coroutineScope: CoroutineScope, earliestDate: Date?, latestDate: Date?, initialize: BaseDateTimePickerPresenter.Builder.() -> Unit): DateTimePickerPresenter
-```
+Since a `UIViewController` is required, for SwiftUI the `View` displaying the DateTimePicker should have a `UIViewControllerRepresentable` wrapping the `UIViewController` associated with the `DateTimePickerPresenter.Builder` attached.
+The [Kaluga SwiftUI scripts](https://github.com/splendo/kaluga-swiftui) provide a `ContainerView` that offers this functionality out of the box (if the `includeDatePicker` setting is set to `true`)
 
-Passing the earliest/latest Date will limit the range of dates to select.
-
-### Build Time Picker
-To create `DateTimePickerPresenter` that selects a Time, thread-safe
-```
-buildTimePicker(coroutineScope: CoroutineScope, initialize: BaseAlertPresenter.Builder.() -> Unit): DateTimePickerPresenter
-```
+## Testing
+Use the [`test-utils-date-time-picker` module](../test-utils-date-time-picker) to get a mockable DateTimePicker Presenter.

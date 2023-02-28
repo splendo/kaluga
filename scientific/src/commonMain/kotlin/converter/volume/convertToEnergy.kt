@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.BaryeMultiple
 import com.splendo.kaluga.scientific.unit.CubicCentimeter
 import com.splendo.kaluga.scientific.unit.CubicFoot
 import com.splendo.kaluga.scientific.unit.CubicInch
@@ -29,8 +30,6 @@ import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
 import com.splendo.kaluga.scientific.unit.ImperialVolume
 import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
 import com.splendo.kaluga.scientific.unit.KipSquareInch
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.OunceSquareInch
 import com.splendo.kaluga.scientific.unit.PoundSquareFoot
 import com.splendo.kaluga.scientific.unit.PoundSquareInch
@@ -48,10 +47,9 @@ infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.tim
     pressure * this
 
 @JvmName("cubicCentimeterTimesBaryeMultiple")
-infix operator fun <BaryeUnit> ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(
+infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(
     pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
-) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> =
-    pressure * this
+) = pressure * this
 
 @JvmName("cubicFootTimesPoundSquareFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicFoot>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>) =

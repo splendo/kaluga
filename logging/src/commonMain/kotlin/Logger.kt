@@ -1,7 +1,6 @@
-package com.splendo.kaluga.logging
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,6 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
  */
 
+package com.splendo.kaluga.logging
+
+/**
+ * An interface for managing logging messages of various [LogLevel]
+ */
 interface Logger {
 
     /**
@@ -29,6 +33,14 @@ interface Logger {
     fun log(level: LogLevel, tag: String? = null, throwable: Throwable? = null, message: (() -> String)? = null)
 }
 
+/**
+ * A [Logger] that transforms the logs of a given [logger] before outputting them.
+ * @param logger the [Logger] whose results should be transformed
+ * @param transformLogLevel When provided, changes the [LogLevel] using this transformation method
+ * @param transformLogLevel When provided, changes the tag using this transformation method
+ * @param transformLogLevel When provided, changes the [Throwable] using this transformation method
+ * @param transformLogLevel When provided, changes the message using this transformation method
+ */
 open class TransformLogger(
     private val logger: Logger,
     private val transformLogLevel: ((LogLevel) -> LogLevel)? = null,

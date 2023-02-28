@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,13 +20,27 @@ package com.splendo.kaluga.architecture.viewmodel
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 /**
  * Convenience [DialogFragment] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelDialogFragment<VM : BaseLifecycleViewModel> : DialogFragment() {
+abstract class KalugaViewModelDialogFragment<ViewModel : BaseLifecycleViewModel> : DialogFragment() {
 
-    abstract val viewModel: VM
+    abstract val viewModel: ViewModel
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.bind(this)
+    }
+}
+
+/**
+ * Convenience [BottomSheetDialogFragment] that is bound to a [LifecycleViewModel]
+ */
+abstract class KalugaViewModelBottomSheetDialogFragment<ViewModel : BaseLifecycleViewModel> : BottomSheetDialogFragment() {
+
+    abstract val viewModel: ViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

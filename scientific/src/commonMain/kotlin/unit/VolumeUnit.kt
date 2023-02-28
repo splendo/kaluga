@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricVolume]
+ */
 val MetricVolumeUnits: Set<MetricVolume> get() = setOf(
     CubicMeter,
     CubicNanometer,
@@ -49,6 +52,9 @@ val MetricVolumeUnits: Set<MetricVolume> get() = setOf(
     Gigaliter
 )
 
+/**
+ * Set of all [ImperialVolume]
+ */
 val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
     CubicInch,
     CubicFoot,
@@ -56,6 +62,9 @@ val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
     CubicMile
 )
 
+/**
+ * Set of all [USCustomaryVolume]
+ */
 val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
     setOf(
         AcreFoot,
@@ -69,6 +78,9 @@ val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.m
         UsLiquidGallon
     )
 
+/**
+ * Set of all [UKImperialVolume]
+ */
 val UKImperialVolumeUnits: Set<UKImperialVolume> get() = ImperialVolumeUnits.map { it.ukImperial }.toSet() +
     setOf(
         ImperialFluidDram,
@@ -79,33 +91,52 @@ val UKImperialVolumeUnits: Set<UKImperialVolume> get() = ImperialVolumeUnits.map
         ImperialGallon
     )
 
+/**
+ * Set of all [Volume]
+ */
 val VolumeUnits: Set<Volume> get() = MetricVolumeUnits +
     ImperialVolumeUnits +
     USCustomaryVolumeUnits.filter { it !is USCustomaryImperialVolumeWrapper }.toSet() +
     UKImperialVolumeUnits.filter { it !is UKImperialImperialVolumeWrapper }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Volume]
+ * SI unit is [CubicMeter]
+ */
 @Serializable
 sealed class Volume : AbstractScientificUnit<PhysicalQuantity.Volume>()
 
+/**
+ * A [Volume] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricVolume : Volume(), MetricScientificUnit<PhysicalQuantity.Volume>
 
+/**
+ * A [Volume] for [MeasurementSystem.USCustomary]
+ */
 @Serializable
 sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQuantity.Volume> {
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.USCustomary
 }
 
+/**
+ * A [Volume] for [MeasurementSystem.UKImperial]
+ */
 @Serializable
 sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuantity.Volume> {
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.UKImperial
 }
 
+/**
+ * A [Volume] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialVolume : Volume(), ImperialScientificUnit<PhysicalQuantity.Volume>
 
-class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
+internal class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
     override val symbol: String = "${unit.symbol}3"
     override val system: S = unit.system
     override val quantity = PhysicalQuantity.Volume
@@ -160,34 +191,37 @@ object Liter : MetricVolume(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 }
 
 @Serializable
-object Deciliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deci(Liter)
+sealed class LiterMultiple : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter>
 
 @Serializable
-object Centiliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Centi(Liter)
+object Deciliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deci(Liter)
 
 @Serializable
-object Milliliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Milli(Liter)
+object Centiliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Centi(Liter)
 
 @Serializable
-object Microliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Micro(Liter)
+object Milliliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Milli(Liter)
 
 @Serializable
-object Nanoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Nano(Liter)
+object Microliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Micro(Liter)
 
 @Serializable
-object Decaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deca(Liter)
+object Nanoliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Nano(Liter)
 
 @Serializable
-object Hectoliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Hecto(Liter)
+object Decaliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deca(Liter)
 
 @Serializable
-object Kiloliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Kilo(Liter)
+object Hectoliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Hecto(Liter)
 
 @Serializable
-object Megaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Mega(Liter)
+object Kiloliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Kilo(Liter)
 
 @Serializable
-object Gigaliter : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Giga(Liter)
+object Megaliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Mega(Liter)
+
+@Serializable
+object Gigaliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Giga(Liter)
 
 // Imperial
 @Serializable
@@ -212,6 +246,10 @@ object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Impe
 
 // US Imperial
 
+/**
+ * Wraps an [ImperialVolume] unit to a [USCustomaryVolume] unit
+ * @param imperial the [ImperialVolume] to wrap
+ */
 @Serializable
 data class USCustomaryImperialVolumeWrapper(val imperial: ImperialVolume) : USCustomaryVolume() {
     override val symbol: String = imperial.symbol
@@ -219,6 +257,10 @@ data class USCustomaryImperialVolumeWrapper(val imperial: ImperialVolume) : USCu
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialVolume] unit to a [USCustomaryImperialVolumeWrapper] unit
+ * @param VolumeUnit the type of [ImperialForce] to convert
+ */
 val <VolumeUnit : ImperialVolume> VolumeUnit.usCustomary get() = USCustomaryImperialVolumeWrapper(this)
 
 @Serializable
@@ -292,6 +334,11 @@ object UsLiquidGallon : USCustomaryVolume() {
 }
 
 // UK Imperial
+
+/**
+ * Wraps an [ImperialVolume] unit to a [UKImperialVolume] unit
+ * @param imperial the [ImperialVolume] to wrap
+ */
 @Serializable
 data class UKImperialImperialVolumeWrapper(val imperial: ImperialVolume) : UKImperialVolume() {
     override val symbol: String = imperial.symbol
@@ -299,6 +346,10 @@ data class UKImperialImperialVolumeWrapper(val imperial: ImperialVolume) : UKImp
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+/**
+ * Converts an [ImperialVolume] unit to a [UKImperialImperialVolumeWrapper] unit
+ * @param VolumeUnit the type of [ImperialForce] to convert
+ */
 val <VolumeUnit : ImperialVolume> VolumeUnit.ukImperial get() = UKImperialImperialVolumeWrapper(this)
 
 @Serializable

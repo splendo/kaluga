@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,31 +17,31 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
-class AlertsViewController: UITableViewController {
+class AlertsViewController: UIViewController {
+
+    @IBOutlet var showAlertButton: UIButton!
+    @IBOutlet var showAndDismissButton: UIButton!
+    @IBOutlet var showAlertWithInputButton: UIButton!
+    @IBOutlet var showAlertWithListButton: UIButton!
 
     private lazy var viewModel = AlertViewModel(builder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
-    
+
     deinit {
         lifecycleManager.unbind()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { return [] }
-    }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        switch indexPath.row {
-        case 0: viewModel.showAlert()
-        case 1: viewModel.showAndDismissAfter(timeSecs: 3)
-        case 2: viewModel.showAlertWithList()
-        case 3: viewModel.showAlertWithInput()
-        default: ()
-        }
+        title = "feature_alerts".localized()
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
+        ButtonStyleKt.bindButton(showAlertButton, button: viewModel.showAlertButton)
+        ButtonStyleKt.bindButton(showAndDismissButton, button: viewModel.showAndDismissAfter3SecondsButton)
+        ButtonStyleKt.bindButton(showAlertWithInputButton, button: viewModel.showAlertWithInputButton)
+        ButtonStyleKt.bindButton(showAlertWithListButton, button: viewModel.showAlertWithListButton)
     }
 }

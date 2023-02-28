@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Style of the Loading Indicator
@@ -38,33 +38,14 @@ enum class HUDStyle {
 
 /**
  * Class showing a loading indicator HUD.
+ * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle
  */
 abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     /**
      * Builder class for creating a [BaseHUD]
      */
-    abstract class Builder : LifecycleSubscribableMarker {
-
-        internal val lock = Lock()
-
-        /** The style of the loading indicator */
-        internal var style: HUDStyle = HUDStyle.SYSTEM
-
-        /** Sets the style for the loading indicator */
-        fun setStyle(style: HUDStyle) = apply { this.style = style }
-
-        /** The title of the loading indicator */
-        internal var title: String? = null
-
-        /** Set the title for the loading indicator */
-        fun setTitle(title: String?) = apply { this.title = title }
-
-        /** Sets default style and empty title */
-        internal fun clear() {
-            setStyle(HUDStyle.SYSTEM)
-            setTitle(null)
-        }
+    abstract class Builder : LifecycleSubscribable {
 
         /** */
         /**
@@ -72,11 +53,14 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
          *
          * @param hudConfig The [HudConfig] used for configuring the HUD style.
          * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
-         * @return The [BaseHUD] to diplay.
+         * @return The [BaseHUD] to display.
          */
         abstract fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): BaseHUD
     }
 
+    /**
+     * The [HudConfig] of the HUD being presented.
+     */
     abstract val hudConfig: HudConfig
 
     /**
@@ -88,6 +72,7 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
      * Presents as indicator
      *
      * @param animated Pass `true` to animate the presentation
+     * @return The [BaseHUD] being presented.
      */
     abstract suspend fun present(animated: Boolean = true): BaseHUD
 
@@ -108,27 +93,49 @@ expect class HUD : BaseHUD {
      * Builder class for creating a [HUD]
      */
     class Builder : BaseHUD.Builder {
+
+        /**
+         * Creates a [HUD] based on [hudConfig].
+         * @param hudConfig The [HudConfig] to apply to the [HUD].
+         * @param coroutineScope The [CoroutineScope] managing the lifecycle of the HUD.
+         * @return the created [HUD]
+         */
         override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUD
     }
 }
 
+/**
+ * The title of the HUD.
+ */
 val BaseHUD.title: String? get() = hudConfig.title
+
+/**
+ * The [HUDStyle] of the HUD.
+ */
 val BaseHUD.style: HUDStyle get() = hudConfig.style
 
 /**
- * Dismisses the indicator after [timeMillis] milliseconds
- * @param timeMillis The number of milliseconds to wait
+ * Dismisses the indicator after [duration]
+ * @param duration The [Duration] to wait
+ * @param animated Pass `true` to animate the transition
  */
-fun BaseHUD.dismissAfter(timeMillis: Long, animated: Boolean = true): BaseHUD = apply {
+fun BaseHUD.dismissAfter(duration: Duration, animated: Boolean = true): BaseHUD = apply {
     launch(Dispatchers.Main) {
-        delay(timeMillis)
+        delay(duration)
         dismiss(animated)
     }
 }
+/**
+ * Dismisses the indicator after [timeMillis] milliseconds
+ * @param timeMillis The number of milliseconds to wait
+ * @param animated Pass `true` to animate the transition
+ */
+fun BaseHUD.dismissAfter(timeMillis: Long, animated: Boolean = true): BaseHUD = dismissAfter(timeMillis.milliseconds, animated)
 
 /**
  * Presents and keep presenting the indicator during block execution,
  * hides view after block finished.
+ * @param animated Pass `true` to animate the transition
  * @param block The block to execute with hud visible
  */
 suspend fun <T> BaseHUD.presentDuring(animated: Boolean = true, block: suspend BaseHUD.() -> T): T {
@@ -142,8 +149,9 @@ suspend fun <T> BaseHUD.presentDuring(animated: Boolean = true, block: suspend B
  * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
  * @param initialize Method for initializing the [HUD.Builder]
  */
-fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: BaseHUD.Builder.() -> Unit = { }): BaseHUD = lock.withLock {
-    clear()
-    initialize()
-    return create(HudConfig(style, title), coroutineScope)
-}
+fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: HudConfig.Builder.() -> Unit = { }): BaseHUD = create(
+    HudConfig.Builder().apply {
+        initialize()
+    }.build(),
+    coroutineScope
+)

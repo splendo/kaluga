@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -60,12 +60,30 @@ import platform.UIKit.window
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Default [BaseHUD] implementation.
+ */
 actual class HUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
+    /**
+     * Builder class for creating a [HUD]
+     * @param viewController The [UIViewController] to present the loading indicator
+     * @param wrapper a modifier method for modifying the ViewController representing the loading indicator before it is presented.
+     */
     actual class Builder(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController) : BaseHUD.Builder() {
 
+        /**
+         * Constructor
+         * @param viewController The [UIViewController] to present the loading indicator
+         */
         constructor(viewController: UIViewController) : this(viewController, { it })
 
+        /**
+         * Creates a [HUD] based on [hudConfig].
+         * @param hudConfig The [HudConfig] to apply to the [HUD].
+         * @param coroutineScope The [CoroutineScope] managing the lifecycle of the HUD.
+         * @return the created [HUD]
+         */
         actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
             viewController,
@@ -85,16 +103,14 @@ actual class HUD private constructor(private val containerView: ContainerView, p
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
                 HUDStyle.SYSTEM ->
-                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
-                        UIColor.blackColor else UIColor.whiteColor
+                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark) UIColor.blackColor else UIColor.whiteColor
             }
 
         private val foregroundColor: UIColor
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
                 HUDStyle.SYSTEM ->
-                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
-                        UIColor.whiteColor else UIColor.blackColor
+                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark) UIColor.whiteColor else UIColor.blackColor
             }
 
         // NOTES: Cast to CGFloat is needed for Arm32

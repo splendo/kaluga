@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.splendo.kaluga.scientific.converter.action.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.converter.angle.div
 import com.splendo.kaluga.scientific.converter.angularVelocity.div
+import com.splendo.kaluga.scientific.converter.area.div
 import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.div
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
@@ -34,6 +35,7 @@ import com.splendo.kaluga.scientific.converter.electricResistance.times
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.frequency.time
+import com.splendo.kaluga.scientific.converter.kinematicViscosity.div
 import com.splendo.kaluga.scientific.converter.length.div
 import com.splendo.kaluga.scientific.converter.luminousEnergy.div
 import com.splendo.kaluga.scientific.converter.luminousExposure.div
@@ -129,6 +131,11 @@ class TimeUnitTest {
     }
 
     @Test
+    fun timeFromKinematicViscosityAndSpecificEnergyTest() {
+        assertEqualScientificValue(1(Minute), 7200(SquareMeter per Minute) / 2(Joule per Kilogram))
+    }
+
+    @Test
     fun timeFromLengthAndSpeedTest() {
         assertEqualScientificValue(1(Hour), 2(Kilometer) / 2(Kilometer per Hour))
     }
@@ -162,5 +169,15 @@ class TimeUnitTest {
     @Test
     fun timeFromWeightAndMassFlowRateTest() {
         assertEqualScientificValue(1(Hour), 2(Gram) / 2(Gram per Hour))
+    }
+
+    @Test
+    fun timeFromMetricAreaDividedByMetricKinematicViscosityTest() {
+        assertEqualScientificValue(1(Second), (2(SquareMeter) / 2(SquareMeter per Second)))
+    }
+
+    @Test
+    fun timeFromImperialAreaByImperialKinematicViscosityTest() {
+        assertEqualScientificValue(1(Second), (2(SquareFoot) / 2(SquareFoot per Second)))
     }
 }

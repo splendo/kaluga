@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth.scanner
 
-import co.touchlab.stately.collections.sharedMutableListOf
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Scanner
@@ -30,6 +29,7 @@ import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 class MockScanner(
     override val isSupported: Boolean,
@@ -37,16 +37,16 @@ class MockScanner(
 ) : Scanner {
 
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
-    override fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
+    override suspend fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
 
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
-    override fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
+    override suspend fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
 
     val startMonitoringHardwareEnabledMock = ::startMonitoringHardwareEnabled.mock()
-    override fun startMonitoringHardwareEnabled(): Unit = startMonitoringHardwareEnabledMock.call()
+    override suspend fun startMonitoringHardwareEnabled(): Unit = startMonitoringHardwareEnabledMock.call()
 
     val stopMonitoringHardwareEnabledMock = ::stopMonitoringHardwareEnabled.mock()
-    override fun stopMonitoringHardwareEnabled(): Unit = stopMonitoringHardwareEnabledMock.call()
+    override suspend fun stopMonitoringHardwareEnabled(): Unit = stopMonitoringHardwareEnabledMock.call()
 
     val isHardwareEnabledMock = ::isHardwareEnabled.mock()
     override suspend fun isHardwareEnabled(): Boolean = isHardwareEnabledMock.call()
@@ -60,11 +60,8 @@ class MockScanner(
     val stopScanningMock = ::stopScanning.mock()
     override suspend fun stopScanning(): Unit = stopScanningMock.call()
 
-    val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
-    override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
-
-    val pairedDevicesMock = ::pairedDevices.mock()
-    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = pairedDevicesMock.call(withServices)
+    val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
+    override suspend fun retrievePairedDevices(withServices: Set<UUID>): Unit = retrievePairedDevicesMock.call(withServices)
 }
 
 /**
@@ -72,12 +69,14 @@ class MockScanner(
  * @param initialBluetoothEnabled Sets the initial enabled state of bluetooth
  * @param settings [BaseScanner.Settings] to configure this scanner
  * @param coroutineScope The [CoroutineScope] to run this Scanner on
+ * @param setupMocks If `true` this will automatically configure the [createMock] to build [MockScanner]
  */
 class MockBaseScanner(
     initialBluetoothEnabled: Boolean,
     settings: Settings,
     coroutineScope: CoroutineScope,
-    override val isSupported: Boolean = true
+    override val isSupported: Boolean = true,
+    setupMocks: Boolean = true
 ) : BaseScanner(
     settings,
     coroutineScope
@@ -93,7 +92,7 @@ class MockBaseScanner(
         /**
          * List of created [MockScanner]
          */
-        val createdScanners = sharedMutableListOf<MockBaseScanner>()
+        val createdScanners = concurrentMutableListOf<MockBaseScanner>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -103,7 +102,7 @@ class MockBaseScanner(
         init {
             if (setupMocks) {
                 createMock.on().doExecute { (settings, coroutineContext) ->
-                    MockBaseScanner(initialBluetoothEnabled, settings, coroutineContext).also {
+                    MockBaseScanner(initialBluetoothEnabled, settings, coroutineContext, setupMocks).also {
                         createdScanners.add(it)
                     }
                 }
@@ -158,27 +157,37 @@ class MockBaseScanner(
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
+    val pairedDeviceDiscoveredEvents = MutableSharedFlow<List<Scanner.Event.DeviceDiscovered>>()
+
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
      */
-    val pairedDevicesMock = ::pairedDevices.mock()
+    val retrievePairedDeviceDiscoveredEventsMock = ::retrievePairedDeviceDiscoveredEvents.mock()
 
-    override fun startMonitoringPermissions() {
+    init {
+        if (setupMocks) {
+            retrievePairedDeviceDiscoveredEventsMock.on().doExecuteSuspended {
+                pairedDeviceDiscoveredEvents.first()
+            }
+        }
+    }
+
+    override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
         startMonitoringPermissionsMock.call()
     }
 
-    override fun stopMonitoringPermissions() {
+    override suspend fun stopMonitoringPermissions() {
         super.stopMonitoringPermissions()
         stopMonitoringPermissionsMock.call()
     }
 
-    override fun startMonitoringHardwareEnabled() {
+    override suspend fun startMonitoringHardwareEnabled() {
         super.startMonitoringHardwareEnabled()
         startMonitoringHardwareEnabledMock.call()
     }
 
-    override fun stopMonitoringHardwareEnabled() {
+    override suspend fun stopMonitoringHardwareEnabled() {
         super.stopMonitoringHardwareEnabled()
         stopMonitoringHardwareEnabledMock.call()
     }
@@ -189,5 +198,5 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    override fun pairedDevices(withServices: Set<UUID>): List<Identifier> = pairedDevicesMock.call(withServices)
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices)
 }

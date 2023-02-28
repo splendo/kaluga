@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,16 +24,15 @@ import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 
-actual interface FocusHandler {
-    fun requestFocus(activity: Activity?)
-}
-
+/**
+ * A [FocusHandler] that focuses on a view with a given ID.
+ * @param id the ID of the View to focus on
+ */
 class ViewFocusHandler(
     @IdRes private val id: Int
 ) : FocusHandler {
-    override fun requestFocus(activity: Activity?) {
-        if (activity == null)
-            return
+    fun requestFocus(activity: Activity?) {
+        if (activity == null) return
         val view = activity.findViewById<View>(id) ?: return
         view.requestFocus()
         val inputManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager

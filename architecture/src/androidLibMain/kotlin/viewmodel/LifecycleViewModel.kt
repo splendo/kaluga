@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,11 +20,22 @@ package com.splendo.kaluga.architecture.viewmodel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 
-actual open class LifecycleViewModel internal actual constructor(allowFreezing: Boolean) : androidx.lifecycle.ViewModel() {
+/**
+ * Simple ViewModel class that is to be bound to a View lifecycle
+ */
+actual open class LifecycleViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
 
+    /**
+     * [CoroutineScope] of the ViewModel.
+     * This scope is active until the ViewModel lifecycle is cleared.
+     */
     actual val coroutineScope = viewModelScope
 
+    /**
+     * Called when the ViewModel lifecycle is cleared
+     */
     actual override fun onCleared() {
         super.onCleared()
     }
@@ -34,17 +45,20 @@ actual open class LifecycleViewModel internal actual constructor(allowFreezing: 
  * Binds an [AppCompatActivity] to the [LifecycleViewModel] to manage the viewmodel lifecycle.
  * @param activity The [AppCompatActivity] to bind to.
  */
-fun <VM : BaseLifecycleViewModel> VM.bind(activity: AppCompatActivity) {
-    activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity, activity.supportFragmentManager))
+fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(activity: AppCompatActivity) {
+    activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity.supportFragmentManager))
 }
 
 /**
  * Binds a [Fragment] to the [LifecycleViewModel] to manage the viewmodel lifecycle
  * @param fragment The [Fragment] to bind to.
- * @return `true` if the ViewModel could be bound to the [Fragment].
  */
-fun <VM : BaseLifecycleViewModel> VM.bind(fragment: Fragment): Boolean {
-    val fragmentManager = fragment.fragmentManager ?: return false
-    fragment.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, fragment.activity, fragment.viewLifecycleOwner, fragmentManager))
-    return true
-}
+fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(fragment: Fragment) =
+    fragment.lifecycle.addObserver(
+        KalugaViewModelLifecycleObserver(
+            viewModel = this,
+            activity = fragment.activity,
+            fragmentManager = fragment.parentFragmentManager,
+            childFragmentManager = fragment.childFragmentManager
+        )
+    )

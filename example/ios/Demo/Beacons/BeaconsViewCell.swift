@@ -1,5 +1,5 @@
 //
-//  Copyright 2021 Splendo Consulting B.V. The Netherlands
+//  Copyright 2022 Splendo Consulting B.V. The Netherlands
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
 class BeaconsViewCell: UICollectionViewCell {
 
@@ -35,15 +35,18 @@ class BeaconsViewCell: UICollectionViewCell {
     func startMonitoring() {
         viewModel?.namespace_.observe { [weak self] namespace in
             self?.namespaceLabel.text = namespace as String?
-        }.addTo(disposeBag: disposeBag)
+        }
+        .addTo(disposeBag: disposeBag)
 
         viewModel?.instance.observe { [weak self] instance in
             self?.instanceLabel.text = instance as String?
-        }.addTo(disposeBag: disposeBag)
+        }
+        .addTo(disposeBag: disposeBag)
 
         viewModel?.txPower.observe { [weak self] txPower in
             self?.txPowerLabel.text = txPower as String?
-        }.addTo(disposeBag: disposeBag)
+        }
+        .addTo(disposeBag: disposeBag)
     }
 
     func stopMonitoring() {

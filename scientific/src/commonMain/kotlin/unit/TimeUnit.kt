@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [Time]
+ */
 val TimeUnits: Set<Time> get() = setOf(
     Second,
     Nanosecond,
@@ -35,6 +38,10 @@ val TimeUnits: Set<Time> get() = setOf(
     Hour
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Time]
+ * SI unit is [Second]
+ */
 @Serializable
 sealed class Time : AbstractScientificUnit<PhysicalQuantity.Time>(), MetricAndImperialScientificUnit<PhysicalQuantity.Time>
 
@@ -48,19 +55,22 @@ object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Phys
 }
 
 @Serializable
-object Decisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Deci(Second)
+sealed class SecondMultiple : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second>
 
 @Serializable
-object Centisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Centi(Second)
+object Decisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Deci(Second)
 
 @Serializable
-object Millisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Milli(Second)
+object Centisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Centi(Second)
 
 @Serializable
-object Microsecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Micro(Second)
+object Millisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Milli(Second)
 
 @Serializable
-object Nanosecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Nano(Second)
+object Microsecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Micro(Second)
+
+@Serializable
+object Nanosecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Nano(Second)
 
 @Serializable
 object Minute : Time() {

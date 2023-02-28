@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,44 +17,58 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 @Deprecated(
     message = "ViewModel was renamed as the name didn't match it's function.",
     replaceWith = ReplaceWith("LifecycleViewModel")
 )
-open class ViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing)
+open class ViewModel : LifecycleViewModel()
 
 @Deprecated(
     message = "BaseViewModel was renamed as the name didn't match it's function.",
     replaceWith = ReplaceWith("BaseLifecycleViewModel")
 )
-open class BaseViewModel(allowFreezing: Boolean = false) : BaseLifecycleViewModel(allowFreezing)
+open class BaseViewModel : BaseLifecycleViewModel()
 
 /**
- * Simple ViewModel class
+ * Simple ViewModel class that is to be bound to a View lifecycle
  */
-expect open class LifecycleViewModel internal constructor(allowFreezing: Boolean = false) {
+expect open class LifecycleViewModel internal constructor() {
     /**
-     * [CoroutineScope] of the ViewModel
+     * [CoroutineScope] of the ViewModel.
+     * This scope is active until the ViewModel lifecycle is cleared.
      */
     val coroutineScope: CoroutineScope
 
     /**
-     * Called when the ViewModel is cleared
+     * Called when the ViewModel lifecycle is cleared
      */
     protected open fun onCleared()
 }
 
 /**
- * Default [LifecycleViewModel] implementation respecting the Lifecycle of the presenting view
+ * Default [LifecycleViewModel] implementation respecting the Lifecycle of the presenting view.
+ * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
-open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing) {
+open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscribable) : LifecycleViewModel() {
 
+    private val _activeLifecycleSubscribables = MutableStateFlow(lifecycleSubscribables.toSet())
+
+    /**
+     * A [StateFlow] of the set of [LifecycleSubscribable] that are currently in use.
+     * Hook up your lifecycle to these [LifecycleSubscribable]s where required.
+     */
+    val activeLifecycleSubscribables = _activeLifecycleSubscribables.asStateFlow()
     private val resumedJobs = SupervisorJob()
 
     /**
@@ -82,10 +96,25 @@ open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleVie
      * Custom handler when the presenting views lifecycle ends
      */
     protected open fun onPause() {}
+
+    /**
+     * Adds a list of [LifecycleSubscribable] to [activeLifecycleSubscribables].
+     */
+    protected fun addLifecycleSubscribables(vararg markers: LifecycleSubscribable) {
+        _activeLifecycleSubscribables.update { it.toMutableSet().apply { addAll(markers.toSet()) }.toSet() }
+    }
+
+    /**
+     * Removes a list of [LifecycleSubscribable] from [activeLifecycleSubscribables] (if added).
+     */
+    protected fun removeLifecycleSubscribables(vararg markers: LifecycleSubscribable) {
+        _activeLifecycleSubscribables.update { it.toMutableSet().apply { removeAll(markers.toSet()) }.toSet() }
+    }
 }
 
 /**
- * Default [LifecycleViewModel] allowing navigation
- * @param navigator The [Navigator] handling navigation
+ * Default [LifecycleViewModel] allowing navigation.
+ * @param navigator The [Navigator] handling navigation.
+ * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>, allowFreezing: Boolean = false) : BaseViewModel(allowFreezing)
+open class NavigatingViewModel<A : NavigationAction<*>>(protected val navigator: Navigator<A>, vararg lifecycleSubscribables: LifecycleSubscribable) : BaseLifecycleViewModel(*lifecycleSubscribables, navigator)

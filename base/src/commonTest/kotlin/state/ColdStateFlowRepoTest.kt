@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
 
  */
 
-package com.splendo.kaluga.state
+package com.splendo.kaluga.base.state
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -58,10 +57,11 @@ class ColdStateFlowRepoTest : BaseTest() {
         val secondCollect = CompletableDeferred<KalugaState>()
         val job = launch {
             repo.collect {
-                if (!firstCollect.isCompleted)
+                if (!firstCollect.isCompleted) {
                     firstCollect.complete(it)
-                else if (!secondCollect.isCompleted)
+                } else if (!secondCollect.isCompleted) {
                     secondCollect.complete(it) // further calls are ignored
+                }
             }
         }
 

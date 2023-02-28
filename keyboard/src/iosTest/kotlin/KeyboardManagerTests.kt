@@ -1,21 +1,21 @@
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.keyboard.IOSKeyboardManagerTests.IOSKeyboardTestContext
+import com.splendo.kaluga.keyboard.UIKitKeyboardManagerTests.IOSKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIApplication
 import platform.UIKit.UITextField
 import kotlin.test.assertTrue
 
-class IOSKeyboardManagerTests : KeyboardManagerTests<IOSKeyboardTestContext>() {
+class UIKitKeyboardManagerTests : KeyboardManagerTests<UIKitFocusHandler, IOSKeyboardTestContext>() {
 
-    class IOSKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
+    class IOSKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext<UIKitFocusHandler>(), CoroutineScope by coroutineScope {
         private val application = UIApplication.sharedApplication
         val textField = MockTextField()
 
-        override val builder get() = KeyboardManager.Builder(application)
+        override val builder get() = UIKitKeyboardManager.Builder(application)
 
-        override val focusHandler: FocusHandler
+        override val focusHandler: UIKitFocusHandler
             get() = UIKitFocusHandler(textField)
 
         override fun verifyShow() {

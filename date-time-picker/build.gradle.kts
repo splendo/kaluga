@@ -3,36 +3,27 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-
-apply(from = "../gradle/publishable_component.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
+publishableComponent()
 
 dependencies {
-
-    val ext = (gradle as ExtensionAware).extra
-
-    implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
-    debugImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
+    androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
 }
 
 kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
-                val ext = (gradle as ExtensionAware).extra
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
             }
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":test-utils-date-time-picker", ""))
             }
         }
     }

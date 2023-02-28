@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.review
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
 /**
  * Manager for requesting the system to show a Review Dialog.
@@ -25,12 +25,20 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
  */
 expect class ReviewManager {
 
-    class Builder : LifecycleSubscribableMarker {
+    /**
+     * Builder for creating a [ReviewManager]
+     */
+    class Builder : LifecycleSubscribable {
+
+        /**
+         * Creates a [ReviewManager]
+         * @return the created [ReviewManager]
+         */
         fun create(): ReviewManager
     }
 
     /**
-     * Attemps to show a dialog that asks the user to submit a review of the app.
+     * Attempts to show a dialog that asks the user to submit a review of the app.
      * This method does not guarantee such a dialog will be shown as the OS may block it.
      */
     suspend fun attemptToRequestReview()

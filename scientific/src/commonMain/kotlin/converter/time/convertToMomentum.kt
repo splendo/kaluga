@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
 import com.splendo.kaluga.scientific.unit.Force
 import com.splendo.kaluga.scientific.unit.GrainForce
 import com.splendo.kaluga.scientific.unit.GramForce
 import com.splendo.kaluga.scientific.unit.ImperialForce
 import com.splendo.kaluga.scientific.unit.ImperialTonForce
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.MetricForce
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.MilligramForce
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.Poundal
@@ -44,10 +43,9 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
     dyne * this
 
 @JvmName("timeTimesDyneMultiple")
-infix operator fun <DyneUnit, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+infix operator fun <DyneUnit : DyneMultiple, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
     dyne: ScientificValue<PhysicalQuantity.Force, DyneUnit>
-) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> =
-    dyne * this
+) = dyne * this
 
 @JvmName("timeTimesTonneForce")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(tonne: ScientificValue<PhysicalQuantity.Force, TonneForce>) =

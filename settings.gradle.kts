@@ -21,7 +21,9 @@ pluginManagement {
             val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
             val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
             val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
+            val kalugaAtomicFuGradlePluginVersion = settings.extra["kaluga.atomicFuGradlePluginVersion"]
             val kalugaBinaryCompatibilityValidatorVersion = settings.extra["kaluga.binaryCompatibilityValidatorVersion"]
+            val kalugaDokkaVersion = settings.extra["kaluga.dokkaVersion"]
 
             when (requested.id.id) {
                 "org.jetbrains.kotlin.multiplatform",
@@ -29,6 +31,8 @@ pluginManagement {
                 "org.jetbrains.kotlin.android",
                 "org.jetbrains.kotlin.kapt",
                 -> useVersion("$kalugaKotlinVersion")
+                "org.jetbrains.dokka"
+                -> useVersion("$kalugaDokkaVersion")
                 "com.android.library",
                 "com.android.application",
                 -> useVersion("$kalugaAndroidGradlePluginVersion")
@@ -39,12 +43,13 @@ pluginManagement {
                 -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
                 "org.jetbrains.kotlinx.binary-compatibility-validator"
                 -> useVersion("$kalugaBinaryCompatibilityValidatorVersion")
+                "org.jetbrains.kotlinx.atomicfu" -> useVersion("$kalugaAtomicFuGradlePluginVersion")
             }
         }
     }
 }
 
-apply("gradle/ext.gradle")
+includeBuild("kaluga-library-components")
 includeBuild("convention-plugins")
 
 rootProject.name = "Kaluga"
@@ -77,8 +82,10 @@ include(":keyboard-compose")
 include(":links")
 include(":resources")
 include(":resources-compose")
+include(":resources-databinding")
 include(":review")
 include(":scientific")
+include(":service")
 include(":system")
 // Test Utils
 include(":test-utils")
@@ -86,9 +93,12 @@ include(":test-utils-base")
 include(":test-utils-alerts")
 include(":test-utils-architecture")
 include(":test-utils-bluetooth")
+include(":test-utils-date-time-picker")
 include(":test-utils-hud")
 include(":test-utils-keyboard")
 include(":test-utils-koin")
 include(":test-utils-location")
 include(":test-utils-permissions")
 include(":test-utils-resources")
+include(":test-utils-service")
+include(":test-utils-system")

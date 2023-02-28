@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 
 package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.stylable.TextAlignment
-import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSAttributedString
 import platform.Foundation.NSAttributedStringKey
@@ -40,20 +39,68 @@ import platform.UIKit.NSMutableParagraphStyle
 import platform.UIKit.NSParagraphStyle
 import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
+import platform.UIKit.size
 
-actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: TextStyle, actual val linkStyle: LinkStyle?)
+/**
+ * A text configured with [StringStyleAttribute]
+ * @property attributeString the [NSAttributedString] styled according to some [StringStyleAttribute]
+ * @property defaultTextStyle The [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range.
+ * This may be partially overwritten (e.g. [StringStyleAttribute.CharacterStyleAttribute.ForegroundColor] may overwrite [KalugaTextStyle.color])
+ * @property linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
+ * When `null` the Theme default will be used
+ */
+actual data class StyledString(
+    val attributeString: NSAttributedString,
+    actual val defaultTextStyle: KalugaTextStyle,
+    actual val linkStyle: LinkStyle?
+)
 
+/**
+ * Gets the plain string of a [StyledString]
+ */
 actual val StyledString.rawString: String get() = attributeString.string
 
-actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: TextStyle, private val linkStyle: LinkStyle?) {
+/**
+ * Builder for creating a [StyledString]
+ * @param string the String to style
+ * @param defaultTextStyle The [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range.
+ * This may be partially overwritten (e.g. [StringStyleAttribute.CharacterStyleAttribute.ForegroundColor] may overwrite [KalugaTextStyle.color])
+ * @param linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
+ * When `null` the Theme default will be used
+ */
+actual class StyledStringBuilder constructor(
+    string: String,
+    private val defaultTextStyle: KalugaTextStyle,
+    private val linkStyle: LinkStyle?
+) {
 
+    /**
+     * Provider for a [StyledStringBuilder]
+     */
     actual class Provider {
-        actual fun provide(string: String, defaultTextStyle: TextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
+
+        /**
+         * Provides a [StyledStringBuilder] to build a [StyledString] for a given text
+         * @param string the text for which to build the [StyledString]
+         * @param defaultTextStyle the [KalugaTextStyle] to apply when no [StringStyleAttribute] are set for a given range
+         * @param linkStyle the [LinkStyle] to apply when [StringStyleAttribute.Link] is applied
+         * @return the [StyledStringBuilder] to build a [StyledString] for [string]
+         */
+        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle)
     }
 
     private val attributedString = NSMutableAttributedString.Companion.create(string)
 
+    /**
+     * Adds a [StringStyleAttribute] for a given range
+     * @param attribute the [StringStyleAttribute] to apply
+     * @param range the [IntRange] at which to apply the style
+     * @throws [IndexOutOfBoundsException] if [range] is out of bounds for the text to span
+     */
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
+        if (range.any { it !in attributedString.string.indices }) {
+            throw IndexOutOfBoundsException("Attribute cannot be applied to $range")
+        }
         val nsRange = range.nsRange
         when (attribute) {
             is StringStyleAttribute.CharacterStyleAttribute -> {
@@ -84,31 +131,31 @@ actual class StyledStringBuilder constructor(string: String, private val default
             "NSStrokeWidth" to -1.0 * width
         )
         is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> {
-            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble() as CGFloat).ascender / 2.0
+            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
             mapOf("NSBaselineOffset" to offset)
         }
         is StringStyleAttribute.CharacterStyleAttribute.SubScript -> {
-            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble() as CGFloat).ascender / 2.0
+            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
             mapOf("NSBaselineOffset" to (-1.0 * offset))
         }
         is StringStyleAttribute.CharacterStyleAttribute.Underline -> mapOf("NSUnderline" to NSUnderlineStyleSingle)
         is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> mapOf("NSStrikethrough" to NSUnderlineStyleSingle)
-        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble() as CGFloat))
+        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble()))
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> mapOf(
-            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat),
+            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
             "NSColor" to textStyle.color.uiColor
         )
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("NSKern" to kern * defaultTextStyle.size)
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> mapOf(
             "NSShadow" to NSShadow().apply {
                 shadowColor = color.uiColor
-                shadowBlurRadius = blurRadius.toDouble() as CGFloat
-                shadowOffset = CGSizeMake(xOffset.toDouble() as CGFloat, yOffset.toDouble() as CGFloat)
+                shadowBlurRadius = blurRadius.toDouble()
+                shadowOffset = CGSizeMake(xOffset.toDouble(), yOffset.toDouble())
             }
         )
     }
 
-    private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: IntRange, defaultAlignment: TextAlignment) {
+    private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: IntRange, defaultAlignment: KalugaTextAlignment) {
         // First search for all existing paragraph attributes within range
         val rangesWithParagraphStyle = mutableListOf<Pair<IntRange, NSParagraphStyle>>()
         attributedString.enumerateAttribute("NSParagraphStyle", (0 until attributedString.string.length).nsRange, 0) { match, matchedNSRange, _ ->
@@ -154,13 +201,13 @@ actual class StyledStringBuilder constructor(string: String, private val default
         rangesToUpdate.forEach { (range, paragraphStyle) ->
             when (this) {
                 is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> {
-                    paragraphStyle.setHeadIndent(indent.toDouble() as CGFloat)
-                    paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble() as CGFloat)
+                    paragraphStyle.setHeadIndent(indent.toDouble())
+                    paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble())
                 }
                 is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> {
-                    paragraphStyle.setLineSpacing(spacing.toDouble() as CGFloat)
-                    paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble() as CGFloat)
-                    paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble() as CGFloat)
+                    paragraphStyle.setLineSpacing(spacing.toDouble())
+                    paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble())
+                    paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble())
                 }
                 is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> {
                     paragraphStyle.setAlignment(alignment.nsTextAlignment)
@@ -170,10 +217,14 @@ actual class StyledStringBuilder constructor(string: String, private val default
         }
     }
 
+    /**
+     * Creates the [StyledString]
+     * @return the created [StyledString]
+     */
     actual fun create(): StyledString = StyledString(attributedString, defaultTextStyle, linkStyle)
 }
 
-val NSAttributedString.urlRanges: List<Pair<CValue<NSRange>, NSURL>> get() {
+internal val NSAttributedString.urlRanges: List<Pair<CValue<NSRange>, NSURL>> get() {
     val result = mutableListOf<Pair<CValue<NSRange>, NSURL>>()
     enumerateAttribute("NSLink", IntRange(0, length.toInt() - 1).nsRange, 0) { match, matchedRange, _ ->
         if (match is NSURL) {

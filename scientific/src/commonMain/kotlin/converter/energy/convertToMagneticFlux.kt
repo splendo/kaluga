@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,9 +25,8 @@ import com.splendo.kaluga.scientific.unit.Biot
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
 import com.splendo.kaluga.scientific.unit.Energy
 import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.ErgMultiple
 import com.splendo.kaluga.scientific.unit.Maxwell
-import com.splendo.kaluga.scientific.unit.MeasurementSystem
-import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
@@ -36,7 +35,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(current: Sc
     Maxwell.flux(this, current)
 
 @JvmName("ergMultipleDivAbampere")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
     Maxwell.flux(this, current)
 
 @JvmName("ergDivBiot")
@@ -44,7 +43,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(current: Sc
     Maxwell.flux(this, current)
 
 @JvmName("ergMultipleDivBiot")
-infix operator fun <ErgUnit> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> =
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
     Maxwell.flux(this, current)
 
 @JvmName("energyDivCurrent")

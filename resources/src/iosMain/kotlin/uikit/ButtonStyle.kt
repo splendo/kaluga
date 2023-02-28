@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@
 package com.splendo.kaluga.resources.uikit
 
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
-import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSMapTable
 import platform.Foundation.NSPointerFunctionsStrongMemory
@@ -42,9 +41,8 @@ import platform.UIKit.setFont
 import platform.darwin.NSObject
 import platform.objc.sel_registerName
 
-class UIControlClosure(private val action: () -> Unit) : NSObject() {
+internal class UIControlClosure(private val action: () -> Unit) : NSObject() {
 
-    @ThreadLocal
     object Registry {
         val registeredUIControl = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
     }
@@ -55,6 +53,10 @@ class UIControlClosure(private val action: () -> Unit) : NSObject() {
     }
 }
 
+/**
+ * Makes a [UIButton] look and behave according to a [KalugaButton]
+ * @param button the [KalugaButton] that specifies the look and behaviour of the [UIButton]
+ */
 fun UIButton.bindButton(button: KalugaButton) {
     applyStyle(button.style)
     when (button) {
@@ -67,8 +69,12 @@ fun UIButton.bindButton(button: KalugaButton) {
     addTarget(wrappedAction, sel_registerName("invoke"), UIControlEventTouchUpInside)
 }
 
-fun UIButton.applyStyle(buttonStyle: ButtonStyle) {
-    setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble() as CGFloat))
+/**
+ * Makes a [UIButton] look as specified by a [KalugaButtonStyle]
+ * @param buttonStyle the [KalugaButtonStyle] that specifies the look of the [UIButton]
+ */
+fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle) {
+    setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble()))
     setContentHorizontalAlignment(buttonStyle.textAlignment.contentHorizontalAlignment)
     applyButtonStateStyle(buttonStyle.defaultStyle, UIControlStateNormal)
     applyButtonStateStyle(buttonStyle.pressedStyle, UIControlStateHighlighted)

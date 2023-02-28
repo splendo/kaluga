@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.location
 
-import co.touchlab.stately.collections.sharedMutableListOf
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.location.BaseLocationManager
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationManager
@@ -48,11 +48,11 @@ class MockLocationManager(
     val startMonitoringLocationEnabledMock = ::startMonitoringLocationEnabled.mock()
     override suspend fun startMonitoringLocationEnabled(): Unit = startMonitoringLocationEnabledMock.call()
     val stopMonitoringLocationEnabledMock = ::stopMonitoringLocationEnabled.mock()
-    override fun stopMonitoringLocationEnabled(): Unit = stopMonitoringLocationEnabledMock.call()
+    override suspend fun stopMonitoringLocationEnabled(): Unit = stopMonitoringLocationEnabledMock.call()
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
-    override fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
+    override suspend fun startMonitoringPermissions(): Unit = startMonitoringPermissionsMock.call()
     val stopMonitoringPermissionsMock = ::stopMonitoringPermissions.mock()
-    override fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
+    override suspend fun stopMonitoringPermissions(): Unit = stopMonitoringPermissionsMock.call()
 }
 
 /**
@@ -71,14 +71,14 @@ class MockBaseLocationManager(
     /**
      * Mock implementation of [BaseLocationManager.Builder]
      * @param initialLocationEnabled Sets the initial state of location
-     * @param setupMocks If `true` sets up [createMock] to build [MockLocationManager]
+     * @param setupMocks If `true` sets up [createMock] to build [MockBaseLocationManager]
      */
     class Builder(val initialLocationEnabled: Boolean, setupMocks: Boolean = true) : BaseLocationManager.Builder {
 
         /**
-         * Ths list of build [MockBaseLocationManager]
+         * Ths list of built [MockBaseLocationManager]
          */
-        val builtLocationManagers = sharedMutableListOf<MockBaseLocationManager>()
+        val builtLocationManagers = concurrentMutableListOf<MockBaseLocationManager>()
 
         /**
          * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [create]
@@ -144,12 +144,12 @@ class MockBaseLocationManager(
      */
     val stopMonitoringLocationMock = ::stopMonitoringLocation.mock()
 
-    override fun startMonitoringPermissions() {
+    override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
         startMonitoringPermissionsMock.call()
     }
 
-    override fun stopMonitoringPermissions() {
+    override suspend fun stopMonitoringPermissions() {
         super.stopMonitoringPermissions()
         stopMonitoringPermissionsMock.call()
     }
@@ -159,7 +159,7 @@ class MockBaseLocationManager(
         startMonitoringLocationEnabledMock.call()
     }
 
-    override fun stopMonitoringLocationEnabled() {
+    override suspend fun stopMonitoringLocationEnabled() {
         super.stopMonitoringLocationEnabled()
         stopMonitoringLocationEnabledMock.call()
     }
@@ -174,5 +174,13 @@ class MockBaseLocationManager(
 
     override suspend fun stopMonitoringLocation() {
         stopMonitoringLocationMock.call()
+    }
+
+    public override fun handleLocationChanged(location: Location.KnownLocation) {
+        super.handleLocationChanged(location)
+    }
+
+    public override fun handleLocationChanged(locations: List<Location.KnownLocation>) {
+        super.handleLocationChanged(locations)
     }
 }

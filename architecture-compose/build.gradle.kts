@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,28 +21,17 @@ plugins {
     kotlin("plugin.serialization")
     id("jacoco")
     id("convention.publication")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext = (gradle as ExtensionAware).extra
-ext["component_type"] = ext["component_type_compose"]
-
-// if the include is made from the example project shared module we need to go up one more directory
-val path_prefix = if (file("../gradle/componentskt.gradle.kts").exists())
-    ".." else "../.."
-
-apply(from = "$path_prefix/gradle/android_compose.gradle")
-
-group = "com.splendo.kaluga"
-version = ext["library_version"]!!
-
-ext["component_type"] = ext["component_type_default"]
+composeAndroidComponent()
 
 dependencies {
     api(project(":base"))
     api(project(":architecture"))
-    val ext = (gradle as ExtensionAware).extra
-    implementation("androidx.compose.material:material:" + ext["androidx_compose_version"])
-    implementation("androidx.navigation:navigation-compose:" + ext["androidx_navigation_compose_version"])
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${ext["kotlinx_coroutines_version"]}!!")
+    implementationDependency(Dependencies.AndroidX.Compose.Material)
+    implementationDependency(Dependencies.AndroidX.Navigation.Compose)
+    implementationDependency(Dependencies.KotlinX.Coroutines.Core)
+    implementationDependency(Dependencies.AndroidX.Browser)
 }

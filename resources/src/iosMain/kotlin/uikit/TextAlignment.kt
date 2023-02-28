@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.resources.stylable.TextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 import platform.UIKit.NSTextAlignment
 import platform.UIKit.NSTextAlignmentCenter
 import platform.UIKit.NSTextAlignmentLeft
@@ -32,22 +32,28 @@ import platform.UIKit.UIControlContentHorizontalAlignmentRight
 import platform.UIKit.UIControlContentHorizontalAlignmentTrailing
 import platform.UIKit.UIUserInterfaceLayoutDirection
 
-val TextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
-    TextAlignment.LEFT -> NSTextAlignmentLeft
-    TextAlignment.RIGHT -> NSTextAlignmentRight
-    TextAlignment.CENTER -> NSTextAlignmentCenter
-    TextAlignment.END -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
+/**
+ * Gets the [NSTextAlignment] of a [KalugaTextAlignment]
+ */
+val KalugaTextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
+    KalugaTextAlignment.LEFT -> NSTextAlignmentLeft
+    KalugaTextAlignment.RIGHT -> NSTextAlignmentRight
+    KalugaTextAlignment.CENTER -> NSTextAlignmentCenter
+    KalugaTextAlignment.END -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
         NSTextAlignmentRight
     } else {
         NSTextAlignmentLeft
     }
-    TextAlignment.START -> NSTextAlignmentNatural
+    KalugaTextAlignment.START -> NSTextAlignmentNatural
 }
 
-val TextAlignment.contentHorizontalAlignment: UIControlContentHorizontalAlignment get() = when (this) {
-    TextAlignment.LEFT -> UIControlContentHorizontalAlignmentLeft
-    TextAlignment.RIGHT -> UIControlContentHorizontalAlignmentRight
-    TextAlignment.CENTER -> UIControlContentHorizontalAlignmentCenter
-    TextAlignment.END -> UIControlContentHorizontalAlignmentTrailing
-    TextAlignment.START -> UIControlContentHorizontalAlignmentLeading
+/**
+ * Gets the [UIControlContentHorizontalAlignment] of a [KalugaTextAlignment]
+ */
+val KalugaTextAlignment.contentHorizontalAlignment: UIControlContentHorizontalAlignment get() = when (this) {
+    KalugaTextAlignment.LEFT -> UIControlContentHorizontalAlignmentLeft
+    KalugaTextAlignment.RIGHT -> UIControlContentHorizontalAlignmentRight
+    KalugaTextAlignment.CENTER -> UIControlContentHorizontalAlignmentCenter
+    KalugaTextAlignment.END -> UIControlContentHorizontalAlignmentTrailing
+    KalugaTextAlignment.START -> UIControlContentHorizontalAlignmentLeading
 }

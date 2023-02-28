@@ -1,6 +1,6 @@
 ## Build instructions
 
-This project uses Android Studio. You might need a canary version at times. Check [gradle/ext.gradle](gradle/ext.gradle) to see which Android gradle plugin is used, as this determines compatability with Android Studio versions. You can check the [Android Gradle plugin release notes](https://developer.android.com/studio/releases/gradle-plugin), the [Android Studio release notes](https://developer.android.com/studio/releases) and the [Android Studio Preview Release Updates](https://androidstudio.googleblog.com/) pages to see which version to use.
+This project uses Android Studio. You might need a canary version at times. Check [`kaluga.androidGradlePluginVersion` in gradle.properties](gradle.properties) to see which Android gradle plugin is used, as this determines compatability with Android Studio versions. You can check the [Android Gradle plugin release notes](https://developer.android.com/studio/releases/gradle-plugin), the [Android Studio release notes](https://developer.android.com/studio/releases) and the [Android Studio Preview Release Updates](https://androidstudio.googleblog.com/) pages to see which version to use.
 
 You can also check the Kotlin version, and if needed align this with the Kotlin plugin version for Android Studio under `Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin`.
 
@@ -20,7 +20,7 @@ If a purely common test does not work, you can make the test's class `open` or `
 
 By extending `BaseTest` you can avoid a lot of boilerplate to make tests behave cross-platform (e.g. enableing the coroutines debugger).
 
-There are specialized test classes in the [`test-utils`](test-utils/) module, e.g. for testings `Flows`, `ViewModel`s etc. 
+There are specialized test classes in the [`test-utils`](test-utils/) modules, e.g. for testings `Flows`, `ViewModel`s etc. 
 
 ### Android tests
 
@@ -39,7 +39,7 @@ Make sure you have the Simulator setup with a working target device. For now you
 
 The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter which tests to run.
 
-Note that for kaluga iOS tests run on a background thread, in order to have a properly working Main dispatchers (and align better with Android). How this works is described in [`test-utils`](test-utils/)
+Note that for Kaluga iOS tests run on a background thread, in order to have a properly working Main dispatchers (and align better with Android). How this works is described in [`test-utils-base`](test-utils-base/)
 
 ## Architecture
 
@@ -84,22 +84,24 @@ If you want to publish with a specific version string, you can override this val
 kaluga.libraryVersion=0.1.0-special-build
 ```
 
-if this property is not set the version string is a combination of the version number, the current git branch (unless that branch is `master`, `main` or `develop`) and `-SNAPSHOT` (unless the `MAVEN_CENTRAL_RELEASE` environment variable is set to `true`). The exact implementation of this can be found in [gradle/gitBranch.gradle.kts](gradle/gitBranch.gradle.kts).
+if this property is not set the version string is a combination of the base version number defined in [kaluga-library-components/src/main/kotlin/Library](kaluga-library-components/src/main/kotlin/Library]), the current git branch (unless that branch is `master`, `main` or `develop`) and `-SNAPSHOT` (unless the `MAVEN_CENTRAL_RELEASE` environment variable is set to `true`). The exact implementation of this can be found in [kaluga-library-components/src/main/kotlin/GitBranch.kt](kaluga-library-components/src/main/kotlin/GitBranch.kt).
 
-For example if the version in `ext.gradle` is `1.1` and `feature/123_fix_bug` is the current branch the resulting version will be `1.1-feature-123_fix_bug-SNAPSHOT`.
+For example if the base version is `1.1` and `feature/123_fix_bug` is the current branch the resulting version will be `1.1-feature-123_fix_bug-SNAPSHOT`.
 
 #### Local Testing
 
 Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`oss.sonatype.org`).
-Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/ios/Supporting\ Files`.
+Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/`.
 ```
-kaluga.exampleEmbeddingMethod=composite
-kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/
+kaluga.exampleEmbeddingMethod=repo
+kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/
 kaluga.libraryVersion=LIBRARY_VERSION
 ```
 Where 
-`REPO_NUMBER` is the last one created after merging to master
-`LIBRARY_VERSION` is the one that we want to publish
+`REPO_NUMBER` is the id of the staging repository created to do the release (normally done automatically by GitHub Actions upon a `master` commit, the number can be found on the https://oss.sonatype.org console under "staging repositories")
+`LIBRARY_VERSION` is the version of the library that we are publish
+
+Don't forget to remove these when you are done.
 
 #### Publishing locally
 
@@ -125,19 +127,21 @@ If these values are present as environment variables they will also be picked up
 
 #### Publishing via CI
 
-Bitrise automatically publishes every branch to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). This is done using a (private) Bitrise project. A Maven Central release can be done by manually starting the `publisMavenCentralRelease` workflow for the appropriate release branch.
+GitHub Actions automatically publishes every branch (except `master`) to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). Commits on `master` are send to the Sonatype staging repository as the first step of a Maven Central release.
 
 #### Releasing to Maven Central
 
-Projects publishing to Sonatype's release repository need to be manually closed and released before they will appear on Maven Central. This can only be done by people with access.
+Projects publishing to Sonatype's staging repository need to be manually closed and released (promoted) before they will appear on Maven Central. This can only be done by people with access to https://oss.sonatype.org.
 
 #### Increase version after publishing
 
-In case this has not been done yet, bump the version at [gradle/ext.gradle](gradle/ext.gradle) in the `develop` branch to start the next development iteration.
+In case this has not been done yet, bump the base version at [kaluga-library-components/src/main/kotlin/Library](kaluga-library-components/src/main/kotlin/Library]) in the `develop` branch to start the next development iteration.
 
-```sh
-library_version = 'X.X.X'
+```kotlin
+private val baseVersion = "X.X.X"
 ```
+
+Also update the version numbers in the README to the just released version and the next version. 
 
 ## Code conventions
 

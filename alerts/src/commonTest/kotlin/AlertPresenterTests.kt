@@ -1,6 +1,6 @@
 /*
 
-Copyright 2020 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,11 +16,8 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.alerts
 
-import com.splendo.kaluga.alerts.AlertPresenter
-import com.splendo.kaluga.alerts.buildActionSheet
-import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
@@ -39,6 +39,13 @@ import kotlin.time.Duration
 
 const val NSPhotoLibraryUsageDescription = "NSPhotoLibraryUsageDescription"
 
+/**
+ * The [BasePermissionManager] to use as a default for [StoragePermission]
+ * @param bundle the [NSBundle] the [StoragePermission] is to be granted in
+ * @param storagePermission the [StoragePermission] to manage
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultStoragePermissionManager(
     private val bundle: NSBundle,
     storagePermission: StoragePermission,
@@ -59,11 +66,10 @@ actual class DefaultStoragePermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
-                val callback = { status: PHAuthorizationStatus ->
+                PHPhotoLibrary.requestAuthorization { status ->
                     deferred.complete(status)
                     Unit
-                }.freeze()
-                PHPhotoLibrary.requestAuthorization(callback)
+                }
 
                 deferred.await().toAuthorizationStatus()
             }
@@ -81,6 +87,10 @@ actual class DefaultStoragePermissionManager(
     }
 }
 
+/**
+ * A [BaseStoragePermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
     override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {

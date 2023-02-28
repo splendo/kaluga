@@ -1,9 +1,23 @@
-## Permissions
+# Bluetooth
 
-This library provide support for out-of-the-box access to Bluetooth.
+This library provides support for out-of-the-box access to Bluetooth.
 
+## Installing
+This library is available on Maven Central. You can import Kaluga Bluetooth as follows:
 
-### Usage
+```kotlin
+repositories {
+    // ...
+    mavenCentral()
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
+}
+```
+
+## Usage
 Create a `Bluetooth` object through the `BluetoothBuilder`. This gives you access to a `Flow` of Bluetooth devices. To scan for devices simply call
 
 ```kotlin
@@ -14,6 +28,7 @@ launch {
 ///
 bluetooth.stopScanning()
 ```
+
 Bluetooth Scanning is managed by a state machine that will keep running as long as it is observed. It will automatically handle Permissions and Enabling/Disabling bluetooth on the device, although this behaviour can be disabled via the `BluetoothBuilder`
 Devices are returned as a flow of `Device` objects, which manages the connection state of each device.
 
@@ -41,56 +56,54 @@ bluetooth.devices()[someUUID].disconnect()
 ```
 
 ### Android
-You may notice that when you ask for kaluga's `Permission.Bluetooth` the android request alert will prompt `Location` permission. This behaviour is encountered because Android system requires Location to access the hardware identifiers of nearby external devices via Bluetooth.
+You may notice that when you ask for Kaluga's `Permission.Bluetooth` the android request alert will prompt `Location` permission. This behaviour is encountered because Android system requires Location to access the hardware identifiers of nearby external devices via Bluetooth.
 
-### Setup
-In order to setup a bluetooth repo you need to do the following:
+## Setup
+In order to setup a bluetooth repo you need to create a `Bluetooth` object using a `BluetoothBuilder`.
 
 ```kotlin
-// Somewhere in Android code
-val permissions = Permissions(
-    PermissionsBuilder().apply {
-        registerBluetoothPermission()
-        registerLocationPermission()
-    }
-)
+class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseLifecycleViewModel() {
+    private val repo: Bluetooth = bltBuilder.create(
+        scannerSettingsBuilder = { permissions ->
+            BaseScanner.Settings(
+                permissions = permissions,
+                autoRequestPermission = false
+            )
+         },
+        connectionSettings = ConnectionSettings(
+            ConnectionSettings.ReconnectionSettings.Never
+        )
+    )
+}
+```
 
+The `BluetoothBuilder` is created on the platform
+
+### Android
+```kotlin
+// Somewhere in Android code
 val scanSettings = ScanSettings.Builder()
     .setScanMode(..)
     .setNumOfMatches(..)
     .build()
 
-val scannerBuilder = Scanner.Builder(scanSettings = scanSettings,..)
+val scannerBuilder = DefaultScanner.Builder(scanSettings = scanSettings,..)
 
-val bluetoothBuilder = BluetoothBuilder(permissions = permissions)
-CommonViewModel(bluetoothBuilder)
-...
-
-// Somewhere in iOS code
-val permissions = Permissions(
-    PermissionsBuilder().apply {
-        registerBluetoothPermission()
-        registerLocationPermission()
-    }
+val bluetoothBuilder = BluetoothBuilder(
+    scannerBuilder = scannerBuilder
 )
+CommonViewModel(bluetoothBuilder)
+```
 
+### iOS
+```kotlin
+// Somewhere in iOS code
 val scanSettings = ScanSettings(allowDuplicateKeys, solicitedServiceUUIDsKey)
 
-val scannerBuilder = Scanner.Builder(scanSettings)
+val scannerBuilder = DefaultScanner.Builder(scanSettings)
 
-val bluetoothBuilder = BluetoothBuilder(permissions = permissions, scannerBuilder = scannerBuilder)
+val bluetoothBuilder = BluetoothBuilder(scannerBuilder = scannerBuilder)
 CommonViewModel(bluetoothBuilder)
-...
-
-// Common code
-class CommonViewModel(bltBuilder: BluetoothBuilder) : BaseViewModel() {
-    private val repo: Bluetooth = bltBuilder.create(
-        connectionSettings = ConnectionSettings(
-            ConnectionSettings.ReconnectionSettings.Never
-        ),
-        autoRequestPermission = false
-    )
-} 
 ```
 
 ### Notes

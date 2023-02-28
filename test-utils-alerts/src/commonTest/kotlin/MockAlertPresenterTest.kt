@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.TestContext, MockAlertPresenterTest.ViewModel>() {
 
-    class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel()
+    class ViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel(alertBuilder)
 
     class TestContext : ViewModelTestContext<ViewModel> {
         val mockAlertBuilder = MockAlertPresenter.Builder()

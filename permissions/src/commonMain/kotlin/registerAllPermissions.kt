@@ -20,13 +20,21 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionStateRepo
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
+import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.calendar.registerCalendarPermission
+import com.splendo.kaluga.permissions.calendar.registerCalendarPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.camera.registerCameraPermission
+import com.splendo.kaluga.permissions.camera.registerCameraPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.contacts.registerContactsPermission
+import com.splendo.kaluga.permissions.contacts.registerContactsPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.registerLocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
+import com.splendo.kaluga.permissions.microphone.registerMicrophonePermissionIfNotRegistered
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
+import com.splendo.kaluga.permissions.notifications.registerNotificationsPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
+import com.splendo.kaluga.permissions.storage.registerStoragePermissionIfNotRegistered
 import kotlin.time.Duration
 
 fun PermissionsBuilder.registerAllPermissions(
@@ -42,4 +50,19 @@ fun PermissionsBuilder.registerAllPermissions(
     registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
     registerStoragePermission(monitoringInterval = monitoringInterval, settings = settings)
+}
+
+suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(
+    monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+) {
+    registerBluetoothPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerCalendarPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerCameraPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerContactsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerLocationPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerNotificationsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
+    registerStoragePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
 }

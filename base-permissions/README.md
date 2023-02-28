@@ -1,6 +1,6 @@
-## Permissions
+# Permissions
 
-This library provide support for out-of-the-box access to device permissions.
+This library provides support for out-of-the-box access to device permissions.
 
 Supported device features:
  - [Bluetooth](../bluetooth-permissions)
@@ -12,25 +12,25 @@ Supported device features:
  - [Notifications](../notifications-permissions)
  - [Storage](../storage-permissions) (aka Photos on iOS)
 
- ## Installing
- This library is available on Maven Central. You can import Kaluga Permissions as follows:
+## Installing
+This library is available on Maven Central. You can import Kaluga Permissions as follows:
 
- ```kotlin
- repositories {
-     // ...
-     mavenCentral()
- }
+```kotlin
+repositories {
  // ...
- dependencies {
-     // ...
-     implementation("com.splendo.kaluga:base-permissions:$kalugaVersion")
- }
- ```
+ mavenCentral()
+}
+// ...
+dependencies {
+ // ...
+ implementation("com.splendo.kaluga:base-permissions:$kalugaVersion")
+}
+```
 
-### Usage
+## Usage
 Permissions can be requested through an instance of the `Permissions` class. This class is instantiated with a `PermissionsBuilder`, which defaults to requesting permissions for the Application Context (Android) or Main NSBundle (iOS).
 A custom `PermissionContext` can be provided.
-To be able to use builder, specific permission should be registered. Use `register<feature>Permission()` method of the `PermissionsBuilder`.
+To be able to use builder, specific permission should be registered. Use the `register<feature>Permission()` (single use only) or `register<feature>PermissionIfNotRegistered()` (multiple uses) method of the `PermissionsBuilder`.
 
 Permissions are modelled as a `Flow` of `State`, providing updates should the state change during observation. A permission can either be `Allowed` or `Denied`. A `Denied` permission can in turn be `Locked`, preventing the app from requesting it, or `Requestable`.
 
@@ -42,7 +42,7 @@ If a request fails, a new request with a more limited scope can then be made.
 
 ```kotlin
 val permissionBuilder = PermissionBuilder().apply {
-    registerLocationPermission()
+    registerLocationPermissionIfNotRegistered()
 }
 val permissions = Permissions(permissionBuilder)
 val locationPermission = Permission.Location(background=true, precise=true)

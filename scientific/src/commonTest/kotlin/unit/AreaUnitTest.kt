@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.splendo.kaluga.scientific.assertEqualScientificValue
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.force.div
+import com.splendo.kaluga.scientific.converter.kinematicViscosity.times
 import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.linearMassDensity.div
 import com.splendo.kaluga.scientific.converter.linearMassDensity.times
@@ -403,5 +404,15 @@ class AreaUnitTest {
             2(Kilogram).convert(Pound) / 2(Kilogram per (SquareMeter)),
             5
         )
+    }
+
+    @Test
+    fun areaFromMetricKinematicViscosityAndTimeTest() {
+        assertEqualScientificValue(4(SquareMeter), (2(SquareMeter per Second) * 2(Second)))
+    }
+
+    @Test
+    fun areaFromImperialKinematicViscosityAndTimeTest() {
+        assertEqualScientificValue(4(SquareFoot), (2(SquareFoot per Second) * 2(Second)))
     }
 }

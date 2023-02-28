@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,7 +20,18 @@ package com.splendo.kaluga.resources
 import android.content.Context
 import android.util.TypedValue
 
+/**
+ * Gets the `pixel` value for a [Float] in `Device Independent Pixels`
+ * @param context the [Context] of the window to render the pixels
+ * @return the number of pixels equal to this amount of `Device Independent Pixels` for this device
+ */
 fun Float.dpToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_DIP, context)
+
+/**
+ * Gets the `pixel` value for a [Float] in `Scaled Pixels`
+ * @param context the [Context] of the window to render the pixels
+ * @return the number of pixels equal to this amount of `Scaled Pixels` for this device
+ */
 fun Float.spToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_SP, context)
 
 private fun Float.toPixel(unit: Int, context: Context): Float = TypedValue.applyDimension(

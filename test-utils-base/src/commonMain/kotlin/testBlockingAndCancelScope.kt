@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,29 +17,23 @@
 
 package com.splendo.kaluga.test.base
 
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class DeliberateCancellationException(val result: Any?, freeze: Boolean) :
-    kotlinx.coroutines.CancellationException("Scope canceled deliberately by testAndCancelScope") {
-    init {
-        if (freeze) freeze()
-    }
-}
+class DeliberateCancellationException(val result: Any?) :
+    kotlinx.coroutines.CancellationException("Scope canceled deliberately by testAndCancelScope")
 
 inline fun <reified T> testBlockingAndCancelScope(
     context: CoroutineContext = EmptyCoroutineContext,
-    freezeResult: Boolean = true,
     crossinline block: suspend CoroutineScope.() -> T
 ): T {
 
     try {
         return runBlocking(context) {
-            block().also { cancel(DeliberateCancellationException(it, freezeResult)) }
+            block().also { cancel(DeliberateCancellationException(it)) }
         }
     } catch (e: Throwable) {
         if (e is DeliberateCancellationException && e.result is T)

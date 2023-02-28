@@ -48,9 +48,10 @@ suspend fun yieldUntil(
 ) = withTimeout(timeout) {
     while (!constraint()) {
         yieldMultiple(times = timesPerTurn)
-        if (!constraint())
+        if (!constraint()) {
             delay(delayPerTurn)
-        else
+        } else {
             return@withTimeout // fast exit to avoid extra constraint check
+        }
     }
 }

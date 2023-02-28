@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,23 +17,40 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBManagerStatePoweredOn
 import platform.darwin.NSObject
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 actual interface BluetoothMonitor : ServiceMonitor {
+
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     * @param centralManagerBuilder a method cor creating a [CBCentralManager] to manage Bluetooth
+     */
     actual class Builder(
         private val centralManagerBuilder: () -> CBCentralManager = { CBCentralManager() }
     ) {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(centralManagerBuilder = centralManagerBuilder)
     }
 }
 
+/**
+ * A default implementation of [BluetoothMonitor]
+ * @param centralManagerBuilder a method cor creating a [CBCentralManager] to manage Bluetooth
+ */
 class DefaultBluetoothMonitor internal constructor(
     private val centralManagerBuilder: () -> CBCentralManager
 ) : DefaultServiceMonitor(), BluetoothMonitor {
@@ -47,14 +64,15 @@ class DefaultBluetoothMonitor internal constructor(
         }
     }
 
-    private val centralManager = AtomicReference<CBCentralManager?>(null)
+    private val lock = reentrantLock()
+    private var centralManager: CBCentralManager? = null
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
         get() = initializeCentralManagerIfNotInitialized().state == CBManagerStatePoweredOn
 
-    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = centralManager.value ?: centralManagerBuilder().apply {
-        centralManager.set(this)
+    private fun initializeCentralManagerIfNotInitialized(): CBCentralManager = lock.withLock {
+        centralManager ?: centralManagerBuilder().also { this.centralManager = it }
     }
 
     override fun monitoringDidStart() {
@@ -63,6 +81,6 @@ class DefaultBluetoothMonitor internal constructor(
     }
 
     override fun monitoringDidStop() {
-        centralManager.value?.delegate = null
+        centralManager?.delegate = null
     }
 }

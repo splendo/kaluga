@@ -1,6 +1,6 @@
 /*
 
-Copyright 2020 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,10 +23,8 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
-import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDate
-import platform.Foundation.NSTimeInterval
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIButton
@@ -51,13 +49,39 @@ import platform.UIKit.topAnchor
 import platform.UIKit.trailingAnchor
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.objc.sel_registerName
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
+/**
+ * A [BaseDateTimePickerPresenter] for presenting a [DateTimePicker]
+ * @param dateTimePicker the [DateTimePicker] to present
+ * @param parent The [UIViewController] to present the [DateTimePicker]
+ */
 actual class DateTimePickerPresenter(
-    private val datePicker: DateTimePicker,
+    dateTimePicker: DateTimePicker,
     private val parent: UIViewController
-) : BaseDateTimePickerPresenter(datePicker) {
+) : BaseDateTimePickerPresenter(dateTimePicker) {
 
-    private inner class DateTimePickerViewController(private val datePicker: DateTimePicker, private val completion: (KalugaDate?) -> Unit) : UIViewController(null, null) {
+    /**
+     * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
+     * @param viewController The [UIViewController] to present any [DateTimePickerPresenter] built using this builder.
+     */
+    actual class Builder(private val viewController: UIViewController) : BaseDateTimePickerPresenter.Builder() {
+
+        /**
+         * Creates a [DateTimePickerPresenter]
+         *
+         * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter.
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @return The created [DateTimePickerPresenter]
+         */
+        actual override fun create(
+            dateTimePicker: DateTimePicker,
+            coroutineScope: CoroutineScope
+        ) = DateTimePickerPresenter(dateTimePicker, viewController)
+    }
+
+    private inner class DateTimePickerViewController(private val completion: (KalugaDate?) -> Unit) : UIViewController(null, null) {
 
         private lateinit var datePickerView: UIDatePicker
 
@@ -69,31 +93,31 @@ actual class DateTimePickerPresenter(
             super.viewDidLoad()
             val containerView = UIView().apply {
                 backgroundColor = UIColor.systemBackgroundColor
-                layer.cornerRadius = 15.0 as CGFloat
+                layer.cornerRadius = 15.0
                 view.addSubview(this)
                 translatesAutoresizingMaskIntoConstraints = false
                 centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
                 centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
-                leadingAnchor.constraintGreaterThanOrEqualToAnchor(view.leadingAnchor, 20.0 as CGFloat).active = true
-                trailingAnchor.constraintLessThanOrEqualToAnchor(view.trailingAnchor, -20.0 as CGFloat).active = true
+                leadingAnchor.constraintGreaterThanOrEqualToAnchor(view.leadingAnchor, 20.0).active = true
+                trailingAnchor.constraintLessThanOrEqualToAnchor(view.trailingAnchor, -20.0).active = true
             }
 
             datePickerView = UIDatePicker().apply {
                 calendar = NSCalendar.currentCalendar.apply {
-                    this.locale = datePicker.locale.nsLocale
-                    this.timeZone = datePicker.selectedDate.timeZone.timeZone
+                    this.locale = this@DateTimePickerPresenter.dateTimePicker.locale.nsLocale
+                    this.timeZone = this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone.timeZone
                 }
-                date = NSDate.dateWithTimeIntervalSince1970((datePicker.selectedDate.millisecondSinceEpoch.toDouble() / 1000.0) as NSTimeInterval)
-                locale = datePicker.locale.nsLocale
-                timeZone = datePicker.selectedDate.timeZone.timeZone
-                datePickerMode = when (val type = datePicker.type) {
+                date = NSDate.dateWithTimeIntervalSince1970(this@DateTimePickerPresenter.dateTimePicker.selectedDate.durationSinceEpoch.toDouble(DurationUnit.SECONDS))
+                locale = this@DateTimePickerPresenter.dateTimePicker.locale.nsLocale
+                timeZone = this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone.timeZone
+                datePickerMode = when (val type = this@DateTimePickerPresenter.dateTimePicker.type) {
                     is DateTimePicker.Type.TimeType -> UIDatePickerMode.UIDatePickerModeTime
                     is DateTimePicker.Type.DateType -> {
                         type.latestDate?.let {
-                            maximumDate = NSDate.dateWithTimeIntervalSince1970((it.millisecondSinceEpoch.toDouble() / 1000.0) as NSTimeInterval)
+                            maximumDate = NSDate.dateWithTimeIntervalSince1970(it.durationSinceEpoch.toDouble(DurationUnit.SECONDS))
                         }
                         type.earliestDate?.let {
-                            minimumDate = NSDate.dateWithTimeIntervalSince1970((it.millisecondSinceEpoch.toDouble() / 1000.0) as NSTimeInterval)
+                            minimumDate = NSDate.dateWithTimeIntervalSince1970(it.durationSinceEpoch.toDouble(DurationUnit.SECONDS))
                         }
                         UIDatePickerMode.UIDatePickerModeDate
                     }
@@ -109,33 +133,33 @@ actual class DateTimePickerPresenter(
 
                 containerView.addSubview(this)
                 translatesAutoresizingMaskIntoConstraints = false
-                leadingAnchor.constraintEqualToAnchor(containerView.leadingAnchor, 10.0 as CGFloat).active = true
-                trailingAnchor.constraintEqualToAnchor(containerView.trailingAnchor, -10.0 as CGFloat).active = true
-                bottomAnchor.constraintEqualToAnchor(containerView.bottomAnchor, -10.0 as CGFloat).active = true
+                leadingAnchor.constraintEqualToAnchor(containerView.leadingAnchor, 10.0).active = true
+                trailingAnchor.constraintEqualToAnchor(containerView.trailingAnchor, -10.0).active = true
+                bottomAnchor.constraintEqualToAnchor(containerView.bottomAnchor, -10.0).active = true
             }
 
-            val topAnchor = datePicker.message?.let {
+            val topAnchor = this@DateTimePickerPresenter.dateTimePicker.message?.let {
                 UILabel().apply {
                     text = it
                     containerView.addSubview(this)
                     translatesAutoresizingMaskIntoConstraints = false
                     bottomAnchor.constraintEqualToAnchor(
                         datePickerView.topAnchor,
-                        -15.0 as CGFloat
+                        -15.0
                     ).active = true
                     containerView.leadingAnchor.constraintEqualToAnchor(
                         leadingAnchor,
-                        -20.0 as CGFloat
+                        -20.0
                     ).active = true
                     containerView.trailingAnchor.constraintEqualToAnchor(
                         trailingAnchor,
-                        20.0 as CGFloat
+                        20.0
                     ).active = true
                     bottomAnchor
                 }.topAnchor
             } ?: datePickerView.topAnchor
 
-            topAnchor.constraintEqualToAnchor(containerView.topAnchor, 10.0 as CGFloat).active = true
+            topAnchor.constraintEqualToAnchor(containerView.topAnchor, 10.0).active = true
 
             UIButton().apply {
                 addTarget(this@DateTimePickerViewController, sel_registerName("onSelected"), UIControlEventTouchUpInside)
@@ -150,14 +174,9 @@ actual class DateTimePickerPresenter(
 
         @ObjCAction
         private fun onSelected() {
-            completion(DefaultKalugaDate.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
+            completion(DefaultKalugaDate.epoch(datePickerView.date.timeIntervalSince1970.seconds, this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone, this@DateTimePickerPresenter.dateTimePicker.locale))
             dismissDateTimePicker(true)
         }
-    }
-
-    actual class Builder(private val viewController: UIViewController) : BaseDateTimePickerPresenter.Builder() {
-        actual override fun create(coroutineScope: CoroutineScope) =
-            DateTimePickerPresenter(createDateTimePicker(), viewController)
     }
 
     override fun dismissDateTimePicker(animated: Boolean) {
@@ -165,6 +184,6 @@ actual class DateTimePickerPresenter(
     }
 
     override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
-        parent.presentViewController(DateTimePickerViewController(datePicker, completion), animated, null)
+        parent.presentViewController(DateTimePickerViewController(completion), animated, null)
     }
 }

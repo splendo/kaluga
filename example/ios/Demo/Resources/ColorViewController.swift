@@ -1,5 +1,5 @@
 //
-//  Copyright 2021 Splendo Consulting B.V. The Netherlands
+//  Copyright 2022 Splendo Consulting B.V. The Netherlands
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 //
 
 import UIKit
-import KotlinNativeFramework
+import KalugaExampleShared
 
-class ColorViewController : UIViewController {
+class ColorViewController: UIViewController {
     
     @IBOutlet var backdropColorBackground: UIView!
     @IBOutlet var sourceColorBackground: UIView!
@@ -36,14 +36,14 @@ class ColorViewController : UIViewController {
     @IBOutlet var blendedLightenedColorsCollectionView: UICollectionView!
     @IBOutlet var blendedDarkenedColorsCollectionView: UICollectionView!
     
-    private var backdropLightenedColors: [BackgroundStyle] = []
-    private var backdropDarkenedColors: [BackgroundStyle] = []
-    private var sourceLightenedColors: [BackgroundStyle] = []
-    private var sourceDarkenedColors: [BackgroundStyle] = []
-    private var blendedLightenedColors: [BackgroundStyle] = []
-    private var blendedDarkenedColors: [BackgroundStyle] = []
+    private var backdropLightenedColors: [KalugaBackgroundStyle] = []
+    private var backdropDarkenedColors: [KalugaBackgroundStyle] = []
+    private var sourceLightenedColors: [KalugaBackgroundStyle] = []
+    private var sourceDarkenedColors: [KalugaBackgroundStyle] = []
+    private var blendedLightenedColors: [KalugaBackgroundStyle] = []
+    private var blendedDarkenedColors: [KalugaBackgroundStyle] = []
     
-    private lazy var viewModel: ColorViewModel = KNArchitectureFramework().createColorViewModel(parent: self)
+    private lazy var viewModel = ColorViewModel(alertPresenterBuilder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
 
     deinit {
@@ -52,30 +52,33 @@ class ColorViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = "feature_resources_color".localized()
+
         backdropLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         backdropDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         sourceLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         sourceDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         blendedLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         blendedDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             
             return [
                 viewModel.backdropColorBackground.observe { next in
-                    guard let backdropColorBackground = self?.backdropColorBackground, let backdropBackgroundStyle = next as? BackgroundStyle else {
+                    guard let backdropColorBackground = self?.backdropColorBackground, let backdropBackgroundStyle = next else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(backdropColorBackground, style: backdropBackgroundStyle)
                 },
                 viewModel.sourceColorBackground.observe { next in
-                    guard let sourceColorBackground = self?.sourceColorBackground, let sourceBackgroundStyle = next as? BackgroundStyle else {
+                    guard let sourceColorBackground = self?.sourceColorBackground, let sourceBackgroundStyle = next else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(sourceColorBackground, style: sourceBackgroundStyle)
                 },
                 viewModel.blendedColorBackground.observe { next in
-                    guard let blendedColorBackground = self?.blendedColorBackground, let blendedBackgroundStyle = next as? BackgroundStyle else {
+                    guard let blendedColorBackground = self?.blendedColorBackground, let blendedBackgroundStyle = next else {
                         return
                     }
                     BackgroundStyleKt.applyBackgroundStyle(blendedColorBackground, style: blendedBackgroundStyle)
@@ -93,29 +96,29 @@ class ColorViewController : UIViewController {
                     ButtonStyleKt.bindButton(blendModeButton, button: buttonStyle)
                 },
                 viewModel.lightenBackdrops.observe { next in
-                    self?.backdropLightenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.backdropLightenedColors = next?.compactMap { $0 as? KalugaBackgroundStyle } ?? []
                     self?.backdropLightenedColorsCollectionView?.reloadData()
                 },
                 viewModel.darkenBackdrops.observe { next in
-                    self?.backdropDarkenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.backdropDarkenedColors = next?.compactMap { $0 as? KalugaBackgroundStyle } ?? []
                     self?.backdropDarkenedColorsCollectionView?.reloadData()
                 },
                 viewModel.lightenSource.observe { next in
-                    self?.sourceLightenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.sourceLightenedColors = next?.compactMap { $0 as? KalugaBackgroundStyle } ?? []
                     self?.sourceLightenedColorsCollectionView?.reloadData()
                 },
                 viewModel.darkenSource.observe { next in
-                    self?.sourceDarkenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.sourceDarkenedColors = next?.compactMap { $0 as? KalugaBackgroundStyle } ?? []
                     self?.sourceDarkenedColorsCollectionView?.reloadData()
                 },
                 viewModel.lightenBlended.observe { next in
-                    self?.blendedLightenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.blendedLightenedColors = next?.compactMap { $0 as? KalugaBackgroundStyle } ?? []
                     self?.blendedLightenedColorsCollectionView?.reloadData()
                 },
                 viewModel.darkenBlended.observe { next in
-                    self?.blendedDarkenedColors = next?.compactMap({ $0 as? BackgroundStyle }) ?? []
+                    self?.blendedDarkenedColors = next?.compactMap { $0 as? KalugaBackgroundStyle } ?? []
                     self?.blendedDarkenedColorsCollectionView?.reloadData()
-                },
+                }
             ]
         }
         
@@ -123,7 +126,7 @@ class ColorViewController : UIViewController {
     }
 }
 
-extension ColorViewController : UITextFieldDelegate {
+extension ColorViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == backdropInputField {
             viewModel.submitBackdropText(backdropText: textField.text ?? "")
@@ -134,7 +137,7 @@ extension ColorViewController : UITextFieldDelegate {
     }
 }
 
-extension ColorViewController : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension ColorViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == backdropLightenedColorsCollectionView {
@@ -163,32 +166,35 @@ extension ColorViewController : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionCellView.Const.identifier, for: indexPath) as! ColorCollectionCellView
-        if collectionView == backdropLightenedColorsCollectionView {
-            BackgroundStyleKt.applyBackgroundStyle(cell, style: backdropLightenedColors[indexPath.row])
+        return collectionView.dequeueTypedReusableCell(
+            withReuseIdentifier: ColorCollectionCellView.Const.identifier,
+            for: indexPath
+        ) { (cell: ColorCollectionCellView) in
+            if collectionView == backdropLightenedColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: backdropLightenedColors[indexPath.row])
+            }
+            if collectionView == backdropDarkenedColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: backdropDarkenedColors[indexPath.row])
+            }
+            if collectionView == sourceLightenedColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: sourceLightenedColors[indexPath.row])
+            }
+            if collectionView == sourceDarkenedColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: sourceDarkenedColors[indexPath.row])
+            }
+            if collectionView == blendedLightenedColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: blendedLightenedColors[indexPath.row])
+            }
+            if collectionView == blendedDarkenedColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: blendedDarkenedColors[indexPath.row])
+            }
         }
-        if collectionView == backdropDarkenedColorsCollectionView {
-            BackgroundStyleKt.applyBackgroundStyle(cell, style: backdropDarkenedColors[indexPath.row])
-        }
-        if collectionView == sourceLightenedColorsCollectionView {
-            BackgroundStyleKt.applyBackgroundStyle(cell, style: sourceLightenedColors[indexPath.row])
-        }
-        if collectionView == sourceDarkenedColorsCollectionView {
-            BackgroundStyleKt.applyBackgroundStyle(cell, style: sourceDarkenedColors[indexPath.row])
-        }
-        if collectionView == blendedLightenedColorsCollectionView {
-            BackgroundStyleKt.applyBackgroundStyle(cell, style: blendedLightenedColors[indexPath.row])
-        }
-        if collectionView == blendedDarkenedColorsCollectionView {
-            BackgroundStyleKt.applyBackgroundStyle(cell, style: blendedDarkenedColors[indexPath.row])
-        }
-        return cell
     }
 }
 
-class ColorCollectionCellView : UICollectionViewCell {
+class ColorCollectionCellView: UICollectionViewCell {
     
-    struct Const {
+    enum Const {
         static let identifier = "ColorCollectionCellView"
     }
     

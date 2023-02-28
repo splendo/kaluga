@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.GCScheduler
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
@@ -25,6 +26,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.numberWithInt
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
+import platform.QuartzCore.CATransaction
 import platform.SafariServices.SFSafariViewController
 import platform.StoreKit.SKStoreProductParameterAdvertisingPartnerToken
 import platform.StoreKit.SKStoreProductParameterAffiliateToken
@@ -55,13 +57,24 @@ import platform.UIKit.removeFromParentViewController
 import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
-import platform.darwin.NSInteger
 import platform.darwin.NSObject
 import kotlin.native.ref.WeakReference
 
-actual interface Navigator<A : NavigationAction<*>> {
-    actual fun navigate(action: A)
+/**
+ * Class that can trigger a given [NavigationAction]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ */
+actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: Action)
 }
+
+class DefaultNavigator<Action : NavigationAction<*>>(val onAction: (Action) -> Unit) : Navigator<Action> {
+    override fun navigate(action: Action) {
+        onAction(action)
+    }
+}
+
+object MissingViewControllerNavigationException : NavigationException("Missing Parent ViewController")
 
 /**
  * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -69,10 +82,10 @@ actual interface Navigator<A : NavigationAction<*>> {
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-class ViewControllerNavigator<A : NavigationAction<*>>(
+class ViewControllerNavigator<Action : NavigationAction<*>>(
     parentVC: UIViewController,
-    private val navigationMapper: (A) -> NavigationSpec
-) : Navigator<A> {
+    private val navigationMapper: (Action) -> NavigationSpec
+) : Navigator<Action> {
 
     private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
 
@@ -84,7 +97,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     private val parent = WeakReference(parentVC)
     private val storeKitDelegate: StoreKitDelegate by lazy { StoreKitDelegate() }
 
-    override fun navigate(action: A) {
+    override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 
@@ -111,35 +124,45 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
-        val parent = assertParent() ?: return
+        val parent = assertParent()
         assert(parent.navigationController != null)
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            pushSpec.completion?.invoke()
+        }
         parent.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
+        CATransaction.commit()
     }
 
     private fun popViewController(popSpec: NavigationSpec.Pop) {
-        val parent = assertParent() ?: return
+        val parent = assertParent()
         assert(parent.navigationController != null)
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            popSpec.completion?.invoke()
+        }
         popSpec.to?.let {
             parent.navigationController?.popToViewController(it, popSpec.animated)
         } ?: parent.navigationController?.popViewControllerAnimated(popSpec.animated)
+        CATransaction.commit()
     }
 
     private fun presentViewController(presentSpec: NavigationSpec.Present) {
         val toPresent = presentSpec.present()
         toPresent.modalPresentationStyle = presentSpec.presentationStyle
         toPresent.modalTransitionStyle = presentSpec.transitionStyle
-        assertParent()?.presentViewController(toPresent, presentSpec.animated) { presentSpec.completion?.invoke() }
+        assertParent().presentViewController(toPresent, presentSpec.animated) { presentSpec.completion?.invoke() }
     }
 
     private fun dismissViewController(dismissSpec: NavigationSpec.Dismiss) {
-        val parent = assertParent() ?: return
+        val parent = assertParent()
         val toDismiss = dismissSpec.toDismiss(parent)
         toDismiss.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.completion?.invoke() }
     }
 
     private fun showViewController(showSpec: NavigationSpec.Show) {
         val toShow = showSpec.show()
-        val parent = assertParent() ?: return
+        val parent = assertParent()
         if (showSpec.detail) {
             parent.showDetailViewController(toShow, parent)
         } else {
@@ -148,26 +171,24 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     }
 
     private fun segueToViewController(segueSpec: NavigationSpec.Segue, bundle: NavigationBundle<*>?) {
-        assertParent()?.performSegueWithIdentifier(segueSpec.identifier, bundle)
+        assertParent().performSegueWithIdentifier(segueSpec.identifier, bundle)
     }
 
     private fun embedNestedViewController(nestedSpec: NavigationSpec.Nested) {
-        val parent = assertParent() ?: return
-        when (val type = nestedSpec.type) {
-            is NavigationSpec.Nested.Type.Replace -> {
-                parent.childViewControllers.map { it as UIViewController }.filter { it.view.tag.toLong() == type.tag }.forEach {
-                    it.willMoveToParentViewController(null)
-                    it.view.removeFromSuperview()
-                    it.removeFromParentViewController()
-                }
+        val parent = assertParent()
+        val type = nestedSpec.type
+        if (type is NavigationSpec.Nested.Type.Replace) {
+            parent.childViewControllers.map { it as UIViewController }.filter { it.view.tag.toLong() == type.tag }.forEach {
+                it.willMoveToParentViewController(null)
+                it.view.removeFromSuperview()
+                it.removeFromParentViewController()
             }
         }
 
         val child = nestedSpec.nested()
-        when (val type = nestedSpec.type) {
-            is NavigationSpec.Nested.Type.Replace -> {
-                child.view.tag = type.tag as NSInteger
-            }
+
+        if (type is NavigationSpec.Nested.Type.Replace) {
+            child.view.tag = type.tag
         }
         child.view.translatesAutoresizingMaskIntoConstraints = false
         parent.addChildViewController(child)
@@ -179,7 +200,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
             NSLayoutAttributeBottom
         ).map { attribute ->
             CGFloat
-            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0 as CGFloat, 0.0 as CGFloat)
+            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0, 0.0)
         }
         constraints.forEach { nestedSpec.containerView.addConstraint(it) }
         child.didMoveToParentViewController(parent)
@@ -197,7 +218,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
         pickerVC.sourceType = imagePickerSpec.sourceType
         pickerVC.mediaTypes = mediaTypes
         pickerVC.delegate = imagePickerSpec.delegate
-        assertParent()?.presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.completion?.invoke() }
+        assertParent().presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.completion?.invoke() }
     }
 
     private fun presentMailComposer(mailSpec: NavigationSpec.Email) {
@@ -222,7 +243,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
             composeVC.addAttachmentData(it.data, it.mimeType, it.fileName)
         }
 
-        assertParent()?.presentViewController(composeVC, mailSpec.animated) { mailSpec.completion?.invoke() }
+        assertParent().presentViewController(composeVC, mailSpec.animated) { mailSpec.completion?.invoke() }
     }
 
     private fun presentDocumentBrowser(browserSpec: NavigationSpec.DocumentSelector) {
@@ -237,12 +258,12 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
         browserVc.additionalTrailingNavigationBarButtonItems = appearance.trailingNavigationBarButtonItems
         browserVc.shouldShowFileExtensions = appearance.showFileExtensions
         browserVc.customActions = appearance.customActions
-        browserVc.defaultDocumentAspectRatio = appearance.documentAspectRatio as CGFloat
+        browserVc.defaultDocumentAspectRatio = appearance.documentAspectRatio
         browserVc.localizedCreateDocumentActionTitle = appearance.createTitle
 
         browserVc.delegate = browserSpec.delegate
 
-        assertParent()?.presentViewController(browserVc, browserSpec.animated) { browserSpec.completion?.invoke() }
+        assertParent().presentViewController(browserVc, browserSpec.animated) { browserSpec.completion?.invoke() }
     }
 
     private fun presentMessageComposer(messageSpec: NavigationSpec.Message) {
@@ -271,7 +292,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
             }
         }
 
-        assertParent()?.presentViewController(composeVC, messageSpec.animated) { messageSpec.completion?.invoke() }
+        assertParent().presentViewController(composeVC, messageSpec.animated) { messageSpec.completion?.invoke() }
     }
 
     private fun openDialer(phoneSpec: NavigationSpec.Phone) {
@@ -289,7 +310,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
             }
             is NavigationSpec.Browser.Type.SafariView -> {
                 val safariVc = SFSafariViewController(browserSpec.url)
-                assertParent()?.presentViewController(safariVc, spec.animated) {
+                assertParent().presentViewController(safariVc, spec.animated) {
                     spec.completion?.invoke()
                 }
             }
@@ -321,7 +342,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
     }
 
     private fun openAppStore(storeInfo: NavigationSpec.ThirdParty.StoreInfo) {
-        val parent = assertParent() ?: return
+        val parent = assertParent()
         val parameters = mutableMapOf<Any?, Any>(SKStoreProductParameterITunesItemIdentifier to NSNumber.numberWithInt(storeInfo.appId))
         storeInfo.productId?.let {
             parameters[SKStoreProductParameterProductIdentifier] = it
@@ -350,7 +371,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(
         }
     }
 
-    private fun assertParent() = parent.get().also { assert(it != null) }
+    private fun assertParent() = parent.get() ?: throw MissingViewControllerNavigationException
 }
 
 // Seems to be a bug on commonizer using new targets sourcesets which is preventing to infer the correct type

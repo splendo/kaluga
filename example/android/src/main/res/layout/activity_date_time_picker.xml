@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -16,27 +16,27 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_select_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/select_date"
-            android:onClick="@{view -> viewModel.onSelectDatePressed()}"/>
+            app:kalugaButton="@{viewModel.selectDateButton}"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_select_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/select_time"
-            android:onClick="@{view -> viewModel.onSelectTimePressed()}"/>
+            app:kalugaButton="@{viewModel.selectTimeButton}"
+            android:layout_marginTop="10dp"/>
 
         <TextView
             android:id="@+id/current_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/current_time"/>
+            android:text="@{viewModel.currentTimeTitle}"/>
 
         <TextView
             android:id="@+id/date_time"

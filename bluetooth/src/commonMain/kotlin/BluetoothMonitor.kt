@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,11 +17,22 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 expect interface BluetoothMonitor : ServiceMonitor {
 
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     */
     class Builder {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         fun create(): BluetoothMonitor
     }
 }

@@ -1,0 +1,3 @@
+[submodule "example/ios/Kaluga-SwiftUI"]
+	path = example/ios/Kaluga-SwiftUI
+	url = https://github.com/splendo/kaluga-swiftui.git

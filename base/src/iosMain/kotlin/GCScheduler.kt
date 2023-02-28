@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.base
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlin.native.concurrent.ThreadLocal
+import kotlinx.coroutines.sync.Mutex
 import kotlin.native.internal.GC
 
-@SharedImmutable
-private val isCollecting: AtomicBoolean = AtomicBoolean(false)
-
-@ThreadLocal
+/**
+ * Scheduler for the Garbage Collector
+ */
 object GCScheduler {
+
+    private val collectingMutex = Mutex()
 
     /**
      * Schedules the Garbage Collector only if no other garbage collection is active.
@@ -42,9 +42,9 @@ object GCScheduler {
      * This is useful in case calling the Garbage collector could trigger another call to [GC.collect].
      */
     fun collectIfNotCollecting() {
-        if (isCollecting.compareAndSet(expected = false, new = true)) {
+        if (collectingMutex.tryLock()) {
             GC.collect()
-            isCollecting.value = false
+            collectingMutex.unlock()
         }
     }
 }

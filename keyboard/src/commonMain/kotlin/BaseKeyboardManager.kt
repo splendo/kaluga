@@ -1,6 +1,7 @@
+
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,56 +19,44 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 
 /**
  * Common interface which handles the focus on a view.
  */
-expect interface FocusHandler
+interface FocusHandler
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
+ * @param FH the type of [FocusHandler] to handle focus requests.
  */
-interface BaseKeyboardManager {
+interface BaseKeyboardManager<FH : FocusHandler> {
 
     /**
-     * Base KeyboardManager builder class, which used to create an KeyboardManager
-     *
-     * @see KeyboardManager
+     * Base KeyboardManager builder class, which used to create a [BaseKeyboardManager]
+     * @param FH the type of [FocusHandler] to handle focus requests.
      */
-    interface Builder : LifecycleSubscribableMarker {
+    interface Builder<FH : FocusHandler> : LifecycleSubscribable {
 
         /**
          * Creates KeyboardManager object
          *
-         * @return The KeyboardManager object
+         * @param coroutineScope The [CoroutineScope] managing the keyboard lifecycle.
+         * @return The created [BaseKeyboardManager]
          */
-        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager
+        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<FH>
     }
 
     /**
-     * Shows the keyboard for a given [KeyboardHostingView]
+     * Shows the keyboard for a given [FH]
      *
-     * @param keyboardHostingView The view for which the keyboard will be shown
+     * @param focusHandler The [FH] for which the keyboard will be shown
      */
-    fun show(focusHandler: FocusHandler)
+    fun show(focusHandler: FH)
 
     /**
      * Dismisses the current keyboard
      */
     fun hide()
-}
-
-/**
- * Manager for Showing and Hiding the Keyboard.
- */
-expect class KeyboardManager : BaseKeyboardManager {
-
-    /**
-     * Builder for creating a [KeyboardManager].
-     */
-    class Builder : BaseKeyboardManager.Builder {
-        override fun create(coroutineScope: CoroutineScope): KeyboardManager
-    }
 }

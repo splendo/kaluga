@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,10 +19,20 @@ package com.splendo.kaluga.example.beacons
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BeaconItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
+
+object BeaconsBinding {
+    @BindingAdapter("beacons")
+    @JvmStatic
+    fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {
+        val beaconsAdapter = view.adapter as? BeaconsAdapter ?: return
+        beaconsAdapter.beacons = beacons ?: emptyList()
+    }
+}
 
 class BeaconsAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BeaconsAdapter.BeaconItemViewHolder>() {
 

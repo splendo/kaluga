@@ -17,19 +17,53 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 
+/**
+ * Data advertised by a Bluetooth [Device]
+ */
 interface BaseAdvertisementData {
+    /**
+     * The name of the Bluetooth device.
+     */
     val name: String?
+
+    /**
+     * The identifier of the manufacturer of the Bluetooth device
+     */
     val manufacturerId: Int?
+
+    /**
+     * The manufacturer specific data of the Bluetooth device
+     */
     val manufacturerData: ByteArray?
+
+    /**
+     * The list of [UUID] of services advertised by the Bluetooth device
+     */
     val serviceUUIDs: List<UUID>
+
+    /**
+     * A map of all the data of the services as advertised by the Bluetooth device
+     */
     val serviceData: Map<UUID, ByteArray?>
-    val txPowerLevel: Int
+
+    /**
+     * The [TxPower] of the packet
+     */
+    val txPowerLevel: TxPower
+
+    /**
+     * If `true` the [Device] can be connected to
+     */
     val isConnectable: Boolean
 }
 
+/**
+ * Platform specific implementation of [BaseAdvertisementData]
+ */
 expect class AdvertisementData : BaseAdvertisementData
 
 val BaseAdvertisementData.description: String get() = listOfNotNull(
@@ -40,4 +74,15 @@ val BaseAdvertisementData.description: String get() = listOfNotNull(
     if (serviceData.isEmpty()) null else { "ServiceData: ${serviceData.entries.joinToString(",") { (uuid, data) -> "[${uuid.uuidString} : $data]" } }" },
     "TxPowerLevel: $txPowerLevel",
     "IsConnectable: $isConnectable"
-).joinToString("\n").ifEmpty { "Empty Advertisement Data" }
+).joinToString("\n")
+
+internal data class PairedAdvertisementData(
+    override val name: String? = null,
+    override val serviceUUIDs: List<UUID> = emptyList()
+) : BaseAdvertisementData {
+    override val manufacturerId: Int? = null
+    override val manufacturerData: ByteArray? = null
+    override val serviceData: Map<UUID, ByteArray?> = emptyMap()
+    override val txPowerLevel = Int.MIN_VALUE
+    override val isConnectable = true
+}

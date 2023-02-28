@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,10 +21,19 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [LuminousEnergy]
+ */
 val LuminousEnergyUnits: Set<LuminousEnergy> get() = LuminousFluxUnits.flatMap { flux ->
     TimeUnits.map { flux x it }
 }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousEnergy]
+ * SI unit is `Lumen x Second`
+ * @property luminousFlux the [LuminousFlux] component
+ * @property time the [Time] component
+ */
 @Serializable
 data class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) : MetricAndImperialScientificUnit<PhysicalQuantity.LuminousEnergy> {
     override val symbol: String = "${luminousFlux.symbol}⋅${time.symbol}"
@@ -34,4 +43,9 @@ data class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) : Metr
     override fun toSIUnit(value: Decimal): Decimal = time.toSIUnit(luminousFlux.toSIUnit(value))
 }
 
+/**
+ * Gets a [LuminousEnergy] from a [LuminousFlux] and a [Time]
+ * @param time the [Time] component
+ * @return the [LuminousEnergy] represented by the units
+ */
 infix fun LuminousFlux.x(time: Time) = LuminousEnergy(this, time)

@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2022 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,10 +18,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocation
 import platform.Foundation.timeIntervalSince1970
+import kotlin.time.Duration.Companion.seconds
 
+/**
+ * The [Location.KnownLocation] of a [CLLocation]
+ */
 val CLLocation.knownLocation
     get() = coordinate.useContents {
         Location.KnownLocation(
@@ -32,6 +39,6 @@ val CLLocation.knownLocation
             verticalAccuracy = verticalAccuracy,
             course = course,
             speed = speed,
-            time = Location.Time.MeasuredTime(timestamp.timeIntervalSince1970.toLong() * 1_000L)
+            time = DefaultKalugaDate.epoch(timestamp.timeIntervalSince1970.seconds, KalugaTimeZone.current(), defaultLocale)
         )
     }
