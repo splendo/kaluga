@@ -1,13 +1,37 @@
 # Links
 
-Module used to decode an object from either an App Link, Universal Link or Deep Link's query. It also uses [kaluga-architecture](https://github.com/splendo/kaluga/tree/master/architecture) to open links in the Browser.
+Module used to decode an object from either an App Link, Universal Link or Deep Link's query.
 
-## Deserializer
-`LinksDecoder` is used to convert query values into an object and it takes a list of values and a serializer. **It is important that the values passed to `LinksDecoder` are ordered in the same way they are declared in the data class**.
-When `decodeFromList` is called, a `LinksDecoder` is created and it goes through the passed `List<Any>` one per one referring to the passed `serializer` in order to know the parameter's type and finally convert it.
-### Special usages
-- Query contains an array of values: In this case the query will have to contain a parameter (put just before the list of values) that identifies the size of that array. 
-``` kotlin
+## Installing
+This library is available on Maven Central. You can import Kaluga Links as follows:
+
+```kotlin
+repositories {
+    // ...
+    mavenCentral()
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga.links:$kalugaVersion")
+}
+```
+
+## Usage
+This library can be used to process an incoming URL into an object. This is useful when handling an App Link, Universal Link or Deep Link
+
+```kotlin
+val linksManager = DefaultLinksManager.Builder().create()
+val someClassOrNull = linksManager.validateLink(url)?.let {
+    linksManager.handleIncomingLink(it, SomeClass.serializer)
+}
+```
+
+The library parses the query parameters of a URL into a list of objects and decodes them into an object using a serializer.
+This means query parameters should be in the order at which the Serializer specifies them.
+When the object contains nested properties, they should be preceded by a numeric indicator of the amount of elements to expect:
+
+```kotlin
 @Serializable 
 data class Aliment(val name: String)
 
@@ -15,69 +39,8 @@ data class Aliment(val name: String)
 data class Recipe(val name: String, val ingredients: List<Aliment>)
 
 // Somewhere in the code
-val query = "name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
-```
-The list size's parameter name is not important and is not included in the data class parameters, but it is requested by the decoder.
+val url = "https://kaluga.splendo.com/?name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
 
-
-## Usage
-
-The entry point for universal links or dynamic links in Android or iOS are `MainActivity.kt` and `AppDelegate.swift`. 
-Said so `MainActivity.kt` will have to override `onNewIntent` and call `handleIncomingLink`, while on iOS you should override the `application` method that receives a `NSUserActivity`.
-
-
-``` kotlin
-// MainActivity.kt
-
-override fun onNewIntent(intent: Intent?) {
-    super.onNewIntent(intent)
-    val appLinkData: Uri? = intent?.data
-		appLinkData?.let {
-		    val url = URL(it.path)
-		    sharedViewModel.handleIncomingData(url, Person.serializer())
-		}	
-}
 ```
 
-``` swift
-// AppDelegate.swift
-func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([NSUserActivityRestoring]) -> Void) -> Bool {
-    // Get URL components from the incoming user activity.
-    guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-        let incomingURL = userActivity.webpageURL else {
-        return false
-    }
-    
-    viewController.viewModel.handleIncomingData(incomingUrl, Person.Companion.serializer())
-}
-```
-
-
-
-``` kotlin
-// common data class
-@Serializable
-data class Person(val name: String, val surname: String)
-
-// ExampleSharedViewModel
-class SharedViewModel(
-    linksBuilder: LinksBuilder,
-    navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
-) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
-    private val links = linksBuilder.create()
-    
-    fun <T> handleIncomingData(url: String, serializer: KSerializer<T>) {
-        links.handleIncomingLink(url, serializer)
-    }
-    
-    fun handleOutgoingLink(url: String) {
-        links.validateLink(url)
-    }
-}
-```
-
-### Android
-Android `PlatformLinksHandler` implementation uses `UrlQuerySanitizer` in order to extract the full query from a url. Keep in mind that `UrlQuerySanitizer`
-will convert space characters into underscore character. Instead use `+` character between 2 words if you want to represent a space.
-
-Follow [navigation](https://github.com/splendo/kaluga/tree/master/architecture#navigation) in order to create a `Navigator`.
+The names of the parameters are ignored when decoding.

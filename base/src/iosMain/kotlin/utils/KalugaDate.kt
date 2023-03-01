@@ -39,37 +39,58 @@ import platform.Foundation.compare
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.dateWithTimeIntervalSinceNow
 import platform.Foundation.timeIntervalSince1970
-import kotlin.math.round
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 actual typealias KalugaDateHolder = NSDate
 
+/**
+ * Default implementation of [KalugaDate]
+ */
 actual class DefaultKalugaDate internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : KalugaDate() {
     actual companion object {
 
-        const val nanoSecondPerMilliSecond = 1000 * 1000
+        private val nanoSecondPerMilliSecond = 1.milliseconds.inWholeNanoseconds.toInt()
 
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate {
+        /**
+         * Creates a [KalugaDate] relative to the current time
+         * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
+        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate {
             val calendar = NSCalendar.currentCalendar.apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
             }
-            val date = NSDate.dateWithTimeIntervalSinceNow(offsetInMilliseconds.toDouble() / 1000.0)
+            val date = NSDate.dateWithTimeIntervalSinceNow(offset.toDouble(DurationUnit.SECONDS))
             return DefaultKalugaDate(calendar, date)
         }
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate {
+
+        /**
+         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
+         * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
+        actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate {
             val calendar = NSCalendar.currentCalendar.apply {
                 this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
             }
-            val date = NSDate.dateWithTimeIntervalSince1970(offsetInMilliseconds.toDouble() / 1000.0)
+            val date = NSDate.dateWithTimeIntervalSince1970(offset.toDouble(DurationUnit.SECONDS))
             return DefaultKalugaDate(calendar, date)
         }
     }
 
     override var date: NSDate = initialDate
 
-    override var timeZone: TimeZone
-        get() = TimeZone(calendar.timeZone)
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone(calendar.timeZone)
         set(value) { calendar.timeZone = value.timeZone }
     override var era: Int
         get() = calendar.component(NSCalendarUnitEra, fromDate = date).toInt()
@@ -112,19 +133,15 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
     override var millisecond: Int
         get() = calendar.component(NSCalendarUnitNanosecond, fromDate = date).toInt() / nanoSecondPerMilliSecond
         set(value) { updateDateForComponent(NSCalendarUnitNanosecond, value * nanoSecondPerMilliSecond) }
-    override var millisecondSinceEpoch: Long
-        get() {
-            val time = date.timeIntervalSince1970
-            val decimalDigits = (time % 1.0) * 1000
-            return time.toLong() * 1000L + round(decimalDigits).toLong()
-        }
-        set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble() / 1000.0) }
+    override var durationSinceEpoch: Duration
+        get() = date.timeIntervalSince1970.seconds
+        set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble(DurationUnit.SECONDS)) }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
     override fun equals(other: Any?): Boolean {
         return if (other is DefaultKalugaDate) {
-            calendar.calendarIdentifier == other.calendar.calendarIdentifier && millisecondSinceEpoch == other.millisecondSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
+            calendar.calendarIdentifier == other.calendar.calendarIdentifier && durationSinceEpoch == other.durationSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
         } else false
     }
 
@@ -159,10 +176,11 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         }
         if (canSetComponent) {
             // If the new value is lower than the old one, make sure we go backwards as otherwise the next highest component will increase
-            val calendarOptions = if (value.toLong() < calendar.component(component, date))
+            val calendarOptions = if (value.toLong() < calendar.component(component, date)) {
                 NSCalendarMatchPreviousTimePreservingSmallerUnits or NSCalendarSearchBackwards
-            else
+            } else {
                 NSCalendarMatchNextTimePreservingSmallerUnits
+            }
             calendar.dateBySettingUnit(component, value.toLong(), date, calendarOptions)
         } else {
             val previousValue = calendar.component(component, this.date)

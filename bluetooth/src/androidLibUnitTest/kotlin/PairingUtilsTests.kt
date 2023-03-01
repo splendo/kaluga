@@ -72,7 +72,7 @@ class PairingUtilsTests : BaseTest() {
                 MockAdvertisementData(NAME)
             ),
             ConnectionSettings(),
-            { manager.create(MockDeviceWrapper(NAME, NAME, 0, true), ConnectionSettings(), coroutineScope) },
+            { manager.create(MockDeviceWrapper(NAME, NAME, DeviceWrapper.BondState.NONE, true), ConnectionSettings(), coroutineScope) },
             coroutineScope
         )
     }

@@ -31,7 +31,7 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 class MockDeviceWrapper(
     override val name: String?,
     override val identifier: Identifier,
-    override val bondState: Int,
+    override val bondState: DeviceWrapper.BondState,
     setupMocks: Boolean = true
 ) : DeviceWrapper {
 

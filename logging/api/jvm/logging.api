@@ -181,11 +181,6 @@ public final class com/splendo/kaluga/logging/NapierLogger : com/splendo/kaluga/
 	public fun log (Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
 }
 
-public final class com/splendo/kaluga/logging/NapierLoggerKt {
-	public static final fun getLogLevel ()[Lio/github/aakira/napier/LogLevel;
-	public static final fun logLevel (Lcom/splendo/kaluga/logging/LogLevel;)Lio/github/aakira/napier/LogLevel;
-}
-
 public abstract class com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field Companion Lcom/splendo/kaluga/logging/RestrictedLogLevel$Companion;
 	public synthetic fun <init> (Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V

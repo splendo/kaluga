@@ -1,5 +1,4 @@
 # Test Utils Architecture
-
 This library adds support for testing the [`architecture` module](../architecture) to [`test-utils`](../test-utils-base)
 
 ## Installing
@@ -19,7 +18,7 @@ dependencies {
 
 ## Testing a ViewModel when testing from the background
 
-It's also possible use the UI Thread context to create a kaluga ViewModel. 
+It's also possible use the UI Thread context to create a Kaluga ViewModel. 
 This can be done by extending `BaseUIThreadViewModelTest` or `UIThreadViewModelTest`.
 
 ```kotlin

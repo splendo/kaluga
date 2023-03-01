@@ -23,6 +23,7 @@ import com.splendo.kaluga.architecture.TestActivity
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.test.architecture.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

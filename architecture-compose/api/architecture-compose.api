@@ -47,7 +47,7 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/BottomS
 	protected final fun SetupNavigationAction (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/compose/runtime/Composer;I)V
 	protected abstract fun getContentModifier ()Lkotlin/jvm/functions/Function4;
 	public final fun getModifier ()Lkotlin/jvm/functions/Function4;
-	public abstract fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetRouteController;
+	protected abstract fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetRouteController;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
 }
 
@@ -111,8 +111,6 @@ public final class com/splendo/kaluga/architecture/compose/navigation/BottomShee
 	public static final field $stable I
 	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;Ljava/util/List;Lkotlin/jvm/functions/Function3;)V
 	public synthetic fun <init> (Lkotlinx/coroutines/flow/StateFlow;Ljava/util/List;Lkotlin/jvm/functions/Function3;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getContentModifier ()Lkotlin/jvm/functions/Function4;
-	public fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetSheetContentRouteController;
 	public synthetic fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
 }
 
@@ -218,9 +216,9 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/Composa
 	public static final field $stable I
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected final fun SetupNavigationAction (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/compose/runtime/Composer;I)V
-	public abstract fun getContentModifier ()Lkotlin/jvm/functions/Function4;
+	protected abstract fun getContentModifier ()Lkotlin/jvm/functions/Function4;
 	public final fun getModifier ()Lkotlin/jvm/functions/Function4;
-	public abstract fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
+	protected abstract fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
 	public fun navigate (Lcom/splendo/kaluga/architecture/navigation/NavigationAction;)V
 }
 
@@ -243,15 +241,12 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Composable
 public final class com/splendo/kaluga/architecture/compose/navigation/LaunchedComposableNavigator : com/splendo/kaluga/architecture/compose/navigation/ComposableNavigator {
 	public static final field $stable I
 	public fun <init> (Lkotlin/jvm/functions/Function3;)V
-	public fun getContentModifier ()Lkotlin/jvm/functions/Function4;
-	public fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/ModalBottomSheetNavigator : com/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigator {
 	public static final field $stable I
 	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function3;)V
 	public synthetic fun <init> (Lkotlinx/coroutines/flow/StateFlow;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function3;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetRouteController;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/NavGraphBuilderKt {
@@ -282,8 +277,8 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/Providi
 	public static final field $stable I
 	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/compose/navigation/ProvidingNavHostRouteController;Ljava/util/List;Lkotlin/jvm/functions/Function3;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/compose/navigation/ProvidingNavHostRouteController;Ljava/util/List;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getContentModifier ()Lkotlin/jvm/functions/Function4;
-	public fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/ProvidingNavHostRouteController;
+	protected fun getContentModifier ()Lkotlin/jvm/functions/Function4;
+	protected fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/ProvidingNavHostRouteController;
 	public synthetic fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
 }
 
@@ -302,15 +297,12 @@ public final class com/splendo/kaluga/architecture/compose/navigation/RootModalB
 	public static final field $stable I
 	public fun <init> (Lkotlin/jvm/functions/Function3;Landroidx/compose/material/ModalBottomSheetValue;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Landroidx/compose/material/ModalBottomSheetValue;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetRouteController;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/RootNavHostComposableNavigator : com/splendo/kaluga/architecture/compose/navigation/ComposableNavigator {
 	public static final field $stable I
 	public fun <init> (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getContentModifier ()Lkotlin/jvm/functions/Function4;
-	public fun getRouteController ()Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;
 }
 
 public abstract class com/splendo/kaluga/architecture/compose/navigation/Route : com/splendo/kaluga/architecture/compose/navigation/ComposableNavSpec {
@@ -470,52 +462,60 @@ public final class com/splendo/kaluga/architecture/compose/navigation/SetupNavHo
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/result/HandleResultKt {
+	public static final fun HandleBooleanArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleBooleanArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleBooleanOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleBooleanResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleByteArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleByteArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleByteOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleByteResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleCharArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleCharArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleCharOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleCharResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleCharSequenceOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleCharSequenceResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDateArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDateArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDateOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDateResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDoubleArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDoubleArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDoubleOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleDoubleResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleFloatArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleFloatArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleFloatOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleFloatResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleIntArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleIntArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleIntOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleIntResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleLongArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleLongArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleLongOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleLongResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleNullableResultOrNull (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun HandleResult (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun HandleResult (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleResultOfNullableTypeOrNull (Landroidx/navigation/NavHostController;Lkotlinx/serialization/KSerializer;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleResultOfType (Landroidx/navigation/NavHostController;Lkotlinx/serialization/KSerializer;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleResultOfTypeOrNull (Landroidx/navigation/NavHostController;Lkotlinx/serialization/KSerializer;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleResultOrNull (Landroidx/navigation/NavHostController;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleShortArrayOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleShortArrayResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleShortOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleShortResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleStringListOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleStringListResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleStringOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleStringResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 }
 
-public abstract class com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler {
+public final class com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler {
 	public static final field $stable I
-	public abstract fun getOnResult ()Lkotlin/jvm/functions/Function2;
-	public abstract fun getRetain ()Z
-	public abstract fun getViewModelClass ()Lkotlin/reflect/KClass;
-}
-
-public final class com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Bundle : com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler {
-	public static final field $stable I
-	public fun <init> (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;ZLkotlin/jvm/functions/Function2;)V
-	public synthetic fun <init> (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;ZLkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lkotlin/reflect/KClass;
-	public final fun component2 ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;
-	public final fun component3 ()Z
-	public final fun component4 ()Lkotlin/jvm/functions/Function2;
-	public final fun copy (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;ZLkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Bundle;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Bundle;Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Bundle;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getOnResult ()Lkotlin/jvm/functions/Function2;
-	public fun getRetain ()Z
-	public final fun getSpec ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpec;
-	public fun getViewModelClass ()Lkotlin/reflect/KClass;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Type : com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler {
-	public static final field $stable I
-	public fun <init> (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function2;)V
-	public final fun component1 ()Lkotlin/reflect/KClass;
-	public final fun component2 ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;
-	public final fun component3 ()Z
-	public final fun component4 ()Lkotlin/jvm/functions/Function2;
-	public final fun copy (Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Type;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Type;Lkotlin/reflect/KClass;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler$Type;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getOnResult ()Lkotlin/jvm/functions/Function2;
-	public fun getRetain ()Z
-	public final fun getSpec ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;
-	public fun getViewModelClass ()Lkotlin/reflect/KClass;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;)V
 }
 
 public abstract class com/splendo/kaluga/architecture/compose/viewModel/KalugaViewModelComposeActivity : androidx/appcompat/app/AppCompatActivity {

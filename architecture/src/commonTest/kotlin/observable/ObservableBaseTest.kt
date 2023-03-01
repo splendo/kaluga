@@ -115,17 +115,21 @@ abstract class ObservableBaseTest : BaseTest() {
     )
 
     fun <O : BasicObservable<String, String?, Value<String>>> Pair<String?, String>.asNullableUpdate(useSetter: Boolean): (O) -> Value<String> = {
-        if (useSetter)
-            (it as? SuspendableSetter<String?>)?.let { runBlocking { it.set(this@asNullableUpdate.first) } } ?: throw Exception("Could not set value")
-        else
+        if (useSetter) {
+            (it as? SuspendableSetter<String?>)?.let { runBlocking { it.set(this@asNullableUpdate.first) } }
+                ?: throw Exception("Could not set value")
+        } else {
             (it as? Postable<String?>)?.post(this.first) ?: throw Exception("Could not post value")
+        }
         Value(this.second)
     }
 
     fun <V : String?, OO : ObservableOptional<V>, O : BasicObservable<V, V, OO>> Pair<V, V>.asUpdate(useSetter: Boolean): (O) -> Value<V> = {
-        if (useSetter)
-            (it as? SuspendableSetter<V>)?.let { runBlocking { it.set(this@asUpdate.first) } } ?: throw Exception("Could not set value")
-        else
+        if (useSetter) {
+            (it as? SuspendableSetter<V>)?.let {
+                runBlocking { it.set(this@asUpdate.first) }
+            } ?: throw Exception("Could not set value")
+        } else
             (it as? Postable<V>)?.post(this.first) ?: throw Exception("Could not post value")
 
         Value(this.second)

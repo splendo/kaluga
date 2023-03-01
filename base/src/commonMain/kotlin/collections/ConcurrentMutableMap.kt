@@ -20,6 +20,11 @@ package com.splendo.kaluga.base.collections
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
+/**
+ * A [MutableMap] that ensures all calls to is happen in a concurrent way.
+ * @param K the type of map keys. The map is invariant in its key type.
+ * @param V the type of map values. The mutable map is invariant in its value type.
+ */
 class ConcurrentMutableMap<K, V> internal constructor(private val internal: MutableMap<K, V> = mutableMapOf()) : MutableMap<K, V> {
     private val lock = reentrantLock()
 
@@ -51,8 +56,21 @@ class ConcurrentMutableMap<K, V> internal constructor(private val internal: Muta
     override fun hashCode(): Int = internal.hashCode()
     override fun toString(): String = internal.toString()
 
+    /**
+     * Synchronizes an action block on the [MutableMap]
+     * @param action The action block to execute concurrently
+     * @return The result of the [action] block
+     */
     fun <T> synchronized(action: MutableMap<K, V>.() -> T): T = lock.withLock { internal.action() }
 }
 
+/**
+ * Creates an empty [ConcurrentMutableMap]
+ */
 fun <K, V> concurrentMutableMapOf() = ConcurrentMutableMap<K, V>(mutableMapOf())
+
+/**
+ * Creates a [ConcurrentMutableMap] containing [entries].
+ * @param entries The key-value pairs to add to the [ConcurrentMutableMap]
+ */
 fun <K, V> concurrentMutableMapOf(vararg entries: Pair<K, V>) = ConcurrentMutableMap(mutableMapOf(*entries))

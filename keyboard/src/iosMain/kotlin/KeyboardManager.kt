@@ -22,8 +22,16 @@ import kotlinx.coroutines.CoroutineScope
 import platform.UIKit.UIApplication
 import platform.darwin.sel_registerName
 
+/**
+ * A [BaseKeyboardManager] that takes a [UIKitFocusHandler]. Used for managing the keyboard in UIKit views.
+ * @param application The [UIApplication] that the keyboard is running in.
+ */
 class UIKitKeyboardManager(private val application: UIApplication) : BaseKeyboardManager<UIKitFocusHandler> {
 
+    /**
+     * Builder for a [UIKitKeyboardManager]
+     * @param application The [UIApplication] that the keyboard is running in.
+     */
     class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder<UIKitFocusHandler> {
         override fun create(coroutineScope: CoroutineScope) = UIKitKeyboardManager(application)
     }
@@ -37,6 +45,11 @@ class UIKitKeyboardManager(private val application: UIApplication) : BaseKeyboar
     }
 }
 
+/**
+ * A [BaseKeyboardManager] that takes a [ValueFocusHandler]. Uses for managing keyboard in a generic way so that it allows for usage from SwiftUI.
+ * @param Value the type of value to expect
+ * @param onFocusOnValue callback method to indicate how to handle a focus change to a [Value]. When `null` is provided, they keyboard should be dismissed.
+ */
 open class ValueKeyboardManager<Value>(private val onFocusOnValue: (Value?) -> Unit) : BaseKeyboardManager<ValueFocusHandler<Value>> {
     override fun show(focusHandler: ValueFocusHandler<Value>) {
         onFocusOnValue(focusHandler.value)

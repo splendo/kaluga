@@ -94,7 +94,7 @@ class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) 
                 loremIpsum.styled(
                     styledStringBuilderProvider,
                     TextStyles.defaultText,
-                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent(10.0f)) }
+                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent(10.0f, 15.0f)) }
                 ),
             ),
             KalugaLabel.Styled(

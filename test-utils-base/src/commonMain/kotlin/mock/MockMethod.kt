@@ -47,7 +47,7 @@ sealed class BaseMethodMock<
     > {
 
     /**
-     * A Stub is a class that provides an [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
+     * A Stub is a class that provides a [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
      */
     abstract class Stub<
         M : ParametersSpec.Matchers,
@@ -105,8 +105,11 @@ sealed class BaseMethodMock<
         val matchingStubs = stubs.synchronized {
             keys.mapNotNull { matchers ->
                 val stub = this[matchers]
-                if (ParametersSpec.run { matchers.matches(values) } && stub != null) matchers.asList()
-                    .sorted() to stub else null
+                if (ParametersSpec.run { matchers.matches(values) } && stub != null) {
+                    matchers.asList().sorted() to stub
+                } else {
+                    null
+                }
             }
         }
         // Ensure there is at least one stub. Otherwise fail

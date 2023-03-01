@@ -104,6 +104,7 @@ object Dependencies {
         private const val groupBase = "com.google.accompanist"
         private const val version = "0.28.0"
 
+        val DrawablePainter = Dependency(groupBase, "accompanist-drawablepainter", version)
         val MaterialThemeAdapter = Dependency(groupBase, "accompanist-themeadapter-material", version)
     }
 

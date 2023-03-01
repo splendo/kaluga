@@ -23,6 +23,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Runs a new coroutine and blocks the current thread interruptibly until its completion.
+ * Since JavaScript does not support threading, this will just run block on [GlobalScope]
+ * @param context the context of the coroutine. The default value is an event loop on the current thread.
+ * @param block the coroutine code.
+ */
 actual fun <T> runBlocking(
     context: CoroutineContext,
     block: suspend CoroutineScope.() -> T

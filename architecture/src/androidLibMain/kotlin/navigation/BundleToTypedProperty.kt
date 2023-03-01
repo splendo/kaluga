@@ -36,14 +36,28 @@ fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
  * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType] either directly or wrapped in [NavigationBundleSpecType.OptionalType]
  * @return The [R] value stored in the bundle.
  */
-fun <R> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
+fun <R : Any> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
     toTypedProperty(type)
 } catch (e: BundleConversionError) {
     try {
-        toTypedProperty(NavigationBundleSpecType.OptionalType(type))
+        (type as? NavigationBundleSpecType.NonNullableNavigationBundleSpecType)?.let {
+            toTypedProperty(NavigationBundleSpecType.OptionalType(it))
+        }
     } catch (e: BundleConversionError) {
         null
     }
+}
+
+/**
+ * Converts a [Bundle] to a [R] property associated with a [NavigationBundleSpecType]
+ * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType].
+ * @return The [R] value stored in the bundle.
+ */
+@JvmName("toNullableTypedPropertyOrNull")
+fun <R> Bundle.toTypedPropertyOrNull(type: NavigationBundleSpecType<R>): R? = try {
+    toTypedProperty(type)
+} catch (e: BundleConversionError) {
+    null
 }
 
 /**
@@ -343,6 +357,7 @@ fun Bundle.asStringListOrNull(): List<String>? = toTypedPropertyOrNull(Navigatio
 /**
  * Converts a [Bundle] to [T].
  * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.SerializedType] with [serializer]
+ * @param T the type of serialized property stored in the bundle
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle.
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
@@ -351,7 +366,17 @@ fun <T> Bundle.asTypeOf(serializer: KSerializer<T>): T = toTypedProperty(Navigat
 
 /**
  * Converts a [Bundle] to [T] if is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.SerializedType] with [serializer] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
+ * @param T the type of serialized property stored in the bundle
  * @param serializer The [KSerializer] to deserialize [T] from the bundle.
  * @return The [T] stored in the bundle or null if no such value was found.
  */
+fun <T : Any> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))
+
+/**
+ * Converts a [Bundle] to [T] if is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.SerializedType] with [serializer].
+ * @param T the type of serialized property stored in the bundle
+ * @param serializer The [KSerializer] to deserialize [T] from the bundle.
+ * @return The [T] stored in the bundle or null if no such value was found.
+ */
+@JvmName("asNullableTypeOfOrNull")
 fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))

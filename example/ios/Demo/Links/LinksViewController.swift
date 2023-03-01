@@ -26,7 +26,7 @@ class LinksViewController: UIViewController {
 
     private lazy var navigator: ViewControllerNavigator<BrowserNavigationActions<AnyObject>> = BrowserNavigatorKt.BrowserNavigator(parent: self)
     private lazy var viewModel = LinksViewModel(
-        linkRepoBuilder: LinksLinksBuilder(),
+        linkManagerBuilder: DefaultLinksManager.Builder(),
         alertPresenterBuilder: AlertPresenter.Builder(viewController: self),
         navigator: navigator
     )

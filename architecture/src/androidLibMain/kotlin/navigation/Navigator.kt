@@ -26,10 +26,20 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscriber
+import com.splendo.kaluga.architecture.lifecycle.DefaultActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
+/**
+ * Class that can trigger a given [NavigationAction]
+ * @param Action the type of [NavigationAction] this navigator should respond to.
+ */
 actual interface Navigator<Action : NavigationAction<*>> : LifecycleSubscribable {
+
+    /**
+     * Triggers a given [NavigationAction]
+     * @param action The [A] to trigger
+     * @throws [NavigationException] if navigation fails.
+     */
     actual fun navigate(action: Action)
 }
 
@@ -40,9 +50,10 @@ object MissingActivityNavigationException : NavigationException("LifecycleManage
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
  * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
  * Requires to be subscribed to an activity via [subscribe] to work
- * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
+ * @param Action The type of [NavigationAction] handled by this navigator.
+ * @param navigationMapper A function mapping the [Action] to [NavigationSpec]
  */
-class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action>, ActivityLifecycleSubscribable by ActivityLifecycleSubscriber() {
+class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action>, ActivityLifecycleSubscribable by DefaultActivityLifecycleSubscribable() {
 
     override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)

@@ -19,9 +19,23 @@ package com.splendo.kaluga.scientific.formatter
 
 import com.splendo.kaluga.scientific.ScientificValue
 
+/**
+ * Interface for formatting a [ScientificValue] to a String
+ */
 interface ScientificValueFormatter {
+
+    /**
+     * Formats a [ScientificValue] into a String
+     * @param value the [ScientificValue] to format
+     * @return the formatted text
+     */
     fun format(value: ScientificValue<*, *>): String
 }
 
+/**
+ * Gets the String representation of a [ScientificValue] using a [ScientificValueFormatter]
+ * @param formatter the [ScientificValueFormatter] to use for formatting
+ * @return the String representation of the [ScientificValue]
+ */
 fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonScientificValueFormatter): String =
     formatter.format(this)

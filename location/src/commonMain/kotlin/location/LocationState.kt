@@ -22,54 +22,149 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import com.splendo.kaluga.base.utils.KalugaDate
+import com.splendo.kaluga.base.utils.minus
+import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.permissions.base.PermissionState.Inactive
+import com.splendo.kaluga.permissions.base.PermissionState.Initialized
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.transformLatest
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.Duration.Companion.seconds
 
 /**
- * State of a [LocationStateRepo]
+ * A [KalugaState] of a [Location]
  */
 sealed interface LocationState : KalugaState {
+
+    /**
+     * The [Location] during this state
+     */
     val location: Location
 
+    /**
+     * A [LocationState] indicating observation is not active
+     */
     sealed interface Inactive : LocationState, SpecialFlowValue.NotImportant
+
+    /**
+     * An [Inactive] State indicating observation has not started yet
+     */
     interface NotInitialized : Inactive
+
+    /**
+     * An [Inactive] State indicating observation has stopped after being started
+     */
     interface Deinitialized : Inactive {
+
+        /**
+         * Transitions into an [Initializing] State
+         */
         val reinitialize: suspend () -> Initializing
     }
 
+    /**
+     * A [LocationState] indicating observation has started
+     */
     sealed interface Active : LocationState {
+
+        /**
+         * Transitions into a [Deinitialized] State
+         */
         val deinitialized: suspend () -> Deinitialized
     }
 
+    /**
+     * An [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
+     */
     interface Initializing : Active, SpecialFlowValue.NotImportant {
+
+        /**
+         * Transitions into an [Initialized] State
+         * @param hasPermission if `true` the [com.splendo.kaluga.permissions.location.LocationPermission] has been granted
+         * @param enabled if `true` the location service is enabled
+         * @return method for transitioning into an [Initialized] State
+         */
         fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> Initialized
     }
+
+    /**
+     * An [Active] State indicating observation has started and initialization has completed
+     */
     sealed interface Initialized : Active
+
+    /**
+     * An [Initialized] State indicating the [com.splendo.kaluga.permissions.location.LocationPermission] has been granted
+     */
     sealed interface Permitted : Initialized {
+
+        /**
+         * Transitions into a [Disabled.NotPermitted] State
+         */
         val revokePermission: suspend () -> Disabled.NotPermitted
     }
+
+    /**
+     * An [Initialized] State indicating that location is not being collected
+     */
     sealed interface Disabled : Initialized {
+
+        /**
+         * A [Disabled] State indicating the Location service is disabled
+         */
         interface NoGPS : Disabled, Permitted {
+
+            /**
+             * Transitions into an [Enabled] State
+             */
             val enable: suspend () -> Enabled
         }
+
+        /**
+         * A [Disabled] State indicating the [com.splendo.kaluga.permissions.location.LocationPermission] has not been granted
+         */
         interface NotPermitted : Disabled {
+
+            /**
+             * Transitions into a [Permitted] State
+             * @param enabled if `true` the Location service is enabled
+             * @return method for transition into a [Permitted] State
+             */
             fun permit(enabled: Boolean): suspend () -> Permitted
         }
     }
+
+    /**
+     * A [Permitted] State indicating location is being collected
+     */
     interface Enabled : Permitted {
+
+        /**
+         * Transitions into a [Disabled.NoGPS] State
+         */
         val disable: suspend () -> Disabled.NoGPS
+
+        /**
+         * Transitions into an [Enabled] State with a new [Location.KnownLocation]
+         * @param location the new [Location.KnownLocation]
+         * @return method for transitioning into an [Enabled] State with the new [location]
+         */
         fun updateWithLocation(location: Location.KnownLocation): suspend () -> Enabled
     }
 }
 
-sealed class LocationStateImpl {
+internal sealed class LocationStateImpl {
 
     abstract val location: Location
 
     object NotInitialized : LocationStateImpl(), LocationState.NotInitialized {
         override val location: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
-        fun startInitializing(locationManager: LocationManager): suspend () -> LocationState.Initializing = { Initializing(location, locationManager) }
+
+        fun startInitializing(locationManager: LocationManager): suspend () -> Initializing = { Initializing(location, locationManager) }
     }
 
     data class Deinitialized(
@@ -83,7 +178,7 @@ sealed class LocationStateImpl {
 
         protected abstract val locationManager: LocationManager
 
-        val deinitialized: suspend () -> LocationState.Deinitialized = { Deinitialized(location, locationManager) }
+        val deinitialized: suspend () -> Deinitialized = { Deinitialized(location, locationManager) }
 
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
@@ -102,11 +197,11 @@ sealed class LocationStateImpl {
 
     class PermittedHandler(val location: Location, private val locationManager: LocationManager) {
 
-        val revokePermission: suspend () -> Disabled.NotPermitted = {
+        internal val revokePermission: suspend () -> Disabled.NotPermitted = {
             Disabled.NotPermitted(location, locationManager)
         }
 
-        suspend fun afterNewStateIsSet(newState: LocationState) {
+        internal suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
                 is LocationState.Inactive,
                 is LocationState.Initializing,
@@ -115,7 +210,7 @@ sealed class LocationStateImpl {
             }
         }
 
-        suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
+        internal suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
                 is LocationState.Inactive,
                 is LocationState.Initializing,
@@ -136,43 +231,24 @@ sealed class LocationStateImpl {
         }
     }
 
-    /**
-     * A [LocationState] that is not actively fetching new [Location]s.
-     */
     sealed class Disabled : Active() {
 
-        /**
-         * A [LocationState.Disabled] that was disabled due to missing permissions.
-         */
         class NotPermitted(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NotPermitted {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED)
 
-            /**
-             * Transforms this state into [LocationState] that has sufficient permissions
-             * @param enabled `true` if GPS is turned on, `false` otherwise.
-             */
             override fun permit(enabled: Boolean): suspend () -> LocationState.Permitted = {
                 if (enabled) Enabled(location.known.orUnknown, locationManager) else NoGPS(location, locationManager)
             }
         }
 
-        /**
-         * A [LocationState.Disabled] that was disabled due to GPS being turned off.
-         */
         class NoGPS(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NoGPS {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)
             private val permittedHandler = PermittedHandler(location, locationManager)
 
-            /**
-             * Transforms this state into a [LocationState.Disabled.NotPermitted] state.
-             */
             override val revokePermission: suspend () -> NotPermitted = permittedHandler.revokePermission
 
-            /**
-             * Transforms this state into a [LocationState.Enabled] state.
-             */
             override val enable: suspend () -> Enabled = {
                 Enabled(location.known.orUnknown, locationManager)
             }
@@ -189,21 +265,11 @@ sealed class LocationStateImpl {
         }
     }
 
-    /**
-     * A [LocationState] that is actively updating its [Location].
-     */
     data class Enabled(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Enabled {
 
         private val permittedHandler = PermittedHandler(location, locationManager)
 
-        /**
-         * Transforms this state into a [LocationState.Disabled.NotPermitted] state.
-         */
         override val revokePermission: suspend () -> Disabled.NotPermitted = permittedHandler.revokePermission
-
-        /**
-         * Transforms this state into a [LocationState.Disabled.NoGPS] state.
-         */
         override val disable: suspend () -> Disabled.NoGPS = {
             Disabled.NoGPS(location, locationManager)
         }
@@ -234,9 +300,33 @@ sealed class LocationStateImpl {
 
 /**
  * Transforms a [Flow] of [LocationState] into a flow of its associated [Location]
+ * @return the [Flow] of [Location] associated with the [LocationState]
  */
 fun Flow<LocationState>.location(): Flow<Location> {
     return this.filterOnlyImportant().map { it.location }
 }
 
-fun Flow<Location>.known(): Flow<Location.KnownLocation> = mapNotNull { location -> location.known }
+/**
+ * Transforms a [Flow] of [LocationState] into a flow of its associated optional [Location.KnownLocation]
+ *
+ * @param maxAge Controls both the max age of a location by filtering out locations that are older and
+ * is used to set a timeout for the last emission that will emit null when triggered
+ * @return a [Flow] of the [Location.KnownLocation] associated with the [LocationState], emitting `null` if the [maxAge] is reached.
+ */
+fun Flow<Location>.known(maxAge: Duration = 0.seconds) = known(maxAge) { DefaultKalugaDate.now() }
+
+internal fun Flow<Location>.known(maxAge: Duration, nowProvider: () -> KalugaDate): Flow<Location.KnownLocation?> = transformLatest { location ->
+    location.known?.let { knownLocation ->
+        val expirationTime = knownLocation.time + maxAge
+        val now = nowProvider()
+        when {
+            maxAge <= ZERO -> emit(knownLocation)
+            expirationTime <= now -> emit(null)
+            else -> {
+                emit(knownLocation)
+                delay(expirationTime - now)
+                emit(null)
+            }
+        }
+    } ?: emit(null)
+}

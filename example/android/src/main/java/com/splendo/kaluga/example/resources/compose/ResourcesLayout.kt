@@ -72,12 +72,14 @@ fun ResourcesLayout() {
                         when (action) {
                             is ResourcesListNavigationAction.Button -> action.next
                             is ResourcesListNavigationAction.Color -> action.next
+                            is ResourcesListNavigationAction.Image -> action.next
                             is ResourcesListNavigationAction.Label -> action.next
                         }
                     }
                 ) {
                     composable(ResourcesListNavigationAction.Button.route()) { ButtonsLayout() }
                     composable(ResourcesListNavigationAction.Color.route()) { ColorsLayout() }
+                    composable(ResourcesListNavigationAction.Image.route()) { ImagesLayout() }
                     composable(ResourcesListNavigationAction.Label.route()) { LabelsLayout() }
                 }
             )

@@ -22,6 +22,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [ElectricCharge]
+ */
 val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
     Coulomb,
     Nanocoulomb,
@@ -37,6 +40,10 @@ val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
     Abcoulomb
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricCharge]
+ * SI unit is [Coulomb]
+ */
 @Serializable
 sealed class ElectricCharge : AbstractScientificUnit<PhysicalQuantity.ElectricCharge>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCharge>
 
@@ -77,4 +84,7 @@ object Megacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.Met
 @Serializable
 object Gigacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Giga(Coulomb)
 
+/**
+ * The [ElectricCharge] carried by a single proton
+ */
 val elementaryCharge = 1.602176634e-19(Coulomb)

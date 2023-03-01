@@ -40,6 +40,7 @@ class XMLResourcesActivity : KalugaViewModelActivity<ResourcesListViewModel>() {
                 when (action) {
                     is ResourcesListNavigationAction.Label -> NavigationSpec.Activity<LabelActivity>()
                     is ResourcesListNavigationAction.Color -> NavigationSpec.Activity<ColorActivity>()
+                    is ResourcesListNavigationAction.Image -> NavigationSpec.Activity<ImagesActivity>()
                     is ResourcesListNavigationAction.Button -> NavigationSpec.Activity<ButtonActivity>()
                 }
             }

@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.test.resources
 
-import com.splendo.kaluga.resources.Font
-import com.splendo.kaluga.resources.Image
+import com.splendo.kaluga.resources.KalugaFont
+import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.KalugaColor
 
 actual fun mockColor(): KalugaColor = 0
-actual fun mockImage(): Image = Image()
-actual fun mockFont(): Font = Font()
+actual fun mockImage(): KalugaImage = KalugaImage()
+actual fun mockFont(): KalugaFont = KalugaFont()

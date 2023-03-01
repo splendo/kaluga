@@ -19,15 +19,42 @@ package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattDescriptor
 
+/**
+ * Accessor to a [BluetoothGattDescriptor]
+ */
 actual interface DescriptorWrapper {
+
+    /**
+     * The [UUID] of the descriptor
+     */
     actual val uuid: java.util.UUID
+
+    /**
+     * The current [Value] of the descriptor
+     */
     actual val value: ByteArray?
+
+    /**
+     * Accessor for updating [DescriptorWrapper.value]
+     * @param value the [ByteArray] to update [DescriptorWrapper.value] with
+     */
     fun updateValue(value: ByteArray?)
 
+    /**
+     * The integer representing all permissions for the descriptor
+     */
     val permissions: Int
+
+    /**
+     * The [CharacteristicWrapper] of the Descriptor of the [BluetoothGattDescriptor]
+     */
     val characteristic: CharacteristicWrapper
 }
 
+/**
+ * Default implementation of [DescriptorWrapper]
+ * @param gattDescriptor the [BluetoothGattDescriptor] to wrap
+ */
 class DefaultDescriptorWrapper(private val gattDescriptor: BluetoothGattDescriptor) : DescriptorWrapper {
 
     override val uuid: java.util.UUID

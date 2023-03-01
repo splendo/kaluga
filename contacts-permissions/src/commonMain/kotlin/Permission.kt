@@ -26,13 +26,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * Permission to access the users Contacts
+ * [Permission] to access the users Contacts
  * @param allowWrite If `true` writing to the contacts is permitted
  */
 data class ContactsPermission(val allowWrite: Boolean = false) : Permission() {
     override val name: String = "Contacts - ${if (allowWrite) "ReadWrite" else "ReadOnly"}"
 }
 
+/**
+ * Registers a [BaseContactsPermissionManagerBuilder] and [PermissionStateRepo] for [ContactsPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param contactsPermissionManagerBuilderBuilder method for creating a [BaseContactsPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseContactsPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseContactsPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerContactsPermission(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -42,6 +51,14 @@ fun PermissionsBuilder.registerContactsPermission(
         ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Registers a [BaseContactsPermissionManagerBuilder] and [PermissionStateRepo] for [ContactsPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * Only one builder can be registered.
+ * @param contactsPermissionManagerBuilderBuilder method for creating a [BaseContactsPermissionManagerBuilder] from a [PermissionContext]
+ * @param contactsPermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [ContactsPermission] given a [BaseContactsPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseContactsPermissionManagerBuilder] registered
+ * @throws [com.splendo.kaluga.permissions.base.PermissionsBuilderError] if either the [BaseContactsPermissionManagerBuilder] or [PermissionStateRepo] have already been registered
+ */
 fun PermissionsBuilder.registerContactsPermission(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
     contactsPermissionStateRepoBuilder: (ContactsPermission, BaseContactsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<ContactsPermission>
@@ -52,6 +69,14 @@ fun PermissionsBuilder.registerContactsPermission(
     }
 }
 
+/**
+ * Gets the [BaseContactsPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseContactsPermissionManagerBuilder] and [PermissionStateRepo] for [ContactsPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param contactsPermissionManagerBuilderBuilder method for creating a [BaseContactsPermissionManagerBuilder] from a [PermissionContext]
+ * @param monitoringInterval the [Duration] after which the system should poll for changes to the permission if automatic detection is impossible.
+ * @param settings the [BasePermissionManager.Settings] to apply to any [BasePermissionManager] created using the registered builders.
+ * @return the [BaseContactsPermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerContactsPermissionIfNotRegistered(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
@@ -61,6 +86,13 @@ fun PermissionsBuilder.registerContactsPermissionIfNotRegistered(
         ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
     }
 
+/**
+ * Gets the [BaseContactsPermissionManagerBuilder] registered
+ * If not yet registered, this will register a [BaseContactsPermissionManagerBuilder] and [PermissionStateRepo] for [ContactsPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
+ * @param contactsPermissionManagerBuilderBuilder method for creating a [BaseContactsPermissionManagerBuilder] from a [PermissionContext]
+ * @param contactsPermissionStateRepoBuilder method for creating a [PermissionStateRepo] for [ContactsPermission] given a [BaseContactsPermissionManagerBuilder] and [CoroutineContext]
+ * @return the [BaseContactsPermissionManagerBuilder] registered
+ */
 fun PermissionsBuilder.registerContactsPermissionIfNotRegistered(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
     contactsPermissionStateRepoBuilder: (ContactsPermission, BaseContactsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<ContactsPermission>

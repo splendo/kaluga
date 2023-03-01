@@ -25,6 +25,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
+/**
+ * Set of all [SolidAngle]
+ */
 val SolidAngleUnits: Set<SolidAngle> get() = setOf(
     Steradian,
     Nanosteradian,
@@ -36,6 +39,10 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
     SquareDegree
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.SolidAngle]
+ * SI unit is [Steradian]
+ */
 @Serializable
 sealed class SolidAngle : AbstractScientificUnit<PhysicalQuantity.SolidAngle>(), MetricAndImperialScientificUnit<PhysicalQuantity.SolidAngle>
 

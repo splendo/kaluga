@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MagneticFlux]
+ */
 val MagneticFluxUnits: Set<MagneticFlux> get() = setOf(
     Weber,
     Nanoweber,
@@ -36,6 +39,10 @@ val MagneticFluxUnits: Set<MagneticFlux> get() = setOf(
     Maxwell
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.MagneticFlux]
+ * SI unit is [Weber]
+ */
 @Serializable
 sealed class MagneticFlux : AbstractScientificUnit<PhysicalQuantity.MagneticFlux>(), MetricAndImperialScientificUnit<PhysicalQuantity.MagneticFlux>
 

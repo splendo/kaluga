@@ -87,7 +87,11 @@ class LifecycleSubscribableManager<ViewModel : BaseLifecycleViewModel>(
 
     private fun LifecycleSubscribable.onSubscribe(lifecycleOwner: LifecycleOwner) {
         when (this) {
-            is ActivityLifecycleSubscribable -> subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager)
+            is ActivityLifecycleSubscribable -> if (childFragmentManager != null) {
+                subscribe(activity, lifecycleOwner, fragmentManager, childFragmentManager)
+            } else {
+                subscribe(activity, lifecycleOwner, fragmentManager)
+            }
             else -> {}
         }
     }

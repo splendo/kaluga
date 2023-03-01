@@ -32,14 +32,39 @@ import platform.Foundation.NSString
 import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.dataUsingEncoding
 
+/**
+ * Accessor to a [CBDescriptor]
+ */
 actual interface DescriptorWrapper {
+
+    /**
+     * The [UUID] of the descriptor
+     */
     actual val uuid: CBUUID
+
+    /**
+     * The current [Value] of the descriptor
+     */
     actual val value: NSData?
 
+    /**
+     * Request a [CBPeripheral] to read the descriptor
+     * @param peripheral the [CBPeripheral] to perform the read operation
+     */
     fun readValue(peripheral: CBPeripheral)
+
+    /**
+     * Request a [CBPeripheral] to write [value] to the descriptor
+     * @param value the [NSData] to write to the descriptor
+     * @param peripheral the [CBPeripheral] to perform the write operation
+     */
     fun writeValue(value: NSData, peripheral: CBPeripheral)
 }
 
+/**
+ * Default implementation of [DescriptorWrapper]
+ * @param descriptor the [CBDescriptor] to wrap
+ */
 class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : DescriptorWrapper {
 
     override val uuid: CBUUID get() { return descriptor.UUID }

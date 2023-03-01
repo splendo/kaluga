@@ -18,14 +18,12 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.base.state.ColdStateFlowRepo
+import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.base.state.ColdStateFlowRepo
-import com.splendo.kaluga.base.state.ColdStateRepo
-import com.splendo.kaluga.base.state.StateRepo
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -33,17 +31,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A [StateRepo]/[MutableStateFlow] of [LocationState]
+ */
 typealias LocationStateFlowRepo = StateRepo<LocationState, MutableStateFlow<LocationState>>
 
 private val defaultLocationDispatcher by lazy {
     singleThreadDispatcher("Location")
 }
 
+/**
+ * An abstract [ColdStateFlowRepo] for managing [LocationState]
+ * @param createNotInitializedState method for creating the initial [LocationState.NotInitialized] State
+ * @param createInitializingState method for transitioning from a [LocationState.Inactive] into a [LocationState.Initializing] given an implementation of this [ColdStateFlowRepo]
+ * @param createDeinitializingState method for transitioning from a [LocationState.Active] into a [LocationState.Deinitialized] given an implementation of this [ColdStateFlowRepo]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+ */
 abstract class BaseLocationStateRepo(
     createNotInitializedState: () -> LocationState.NotInitialized,
-    createInitializingState: suspend ColdStateFlowRepo<LocationState>.(LocationState.Inactive) -> suspend () -> LocationState,
+    createInitializingState: suspend ColdStateFlowRepo<LocationState>.(LocationState.Inactive) -> suspend () -> LocationState.Initializing,
     createDeinitializingState: suspend ColdStateFlowRepo<LocationState>.(LocationState.Active) -> suspend () -> LocationState.Deinitialized,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : ColdStateFlowRepo<LocationState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -63,9 +71,14 @@ abstract class BaseLocationStateRepo(
     firstState = createNotInitializedState
 )
 
+/**
+ * A [BaseLocationStateRepo] managed using a [LocationManager]
+ * @param createLocationManager method for creating the [LocationManager] to manage the [LocationState]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
+ */
 open class LocationStateImplRepo(
     createLocationManager: suspend () -> LocationManager,
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext
 ) : BaseLocationStateRepo(
     createNotInitializedState = { LocationStateImpl.NotInitialized },
     createInitializingState = { state ->
@@ -85,7 +98,8 @@ open class LocationStateImplRepo(
     createDeinitializingState = { state ->
         (this as LocationStateImplRepo).superVisorJob.cancelChildren()
         state.deinitialized
-    }
+    },
+    coroutineContext = coroutineContext
 ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
@@ -114,10 +128,7 @@ open class LocationStateImplRepo(
                 state.initialize(event.hasPermission, locationManager.isLocationEnabled())
             }
             is LocationState.Permitted -> {
-                if (event.hasPermission)
-                    state.remain()
-                else
-                    state.revokePermission
+                if (event.hasPermission) state.remain() else state.revokePermission
             }
             is LocationState.Disabled.NotPermitted -> if (event.hasPermission) state.permit(locationManager.isLocationEnabled()) else state.remain()
             else -> { state.remain() }
@@ -126,13 +137,10 @@ open class LocationStateImplRepo(
 }
 
 /**
- * A [ColdStateRepo] that tracks the [LocationState] of the user.
- * Since this is a coldStateRepo location changes will only be requested when there is at least one observer.
- * @param settingsBuilder A function that creates the [BaseLocationManager.Settings] used for this Location State Repo.
- * @param builder
- * @param autoRequestPermission If 'true` the user will automatically receive a request to provide permissions when missing. Set this to `false` if manual permission requests are required.
- * @param autoEnableLocations If `true` the user will automatically receive a request to enable GPS if it is disabled. Set this to `false` if manual gps enabling is required.
- * @param locationManagerBuilder The [BaseLocationManager.Builder] to create the [LocationManager] managing the location state.
+ * A [LocationStateImplRepo] using a [BaseLocationManager]
+ * @param settingsBuilder method for creating [BaseLocationManager.Settings]
+ * @param builder the [BaseLocationManager.Builder] for building a [BaseLocationManager]
+ * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
  */
 class LocationStateRepo(
     settingsBuilder: suspend (CoroutineContext) -> BaseLocationManager.Settings,
@@ -148,11 +156,25 @@ class LocationStateRepo(
     coroutineContext = coroutineContext,
 )
 
+/**
+ * Builder for creating a [LocationStateRepo]
+ */
 interface BaseLocationStateRepoBuilder {
+
+    /**
+     * Creates the [LocationStateRepo]
+     * @param locationPermission the [LocationPermission] to use while monitoring the location
+     * @param settingsBuilder method for creating [BaseLocationManager.Settings] using a [LocationPermission] and [Permissions]
+     * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
+     */
     fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings = { permission, permissions -> BaseLocationManager.Settings(permission, permissions) },
         coroutineContext: CoroutineContext = defaultLocationDispatcher
     ): LocationStateRepo
 }
+
+/**
+ * Default [BaseLocationStateRepoBuilder]
+ */
 expect class LocationStateRepoBuilder : BaseLocationStateRepoBuilder

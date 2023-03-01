@@ -17,16 +17,28 @@
 package com.splendo.kaluga.base
 
 /**
- * On JS there is only one thread, so everything is the main thread
+ * The thread of execution
+ * On JavaScript there is only one thread, so everything is the main thread
  */
 actual class KalugaThread {
 
     actual companion object {
+        /**
+         * The [KalugaThread] the calling method is running on.
+         * Since on JavaScript there is only one thread, this always results in the same thread.
+         */
         actual val currentThread: KalugaThread get() = KalugaThread()
     }
 
+    /**
+     * Name of the thread
+     */
     actual var name: String = "Main Thread"
         set(_) = Unit
+
+    /**
+     * Always `true` since on JavaScript there is only one thread.
+     */
     actual val isMainThread: Boolean = true
 
     override fun equals(other: Any?): Boolean {

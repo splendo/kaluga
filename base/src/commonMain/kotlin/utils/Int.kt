@@ -20,6 +20,9 @@ package com.splendo.kaluga.base.utils
 import kotlin.math.abs
 import kotlin.math.log10
 
+/**
+ * Determines the number of digits in an Integer
+ */
 fun Int.length() = when (this) {
     0 -> 1
     else -> log10(abs(toDouble())).toInt() + 1

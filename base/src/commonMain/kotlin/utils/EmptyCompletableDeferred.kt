@@ -21,6 +21,9 @@ package com.splendo.kaluga.base.utils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 
+/**
+ * Completes an [EmptyCompletableDeferred] with [Unit]
+ */
 fun EmptyCompletableDeferred.complete() {
     complete(Unit)
 }

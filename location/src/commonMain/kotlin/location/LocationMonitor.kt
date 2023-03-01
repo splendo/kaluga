@@ -17,10 +17,22 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether the location service is enabled
+ */
 expect interface LocationMonitor : ServiceMonitor {
+
+    /**
+     * Builder for creating a [LocationMonitor]
+     */
     class Builder {
+
+        /**
+         * Creates the [LocationMonitor]
+         * @return the created [LocationMonitor]
+         */
         fun create(): LocationMonitor
     }
 }

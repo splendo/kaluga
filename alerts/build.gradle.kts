@@ -3,6 +3,7 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -25,7 +26,7 @@ kotlin {
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":test-utils-base", ""))
+                implementation(project(":test-utils-alerts", ""))
             }
         }
     }

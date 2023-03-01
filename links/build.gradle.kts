@@ -21,6 +21,7 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -37,8 +38,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":base", ""))
-                implementation(project(":logging", ""))
-                implementation(project(":architecture", ""))
                 apiDependency(Dependencies.KotlinX.Serialization.Core)
             }
         }

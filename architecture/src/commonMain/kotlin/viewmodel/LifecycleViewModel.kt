@@ -41,16 +41,17 @@ open class ViewModel : LifecycleViewModel()
 open class BaseViewModel : BaseLifecycleViewModel()
 
 /**
- * Simple ViewModel class
+ * Simple ViewModel class that is to be bound to a View lifecycle
  */
 expect open class LifecycleViewModel internal constructor() {
     /**
-     * [CoroutineScope] of the ViewModel
+     * [CoroutineScope] of the ViewModel.
+     * This scope is active until the ViewModel lifecycle is cleared.
      */
     val coroutineScope: CoroutineScope
 
     /**
-     * Called when the ViewModel is cleared
+     * Called when the ViewModel lifecycle is cleared
      */
     protected open fun onCleared()
 }

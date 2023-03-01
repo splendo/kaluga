@@ -23,11 +23,18 @@ import android.content.pm.PackageManager
 import com.splendo.kaluga.permissions.base.AndroidPermissionState
 import com.splendo.kaluga.permissions.base.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
+/**
+ * The [BasePermissionManager] to use as a default for [MicrophonePermission]
+ * @param context the [Context] the [MicrophonePermission] is to be granted in
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultMicrophonePermissionManager(
     context: Context,
     settings: Settings,
@@ -39,17 +46,17 @@ actual class DefaultMicrophonePermissionManager(
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 
     override fun requestPermissionDidStart() {
-        if (supported)
+        if (supported) {
             permissionsManager.requestPermissions()
-        else {
+        } else {
             permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
 
     override fun monitoringDidStart(interval: Duration) {
-        if (supported)
+        if (supported) {
             permissionsManager.startMonitoring(interval)
-        else {
+        } else {
             permissionHandler.status(AndroidPermissionState.DENIED_DO_NOT_ASK)
         }
     }
@@ -60,6 +67,10 @@ actual class DefaultMicrophonePermissionManager(
     }
 }
 
+/**
+ * A [BaseMicrophonePermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
     override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {

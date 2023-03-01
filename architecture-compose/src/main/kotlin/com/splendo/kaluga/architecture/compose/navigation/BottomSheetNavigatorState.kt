@@ -24,9 +24,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The State of a [BottomSheetNavigator]
- * @param contentNavHostController The [NavHostController] managing the content of the bottom sheet.
- * @param sheetContentNavHostController The [NavHostController] managing the sheet content of the bottom sheet.
- * @param sheetState The [ModalBottomSheetState] of the bottom sheet.
+ * @property contentNavHostController The [NavHostController] managing the content of the bottom sheet.
+ * @property sheetContentNavHostController The [NavHostController] managing the sheet content of the bottom sheet.
+ * @property sheetState The [ModalBottomSheetState] of the bottom sheet.
  */
 data class BottomSheetNavigatorState(
     val contentNavHostController: NavHostController,

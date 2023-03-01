@@ -21,17 +21,30 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricJolt]
+ */
 val MetricJoltUnits: Set<MetricJolt> get() = MetricAccelerationUnits.flatMap { acceleration ->
     TimeUnits.map { acceleration per it }
 }.toSet()
 
+/**
+ * Set of all [ImperialJolt]
+ */
 val ImperialJoltUnits: Set<ImperialJolt> get() = ImperialAccelerationUnits.flatMap { acceleration ->
     TimeUnits.map { acceleration per it }
 }.toSet()
 
+/**
+ * Set of all [Jolt]
+ */
 val JoltUnits: Set<Jolt> get() = MetricJoltUnits +
     ImperialJoltUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Jolt]
+ * SI unit is `Meter per Second per Second per Second`
+ */
 @Serializable
 sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
     abstract val acceleration: Acceleration
@@ -51,19 +64,36 @@ sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
     override fun toSIUnit(value: Decimal): Decimal = acceleration.toSIUnit(per.fromSIUnit(value))
 }
 
+/**
+ * A [Jolt] for [MeasurementSystem.Metric]
+ * @param acceleration the [MetricAcceleration] component
+ * @param per the [Time] component
+ */
 @Serializable
 data class MetricJolt(override val acceleration: MetricAcceleration, override val per: Time) : Jolt(), MetricScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.Metric
 }
 
+/**
+ * A [Jolt] for [MeasurementSystem.Imperial]
+ * @param acceleration the [ImperialAcceleration] component
+ * @param per the [Time] component
+ */
 @Serializable
 data class ImperialJolt(override val acceleration: ImperialAcceleration, override val per: Time) : Jolt(), ImperialScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.Imperial
 }
 
+/**
+ * Gets a [MetricJolt] from a [MetricAcceleration] and a [Time]
+ * @param time the [Time] component
+ * @return the [MetricJolt] represented by the units
+ */
 infix fun MetricAcceleration.per(time: Time) = MetricJolt(this, time)
+
+/**
+ * Gets an [ImperialJolt] from an [ImperialAcceleration] and a [Time]
+ * @param time the [Time] component
+ * @return the [ImperialJolt] represented by the units
+ */
 infix fun ImperialAcceleration.per(time: Time) = ImperialJolt(this, time)
-infix fun Acceleration.per(time: Time): Jolt = when (this) {
-    is MetricAcceleration -> this per time
-    is ImperialAcceleration -> this per time
-}

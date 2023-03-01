@@ -32,6 +32,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
@@ -190,12 +191,13 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun disconnect() {
-        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED)
+        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
             gatt.await().disconnect()
-        else
+        } else {
             handleDisconnect {
                 closeGatt()
             }
+        }
     }
 
     private fun closeGatt() {
@@ -209,12 +211,11 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().readRemoteRssi()
     }
 
-    override suspend fun requestMtu(mtu: Int): Boolean {
+    override suspend fun requestMtu(mtu: MTU): Boolean {
         return gatt.await().requestMtu(mtu)
     }
 
-    override suspend fun performAction(action: DeviceAction) {
-        super.performAction(action)
+    override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         val succeeded = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
@@ -232,16 +233,16 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun unpair() {
-        if (device.bondState != BluetoothDevice.BOND_NONE) {
-            deviceWrapper.removeBond()
+    override suspend fun requestStartPairing() {
+        if (device.bondState == BluetoothDevice.BOND_NONE) {
+            deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun pair() {
-        if (device.bondState == BluetoothDevice.BOND_NONE) {
-            deviceWrapper.createBond()
+    override suspend fun requestStartUnpairing() {
+        if (device.bondState != BluetoothDevice.BOND_NONE) {
+            deviceWrapper.removeBond()
         }
     }
 
@@ -256,10 +257,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     private suspend fun setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
         val uuid = characteristic.uuid.uuidString
-        if (enable)
+        if (enable) {
             notifyingCharacteristics[uuid] = characteristic
-        else
+        } else {
             notifyingCharacteristics.remove(uuid)
+        }
         if (!gatt.await().setCharacteristicNotification(characteristic.wrapper, enable)) {
             return false
         }

@@ -24,15 +24,28 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.monitor.DefaultServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether the location service is enabled
+ */
 actual interface LocationMonitor : ServiceMonitor {
 
+    /**
+     * Builder for creating a [LocationMonitor]
+     * @param applicationContext the [Context] in which to monitor the location
+     * @param locationManager the [LocationManager] to use for monitoring the location
+     */
     actual class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
     ) {
+
+        /**
+         * Creates the [LocationMonitor]
+         * @return the created [LocationMonitor]
+         */
         actual fun create(): LocationMonitor = DefaultLocationMonitor(
             applicationContext = applicationContext,
             locationManager = locationManager
@@ -40,6 +53,11 @@ actual interface LocationMonitor : ServiceMonitor {
     }
 }
 
+/**
+ * Default implementation of [LocationMonitor]
+ * @param applicationContext the [Context] in which to monitor the location
+ * @param locationManager the [LocationManager] to use for monitoring the location
+ */
 class DefaultLocationMonitor(
     private val applicationContext: Context,
     private val locationManager: LocationManager?

@@ -26,6 +26,8 @@
 		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
 		2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0EF270303B3002CB856 /* ButtonViewController.swift */; };
 		2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0F127032B5B002CB856 /* ColorViewController.swift */; };
+		207537A929A64CEC00D273F2 /* ImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207537A829A64CEC00D273F2 /* ImagesView.swift */; };
+		207537AB29A64D3000D273F2 /* ImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207537AA29A64D3000D273F2 /* ImagesViewController.swift */; };
 		209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
 		209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E324C07EAD001426CD /* BluetoothViewController.swift */; };
 		209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */; };
@@ -92,6 +94,7 @@
 		D17DC9D74F0BD77D12813366 /* Observable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6681B8FDABE90D9625CA407A /* Observable.generated.swift */; };
 		D976FB8DC34A35578A995B2E /* KalugaButton+SwiftUI.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304E64813F87A2C71BD40C2 /* KalugaButton+SwiftUI.generated.swift */; };
 		F62F6B35C805651F41B90380 /* KalugaStyledString+SwiftUI.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382B35FA85A28992FE37B803 /* KalugaStyledString+SwiftUI.generated.swift */; };
+		FEA04DB9D0C154DAAC5F351C /* TintedImage+Image.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944D74BABB71F3B76E746EC8 /* TintedImage+Image.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +146,8 @@
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2073D0EF270303B3002CB856 /* ButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
 		2073D0F127032B5B002CB856 /* ColorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewController.swift; sourceTree = "<group>"; };
+		207537A829A64CEC00D273F2 /* ImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesView.swift; sourceTree = "<group>"; };
+		207537AA29A64D3000D273F2 /* ImagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesViewController.swift; sourceTree = "<group>"; };
 		209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		209471E324C07EAD001426CD /* BluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
 		209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceDetailsViewController.swift; sourceTree = "<group>"; };
@@ -209,6 +214,7 @@
 		896B16F89BA730B7FBF42625 /* RoutingState.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = RoutingState.generated.swift; sourceTree = "<group>"; };
 		89DAFF461D97215C4B63A0A1 /* PlatformMappers.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = PlatformMappers.generated.swift; sourceTree = "<group>"; };
 		93070CB7E1723F904DBEDD26 /* DefaultValues.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = DefaultValues.generated.swift; sourceTree = "<group>"; };
+		944D74BABB71F3B76E746EC8 /* TintedImage+Image.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; lastKnownFileType = sourcecode.swift; name = "TintedImage+Image.generated.swift"; path = "TintedImage+Image.generated.swift"; sourceTree = "<group>"; };
 		978348A6235DF586005B140B /* PermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionViewController.swift; sourceTree = "<group>"; };
 		A1AD210B87A46DBD057A7D28 /* Navigation.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Navigation.generated.swift; sourceTree = "<group>"; };
 		A8678F48E60D40E6AB06177C /* LifecycleViewModel.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = LifecycleViewModel.generated.swift; sourceTree = "<group>"; };
@@ -363,6 +369,8 @@
 				201EA22429390A7F00C562EC /* ButtonView.swift */,
 				201EA22629390CFE00C562EC /* LabelView.swift */,
 				201EA228293B8C6600C562EC /* ColorView.swift */,
+				207537A829A64CEC00D273F2 /* ImagesView.swift */,
+				207537AA29A64D3000D273F2 /* ImagesViewController.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -536,6 +544,7 @@
 				744B1E9043B534F8B9BD501C /* UninitializedObservable.generated.swift */,
 				8165D122BD8D8848D7242385 /* UninitializedSubject.generated.swift */,
 				2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */,
+				944D74BABB71F3B76E746EC8 /* TintedImage+Image.generated.swift */,
 			);
 			path = KalugaSwiftUI;
 			sourceTree = "<group>";
@@ -749,6 +758,7 @@
 				20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */,
 				20BB9E76296333BE0096E836 /* UITableView+Typed.swift in Sources */,
 				20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */,
+				207537A929A64CEC00D273F2 /* ImagesView.swift in Sources */,
 				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
 				201EA2212938ECE700C562EC /* LoadingView.swift in Sources */,
 				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
@@ -772,6 +782,7 @@
 				201EA21D2938E89300C562EC /* DateTimePickerView.swift in Sources */,
 				7ECE3B4F9AD53DA93EF73B0E /* ContainerView.generated.swift in Sources */,
 				73DBBA374F2ED176BCF8E189 /* DefaultValues.generated.swift in Sources */,
+				207537AB29A64D3000D273F2 /* ImagesViewController.swift in Sources */,
 				42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */,
 				D174F54A364898AC7E0962FC /* KalugaBackgroundStyle+SwiftUI.generated.swift in Sources */,
 				20FFB48C293EC3CB005CF1C8 /* ArchitectureDetailsView.swift in Sources */,
@@ -801,6 +812,7 @@
 				20D4E17C296D562D00A046D6 /* ScientificView.swift in Sources */,
 				1529FF0B35BD7AB3B6E838A9 /* UninitializedSubject.generated.swift in Sources */,
 				9481F22DC3CFE170CE894584 /* KeyboardManager.generated.swift in Sources */,
+				FEA04DB9D0C154DAAC5F351C /* TintedImage+Image.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -924,8 +936,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Demo.app/Demo";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = DemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -972,8 +985,9 @@
 		74C4C9BEEE5FE949D448C58D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = DemoUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1054,8 +1068,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Demo.app/Demo";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = DemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1072,8 +1087,9 @@
 		74F864CC21F489CA494FD856 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/KotlinNativeFramework/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = DemoUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

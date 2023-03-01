@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.RSSI
+import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
@@ -42,13 +44,13 @@ class MockDeviceInfoBuilder {
 
     var deviceName: String? = null
     var identifier: Identifier = randomIdentifier()
-    var rssi: Int = 0
+    var rssi: RSSI = 0
     var manufacturerId: Int? = null
     var manufacturerData: ByteArray? = null
     private val _serviceUUIDs = ArrayList<UUID>()
     private val serviceUUIDs get() = _serviceUUIDs.toList()
     var serviceData: Map<UUID, ByteArray?> = emptyMap()
-    var txPowerLevel: Int = Int.MIN_VALUE
+    var txPowerLevel: TxPower = Int.MIN_VALUE
 
     fun services(builder: ServiceUUIDsList.() -> Unit) = builder(_serviceUUIDs)
 

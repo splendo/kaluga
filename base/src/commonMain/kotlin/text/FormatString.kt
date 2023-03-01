@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 
 internal interface FormatString {
     val index: Int
-    fun print(arg: Any?, locale: Locale)
+    fun print(arg: Any?, locale: KalugaLocale)
 }

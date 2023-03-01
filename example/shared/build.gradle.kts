@@ -17,7 +17,7 @@ val modules = listOf(
     "date-time-picker" to true,
     "hud" to true,
     "keyboard" to true,
-    "links" to false,
+    "links" to true,
     "location" to false,
     "logging" to false,
     "resources" to true,

@@ -27,6 +27,10 @@ import com.splendo.kaluga.base.ApplicationHolder.Companion.application
 import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
 import kotlinx.coroutines.CompletableDeferred
 
+/**
+ * Default implementation of a [StringLoader].
+ * @param context the [Context] from which to load the string resources
+ */
 actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadString(identifier: String, defaultValue: String): String {
@@ -40,8 +44,9 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
         }
     }
     override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "plurals", context.packageName)
         return try {
             context.resources.getQuantityString(id, quantity, quantity)
@@ -51,11 +56,16 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     }
 }
 
+/**
+ * Default implementation of a [KalugaColorLoader].
+ * @param context the [Context] from which to load the color resources
+ */
 actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "color", context.packageName)
         return try {
             ContextCompat.getColor(context, id)
@@ -65,25 +75,36 @@ actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoad
     }
 }
 
+/**
+ * Default implementation of an [ImageLoader].
+ * @param context the [Context] from which to load the image resources
+ */
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? {
-        if (context == null)
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? {
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
         return try {
-            ContextCompat.getDrawable(context, id)?.let { Image(it) }
+            ContextCompat.getDrawable(context, id)?.let { KalugaImage(it) }
         } catch (e: Resources.NotFoundException) {
             defaultValue
         }
     }
 }
 
+/**
+ * Default implementation of a [FontLoader].
+ * @param context the [Context] from which to load the font resources
+ * @param handler a [Handler] for the thread the completion of loading the font should called on. If `null`, the UI thread will be used.
+ */
 actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
-    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
-        if (context == null)
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? {
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "font", context.packageName)
         return try {
             val deferredFont = CompletableDeferred<Typeface?>()

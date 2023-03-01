@@ -17,18 +17,40 @@
 
 package com.splendo.kaluga.base.utils
 
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
 actual typealias KalugaDateHolder = kotlin.js.Date
 
 // TODO Implement with proper date solution for Java Script
+/**
+ * Default implementation of [KalugaDate]
+ */
 actual class DefaultKalugaDate internal constructor(override val date: KalugaDateHolder) : KalugaDate() {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offsetInMilliseconds))
+
+        /**
+         * Creates a [KalugaDate] relative to the current time
+         * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
+        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offset.inWholeMilliseconds))
+
+        /**
+         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
+         * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
+         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
+         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
+         * @return A [KalugaDate] relative to the current time
+         */
+        actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offset.inWholeMilliseconds))
     }
 
-    override var timeZone: TimeZone
-        get() = TimeZone()
+    override var timeZone: KalugaTimeZone
+        get() = KalugaTimeZone()
         set(_) { }
 
     override var era: Int
@@ -72,15 +94,15 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
     override var millisecond: Int
         get() = date.getMilliseconds()
         set(_) { }
-    override var millisecondSinceEpoch: Long
-        get() = date.getTime().toLong()
+    override var durationSinceEpoch: Duration
+        get() = date.getTime().milliseconds
         set(_) { }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getMilliseconds()))
 
     override fun equals(other: Any?): Boolean {
         return (other as? KalugaDate)?.let {
-            timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
+            timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
         } ?: false
     }
 

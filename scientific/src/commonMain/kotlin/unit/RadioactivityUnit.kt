@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [Radioactivity]
+ */
 val RadioactivityUnits: Set<Radioactivity> get() = setOf(
     Becquerel,
     Nanobecquerel,
@@ -50,6 +53,10 @@ val RadioactivityUnits: Set<Radioactivity> get() = setOf(
     Gigacurie
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Radioactivity]
+ * SI unit is [Becquerel]
+ */
 @Serializable
 sealed class Radioactivity : AbstractScientificUnit<PhysicalQuantity.Radioactivity>(), MetricAndImperialScientificUnit<PhysicalQuantity.Radioactivity>
 

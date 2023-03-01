@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricEnergy]
+ */
 val MetricEnergyUnits: Set<MetricEnergy> get() = setOf(
     Joule,
     Nanojoule,
@@ -60,6 +63,9 @@ val MetricEnergyUnits: Set<MetricEnergy> get() = setOf(
     Gigaelectronvolt
 ) + MetricAndImperialEnergyUnits.map { it.metric }.toSet()
 
+/**
+ * Set of all [MetricAndImperialEnergy]
+ */
 val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> get() = setOf(
     WattHour,
     NanowattHour,
@@ -82,6 +88,9 @@ val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> get() = setOf(
     Megacalorie.IT
 )
 
+/**
+ * Set of all [ImperialEnergy]
+ */
 val ImperialEnergyUnits: Set<ImperialEnergy> get() = setOf(
     FootPoundal,
     FootPoundForce,
@@ -92,15 +101,33 @@ val ImperialEnergyUnits: Set<ImperialEnergy> get() = setOf(
     BritishThermalUnit.Thermal
 ) + MetricAndImperialEnergyUnits.map { it.imperial }.toSet()
 
+/**
+ * Set of all [Energy]
+ */
 val EnergyUnits: Set<Energy> get() = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Energy]
+ * SI unit is [Joule]
+ */
 @Serializable
 sealed class Energy : AbstractScientificUnit<PhysicalQuantity.Energy>()
 
+/**
+ * An [Energy] for [MeasurementSystem.Metric]
+ */
 @Serializable
 sealed class MetricEnergy : Energy(), MetricScientificUnit<PhysicalQuantity.Energy>
+
+/**
+ * An [Energy] for [MeasurementSystem.Imperial]
+ */
 @Serializable
 sealed class ImperialEnergy : Energy(), ImperialScientificUnit<PhysicalQuantity.Energy>
+
+/**
+ * An [Energy] for [MeasurementSystem.MetricAndImperial]
+ */
 @Serializable
 sealed class MetricAndImperialEnergy : Energy(), MetricAndImperialScientificUnit<PhysicalQuantity.Energy>
 
@@ -330,6 +357,10 @@ object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSy
     object Thermal : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> by BritishThermalUnitBase(Calorie, "-th")
 }
 
+/**
+ * Wraps a [MetricAndImperialEnergy] unit to a [MetricEnergy] unit
+ * @param metricAndImperialEnergy the [MetricAndImperialEnergy] to wrap
+ */
 @Serializable
 data class MetricMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: MetricAndImperialEnergy) : MetricEnergy() {
     override val system = MeasurementSystem.Metric
@@ -339,8 +370,16 @@ data class MetricMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: Met
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.toSIUnit(value)
 }
 
+/**
+ * Converts a [MetricAndImperialEnergy] unit to a [MetricMetricAndImperialEnergyWrapper] unit
+ * @param EnergyUnit the type of [MetricAndImperialEnergy] to convert
+ */
 val <EnergyUnit : MetricAndImperialEnergy> EnergyUnit.metric get() = MetricMetricAndImperialEnergyWrapper(this)
 
+/**
+ * Wraps a [MetricAndImperialEnergy] unit to an [ImperialEnergy] unit
+ * @param metricAndImperialEnergy the [MetricAndImperialEnergy] to wrap
+ */
 @Serializable
 data class ImperialMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: MetricAndImperialEnergy) : ImperialEnergy() {
     override val system = MeasurementSystem.Imperial
@@ -350,4 +389,8 @@ data class ImperialMetricAndImperialEnergyWrapper(val metricAndImperialEnergy: M
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialEnergy.toSIUnit(value)
 }
 
+/**
+ * Converts a [MetricAndImperialEnergy] unit to an [ImperialMetricAndImperialEnergyWrapper] unit
+ * @param EnergyUnit the type of [MetricAndImperialEnergy] to convert
+ */
 val <EnergyUnit : MetricAndImperialEnergy> EnergyUnit.imperial get() = ImperialMetricAndImperialEnergyWrapper(this)

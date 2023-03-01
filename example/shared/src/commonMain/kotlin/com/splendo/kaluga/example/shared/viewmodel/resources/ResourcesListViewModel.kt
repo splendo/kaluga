@@ -10,12 +10,14 @@ sealed class ResourcesListNavigationAction : NavigationAction<Nothing>(null) {
 
     object Color : ResourcesListNavigationAction()
     object Button : ResourcesListNavigationAction()
+    object Image : ResourcesListNavigationAction()
     object Label : ResourcesListNavigationAction()
 }
 
 enum class Resource(private val titleKey: String) {
     COLOR("feature_resources_color"),
     BUTTON("feature_resources_button"),
+    IMAGE("feature_resources_image"),
     LABEL("feature_resources_label");
 
     val title: String get() = titleKey.localized()
@@ -30,6 +32,7 @@ class ResourcesListViewModel(navigator: Navigator<ResourcesListNavigationAction>
             when (resource) {
                 Resource.COLOR -> ResourcesListNavigationAction.Color
                 Resource.BUTTON -> ResourcesListNavigationAction.Button
+                Resource.IMAGE -> ResourcesListNavigationAction.Image
                 Resource.LABEL -> ResourcesListNavigationAction.Label
             }
         )

@@ -31,9 +31,7 @@ class DemoTests: XCTestCase {
     }
 
     func testExample() {
-        assert(KotlinNativeFramework().hello() == "Hello from the shared module common source")
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        assert(HelloSharedKt.helloCommon() == "Hello from the shared module common source")
     }
 
     func testPerformanceExample() {

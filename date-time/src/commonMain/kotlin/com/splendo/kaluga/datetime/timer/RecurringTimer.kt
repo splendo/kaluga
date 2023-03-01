@@ -39,9 +39,11 @@ import com.splendo.kaluga.base.state.KalugaState as KalugaState
 /** A coroutine delay function. */
 typealias DelayFunction = suspend (Duration) -> Unit
 /**
- * Timer based on the system clock.
- * @param duration timer duration
- * @param interval timer tick interval
+ * [Timer] based on the system clock.
+ * @property duration timer duration
+ * @param interval The [Duration] between timer ticks
+ * @param timeSource The [TimeSource] for measuring intervals
+ * @param delayFunction Method for delaying a given [Duration]
  * @param coroutineScope a parent coroutine scope for the timer
  */
 class RecurringTimer(

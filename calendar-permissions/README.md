@@ -1,5 +1,5 @@
-## Calendar Permissions
-Adds a `CalendarPermission`. Register this permission by calling `PermissionsBuilder.registerCalendarPermission`.
+# Calendar Permissions
+Adds a `CalendarPermission` to `Permissions`. Register this permission by calling `PermissionsBuilder.registerCalendarPermission`()/`PermissionsBuilder.registerCalendarPermissionIfNotRegistered()`.
 
 ## Installing
 This library is available on Maven Central. You can import Kaluga Calendar Permissions as follows:

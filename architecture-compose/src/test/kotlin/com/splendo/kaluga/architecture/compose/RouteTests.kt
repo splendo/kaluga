@@ -28,9 +28,10 @@ import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.utc
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.nullable
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -57,7 +58,7 @@ sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : Navig
     object SerializableSpecRow : MockSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer()))
     object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
     object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
-    object OptionalMockSerializable : MockSpecRow<MockSerializable?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.SerializedType(MockSerializable.serializer())))
+    object OptionalMockSerializable : MockSpecRow<MockSerializable?>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer().nullable))
     object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
 }
 
@@ -74,7 +75,7 @@ class RouteTests {
 
     @Test
     fun testRoute() {
-        val time = DefaultKalugaDate.epoch(timeZone = TimeZone.utc)
+        val time = DefaultKalugaDate.epoch(timeZone = KalugaTimeZone.utc)
         val bundle = MockSpec.toBundle { row ->
             when (row) {
                 is MockSpecRow.StringSpecRow -> row.convertValue("string")
@@ -88,6 +89,6 @@ class RouteTests {
             }
         }
         val action = TestNavigationAction(bundle)
-        assertEquals("TestNavigationAction/string/true/0.5/{\"value\":\"Mock\"}/${KalugaDateFormatter.iso8601Pattern().format(time)}?OptionalString={optional}&OptionalMockSerializable={{\"value\":\"OptionalMock\"}}", action.route())
+        assertEquals("TestNavigationAction/true/0.5/{\"value\":\"Mock\"}/{\"value\":\"OptionalMock\"}/${KalugaDateFormatter.iso8601Pattern().format(time)}?StringSpecRow=string&OptionalString=optional", action.route())
     }
 }

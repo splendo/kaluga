@@ -21,11 +21,26 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.randomUUIDString
 
+/**
+ * Unique identifier of a Bluetooth [Device]
+ */
 actual typealias Identifier = String
 
+/**
+ * Gets a random [Identifier]
+ * @return a random [Identifier]
+ */
 actual fun randomIdentifier() = randomUUIDString()
 
+/**
+ * Gets an [Identifier] from a string value
+ * @param stringValue the string value to get the [Identifier] from
+ * @return an [Identifier] matching the string value or `null` if it could not be generated
+ */
 actual fun identifierFromString(stringValue: String): Identifier? = stringValue
 
+/**
+ * Gets a string representation of an [Identifier]
+ */
 actual val Identifier.stringValue: String
     get() = this

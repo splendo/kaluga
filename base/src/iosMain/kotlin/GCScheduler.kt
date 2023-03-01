@@ -22,6 +22,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlin.native.internal.GC
 
+/**
+ * Scheduler for the Garbage Collector
+ */
 object GCScheduler {
 
     private val collectingMutex = Mutex()

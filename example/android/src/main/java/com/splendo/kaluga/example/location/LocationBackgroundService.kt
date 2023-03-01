@@ -17,17 +17,24 @@
 
 package com.splendo.kaluga.example.location
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.lifecycleScope
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.permissions.location.LocationPermission
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNot
 
 class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
@@ -36,18 +43,35 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
         const val channelId = "location_channel"
         const val channelName = "Kaluga Location"
 
-        private val permission = LocationPermission(background = true, precise = true)
+        private val locationPermission = LocationPermission(background = true, precise = true)
     }
 
     private val notificationService by lazy { applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
-    private val viewModel = LocationViewModel(permission)
+    private val viewModel = LocationViewModel(locationPermission)
+    private val notificationsViewModel = NotificationPermissionViewModel()
 
     override fun onCreate() {
         super.onCreate()
 
-        viewModel.location.observeInitialized { message ->
-            NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
+        lifecycleScope.launchWhenCreated {
+            combine(viewModel.location.stateFlow, notificationsViewModel.hasPermission.stateFlow) { message, hasNotificationsPermission ->
+                if (hasNotificationsPermission) message else null
+            }.collect { message ->
+                if (message != null && ActivityCompat.checkSelfPermission(
+                        this@LocationBackgroundService,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            notificationsViewModel.hasPermission.stateFlow.filterNot { it }.collect {
+                notificationsViewModel.requestPermission()
+            }
         }
 
         startForeground(notificationId, getNotification(""))
@@ -56,6 +80,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         viewModel.didResume()
+        notificationsViewModel.didResume()
         return START_NOT_STICKY
     }
 
@@ -63,6 +88,8 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
         super.onDestroy()
         viewModel.didPause()
         viewModel.onCleared()
+        notificationsViewModel.didPause()
+        notificationsViewModel.onCleared()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         } else {

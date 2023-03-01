@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.converter.kinematicViscosity.kinematicVisco
 import com.splendo.kaluga.scientific.unit.Area
 import com.splendo.kaluga.scientific.unit.ImperialArea
 import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
@@ -40,4 +41,4 @@ infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Ar
 @JvmName("areaDivTime")
 infix operator fun <AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
     time: ScientificValue<PhysicalQuantity.Time, Time>
-) = (unit per time.unit).kinematicViscosity(this, time)
+) = (SquareMeter per time.unit).kinematicViscosity(this, time)

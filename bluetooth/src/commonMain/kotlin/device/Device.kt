@@ -20,6 +20,7 @@ import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.base.state.HotStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
+import com.splendo.kaluga.bluetooth.RSSI
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -38,21 +39,74 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A Mutable [StateRepo] of [ConnectableDeviceState]
+ */
 typealias ConnectableDeviceStateFlowRepo = StateRepo<ConnectableDeviceState, MutableStateFlow<ConnectableDeviceState>>
 
+/**
+ * A Bluetooth device that can be connected to
+ */
 interface Device {
+
+    /**
+     * The [Identifier] of the device
+     */
     val identifier: Identifier
+
+    /**
+     * A [Flow] of the latest [DeviceInfo] of the device
+     */
     val info: Flow<DeviceInfo>
+
+    /**
+     * A [Flow] of the latest [DeviceState] of the device
+     */
     val state: Flow<DeviceState>
 
+    /**
+     * Attempts to connect to the device
+     * @return `true` if connection was successful.
+     */
     suspend fun connect(): Boolean
+
+    /**
+     * Notifies the device that is has connected
+     */
     fun handleConnected()
+
+    /**
+     * Attempts to disconnect from the device
+     */
     suspend fun disconnect()
-    suspend fun handleDisconnected()
-    fun rssiDidUpdate(rssi: Int)
+
+    /**
+     * Notifies the device that is has disconnected
+     */
+    fun handleDisconnected()
+
+    /**
+     * Notifies the device that the [RSSI] has updated
+     * @param rssi the new [RSSI] value
+     */
+    fun rssiDidUpdate(rssi: RSSI)
+
+    /**
+     * Notifies the device that the [BaseAdvertisementData] has updated
+     * @param advertisementData the new [BaseAdvertisementData]
+     */
     fun advertisementDataDidUpdate(advertisementData: BaseAdvertisementData)
 }
 
+/**
+ * Implementation of [Device]
+ * @param identifier The [Identifier] of the device
+ * @param initialDeviceInfo the initial [DeviceInfoImpl] known about the device
+ * @param connectionSettings the [ConnectionSettings] to apply to the [DeviceConnectionManager] associated with this device
+ * @param connectionManagerBuilder creates a [DeviceConnectionManager] to manage connecting this device
+ * @param coroutineScope the [CoroutineScope] this device is running on]
+ * @param createDeviceStateFlow creates a [ConnectableDeviceStateFlowRepo] to manage the device connection state
+ */
 class DeviceImpl(
     override val identifier: Identifier,
     initialDeviceInfo: DeviceInfoImpl,
@@ -127,15 +181,13 @@ class DeviceImpl(
         }
     }
 
-    override suspend fun connect(): Boolean = createDeviceStateRepoIfNotCreated()?.let { repo ->
-        repo.transformLatest { deviceState ->
-            when (deviceState) {
-                is ConnectableDeviceState.Disconnected -> deviceState.startConnecting()
-                is ConnectableDeviceState.Connected -> emit(true)
-                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Reconnecting, is ConnectableDeviceState.Disconnecting -> {}
-            }
-        }.first()
-    } ?: false
+    override suspend fun connect(): Boolean = createDeviceStateRepoIfNotCreated()?.transformLatest { deviceState ->
+        when (deviceState) {
+            is ConnectableDeviceState.Disconnected -> deviceState.startConnecting()
+            is ConnectableDeviceState.Connected -> emit(true)
+            is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Reconnecting, is ConnectableDeviceState.Disconnecting -> {}
+        }
+    }?.first() ?: false
 
     override fun handleConnected() = createConnectionManagerIfNotCreated().handleConnect()
 
@@ -151,9 +203,9 @@ class DeviceImpl(
         }?.first()
     }
 
-    override suspend fun handleDisconnected() = createConnectionManagerIfNotCreated().handleDisconnect()
+    override fun handleDisconnected() = createConnectionManagerIfNotCreated().handleDisconnect()
 
-    override fun rssiDidUpdate(rssi: Int) {
+    override fun rssiDidUpdate(rssi: RSSI) {
         sharedInfo.value = sharedInfo.value.copy(rssi = rssi)
     }
 
@@ -194,10 +246,7 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Disconnected)
-            state.connect
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Disconnected) state.connect else state.remain()
 
     private fun DeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: ConnectableDeviceState) =
         when (state) {
@@ -218,10 +267,7 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Disconnecting.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected)
-            state.disconnecting
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Connected) state.disconnecting else state.remain()
 
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) =
         when (state) {
@@ -249,16 +295,10 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Discovering.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected.NoServices)
-            state.discoverServices
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Connected.NoServices) state.discoverServices else state.remain()
 
     private fun DeviceConnectionManager.Event.DiscoveredServices.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Connected.Discovering)
-            state.didDiscoverServices(services)
-        else
-            state.remain()
+        if (state is ConnectableDeviceState.Connected.Discovering) state.didDiscoverServices(services) else state.remain()
 
     private fun DeviceConnectionManager.Event.AddAction.stateTransition(state: ConnectableDeviceState) =
         when (state) {
@@ -296,6 +336,11 @@ class DeviceImpl(
         }
 }
 
+/**
+ * A [HotStateFlowRepo] to manage the [ConnectableDeviceState] of a [Device]
+ * @param initialState gets the initial [ConnectableDeviceState] when observation starts
+ * @param coroutineContext the [CoroutineContext] of this repo
+ */
 abstract class BaseConnectableDeviceStateRepo(
     initialState: () -> ConnectableDeviceState,
     coroutineContext: CoroutineContext
@@ -304,6 +349,11 @@ abstract class BaseConnectableDeviceStateRepo(
     initialState = { initialState() }
 )
 
+/**
+ * A [BaseConnectableDeviceStateRepo] managed by a [DeviceConnectionManager]
+ * @param connectionManager the [DeviceConnectionManager] to manage the [ConnectableDeviceState]
+ * @param coroutineContext the [CoroutineContext] of this repo
+ */
 class ConnectableDeviceStateImplRepo(
     connectionManager: DeviceConnectionManager,
     coroutineContext: CoroutineContext

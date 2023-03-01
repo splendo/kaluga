@@ -21,6 +21,10 @@ package com.splendo.kaluga.base
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
+/**
+ * Runs the provided [block] on the main thread
+ * @param block the code to run on the main thread.
+ */
 actual fun runOnMain(block: () -> Unit) {
     dispatch_async(dispatch_get_main_queue(), block)
 }

@@ -20,6 +20,9 @@ package com.splendo.kaluga.resources.compose
 import androidx.compose.ui.text.style.TextAlign
 import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 
+/**
+ * Gets the [TextAlign] from a [KalugaTextAlignment]
+ */
 val KalugaTextAlignment.composable: TextAlign
     get() = when (this) {
         KalugaTextAlignment.CENTER -> TextAlign.Center

@@ -19,6 +19,10 @@ package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.GCScheduler
 
+/**
+ * A [Disposable] that has a [DisposeHandler]
+ * @param onDispose Function to call when disposing the object.
+ */
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose) {
 
     override fun afterDispose() {

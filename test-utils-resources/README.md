@@ -20,4 +20,4 @@ dependencies {
 ## Mocks
 This library contains mock classes for `StringLoader`, `FontLoader`, `KalugaColorLoader` and `ImageLoader`.
 
-Call `mockColor`, `mockFont`, or `mockImage` to generate mocks for `KalugaColor`, `Font`, or `Image` respectively.
+Call `mockColor`, `mockFont`, or `mockImage` to generate mocks for `KalugaColor`, `KalugaFont`, or `KalugaImage` respectively.

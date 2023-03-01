@@ -1,4 +1,4 @@
-## Scientific
+# Scientific
 This Scientific Library for Kaluga contains methods for converting values to and from different scientific units.
 
 ## Installing
@@ -131,5 +131,4 @@ ScientificArray can be modied using some methods:
   val listOfDefaultBPM = bpmArray.split()
   val listOfHeartRate = heartRateArray.split(::HeartRateValue)
   ```
-
   

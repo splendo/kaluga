@@ -20,6 +20,7 @@ plugins {
     kotlin("android")
     id("jacoco")
     id("convention.publication")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -33,4 +34,5 @@ dependencies {
     implementationDependency(Dependencies.AndroidX.Compose.UI)
     implementationDependency(Dependencies.AndroidX.Compose.UITooling)
     implementationDependency(Dependencies.KotlinX.Coroutines.Core)
+    implementationDependency(Dependencies.Accompanist.DrawablePainter)
 }

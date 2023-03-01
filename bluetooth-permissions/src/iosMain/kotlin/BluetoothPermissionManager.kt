@@ -21,6 +21,7 @@ package com.splendo.kaluga.permissions.bluetooth
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
+import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.CurrentAuthorizationStatusProvider
 import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
@@ -48,6 +49,12 @@ import kotlin.time.Duration
 const val NSBluetoothAlwaysUsageDescription = "NSBluetoothAlwaysUsageDescription"
 const val NSBluetoothPeripheralUsageDescription = "NSBluetoothPeripheralUsageDescription"
 
+/**
+ * The [BasePermissionManager] to use as a default for [BluetoothPermission]
+ * @param bundle the [NSBundle] the [BluetoothPermission] is to be granted in
+ * @param settings the [Settings] to apply to this manager.
+ * @param coroutineScope the [CoroutineScope] of this manager.
+ */
 actual class DefaultBluetoothPermissionManager(
     private val bundle: NSBundle,
     settings: Settings,
@@ -109,6 +116,10 @@ actual class DefaultBluetoothPermissionManager(
     }
 }
 
+/**
+ * A [BaseBluetoothPermissionManagerBuilder]
+ * @param context the [PermissionContext] this permissions manager builder runs on
+ */
 actual class BluetoothPermissionManagerBuilder actual constructor(
     private val context: PermissionContext
 ) : BaseBluetoothPermissionManagerBuilder {

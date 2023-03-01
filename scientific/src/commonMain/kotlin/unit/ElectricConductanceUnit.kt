@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [ElectricConductance]
+ */
 val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
     Siemens,
     Nanosiemens,
@@ -36,6 +39,10 @@ val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
     Absiemens
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricConductance]
+ * SI unit is [Siemens]
+ */
 @Serializable
 sealed class ElectricConductance : AbstractScientificUnit<PhysicalQuantity.ElectricConductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricConductance>
 

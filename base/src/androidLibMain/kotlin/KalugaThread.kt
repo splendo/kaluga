@@ -19,13 +19,27 @@ package com.splendo.kaluga.base
 import android.os.Looper
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * The thread of execution
+ */
 actual data class KalugaThread(val thread: Thread) {
 
     actual companion object {
+
+        /**
+         * The [KalugaThread] the calling method is running on
+         */
         actual val currentThread: KalugaThread get() = KalugaThread(Thread.currentThread())
     }
 
+    /**
+     * Name of the thread
+     */
     actual var name: String by thread::name
+
+    /**
+     * When `true` this thread is the main thread.
+     */
     actual val isMainThread: Boolean get() {
         val mainThread = Looper.getMainLooper()?.thread ?: run {
             // Fallback when no MainLooper is present. This should only occur in tests

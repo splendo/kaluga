@@ -19,13 +19,24 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.KalugaLocale
 import platform.Foundation.NSString
 import platform.Foundation.lowercaseStringWithLocale
 import platform.Foundation.uppercaseStringWithLocale
 
+/**
+ * The String that serves as a line separator.
+ */
 actual val lineSeparator = "\n"
 
-actual fun String.lowerCased(locale: Locale): String = (this as NSString).lowercaseStringWithLocale(locale.nsLocale)
+/**
+ * Converts a String to its lower cased variant based on a given [KalugaLocale]
+ * @param locale The [KalugaLocale] to use for transforming to lower case.
+ */
+actual fun String.lowerCased(locale: KalugaLocale): String = (this as NSString).lowercaseStringWithLocale(locale.nsLocale)
 
-actual fun String.upperCased(locale: Locale): String = (this as NSString).uppercaseStringWithLocale(locale.nsLocale)
+/**
+ * Converts a String to its upper cased variant based on a given [KalugaLocale]
+ * @param locale The [KalugaLocale] to use for transforming to upper case.
+ */
+actual fun String.upperCased(locale: KalugaLocale): String = (this as NSString).uppercaseStringWithLocale(locale.nsLocale)

@@ -76,7 +76,7 @@ fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>>
     composable(
         route(actionClass, spec),
         arguments = spec.rows.mapNotNull {
-            if (it.associatedType is NavigationBundleSpecType.OptionalType<*>) {
+            if (!it.associatedType.isRequired) {
                 navArgument(it.argumentKey) { nullable = true }
             } else {
                 null

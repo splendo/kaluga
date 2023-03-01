@@ -1,4 +1,4 @@
-## Review
+# Review
 This Library for Kaluga contains methods for requesting the user to review the app.
 Both Android and iOS will limit the amount of times this dialog is actually shown.
 As such, this library will only guarantee that an attempt will be made to show the request review dialog.
@@ -67,7 +67,7 @@ class MyActivity: KalugaViewModelActivity<ReviewViewModel>() {
 }
 ```
 
-For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
+For other usages, make sure to call `ActivityLifecycleSubscribable.subscribe` and `ActivityLifecycleSubscribable.unsubscribe` to manage the lifecycle manually.
 
 ```kotlin
 // Android specific
@@ -77,8 +77,6 @@ MainScope().launch {
     builder.create(coroutineScope).attemptToRequestReview()
 }
 ```
-
-You can use the `AppCompatActivity.reviewManager()` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ### iOS
 On iOS simply create the builder

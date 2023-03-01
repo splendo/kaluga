@@ -3,6 +3,7 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
+    id("org.jetbrains.dokka")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -12,14 +13,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":test-utils-base"))
-                implementation(project(":architecture"))
-                api(project(":hud"))
-            }
-        }
-        commonTest {
-            dependencies {
                 api(project(":test-utils-architecture"))
+                api(project(":hud"))
             }
         }
     }

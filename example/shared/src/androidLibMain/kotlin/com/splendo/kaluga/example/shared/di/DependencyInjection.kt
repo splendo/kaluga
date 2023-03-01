@@ -51,11 +51,13 @@ import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ImagesViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
@@ -69,8 +71,10 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.links.DefaultLinksManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.location.DefaultLocationManager
+import com.splendo.kaluga.location.GoogleLocationProvider
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.resources.StyledStringBuilder
@@ -111,6 +115,8 @@ internal val androidModule = module {
 
     viewModel { (permission: LocationPermission) -> LocationViewModel(permission) }
 
+    viewModel { NotificationPermissionViewModel() }
+
     viewModel { (navigator: Navigator<ArchitectureNavigationAction<*>>) ->
         ArchitectureViewModel(navigator)
     }
@@ -148,7 +154,7 @@ internal val androidModule = module {
 
     viewModel { (navigator: Navigator<BrowserNavigationActions<*>>) ->
         LinksViewModel(
-            LinksBuilder(),
+            DefaultLinksManager.Builder(),
             AlertPresenter.Builder(),
             navigator
         )
@@ -185,6 +191,10 @@ internal val androidModule = module {
     }
 
     viewModel {
+        ImagesViewModel()
+    }
+
+    viewModel {
         LabelViewModel(StyledStringBuilder.Provider())
     }
 
@@ -207,7 +217,14 @@ internal val androidModule = module {
 
 fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     androidModule,
-    { LocationStateRepoBuilder(permissionsBuilder = it) },
+    {
+        LocationStateRepoBuilder(
+            locationManagerBuilder = DefaultLocationManager.Builder(
+                googleLocationProviderSettings = GoogleLocationProvider.Settings()
+            ),
+            permissionsBuilder = it,
+        )
+    },
     { BluetoothBuilder(permissionsBuilder = it) },
     customModules
 )

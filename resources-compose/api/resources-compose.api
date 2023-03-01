@@ -10,11 +10,6 @@ public final class com/splendo/kaluga/resources/compose/ColorKt {
 	public static final fun getComposable (I)J
 }
 
-public abstract interface class com/splendo/kaluga/resources/compose/CornerRadiusSize {
-	public abstract fun xToPx-TmRCtEA (JLandroidx/compose/ui/unit/Density;)F
-	public abstract fun yToPx-TmRCtEA (JLandroidx/compose/ui/unit/Density;)F
-}
-
 public final class com/splendo/kaluga/resources/compose/GradientStyleKt {
 	public static final fun getBrush (Lcom/splendo/kaluga/resources/stylable/GradientStyle;)Landroidx/compose/ui/graphics/Brush;
 }
@@ -24,43 +19,14 @@ public final class com/splendo/kaluga/resources/compose/KalugaButtonKt {
 	public static final fun PreviewKalugaButton (Landroidx/compose/runtime/Composer;I)V
 }
 
+public final class com/splendo/kaluga/resources/compose/KalugaImageKt {
+	public static final fun Composable (Lcom/splendo/kaluga/resources/KalugaImage;Ljava/lang/String;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Composable (Lcom/splendo/kaluga/resources/TintedImage;Ljava/lang/String;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/splendo/kaluga/resources/compose/KalugaLabelKt {
 	public static final fun Composable (Lcom/splendo/kaluga/resources/view/KalugaLabel;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
 	public static final fun PreviewKalugaLabel (Landroidx/compose/runtime/Composer;I)V
-}
-
-public final class com/splendo/kaluga/resources/compose/RelativeRadialGradient : androidx/compose/ui/graphics/ShaderBrush {
-	public static final field $stable I
-	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FI[Lkotlin/Pair;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FI[Lkotlin/Pair;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/util/List;Ljava/util/List;Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;FIILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun createShader-uvyYCjk (J)Landroid/graphics/Shader;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/resources/compose/RelativeSweepGradient : androidx/compose/ui/graphics/ShaderBrush {
-	public static final field $stable I
-	public fun <init> (Lcom/splendo/kaluga/resources/stylable/GradientStyle$CenterPoint;[Lkotlin/Pair;)V
-	public fun createShader-uvyYCjk (J)Landroid/graphics/Shader;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/resources/compose/RoundedCornerRadiusShape : androidx/compose/ui/graphics/Shape {
-	public static final field $stable I
-	public fun <init> (Lcom/splendo/kaluga/resources/compose/CornerRadiusSize;Lcom/splendo/kaluga/resources/compose/CornerRadiusSize;Lcom/splendo/kaluga/resources/compose/CornerRadiusSize;Lcom/splendo/kaluga/resources/compose/CornerRadiusSize;)V
-	public final fun createOutline-Pq9zytI (JLandroidx/compose/ui/unit/LayoutDirection;Landroidx/compose/ui/unit/Density;)Landroidx/compose/ui/graphics/Outline;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/splendo/kaluga/resources/compose/RoundedCornerRadiusShapeKt {
-	public static final fun CornerRadiusSize-YgX7TsA (FF)Lcom/splendo/kaluga/resources/compose/CornerRadiusSize;
-	public static final fun isValid-12SF9DM (Lcom/splendo/kaluga/resources/compose/CornerRadiusSize;JLandroidx/compose/ui/unit/Density;)Z
 }
 
 public final class com/splendo/kaluga/resources/compose/TextAlignmentKt {

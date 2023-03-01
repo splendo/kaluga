@@ -24,6 +24,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [Frequency]
+ */
 val FrequencyUnits: Set<Frequency> get() = setOf(
     Hertz,
     Nanohertz,
@@ -39,6 +42,10 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
     BeatsPerMinute
 )
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Frequency]
+ * SI unit is [Hertz]
+ */
 @Serializable
 sealed class Frequency : ScientificUnit<PhysicalQuantity.Frequency>, MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
 

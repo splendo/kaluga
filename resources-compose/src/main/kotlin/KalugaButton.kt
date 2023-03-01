@@ -47,6 +47,14 @@ import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
 
+/**
+ * Gets a [Button] that looks and behaves according to a [KalugaButton]
+ * @param modifier the [Modifier] to be applied to the button
+ * @param elevation the [ButtonElevation] used to resolve the elevation for this button in different states.
+ * This controls the size of the shadow below the button. Pass `null` here to disable elevation for this button.
+ * See [ButtonDefaults.elevation].
+ * @param contentPadding The spacing values to apply internally between the container and the content
+ */
 @Composable
 fun KalugaButton.Composable(
     modifier: Modifier,

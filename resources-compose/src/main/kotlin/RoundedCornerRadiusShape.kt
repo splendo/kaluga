@@ -32,17 +32,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 
 @Immutable
-interface CornerRadiusSize {
+internal interface CornerRadiusSize {
     fun xToPx(shapeSize: Size, density: Density): Float
     fun yToPx(shapeSize: Size, density: Density): Float
 }
 
-fun CornerRadiusSize.isValid(shapeSize: Size, density: Density): Boolean {
+internal fun CornerRadiusSize.isValid(shapeSize: Size, density: Density): Boolean {
     return xToPx(shapeSize, density) >= 0.0f && yToPx(shapeSize, density) >= 0.0f
 }
 
 @Stable
-fun CornerRadiusSize(x: Dp, y: Dp): CornerRadiusSize = DpCornerRadiusSize(x, y)
+internal fun CornerRadiusSize(x: Dp, y: Dp): CornerRadiusSize = DpCornerRadiusSize(x, y)
 
 private data class DpCornerRadiusSize(private val radiusSize: RadiusSize) : CornerRadiusSize, InspectableValue {
     constructor(x: Dp, y: Dp) : this (RadiusSize(x, y))
@@ -58,7 +58,7 @@ private data class DpCornerRadiusSize(private val radiusSize: RadiusSize) : Corn
         get() = radiusSize
 }
 
-class RoundedCornerRadiusShape(
+internal class RoundedCornerRadiusShape(
     private val topStart: CornerRadiusSize,
     private val topEnd: CornerRadiusSize,
     private val bottomEnd: CornerRadiusSize,

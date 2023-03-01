@@ -29,10 +29,25 @@ import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
 
+/**
+ * Set of all [MetricAndUKImperialTemperature]
+ */
 val MetricAndUkImperialTemperatureUnits: Set<MetricAndUKImperialTemperature> get() = setOf(Kelvin, Celsius)
+
+/**
+ * Set of all [USCustomaryTemperature]
+ */
 val USCustomaryTemperatureUnits: Set<USCustomaryTemperature> get() = setOf(Rankine, Fahrenheit)
+
+/**
+ * Set of all [Temperature]
+ */
 val TemperatureUnits: Set<Temperature> get() = MetricAndUkImperialTemperatureUnits + USCustomaryTemperatureUnits
 
+/**
+ * An [AbstractScientificUnit] for [PhysicalQuantity.Temperature]
+ * SI unit is [Kelvin]
+ */
 @Serializable
 sealed class Temperature : AbstractScientificUnit<PhysicalQuantity.Temperature>() {
     override val quantity = PhysicalQuantity.Temperature
@@ -40,11 +55,17 @@ sealed class Temperature : AbstractScientificUnit<PhysicalQuantity.Temperature>(
     abstract fun deltaFromSIUnitDelta(delta: Decimal): Decimal
 }
 
+/**
+ * A [Temperature] for [MeasurementSystem.MetricAndUKImperial]
+ */
 @Serializable
 sealed class MetricAndUKImperialTemperature(override val symbol: String) : Temperature(), MetricAndUKImperialScientificUnit<PhysicalQuantity.Temperature>, MeasurementUsage.UsedInUKImperial {
     override val system = MeasurementSystem.MetricAndUKImperial
 }
 
+/**
+ * A [Temperature] for [MeasurementSystem.USCustomary]
+ */
 @Serializable
 sealed class USCustomaryTemperature(override val symbol: String) : Temperature(), USCustomaryScientificUnit<PhysicalQuantity.Temperature> {
     override val system = MeasurementSystem.USCustomary

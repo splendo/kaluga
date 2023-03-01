@@ -17,11 +17,22 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.monitor.ServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 
+/**
+ * A [ServiceMonitor] that monitors whether Bluetooth is enabled
+ */
 expect interface BluetoothMonitor : ServiceMonitor {
 
+    /**
+     * Builder for creating a [BluetoothMonitor]
+     */
     class Builder {
+
+        /**
+         * Creates the [BluetoothMonitor]
+         * @return the [BluetoothMonitor] created
+         */
         fun create(): BluetoothMonitor
     }
 }

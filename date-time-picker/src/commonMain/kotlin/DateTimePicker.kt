@@ -21,18 +21,29 @@ package com.splendo.kaluga.datetimepicker
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
-import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
+/**
+ * An object that represents a date-time picker view
+ *
+ * @property message (optional) message to show in the date-time picker
+ * @property cancelButtonTitle the text to show in the button to cancel picking a date
+ * @property confirmButtonTitle the text to show in the button to confirm picking a date
+ * @property type the [Type] of date time picker
+ * @property locale the [KalugaLocale] used for representing time in the date-time picker
+ * @property selectedDate the [KalugaDate] that the date-time picker will use as a base for picking the date.
+ * This will determine the initial time/day to be selected in the picker, depending on the [type].
+ * Upon completion, a copy of this date modified with the selected date or time will be provided, keeping timezone and components not selected the same.
+ */
 data class DateTimePicker(
     val message: String?,
     val cancelButtonTitle: String,
     val confirmButtonTitle: String,
     val type: Type,
-    val locale: Locale,
+    val locale: KalugaLocale,
     val selectedDate: KalugaDate
 ) {
 
@@ -43,11 +54,21 @@ data class DateTimePicker(
         /**
          * Selects a Date
          * A range can be provided to limit the dates selectable
+         *
+         * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
+         * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
          */
-        class DateType(
+        data class DateType(
             val earliestDate: KalugaDate? = null,
             val latestDate: KalugaDate? = null
-        ) : Type()
+        ) : Type() {
+
+            internal fun adjustDate(date: KalugaDate) = when {
+                earliestDate != null && earliestDate > date -> earliestDate
+                latestDate != null && latestDate < date -> latestDate
+                else -> date
+            }
+        }
 
         /**
          * Selects a Time
@@ -55,43 +76,74 @@ data class DateTimePicker(
         object TimeType : Type()
     }
 
-    class Builder(private var type: Type = Type.TimeType) {
+    /**
+     * Builder class for creating a [DateTimePicker]
+     * @param type the [Type] of [DateTimePicker] to build.
+     */
+    class Builder(private val type: Type = Type.TimeType) {
         private var message: String? = null
         private var cancelButtonTitle: String = ""
         private var confirmButtonTitle: String = ""
-        private var locale: Locale = defaultLocale
-        private var selectedDate: KalugaDate = DefaultKalugaDate.epoch()
+        private var locale: KalugaLocale = defaultLocale
+        private var selectedDate: KalugaDate = when (type) {
+            is Type.DateType -> type.adjustDate(
+                DefaultKalugaDate.now().apply {
+                    hour = 0
+                    minute = 0
+                    second = 0
+                    millisecond = 0
+                }
+            )
+            is Type.TimeType -> DefaultKalugaDate.epoch().apply {
+                val now = DefaultKalugaDate.now()
+                hour = now.hour
+                minute = now.minute
+                second = 0
+                millisecond = 0
+            }
+        }
 
         /**
          * Sets the [message] displayed in the DateTimePicker
          *
-         * @param message The message of the alert
+         * @param message The message of the DateTimePicker
          */
         fun setMessage(message: String?) = apply { this.message = message }
 
         /**
-         * Sets this [cancelButtonTitle] shown in the DateTimePicker
+         * Sets the text to show in the DateTimePicker button to cancel picking a date
+         *
+         * @param cancelButtonTitle the text to show in the cancel button
          */
         fun setCancelButtonTitle(cancelButtonTitle: String) = apply { this.cancelButtonTitle = cancelButtonTitle }
 
         /**
-         * Sets this [cancelButtonTitle] shown in the DateTimePicker
+         * Sets the text to show in the DateTimePicker button to confirm picking a date
+         *
+         * @param confirmButtonTitle the text to show in the confirm button
          */
         fun setConfirmButtonTitle(confirmButtonTitle: String) = apply { this.confirmButtonTitle = confirmButtonTitle }
 
         /**
-         * Sets the Locale for which a Date is selected
+         * Sets the [KalugaLocale] for which a Date is selected
+         *
+         * @param locale the [KalugaLocale] for which the date is selected
          */
-        fun setLocale(locale: Locale) = apply { this.locale = locale }
-
-        fun setSelectedDate(date: KalugaDate) = apply { this.selectedDate = date }
+        fun setLocale(locale: KalugaLocale) = apply { this.locale = locale }
 
         /**
-         * Sets a style of the alert
+         * Sets the [KalugaDate] that the date-time picker will use as a base for picking the date.
+         * This will determine the initial time/day to be selected in the picker, depending on the [type].
+         * Upon completion, a copy of this date modified with the selected date or time will be provided, keeping timezone and components not selected the same.
          *
-         * @param type The style of an alert
+         * @param date the date to use as a basis for selection.
          */
-        internal fun setType(type: Type) = apply { this.type = type }
+        fun setSelectedDate(date: KalugaDate) = apply {
+            this.selectedDate = when (type) {
+                is Type.DateType -> type.adjustDate(date)
+                is Type.TimeType -> date
+            }
+        }
 
         /**
          * Creates a [DateTimePicker]
@@ -108,27 +160,27 @@ data class DateTimePicker(
 }
 
 /**
- * Interface that defines actions that can be applied to the alert.
+ * Interface that defines actions that can used to present a [DateTimePicker].
  */
 interface DateTimePickerActions {
     /**
-     * Presents an DateTimePicker
+     * Presents a [DateTimePicker]
      *
      * @param animated Pass `true` to animate the presentation
-     * @param completion The callback invoked when a Date is selected or the dialog is cancelled
+     * @param completion The callback invoked when a [KalugaDate] is selected or the dialog is cancelled
      */
     fun showAsync(animated: Boolean = true, completion: (KalugaDate?) -> Unit = {})
 
     /**
-     * Presents an DateTimePicker and suspends
+     * Presents a [DateTimePicker] and suspends until completion
      *
-     * @param animated
+     * @param animated Pass `true` to animate the presentation
      * @return The [KalugaDate] that was selected or `null` if the DateTimePicker was cancelled
      */
     suspend fun show(animated: Boolean = true): KalugaDate?
 
     /**
-     * Dismisses the DateTimePicker, which was presented previously
+     * Dismisses the currently presented [DateTimePicker].
      *
      * @param animated Pass `true` to animate the transition
      */
@@ -139,13 +191,12 @@ interface DateTimePickerActions {
  * Abstract DateTimePicker presenter, used to show and dismiss given [DateTimePicker]
  * @see [DateTimePickerPresenter]
  *
- * @property dateTimePicker The alert to present (and dismiss if needed)
+ * @param dateTimePicker The [DateTimePicker] to present (and dismiss if needed)
  */
-abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimePicker) : DateTimePickerActions {
+abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: DateTimePicker) : DateTimePickerActions {
 
     /**
-     * Abstract alert builder class, used to create an [DateTimePicker].
-     * The resulting DateTimePicker that can be shown and dismissed using an [DateTimePickerPresenter].
+     * Abstract alert builder class, used to create a [BaseDateTimePickerPresenter].
      *
      * @see [DateTimePickerPresenter.Builder]
      */
@@ -155,7 +206,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
          * Creates the [BaseDateTimePickerPresenter] described by this builder.
          *
          * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter
-         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+         * @param coroutineScope The [CoroutineScope] managing the date-time picker lifecycle.
          * @return The [BaseDateTimePickerPresenter] described by this builder.
          */
         abstract fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): BaseDateTimePickerPresenter
@@ -169,9 +220,15 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         suspendCancellableCoroutine { continuation ->
             continuation.invokeOnCancellation {
                 dismissDateTimePicker(animated)
-                continuation.resume(null)
+                continuation.tryResume(null)?.let {
+                    continuation.completeResume(it)
+                }
             }
-            showDateTimePicker(animated) { continuation.resume(it) }
+            showDateTimePicker(animated) { pickedDate ->
+                continuation.tryResume(pickedDate)?.let {
+                    continuation.completeResume(it)
+                }
+            }
         }
 
     override fun dismiss(animated: Boolean) {
@@ -187,26 +244,32 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
 }
 
 /**
- * Class for presenting an [DateTimePicker].
+ * Class for presenting a [DateTimePicker]. Implementation of [BaseDateTimePickerPresenter]
  */
 expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
+
+    /**
+     * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
+     */
     class Builder : BaseDateTimePickerPresenter.Builder {
         /**
-         * Creates DateTimePickerPresenter object
+         * Creates a [DateTimePickerPresenter]
          *
          * @param dateTimePicker The [DateTimePicker] to be presented with the built presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
-         * @return The DateTimePickerPresenter object
+         * @return The created [DateTimePickerPresenter]
          */
         override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): DateTimePickerPresenter
     }
 }
 
 /**
- * Builds an alert using DSL syntax (thread safe)
+ * Builds a date picker using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @param initialize The block to construct an [DateTimePicker]
+ * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
+ * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
+ * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.DateType]
  * @return The built alert interface object
  */
 fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
@@ -222,10 +285,10 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
 )
 
 /**
- * Builds an alert using DSL syntax (thread safe)
+ * Builds a time picker using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
- * @param initialize The block to construct an Alert
+ * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.TimeType]
  * @return The built alert interface object
  */
 fun BaseDateTimePickerPresenter.Builder.buildTimePicker(

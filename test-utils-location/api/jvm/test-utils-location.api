@@ -2,7 +2,6 @@ public final class com/splendo/kaluga/test/location/MockBaseLocationManager : co
 	public fun <init> (ZLcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 	public final fun getLocationEnabled ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getLocationMonitor ()Lcom/splendo/kaluga/location/LocationMonitor;
-	public fun getLocationMonitor ()Lcom/splendo/kaluga/test/location/MockLocationMonitor;
 	public final fun getRequestEnableLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStartMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStartMonitoringLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
@@ -10,6 +9,8 @@ public final class com/splendo/kaluga/test/location/MockBaseLocationManager : co
 	public final fun getStopMonitoringLocationEnabledMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStopMonitoringLocationMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
 	public final fun getStopMonitoringPermissionsMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun handleLocationChanged (Lcom/splendo/kaluga/location/Location$KnownLocation;)V
+	public fun handleLocationChanged (Ljava/util/List;)V
 	public fun requestEnableLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringLocation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startMonitoringLocationEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -53,7 +54,7 @@ public final class com/splendo/kaluga/test/location/MockLocationManager : com/sp
 	public fun stopMonitoringPermissions (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class com/splendo/kaluga/test/location/MockLocationMonitor : com/splendo/kaluga/test/base/monitor/MockServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
+public final class com/splendo/kaluga/test/location/MockLocationMonitor : com/splendo/kaluga/test/service/MockServiceMonitor, com/splendo/kaluga/location/LocationMonitor {
 	public fun <init> (Lkotlinx/coroutines/flow/StateFlow;)V
 	public synthetic fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
 	public fun isEnabled ()Lkotlinx/coroutines/flow/StateFlow;

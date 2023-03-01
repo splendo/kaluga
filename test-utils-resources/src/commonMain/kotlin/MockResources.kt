@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.test.resources
 
-import com.splendo.kaluga.resources.Font
+import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.FontLoader
-import com.splendo.kaluga.resources.Image
+import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaColorLoader
@@ -99,7 +99,7 @@ class MockImageLoader(private val returnMock: Boolean = false) : ImageLoader {
         }
     }
 
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? = loadImageMock.call(identifier, defaultValue)
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? = loadImageMock.call(identifier, defaultValue)
 }
 
 /**
@@ -119,7 +119,7 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
         }
     }
 
-    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? =
         loadFontMock.call(identifier, defaultValue)
 }
 
@@ -129,11 +129,11 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
 expect fun mockColor(): KalugaColor
 
 /**
- * Creates a mocked [Image]
+ * Creates a mocked [KalugaImage]
  */
-expect fun mockImage(): Image
+expect fun mockImage(): KalugaImage
 
 /**
- * Creates a mocked [Font]
+ * Creates a mocked [KalugaFont]
  */
-expect fun mockFont(): Font
+expect fun mockFont(): KalugaFont

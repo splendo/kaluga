@@ -1,3 +1,7 @@
+public final class com/splendo/kaluga/test/alerts/AlertPresenterBuilderKt {
+	public static final fun alertPresenterBuilder (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/alerts/AlertPresenter$Builder;
+}
+
 public final class com/splendo/kaluga/test/alerts/BuildConfig {
 	public static final field BUILD_TYPE Ljava/lang/String;
 	public static final field DEBUG Z

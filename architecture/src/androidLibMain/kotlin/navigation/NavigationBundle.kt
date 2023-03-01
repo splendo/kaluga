@@ -19,6 +19,7 @@ package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Converts a [NavigationBundle] to a [Bundle]
@@ -59,9 +60,9 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
         is NavigationBundleValue.StringValue -> bundle.putString(key, value.value)
         is NavigationBundleValue.StringArrayValue -> bundle.putStringArrayList(key, ArrayList(value.value))
         is NavigationBundleValue.OptionalValue<*> -> value.optionalValue?.let { mapValue(key, it, bundle) }
-        is NavigationBundleValue.DateValue -> bundle.putLong(key, value.value.millisecondSinceEpoch)
+        is NavigationBundleValue.DateValue -> bundle.putLong(key, value.value.durationSinceEpoch.inWholeMilliseconds)
         is NavigationBundleValue.DateArrayValue ->
-            bundle.putLongArray(key, LongArray(value.value.size) { value.value[it].millisecondSinceEpoch })
+            bundle.putLongArray(key, LongArray(value.value.size) { value.value[it].durationSinceEpoch.inWholeMilliseconds })
     }
 }
 
@@ -123,10 +124,10 @@ internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>)
             }
         }
         is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
-            specType.convertValue(DefaultKalugaDate.epoch(value))
+            specType.convertValue(DefaultKalugaDate.epoch(value.milliseconds))
         }
         is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
-            specType.convertValue(array.map { DefaultKalugaDate.epoch(it) })
+            specType.convertValue(array.map { DefaultKalugaDate.epoch(it.milliseconds) })
         }
     }
 }

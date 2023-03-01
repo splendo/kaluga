@@ -30,10 +30,24 @@ internal open class InternalConcurrentMutableIterator<E, I : MutableIterator<E>>
     fun <T> synchronized(action: I.() -> T): T = lock.withLock { internal.action() }
 }
 
+/**
+ * A [MutableIterator] that ensures all calls to is happen in a concurrent way.
+ * @see [MutableCollection.iterator]
+ */
 class ConcurrentMutableIterator<E> internal constructor(private val internal: InternalConcurrentMutableIterator<E, MutableIterator<E>>) : MutableIterator<E> by internal {
     internal constructor(internal: MutableIterator<E>) : this(InternalConcurrentMutableIterator(internal))
+
+    /**
+     * Synchronizes an action block on the [MutableIterator]
+     * @param action The action block to execute concurrently
+     * @return The result of the [action] block
+     */
+    fun <T> synchronized(action: MutableIterator<E>.() -> T): T = internal.synchronized(action)
 }
 
+/**
+ * A [MutableListIterator] that ensures all calls to is happen in a concurrent way.
+ */
 class ConcurrentMutableListIterator<E> internal constructor(private val internal: InternalConcurrentMutableIterator<E, MutableListIterator<E>>) : MutableIterator<E> by internal, MutableListIterator<E> {
 
     internal constructor(internal: MutableListIterator<E>) : this(InternalConcurrentMutableIterator(internal))
@@ -44,4 +58,11 @@ class ConcurrentMutableListIterator<E> internal constructor(private val internal
     override fun previous(): E = internal.synchronized { previous() }
     override fun previousIndex(): Int = internal.synchronized { previousIndex() }
     override fun set(element: E) = internal.synchronized { set(element) }
+
+    /**
+     * Synchronizes an action block on the [MutableListIterator]
+     * @param action The action block to execute concurrently
+     * @return The result of the [action] block
+     */
+    fun <T> synchronized(action: MutableListIterator<E>.() -> T): T = internal.synchronized(action)
 }
