@@ -35,7 +35,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd.v3-${{ matrix.api-level }}
+          key: avd.v4-${{ matrix.api-level }}
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -50,6 +50,7 @@ jobs:
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
+          profile: 3.4in WQVGA
           script: echo "Generated AVD snapshot for caching."
 
       - name: run tests
@@ -64,4 +65,5 @@ jobs:
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
+          profile: 3.4in WQVGA
           script: ./gradlew :${{ matrix.module }}:connectedDebugAndroidTest
