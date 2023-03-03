@@ -200,7 +200,7 @@ expect class BluetoothBuilder : Bluetooth.Builder
 operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     return this.map { devices ->
         devices.firstOrNull { it.identifier == identifier }
-    }
+    }.distinctUntilChanged()
 }
 
 fun Flow<Device?>.state(): Flow<DeviceState> {
@@ -308,7 +308,7 @@ operator fun Flow<List<Service>>.get(uuid: UUID): Flow<Service?> {
         services.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
-    }
+    }.distinctUntilChanged()
 }
 
 fun Flow<Service?>.characteristics(): Flow<List<Characteristic>> {
@@ -325,7 +325,7 @@ operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write
         attribute.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
-    }
+    }.distinctUntilChanged()
 }
 
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value(): Flow<ByteArray?> {

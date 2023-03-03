@@ -94,11 +94,18 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
                     is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning }
-                    is Scanner.Event.DeviceDiscovered -> handleDeviceDiscovered(event)
-                    is Scanner.Event.DeviceConnected -> handleDeviceConnectionChanged(event.identifier, true)
-                    is Scanner.Event.DeviceDisconnected -> handleDeviceConnectionChanged(event.identifier, false)
+                    is Scanner.Event.DevicesDiscovered -> handleDeviceDiscovered(event)
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
+            }
+        }
+        CoroutineScope(coroutineContext + superVisorJob).launch {
+            scanner.connectionEvents.collect { connectionEvent ->
+                when (connectionEvent) {
+                    is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
+                    is Scanner.ConnectionEvent.DeviceDisconnected -> handleDeviceConnectionChanged(connectionEvent.identifier, false)
+                }
+
             }
         }
     }
@@ -119,11 +126,14 @@ open class ScanningStateImplRepo(
         }
     }
 
-    private suspend fun handleDeviceDiscovered(event: Scanner.Event.DeviceDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
-        state.discoverDevice(event.identifier, event.rssi, event.advertisementData) {
-            val (deviceWrapper, connectionManagerBuilder) = event.deviceCreator()
-            createDevice(event.identifier, DeviceInfoImpl(deviceWrapper, event.rssi, event.advertisementData), deviceWrapper, connectionManagerBuilder)
+    private suspend fun handleDeviceDiscovered(event: Scanner.Event.DevicesDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
+        val discoveredDevices = event.devices.map { deviceDiscovered ->
+            ScanningState.Enabled.Scanning.DiscoveredDevice(deviceDiscovered.identifier, deviceDiscovered.rssi, deviceDiscovered.advertisementData) {
+                val (deviceWrapper, connectionManagerBuilder) = deviceDiscovered.deviceCreator()
+                createDevice(deviceDiscovered.identifier, DeviceInfoImpl(deviceWrapper, deviceDiscovered.rssi, deviceDiscovered.advertisementData), deviceWrapper, connectionManagerBuilder)
+            }
         }
+        state.discoverDevices(discoveredDevices)
     }
 
     private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->

@@ -88,11 +88,15 @@ sealed interface ScanningState : KalugaState {
 
         interface Scanning : Enabled {
 
-            suspend fun discoverDevice(
-                identifier: Identifier,
-                rssi: Int,
-                advertisementData: BaseAdvertisementData,
-                deviceCreator: () -> Device
+            data class DiscoveredDevice(
+                val identifier: Identifier,
+                val rssi: Int,
+                val advertisementData: BaseAdvertisementData,
+                val deviceCreator: () -> Device
+            )
+
+            suspend fun discoverDevices(
+                devices: List<DiscoveredDevice>
             ): suspend () -> Scanning
 
             val stopScanning: suspend () -> Idle
@@ -318,19 +322,27 @@ sealed class ScanningStateImpl {
                 }
             }
 
-            override suspend fun discoverDevice(
-                identifier: Identifier,
-                rssi: Int,
-                advertisementData: BaseAdvertisementData,
-                deviceCreator: () -> Device
+            override suspend fun discoverDevices(
+                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>
             ): suspend () -> ScanningState.Enabled.Scanning {
-
-                return discovered.devices.find { it.identifier == identifier }
-                    ?.let { knownDevice ->
-                        knownDevice.rssiDidUpdate(rssi)
-                        knownDevice.advertisementDataDidUpdate(advertisementData)
-                        remain()
-                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), paired, scanner) }
+                devices.mapNotNull { device ->
+                    discovered.devices.find { it.identifier == device.identifier }?.let { knownDevice ->
+                        knownDevice.rssiDidUpdate(device.rssi)
+                        knownDevice.advertisementDataDidUpdate(device.advertisementData)
+                    }
+                }
+                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier} }
+                return if (unknownDevices.isEmpty()) {
+                    remain()
+                } else {
+                    suspend {
+                        val newDiscovered =
+                            unknownDevices.fold(discovered) { acc, discoveredDevice ->
+                                acc.copyAndAdd(discoveredDevice.deviceCreator())
+                            }
+                        Scanning(newDiscovered, paired, scanner)
+                    }
+                }
             }
 
             override val stopScanning = suspend { Idle(discovered, paired, scanner) }
