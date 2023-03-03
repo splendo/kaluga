@@ -135,24 +135,29 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun connect() {
+        debug("!!!! cbCentralManager connect()")
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
     override suspend fun discoverServices() {
+        debug("!!!! discoverServices()")
         discoveringServices.clear()
         discoveringCharacteristics.clear()
         peripheral.discoverServices(null)
     }
 
     override suspend fun disconnect() {
+        debug("!!!! disconnect()")
         cbCentralManager.cancelPeripheralConnection(peripheral)
     }
 
     override suspend fun readRssi() {
+        debug("!!!! readRssi()")
         peripheral.readRSSI()
     }
 
     override suspend fun requestMtu(mtu: Int): Boolean {
+        debug("!!!! requestMtu")
         val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
@@ -164,6 +169,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun performAction(action: DeviceAction) {
+        debug("!!!! performAction $action")
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -188,22 +194,27 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     override suspend fun unpair() {
+        debug("!!!! unpair")
         // There is no iOS API to unpair peripheral
     }
 
     override suspend fun pair() {
+        debug("!!!! pair")
         // There is no iOS API to pair peripheral
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
+        debug("!!!! updateCharacteristic $characteristic")
         handleUpdatedCharacteristic(characteristic.UUID, succeeded = error == null)
     }
 
     private fun updateDescriptor(descriptor: CBDescriptor, error: NSError?) {
+        debug("!!!! updateDescriptor $descriptor")
         handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
     }
 
     private fun didDiscoverServices() {
+        debug("!!!! didDiscoverServices")
         discoveringServices.addAll(
             peripheral.services?.typedList<CBService>()?.map {
                 peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
@@ -215,6 +226,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun didDiscoverCharacteristic(forService: CBService) {
+        debug("!!!! didDiscoverCharacteristic forService $forService")
         discoveringServices.remove(forService.UUID)
         discoveringCharacteristics.addAll(
             forService.characteristics?.typedList<CBCharacteristic>()?.map {
@@ -226,14 +238,17 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
+        debug("!!!! didDiscoverDescriptors forCharacteristic $forCharacteristic")
         discoveringCharacteristics.remove(forCharacteristic.UUID)
         checkScanComplete()
     }
 
     private fun checkScanComplete() {
+        debug("!!!! checkScanComplete()")
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             val services = peripheral.services?.typedList<CBService>()?.map { DefaultServiceWrapper(it) } ?: emptyList()
             handleDiscoverCompleted(services)
+            debug("!!!! handleDiscoverCompleted $services")
         }
     }
 }

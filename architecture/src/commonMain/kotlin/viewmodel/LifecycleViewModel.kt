@@ -19,6 +19,7 @@ package com.splendo.kaluga.architecture.viewmodel
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -55,13 +56,17 @@ expect open class LifecycleViewModel internal constructor(allowFreezing: Boolean
  */
 open class BaseLifecycleViewModel(allowFreezing: Boolean = false) : LifecycleViewModel(allowFreezing) {
 
+    private val exceptionHandler = CoroutineExceptionHandler { context, exception ->
+        println("exception = $exception in context = $context with stackTrace: ${exception.printStackTrace()}")
+    }
+
     private val resumedJobs = SupervisorJob()
 
     /**
      * Function to be called when the presenting views lifecycle begins
      */
     fun didResume() {
-        onResume(CoroutineScope(coroutineScope.coroutineContext + resumedJobs))
+        onResume(CoroutineScope(coroutineScope.coroutineContext + resumedJobs + exceptionHandler))
     }
 
     /**
