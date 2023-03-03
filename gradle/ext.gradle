@@ -31,7 +31,7 @@ gradle.ext {
     napier_version = '2.4.0'
     android_ble_scanner_version = '1.6.0'
     library_version_base = '0.5.0'
-    library_version = libraryVersionLocalProperties ?: "$library_version_base${System.properties.kaluga_branch_postfix}"
+    library_version = "leo_version"
     android_min_sdk_version = 21
     android_compile_sdk_version = 33
     android_target_sdk_version = 33

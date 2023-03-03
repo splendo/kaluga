@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.base
 
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -84,9 +85,12 @@ open class PermissionStateRepo<P : Permission>(
         val defaultMonitoringInterval: Duration = 1.seconds
     }
 
+    private val exceptionHandler = CoroutineExceptionHandler { context, exception ->
+        println("exception = $exception in context = $context with stackTrace: ${exception.printStackTrace()}")
+    }
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private fun startMonitoringManager(permissionManager: PermissionManager<P>) {
-        CoroutineScope(coroutineContext + superVisorJob).launch {
+        CoroutineScope(coroutineContext + superVisorJob + exceptionHandler).launch {
             permissionManager.events.collect { event ->
                 when (event) {
                     is PermissionManager.Event.PermissionGranted -> handlePermissionGranted()

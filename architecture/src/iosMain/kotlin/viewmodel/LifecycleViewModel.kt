@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,9 +31,13 @@ actual open class LifecycleViewModel internal actual constructor(val allowFreezi
             ensureNeverFrozen()
     }
 
+    private val exceptionHandler = CoroutineExceptionHandler { context, exception ->
+        println("exception = $exception in context = $context with stackTrace: ${exception.printStackTrace()}")
+    }
+
     private val lifecycleJob = SupervisorJob()
 
-    actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob)
+    actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob + exceptionHandler)
 
     /**
      * Call this when the [LifecycleViewModel] should be cleared to cancel all its coroutines.

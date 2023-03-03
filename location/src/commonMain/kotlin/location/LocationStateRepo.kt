@@ -23,6 +23,7 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -90,9 +91,13 @@ open class LocationStateImplRepo(
     }
 ) {
 
+    private val exceptionHandler = CoroutineExceptionHandler { context, exception ->
+        println("exception = $exception in context = $context with stackTrace: ${exception.printStackTrace()}")
+    }
+
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private suspend fun startMonitoringLocationManager(locationManager: LocationManager) {
-        CoroutineScope(coroutineContext + superVisorJob).launch {
+        CoroutineScope(coroutineContext + superVisorJob + exceptionHandler).launch {
             locationManager.events.collect { event ->
                 when (event) {
                     is LocationManager.Event.PermissionChanged -> handlePermissionChangedEvent(event, locationManager)
@@ -101,7 +106,7 @@ open class LocationStateImplRepo(
                 }
             }
         }
-        CoroutineScope(coroutineContext + superVisorJob).launch {
+        CoroutineScope(coroutineContext + superVisorJob + exceptionHandler).launch {
             locationManager.locations.collect { location ->
                 takeAndChangeState(remainIfStateNot = LocationState.Enabled::class) {
                     it.updateWithLocation(location)

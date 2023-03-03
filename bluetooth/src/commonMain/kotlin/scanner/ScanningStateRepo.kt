@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -85,9 +86,12 @@ open class ScanningStateImplRepo(
     coroutineContext = coroutineContext
 ) {
 
+    private val exceptionHandler = CoroutineExceptionHandler { context, exception ->
+        println("exception = $exception in context = $context with stackTrace: ${exception.printStackTrace()}")
+    }
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private fun startMonitoringScanner(scanner: Scanner) {
-        CoroutineScope(coroutineContext + superVisorJob).launch {
+        CoroutineScope(coroutineContext + superVisorJob + exceptionHandler).launch {
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
