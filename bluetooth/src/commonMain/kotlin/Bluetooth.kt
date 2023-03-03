@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -127,10 +128,8 @@ class Bluetooth internal constructor(
     internal fun pairedDevices(filter: Set<UUID>, timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
-                com.splendo.kaluga.logging.debug("State $state")
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
-                    com.splendo.kaluga.logging.debug("Retrieve paired devices")
                     state.retrievePairedDevices(filter)
                     emit(state.paired.devices)
                 } else {
@@ -231,8 +230,10 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 }
 
 suspend fun Flow<Device?>.connect() {
+    debug("Start connect")
     transformLatest { device ->
         device?.let {
+            debug("Start connect ${it.identifier}")
             emit(it.connect())
         }
     }.first()

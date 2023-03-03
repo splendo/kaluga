@@ -53,7 +53,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 typealias EnableSensorAction = suspend () -> Boolean
 typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
@@ -207,27 +209,40 @@ abstract class BaseScanner constructor(
         }
         scanningDevicesJob?.cancel()
         scanningDevicesJob = launch(coroutineContext) {
+            debug("Scanning Devices Job launched")
             val channel = Channel<Scanner.Event.DeviceDiscovered>(UNLIMITED)
+            val flow = channel.receiveAsFlow()
             if (devicesDiscovered.compareAndSet(null, channel)) {
+                debug("Devices Discovered Channel Created")
                 if (settings.debounceDiscoveryBy == Duration.ZERO) {
-                    channel.consumeAsFlow().collect {
+                    flow.collect {
+                        debug("Emit device discovered ${it.identifier}")
                         emitEvent(Scanner.Event.DevicesDiscovered(filter, listOf(it)))
                     }
                 } else {
                     while (true) {
                         val collected = mutableListOf<Scanner.Event.DeviceDiscovered>()
                         try {
-                            withTimeout(settings.debounceDiscoveryBy) {
-                                channel.consumeAsFlow().collect {
+                            withTimeout(5.seconds) {
+                                debug("With timeout $channel")
+                                flow.collect {
+                                    debug("Device ${it.identifier}")
                                     collected.add(it)
+                                    yield()
                                 }
                             }
                         } catch (e: TimeoutCancellationException) {
+                            debug(
+                                "Emit devices discovered ${
+                                    collected.map { it.identifier }.joinToString(", ")
+                                }"
+                            )
                             emitEvent(
                                 Scanner.Event.DevicesDiscovered(
                                     filter,
                                     collected.groupBy { it.identifier }.map { it.value.last() })
                             )
+                            yield()
                         }
                     }
                 }
@@ -241,6 +256,7 @@ abstract class BaseScanner constructor(
     final override suspend fun stopScanning() {
         logger.info(LOG_TAG) { "Stop scanning" }
         scanningDevicesJob?.cancel()
+        devicesDiscovered.set(null)
         didStopScanning()
     }
 
@@ -316,9 +332,22 @@ abstract class BaseScanner constructor(
         advertisementData: AdvertisementData,
         deviceCreator: DeviceCreator
     ) {
-        logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
-        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
-        devicesDiscovered.get()?.trySend(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+        coroutineScope.launch {
+            val channel = devicesDiscovered.get()
+            debug("Post device discovered by sensor $identifier to $channel")
+            logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
+            logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
+
+            channel?.trySend(
+                Scanner.Event.DeviceDiscovered(
+                    identifier,
+                    rssi,
+                    advertisementData,
+                    deviceCreator
+                )
+            )
+            yield()
+        }
     }
 
     internal suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {

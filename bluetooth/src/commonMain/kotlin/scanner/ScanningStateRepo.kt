@@ -21,6 +21,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineName
@@ -89,6 +90,7 @@ open class ScanningStateImplRepo(
     private fun startMonitoringScanner(scanner: Scanner) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
             scanner.events.collect { event ->
+                debug("Received event $event")
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
@@ -127,6 +129,7 @@ open class ScanningStateImplRepo(
     }
 
     private suspend fun handleDeviceDiscovered(event: Scanner.Event.DevicesDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
+        debug("Handle devices discovered ${event.devices.map { it.identifier }.joinToString(", ")}")
         val discoveredDevices = event.devices.map { deviceDiscovered ->
             ScanningState.Enabled.Scanning.DiscoveredDevice(deviceDiscovered.identifier, deviceDiscovered.rssi, deviceDiscovered.advertisementData) {
                 val (deviceWrapper, connectionManagerBuilder) = deviceDiscovered.deviceCreator()
