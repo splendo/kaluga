@@ -27,13 +27,15 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
 class MockScanner(
     override val isSupported: Boolean,
-    override val events: MutableSharedFlow<Scanner.Event>
+    override val events: MutableSharedFlow<Scanner.Event>,
+    override val connectionEvents: Flow<Scanner.ConnectionEvent>
 ) : Scanner {
 
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()

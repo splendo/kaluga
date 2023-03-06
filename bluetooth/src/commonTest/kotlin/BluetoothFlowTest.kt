@@ -206,11 +206,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         ) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
-                state.discoverDevice(
-                    deviceWrapper.identifier,
-                    rssi,
-                    advertisementData
-                ) { device }
+                state.discoverDevices(
+                    listOf(
+                        ScanningState.Enabled.Scanning.DiscoveredDevice(
+                            deviceWrapper.identifier,
+                            rssi,
+                            advertisementData
+                        ) { device }
+                    )
+                )
             }
         }
 

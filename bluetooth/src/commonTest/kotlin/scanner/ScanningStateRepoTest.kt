@@ -20,6 +20,9 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
@@ -120,6 +123,22 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             scanner.generateEnableSensorsActionsMock.verify(rule = never())
         }
     }
+
+    private suspend fun Scanning.discoverDevice(
+        identifier: Identifier,
+        rssi: Int,
+        advertisementData: BaseAdvertisementData,
+        deviceCreator: () -> Device
+    ) = discoverDevices(
+        listOf(
+            Scanning.DiscoveredDevice(
+                identifier,
+                rssi,
+                advertisementData,
+                deviceCreator
+            )
+        )
+    )
 
     @Test
     fun testScanning() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
