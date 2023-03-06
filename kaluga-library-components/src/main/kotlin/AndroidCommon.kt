@@ -18,6 +18,7 @@
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.api.file.*
 
 fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default) {
     androidLibrary {
@@ -61,9 +62,21 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("stableDebug") {
+            storeFile = project.rootProject.file("keystore/stableDebug.keystore")
+            storePassword = "stableDebug"
+            keyAlias = "stableDebug"
+            keyPassword = "stableDebug"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("stableDebug")
         }
     }
 
