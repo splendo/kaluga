@@ -127,10 +127,8 @@ class Bluetooth internal constructor(
     internal fun pairedDevices(filter: Set<UUID>, timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
-                com.splendo.kaluga.logging.debug("State $state")
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
-                    com.splendo.kaluga.logging.debug("Retrieve paired devices")
                     state.retrievePairedDevices(filter)
                     emit(state.paired.devices)
                 } else {

@@ -19,9 +19,9 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
-import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -174,7 +174,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
@@ -192,7 +192,7 @@ actual class DefaultScanner internal constructor(
                     ?.map { it.UUID }
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
-                Scanner.Event.DeviceDiscovered(
+                Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
                     advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),

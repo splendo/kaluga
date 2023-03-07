@@ -16,6 +16,9 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
@@ -23,10 +26,9 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -79,32 +81,43 @@ open class ScanningStateImplRepo(
         }
     },
     createDeinitializingState = { state ->
-        (this as ScanningStateImplRepo).superVisorJob.cancelChildren()
+        (this as ScanningStateImplRepo).dispatcher.value?.apply {
+            cancelChildren()
+            close()
+        }
         state.deinitialize
     },
     coroutineContext = coroutineContext
 ) {
 
-    private val superVisorJob = SupervisorJob(coroutineContext[Job])
+    private val dispatcher = AtomicReference<CloseableCoroutineDispatcher?>(null)
     private fun startMonitoringScanner(scanner: Scanner) {
-        CoroutineScope(coroutineContext + superVisorJob).launch {
+        val dispatcher = singleThreadDispatcher("ScanningStateRepo").also {
+            this.dispatcher.value = it
+        }
+        CoroutineScope(coroutineContext + dispatcher).launch {
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
                     is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning }
-                    is Scanner.Event.DevicesDiscovered -> handleDeviceDiscovered(event)
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
         }
-        CoroutineScope(coroutineContext + superVisorJob).launch {
+        CoroutineScope(coroutineContext + dispatcher).launch {
             scanner.connectionEvents.collect { connectionEvent ->
                 when (connectionEvent) {
                     is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
                     is Scanner.ConnectionEvent.DeviceDisconnected -> handleDeviceConnectionChanged(connectionEvent.identifier, false)
                 }
+
+            }
+        }
+        CoroutineScope(coroutineContext + dispatcher).launch {
+            scanner.discoveryEvents.collect { discoveredDevices ->
+                handleDeviceDiscovered(discoveredDevices)
 
             }
         }
@@ -126,8 +139,8 @@ open class ScanningStateImplRepo(
         }
     }
 
-    private suspend fun handleDeviceDiscovered(event: Scanner.Event.DevicesDiscovered) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
-        val discoveredDevices = event.devices.map { deviceDiscovered ->
+    private suspend fun handleDeviceDiscovered(event: List<Scanner.DeviceDiscovered>) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
+        val discoveredDevices = event.map { deviceDiscovered ->
             ScanningState.Enabled.Scanning.DiscoveredDevice(deviceDiscovered.identifier, deviceDiscovered.rssi, deviceDiscovered.advertisementData) {
                 val (deviceWrapper, connectionManagerBuilder) = deviceDiscovered.deviceCreator()
                 createDevice(deviceDiscovered.identifier, DeviceInfoImpl(deviceWrapper, deviceDiscovered.rssi, deviceDiscovered.advertisementData), deviceWrapper, connectionManagerBuilder)

@@ -17,7 +17,6 @@
 package com.splendo.kaluga.test.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.Filter
@@ -164,19 +163,25 @@ sealed class MockScanningState {
                 }
             }
 
-            override suspend fun discoverDevice(
-                identifier: Identifier,
-                rssi: Int,
-                advertisementData: BaseAdvertisementData,
-                deviceCreator: () -> Device
+            override suspend fun discoverDevices(
+                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>
             ): suspend () -> ScanningState.Enabled.Scanning {
-
-                return discovered.devices.find { it.identifier == identifier }
-                    ?.let { knownDevice ->
-                        knownDevice.rssiDidUpdate(rssi)
-                        knownDevice.advertisementDataDidUpdate(advertisementData)
-                        remain()
-                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), paired) }
+                devices.mapNotNull { device ->
+                    discovered.devices.find { it.identifier == device.identifier }?.let { knownDevice ->
+                        knownDevice.rssiDidUpdate(device.rssi)
+                        knownDevice.advertisementDataDidUpdate(device.advertisementData)
+                    }
+                }
+                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier} }
+                return if (unknownDevices.isEmpty()) {
+                    remain()
+                } else {
+                    val newDiscovered =
+                        unknownDevices.fold(discovered) { acc, discoveredDevice ->
+                            acc.copyAndAdd(discoveredDevice.deviceCreator())
+                        }
+                    suspend { Scanning(newDiscovered, paired) }
+                }
             }
 
             override val stopScanning = suspend { Idle(discovered, paired) }

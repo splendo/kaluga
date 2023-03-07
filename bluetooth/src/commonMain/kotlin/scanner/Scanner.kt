@@ -20,6 +20,8 @@ package com.splendo.kaluga.bluetooth.scanner
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.base.utils.BufferedAsListChannel
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -38,13 +40,15 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
@@ -52,29 +56,25 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeout
-import kotlin.time.Duration
+import kotlinx.coroutines.withContext
 
 typealias EnableSensorAction = suspend () -> Boolean
 typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
 
 interface Scanner {
 
+    data class DeviceDiscovered(
+        val identifier: Identifier,
+        val rssi: Int,
+        val advertisementData: BaseAdvertisementData,
+        val deviceCreator: DeviceCreator
+    )
+
     sealed class Event {
         data class PermissionChanged(val hasPermission: Boolean) : Event()
         object BluetoothEnabled : Event()
         object BluetoothDisabled : Event()
         object FailedScanning : Event()
-        data class DeviceDiscovered(
-            val identifier: Identifier,
-            val rssi: Int,
-            val advertisementData: BaseAdvertisementData,
-            val deviceCreator: DeviceCreator
-        )
-        data class DevicesDiscovered(
-            val filter: Filter,
-            val devices: List<DeviceDiscovered>
-        ) : Event()
         data class PairedDevicesRetrieved(
             val filter: Filter,
             val devices: List<DeviceDiscovered>
@@ -91,6 +91,7 @@ interface Scanner {
 
     val isSupported: Boolean
     val events: Flow<Event>
+    val discoveryEvents: Flow<List<DeviceDiscovered>>
     val connectionEvents: Flow<ConnectionEvent>
     fun startMonitoringPermissions()
     fun stopMonitoringPermissions()
@@ -105,7 +106,7 @@ interface Scanner {
 }
 
 abstract class BaseScanner constructor(
-    private val settings: Settings,
+    settings: Settings,
     private val coroutineScope: CoroutineScope
 ) : Scanner, CoroutineScope by coroutineScope {
 
@@ -119,8 +120,7 @@ abstract class BaseScanner constructor(
         val autoEnableSensors: Boolean = true,
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
         /** If set, will include bonded devices in discovered result list on Android */
-        val discoverBondedDevices: Boolean = true,
-        val debounceDiscoveryBy: Duration = Duration.ZERO
+        val discoverBondedDevices: Boolean = true
     )
 
     interface Builder {
@@ -140,7 +140,8 @@ abstract class BaseScanner constructor(
     override val events: Flow<Scanner.Event> = eventChannel.receiveAsFlow()
     private val connectionEventChannel = Channel<Scanner.ConnectionEvent>(UNLIMITED)
     override val connectionEvents: Flow<Scanner.ConnectionEvent> = connectionEventChannel.receiveAsFlow()
-    private val devicesDiscovered: AtomicReference<Channel<Scanner.Event.DeviceDiscovered>?> = AtomicReference(null)
+    private val isScanningDevicesDiscovered = MutableStateFlow<BufferedAsListChannel<Scanner.DeviceDiscovered>?>(null)
+    override val discoveryEvents: Flow<List<Scanner.DeviceDiscovered>> = isScanningDevicesDiscovered.flatMapLatest { it?.receiveAsFlow() ?: emptyFlow() }
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
@@ -158,10 +159,9 @@ abstract class BaseScanner constructor(
         get() = _monitoringBluetoothEnabledJob.get()
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
 
-    private val _scanningDevicesJob = AtomicReference<Job?>(null)
-    private var scanningDevicesJob: Job?
-        get() = _scanningDevicesJob.get()
-        set(value) { _scanningDevicesJob.set(value) }
+    private val isScanningDevicesMutex = Mutex()
+    private val isScanningDevicesFilter = AtomicReference<Set<UUID>?>(null)
+    private val isScanningDevicesDispatcher = AtomicReference<CloseableCoroutineDispatcher?>(null)
 
     private val isRetrievingPairedDevicesMutex = Mutex()
     private val isRetrievingPairedDevicesFilter = AtomicReference<Set<UUID>?>(null)
@@ -205,43 +205,31 @@ abstract class BaseScanner constructor(
         } else {
             logger.info(LOG_TAG) { "Start scanning with filter [${filter.joinToString(", ") { it.uuidString }}]" }
         }
-        scanningDevicesJob?.cancel()
-        scanningDevicesJob = launch(coroutineContext) {
-            val channel = Channel<Scanner.Event.DeviceDiscovered>(UNLIMITED)
-            if (devicesDiscovered.compareAndSet(null, channel)) {
-                if (settings.debounceDiscoveryBy == Duration.ZERO) {
-                    channel.consumeAsFlow().collect {
-                        emitEvent(Scanner.Event.DevicesDiscovered(filter, listOf(it)))
-                    }
-                } else {
-                    while (true) {
-                        val collected = mutableListOf<Scanner.Event.DeviceDiscovered>()
-                        try {
-                            withTimeout(settings.debounceDiscoveryBy) {
-                                channel.consumeAsFlow().collect {
-                                    collected.add(it)
-                                }
-                            }
-                        } catch (e: TimeoutCancellationException) {
-                            emitEvent(
-                                Scanner.Event.DevicesDiscovered(
-                                    filter,
-                                    collected.groupBy { it.identifier }.map { it.value.last() })
-                            )
-                        }
-                    }
-                }
+        isScanningDevicesMutex.withLock {
+            val dispatcher = singleThreadDispatcher("Scanning for Devices").also {
+                isScanningDevicesDispatcher.value = it
+            }
+            isScanningDevicesDiscovered.value = BufferedAsListChannel(coroutineContext)
+            isScanningDevicesFilter.value = filter
+            withContext(coroutineContext + dispatcher) {
+                didStartScanning(filter)
             }
         }
-        didStartScanning(filter)
     }
 
     protected abstract suspend fun didStartScanning(filter: Set<UUID>)
 
     final override suspend fun stopScanning() {
         logger.info(LOG_TAG) { "Stop scanning" }
-        scanningDevicesJob?.cancel()
-        didStopScanning()
+        isScanningDevicesMutex.withLock {
+            withContext(isScanningDevicesDispatcher.value?.let { coroutineContext + it } ?: coroutineContext) {
+                didStopScanning()
+            }
+            isScanningDevicesDispatcher.value?.close()
+            isScanningDevicesDispatcher.value = null
+            isScanningDevicesDiscovered.value = null
+            isScanningDevicesFilter.value = null
+        }
     }
 
     protected abstract suspend fun didStopScanning()
@@ -308,7 +296,7 @@ abstract class BaseScanner constructor(
         }
     }
 
-    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered>
+    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered>
 
     internal fun handleDeviceDiscovered(
         identifier: Identifier,
@@ -318,15 +306,16 @@ abstract class BaseScanner constructor(
     ) {
         logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
-        devicesDiscovered.get()?.trySend(Scanner.Event.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+
+        isScanningDevicesDiscovered.value?.trySend(Scanner.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
     }
 
-    internal suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.Event.DeviceDiscovered>) {
+    internal suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.DeviceDiscovered>) {
         // Only update if actually scanning for this Filter
         isRetrievingPairedDevicesMutex.withLock {
             if (isRetrievingPairedDevicesFilter.compareAndSet(filter, null)) {
                 logger.info(LOG_TAG) {
-                    val identifiers = devices.map(Scanner.Event.DeviceDiscovered::identifier)
+                    val identifiers = devices.map(Scanner.DeviceDiscovered::identifier)
                     "Paired Devices retrieved: $identifiers for filter: $filter"
                 }
                 emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
