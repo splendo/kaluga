@@ -331,7 +331,7 @@ sealed class ScanningStateImpl {
                         knownDevice.advertisementDataDidUpdate(device.advertisementData)
                     }
                 }
-                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier} }
+                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier } }
                 return if (unknownDevices.isEmpty()) {
                     remain()
                 } else {

@@ -107,7 +107,6 @@ open class ScanningStateImplRepo(
                     is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
                     is Scanner.ConnectionEvent.DeviceDisconnected -> handleDeviceConnectionChanged(connectionEvent.identifier, false)
                 }
-
             }
         }
     }

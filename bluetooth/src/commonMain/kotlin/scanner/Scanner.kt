@@ -44,7 +44,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.map
@@ -232,15 +231,15 @@ abstract class BaseScanner constructor(
                                 }
                             }
                         } catch (e: TimeoutCancellationException) {
-                            debug(
-                                "Emit devices discovered ${
-                                    collected.map { it.identifier }.joinToString(", ")
-                                }"
-                            )
+                            debug {
+                                val devices = collected.map { it.identifier }.joinToString(", ")
+                                "Emit devices discovered $devices"
+                            }
                             emitEvent(
                                 Scanner.Event.DevicesDiscovered(
                                     filter,
-                                    collected.groupBy { it.identifier }.map { it.value.last() })
+                                    collected.groupBy { it.identifier }.map { it.value.last() }
+                                )
                             )
                             yield()
                         }

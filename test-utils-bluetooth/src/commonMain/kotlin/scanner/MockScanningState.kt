@@ -17,7 +17,6 @@
 package com.splendo.kaluga.test.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.Filter
@@ -173,7 +172,7 @@ sealed class MockScanningState {
                         knownDevice.advertisementDataDidUpdate(device.advertisementData)
                     }
                 }
-                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier} }
+                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier } }
                 return if (unknownDevices.isEmpty()) {
                     remain()
                 } else {
