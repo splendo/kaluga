@@ -53,14 +53,14 @@ internal class BatchingChannelInt<T : Any>(coroutineContext: CoroutineContext) :
             while (!sendChannel.isClosedForReceive) {
                 val list = mutableListOf<T>()
                 do {
-                    val lastReceived = sendChannel.tryReceive().getOrNull()?.also {
-                        list.add(it)
-                    }
-                } while (lastReceived != null)
-
-                if (list.isNotEmpty()) {
-                    receiveChannel.send(list)
-                }
+                    do {
+                        val lastReceived = sendChannel.tryReceive().getOrNull()?.also {
+                            list.add(it)
+                        }
+                    } while (lastReceived != null)
+                } while (
+                    list.isNotEmpty() && receiveChannel.trySend(list).isFailure
+                )
             }
             receiveChannel.close()
         }.invokeOnCompletion {
