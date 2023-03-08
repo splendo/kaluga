@@ -29,6 +29,8 @@ import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -81,21 +83,21 @@ open class ScanningStateImplRepo(
         }
     },
     createDeinitializingState = { state ->
-        (this as ScanningStateImplRepo).dispatcher.value?.apply {
-            cancelChildren()
-            close()
-        }
+        val repo = this as ScanningStateImplRepo
+        repo.supervisorJob.cancelChildren()
+        repo.dispatcher.value?.close()
         state.deinitialize
     },
     coroutineContext = coroutineContext
 ) {
 
+    private val supervisorJob = SupervisorJob(coroutineContext[Job])
     private val dispatcher = AtomicReference<CloseableCoroutineDispatcher?>(null)
     private fun startMonitoringScanner(scanner: Scanner) {
         val dispatcher = singleThreadDispatcher("ScanningStateRepo").also {
             this.dispatcher.value = it
         }
-        CoroutineScope(coroutineContext + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
@@ -106,7 +108,7 @@ open class ScanningStateImplRepo(
                 }
             }
         }
-        CoroutineScope(coroutineContext + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
             scanner.connectionEvents.collect { connectionEvent ->
                 when (connectionEvent) {
                     is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
@@ -115,7 +117,7 @@ open class ScanningStateImplRepo(
 
             }
         }
-        CoroutineScope(coroutineContext + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
             scanner.discoveryEvents.collect { discoveredDevices ->
                 handleDeviceDiscovered(discoveredDevices)
 

@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
@@ -55,9 +57,10 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             bluetooth.startScanning()
             yield()
             scanner.didStartScanningMock.verify(eq(emptySet()))
-
-            yield()
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             bluetooth.startScanning(filter)
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
+
             val rssi = -100
             val advertisementData = MockAdvertisementData()
             val deviceWrapper = createDeviceWrapper()

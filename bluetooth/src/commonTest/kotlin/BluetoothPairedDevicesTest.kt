@@ -61,6 +61,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             val name = "Watch"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
             pairedDevicesTimer.tryEmit(Unit)
+            yield()
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
