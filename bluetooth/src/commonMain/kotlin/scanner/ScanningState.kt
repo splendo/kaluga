@@ -117,6 +117,13 @@ sealed interface ScanningState : KalugaState {
     interface NoHardware : ScanningState
 }
 
+suspend fun ScanningState.Enabled.Scanning.discoverDevice(
+    identifier: Identifier,
+    rssi: Int,
+    advertisementData: BaseAdvertisementData,
+    deviceCreator: () -> Device
+) = discoverDevices(listOf(ScanningState.Enabled.Scanning.DiscoveredDevice(identifier, rssi, advertisementData, deviceCreator)))
+
 sealed class ScanningStateImpl {
 
     companion object {

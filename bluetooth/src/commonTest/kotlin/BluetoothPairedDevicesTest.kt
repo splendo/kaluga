@@ -64,7 +64,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
-                    Scanner.Event.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
+                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
                         deviceWrapper to MockDeviceConnectionManager.Builder()
                     }
                 )
@@ -111,7 +111,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
-                    Scanner.Event.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
+                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
                         deviceWrapper to MockDeviceConnectionManager.Builder()
                     }
                 )
@@ -142,7 +142,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(completablePairedDeviceWrapper.await(), deviceWrapper).map {
-                    Scanner.Event.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
+                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
                         it to MockDeviceConnectionManager.Builder()
                     }
                 }
