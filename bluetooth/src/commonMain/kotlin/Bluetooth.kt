@@ -169,10 +169,8 @@ class Bluetooth internal constructor(
     internal fun pairedDevices(filter: Set<UUID>, timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
-                com.splendo.kaluga.logging.debug("State $state")
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
-                    com.splendo.kaluga.logging.debug("Retrieve paired devices")
                     state.retrievePairedDevices(filter)
                     emit(state.paired.devices)
                 } else {
@@ -269,7 +267,7 @@ expect class BluetoothBuilder : BaseBluetoothBuilder
 operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     return this.map { devices ->
         devices.firstOrNull { it.identifier == identifier }
-    }
+    }.distinctUntilChanged()
 }
 
 /**
@@ -431,7 +429,7 @@ operator fun Flow<List<Service>>.get(uuid: UUID): Flow<Service?> {
         services.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
-    }
+    }.distinctUntilChanged()
 }
 
 /**
@@ -464,7 +462,7 @@ operator fun <AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : D
         attribute.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
-    }
+    }.distinctUntilChanged()
 }
 
 /**

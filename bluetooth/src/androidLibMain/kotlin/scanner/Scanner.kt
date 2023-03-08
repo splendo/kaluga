@@ -218,7 +218,7 @@ actual class DefaultScanner internal constructor(
     }
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> {
         if (!isSupported) return emptyList()
         val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
             Manifest.permission.BLUETOOTH_CONNECT
@@ -244,7 +244,7 @@ actual class DefaultScanner internal constructor(
                     ?.map(ParcelUuid::getUuid)
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
-                Scanner.Event.DeviceDiscovered(
+                Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
                     advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),

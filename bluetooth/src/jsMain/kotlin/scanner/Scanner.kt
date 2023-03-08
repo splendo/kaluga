@@ -58,5 +58,5 @@ actual class DefaultScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> = TODO("Not yet implemented")
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> = TODO("Not yet implemented")
 }

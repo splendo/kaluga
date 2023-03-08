@@ -84,13 +84,11 @@ actual class DefaultScanner internal constructor(
             internal val defaultScanOptions = Builder().build()
         }
 
-        internal fun parse(): Map<Any?, *> {
-            val result: MutableMap<String, Any> =
-                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
-            solicitedServiceUUIDsKey?.let {
-                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+        internal fun parse(): Map<Any?, *> = buildMap {
+            this[CBCentralManagerScanOptionAllowDuplicatesKey] = allowDuplicateKeys
+            if (solicitedServiceUUIDsKey?.isNotEmpty() == true) {
+                this[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = solicitedServiceUUIDsKey
             }
-            return result.toMap()
         }
 
         /**
@@ -201,20 +199,16 @@ actual class DefaultScanner internal constructor(
         return manager
     }
 
-    private suspend fun scan(filter: UUID? = null) {
+    private suspend fun scan(filter: Set<UUID>) {
         val centralManager = getOrCreateCentralManager()
         centralManager.scanForPeripheralsWithServices(
-            filter?.let { listOf(filter) },
+            filter.takeIf { it.isNotEmpty() }?.toList(),
             scanSettings.parse()
         )
     }
 
     override suspend fun didStartScanning(filter: Set<UUID>) {
-        if (filter.isEmpty()) {
-            scan()
-        } else {
-            filter.forEach { scan(it) }
-        }
+        scan(filter)
     }
 
     override suspend fun didStopScanning() {
@@ -235,7 +229,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
@@ -253,7 +247,7 @@ actual class DefaultScanner internal constructor(
                     ?.map { it.UUID }
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
-                Scanner.Event.DeviceDiscovered(
+                Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
                     advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),

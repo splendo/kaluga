@@ -18,10 +18,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.base.state.HandleAfterCreating
 import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
@@ -29,6 +25,11 @@ import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 
 /**
  * A set of [UUID] to apply to a scan result
@@ -212,18 +213,26 @@ sealed interface ScanningState : KalugaState {
         interface Scanning : Enabled {
 
             /**
-             * Transitions into a [Scanning] state where a [Device] is added or updated
+             * A class to add or update a [Device] using [discoverDevices]
              * @param identifier the [Identifier] of the [Device] discovered
              * @param rssi the [RSSI] value of the [Device] discovered
              * @param advertisementData the [BaseAdvertisementData] of the [Device] discovered
              * @param deviceCreator Method for creating a [Device] if it had not been scanned previously.
-             * @return method for transitioning into a [Scanning] state where the [Device] is discovered
              */
-            suspend fun discoverDevice(
-                identifier: Identifier,
-                rssi: RSSI,
-                advertisementData: BaseAdvertisementData,
-                deviceCreator: () -> Device
+            data class DiscoveredDevice(
+                val identifier: Identifier,
+                val rssi: RSSI,
+                val advertisementData: BaseAdvertisementData,
+                val deviceCreator: () -> Device
+            )
+
+            /**
+             * Transitions into a [Scanning] state where a list of [Device] is added or updated
+             * @param devices the list of [DiscoveredDevice] to be scanned
+             * @return method for transitioning into a [Scanning] state where the list of [Device] is discovered
+             */
+            suspend fun discoverDevices(
+                devices: List<DiscoveredDevice>
             ): suspend () -> Scanning
 
             /**
@@ -268,6 +277,21 @@ sealed interface ScanningState : KalugaState {
      */
     interface NoHardware : ScanningState
 }
+
+/**
+ * Transitions into a [Scanning] state where a [Device] is added or updated
+ * @param identifier the [Identifier] of the [Device] discovered
+ * @param rssi the [RSSI] value of the [Device] discovered
+ * @param advertisementData the [BaseAdvertisementData] of the [Device] discovered
+ * @param deviceCreator Method for creating a [Device] if it had not been scanned previously.
+ * @return method for transitioning into a [Scanning] state where the [Device] is discovered
+ */
+suspend fun Scanning.discoverDevice(
+    identifier: Identifier,
+    rssi: RSSI,
+    advertisementData: BaseAdvertisementData,
+    deviceCreator: () -> Device
+) = discoverDevices(listOf(Scanning.DiscoveredDevice(identifier, rssi, advertisementData, deviceCreator)))
 
 internal sealed class ScanningStateImpl {
 
@@ -477,19 +501,27 @@ internal sealed class ScanningStateImpl {
                 }
             }
 
-            override suspend fun discoverDevice(
-                identifier: Identifier,
-                rssi: RSSI,
-                advertisementData: BaseAdvertisementData,
-                deviceCreator: () -> Device
+            override suspend fun discoverDevices(
+                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>
             ): suspend () -> ScanningState.Enabled.Scanning {
-
-                return discovered.devices.find { it.identifier == identifier }
-                    ?.let { knownDevice ->
-                        knownDevice.rssiDidUpdate(rssi)
-                        knownDevice.advertisementDataDidUpdate(advertisementData)
-                        remain()
-                    } ?: suspend { Scanning(discovered.copyAndAdd(deviceCreator()), paired, scanner) }
+                devices.mapNotNull { device ->
+                    discovered.devices.find { it.identifier == device.identifier }?.let { knownDevice ->
+                        knownDevice.rssiDidUpdate(device.rssi)
+                        knownDevice.advertisementDataDidUpdate(device.advertisementData)
+                    }
+                }
+                val unknownDevices = devices.filter { device -> !discovered.devices.any { it.identifier == device.identifier } }
+                return if (unknownDevices.isEmpty()) {
+                    remain()
+                } else {
+                    suspend {
+                        val newDiscovered =
+                            unknownDevices.fold(discovered) { acc, discoveredDevice ->
+                                acc.copyAndAdd(discoveredDevice.deviceCreator())
+                            }
+                        Scanning(newDiscovered, paired, scanner)
+                    }
+                }
             }
 
             override val stopScanning = suspend { Idle(discovered, paired, scanner) }

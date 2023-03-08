@@ -33,7 +33,9 @@ import kotlinx.coroutines.flow.first
 
 class MockScanner(
     override val isSupported: Boolean,
-    override val events: MutableSharedFlow<Scanner.Event>
+    override val events: MutableSharedFlow<Scanner.Event>,
+    override val connectionEvents: MutableSharedFlow<Scanner.ConnectionEvent>,
+    override val discoveryEvents: MutableSharedFlow<List<Scanner.DeviceDiscovered>>
 ) : Scanner {
 
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
@@ -157,7 +159,7 @@ class MockBaseScanner(
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
-    val pairedDeviceDiscoveredEvents = MutableSharedFlow<List<Scanner.Event.DeviceDiscovered>>()
+    val pairedDeviceDiscoveredEvents = MutableSharedFlow<List<Scanner.DeviceDiscovered>>()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
@@ -198,5 +200,5 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices)
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices)
 }
