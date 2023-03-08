@@ -50,7 +50,7 @@ internal class BatchingChannelInt<T : Any>(coroutineContext: CoroutineContext) :
     init {
         val dispatcher = singleThreadDispatcher("GroupingChannel")
         CoroutineScope(coroutineContext + dispatcher).launch {
-            while (!sendChannel.isClosedForReceive) {
+            while (!sendChannel.isClosedForReceive && !receiveChannel.isClosedForSend) {
                 val list = mutableListOf<T>()
                 do {
                     do {
@@ -59,7 +59,7 @@ internal class BatchingChannelInt<T : Any>(coroutineContext: CoroutineContext) :
                         }
                     } while (lastReceived != null)
                 } while (
-                    list.isNotEmpty() && receiveChannel.trySend(list).isFailure
+                    list.isNotEmpty() && !receiveChannel.isClosedForSend && receiveChannel.trySend(list).isFailure
                 )
             }
             receiveChannel.close()
