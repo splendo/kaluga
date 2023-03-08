@@ -140,20 +140,16 @@ actual class DefaultScanner internal constructor(
         return manager
     }
 
-    private suspend fun scan(filter: UUID? = null) {
+    private suspend fun scan(filter: Set<UUID>) {
         val centralManager = getOrCreateCentralManager()
         centralManager.scanForPeripheralsWithServices(
-            filter?.let { listOf(filter) },
+            filter.takeIf { it.isNotEmpty() }?.toList(),
             scanSettings.parse()
         )
     }
 
     override suspend fun didStartScanning(filter: Set<UUID>) {
-        if (filter.isEmpty()) {
-            scan()
-        } else {
-            filter.forEach { scan(it) }
-        }
+        scan(filter)
     }
 
     override suspend fun didStopScanning() {
@@ -214,13 +210,11 @@ actual class DefaultScanner internal constructor(
         private val solicitedServiceUUIDsKey: List<UUID>?
     ) {
 
-        fun parse(): Map<Any?, *> {
-            val result: MutableMap<String, Any> =
-                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
-            solicitedServiceUUIDsKey?.let {
-                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+        fun parse(): Map<Any?, *> = buildMap {
+            this[CBCentralManagerScanOptionAllowDuplicatesKey] = allowDuplicateKeys
+            if (solicitedServiceUUIDsKey?.isNotEmpty() == true) {
+                this[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = solicitedServiceUUIDsKey
             }
-            return result.toMap()
         }
 
         data class Builder(
