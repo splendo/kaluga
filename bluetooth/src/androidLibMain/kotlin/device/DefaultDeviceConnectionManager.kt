@@ -53,7 +53,7 @@ internal actual class DefaultDeviceConnectionManager(
         val CLIENT_CONFIGURATION: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
-    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
+    class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,

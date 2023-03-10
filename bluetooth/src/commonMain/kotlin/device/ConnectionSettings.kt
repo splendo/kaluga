@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger

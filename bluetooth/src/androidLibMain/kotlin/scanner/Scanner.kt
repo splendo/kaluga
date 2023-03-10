@@ -144,9 +144,7 @@ actual class DefaultScanner internal constructor(
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
-            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
-                deviceWrapper to deviceConnectionManagerBuilder
-            }
+            handleDeviceDiscovered(deviceWrapper, scanResult.rssi, advertisementData, deviceConnectionManagerBuilder)
         }
     }
 

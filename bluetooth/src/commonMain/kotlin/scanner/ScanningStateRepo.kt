@@ -19,10 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
@@ -73,12 +70,12 @@ abstract class BaseScanningStateRepo(
 /**
  * A [BaseScanningStateRepo] managed using a [Scanner]
  * @param createScanner method for creating the [Scanner] to manage the [ScanningState]
- * @param createDevice method for creating a [Device]
+ * @param settingsForDevice method for creating [ConnectionSettings] given an identifier
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
 open class ScanningStateImplRepo(
     createScanner: suspend () -> Scanner,
-    private val createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
+    private val settingsForDevice: (Identifier) -> Pair<ConnectionSettings, CoroutineContext>,
     coroutineContext: CoroutineContext
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
@@ -157,26 +154,20 @@ open class ScanningStateImplRepo(
     private suspend fun handleDeviceDiscovered(event: List<Scanner.DeviceDiscovered>) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
         val discoveredDevices = event.map { deviceDiscovered ->
             ScanningState.Enabled.Scanning.DiscoveredDevice(deviceDiscovered.identifier, deviceDiscovered.rssi, deviceDiscovered.advertisementData) {
-                val (deviceWrapper, connectionManagerBuilder) = deviceDiscovered.deviceCreator()
-                createDevice(deviceDiscovered.identifier, DeviceInfoImpl(deviceWrapper, deviceDiscovered.rssi, deviceDiscovered.advertisementData), deviceWrapper, connectionManagerBuilder)
+                val (settings, context) = settingsForDevice(deviceDiscovered.identifier)
+                deviceDiscovered.deviceCreator(settings, context)
             }
         }
         state.discoverDevices(discoveredDevices)
     }
 
     private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
-        val creators = event.devices.map {
-            {
-                val (deviceWrapper, connectionManagerBuilder) = it.deviceCreator()
-                createDevice(
-                    deviceWrapper.identifier,
-                    DeviceInfoImpl(deviceWrapper, it.rssi, it.advertisementData),
-                    deviceWrapper,
-                    connectionManagerBuilder
-                )
+        val devices = event.devices.associate { it.identifier to {
+                val (settings, context) = settingsForDevice(it.identifier)
+                it.deviceCreator(settings, context)
             }
         }
-        state.pairedDevices(event.filter, event.identifiers.toSet(), creators)
+        state.pairedDevices(event.filter, devices)
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
@@ -201,13 +192,13 @@ open class ScanningStateImplRepo(
  * A [ScanningStateImplRepo] using a [BaseScanner]
  * @param settingsBuilder method for creating [BaseScanner.Settings]
  * @param builder the [BaseScanner.Builder] for building a [BaseScanner]
- * @param createDevice method for creating a [Device]
+ * @param settingsForDevice method for creating [ConnectionSettings] given an identifier
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
  */
 class ScanningStateRepo(
     settingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
-    createDevice: (Identifier, DeviceInfoImpl, DeviceWrapper, BaseDeviceConnectionManager.Builder) -> Device,
+    settingsForDevice: (Identifier) -> Pair<ConnectionSettings, CoroutineContext>,
     coroutineContext: CoroutineContext,
 ) : ScanningStateImplRepo(
     createScanner = {
@@ -216,6 +207,6 @@ class ScanningStateRepo(
             CoroutineScope(coroutineContext + CoroutineName("BluetoothScanner"))
         )
     },
-    createDevice = createDevice,
+    settingsForDevice = settingsForDevice,
     coroutineContext = coroutineContext,
 )

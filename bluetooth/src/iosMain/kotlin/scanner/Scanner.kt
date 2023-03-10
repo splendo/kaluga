@@ -236,7 +236,8 @@ actual class DefaultScanner internal constructor(
             .filterIsInstance<CBPeripheral>()
             .map { peripheral ->
                 val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-                val deviceCreator: DeviceCreator = {
+                val deviceCreator = {
+                    getDeviceBuilder(deviceWrapper, )
                     deviceWrapper to DefaultDeviceConnectionManager.Builder(
                         centralManager,
                         peripheral
@@ -259,8 +260,6 @@ actual class DefaultScanner internal constructor(
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
-            deviceWrapper to DefaultDeviceConnectionManager.Builder(central, peripheral)
-        }
+        handleDeviceDiscovered(deviceWrapper, rssi, advertisementData, DefaultDeviceConnectionManager.Builder(central, peripheral))
     }
 }

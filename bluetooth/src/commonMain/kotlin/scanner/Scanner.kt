@@ -26,8 +26,12 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DeviceImpl
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.description
@@ -43,6 +47,7 @@ import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import kotlinx.coroutines.CloseableCoroutineDispatcher
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -59,13 +64,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 typealias EnableSensorAction = suspend () -> Boolean
-
-/**
- * Creates a [DeviceWrapper] and [BaseDeviceConnectionManager.Builder] for a discovered device
- */
-typealias DeviceCreator = () -> Pair<DeviceWrapper, BaseDeviceConnectionManager.Builder>
 
 /**
  * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.Device]
@@ -83,7 +84,7 @@ interface Scanner {
         val identifier: Identifier,
         val rssi: Int,
         val advertisementData: BaseAdvertisementData,
-        val deviceCreator: DeviceCreator
+        val deviceCreator: (ConnectionSettings, CoroutineContext) -> Device
     )
 
     /**
@@ -432,15 +433,22 @@ abstract class BaseScanner constructor(
     protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered>
 
     internal fun handleDeviceDiscovered(
-        identifier: Identifier,
+        deviceWrapper: DeviceWrapper,
         rssi: RSSI,
         advertisementData: AdvertisementData,
-        deviceCreator: DeviceCreator
+        connectionManagerBuilder: DeviceConnectionManager.Builder
     ) {
-        logger.info(LOG_TAG) { "Device ${identifier.stringValue} discovered with rssi: $rssi" }
-        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
+        logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
+        logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 
-        isScanningDevicesDiscovered.value?.trySend(Scanner.DeviceDiscovered(identifier, rssi, advertisementData, deviceCreator))
+        isScanningDevicesDiscovered.value?.trySend(Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { connectionSettings, coroutineContext ->
+            getDeviceBuilder(
+                deviceWrapper,
+                rssi,
+                advertisementData,
+                connectionManagerBuilder
+            )(connectionSettings, coroutineContext)
+        })
     }
 
     private suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.DeviceDiscovered>) {
@@ -455,6 +463,26 @@ abstract class BaseScanner constructor(
                 isRetrievingPairedDevicesFilter = null
                 retrievingPairedDevicesJob = null
             }
+        }
+    }
+
+    protected fun getDeviceBuilder(
+        deviceWrapper: DeviceWrapper,
+        rssi: RSSI,
+        advertisementData: AdvertisementData,
+        connectionManagerBuilder: DeviceConnectionManager.Builder
+    ): (ConnectionSettings, CoroutineContext) -> Device = { connectionSettings, coroutineContext ->
+        DeviceImpl(
+            deviceWrapper.identifier,
+            DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
+            connectionSettings,
+            { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${deviceWrapper.identifier.stringValue}"))) },
+            CoroutineScope(coroutineContext + CoroutineName("Device ${deviceWrapper.identifier.stringValue}"))
+        ) { connectionManager, context ->
+            ConnectableDeviceStateImplRepo(
+                connectionManager,
+                context
+            )
         }
     }
 

@@ -3,6 +3,7 @@ package com.splendo.kaluga.bluetooth
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.permissions.base.PermissionContext
@@ -35,13 +36,13 @@ actual class BluetoothBuilder(
 
     override fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
-        connectionSettings: ConnectionSettings,
+        connectionSettingsBuilder: (Identifier) -> ConnectionSettings,
         coroutineContext: CoroutineContext
     ): Bluetooth = Bluetooth(
         { scannerContext ->
             scannerSettingsBuilder(permissionsBuilder(scannerContext))
         },
-        connectionSettings,
+        connectionSettingsBuilder,
         scannerBuilder,
         coroutineContext
     )

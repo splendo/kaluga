@@ -32,6 +32,7 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CoroutineName
@@ -115,38 +116,40 @@ interface BluetoothService {
 }
 
 /**
- * A [BluetoothService] that builds a [BaseScanner] for scanning.
- * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
- * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned
- * @param scannerBuilder the [BaseScanner.Builder] to use to create a [BaseScanner] responsible for scanning.
+ * A [BluetoothService] that uses a [ScanningStateFlowRepo] to manage the [ScanningState]
  * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+ * @param scanningStateRepoBuilder method for creating a the [ScanningStateFlowRepo] to contain the [ScanningState] of the Bluetooth service
  */
-class Bluetooth internal constructor(
-    scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
-    connectionSettings: ConnectionSettings,
-    scannerBuilder: BaseScanner.Builder,
+class Bluetooth constructor(
     coroutineContext: CoroutineContext,
+    scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo,
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
-    internal val scanningStateRepo = ScanningStateRepo(
-        scannerSettingsBuilder,
-        scannerBuilder,
-        { identifier, deviceInfo, deviceWrapper, connectionManagerBuilder ->
-            DeviceImpl(
-                identifier,
-                deviceInfo,
-                connectionSettings,
-                { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${identifier.stringValue}"))) },
-                CoroutineScope(coroutineContext + CoroutineName("Device ${identifier.stringValue}"))
-            ) { connectionManager, coroutineContext ->
-                ConnectableDeviceStateImplRepo(
-                    connectionManager,
-                    coroutineContext
-                )
-            }
-        },
-        coroutineContext + CoroutineName("Scanning State Repo")
+    /**
+     * Constructor that builds a [BaseScanner] for scanning.
+     * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
+     * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned
+     * @param scannerBuilder the [BaseScanner.Builder] to use to create a [BaseScanner] responsible for scanning.
+     * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+     */
+    internal constructor(
+        scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
+        connectionSettingsBuilder: (Identifier) -> ConnectionSettings,
+        scannerBuilder: BaseScanner.Builder,
+        coroutineContext: CoroutineContext,
+    ) : this(
+        coroutineContext,
+        { context ->
+            ScanningStateRepo(
+                scannerSettingsBuilder,
+                scannerBuilder,
+                { identifier -> connectionSettingsBuilder(identifier) to context + CoroutineName("Device ${identifier.stringValue}") },
+                context + CoroutineName("Scanning State Repo")
+            )
+        }
     )
+
+    internal val scanningStateRepo = scanningStateRepoBuilder(coroutineContext + CoroutineName("Scanning State Repo"))
 
     private sealed class ScanMode {
         object Stopped : ScanMode()
@@ -243,13 +246,13 @@ interface BaseBluetoothBuilder {
     /**
      * Creates a [Bluetooth] object
      * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
-     * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned by the [Bluetooth] service.
+     * @param connectionSettingsBuilder provides the [ConnectionSettings] to apply to [Device] of a given [Identifier] scanned by the [Bluetooth] service.
      * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
      * @return the created [Bluetooth]
      */
     fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-        connectionSettings: ConnectionSettings = ConnectionSettings(),
+        connectionSettingsBuilder: (Identifier) -> ConnectionSettings = { ConnectionSettings() },
         coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
     ): Bluetooth
 }

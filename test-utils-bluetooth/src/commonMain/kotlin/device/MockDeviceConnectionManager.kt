@@ -57,11 +57,11 @@ class MockDeviceConnectionManager(
 ) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
 
     /**
-     * Mock implementation of [BaseDeviceConnectionManager.Builder]
+     * Mock implementation of [DeviceConnectionManager.Builder]
      * @param initialWillActionSucceed Sets the initial status of whether actions will succeed for each created [MockDeviceConnectionManager]
      * @param setupMocks If `true` this will automatically configure the [createMock] to create a [MockDeviceConnectionManager]
      */
-    class Builder(initialWillActionSucceed: Boolean = true, setupMocks: Boolean = true) : BaseDeviceConnectionManager.Builder {
+    class Builder(initialWillActionSucceed: Boolean = true, setupMocks: Boolean = true) : DeviceConnectionManager.Builder {
 
         /**
          * List of created [MockDeviceConnectionManager]

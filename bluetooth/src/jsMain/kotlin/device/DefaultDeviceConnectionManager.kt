@@ -26,7 +26,7 @@ internal actual class DefaultDeviceConnectionManager(
     coroutineScope: CoroutineScope
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
-    class Builder() : BaseDeviceConnectionManager.Builder {
+    class Builder() : DeviceConnectionManager.Builder {
 
         override fun create(
             deviceWrapper: DeviceWrapper,

@@ -172,14 +172,12 @@ sealed interface ScanningState : KalugaState {
         /**
          * Transitions into an [Enabled] state where a set of devices is paired
          * @param filter the [Filter] applied to finding the paired devices
-         * @param identifiers the set of [Identifier] of all devices paired
-         * @param deviceCreators A list of methods for creating [Device] if [filter] has changed
+         * @param devices the amp of [Identifier] and the method for creating a [Device] of all devices paired
          * @return a method for transitioning into [Enabled] with the new list of paired [Device]
          */
         fun pairedDevices(
             filter: Filter,
-            identifiers: Set<Identifier>,
-            deviceCreators: List<() -> Device>
+            devices: Map<Identifier, () -> Device>
         ): suspend () -> Enabled
 
         /**
@@ -429,6 +427,28 @@ internal sealed class ScanningStateImpl {
             permittedHandler.beforeOldStateIsRemoved(oldState)
         }
 
+        protected fun <S : ScanningState.Enabled> S.pairedDevices(
+            filter: Filter,
+            devices: Map<Identifier, () -> Device>,
+            createNewState: (ScanningState.Devices) -> S
+        ): suspend () -> ScanningState.Enabled = if (paired.filter == filter && paired.identifiers() == devices.keys) {
+            remain()
+        } else {
+            suspend {
+                val pairedWithCorrectFilter = paired.foundForFilter(filter)
+                val identifiers = pairedWithCorrectFilter.identifiers()
+                val newPaired = devices.entries.fold(pairedWithCorrectFilter) { acc, (key, value) ->
+                    if (identifiers.contains(key))
+                        acc
+                    else
+                        acc.copyAndAdd(value())
+                }
+                createNewState(
+                    newPaired
+                )
+            }
+        }
+
         class Idle internal constructor(
             override val discovered: ScanningState.Devices,
             override val paired: ScanningState.Devices,
@@ -441,19 +461,8 @@ internal sealed class ScanningStateImpl {
 
             override fun pairedDevices(
                 filter: Filter,
-                identifiers: Set<Identifier>,
-                deviceCreators: List<() -> Device>
-            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
-                remain()
-            } else {
-                suspend {
-                    Idle(
-                        discovered,
-                        Devices(deviceCreators.map { it.invoke() }, filter),
-                        scanner
-                    )
-                }
-            }
+                devices: Map<Identifier, () -> Device>
+            ): suspend () -> ScanningState.Enabled = pairedDevices(filter, devices) { Idle(discovered, it, scanner) }
 
             override fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
                 Scanning(
@@ -487,19 +496,8 @@ internal sealed class ScanningStateImpl {
 
             override fun pairedDevices(
                 filter: Filter,
-                identifiers: Set<Identifier>,
-                deviceCreators: List<() -> Device>
-            ): suspend () -> ScanningState.Enabled = if (paired.identifiers() == identifiers) {
-                remain()
-            } else {
-                suspend {
-                    Scanning(
-                        discovered,
-                        Devices(deviceCreators.map { it.invoke() }, filter),
-                        scanner
-                    )
-                }
-            }
+                devices: Map<Identifier, () -> Device>
+            ): suspend () -> ScanningState.Enabled = pairedDevices(filter, devices) { Scanning(discovered, it, scanner) }
 
             override suspend fun discoverDevices(
                 devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>
