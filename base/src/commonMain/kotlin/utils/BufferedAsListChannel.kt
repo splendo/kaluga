@@ -24,7 +24,7 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.selects.select
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -58,24 +58,36 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
     init {
         val dispatcher = singleThreadDispatcher("GroupingChannel")
         CoroutineScope(coroutineContext + dispatcher).launch {
-            while (!sendChannel.isClosedForReceive && !receiveChannel.isClosedForSend) {
-                try {
-                    val list = mutableListOf(sendChannel.receive())
-                    do {
-                        do {
-                            val lastReceived = sendChannel.tryReceive().getOrNull()?.also {
-                                list.add(it)
-                            }
-                        } while (lastReceived != null)
-                    } while (
-                        !receiveChannel.isClosedForSend && receiveChannel.trySend(list).isFailure.also { yield() }
-                    )
-                } catch (_: ClosedReceiveChannelException) { }
-            }
+            do {
+                val didSendBuffer = bufferUntilNextSend()
+            } while (didSendBuffer)
             receiveChannel.close()
         }.invokeOnCompletion {
             dispatcher.close()
         }
+    }
+
+    private suspend fun bufferUntilNextSend(): Boolean = try {
+        var buffer = listOf(sendChannel.receive())
+        do {
+            buffer = select {
+                receiveChannel.onSend(buffer) {
+                    emptyList()
+                }
+                if (!sendChannel.isClosedForReceive) {
+                    sendChannel.onReceiveCatching { result ->
+                        result.getOrNull()?.let {
+                            buffer.toMutableList().apply {
+                                add(it)
+                            }.toList()
+                        } ?: buffer
+                    }
+                }
+            }
+        } while (buffer.isNotEmpty())
+        true
+    } catch(_: ClosedReceiveChannelException) {
+        false
     }
 
     override fun cancel(cause: Throwable?): Boolean {
