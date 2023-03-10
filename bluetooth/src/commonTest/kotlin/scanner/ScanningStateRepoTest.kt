@@ -181,8 +181,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
 
         mainAction {
             yieldMultiple(100)
-            // scanner.stopMonitoringPermissionsMock.verify()
-            // scanner.stopMonitoringHardwareEnabledMock.verify()
+            scanner.stopMonitoringPermissionsMock.verify()
+            scanner.stopMonitoringHardwareEnabledMock.verify()
 
             // here to debug this test potentially being unstable
             println("peek current state: ${bluetooth.scanningStateRepo.stateFlow.value}")
