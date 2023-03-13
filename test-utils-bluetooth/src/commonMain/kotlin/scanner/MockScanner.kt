@@ -19,8 +19,10 @@ package com.splendo.kaluga.test.bluetooth.scanner
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
+import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
@@ -57,13 +59,17 @@ class MockScanner(
     override suspend fun requestEnableHardware(): Unit = requestEnableHardwareMock.call()
 
     val scanForDevicesMock = ::scanForDevices.mock()
-    override suspend fun scanForDevices(filter: Set<UUID>): Unit = scanForDevicesMock.call(filter)
+    override suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings): Unit = scanForDevicesMock.call(filter, connectionSettings)
 
     val stopScanningMock = ::stopScanning.mock()
     override suspend fun stopScanning(): Unit = stopScanningMock.call()
 
     val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
-    override suspend fun retrievePairedDevices(withServices: Set<UUID>): Unit = retrievePairedDevicesMock.call(withServices)
+    override suspend fun retrievePairedDevices(
+        withServices: Filter,
+        removeForAllPairedFilters: Boolean,
+        connectionSettings: ConnectionSettings
+    ): Unit = retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
 }
 
 /**
@@ -147,12 +153,12 @@ class MockBaseScanner(
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [scanForDevices]
      */
-    val didStartScanningMock = ::scanForDevices.mock()
+    val didStartScanningMock = ::didStartScanning.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [stopScanning]
      */
-    val didStopScanningMock = ::stopScanning.mock()
+    val didStopScanningMock = ::didStopScanning.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [generateEnableSensorsActions]
@@ -200,5 +206,8 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices)
+    override suspend fun retrievePairedDeviceDiscoveredEvents(
+        withServices: Filter,
+        connectionSettings: ConnectionSettings
+    ): List<Scanner.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices, connectionSettings)
 }

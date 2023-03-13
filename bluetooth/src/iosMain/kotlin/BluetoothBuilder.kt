@@ -32,13 +32,11 @@ actual class BluetoothBuilder(
 
     override fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
-        connectionSettingsBuilder: (Identifier) -> ConnectionSettings,
         coroutineContext: CoroutineContext
     ): Bluetooth = Bluetooth(
         { scannerContext ->
             scannerSettingsBuilder(permissionsBuilder(scannerContext))
         },
-        connectionSettingsBuilder,
         scannerBuilder,
         coroutineContext
     )

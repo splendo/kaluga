@@ -33,8 +33,8 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
@@ -162,7 +162,7 @@ actual class DefaultScanner internal constructor(
         listOf(bluetoothEnabled, locationEnabled)
     }
 
-    override suspend fun didStartScanning(filter: Set<UUID>) {
+    override suspend fun didStartScanning(filter: Filter) {
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -216,7 +216,10 @@ actual class DefaultScanner internal constructor(
     }
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(
+        withServices: Filter,
+        connectionSettings: ConnectionSettings
+    ): List<Scanner.DeviceDiscovered> {
         if (!isSupported) return emptyList()
         val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
             Manifest.permission.BLUETOOTH_CONNECT
@@ -235,18 +238,16 @@ actual class DefaultScanner internal constructor(
             }
             ?.map { device ->
                 val deviceWrapper = DefaultDeviceWrapper(device)
-                val deviceCreator: DeviceCreator = {
-                    deviceWrapper to deviceConnectionManagerBuilder
-                }
                 val serviceUUIDs = device.uuids
                     ?.map(ParcelUuid::getUuid)
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
+                val advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs)
                 Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
-                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
-                    deviceCreator = deviceCreator
+                    advertisementData = advertisementData,
+                    deviceCreator = getDeviceBuilder(deviceWrapper, Int.MIN_VALUE, advertisementData, deviceConnectionManagerBuilder, connectionSettings)
                 )
             } ?: emptyList()
     }

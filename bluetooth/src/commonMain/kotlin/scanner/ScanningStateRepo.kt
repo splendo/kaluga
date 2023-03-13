@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
@@ -70,12 +70,12 @@ abstract class BaseScanningStateRepo(
 /**
  * A [BaseScanningStateRepo] managed using a [Scanner]
  * @param createScanner method for creating the [Scanner] to manage the [ScanningState]
- * @param settingsForDevice method for creating [ConnectionSettings] given an identifier
+ * @param contextForIdentifier method for creating [CoroutineContext] given an [Identifier]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
 open class ScanningStateImplRepo(
     createScanner: suspend () -> Scanner,
-    private val settingsForDevice: (Identifier) -> Pair<ConnectionSettings, CoroutineContext>,
+    private val contextForIdentifier: (Identifier) -> CoroutineContext,
     coroutineContext: CoroutineContext
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
@@ -115,7 +115,7 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
-                    is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning }
+                    is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning(BluetoothService.CleanMode.RemoveAll) }
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
@@ -154,8 +154,8 @@ open class ScanningStateImplRepo(
     private suspend fun handleDeviceDiscovered(event: List<Scanner.DeviceDiscovered>) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { state ->
         val discoveredDevices = event.map { deviceDiscovered ->
             ScanningState.Enabled.Scanning.DiscoveredDevice(deviceDiscovered.identifier, deviceDiscovered.rssi, deviceDiscovered.advertisementData) {
-                val (settings, context) = settingsForDevice(deviceDiscovered.identifier)
-                deviceDiscovered.deviceCreator(settings, context)
+                val context = contextForIdentifier(deviceDiscovered.identifier)
+                deviceDiscovered.deviceCreator(context)
             }
         }
         state.discoverDevices(discoveredDevices)
@@ -163,22 +163,22 @@ open class ScanningStateImplRepo(
 
     private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
         val devices = event.devices.associate { it.identifier to {
-                val (settings, context) = settingsForDevice(it.identifier)
-                it.deviceCreator(settings, context)
+                val context = contextForIdentifier(it.identifier)
+                it.deviceCreator(context)
             }
         }
-        state.pairedDevices(event.filter, devices)
+        state.pairedDevices(event.filter, event.removeForAllPairedFilters, devices)
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
         if (state is ScanningState.Enabled) {
-            state.discovered.devices.find { it.identifier == identifier }?.let { device ->
+            state.devices.allDevices[identifier]?.let { device ->
                 if (connected)
                     device.handleConnected()
                 else
                     device.handleDisconnected()
             }
-            state.paired.devices.find { it.identifier == identifier }?.let { device ->
+            state.devices.allDevices[identifier]?.let { device ->
                 if (connected)
                     device.handleConnected()
                 else
@@ -192,13 +192,13 @@ open class ScanningStateImplRepo(
  * A [ScanningStateImplRepo] using a [BaseScanner]
  * @param settingsBuilder method for creating [BaseScanner.Settings]
  * @param builder the [BaseScanner.Builder] for building a [BaseScanner]
- * @param settingsForDevice method for creating [ConnectionSettings] given an identifier
+ * @param contextForIdentifier method for creating [CoroutineContext] given an [Identifier]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
  */
 class ScanningStateRepo(
     settingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
-    settingsForDevice: (Identifier) -> Pair<ConnectionSettings, CoroutineContext>,
+    contextForIdentifier: (Identifier) -> CoroutineContext,
     coroutineContext: CoroutineContext,
 ) : ScanningStateImplRepo(
     createScanner = {
@@ -207,6 +207,6 @@ class ScanningStateRepo(
             CoroutineScope(coroutineContext + CoroutineName("BluetoothScanner"))
         )
     },
-    settingsForDevice = settingsForDevice,
+    contextForIdentifier = contextForIdentifier,
     coroutineContext = coroutineContext,
 )

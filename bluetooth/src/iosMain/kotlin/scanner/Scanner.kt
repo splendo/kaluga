@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
@@ -182,6 +183,7 @@ actual class DefaultScanner internal constructor(
     private var centralManager: CBCentralManager? = null
     private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
     private val centralManagerMutex = Mutex()
+
     private suspend fun getOrCreateCentralManager(): CBCentralManager {
         return centralManager ?: centralManagerMutex.withLock {
             centralManager ?: createCentralManager().also {
@@ -199,7 +201,7 @@ actual class DefaultScanner internal constructor(
         return manager
     }
 
-    private suspend fun scan(filter: Set<UUID>) {
+    private suspend fun scan(filter: Filter) {
         val centralManager = getOrCreateCentralManager()
         centralManager.scanForPeripheralsWithServices(
             filter.takeIf { it.isNotEmpty() }?.toList(),
@@ -207,7 +209,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun didStartScanning(filter: Set<UUID>) {
+    override suspend fun didStartScanning(filter: Filter) {
         scan(filter)
     }
 
@@ -229,30 +231,36 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(
+        withServices: Filter,
+        connectionSettings: ConnectionSettings
+    ): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
             .map { peripheral ->
                 val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-                val deviceCreator = {
-                    getDeviceBuilder(deviceWrapper, )
-                    deviceWrapper to DefaultDeviceConnectionManager.Builder(
-                        centralManager,
-                        peripheral
-                    )
-                }
                 val serviceUUIDs: List<UUID> = peripheral.services
                     ?.filterIsInstance<CBService>()
                     ?.map { it.UUID }
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
+                val advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs)
 
                 Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
-                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
-                    deviceCreator = deviceCreator
+                    advertisementData = advertisementData,
+                    deviceCreator = getDeviceBuilder(
+                        deviceWrapper,
+                        Int.MIN_VALUE,
+                        advertisementData,
+                        DefaultDeviceConnectionManager.Builder(
+                            centralManager,
+                            peripheral
+                        ),
+                        connectionSettings
+                    )
                 )
             }
     }

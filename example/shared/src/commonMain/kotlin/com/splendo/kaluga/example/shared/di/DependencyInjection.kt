@@ -64,8 +64,7 @@ private fun sharedModule(
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
         }.create(
-            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
-            connectionSettings = ConnectionSettings(logger = get())
+            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) }
         )
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }

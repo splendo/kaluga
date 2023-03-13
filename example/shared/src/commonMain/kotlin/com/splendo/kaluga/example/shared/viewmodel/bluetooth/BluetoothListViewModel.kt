@@ -21,12 +21,15 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class BluetoothListViewModel(navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator), KoinComponent {
@@ -47,7 +50,7 @@ class BluetoothListViewModel(navigator: Navigator<DeviceDetails>) : NavigatingVi
 
         scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
         scope.launch {
-            bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
+            bluetooth.scannedDevices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
                 cleanDevices()
                 _devices.value = devices.sortedByDescending { it.name.currentOrNull }
             }
@@ -56,9 +59,9 @@ class BluetoothListViewModel(navigator: Navigator<DeviceDetails>) : NavigatingVi
 
     fun onScanPressed() {
         if (_isScanning.value) {
-            bluetooth.stopScanning()
+            bluetooth.stopScanning(BluetoothService.CleanMode.RetainAll)
         } else {
-            bluetooth.startScanning()
+            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.RetainAll, connectionSettings = ConnectionSettings(logger = get()))
         }
     }
 

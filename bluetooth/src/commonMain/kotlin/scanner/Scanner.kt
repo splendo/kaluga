@@ -84,7 +84,7 @@ interface Scanner {
         val identifier: Identifier,
         val rssi: Int,
         val advertisementData: BaseAdvertisementData,
-        val deviceCreator: (ConnectionSettings, CoroutineContext) -> Device
+        val deviceCreator: (CoroutineContext) -> Device
     )
 
     /**
@@ -120,6 +120,7 @@ interface Scanner {
          */
         data class PairedDevicesRetrieved(
             val filter: Filter,
+            val removeForAllPairedFilters: Boolean,
             val devices: List<DeviceDiscovered>
         ) : Event() {
 
@@ -189,7 +190,7 @@ interface Scanner {
      * This will result in [Event.DeviceDiscovered] or [Event.FailedScanning]
      * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
      */
-    suspend fun scanForDevices(filter: Set<UUID>)
+    suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings)
 
     /**
      * Stops scanning for devices
@@ -222,7 +223,7 @@ interface Scanner {
      * This will result in [Event.PairedDevicesRetrieved] on the [events] flow
      * @param withServices filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
      */
-    suspend fun retrievePairedDevices(withServices: Set<UUID>)
+    suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings)
 }
 
 /**
@@ -252,6 +253,7 @@ abstract class BaseScanner constructor(
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
         val discoverBondedDevices: Boolean = true,
+        val defaultConnectionSettings: ConnectionSettings = ConnectionSettings(),
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
     )
 
@@ -277,6 +279,7 @@ abstract class BaseScanner constructor(
     internal val permissions: Permissions = settings.permissions
     private val autoRequestPermission: Boolean = settings.autoRequestPermission
     private val autoEnableSensors: Boolean = settings.autoEnableSensors
+    private val defaultConnectionSettings = settings.defaultConnectionSettings
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
     override val events: Flow<Scanner.Event> = eventChannel.receiveAsFlow()
@@ -303,6 +306,8 @@ abstract class BaseScanner constructor(
     private val isRetrievingPairedDevicesMutex = Mutex()
     private var isRetrievingPairedDevicesFilter: Set<UUID>? = null
     private var retrievingPairedDevicesJob: Job? = null
+
+    private var currentConnectionSettings: ConnectionSettings? = null
 
     override suspend fun startMonitoringPermissions() = permissionsLock.withLock {
         logger.debug(LOG_TAG) { "Start monitoring permissions" }
@@ -336,7 +341,7 @@ abstract class BaseScanner constructor(
         monitoringPermissionsJob = null
     }
 
-    final override suspend fun scanForDevices(filter: Set<UUID>) {
+    final override suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings) {
         if (filter.isEmpty()) {
             logger.info(LOG_TAG) { "Start Scanning" }
         } else {
@@ -348,13 +353,14 @@ abstract class BaseScanner constructor(
             }
             isScanningDevicesDiscovered.value = BufferedAsListChannel(coroutineContext)
             isScanningDevicesFilter = filter
+            currentConnectionSettings = connectionSettings
             withContext(coroutineContext + dispatcher) {
                 didStartScanning(filter)
             }
         }
     }
 
-    protected abstract suspend fun didStartScanning(filter: Set<UUID>)
+    protected abstract suspend fun didStartScanning(filter: Filter)
 
     final override suspend fun stopScanning() {
         logger.info(LOG_TAG) { "Stop scanning" }
@@ -366,6 +372,7 @@ abstract class BaseScanner constructor(
             isScanningDevicesDispatcher = null
             isScanningDevicesDiscovered.value = null
             isScanningDevicesFilter = null
+            currentConnectionSettings = null
         }
     }
 
@@ -408,17 +415,17 @@ abstract class BaseScanner constructor(
 
     protected abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    override suspend fun retrievePairedDevices(withServices: Set<UUID>) = isRetrievingPairedDevicesMutex.withLock {
+    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings) = isRetrievingPairedDevicesMutex.withLock {
         if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
 
         retrievingPairedDevicesJob = this@BaseScanner.launch {
             // We have to call even with empty list to clean up cached devices
-            val devices = retrievePairedDeviceDiscoveredEvents(withServices)
-            handlePairedDevices(withServices, devices)
+            val devices = retrievePairedDeviceDiscoveredEvents(withServices, connectionSettings)
+            handlePairedDevices(withServices, removeForAllPairedFilters, devices)
         }
     }
 
-    private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Set<UUID>): Boolean = when (isRetrievingPairedDevicesFilter) {
+    private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Filter): Boolean = when (isRetrievingPairedDevicesFilter) {
         withServices -> false
         null -> true
         else -> {
@@ -430,7 +437,7 @@ abstract class BaseScanner constructor(
         isRetrievingPairedDevicesFilter = withServices
     }
 
-    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.DeviceDiscovered>
+    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings): List<Scanner.DeviceDiscovered>
 
     internal fun handleDeviceDiscovered(
         deviceWrapper: DeviceWrapper,
@@ -441,17 +448,18 @@ abstract class BaseScanner constructor(
         logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 
-        isScanningDevicesDiscovered.value?.trySend(Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { connectionSettings, coroutineContext ->
+        isScanningDevicesDiscovered.value?.trySend(Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
             getDeviceBuilder(
                 deviceWrapper,
                 rssi,
                 advertisementData,
-                connectionManagerBuilder
-            )(connectionSettings, coroutineContext)
+                connectionManagerBuilder,
+                defaultConnectionSettings
+            )(coroutineContext)
         })
     }
 
-    private suspend fun handlePairedDevices(filter: Filter, devices: List<Scanner.DeviceDiscovered>) {
+    private suspend fun handlePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, devices: List<Scanner.DeviceDiscovered>) {
         // Only update if actually scanning for this Filter
         isRetrievingPairedDevicesMutex.withLock {
             if (isRetrievingPairedDevicesFilter == filter) {
@@ -459,7 +467,7 @@ abstract class BaseScanner constructor(
                     val identifiers = devices.map(Scanner.DeviceDiscovered::identifier)
                     "Paired Devices retrieved: $identifiers for filter: $filter"
                 }
-                emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, devices))
+                emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, removeForAllPairedFilters, devices))
                 isRetrievingPairedDevicesFilter = null
                 retrievingPairedDevicesJob = null
             }
@@ -469,13 +477,14 @@ abstract class BaseScanner constructor(
     protected fun getDeviceBuilder(
         deviceWrapper: DeviceWrapper,
         rssi: RSSI,
-        advertisementData: AdvertisementData,
-        connectionManagerBuilder: DeviceConnectionManager.Builder
-    ): (ConnectionSettings, CoroutineContext) -> Device = { connectionSettings, coroutineContext ->
+        advertisementData: BaseAdvertisementData,
+        connectionManagerBuilder: DeviceConnectionManager.Builder,
+        connectionSettings: ConnectionSettings?
+    ): (CoroutineContext) -> Device = { coroutineContext ->
         DeviceImpl(
             deviceWrapper.identifier,
             DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
-            connectionSettings,
+            connectionSettings ?: defaultConnectionSettings,
             { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${deviceWrapper.identifier.stringValue}"))) },
             CoroutineScope(coroutineContext + CoroutineName("Device ${deviceWrapper.identifier.stringValue}"))
         ) { connectionManager, context ->
