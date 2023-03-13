@@ -61,7 +61,7 @@ class BluetoothListViewModel(navigator: Navigator<DeviceDetails>) : NavigatingVi
         if (_isScanning.value) {
             bluetooth.stopScanning(BluetoothService.CleanMode.RetainAll)
         } else {
-            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.RetainAll, connectionSettings = ConnectionSettings(logger = get()))
+            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.RemoveAll, connectionSettings = ConnectionSettings(logger = get()))
         }
     }
 

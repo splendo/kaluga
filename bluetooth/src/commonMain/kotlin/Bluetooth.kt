@@ -78,27 +78,47 @@ typealias MTU = Int
  */
 interface BluetoothService {
 
+    /**
+     * Specifies the behaviour of cleaning up the list of [Device] discovered by a [BluetoothService]
+     */
     sealed class CleanMode {
+
+        /**
+         * Retains all [Device] previously scanned, regardless of [Filter]
+         */
         object RetainAll : CleanMode()
+
+        /**
+         * Removes all [Device] previously scanned, regardless of [Filter]
+         */
         object RemoveAll : CleanMode()
+
+        /**
+         * Removes only the [Device] previously scanned with the [Filter] used for scanning
+         */
         object OnlyProvidedFilter : CleanMode()
     }
 
     /**
      * Starts scanning for [Device].
-     * To receive the devices, use [devices]
+     * To receive the devices, use [scannedDevices] or [allDevices]
      * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.OnlyProvidedFilter] will apply to [filter]
+     * @param connectionSettings the [ConnectionSettings] to apply to scanned [Device].
+     * Note that if a [Device] was previously scanned (and not cleaned by [cleanMode]) the old [ConnectionSettings] will still apply.
      */
     fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.RemoveAll, connectionSettings: ConnectionSettings = ConnectionSettings())
 
     /**
      * Stops scanning for [Device]
+     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.OnlyProvidedFilter] will apply to the [Filter] last passed to [startScanning]
      */
     fun stopScanning(cleanMode: CleanMode = CleanMode.RemoveAll)
 
     /**
      * Gets a [Flow] of the list of [Device] that have been paired to the system
      * @param filter filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     * @param removeForAllPairedFilters if `true`
      */
     fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings): Flow<List<Device>>
 
@@ -108,6 +128,11 @@ interface BluetoothService {
      */
     fun allDevices(): Flow<List<Device>>
 
+    /**
+     * Gets a [Flow] containing a list of all [Device] scanned by the service for a given [Filter].
+     * Requires that [startScanning] has been called with [filter], otherwise no devices will be found
+     * @param filter the [Filter] to get the devices for
+     */
     fun scannedDevices(filter: Filter = emptySet()): Flow<List<Device>>
 
     /**
@@ -131,12 +156,6 @@ class Bluetooth constructor(
     scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo,
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
-    /**
-     * Constructor that builds a [BaseScanner] for scanning.
-     * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
-     * @param scannerBuilder the [BaseScanner.Builder] to use to create a [BaseScanner] responsible for scanning.
-     * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
-     */
     internal constructor(
         scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
         scannerBuilder: BaseScanner.Builder,
@@ -183,7 +202,7 @@ class Bluetooth constructor(
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
                     state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
-                    emit(state.devices.devicesForFilter(ScanningState.FilterType.Paired(filter)))
+                    emit(state.devices.devicesForFilter(ScanningState.DeviceDiscoveryMode.Paired(filter)))
                 } else {
                     emit(emptyList())
                 }
@@ -229,7 +248,7 @@ class Bluetooth constructor(
 
     override fun allDevices(): Flow<List<Device>> = devices().map { it.allDevices.values.toList() }.distinctUntilChanged()
     override fun scannedDevices(filter: Filter): Flow<List<Device>> = devices().map {
-        it.devicesForFilter(ScanningState.FilterType.Scanning(filter))
+        it.devicesForFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
     }.distinctUntilChanged()
 
     override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings) {
@@ -259,7 +278,6 @@ interface BaseBluetoothBuilder {
     /**
      * Creates a [Bluetooth] object
      * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
-     * @param connectionSettingsBuilder provides the [ConnectionSettings] to apply to [Device] of a given [Identifier] scanned by the [Bluetooth] service.
      * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
      * @return the created [Bluetooth]
      */

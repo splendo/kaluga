@@ -86,7 +86,7 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
             }
         } while (buffer.isNotEmpty())
         true
-    } catch(_: ClosedReceiveChannelException) {
+    } catch (_: ClosedReceiveChannelException) {
         false
     }
 

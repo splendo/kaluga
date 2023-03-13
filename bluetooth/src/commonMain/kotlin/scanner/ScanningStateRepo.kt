@@ -162,22 +162,17 @@ open class ScanningStateImplRepo(
     }
 
     private suspend fun handlePairedDevice(event: Scanner.Event.PairedDevicesRetrieved) = takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { state ->
-        val devices = event.devices.associate { it.identifier to {
+        val devices = event.devices.associate {
+            it.identifier to {
                 val context = contextForIdentifier(it.identifier)
                 it.deviceCreator(context)
             }
         }
-        state.pairedDevices(event.filter, event.removeForAllPairedFilters, devices)
+        state.pairedDevices(devices, event.filter, event.removeForAllPairedFilters)
     }
 
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
         if (state is ScanningState.Enabled) {
-            state.devices.allDevices[identifier]?.let { device ->
-                if (connected)
-                    device.handleConnected()
-                else
-                    device.handleDisconnected()
-            }
             state.devices.allDevices[identifier]?.let { device ->
                 if (connected)
                     device.handleConnected()

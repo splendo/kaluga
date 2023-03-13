@@ -119,9 +119,9 @@ interface Scanner {
          * @property devices the list of [DeviceDiscovered] paired to the system
          */
         data class PairedDevicesRetrieved(
+            val devices: List<DeviceDiscovered>,
             val filter: Filter,
-            val removeForAllPairedFilters: Boolean,
-            val devices: List<DeviceDiscovered>
+            val removeForAllPairedFilters: Boolean
         ) : Event() {
 
             /**
@@ -421,7 +421,7 @@ abstract class BaseScanner constructor(
         retrievingPairedDevicesJob = this@BaseScanner.launch {
             // We have to call even with empty list to clean up cached devices
             val devices = retrievePairedDeviceDiscoveredEvents(withServices, connectionSettings)
-            handlePairedDevices(withServices, removeForAllPairedFilters, devices)
+            handlePairedDevices(devices, withServices, removeForAllPairedFilters)
         }
     }
 
@@ -448,18 +448,20 @@ abstract class BaseScanner constructor(
         logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 
-        isScanningDevicesDiscovered.value?.trySend(Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
-            getDeviceBuilder(
-                deviceWrapper,
-                rssi,
-                advertisementData,
-                connectionManagerBuilder,
-                defaultConnectionSettings
-            )(coroutineContext)
-        })
+        isScanningDevicesDiscovered.value?.trySend(
+            Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
+                getDeviceBuilder(
+                    deviceWrapper,
+                    rssi,
+                    advertisementData,
+                    connectionManagerBuilder,
+                    defaultConnectionSettings
+                )(coroutineContext)
+            }
+        )
     }
 
-    private suspend fun handlePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, devices: List<Scanner.DeviceDiscovered>) {
+    private suspend fun handlePairedDevices(devices: List<Scanner.DeviceDiscovered>, filter: Filter, removeForAllPairedFilters: Boolean) {
         // Only update if actually scanning for this Filter
         isRetrievingPairedDevicesMutex.withLock {
             if (isRetrievingPairedDevicesFilter == filter) {
@@ -467,7 +469,7 @@ abstract class BaseScanner constructor(
                     val identifiers = devices.map(Scanner.DeviceDiscovered::identifier)
                     "Paired Devices retrieved: $identifiers for filter: $filter"
                 }
-                emitEvent(Scanner.Event.PairedDevicesRetrieved(filter, removeForAllPairedFilters, devices))
+                emitEvent(Scanner.Event.PairedDevicesRetrieved(devices, filter, removeForAllPairedFilters))
                 isRetrievingPairedDevicesFilter = null
                 retrievingPairedDevicesJob = null
             }
