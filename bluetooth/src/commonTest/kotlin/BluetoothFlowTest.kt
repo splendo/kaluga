@@ -29,7 +29,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.bluetooth.scanner.discoverDevice
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.base.BaseFlowTest
@@ -173,7 +172,6 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                     configuration.autoEnableBluetooth
                 )
             },
-            ConnectionSettings(),
             scannerBuilder,
             coroutineScope.coroutineContext
         )
@@ -205,13 +203,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             advertisementData: BaseAdvertisementData
         ) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
-            bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
-                state.discoverDevice(
-                    deviceWrapper.identifier,
-                    rssi,
-                    advertisementData
-                ) { device }
-            }
+            scanner.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { device }
         }
 
         fun scanDevice(
@@ -231,7 +223,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                     connectionManager.handleConnect()
                 }
             }
-            bluetooth.devices()[device.identifier].connect()
+            bluetooth.allDevices()[device.identifier].connect()
         }
 
         suspend fun disconnectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
@@ -240,7 +232,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                     connectionManager.handleDisconnect()
                 }
             }
-            bluetooth.devices()[device.identifier].disconnect()
+            bluetooth.allDevices()[device.identifier].disconnect()
         }
 
         suspend fun discoverService(service: Service, device: Device, connectionManager: MockDeviceConnectionManager) {

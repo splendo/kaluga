@@ -18,8 +18,12 @@
 package com.splendo.kaluga.test.bluetooth.scanner
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Filter
@@ -32,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlin.coroutines.CoroutineContext
 
 class MockScanner(
     override val isSupported: Boolean,
@@ -205,6 +210,15 @@ class MockBaseScanner(
     override suspend fun didStopScanning(): Unit = didStopScanningMock.call()
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
+
+    public override fun handleDeviceDiscovered(
+        deviceWrapper: DeviceWrapper,
+        rssi: RSSI,
+        advertisementData: BaseAdvertisementData,
+        deviceCreator: (CoroutineContext) -> Device
+    ) {
+        super.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData, deviceCreator)
+    }
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,

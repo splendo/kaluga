@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
+import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
@@ -55,8 +56,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             scanner.startMonitoringPermissionsMock.verify()
             scanner.startMonitoringHardwareEnabledMock.verify()
             assertIs<Idle>(it)
-            assertEquals(emptySet(), it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(emptySet(), it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
         }
     }
 
@@ -75,8 +76,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         test {
             assertIs<Idle>(it)
-            assertEquals(emptySet(), it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(emptySet(), it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
         }
     }
 
@@ -106,8 +107,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         test {
             assertIs<Idle>(it)
-            assertEquals(emptySet(), it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(emptySet(), it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
         }
     }
 
@@ -125,8 +126,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     fun testScanning() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
         test {
             assertIs<Idle>(it)
-            assertEquals(emptySet(), it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(emptySet(), it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
         }
         mainAction {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -139,8 +140,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         val advertisementData = MockAdvertisementData()
         test {
             assertIs<Scanning>(it)
-            assertEquals(deviceFilter, it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(deviceFilter, it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
             scanner.didStartScanningMock.verify(eq(deviceFilter))
             scanner.didStopScanningMock.verify(rule = never())
         }
@@ -155,23 +156,23 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         test {
             assertIs<Scanning>(it)
-            assertEquals(deviceFilter, it.discovered.currentScanFilter)
-            assertEquals(listOf(device), it.discovered.allDevices)
+            assertEquals(deviceFilter, it.devices.currentScanFilter.filter)
+            assertEquals(mapOf(device.identifier to device), it.devices.allDevices)
             scanner.didStopScanningMock.verify(rule = never())
         }
         mainAction {
             scanningStateRepo.takeAndChangeState { scanningState ->
                 when (scanningState) {
-                    is Scanning -> scanningState.stopScanning
+                    is Scanning -> scanningState.stopScanning(cleanMode = BluetoothService.CleanMode.RetainAll)
                     else -> scanningState.remain()
                 }
             }
         }
         test {
             assertIs<Idle>(it)
-            assertEquals(deviceFilter, it.discovered.currentScanFilter)
+            assertEquals(deviceFilter, it.devices.currentScanFilter.filter)
             scanner.didStopScanningMock.verify()
-            assertEquals(listOf(device), it.discovered.allDevices)
+            assertEquals(mapOf(device.identifier to device), it.devices.allDevices)
         }
 
         action {
@@ -185,15 +186,15 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             scanner.stopMonitoringHardwareEnabledMock.verify()
 
             // here to debug this test potentially being unstable
-            println("peek current state: ${bluetooth.scanningStateRepo.stateFlow.value}")
+            println("peek current state: ${bluetooth.scanningStateRepo.peekState()}")
             delay(100)
-            println("peek current state after delay: ${bluetooth.scanningStateRepo.stateFlow.value}")
+            println("peek current state after delay: ${bluetooth.scanningStateRepo.peekState()}")
         }
 
         test {
             assertIs<Idle>(it)
-            assertEquals(deviceFilter, it.discovered.currentScanFilter)
-            assertEquals(listOf(device), it.discovered.allDevices)
+            assertEquals(deviceFilter, it.devices.currentScanFilter.filter)
+            assertEquals(mapOf(device.identifier to device), it.devices.allDevices)
         }
     }
 
@@ -201,8 +202,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     fun testRediscoverSameDevice() = testWithFlowAndTestContext(Configuration.DeviceWithoutService()) {
         test {
             assertIs<Idle>(it)
-            assertEquals(emptySet(), it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(emptySet(), it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
         }
         mainAction {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -215,8 +216,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
 
         test {
             assertIs<Scanning>(it)
-            assertEquals(deviceFilter, it.discovered.currentScanFilter)
-            assertEquals(emptyList(), it.discovered.allDevices)
+            assertEquals(deviceFilter, it.devices.currentScanFilter.filter)
+            assertEquals(emptyMap(), it.devices.allDevices)
             scanner.didStartScanningMock.verify(eq(deviceFilter))
             scanner.didStopScanningMock.verify(rule = never())
         }
@@ -231,7 +232,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
 
         test {
             assertIs<Scanning>(it)
-            assertEquals(configuration.advertisementData, it.discovered.allDevices[0].info.first().advertisementData)
+            assertEquals(configuration.advertisementData, it.devices.allDevices[device.identifier]?.info?.first()?.advertisementData)
         }
 
         mainAction {
@@ -251,12 +252,12 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
                             newAdvertisementData
                         ) { device }
                         assertEquals(scanningState.remain(), newState)
-                        assertEquals(listOf(device), scanningState.discovered.allDevices)
+                        assertEquals(mapOf(device.identifier to device), scanningState.devices.allDevices)
                         assertEquals(
                             newAdvertisementData,
-                            scanningState.discovered.allDevices[0].info.first().advertisementData
+                            scanningState.devices.allDevices[device.identifier]?.info?.first()?.advertisementData
                         )
-                        assertEquals(newRssi, scanningState.discovered.allDevices[0].info.first().rssi)
+                        assertEquals(newRssi, scanningState.devices.allDevices[device.identifier]?.info?.first()?.rssi)
                         newState
                     }
                     else -> fail("unexpected state")

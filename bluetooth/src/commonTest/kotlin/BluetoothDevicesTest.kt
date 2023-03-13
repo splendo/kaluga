@@ -23,13 +23,13 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -40,7 +40,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
     }
 
     override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
-        bluetooth.devices()
+        bluetooth.allDevices()
     }
 
     @Test
@@ -55,11 +55,12 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         val deferredDevice = CompletableDeferred<Device>()
         mainAction {
             bluetooth.startScanning()
-            yield()
+            yieldMultiple(2)
             scanner.didStartScanningMock.verify(eq(emptySet()))
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             bluetooth.startScanning(filter)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
+            scanner.didStopScanningMock.verify()
 
             val rssi = -100
             val advertisementData = MockAdvertisementData()
@@ -71,7 +72,6 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
             scanDevice(device, deviceWrapper, rssi, advertisementData)
         }
         test {
-            scanner.didStopScanningMock.verify()
             scanner.didStartScanningMock.verify(eq(filter))
             assertEquals(listOf(deferredDevice.getCompleted()), it)
         }

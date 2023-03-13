@@ -246,7 +246,7 @@ sealed interface ScanningState : KalugaState {
             fun startScanning(
                 filter: Filter = devices.currentScanFilter.filter,
                 cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.RemoveAll,
-                connectionSettings: ConnectionSettings
+                connectionSettings: ConnectionSettings = ConnectionSettings()
             ): suspend () -> Scanning
 
             /**
@@ -290,7 +290,7 @@ sealed interface ScanningState : KalugaState {
              * Transitions into an [Idle] State
              * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
              */
-            fun stopScanning(cleanMode: BluetoothService.CleanMode): suspend () -> Idle
+            fun stopScanning(cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.RemoveAll): suspend () -> Idle
         }
     }
 

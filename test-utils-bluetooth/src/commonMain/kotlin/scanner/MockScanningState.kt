@@ -83,12 +83,10 @@ sealed class MockScanningState {
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
 
         protected fun devicesForPairedDevices(
+            devices: Map<Identifier, () -> Device>,
             filter: Filter,
             removeForAllPairedFilters: Boolean,
-            devices: Map<Identifier, () -> Device>
-        ) = devices.entries.foldIndexed(this.devices) { index, acc, entry ->
-            acc.copyAndSetPaired(entry.key, filter, if (index == 0) removeForAllPairedFilters else false, entry.value)
-        }
+        ) = this.devices.copyAndSetPaired(devices, filter, removeForAllPairedFilters)
 
         class Idle(
             override val devices: ScanningState.Devices
@@ -105,12 +103,12 @@ sealed class MockScanningState {
             ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
             override fun pairedDevices(
+                devices: Map<Identifier, () -> Device>,
                 filter: Filter,
-                removeForAllPairedFilters: Boolean,
-                devices: Map<Identifier, () -> Device>
-            ): suspend () -> ScanningState.Enabled = {
+                removeForAllPairedFilters: Boolean
+            ): suspend () -> ScanningState.Enabled  = {
                 Idle(
-                    devicesForPairedDevices(filter, removeForAllPairedFilters, devices)
+                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
                 )
             }
 
@@ -150,12 +148,12 @@ sealed class MockScanningState {
             ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
             override fun pairedDevices(
+                devices: Map<Identifier, () -> Device>,
                 filter: Filter,
                 removeForAllPairedFilters: Boolean,
-                devices: Map<Identifier, () -> Device>
             ): suspend () -> ScanningState.Enabled = {
                 Scanning(
-                    devicesForPairedDevices(filter, removeForAllPairedFilters, devices)
+                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
                 )
             }
 

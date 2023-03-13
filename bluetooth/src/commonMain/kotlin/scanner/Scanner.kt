@@ -24,7 +24,6 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -442,22 +441,29 @@ abstract class BaseScanner constructor(
     internal fun handleDeviceDiscovered(
         deviceWrapper: DeviceWrapper,
         rssi: RSSI,
-        advertisementData: AdvertisementData,
+        advertisementData: BaseAdvertisementData,
         connectionManagerBuilder: DeviceConnectionManager.Builder
+    ) = handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { coroutineContext ->
+        getDeviceBuilder(
+            deviceWrapper,
+            rssi,
+            advertisementData,
+            connectionManagerBuilder,
+            defaultConnectionSettings
+        )(coroutineContext)
+    }
+
+    protected open fun handleDeviceDiscovered(
+        deviceWrapper: DeviceWrapper,
+        rssi: RSSI,
+        advertisementData: BaseAdvertisementData,
+        deviceCreator: (CoroutineContext) -> Device
     ) {
         logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 
         isScanningDevicesDiscovered.value?.trySend(
-            Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) { coroutineContext ->
-                getDeviceBuilder(
-                    deviceWrapper,
-                    rssi,
-                    advertisementData,
-                    connectionManagerBuilder,
-                    defaultConnectionSettings
-                )(coroutineContext)
-            }
+            Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData, deviceCreator)
         )
     }
 

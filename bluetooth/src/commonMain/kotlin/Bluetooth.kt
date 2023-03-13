@@ -120,7 +120,7 @@ interface BluetoothService {
      * @param filter filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
      * @param removeForAllPairedFilters if `true`
      */
-    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings): Flow<List<Device>>
+    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings = ConnectionSettings()): Flow<List<Device>>
 
     /**
      * Gets a [Flow] containing a list of all [Device] scanned by the service.
@@ -196,7 +196,7 @@ class Bluetooth constructor(
         }
     }
     override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
-    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings, timer: Flow<Unit>): Flow<List<Device>> =
+    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings = ConnectionSettings(), timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
                 if (state is ScanningState.Enabled) {
