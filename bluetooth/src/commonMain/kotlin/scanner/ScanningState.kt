@@ -211,7 +211,7 @@ sealed interface ScanningState : KalugaState {
          * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
          * @param connectionSettings the [ConnectionSettings] to apply to [Device] found as paired devices. Note this will only be used if the devices was not previously discovered without cleaning up.
          */
-        suspend fun retrievePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings)
+        suspend fun retrievePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?)
 
         /**
          * Transitions into an [Enabled] state where a set of devices is paired
@@ -240,13 +240,13 @@ sealed interface ScanningState : KalugaState {
              * Transitions into a [Scanning] State for a given filter
              * @param filter the [Filter] to apply for scanning
              * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
-             * @param connectionSettings the [ConnectionSettings] to apply to any [Device] scanned that was not previously discovered
+             * @param connectionSettings the [ConnectionSettings] to apply to any [Device] scanned that was not previously discovered. If `null` the default will be used
              * @return the method for transitioning into a [Scanning] state
              */
             fun startScanning(
                 filter: Filter = devices.currentScanFilter.filter,
                 cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.RemoveAll,
-                connectionSettings: ConnectionSettings = ConnectionSettings()
+                connectionSettings: ConnectionSettings? = null
             ): suspend () -> Scanning
 
             /**
@@ -564,7 +564,7 @@ internal sealed class ScanningStateImpl {
         suspend fun retrievePairedDevices(
             filter: Filter,
             removeForAllPairedFilters: Boolean,
-            connectionSettings: ConnectionSettings
+            connectionSettings: ConnectionSettings?
         ) = scanner.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
 
         class Idle internal constructor(
@@ -588,7 +588,7 @@ internal sealed class ScanningStateImpl {
             override fun startScanning(
                 filter: Filter,
                 cleanMode: BluetoothService.CleanMode,
-                connectionSettings: ConnectionSettings
+                connectionSettings: ConnectionSettings?
             ): suspend () -> ScanningState.Enabled.Scanning = {
                 Scanning(
                     devices.updateScanFilter(filter, cleanMode),
@@ -611,7 +611,7 @@ internal sealed class ScanningStateImpl {
         class Scanning internal constructor(
             override val devices: ScanningState.Devices,
             override val scanner: Scanner,
-            private val connectionSettings: ConnectionSettings
+            private val connectionSettings: ConnectionSettings?
         ) : Enabled(),
             HandleAfterOldStateIsRemoved<ScanningState>,
             HandleAfterCreating<ScanningState>,

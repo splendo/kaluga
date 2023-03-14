@@ -99,7 +99,7 @@ sealed class MockScanningState {
             override suspend fun retrievePairedDevices(
                 filter: Filter,
                 removeForAllPairedFilters: Boolean,
-                connectionSettings: ConnectionSettings
+                connectionSettings: ConnectionSettings?
             ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
             override fun pairedDevices(
@@ -115,7 +115,7 @@ sealed class MockScanningState {
             override fun startScanning(
                 filter: Filter,
                 cleanMode: BluetoothService.CleanMode,
-                connectionSettings: ConnectionSettings
+                connectionSettings: ConnectionSettings?
             ): suspend () -> ScanningState.Enabled.Scanning = {
                 Scanning(
                     devices.updateScanFilter(filter, cleanMode)
@@ -144,7 +144,7 @@ sealed class MockScanningState {
             override suspend fun retrievePairedDevices(
                 filter: Filter,
                 removeForAllPairedFilters: Boolean,
-                connectionSettings: ConnectionSettings
+                connectionSettings: ConnectionSettings?
             ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
             override fun pairedDevices(

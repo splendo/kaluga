@@ -189,7 +189,7 @@ interface Scanner {
      * This will result in [Event.DeviceDiscovered] or [Event.FailedScanning]
      * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
      */
-    suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings)
+    suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings?)
 
     /**
      * Stops scanning for devices
@@ -221,8 +221,10 @@ interface Scanner {
      * Retrieves the list of paired [Device]
      * This will result in [Event.PairedDevicesRetrieved] on the [events] flow
      * @param withServices filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
+     * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
-    suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings)
+    suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?)
 }
 
 /**
@@ -245,6 +247,7 @@ abstract class BaseScanner constructor(
      * @property autoRequestPermission if `true` the scanner should automatically request permissions if not granted
      * @property autoEnableSensors if `true` the scanner should automatically enable the Bluetooth service if disabled
      * @property discoverBondedDevices If `true` scanned results will include devices bonded to the system.
+     * @param defaultConnectionSettings The [ConnectionSettings] to apply for scanned devices if no settings are provided in [Scanner.scanForDevices]
      * @property logger the [Logger] to log to
      */
     data class Settings(
@@ -340,7 +343,7 @@ abstract class BaseScanner constructor(
         monitoringPermissionsJob = null
     }
 
-    final override suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings) {
+    final override suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings?) {
         if (filter.isEmpty()) {
             logger.info(LOG_TAG) { "Start Scanning" }
         } else {
@@ -414,7 +417,7 @@ abstract class BaseScanner constructor(
 
     protected abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings) = isRetrievingPairedDevicesMutex.withLock {
+    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?) = isRetrievingPairedDevicesMutex.withLock {
         if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
 
         retrievingPairedDevicesJob = this@BaseScanner.launch {
@@ -436,7 +439,7 @@ abstract class BaseScanner constructor(
         isRetrievingPairedDevicesFilter = withServices
     }
 
-    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings): List<Scanner.DeviceDiscovered>
+    protected abstract suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered>
 
     internal fun handleDeviceDiscovered(
         deviceWrapper: DeviceWrapper,

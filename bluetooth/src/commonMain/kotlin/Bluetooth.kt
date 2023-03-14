@@ -18,6 +18,9 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.base.text.lowerCased
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -104,10 +107,10 @@ interface BluetoothService {
      * To receive the devices, use [scannedDevices] or [allDevices]
      * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
      * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.OnlyProvidedFilter] will apply to [filter]
-     * @param connectionSettings the [ConnectionSettings] to apply to scanned [Device].
+     * @param connectionSettings the [ConnectionSettings] to apply to scanned [Device]. If `null` the default will be used
      * Note that if a [Device] was previously scanned (and not cleaned by [cleanMode]) the old [ConnectionSettings] will still apply.
      */
-    fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.RemoveAll, connectionSettings: ConnectionSettings = ConnectionSettings())
+    fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.RemoveAll, connectionSettings: ConnectionSettings? = null)
 
     /**
      * Stops scanning for [Device]
@@ -118,9 +121,10 @@ interface BluetoothService {
     /**
      * Gets a [Flow] of the list of [Device] that have been paired to the system
      * @param filter filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
-     * @param removeForAllPairedFilters if `true`
+     * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
+     * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
-    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings = ConnectionSettings()): Flow<List<Device>>
+    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null): Flow<List<Device>>
 
     /**
      * Gets a [Flow] containing a list of all [Device] scanned by the service.
@@ -185,7 +189,7 @@ class Bluetooth constructor(
         data class Scan(
             val filter: Filter,
             val cleanMode: BluetoothService.CleanMode,
-            val connectionSettings: ConnectionSettings
+            val connectionSettings: ConnectionSettings?
         ) : ScanMode()
     }
 
@@ -201,8 +205,8 @@ class Bluetooth constructor(
             delay(PAIRED_DEVICES_REFRESH_RATE)
         }
     }
-    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
-    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings = ConnectionSettings(), timer: Flow<Unit>): Flow<List<Device>> =
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
+    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings?, timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
                 if (state is ScanningState.Enabled) {
@@ -261,7 +265,7 @@ class Bluetooth constructor(
         it.devicesForCurrentScanFilter()
     }
 
-    override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings) {
+    override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings?) {
         scanMode.value = ScanMode.Scan(filter, cleanMode, connectionSettings)
     }
 
@@ -309,7 +313,7 @@ expect class BluetoothBuilder : BaseBluetoothBuilder
  */
 operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     return this.map { devices ->
-        devices.firstOrNull { it.identifier == identifier }
+        devices.firstOrNull { it.identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) == identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) }
     }.distinctUntilChanged()
 }
 

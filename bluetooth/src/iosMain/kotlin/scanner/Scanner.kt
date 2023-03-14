@@ -233,7 +233,7 @@ actual class DefaultScanner internal constructor(
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings
+        connectionSettings: ConnectionSettings?
     ): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager

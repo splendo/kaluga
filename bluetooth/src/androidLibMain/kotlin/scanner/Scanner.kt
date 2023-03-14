@@ -218,7 +218,7 @@ actual class DefaultScanner internal constructor(
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings
+        connectionSettings: ConnectionSettings?
     ): List<Scanner.DeviceDiscovered> {
         if (!isSupported) return emptyList()
         val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)

@@ -60,7 +60,7 @@ actual class DefaultScanner(
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings
+        connectionSettings: ConnectionSettings?
     ): List<Scanner.DeviceDiscovered> {
         TODO("Not yet implemented")
     }

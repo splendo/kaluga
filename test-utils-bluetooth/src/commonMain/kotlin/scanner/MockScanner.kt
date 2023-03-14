@@ -64,7 +64,7 @@ class MockScanner(
     override suspend fun requestEnableHardware(): Unit = requestEnableHardwareMock.call()
 
     val scanForDevicesMock = ::scanForDevices.mock()
-    override suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings): Unit = scanForDevicesMock.call(filter, connectionSettings)
+    override suspend fun scanForDevices(filter: Filter, connectionSettings: ConnectionSettings?): Unit = scanForDevicesMock.call(filter, connectionSettings)
 
     val stopScanningMock = ::stopScanning.mock()
     override suspend fun stopScanning(): Unit = stopScanningMock.call()
@@ -73,7 +73,7 @@ class MockScanner(
     override suspend fun retrievePairedDevices(
         withServices: Filter,
         removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings
+        connectionSettings: ConnectionSettings?
     ): Unit = retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
 }
 
@@ -222,6 +222,6 @@ class MockBaseScanner(
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings
+        connectionSettings: ConnectionSettings?
     ): List<Scanner.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices, connectionSettings)
 }
