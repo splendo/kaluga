@@ -206,7 +206,7 @@ class Bluetooth constructor(
         }
     }
     override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
-    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings?, timer: Flow<Unit>): Flow<List<Device>> =
+    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
                 if (state is ScanningState.Enabled) {
@@ -356,11 +356,13 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 /**
  * Attempts to connect to the [Device] from a [Flow] of [Device]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
+ * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [Device] disconnects after connecting. If `null` the default will be used.
+ * @return `true` if connection was successful
  */
-suspend fun Flow<Device?>.connect() {
+suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null) {
     transformLatest { device ->
         device?.let {
-            emit(it.connect())
+            emit(it.connect(reconnectionSettings))
         }
     }.first()
 }

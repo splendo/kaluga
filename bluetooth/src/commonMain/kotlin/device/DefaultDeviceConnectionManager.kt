@@ -92,8 +92,9 @@ interface DeviceConnectionManager {
 
         /**
          * [Event] indicating the device started connecting
+         * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
          */
-        object Connecting : Event()
+        data class Connecting(val reconnectionSettings: ConnectionSettings.ReconnectionSettings) : Event()
 
         /**
          * [Event] indicating the device cancelled connecting
@@ -197,8 +198,9 @@ interface DeviceConnectionManager {
 
     /**
      * Fires an [Event.Connecting]
+     * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly. If `null` the default will be used.
      */
-    fun startConnecting()
+    fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null)
 
     /**
      * Fires an [Event.CancelledConnecting]
@@ -256,6 +258,8 @@ abstract class BaseDeviceConnectionManager(
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
     private val logger = settings.logger
 
+    private val defaultReconnectionSettings = settings.reconnectionSettings
+
     protected var currentAction: DeviceAction? = null
     protected val notifyingCharacteristics = concurrentMutableMapOf<String, Characteristic>()
 
@@ -280,9 +284,9 @@ abstract class BaseDeviceConnectionManager(
         emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }
 
-    final override fun startConnecting() {
+    final override fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?) {
         logger.info(logTag) { "Start Connecting" }
-        emitEvent(DeviceConnectionManager.Event.Connecting)
+        emitEvent(DeviceConnectionManager.Event.Connecting(reconnectionSettings ?: defaultReconnectionSettings))
     }
 
     final override fun cancelConnecting() {

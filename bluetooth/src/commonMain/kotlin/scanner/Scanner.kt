@@ -500,6 +500,7 @@ abstract class BaseScanner constructor(
             CoroutineScope(coroutineContext + CoroutineName("Device ${deviceWrapper.identifier.stringValue}"))
         ) { connectionManager, context ->
             ConnectableDeviceStateImplRepo(
+                (connectionSettings ?: defaultConnectionSettings).reconnectionSettings,
                 connectionManager,
                 context
             )

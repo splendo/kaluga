@@ -76,7 +76,7 @@ fun createMockDevice(
     ),
     connectionManagerBuilder: (ConnectionSettings) -> DeviceConnectionManager,
     builder: MockDeviceInfoBuilder.() -> Unit,
-    createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { manager, coroutineContext -> ConnectableDeviceStateImplRepo(manager, coroutineContext) },
+    createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { manager, coroutineContext -> ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, manager, coroutineContext) },
     coroutineScope: CoroutineScope
 ) = DeviceImpl(
     identifier = identifier,
@@ -94,6 +94,6 @@ fun createMockDevice(
         reconnectionSettings = ConnectionSettings.ReconnectionSettings.Never
     ),
     connectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),
-    createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { manager, coroutineContext -> ConnectableDeviceStateImplRepo(manager, coroutineContext) },
+    createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { manager, coroutineContext -> ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, manager, coroutineContext) },
     builder: MockDeviceInfoBuilder.() -> Unit,
 ) = createMockDevice(wrapper.identifier, connectionSettings, { connectionManagerBuilder.create(wrapper, it, coroutineScope) }, builder, createDeviceStateFlow, coroutineScope)

@@ -192,8 +192,9 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                 connectionSettings,
                 deviceConnectionManagerBuilder,
                 coroutineScope,
-                ::ConnectableDeviceStateImplRepo
-            )
+            ) { connectionManager, context ->
+                ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
+            }
         }
 
         private suspend fun awaitScanDevice(
@@ -253,7 +254,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun createDevice(
             deviceWrapper: DeviceWrapper = this.deviceWrapper,
             deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder
-        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, ConnectionSettings(), coroutineScope) }
+        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, configuration.connectionSettings, coroutineScope) }
 
         fun scanDevice(
             rssi: RSSI = configuration.rssi,

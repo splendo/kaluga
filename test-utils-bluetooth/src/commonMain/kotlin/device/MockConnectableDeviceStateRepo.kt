@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.device.BaseConnectableDeviceStateRepo
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
@@ -58,5 +59,5 @@ class MockConnectableDeviceManager {
     fun handleCancelReconnecting(): Unit = mockHandleCancelReconnecting.call()
 
     val mockStartConnecting = this::startConnecting.mock()
-    fun startConnecting(): Unit = mockStartConnecting.call()
+    fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?): Unit = mockStartConnecting.call(reconnectionSettings)
 }

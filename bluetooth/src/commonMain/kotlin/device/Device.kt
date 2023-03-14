@@ -67,14 +67,15 @@ interface Device {
 
     /**
      * Attempts to connect to the device
+     * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
      * @return `true` if connection was successful.
      */
-    suspend fun connect(): Boolean {
+    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean {
         var hasStartedConnecting = false
         return state.transform { deviceState ->
             when (deviceState) {
                 is ConnectableDeviceState.Disconnected -> if (!hasStartedConnecting) {
-                    deviceState.startConnecting()
+                    deviceState.startConnecting(reconnectionSettings)
                     hasStartedConnecting = true
                 } else {
                     emit(false)
@@ -140,7 +141,9 @@ class DeviceImpl(
     private val connectionSettings: ConnectionSettings,
     private val connectionManagerBuilder: (ConnectionSettings) -> DeviceConnectionManager,
     private val coroutineScope: CoroutineScope,
-    private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = ::ConnectableDeviceStateImplRepo
+    private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { connectionManager, context ->
+        ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
+    }
 ) : Device, CoroutineScope by coroutineScope {
 
     companion object {
@@ -253,7 +256,7 @@ class DeviceImpl(
         }
 
     private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectableDeviceState) =
-        if (state is ConnectableDeviceState.Disconnected) state.connect else state.remain()
+        if (state is ConnectableDeviceState.Disconnected) state.connect(reconnectionSettings) else state.remain()
 
     private fun DeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: ConnectableDeviceState) =
         when (state) {
@@ -279,13 +282,13 @@ class DeviceImpl(
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) =
         when (state) {
             is ConnectableDeviceState.Reconnecting -> {
-                state.retry(connectionSettings.reconnectionSettings).also {
+                state.retry().also {
                     if (it == state.didDisconnect) {
                         onDisconnect()
                     }
                 }
             }
-            is ConnectableDeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+            is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
                 is ConnectionSettings.ReconnectionSettings.Always,
                 is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
                 is ConnectionSettings.ReconnectionSettings.Never -> {
@@ -358,20 +361,24 @@ abstract class BaseConnectableDeviceStateRepo(
 
 /**
  * A [BaseConnectableDeviceStateRepo] managed by a [DeviceConnectionManager]
+ * @param defaultReconnectionSettings the default [ConnectionSettings.ReconnectionSettings] to use when reconnecting after the device disconnects unexpectedly
  * @param connectionManager the [DeviceConnectionManager] to manage the [ConnectableDeviceState]
  * @param coroutineContext the [CoroutineContext] of this repo
  */
 class ConnectableDeviceStateImplRepo(
+    defaultReconnectionSettings: ConnectionSettings.ReconnectionSettings,
     connectionManager: DeviceConnectionManager,
     coroutineContext: CoroutineContext
 ) : BaseConnectableDeviceStateRepo(
     initialState = {
         when (connectionManager.getCurrentState()) {
             DeviceConnectionManager.State.CONNECTED -> ConnectableDeviceStateImpl.Connected.NoServices(
+                defaultReconnectionSettings,
                 null,
                 connectionManager
             )
             DeviceConnectionManager.State.CONNECTING -> ConnectableDeviceStateImpl.Connecting(
+                defaultReconnectionSettings,
                 connectionManager
             )
             DeviceConnectionManager.State.DISCONNECTED -> ConnectableDeviceStateImpl.Disconnected(

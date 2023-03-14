@@ -80,7 +80,7 @@ class MockDevice(
         connectableDeviceStateRepo.launchTakeAndChangeState(
             coroutineContext,
             ConnectableDeviceState.Disconnected::class
-        ) { it.connect }
+        ) { it.connect(connectionSettings.reconnectionSettings) }
     }
 
     fun handleCancelConnecting() {
@@ -111,9 +111,9 @@ class MockDevice(
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext) { state ->
             when (state) {
                 is ConnectableDeviceState.Reconnecting -> {
-                    state.retry(connectionSettings.reconnectionSettings)
+                    state.retry()
                 }
-                is ConnectableDeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+                is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
                     is ConnectionSettings.ReconnectionSettings.Always,
                     is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
                     is ConnectionSettings.ReconnectionSettings.Never -> state.didDisconnect
