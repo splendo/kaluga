@@ -888,6 +888,21 @@ public abstract class com/splendo/kaluga/base/utils/BaseTimeZone {
 	public static synthetic fun usesDaylightSavingsTime$default (Lcom/splendo/kaluga/base/utils/BaseTimeZone;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)Z
 }
 
+public abstract interface class com/splendo/kaluga/base/utils/BufferedAsListChannel : kotlinx/coroutines/channels/ReceiveChannel, kotlinx/coroutines/channels/SendChannel {
+}
+
+public final class com/splendo/kaluga/base/utils/BufferedAsListChannel$DefaultImpls {
+	public static synthetic fun cancel (Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;)V
+	public static fun getOnReceiveOrNull (Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;)Lkotlinx/coroutines/selects/SelectClause1;
+	public static fun offer (Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;Ljava/lang/Object;)Z
+	public static fun poll (Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;)Ljava/util/List;
+	public static fun receiveOrNull (Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/base/utils/BufferedAsListChannelKt {
+	public static final fun BufferedAsListChannel (Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;
+}
+
 public final class com/splendo/kaluga/base/utils/ByteUtils {
 	public static final field BYTE_STRING_LENGTH I
 	public static final field HEX_RADIX I

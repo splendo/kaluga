@@ -121,13 +121,13 @@ sealed interface ScanningState : KalugaState {
          * @param filter the [DeviceDiscoveryMode] to get devices for
          * @return the list of [Device] found for the [filter]
          */
-        fun devicesForFilter(filter: DeviceDiscoveryMode) = identifiersFoundForDeviceDiscoveryMode[filter]?.let { identifiers -> allDevices.entries.mapNotNull { if (identifiers.contains(it.key)) it.value else null } } ?: emptyList()
+        fun devicesForDiscoveryMode(filter: DeviceDiscoveryMode) = identifiersFoundForDeviceDiscoveryMode[filter]?.let { identifiers -> allDevices.entries.mapNotNull { if (identifiers.contains(it.key)) it.value else null } } ?: emptyList()
 
         /**
          * The list of [Device] found for the [currentScanFilter]
          * @return the list of [Device] found for [currentScanFilter]
          */
-        fun devicesForCurrentScanFilter() = devicesForFilter(currentScanFilter)
+        fun devicesForCurrentScanFilter() = devicesForDiscoveryMode(currentScanFilter)
     }
 
     /**

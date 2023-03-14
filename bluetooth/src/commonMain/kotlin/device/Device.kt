@@ -16,11 +16,11 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.utils.getCompletedOrNull
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.base.state.HotStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
+import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.RSSI
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
@@ -68,7 +69,22 @@ interface Device {
      * Attempts to connect to the device
      * @return `true` if connection was successful.
      */
-    suspend fun connect(): Boolean
+    suspend fun connect(): Boolean {
+        var hasStartedConnecting = false
+        return state.transform { deviceState ->
+            when (deviceState) {
+                is ConnectableDeviceState.Disconnected -> if (!hasStartedConnecting) {
+                    deviceState.startConnecting()
+                    hasStartedConnecting = true
+                } else {
+                    emit(false)
+                }
+                is ConnectableDeviceState.Connected -> emit(true)
+                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Reconnecting, is ConnectableDeviceState.Disconnecting -> {}
+                is NotConnectableDeviceState -> emit(false)
+            }
+        }.first()
+    }
 
     /**
      * Notifies the device that is has connected
@@ -78,7 +94,18 @@ interface Device {
     /**
      * Attempts to disconnect from the device
      */
-    suspend fun disconnect()
+    suspend fun disconnect() {
+        state.transformLatest { deviceState ->
+            when (deviceState) {
+                is ConnectableDeviceState.Connected -> deviceState.startDisconnected()
+                is ConnectableDeviceState.Connecting -> deviceState.handleCancel()
+                is ConnectableDeviceState.Reconnecting -> deviceState.handleCancel()
+                is ConnectableDeviceState.Disconnected -> emit(Unit)
+                is ConnectableDeviceState.Disconnecting -> {} // just wait
+                is NotConnectableDeviceState -> emit(Unit)
+            }
+        }.first()
+    }
 
     /**
      * Notifies the device that is has disconnected
@@ -181,27 +208,7 @@ class DeviceImpl(
         }
     }
 
-    override suspend fun connect(): Boolean = createDeviceStateRepoIfNotCreated()?.transformLatest { deviceState ->
-        when (deviceState) {
-            is ConnectableDeviceState.Disconnected -> deviceState.startConnecting()
-            is ConnectableDeviceState.Connected -> emit(true)
-            is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Reconnecting, is ConnectableDeviceState.Disconnecting -> {}
-        }
-    }?.first() ?: false
-
     override fun handleConnected() = createConnectionManagerIfNotCreated().handleConnect()
-
-    override suspend fun disconnect() {
-        deviceStateRepo.value?.transformLatest { deviceState ->
-            when (deviceState) {
-                is ConnectableDeviceState.Connected -> deviceState.startDisconnected()
-                is ConnectableDeviceState.Connecting -> deviceState.handleCancel()
-                is ConnectableDeviceState.Reconnecting -> deviceState.handleCancel()
-                is ConnectableDeviceState.Disconnected -> emit(Unit)
-                is ConnectableDeviceState.Disconnecting -> {} // just wait
-            }
-        }?.first()
-    }
 
     override fun handleDisconnected() = createConnectionManagerIfNotCreated().handleDisconnect()
 

@@ -27,6 +27,7 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 class MockBluetoothService(
@@ -45,7 +46,10 @@ class MockBluetoothService(
 
     val allDevicesMock = this::allDevices.mock()
     val scannedDevicesMock = this::scannedDevices.mock()
+    val devicesMock = this::devices.mock()
     val pairedDevicesMock = this::pairedDevices.mock()
+
+    var currentFilter = MutableStateFlow<Filter>(emptySet())
 
     init {
         if (setupMocks) {
@@ -59,6 +63,7 @@ class MockBluetoothService(
             scannedDevicesMock.on().doExecute { (uuids) ->
                 filteredDevicesFlow.map { it[uuids] ?: emptyList() }
             }
+            devicesMock.on().doExecute { filteredDevicesFlow.combine(currentFilter) { filteredDevices, filter -> filteredDevices[filter] ?: emptyList() } }
             pairedDevicesMock.on().doExecute { (uuids) ->
                 pairedDevicesFlow.map { it[uuids] ?: emptyList() }
             }
@@ -70,7 +75,10 @@ class MockBluetoothService(
         filter: Filter,
         cleanMode: BluetoothService.CleanMode,
         connectionSettings: ConnectionSettings
-    ): Unit = startScanningMock.call(filter, cleanMode, connectionSettings)
+    ) {
+        currentFilter.value = filter
+        startScanningMock.call(filter, cleanMode, connectionSettings)
+    }
 
     override fun stopScanning(cleanMode: BluetoothService.CleanMode): Unit = stopScanningMock.call(cleanMode)
     override fun pairedDevices(
@@ -81,5 +89,6 @@ class MockBluetoothService(
 
     override fun scannedDevices(filter: Filter): Flow<List<Device>> = scannedDevicesMock.call(filter)
     override fun allDevices(): Flow<List<Device>> = allDevicesMock.call()
+    override fun devices(): Flow<List<Device>> = devicesMock.call()
     override suspend fun isScanning(): Flow<Boolean> = isScanningMock.call()
 }

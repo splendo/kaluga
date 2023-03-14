@@ -106,7 +106,7 @@ sealed class MockScanningState {
                 devices: Map<Identifier, () -> Device>,
                 filter: Filter,
                 removeForAllPairedFilters: Boolean
-            ): suspend () -> ScanningState.Enabled  = {
+            ): suspend () -> ScanningState.Enabled = {
                 Idle(
                     devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
                 )

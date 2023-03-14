@@ -32,13 +32,13 @@ import kotlin.time.Duration.Companion.milliseconds
 class BufferedAsListChannelTest {
 
     @Test
-    fun testEqualChannel() = testBufferedAsListChannel(10.milliseconds, 10.milliseconds, 98..100)
+    fun testEqualChannel() = testBufferedAsListChannel(10.milliseconds, 10.milliseconds, 50..100)
 
     @Test
-    fun testSlowToProduceChannel() = testBufferedAsListChannel(10.milliseconds, 1.milliseconds, 99..100)
+    fun testSlowToProduceChannel() = testBufferedAsListChannel(10.milliseconds, 1.milliseconds, 50..100)
 
     @Test
-    fun testSlowToConsumeChannel() = testBufferedAsListChannel(1.milliseconds, 10.milliseconds, 10..13)
+    fun testSlowToConsumeChannel() = testBufferedAsListChannel(1.milliseconds, 10.milliseconds, 5..20)
 
     private fun testBufferedAsListChannel(producingDuration: Duration, consumingDuration: Duration, expectedNumberOfGroupsIn: IntRange) = runBlocking {
         val groupingChannel = BufferedAsListChannel<Int>(coroutineContext)

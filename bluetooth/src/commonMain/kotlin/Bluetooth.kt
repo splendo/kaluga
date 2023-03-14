@@ -136,6 +136,12 @@ interface BluetoothService {
     fun scannedDevices(filter: Filter = emptySet()): Flow<List<Device>>
 
     /**
+     * Gets a [Flow] containing a list of all [Device] scanned by the service for the last [Filter] passed to [startScanning].
+     * Requires that [startScanning] has been called with [filter], otherwise no devices will be found
+     */
+    fun devices(): Flow<List<Device>>
+
+    /**
      * Gets a [Flow] that indicates whether the service is actively scanning for [Device]
      */
     suspend fun isScanning(): Flow<Boolean>
@@ -202,14 +208,14 @@ class Bluetooth constructor(
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
                     state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
-                    emit(state.devices.devicesForFilter(ScanningState.DeviceDiscoveryMode.Paired(filter)))
+                    emit(state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)))
                 } else {
                     emit(emptyList())
                 }
             }
             .distinctUntilChanged()
 
-    private fun devices(): Flow<ScanningState.Devices> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+    private fun devicesForScanMode(): Flow<ScanningState.Devices> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
             is ScanningState.Enabled.Idle -> when (scanMode) {
                 is ScanMode.Scan -> {
@@ -246,10 +252,14 @@ class Bluetooth constructor(
         }
     }.distinctUntilChanged()
 
-    override fun allDevices(): Flow<List<Device>> = devices().map { it.allDevices.values.toList() }.distinctUntilChanged()
-    override fun scannedDevices(filter: Filter): Flow<List<Device>> = devices().map {
-        it.devicesForFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
+    override fun allDevices(): Flow<List<Device>> = devicesForScanMode().map { it.allDevices.values.toList() }.distinctUntilChanged()
+    override fun scannedDevices(filter: Filter): Flow<List<Device>> = devicesForScanMode().map {
+        it.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Scanning(filter))
     }.distinctUntilChanged()
+
+    override fun devices(): Flow<List<Device>> = devicesForScanMode().map {
+        it.devicesForCurrentScanFilter()
+    }
 
     override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings) {
         scanMode.value = ScanMode.Scan(filter, cleanMode, connectionSettings)
