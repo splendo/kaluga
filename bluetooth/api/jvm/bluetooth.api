@@ -306,6 +306,7 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableD
 	public abstract fun readRssi (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun requestMtu (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun startDisconnected ()V
+	public abstract fun updateReconnectionSettings (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DefaultImpls {
