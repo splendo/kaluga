@@ -79,7 +79,12 @@ public abstract interface class com/splendo/kaluga/bluetooth/BluetoothService {
 	public abstract fun stopScanning (Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;)V
 }
 
-public abstract class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode {
+public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode : java/lang/Enum {
+	public static final field ONLY_PROVIDED_FILTER Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
+	public static final field REMOVE_ALL Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
+	public static final field RETAIN_ALL Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
+	public static fun values ()[Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 }
 
 public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode$OnlyProvidedFilter : com/splendo/kaluga/bluetooth/BluetoothService$CleanMode {

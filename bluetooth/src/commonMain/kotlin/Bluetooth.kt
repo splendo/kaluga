@@ -87,39 +87,39 @@ interface BluetoothService {
     /**
      * Specifies the behaviour of cleaning up the list of [Device] discovered by a [BluetoothService]
      */
-    sealed class CleanMode {
+    enum class CleanMode {
 
         /**
          * Retains all [Device] previously scanned, regardless of [Filter]
          */
-        object RetainAll : CleanMode()
+        RETAIN_ALL,
 
         /**
          * Removes all [Device] previously scanned, regardless of [Filter]
          */
-        object RemoveAll : CleanMode()
+        REMOVE_ALL,
 
         /**
          * Removes only the [Device] previously scanned with the [Filter] used for scanning
          */
-        object OnlyProvidedFilter : CleanMode()
+        ONLY_PROVIDED_FILTER
     }
 
     /**
      * Starts scanning for [Device].
      * To receive the devices, use [scannedDevices] or [allDevices]
      * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
-     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.OnlyProvidedFilter] will apply to [filter]
+     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to [filter]
      * @param connectionSettings the [ConnectionSettings] to apply to scanned [Device]. If `null` the default will be used
      * Note that if a [Device] was previously scanned (and not cleaned by [cleanMode]) the old [ConnectionSettings] will still apply.
      */
-    fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.RemoveAll, connectionSettings: ConnectionSettings? = null)
+    fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.REMOVE_ALL, connectionSettings: ConnectionSettings? = null)
 
     /**
      * Stops scanning for [Device]
-     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.OnlyProvidedFilter] will apply to the [Filter] last passed to [startScanning]
+     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to the [Filter] last passed to [startScanning]
      */
-    fun stopScanning(cleanMode: CleanMode = CleanMode.RemoveAll)
+    fun stopScanning(cleanMode: CleanMode = CleanMode.RETAIN_ALL)
 
     /**
      * Gets a [Flow] of the list of [Device] that have been paired to the system
@@ -196,7 +196,7 @@ class Bluetooth constructor(
         ) : ScanMode()
     }
 
-    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped(BluetoothService.CleanMode.RemoveAll))
+    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped(BluetoothService.CleanMode.REMOVE_ALL))
 
     private companion object {
         val PAIRED_DEVICES_REFRESH_RATE = 15.seconds
@@ -242,7 +242,7 @@ class Bluetooth constructor(
                             remainIfStateNot = ScanningState.Enabled.Scanning::class
                         ) {
                             // Cleaning should happen when the new scan is started to ensure the proper clean mode is applied
-                            it.stopScanning(BluetoothService.CleanMode.RetainAll)
+                            it.stopScanning(BluetoothService.CleanMode.RETAIN_ALL)
                         }
                         scanState.devices
                     }

@@ -245,7 +245,7 @@ sealed interface ScanningState : KalugaState {
              */
             fun startScanning(
                 filter: Filter = devices.currentScanFilter.filter,
-                cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.RemoveAll,
+                cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL,
                 connectionSettings: ConnectionSettings? = null
             ): suspend () -> Scanning
 
@@ -255,7 +255,7 @@ sealed interface ScanningState : KalugaState {
              * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
              * @return the method for transitioning into a new [Idle] state
              */
-            fun refresh(filter: Filter = devices.currentScanFilter.filter, cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.RemoveAll): suspend () -> Idle
+            fun refresh(filter: Filter = devices.currentScanFilter.filter, cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL): suspend () -> Idle
         }
 
         /**
@@ -290,7 +290,7 @@ sealed interface ScanningState : KalugaState {
              * Transitions into an [Idle] State
              * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
              */
-            fun stopScanning(cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.RemoveAll): suspend () -> Idle
+            fun stopScanning(cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL): suspend () -> Idle
         }
     }
 
@@ -416,9 +416,9 @@ data class DefaultDevices(
         filter: Filter,
         cleanMode: BluetoothService.CleanMode
     ): ScanningState.Devices = when (cleanMode) {
-        is BluetoothService.CleanMode.RetainAll -> DefaultDevices(allDevices, identifiersFoundForDeviceDiscoveryMode, ScanningState.DeviceDiscoveryMode.Scanning(filter))
-        is BluetoothService.CleanMode.OnlyProvidedFilter -> cleanFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
-        is BluetoothService.CleanMode.RemoveAll -> DefaultDevices(emptyMap(), emptyMap(), ScanningState.DeviceDiscoveryMode.Scanning(filter))
+        BluetoothService.CleanMode.RETAIN_ALL -> DefaultDevices(allDevices, identifiersFoundForDeviceDiscoveryMode, ScanningState.DeviceDiscoveryMode.Scanning(filter))
+        BluetoothService.CleanMode.ONLY_PROVIDED_FILTER -> cleanFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
+        BluetoothService.CleanMode.REMOVE_ALL -> DefaultDevices(emptyMap(), emptyMap(), ScanningState.DeviceDiscoveryMode.Scanning(filter))
     }
 
     private fun cleanFilter(filter: ScanningState.DeviceDiscoveryMode): DefaultDevices {

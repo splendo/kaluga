@@ -163,7 +163,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         mainAction {
             scanningStateRepo.takeAndChangeState { scanningState ->
                 when (scanningState) {
-                    is Scanning -> scanningState.stopScanning(cleanMode = BluetoothService.CleanMode.RetainAll)
+                    is Scanning -> scanningState.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
                     else -> scanningState.remain()
                 }
             }

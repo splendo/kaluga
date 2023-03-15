@@ -48,7 +48,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter)
                 validateDevicesForCurrentScanFilter(devices[0], devices[1])
             }
-            .setFilterValidate(filter, BluetoothService.CleanMode.OnlyProvidedFilter) {
+            .setFilterValidate(filter, BluetoothService.CleanMode.ONLY_PROVIDED_FILTER) {
                 validateAllDevices(devices[0], devices[1])
                 validateDevicesForScanningFilter(emptyFilter, devices[0], devices[1])
                 validateDevicesForScanningFilter(filter)
@@ -66,7 +66,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
                 validateDevicesForCurrentScanFilter(devices[1], devices[2])
             }
-            .setFilterValidate(emptyFilter, BluetoothService.CleanMode.OnlyProvidedFilter) {
+            .setFilterValidate(emptyFilter, BluetoothService.CleanMode.ONLY_PROVIDED_FILTER) {
                 validateAllDevices(devices[1], devices[2])
                 validateDevicesForScanningFilter(emptyFilter)
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
@@ -78,7 +78,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
                 validateDevicesForCurrentScanFilter(devices[0])
             }
-            .setFilterValidate(filter, BluetoothService.CleanMode.RetainAll) {
+            .setFilterValidate(filter, BluetoothService.CleanMode.RETAIN_ALL) {
                 validateAllDevices(devices[0], devices[1], devices[2])
                 validateDevicesForScanningFilter(emptyFilter, devices[0])
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
@@ -90,7 +90,7 @@ class DevicesTest {
                 validateDevicesForScanningFilter(filter, devices[1], devices[2])
                 validateDevicesForCurrentScanFilter(devices[1], devices[2])
             }
-            .setFilterValidate(emptyFilter, BluetoothService.CleanMode.RemoveAll) {
+            .setFilterValidate(emptyFilter, BluetoothService.CleanMode.REMOVE_ALL) {
                 validateAllDevices()
                 validateDevicesForScanningFilter(emptyFilter)
                 validateDevicesForScanningFilter(filter)
@@ -136,7 +136,7 @@ class DevicesTest {
                 validateDevicesForPairingFilter(filter2)
                 validateDevicesForCurrentScanFilter(devices[0])
             }
-            .setFilterValidate(filter1, cleanMode = BluetoothService.CleanMode.RemoveAll) {
+            .setFilterValidate(filter1, cleanMode = BluetoothService.CleanMode.REMOVE_ALL) {
                 validateAllDevices()
                 validateDevicesForPairingFilter(filter1)
                 validateDevicesForPairingFilter(filter2)

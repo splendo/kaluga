@@ -110,10 +110,10 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
         val deferredDevice2 = CompletableDeferred<Device>()
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RetainAll)
+            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
-            bluetooth.startScanning(filter, BluetoothService.CleanMode.RetainAll)
+            bluetooth.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
 
             createAndScanDevice(deferredDevice2)
         }
@@ -126,7 +126,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RemoveAll)
+            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.REMOVE_ALL)
         }
 
         test {
@@ -160,10 +160,10 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
         val deferredDevice2 = CompletableDeferred<Device>()
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RetainAll)
+            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.RETAIN_ALL)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()
-            bluetooth.startScanning(filter, BluetoothService.CleanMode.RetainAll)
+            bluetooth.startScanning(filter, BluetoothService.CleanMode.RETAIN_ALL)
 
             scanDevice(deferredDevice1.await(), createDeviceWrapper(identifier = deferredDevice1.await().identifier), -100, MockAdvertisementData())
             yield()
@@ -178,7 +178,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         mainAction {
-            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.OnlyProvidedFilter)
+            bluetooth.stopScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
         }
 
         test {
@@ -189,7 +189,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         }
 
         mainAction {
-            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.OnlyProvidedFilter)
+            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.ONLY_PROVIDED_FILTER)
         }
 
         test {
