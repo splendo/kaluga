@@ -166,7 +166,7 @@ interface DeviceConnectionManager {
     /**
      * Starts connecting to the device
      */
-    suspend fun connect()
+    fun connect()
 
     /**
      * Starts discovering [Service] for the device
@@ -176,7 +176,7 @@ interface DeviceConnectionManager {
     /**
      * Starts disconnecting from the device
      */
-    suspend fun disconnect()
+    fun disconnect()
 
     /**
      * Starts reading the latest RSSI value of the device

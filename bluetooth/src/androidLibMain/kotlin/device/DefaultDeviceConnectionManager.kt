@@ -28,6 +28,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
@@ -167,7 +168,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun connect() {
+    override fun connect() {
         if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
             if (gatt.isCompleted) {
                 if (!gatt.getCompleted().connect()) {
@@ -187,9 +188,10 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().discoverServices()
     }
 
-    override suspend fun disconnect() {
-        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
-            gatt.await().disconnect()
+    override fun disconnect() {
+        val gatt = gatt.getCompletedOrNull()
+        if (gatt != null && lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
+            gatt.disconnect()
         } else {
             handleDisconnect {
                 closeGatt()
@@ -198,9 +200,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun closeGatt() {
-        if (gatt.isCompleted) {
-            gatt.getCompleted().close()
-        }
+        gatt.getCompletedOrNull()?.close()
         gatt = CompletableDeferred()
     }
 

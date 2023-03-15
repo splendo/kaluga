@@ -382,13 +382,9 @@ data class DefaultDevices(
         val deviceWithFiltersRemoved = filtersToRemove.fold(this) { acc, paired ->
             acc.cleanFilter(paired)
         }
-        val newIdentifiersForDiscoveryMode = deviceWithFiltersRemoved.identifiersFoundForDeviceDiscoveryMode.toMutableMap().apply {
-            put(ScanningState.DeviceDiscoveryMode.Paired(filter), devices.keys)
-        }.toMap()
+        val newIdentifiersForDiscoveryMode = deviceWithFiltersRemoved.identifiersFoundForDeviceDiscoveryMode + listOf(ScanningState.DeviceDiscoveryMode.Paired(filter) to devices.keys)
 
-        val newDevices = deviceWithFiltersRemoved.allDevices.toMutableMap().apply {
-            putAll(newPairedDevices.toMap())
-        }
+        val newDevices = deviceWithFiltersRemoved.allDevices + newPairedDevices
 
         return DefaultDevices(newDevices, newIdentifiersForDiscoveryMode, currentScanFilter)
     }
@@ -399,16 +395,9 @@ data class DefaultDevices(
         createDevice: () -> Device
     ): DefaultDevices {
         val device = allDevices.getOrElse(identifier, createDevice)
-        val newDevices = allDevices.toMutableMap().apply {
-            put(identifier, device)
-        }.toMap()
-        val identifiersForCurrentFilter = identifiersFoundForDeviceDiscoveryMode.getOrElse(filter) { emptySet() }
-            .toMutableSet().apply {
-                add(identifier)
-            }.toSet()
-        val newIdentifiersForFilter = identifiersFoundForDeviceDiscoveryMode.toMutableMap().apply {
-            put(currentScanFilter, identifiersForCurrentFilter)
-        }
+        val newDevices = allDevices + listOf(identifier to device)
+        val identifiersForCurrentFilter = identifiersFoundForDeviceDiscoveryMode.getOrElse(filter) { emptySet() } + identifier
+        val newIdentifiersForFilter = identifiersFoundForDeviceDiscoveryMode + listOf(currentScanFilter to identifiersForCurrentFilter)
         return DefaultDevices(newDevices, newIdentifiersForFilter, currentScanFilter)
     }
 
@@ -423,18 +412,12 @@ data class DefaultDevices(
 
     private fun cleanFilter(filter: ScanningState.DeviceDiscoveryMode): DefaultDevices {
         val potentialIdentifiersToRemove = identifiersFoundForDeviceDiscoveryMode[filter] ?: emptySet()
-        val newIdentifiersFoundForFilter = identifiersFoundForDeviceDiscoveryMode.toMutableMap().apply {
-            remove(filter)
-        }.toMap()
+        val newIdentifiersFoundForFilter = identifiersFoundForDeviceDiscoveryMode - filter
         val identifiersToRemove = newIdentifiersFoundForFilter.entries.fold(potentialIdentifiersToRemove) { acc, entry ->
-            acc.toMutableSet().apply {
-                removeAll(entry.value)
-            }.toSet()
+            acc - entry.value
         }
 
-        val newDevices = allDevices.toMutableMap().apply {
-            identifiersToRemove.forEach { remove(it) }
-        }.toMap()
+        val newDevices = allDevices - identifiersToRemove
         return DefaultDevices(newDevices, newIdentifiersFoundForFilter, filter as? ScanningState.DeviceDiscoveryMode.Scanning ?: currentScanFilter)
     }
 }

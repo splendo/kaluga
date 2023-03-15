@@ -219,19 +219,15 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         }
 
         suspend fun connectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
-            connectionManager.connectMock.on().doExecuteSuspended {
-                coroutineScope.launch {
-                    connectionManager.handleConnect()
-                }
+            connectionManager.connectMock.on().doExecute {
+                connectionManager.handleConnect()
             }
             bluetooth.allDevices()[device.identifier].connect()
         }
 
         suspend fun disconnectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
-            connectionManager.disconnectMock.on().doExecuteSuspended {
-                coroutineScope.launch {
-                    connectionManager.handleDisconnect()
-                }
+            connectionManager.disconnectMock.on().doExecute {
+                connectionManager.handleDisconnect()
             }
             bluetooth.allDevices()[device.identifier].disconnect()
         }

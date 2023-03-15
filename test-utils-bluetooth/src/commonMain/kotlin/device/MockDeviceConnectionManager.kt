@@ -167,11 +167,11 @@ class MockDeviceConnectionManager(
         super.handleNewRssi(rssi)
     }
 
-    override suspend fun connect(): Unit = connectMock.call()
+    override fun connect(): Unit = connectMock.call()
 
     override suspend fun discoverServices(): Unit = discoverServicesMock.call()
 
-    override suspend fun disconnect(): Unit = disconnectMock.call()
+    override fun disconnect(): Unit = disconnectMock.call()
 
     override suspend fun readRssi(): Unit = readRssiMock.call()
 

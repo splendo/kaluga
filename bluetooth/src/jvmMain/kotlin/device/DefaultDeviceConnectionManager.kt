@@ -39,11 +39,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     override fun getCurrentState(): DeviceConnectionManager.State = DeviceConnectionManager.State.DISCONNECTED
 
-    override suspend fun connect() {}
+    override fun connect() {}
 
     override suspend fun discoverServices() {}
 
-    override suspend fun disconnect() {}
+    override fun disconnect() {}
 
     override suspend fun readRssi() {}
 

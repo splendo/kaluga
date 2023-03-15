@@ -525,8 +525,8 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceAction$Write$Descri
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager {
 	public abstract fun cancelConnecting ()V
-	public abstract fun connect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun disconnect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun connect ()V
+	public abstract fun disconnect ()V
 	public abstract fun discoverServices (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getCurrentState ()Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;

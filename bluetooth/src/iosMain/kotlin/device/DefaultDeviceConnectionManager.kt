@@ -134,7 +134,7 @@ internal actual class DefaultDeviceConnectionManager(
         else -> DeviceConnectionManager.State.DISCONNECTED
     }
 
-    override suspend fun connect() {
+    override fun connect() {
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
@@ -146,8 +146,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun disconnect() {
+    override fun disconnect() {
+        val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
+        if (state != DeviceConnectionManager.State.CONNECTED) {
+            handleDisconnect()
+        }
     }
 
     override suspend fun readRssi() {

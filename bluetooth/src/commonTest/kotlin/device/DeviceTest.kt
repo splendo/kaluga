@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
@@ -94,11 +95,12 @@ class DeviceTest :
         getDisconnectedState()
         connecting()
         mainAction {
+            connectionManager.disconnectMock.on().doExecute { connectionManager.handleDisconnect() }
             connectionManager.cancelConnecting()
             yieldMultiple(2)
         }
-        disconnecting()
-        disconnect()
+        getDisconnectingState()
+        getDisconnectedState()
     }
 
     @Test

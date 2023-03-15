@@ -38,7 +38,6 @@ import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.state
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +45,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator) {
 
