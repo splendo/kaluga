@@ -487,7 +487,6 @@ public final class com/splendo/kaluga/bluetooth/device/DefaultDeviceWrapper : co
 	public fun connectGatt (Landroid/content/Context;ZLandroid/bluetooth/BluetoothGattCallback;)Lcom/splendo/kaluga/bluetooth/device/BluetoothGattWrapper;
 	public fun createBond ()V
 	public fun getBondState ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper$BondState;
-	public fun getDevice ()Landroid/bluetooth/BluetoothDevice;
 	public fun getIdentifier ()Ljava/lang/String;
 	public fun getName ()Ljava/lang/String;
 	public fun removeBond ()V
@@ -740,7 +739,6 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceWrappe
 	public abstract fun connectGatt (Landroid/content/Context;ZLandroid/bluetooth/BluetoothGattCallback;)Lcom/splendo/kaluga/bluetooth/device/BluetoothGattWrapper;
 	public abstract fun createBond ()V
 	public abstract fun getBondState ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper$BondState;
-	public abstract fun getDevice ()Landroid/bluetooth/BluetoothDevice;
 	public abstract fun getIdentifier ()Ljava/lang/String;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun removeBond ()V

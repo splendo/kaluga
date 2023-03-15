@@ -163,7 +163,6 @@ public final class com/splendo/kaluga/test/bluetooth/MockDeviceWrapper : com/spl
 	public fun getBondState ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper$BondState;
 	public final fun getConnectGattMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getCreateBondMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public fun getDevice ()Landroid/bluetooth/BluetoothDevice;
 	public final fun getGattWrappers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 	public fun getIdentifier ()Ljava/lang/String;
 	public fun getName ()Ljava/lang/String;
