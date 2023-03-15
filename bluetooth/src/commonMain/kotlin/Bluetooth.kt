@@ -119,7 +119,7 @@ interface BluetoothService {
      * Stops scanning for [Device]
      * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to the [Filter] last passed to [startScanning]
      */
-    fun stopScanning(cleanMode: CleanMode = CleanMode.RETAIN_ALL)
+    fun stopScanning(cleanMode: CleanMode = CleanMode.REMOVE_ALL)
 
     /**
      * Gets a [Flow] of the list of [Device] that have been paired to the system
