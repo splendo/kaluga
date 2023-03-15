@@ -81,7 +81,7 @@ interface Device {
                     emit(false)
                 }
                 is ConnectableDeviceState.Connected -> emit(true)
-                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Reconnecting, is ConnectableDeviceState.Disconnecting -> {}
+                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
                 is NotConnectableDeviceState -> emit(false)
             }
         }.first()
@@ -100,7 +100,6 @@ interface Device {
             when (deviceState) {
                 is ConnectableDeviceState.Connected -> deviceState.startDisconnected()
                 is ConnectableDeviceState.Connecting -> deviceState.handleCancel()
-                is ConnectableDeviceState.Reconnecting -> deviceState.handleCancel()
                 is ConnectableDeviceState.Disconnected -> emit(Unit)
                 is ConnectableDeviceState.Disconnecting -> {} // just wait
                 is NotConnectableDeviceState -> emit(Unit)
@@ -261,14 +260,12 @@ class DeviceImpl(
     private fun DeviceConnectionManager.Event.CancelledConnecting.stateTransition(state: ConnectableDeviceState) =
         when (state) {
             is ConnectableDeviceState.Connecting -> state.cancelConnection
-            is ConnectableDeviceState.Reconnecting -> state.cancelConnection
             else -> state.remain()
         }
 
     private suspend fun DeviceConnectionManager.Event.Connected.stateTransition(state: ConnectableDeviceState) =
         when (state) {
             is ConnectableDeviceState.Connecting -> state.didConnect
-            is ConnectableDeviceState.Reconnecting -> state.didConnect
             is ConnectableDeviceState.Connected -> state.remain()
             else -> {
                 connectionManager.getCompletedOrNull()?.reset()
@@ -281,16 +278,8 @@ class DeviceImpl(
 
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) =
         when (state) {
-            is ConnectableDeviceState.Reconnecting -> {
-                state.retry().also {
-                    if (it == state.didDisconnect) {
-                        onDisconnect()
-                    }
-                }
-            }
             is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
-                is ConnectionSettings.ReconnectionSettings.Always,
-                is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
+                is ConnectionSettings.ReconnectionSettings.Always -> state.reconnect
                 is ConnectionSettings.ReconnectionSettings.Never -> {
                     onDisconnect()
                     state.didDisconnect
@@ -321,7 +310,6 @@ class DeviceImpl(
             is ConnectableDeviceState.Connected.NoServices,
             is ConnectableDeviceState.Connected.Discovering,
             is ConnectableDeviceState.Connecting,
-            is ConnectableDeviceState.Reconnecting,
             is ConnectableDeviceState.Disconnected,
             is ConnectableDeviceState.Disconnecting,
             -> {

@@ -36,8 +36,10 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +55,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.seconds
@@ -362,7 +365,14 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null) {
     transformLatest { device ->
         device?.let {
-            emit(it.connect(reconnectionSettings))
+            try {
+                emit(it.connect(reconnectionSettings))
+            } catch (e: CancellationException) {
+                withContext(NonCancellable) {
+                    it.disconnect()
+                }
+                throw e
+            }
         }
     }.first()
 }

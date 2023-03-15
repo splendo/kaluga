@@ -209,9 +209,9 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
         fun startDisconnected()
 
         /**
-         * Transitions into a [Reconnecting] State
+         * Transitions into a [Connecting] State
          */
-        val reconnect: suspend () -> Reconnecting
+        val reconnect: suspend () -> Connecting
 
         /**
          * Updates the [MTU] size of the device
@@ -264,63 +264,6 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
          * Starts cancelling the connection
          */
         fun handleCancel()
-    }
-
-    /**
-     * A [ConnectableDeviceState] where the [Device] is reconnecting after the connection was dropped
-     */
-    interface Reconnecting : ConnectableDeviceState {
-
-        /**
-         * The [ConnectionSettings.ReconnectionSettings] to use for reconnecting when the device disconnects unexpectedly
-         */
-        val reconnectionSettings: ConnectionSettings.ReconnectionSettings
-
-        /**
-         * The number of attempts to reconnect that have been made since the disconnect occurred
-         */
-        val attempt: Int
-
-        /**
-         * The list of [Service] discovered
-         */
-        val services: List<Service>?
-
-        /**
-         * Fail this attempt and transition into a new [Reconnecting] State
-         */
-        val raiseAttempt: suspend () -> Reconnecting
-
-        /**
-         * Transition into a [Connected] State
-         */
-        val didConnect: suspend () -> Connected
-
-        /**
-         * Transition into a [Disconnecting] State
-         */
-        val cancelConnection: suspend () -> Disconnecting
-
-        /**
-         * Starts cancelling the reconnection
-         */
-        fun handleCancel()
-
-        /**
-         * Retries according to [ConnectionSettings.ReconnectionSettings] and transitions into a new [ConnectableDeviceState]
-         * @return a transition into the next [ConnectableDeviceState]. Can be either [Disconnected] or [Reconnecting].
-         */
-        fun retry(): suspend () -> ConnectableDeviceState = when (val reconnectionSettings = reconnectionSettings) {
-            is ConnectionSettings.ReconnectionSettings.Always -> raiseAttempt
-            is ConnectionSettings.ReconnectionSettings.Never -> didDisconnect
-            is ConnectionSettings.ReconnectionSettings.Limited -> {
-                if (attempt + 1 < reconnectionSettings.attempts) {
-                    raiseAttempt
-                } else {
-                    didDisconnect
-                }
-            }
-        }
     }
 
     /**
@@ -474,7 +417,7 @@ internal sealed class ConnectableDeviceStateImpl {
 
         val reconnect = suspend {
             // All services, characteristics and descriptors become invalidated after it disconnects
-            Reconnecting(reconnectionSettings, 0, null, deviceConnectionManager)
+            Connecting(reconnectionSettings, deviceConnectionManager)
         }
 
         suspend fun readRssi() {
@@ -503,34 +446,10 @@ internal sealed class ConnectableDeviceStateImpl {
 
         override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
             when (oldState) {
-                is Disconnected -> deviceConnectionManager.connect()
+                is Disconnected, is Connected -> deviceConnectionManager.connect()
                 else -> {
                     // do nothing: TODO check all these are correct, e.g. Disconnecting
                 }
-            }
-        }
-    }
-
-    data class Reconnecting constructor(
-        override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
-        override val attempt: Int,
-        override val services: List<Service>?,
-        override val deviceConnectionManager: DeviceConnectionManager
-    ) : ConnectableDeviceStateImpl(), ConnectableDeviceState.Reconnecting, HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
-
-        override fun handleCancel() = deviceConnectionManager.cancelConnecting()
-
-        override val cancelConnection = disconnecting
-
-        override val raiseAttempt = suspend { Reconnecting(reconnectionSettings, attempt + 1, services, deviceConnectionManager) }
-        override val didConnect: suspend () -> ConnectableDeviceState.Connected = suspend {
-            services?.let { Connected.Idle(reconnectionSettings, null, services, deviceConnectionManager) } ?: Connected.NoServices(reconnectionSettings, null, deviceConnectionManager)
-        }
-
-        override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
-            when (oldState) {
-                is Connected, is Reconnecting -> deviceConnectionManager.connect()
-                else -> {}
             }
         }
     }
@@ -552,7 +471,7 @@ internal sealed class ConnectableDeviceStateImpl {
 
         override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
             when (oldState) {
-                is Connecting, is Reconnecting, is Connected -> deviceConnectionManager.disconnect()
+                is Connecting, is Connected -> deviceConnectionManager.disconnect()
                 else -> {}
             }
         }

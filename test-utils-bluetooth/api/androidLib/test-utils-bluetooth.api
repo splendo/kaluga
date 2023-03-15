@@ -532,28 +532,6 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$NotC
 	public static final field INSTANCE Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$NotConnectable;
 }
 
-public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Reconnecting : com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connectable, com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Reconnecting {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;ILjava/util/List;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;)V
-	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
-	public final fun component2 ()I
-	public final fun component3 ()Ljava/util/List;
-	public final fun component4 ()Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;
-	public final fun copy (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;ILjava/util/List;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;)Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Reconnecting;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Reconnecting;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;ILjava/util/List;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;ILjava/lang/Object;)Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Reconnecting;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getAsDeviceState ()Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState;
-	public fun getAttempt ()I
-	public fun getCancelConnection ()Lkotlin/jvm/functions/Function1;
-	public fun getDidConnect ()Lkotlin/jvm/functions/Function1;
-	public fun getMockConnectableDeviceManager ()Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;
-	public fun getRaiseAttempt ()Lkotlin/jvm/functions/Function1;
-	public fun getReconnectionSettings ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
-	public fun getServices ()Ljava/util/List;
-	public fun handleCancel ()V
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : com/splendo/kaluga/bluetooth/scanner/BaseScanner {
 	public fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;ZZ)V
 	public synthetic fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V

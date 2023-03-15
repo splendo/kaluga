@@ -114,9 +114,7 @@ class DeviceTest :
     fun testReconnect() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
-                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(
-                    attempts = 2
-                )
+                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always
             )
         )
     ) {
@@ -130,8 +128,7 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 2)
-            assertIs<ConnectableDeviceState.Reconnecting>(it)
-            assertEquals(0, it.attempt)
+            assertIs<ConnectableDeviceState.Connecting>(it)
         }
         mainAction {
             connectionManager.handleConnect()
@@ -139,49 +136,6 @@ class DeviceTest :
         }
         test {
             assertIs<ConnectableDeviceState.Connected>(it)
-        }
-    }
-
-    @Test
-    fun testReconnectFailed() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor(
-            connectionSettings = ConnectionSettings(
-                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(
-                    attempts = 2
-                )
-            )
-        )
-    ) {
-        getDisconnectedState()
-        connecting()
-        connect()
-
-        mainAction {
-            connectionManager.handleDisconnect()
-            yieldMultiple(2)
-        }
-
-        test {
-            connectionManager.connectMock.verify(times = 2)
-            assertIs<ConnectableDeviceState.Reconnecting>(it)
-            assertEquals(0, it.attempt)
-        }
-        mainAction {
-            connectionManager.handleDisconnect()
-            yieldMultiple(2)
-        }
-        test {
-            connectionManager.connectMock.verify(times = 3)
-            assertIs<ConnectableDeviceState.Reconnecting>(it)
-            assertEquals(1, it.attempt)
-        }
-        mainAction {
-            connectionManager.handleDisconnect()
-            yieldMultiple(2)
-        }
-        test {
-            connectionManager.connectMock.verify(times = 3)
-            assertIs<ConnectableDeviceState.Disconnected>(it)
         }
     }
 

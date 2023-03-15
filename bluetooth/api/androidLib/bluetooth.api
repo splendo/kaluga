@@ -415,17 +415,6 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableD
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnecting : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState {
 }
 
-public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Reconnecting : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState {
-	public abstract fun getAttempt ()I
-	public abstract fun getCancelConnection ()Lkotlin/jvm/functions/Function1;
-	public abstract fun getDidConnect ()Lkotlin/jvm/functions/Function1;
-	public abstract fun getRaiseAttempt ()Lkotlin/jvm/functions/Function1;
-	public abstract fun getReconnectionSettings ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
-	public abstract fun getServices ()Ljava/util/List;
-	public abstract fun handleCancel ()V
-	public fun retry ()Lkotlin/jvm/functions/Function1;
-}
-
 public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceStateImplRepo : com/splendo/kaluga/bluetooth/device/BaseConnectableDeviceStateRepo {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager;Lkotlin/coroutines/CoroutineContext;)V
 }
@@ -450,17 +439,6 @@ public abstract class com/splendo/kaluga/bluetooth/device/ConnectionSettings$Rec
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Always : com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Always;
-}
-
-public final class com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Limited : com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Limited;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Limited;IILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Limited;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAttempts ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Never : com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings {

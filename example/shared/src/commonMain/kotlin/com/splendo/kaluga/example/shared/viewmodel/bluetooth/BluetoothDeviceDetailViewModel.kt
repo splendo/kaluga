@@ -69,7 +69,6 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
             is ConnectableDeviceState.Connected.Discovering -> "bluetooth_discovering"
             is ConnectableDeviceState.Connected -> "bluetooth_connected"
             is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
-            is ConnectableDeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
     }.toUninitializedObservable(coroutineScope)
     private val _services = MutableStateFlow(

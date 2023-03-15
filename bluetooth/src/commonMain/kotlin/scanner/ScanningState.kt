@@ -490,12 +490,12 @@ internal sealed class ScanningStateImpl {
         abstract val scanner: Scanner
         abstract val devices: ScanningState.Devices
 
-        val deinitialize: suspend () -> Deinitialized = { Deinitialized(devices, scanner) }
+        open val deinitialize: suspend () -> Deinitialized = { Deinitialized(devices, scanner) }
     }
 
-    class PermittedHandler(val scanner: Scanner) {
+    class PermittedHandler(val devices: ScanningState.Devices, val scanner: Scanner) {
 
-        internal val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
+        internal val revokePermission = suspend { NoBluetooth.MissingPermissions(devices, scanner) }
 
         internal suspend fun afterNewStateIsSet(newState: ScanningState) {
             when (newState) {
@@ -526,8 +526,8 @@ internal sealed class ScanningStateImpl {
         override fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> ScanningState.Initialized =
             suspend {
                 when {
-                    !hasPermission -> NoBluetooth.MissingPermissions(scanner)
-                    !enabled -> NoBluetooth.Disabled(scanner)
+                    !hasPermission -> NoBluetooth.MissingPermissions(devices, scanner)
+                    !enabled -> NoBluetooth.Disabled(devices, scanner)
                     else -> Enabled.Idle(devices, scanner)
                 }
             }
@@ -538,7 +538,7 @@ internal sealed class ScanningStateImpl {
         protected abstract val permittedHandler: PermittedHandler
 
         val disable = suspend {
-            NoBluetooth.Disabled(scanner)
+            NoBluetooth.Disabled(devices, scanner)
         }
 
         val revokePermission: suspend () -> NoBluetooth.MissingPermissions get() = permittedHandler.revokePermission
@@ -572,7 +572,7 @@ internal sealed class ScanningStateImpl {
             override val scanner: Scanner
         ) : Enabled(), ScanningState.Enabled.Idle {
 
-            override val permittedHandler: PermittedHandler = PermittedHandler(scanner)
+            override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
 
             override fun pairedDevices(
                 devices: Map<Identifier, () -> Device>,
@@ -617,7 +617,7 @@ internal sealed class ScanningStateImpl {
             HandleAfterCreating<ScanningState>,
             ScanningState.Enabled.Scanning {
 
-            override val permittedHandler: PermittedHandler = PermittedHandler(scanner)
+            override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
 
             override fun pairedDevices(
                 devices: Map<Identifier, () -> Device>,
@@ -675,16 +675,19 @@ internal sealed class ScanningStateImpl {
 
     sealed class NoBluetooth : Active() {
 
-        override val devices: DefaultDevices = nothingFound
+        override val devices: ScanningState.Devices = nothingFound
+        abstract val lastDevices: ScanningState.Devices
+        override val deinitialize: suspend () -> Deinitialized = { Deinitialized(lastDevices, scanner) }
 
         class Disabled internal constructor(
+            override val lastDevices: ScanningState.Devices,
             override val scanner: Scanner
         ) : NoBluetooth(), ScanningState.NoBluetooth.Disabled {
 
-            private val permittedHandler = PermittedHandler(scanner)
+            private val permittedHandler = PermittedHandler(lastDevices, scanner)
 
             override val enable: suspend () -> ScanningState.Enabled = {
-                Enabled.Idle(nothingFound, scanner)
+                Enabled.Idle(lastDevices, scanner)
             }
 
             override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
@@ -701,12 +704,13 @@ internal sealed class ScanningStateImpl {
         }
 
         class MissingPermissions internal constructor(
+            override val lastDevices: ScanningState.Devices,
             override val scanner: Scanner
         ) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(nothingFound, scanner)
-                else Disabled(scanner)
+                if (enabled) Enabled.Idle(lastDevices, scanner)
+                else Disabled(lastDevices, scanner)
             }
         }
     }

@@ -60,7 +60,7 @@ sealed class MockDeviceState {
                 copy(reconnectionSettings = reconnectionSettings)
             }
 
-            override val reconnect: suspend () -> ConnectableDeviceState.Reconnecting = { Reconnecting(reconnectionSettings, 0, null, mockConnectableDeviceManager) }
+            override val reconnect: suspend () -> ConnectableDeviceState.Connecting = { Connecting(reconnectionSettings, mockConnectableDeviceManager) }
 
             override val asDeviceState: ConnectableDeviceState = this
         }
@@ -75,7 +75,7 @@ sealed class MockDeviceState {
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
             }
-            override val reconnect: suspend () -> ConnectableDeviceState.Reconnecting = { Reconnecting(reconnectionSettings, 0, null, mockConnectableDeviceManager) }
+            override val reconnect: suspend () -> ConnectableDeviceState.Connecting = { Connecting(reconnectionSettings, mockConnectableDeviceManager) }
 
             override val asDeviceState: ConnectableDeviceState = this
         }
@@ -91,7 +91,8 @@ sealed class MockDeviceState {
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
             }
-            override val reconnect: suspend () -> ConnectableDeviceState.Reconnecting = { Reconnecting(reconnectionSettings, 0, services, mockConnectableDeviceManager) }
+
+            override val reconnect: suspend () -> ConnectableDeviceState.Connecting = { Connecting(reconnectionSettings, mockConnectableDeviceManager) }
 
             override val asDeviceState: ConnectableDeviceState = this
         }
@@ -121,7 +122,7 @@ sealed class MockDeviceState {
                 copy(reconnectionSettings = reconnectionSettings)
             }
 
-            override val reconnect: suspend () -> ConnectableDeviceState.Reconnecting = { Reconnecting(reconnectionSettings, 0, services, mockConnectableDeviceManager) }
+            override val reconnect: suspend () -> ConnectableDeviceState.Connecting = { Connecting(reconnectionSettings, mockConnectableDeviceManager) }
 
             override val asDeviceState: ConnectableDeviceState = this
         }
@@ -134,22 +135,6 @@ sealed class MockDeviceState {
         override val didConnect: suspend () -> ConnectableDeviceState.Connected.NoServices = { Connected.NoServices(reconnectionSettings, null, mockConnectableDeviceManager) }
 
         override fun handleCancel() = mockConnectableDeviceManager.handleCancelConnecting()
-
-        override val asDeviceState: ConnectableDeviceState = this
-    }
-
-    data class Reconnecting(override val reconnectionSettings: ConnectionSettings.ReconnectionSettings, override val attempt: Int, override val services: List<Service>?, override val mockConnectableDeviceManager: MockConnectableDeviceManager) : Connectable(), ConnectableDeviceState.Reconnecting {
-        override val raiseAttempt: suspend () -> ConnectableDeviceState.Reconnecting = {
-            Reconnecting(reconnectionSettings, attempt + 1, services, mockConnectableDeviceManager)
-        }
-
-        override val didConnect: suspend () -> ConnectableDeviceState.Connected = {
-            services?.let { Connected.Idle(reconnectionSettings, null, it, mockConnectableDeviceManager) } ?: Connected.NoServices(reconnectionSettings, null, mockConnectableDeviceManager)
-        }
-
-        override val cancelConnection: suspend () -> Disconnecting = { Disconnecting(mockConnectableDeviceManager) }
-
-        override fun handleCancel() = mockConnectableDeviceManager.handleCancelReconnecting()
 
         override val asDeviceState: ConnectableDeviceState = this
     }

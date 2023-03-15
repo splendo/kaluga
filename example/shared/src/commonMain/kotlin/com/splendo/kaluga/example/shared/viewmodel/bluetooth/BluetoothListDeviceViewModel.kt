@@ -38,10 +38,15 @@ import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.resources.localized
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator) {
 
@@ -74,7 +79,6 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
             is ConnectableDeviceState.Disconnected -> "bluetooth_disconnected"
             is ConnectableDeviceState.Connected -> "bluetooth_connected"
             is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
-            is ConnectableDeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
     }
     val serviceUUIDs = advertisementObservable { parseServiceUUIDs(it.serviceUUIDs) }
@@ -93,7 +97,11 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     }
 
     fun onConnectPressed() = coroutineScope.launch {
-        device.connect()
+        try {
+            withTimeout(5.minutes) {
+                device.connect()
+            }
+        } catch (_: TimeoutCancellationException) {}
     }
 
     fun onDisconnectPressed() = coroutineScope.launch {
