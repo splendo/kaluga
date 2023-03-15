@@ -892,6 +892,7 @@ public final class com/splendo/kaluga/base/utils/BufferedAsListChannel$DefaultIm
 
 public final class com/splendo/kaluga/base/utils/BufferedAsListChannelKt {
 	public static final fun BufferedAsListChannel (Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;
+	public static final fun BufferedAsListChannel (Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/ExecutorCoroutineDispatcher;Z)Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;
 }
 
 public final class com/splendo/kaluga/base/utils/ByteUtils {

@@ -18,6 +18,7 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.singleThreadDispatcher
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
@@ -39,48 +40,84 @@ interface BufferedAsListChannel<T : Any> : SendChannel<T>, ReceiveChannel<List<T
  * @param coroutineContext the [CoroutineContext] to use for batching
  * @return the [BufferedAsListChannel] created
  */
-fun <T : Any> BufferedAsListChannel(coroutineContext: CoroutineContext): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext)
+fun <T : Any> BufferedAsListChannel(
+    coroutineContext: CoroutineContext
+): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext)
+
+/**
+ * Creates a [BufferedAsListChannel] that batches its elements with a given [CoroutineContext]
+ * @param T the type of element to batch. Must be non-nullable
+ * @param coroutineContext the [CoroutineContext] to use for batching
+ * @param dispatcher the [CloseableCoroutineDispatcher] to which grouping will be dispatched
+ * @param closeDispatcherOnCompletion if `true` the [dispatcher] will be closed once the channel is closed
+ * @return the [BufferedAsListChannel] created
+ */
+fun <T : Any> BufferedAsListChannel(
+    coroutineContext: CoroutineContext,
+    dispatcher: CloseableCoroutineDispatcher,
+    closeDispatcherOnCompletion: Boolean
+): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext, dispatcher, closeDispatcherOnCompletion)
 
 internal class BufferedAsListChannelInt<T : Any> private constructor(
     private val sendChannel: Channel<T>,
     private val receiveChannel: Channel<List<T>>,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
+    dispatcher: CloseableCoroutineDispatcher,
+    closeDispatcherOnCompletion: Boolean
 ) : BufferedAsListChannel<T>, SendChannel<T> by sendChannel, ReceiveChannel<List<T>> by receiveChannel {
 
     constructor(
-        coroutineContext: CoroutineContext
+        coroutineContext: CoroutineContext,
+    ) : this(coroutineContext, singleThreadDispatcher("GroupingChannel"), true)
+
+    constructor(
+        coroutineContext: CoroutineContext,
+        dispatcher: CloseableCoroutineDispatcher,
+        closeDispatcherOnCompletion: Boolean
     ) : this(
         Channel<T>(Channel.UNLIMITED),
         Channel<List<T>>(),
-        coroutineContext
+        coroutineContext,
+        dispatcher,
+        closeDispatcherOnCompletion
     )
 
     init {
-        val dispatcher = singleThreadDispatcher("GroupingChannel")
+        // Dispatch grouping to a separate thread so that the produce/consumption is not blocked by grouping
         CoroutineScope(coroutineContext + dispatcher).launch {
             do {
                 val didSendBuffer = bufferUntilNextSend()
             } while (didSendBuffer)
+
+            // When done buffering (i.e. the send channel is closed and all values have been send to receive channel) we should close the receive channel
             receiveChannel.close()
         }.invokeOnCompletion {
-            dispatcher.close()
+            // Close the dispatcher to prevent thread leaks
+            if (closeDispatcherOnCompletion) {
+                dispatcher.close()
+            }
         }
     }
 
     private suspend fun bufferUntilNextSend(): Boolean = try {
-        var buffer = listOf(sendChannel.receive())
+        // Wait until at least one element is send to the send channel
+        val buffer = mutableListOf(sendChannel.receive())
         do {
-            buffer = select {
-                receiveChannel.onSend(buffer) {
-                    emptyList()
+            // Use the select method to either:
+            // - send the current buffer to the receiveChannel or
+            // - to add it the next item in sendChannel to the buffer
+            // Sending will take priority
+            select {
+                receiveChannel.onSend(buffer.toList()) {
+                    buffer.clear()
                 }
+                // OnReceiveCatching will complete before onSend if the channel is closed
+                // To account for this, we check whether its closed first
                 if (!sendChannel.isClosedForReceive) {
                     sendChannel.onReceiveCatching { result ->
                         result.getOrNull()?.let {
-                            buffer.toMutableList().apply {
-                                add(it)
-                            }.toList()
-                        } ?: buffer
+                            buffer.add(it)
+                        }
                     }
                 }
             }
@@ -90,6 +127,10 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
         false
     }
 
+    @Deprecated(
+        "Since 1.2.0, binary compatibility with versions <= 1.1.x",
+        level = DeprecationLevel.HIDDEN
+    )
     override fun cancel(cause: Throwable?): Boolean {
         sendChannel.cancel(cause as? CancellationException)
         receiveChannel.cancel(cause as? CancellationException)
@@ -102,7 +143,7 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
     }
 
     override fun invokeOnClose(handler: (cause: Throwable?) -> Unit) {
-        sendChannel.invokeOnClose(handler)
+        // Receive channel is the last to close, so we should invoke the method there instead of on sendChannel
         receiveChannel.invokeOnClose(handler)
     }
 }
