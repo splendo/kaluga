@@ -220,7 +220,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     sb.append(getZero(locale))
                 }
                 if (flags.contains(Flag.ZERO_PAD)) {
-                    trailingZeros(sb, width - length)
+                    trailingZeros(sb, width - length, locale)
                 }
                 sb.append(valueString)
             }
@@ -235,7 +235,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     sb.append(if (uppercase) prefix.upperCased(locale) else prefix)
                 }
                 if (flags.contains(Flag.ZERO_PAD)) {
-                    trailingZeros(sb, width - length)
+                    trailingZeros(sb, width - length, locale)
                 }
                 sb.append(if (uppercase) hexValue.upperCased(locale) else hexValue)
             }
@@ -302,7 +302,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     else -> scientific[1]
                 }
                 number.append(mantissa)
-                addZeros(number, prec)
+                addZeros(number, prec, locale)
 
                 if (flags.contains(Flag.ALTERNATE) && prec == 0)
                     number.append(formatter.decimalSeparator)
@@ -326,7 +326,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     number.append(formatter.zeroSymbol)
                 }
                 number.append(formatter.format(value))
-                addZeros(number, prec)
+                addZeros(number, prec, locale)
 
                 if (flags.contains(Flag.ALTERNATE) && prec == 0)
                     number.append(formatter.decimalSeparator)
@@ -527,15 +527,16 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return sb
     }
 
-    private fun addZeros(sb: StringBuilder, prec: Int) {
+    private fun addZeros(sb: StringBuilder, prec: Int, locale: KalugaLocale) {
 
         // Look for the dot.  If we don't find one, the we'll need to add
 
         // it before we add the zeros.
+        val decimalSeparator = NumberFormatter(locale).decimalSeparator
         val len: Int = sb.length
         var i = 0
         while (i < len) {
-            if (sb[i] == '.') {
+            if (sb[i] == decimalSeparator) {
                 break
             }
             i++
@@ -553,11 +554,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
         // Add dot if previously determined to be necessary.
         if (needDot) {
-            sb.append('.')
+            sb.append(decimalSeparator)
         }
 
         // Add zeros.
-        trailingZeros(sb, prec - outPrec)
+        trailingZeros(sb, prec - outPrec, locale)
     }
 
     private fun appendJustified(out: StringBuilder, cs: CharSequence): StringBuilder {
@@ -620,20 +621,17 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         val zero: Char = getZero(locale)
 
         // determine localized grouping separator and size
+        val numberFormatter = NumberFormatter(locale)
         var grpSep = '\u0000'
         var grpSize = -1
-        var decSep = '\u0000'
+        val decSep = numberFormatter.decimalSeparator
         val len = value.length
         var dot = len
         for (j in offset until len) {
-            if (value[j] == '.') {
+            if (value[j] == decSep) {
                 dot = j
                 break
             }
-        }
-        val numberFormatter = NumberFormatter(locale)
-        if (dot < len) {
-            decSep = numberFormatter.decimalSeparator
         }
         if (flags.contains(Flag.GROUP)) {
             grpSep = numberFormatter.groupingSeparator
@@ -683,9 +681,10 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     // Add trailing zeros
 
     // Add trailing zeros
-    private fun trailingZeros(sb: StringBuilder, nzeros: Int) {
+    private fun trailingZeros(sb: StringBuilder, nzeros: Int, locale: KalugaLocale) {
+        val zeroSymbol = getZero(locale)
         for (i in 0 until nzeros) {
-            sb.append('0')
+            sb.append(zeroSymbol)
         }
     }
 
