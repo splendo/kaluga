@@ -435,14 +435,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.NAME_OF_DAY_ABBREV, DateTime.NAME_OF_DAY -> {
                 // 'A'
                 val i: Int = time.weekDay - 1
-                val dateFormat = KalugaDateFormatter.patternFormat("EEEE")
+                val dateFormat = KalugaDateFormatter.patternFormat("EEEE", locale = locale)
                 val weekdays = if (currentChar.dateTime == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
                 sb.append(weekdays[i])
             }
             DateTime.NAME_OF_MONTH_ABBREV, DateTime.NAME_OF_MONTH_ABBREV_X, DateTime.NAME_OF_MONTH -> {
                 // 'B'
                 val i: Int = time.month - 1
-                val dateFormat = KalugaDateFormatter.patternFormat("MMMM")
+                val dateFormat = KalugaDateFormatter.patternFormat("MMMM", locale = locale)
                 val months = if (currentChar.dateTime == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
                 sb.append(months[i])
             }
