@@ -539,6 +539,6 @@ class StringFormatterTest {
         val time = "%1\$tA %1\$tB %1\$te, %1\$tY at %1\$tH:%1\$tM:%1\$tS in %1\$tZ".format(date, locale = locale)
         assertEquals("Thursday July 23, 2020 at 08:45:20 in PDT", time)
         val timeNL = "%1\$tA %1\$tB %1\$te, %1\$tY at %1\$tH:%1\$tM:%1\$tS in %1\$tZ".format(date, locale = localeNL)
-        assertEquals("Thursday July 23, 2020 at 08:45:20 in PDT", timeNL)
+        assertEquals("donderdag juli 23, 2020 at 08:45:20 in PDT", timeNL)
     }
 }
