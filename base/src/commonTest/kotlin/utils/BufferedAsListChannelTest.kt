@@ -18,7 +18,10 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.singleThreadDispatcher
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -26,6 +29,7 @@ import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -39,6 +43,51 @@ class BufferedAsListChannelTest {
 
     @Test
     fun testSlowToConsumeChannel() = testBufferedAsListChannel(1.milliseconds, 10.milliseconds, 5..20)
+
+    @Test
+    fun testCancel() = runBlocking {
+        val groupingChannel = BufferedAsListChannel<Int>(coroutineContext)
+        val producingDispatcher = singleThreadDispatcher("Produce")
+        val didCompletedProductionExceptionally = CompletableDeferred<Boolean>()
+        CoroutineScope(coroutineContext + producingDispatcher).launch {
+            try {
+                for (i in 1..100) {
+                    groupingChannel.trySend(i)
+                    delay(1.milliseconds)
+                }
+                groupingChannel.close()
+                didCompletedProductionExceptionally.complete(false)
+            } catch (e: CancellationException) {
+                didCompletedProductionExceptionally.complete(true)
+            }
+        }
+
+        val consumerDispatcher = singleThreadDispatcher("Consume")
+        val didCompletedConsumptionExceptionally = CompletableDeferred<Boolean>()
+        val result = CompletableDeferred<List<List<Int>>>()
+        CoroutineScope(coroutineContext + consumerDispatcher).launch {
+            val consumedResult = mutableListOf<List<Int>>()
+            try {
+                groupingChannel.receiveAsFlow().collect {
+                    consumedResult.add(it)
+                    delay(10.milliseconds)
+                }
+                didCompletedConsumptionExceptionally.complete(false)
+            } catch (e: CancellationException) {
+                didCompletedConsumptionExceptionally.complete(true)
+            } finally {
+                result.complete(consumedResult)
+            }
+        }
+        delay(20)
+        groupingChannel.cancel()
+        coroutineContext.cancelChildren()
+        assertTrue { result.await().flatten().size < 100 }
+        assertTrue(didCompletedProductionExceptionally.await())
+        assertTrue(didCompletedConsumptionExceptionally.await())
+        producingDispatcher.close()
+        consumerDispatcher.close()
+    }
 
     private fun testBufferedAsListChannel(producingDuration: Duration, consumingDuration: Duration, expectedNumberOfGroupsIn: IntRange) = runBlocking {
         val groupingChannel = BufferedAsListChannel<Int>(coroutineContext)
@@ -63,5 +112,8 @@ class BufferedAsListChannelTest {
 
         assertContains(expectedNumberOfGroupsIn, list.size)
         assertEquals((1..100).toList(), list.flatten())
+
+        producingDispatcher.close()
+        consumerDispatcher.close()
     }
 }

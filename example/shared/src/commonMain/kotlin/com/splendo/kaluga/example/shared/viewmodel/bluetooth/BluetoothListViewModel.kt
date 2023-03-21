@@ -23,7 +23,6 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map

@@ -350,6 +350,7 @@ abstract class BaseScanner constructor(
             logger.info(LOG_TAG) { "Start scanning with filter [${filter.joinToString(", ") { it.uuidString }}]" }
         }
         isScanningDevicesMutex.withLock {
+            isScanningDevicesDispatcher?.close()
             val dispatcher = singleThreadDispatcher("Scanning for Devices").also {
                 isScanningDevicesDispatcher = it
             }
