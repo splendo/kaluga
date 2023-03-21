@@ -8,6 +8,7 @@
 "feature_hud" = "Loading Indicator";
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
+"feature_media" = "Media";
 "feature_permissions" = "Permissions";
 "feature_links" = "Links";
 "feature_beacons" = "Beacons";

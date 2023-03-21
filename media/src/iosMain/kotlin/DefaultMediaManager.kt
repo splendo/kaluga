@@ -75,6 +75,10 @@ actual class PlayableMedia(internal val avPlayerItem: AVPlayerItem) {
 
 actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
 
+    class Builder : BaseMediaManager.Builder {
+        override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
+    }
+
     private val avPlayer = AVPlayer(null)
     private val observers = atomic<List<NSObjectProtocol>>(emptyList())
 
@@ -140,6 +144,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     override fun cleanUp() {
+        avPlayer.replaceCurrentItemWithPlayerItem(null)
         observers.getAndUpdate { emptyList() }.forEach { observer ->
             NSNotificationCenter.defaultCenter.removeObserver(observer)
         }

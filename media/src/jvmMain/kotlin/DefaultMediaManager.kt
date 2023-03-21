@@ -27,6 +27,10 @@ actual class PlayableMedia(val url: String) {
 
 actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
 
+    class Builder : BaseMediaManager.Builder {
+        override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
+    }
+
     override fun createPlayableMedia(url: String): PlayableMedia? = PlayableMedia(url)
 
     override fun initialize(playableMedia: PlayableMedia) {

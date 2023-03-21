@@ -42,6 +42,8 @@ interface MediaPlayer {
 
     val playableMedia: Flow<PlayableMedia?>
 
+    val isPrepared: Flow<Boolean>
+
     val canStart: Flow<Boolean>
     suspend fun start(loopMode: PlaybackState.LoopMode = PlaybackState.LoopMode.NotLooping)
 
@@ -94,6 +96,17 @@ class DefaultMediaPlayer(
     override val playableMedia: Flow<PlayableMedia?> = playbackStateRepo.map {
         (it as? PlaybackState.Prepared)?.playableMedia
     }.distinctUntilChanged()
+
+    override val isPrepared: Flow<Boolean> = playbackStateRepo.map { state ->
+        when (state) {
+            is PlaybackState.Prepared -> true
+            is PlaybackState.Error,
+            is PlaybackState.Ended,
+            is PlaybackState.Stopped,
+            is PlaybackState.Uninitialized,
+            is PlaybackState.Initialized -> false
+        }
+    }
 
     override val canStart: Flow<Boolean> = playbackStateRepo.map { state ->
         when (state) {
