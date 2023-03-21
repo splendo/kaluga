@@ -20,7 +20,7 @@ on:
 jobs:
   setup:
 
-    runs-on: self-hosted
+    runs-on: macos-12
 
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
