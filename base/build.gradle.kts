@@ -8,7 +8,19 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent(
+    iosMainInterop = {
+        create("objectObserver").apply {
+            defFile = project.file("src/nativeInterop/cinterop/objectObserver.def")
+            packageName("com.splendo.kaluga.base.kvo")
+            compilerOpts ("-I/src/nativeInterop/cinterop")
+            linkerOpts ("-I/src/nativeInterop/cinterop")
+            includeDirs{
+                allHeaders("src/nativeInterop/cinterop")
+            }
+        }
+    }
+)
 
 dependencies {
     implementationDependency(Dependencies.KotlinX.AtomicFu)

@@ -17,16 +17,18 @@
 
 package com.splendo.kaluga.media
 
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 expect class PlayableMedia {
     val duration: Duration
     val currentPlayTime: Duration
-    fun playTime(pollingInterval: Duration): Flow<Duration>
 }
 
 interface MediaManager {
@@ -35,6 +37,7 @@ interface MediaManager {
         data class DidPrepare(val playableMedia: PlayableMedia) : Event()
         data class DidFailWithError(val error: PlaybackError) : Event()
         object DidComplete : Event()
+        object DidEnd : Event()
     }
 
     val events: Flow<Event>
@@ -42,7 +45,6 @@ interface MediaManager {
     fun createPlayableMedia(url: String): PlayableMedia?
     fun initialize(playableMedia: PlayableMedia)
 
-    fun prepare()
     fun play()
     fun pause()
     fun stop()
@@ -50,10 +52,10 @@ interface MediaManager {
     fun end()
 }
 
-abstract class BaseMediaManager : MediaManager {
+abstract class BaseMediaManager(coroutineContext: CoroutineContext) : MediaManager, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
 
     interface Builder {
-        fun create(): BaseMediaManager
+        fun create(coroutineContext: CoroutineContext): BaseMediaManager
     }
 
     private val _events = Channel<MediaManager.Event>(UNLIMITED)
@@ -70,6 +72,13 @@ abstract class BaseMediaManager : MediaManager {
     protected fun handleCompleted() {
         _events.trySend(MediaManager.Event.DidComplete)
     }
+
+    override fun end() {
+        cleanUp()
+        _events.trySend(MediaManager.Event.DidEnd)
+    }
+
+    protected abstract fun cleanUp()
 }
 
 expect class DefaultMediaManager : BaseMediaManager

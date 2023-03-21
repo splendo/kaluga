@@ -23,8 +23,13 @@ import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
 import kotlin.time.Duration
 
-sealed class PlaybackError {
+sealed class PlaybackError : Exception() {
+    object Unsupported : PlaybackError()
+    object IO : PlaybackError()
+    object TimedOut : PlaybackError()
     object MalformedMediaSource : PlaybackError()
+    object PlaybackHasEnded : PlaybackError()
+    object Unknown : PlaybackError()
 }
 
 sealed interface PlaybackState : KalugaState {
@@ -81,7 +86,9 @@ sealed interface PlaybackState : KalugaState {
     }
 
     interface Completed : Prepared {
-        val start: suspend () -> Started
+        val willLoop: Boolean
+        fun start(loopMode: LoopMode = LoopMode.NotLooping): suspend () -> Started
+        val restartIfLooping: suspend  () -> Prepared
     }
 
     interface Error : InitializedOrError {
@@ -134,7 +141,17 @@ internal class PlaybackStateImpl {
 
     data class Started(override val loopMode: PlaybackState.LoopMode, override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Prepared(), PlaybackState.Started, HandleBeforeOldStateIsRemoved<PlaybackState> {
 
-        override val completed: suspend () -> PlaybackState.Completed = { Completed(loopMode, playableMedia, mediaManager) }
+        override val completed: suspend () -> PlaybackState.Completed = {
+            val newLoopMode = when (loopMode) {
+                is PlaybackState.LoopMode.NotLooping -> PlaybackState.LoopMode.NotLooping
+                is PlaybackState.LoopMode.LoopingForever -> PlaybackState.LoopMode.LoopingForever
+                is PlaybackState.LoopMode.LoopingForFixedNumber -> {
+                    val remainingLoops = loopMode.loops.toInt() - 1
+                    if (remainingLoops > 0) PlaybackState.LoopMode.LoopingForFixedNumber(remainingLoops.toUInt()) else PlaybackState.LoopMode.NotLooping
+                }
+            }
+            Completed(newLoopMode, playableMedia, mediaManager)
+        }
         override val pause: suspend () -> PlaybackState.Paused = { Paused(loopMode, playableMedia, mediaManager) }
         override val updateLoopMode: suspend () -> PlaybackState.Playing = { copy(loopMode = loopMode) }
 
@@ -171,21 +188,25 @@ internal class PlaybackStateImpl {
     }
 
     data class Completed(private val loopMode: PlaybackState.LoopMode, override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Prepared(), PlaybackState.Completed {
-        override val start: suspend () -> PlaybackState.Started = {
+
+        override val willLoop: Boolean = when (loopMode) {
+            is PlaybackState.LoopMode.NotLooping -> false
+            is PlaybackState.LoopMode.LoopingForever -> true
+            is PlaybackState.LoopMode.LoopingForFixedNumber -> loopMode.loops > 0U
+        }
+
+        override fun start(loopMode: PlaybackState.LoopMode): suspend () -> PlaybackState.Started = {
             mediaManager.seekTo(Duration.ZERO)
             Started(loopMode, playableMedia, mediaManager)
+        }
+
+        override val restartIfLooping: suspend () -> PlaybackState.Prepared get() = when {
+            willLoop -> start(loopMode)
+            else -> remain()
         }
     }
 
     data class Error(override val error: PlaybackError, override val mediaManager: MediaManager) : Active(), PlaybackState.Error
 
-    object Ended : PlaybackState.Ended, HandleAfterOldStateIsRemoved<PlaybackState> {
-        override suspend fun afterOldStateIsRemoved(oldState: PlaybackState) {
-            when (oldState) {
-                is Active -> oldState.mediaManager?.end()
-                else -> {}
-            }
-        }
-
-    }
+    object Ended : PlaybackState.Ended
 }
