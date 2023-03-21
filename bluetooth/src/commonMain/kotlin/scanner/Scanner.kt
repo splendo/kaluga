@@ -45,7 +45,7 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
-import kotlinx.coroutines.CloseableCoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -66,6 +66,10 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 typealias EnableSensorAction = suspend () -> Boolean
+
+private val scanningDispatcher: CoroutineDispatcher by lazy {
+    singleThreadDispatcher("Scanning for Devices")
+}
 
 /**
  * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.Device]
@@ -303,7 +307,6 @@ abstract class BaseScanner constructor(
 
     private val isScanningDevicesMutex = Mutex()
     private var isScanningDevicesFilter: Set<UUID>? = null
-    private var isScanningDevicesDispatcher: CloseableCoroutineDispatcher? = null
 
     private val isRetrievingPairedDevicesMutex = Mutex()
     private var isRetrievingPairedDevicesFilter: Set<UUID>? = null
@@ -350,14 +353,10 @@ abstract class BaseScanner constructor(
             logger.info(LOG_TAG) { "Start scanning with filter [${filter.joinToString(", ") { it.uuidString }}]" }
         }
         isScanningDevicesMutex.withLock {
-            isScanningDevicesDispatcher?.close()
-            val dispatcher = singleThreadDispatcher("Scanning for Devices").also {
-                isScanningDevicesDispatcher = it
-            }
             isScanningDevicesDiscovered.value = BufferedAsListChannel(coroutineContext)
             isScanningDevicesFilter = filter
             currentConnectionSettings = connectionSettings
-            withContext(coroutineContext + dispatcher) {
+            withContext(coroutineContext + scanningDispatcher) {
                 didStartScanning(filter)
             }
         }
@@ -368,11 +367,9 @@ abstract class BaseScanner constructor(
     final override suspend fun stopScanning() {
         logger.info(LOG_TAG) { "Stop scanning" }
         isScanningDevicesMutex.withLock {
-            withContext(isScanningDevicesDispatcher?.let { coroutineContext + it } ?: coroutineContext) {
+            withContext(coroutineContext + scanningDispatcher) {
                 didStopScanning()
             }
-            isScanningDevicesDispatcher?.close()
-            isScanningDevicesDispatcher = null
             isScanningDevicesDiscovered.value = null
             isScanningDevicesFilter = null
             currentConnectionSettings = null
