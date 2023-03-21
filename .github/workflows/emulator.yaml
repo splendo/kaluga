@@ -53,6 +53,14 @@ jobs:
           profile: 3.4in WQVGA
           script: echo "Generated AVD snapshot for caching."
 
+      - name: run ffmpeg screen capture
+        run: |
+          brew install ffmpeg
+          ffmpeg -nostdin -f avfoundation -i 0 recording.mov &
+
+      - name: sleep for ffmpeg starting
+        run: sleep 5
+
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -67,3 +75,18 @@ jobs:
           heap-size: 1500M
           profile: 3.4in WQVGA
           script: ./gradlew :${{ matrix.module }}:connectedDebugAndroidTest
+
+      - name: stop screen capture
+        continue-on-error: true
+        shell: bash
+        run: |
+          PID=$(ps aux | grep -m 1 ffmpeg | awk '{print $2}')
+          python -c "import os, signal; os.kill($PID, signal.SIGINT)"
+
+      - name: upload video
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@master
+        with:
+          name: Recording
+          path: recording.mov
