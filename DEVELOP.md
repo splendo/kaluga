@@ -105,16 +105,18 @@ Don't forget to remove these when you are done.
 
 #### Publishing locally
 
+⚠️ Publishing is currently not compatible with the configuration cache. It can be disabled by passing `--no-configuration-cache` to Gradle. 
+
 1. Publish to local maven:
 
 ```sh
-./gradlew publishToMavenLocal
+./gradlew publishToMavenLocal --no-configuration-cache
 ```
 
 2. Upload and publish on Maven Central:
 
 ```sh
-./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
+./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD --no-configuration-cache
 ```
 
 Where `SIGNING_KEY_ID` is the key id associated with the signing key,
