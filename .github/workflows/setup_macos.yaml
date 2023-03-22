@@ -10,12 +10,15 @@ on:
       gradleTask:
         required: false
         type: string
+      project:
+        required: false
+        type: string
     outputs:
       kotlinVersion:
         description: "kaluga.kotlinVersion property from gradle.propertoes"
         value: ${{ jobs.setup.outputs.kotlinVersion }}
       projects:
-        description: "Gradle projects that do not depenent on another module or have other modules dependent on them"
+        description: "Gradle projects that do not dependent on another module or have other modules dependent on them"
         value: ${{ jobs.setup.outputs.projects }}
 jobs:
   setup:
@@ -45,7 +48,12 @@ jobs:
           kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
 
       - name: generate file with projects for build matrix
+        if: inputs.module == ''
         run: ./gradlew generateNonDependentProjectsFile
+
+      - name: generate file with request project module for build matrix
+        if: inputs.module != ''
+        run: echo "projects=[\"${{ inputs.project }}\"]" > non_dependent_projects.properties
 
       - name: load projects for build matrix
         uses: cardinalby/export-env-action@v2
@@ -64,5 +72,5 @@ jobs:
           path: |
             ./*
             !/.gradle
-          key: build-iOS-${{ github.sha }}
+          key: build-iOS-${{ github.sha }}-{{ inputs.module }}
 

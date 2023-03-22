@@ -1,5 +1,17 @@
 name: Android Emulator tests
-on: pull_request
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project (Gradle module) to run tests for'
+        required: false
+        type: string
+      video:
+        description: 'Record video'
+        required: false
+        type: boolean
+
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
@@ -10,6 +22,7 @@ jobs:
     uses: ./.github/workflows/setup_macos.yaml
     with:
       gradleTask: bundleLibRuntimeToJarDebug
+      project: inputs.project
 
   test:
     needs: build
@@ -18,7 +31,7 @@ jobs:
       fail-fast: false
       matrix:
         api-level: [23, 33]
-        module: ${{ fromJSON(needs.build.outputs.projects) }}
+        project: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -54,12 +67,11 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
 
       - name: run ffmpeg screen capture
+        if: inputs.video
         run: |
           brew install ffmpeg
-          ffmpeg -nostdin -f avfoundation -i 0 recording.mov &
-
-      - name: sleep for ffmpeg starting
-        run: sleep 5
+          ffmpeg -nostdin -f avfoundation -i 0 recording-${{ matrix.project }}-${{ matrix.api-level }}.mov &
+          sleep 5
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -74,9 +86,10 @@ jobs:
           ram-size: 3G
           heap-size: 1500M
           profile: 3.4in WQVGA
-          script: ./gradlew :${{ matrix.module }}:connectedDebugAndroidTest
+          script: ./gradlew :${{ matrix.project }}:connectedDebugAndroidTest
 
       - name: stop screen capture
+        if: inputs.video
         continue-on-error: true
         shell: bash
         run: |
@@ -84,9 +97,9 @@ jobs:
           python -c "import os, signal; os.kill($PID, signal.SIGINT)"
 
       - name: upload video
-        if: always()
+        if: inputs.video
         continue-on-error: true
         uses: actions/upload-artifact@master
         with:
-          name: Recording
-          path: recording.mov
+          name: Recording-${{ matrix.project }}-${{ matrix.api-level }}
+          path: recording-${{ matrix.project }}-${{ matrix.api-level }}.mov
