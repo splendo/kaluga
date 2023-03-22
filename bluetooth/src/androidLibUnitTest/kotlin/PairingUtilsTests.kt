@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
@@ -47,12 +47,12 @@ class PairingUtilsTests : BaseTest() {
 
         val mockConnectionManager = CompletableDeferred<MockDeviceConnectionManager>()
 
-        private val manager = object : BaseDeviceConnectionManager.Builder {
+        private val manager = object : DeviceConnectionManager.Builder {
             override fun create(
                 deviceWrapper: DeviceWrapper,
                 settings: ConnectionSettings,
                 coroutineScope: CoroutineScope
-            ): BaseDeviceConnectionManager {
+            ): MockDeviceConnectionManager {
                 val connectionManager = MockDeviceConnectionManager(
                     true,
                     deviceWrapper,

@@ -18,19 +18,22 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 
 /**
  * Default implementation of [BaseScanner]
  * @param settings the [Settings] to configure this scanner
  * @param coroutineScope the [CoroutineScope] this scanner runs on
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
 actual class DefaultScanner(
     settings: Settings,
-    coroutineScope: CoroutineScope
-) : BaseScanner(settings, coroutineScope) {
+    coroutineScope: CoroutineScope,
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
      * Builder for creating a [DefaultScanner]
@@ -40,15 +43,16 @@ actual class DefaultScanner(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher
         ): BaseScanner {
-            return DefaultScanner(settings, coroutineScope)
+            return DefaultScanner(settings, coroutineScope, scanningDispatcher)
         }
     }
 
     override val isSupported: Boolean = false
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
 
-    override suspend fun didStartScanning(filter: Set<UUID>) {
+    override suspend fun didStartScanning(filter: Filter) {
         TODO("Not yet implemented")
     }
 
@@ -58,5 +62,10 @@ actual class DefaultScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> = TODO("Not yet implemented")
+    override suspend fun retrievePairedDeviceDiscoveredEvents(
+        withServices: Filter,
+        connectionSettings: ConnectionSettings?
+    ): List<Scanner.DeviceDiscovered> {
+        TODO("Not yet implemented")
+    }
 }

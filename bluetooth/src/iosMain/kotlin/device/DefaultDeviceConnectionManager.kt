@@ -51,12 +51,12 @@ internal actual class DefaultDeviceConnectionManager(
     coroutineScope: CoroutineScope,
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
-    class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
+    class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : DeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
             coroutineScope: CoroutineScope
-        ): BaseDeviceConnectionManager {
+        ): DefaultDeviceConnectionManager {
             return DefaultDeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
@@ -134,7 +134,7 @@ internal actual class DefaultDeviceConnectionManager(
         else -> DeviceConnectionManager.State.DISCONNECTED
     }
 
-    override suspend fun connect() {
+    override fun connect() {
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
@@ -146,8 +146,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun disconnect() {
+    override fun disconnect() {
+        val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
+        if (state != DeviceConnectionManager.State.CONNECTED) {
+            handleDisconnect()
+        }
     }
 
     override suspend fun readRssi() {

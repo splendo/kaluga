@@ -32,7 +32,7 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext = { configuration, scope -> CharacteristicContext(configuration, scope) }
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<ByteArray?> = {
-        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].value()
+        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].value()
     }
 
     @Test

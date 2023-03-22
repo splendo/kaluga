@@ -42,7 +42,7 @@ class BluetoothScanTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Blue
         mainAction {
             devicesJob.complete(
                 coroutineScope.launch {
-                    bluetooth.devices().collect {}
+                    bluetooth.scannedDevices().collect {}
                 }
             )
         }

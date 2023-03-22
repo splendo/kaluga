@@ -17,24 +17,28 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.Scanner
+import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.base.yieldUntil
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.createMockDevice
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
-import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, List<Device>>() {
 
@@ -46,7 +50,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
     }
 
     override val flowFromTestContext: suspend BluetoothContext.() -> Flow<List<Device>> = {
-        bluetooth.pairedDevices(pairedFilter, pairedDevicesTimer)
+        bluetooth.pairedDevices(pairedFilter, timer = pairedDevicesTimer)
     }
 
     @Test
@@ -57,28 +61,44 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
         test {
             assertEquals(emptyList(), it)
         }
-        val completableDeviceWrapper = CompletableDeferred<DeviceWrapper>()
+        val completableDevice = CompletableDeferred<Device>()
         mainAction {
             val name = "Watch"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
+            val device = createMockDevice(deviceWrapper, coroutineScope) { deviceName = name }
             pairedDevicesTimer.tryEmit(Unit)
+            yieldMultiple(5)
+            yieldUntil(60.seconds) {
+                try {
+                    scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
+                    true
+                } catch (e: AssertionError) {
+                    false
+                }
+            }
             yieldMultiple(11)
-            scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
+
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
-                    Scanner.Event.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
-                        deviceWrapper to MockDeviceConnectionManager.Builder()
+                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
+                        device
                     }
                 )
             )
             pairedDevicesTimer.tryEmit(Unit)
-            yieldMultiple(4)
-            scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
-            completableDeviceWrapper.complete(deviceWrapper)
+            yieldUntil(60.seconds) {
+                try {
+                    scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
+                    true
+                } catch (e: AssertionError) {
+                    false
+                }
+            }
+            completableDevice.complete(device)
         }
 
         test { devices ->
-            assertContentEquals(listOf(completableDeviceWrapper.await().identifier), devices.map { it.identifier })
+            assertContentEquals(listOf(completableDevice.await().identifier), devices.map { it.identifier })
         }
     }
 
@@ -102,27 +122,33 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             scannedDevice.complete(device)
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
-            bluetooth.devices().first() // trigger scanning
+            val job = launch {
+                bluetooth.scannedDevices().collect() // trigger scanning
+            }
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
+            yieldMultiple(10)
             scanner.didStartScanningMock.verify(eq(emptySet()))
+            job.cancel()
         }
 
-        val completablePairedDeviceWrapper = CompletableDeferred<DeviceWrapper>()
+        val completablePairedDevice = CompletableDeferred<Device>()
         mainAction {
             val name = "Paired Device"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
+            val device = createMockDevice(deviceWrapper, coroutineScope) {
+                deviceName = name
+            }
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
-                    Scanner.Event.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
-                        deviceWrapper to MockDeviceConnectionManager.Builder()
-                    }
+                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) { device }
                 )
             )
-            completablePairedDeviceWrapper.complete(deviceWrapper)
+            completablePairedDevice.complete(device)
         }
 
         test { devices ->
-            assertContentEquals(listOf(completablePairedDeviceWrapper.await().identifier), devices.map { it.identifier })
+            assertContentEquals(listOf(completablePairedDevice.await()), devices)
         }
 
         val scannedList = CompletableDeferred<List<Device>>()
@@ -134,26 +160,27 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             scannedList.complete(listOf(scannedDevice.getCompleted(), device))
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
-            bluetooth.devices().first() // wait for scanned devices updated
+            bluetooth.scannedDevices().first() // wait for scanned devices updated
         }
 
-        val completableSecondPairedDeviceWrapper = CompletableDeferred<DeviceWrapper>()
+        val completableSecondPairedDevice = CompletableDeferred<Device>()
         mainAction {
             val name = "One More Paired Device"
             val deviceWrapper = createDeviceWrapper(deviceName = name)
+            val device = createMockDevice(deviceWrapper, coroutineScope) {
+                deviceName = name
+            }
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
             scanner.pairedDeviceDiscoveredEvents.emit(
-                listOf(completablePairedDeviceWrapper.await(), deviceWrapper).map {
-                    Scanner.Event.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
-                        it to MockDeviceConnectionManager.Builder()
-                    }
+                listOf(completablePairedDevice.await(), device).map { deviceToAdd ->
+                    Scanner.DeviceDiscovered(deviceToAdd.identifier, 0, MockAdvertisementData()) { deviceToAdd }
                 }
             )
-            completableSecondPairedDeviceWrapper.complete(deviceWrapper)
+            completableSecondPairedDevice.complete(device)
         }
 
         test { devices ->
-            assertContentEquals(listOf(completablePairedDeviceWrapper, completableSecondPairedDeviceWrapper).map { it.await().identifier }, devices.map { it.identifier })
+            assertContentEquals(listOf(completablePairedDevice, completableSecondPairedDevice).map { it.await() }, devices)
         }
     }
 }
