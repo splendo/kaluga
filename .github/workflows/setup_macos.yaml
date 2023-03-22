@@ -18,7 +18,7 @@ on:
         description: "kaluga.kotlinVersion property from gradle.propertoes"
         value: ${{ jobs.setup.outputs.kotlinVersion }}
       projects:
-        description: "Gradle projects that do not dependent on another module or have other modules dependent on them"
+        description: "Gradle projects that do not dependent on another project or have other projects dependent on them"
         value: ${{ jobs.setup.outputs.projects }}
 jobs:
   setup:
@@ -48,11 +48,11 @@ jobs:
           kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
 
       - name: generate file with projects for build matrix
-        if: inputs.module == ''
+        if: inputs.project == ''
         run: ./gradlew generateNonDependentProjectsFile
 
-      - name: generate file with request project module for build matrix
-        if: inputs.module != ''
+      - name: generate file with single requested project for build matrix
+        if: inputs.project != ''
         run: echo "projects=[\"${{ inputs.project }}\"]" > non_dependent_projects.properties
 
       - name: load projects for build matrix
@@ -72,5 +72,5 @@ jobs:
           path: |
             ./*
             !/.gradle
-          key: build-iOS-${{ github.sha }}-{{ inputs.module }}
+          key: build-iOS-${{ github.sha }}-{{ inputs.project }}
 
