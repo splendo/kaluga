@@ -32,6 +32,7 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import com.splendo.kaluga.test.bluetooth.MockBluetoothMonitor
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,17 +83,21 @@ class MockScanner(
  * @param initialBluetoothEnabled Sets the initial enabled state of bluetooth
  * @param settings [BaseScanner.Settings] to configure this scanner
  * @param coroutineScope The [CoroutineScope] to run this Scanner on
- * @param setupMocks If `true` this will automatically configure the [createMock] to build [MockScanner]
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
+ * @param isSupported Indicates whether the system supports Bluetooth scanning
+ * @param setupMocks If `true` this will automatically configure some mocks
  */
 class MockBaseScanner(
     initialBluetoothEnabled: Boolean,
     settings: Settings,
     coroutineScope: CoroutineScope,
+    scanningDispatcher: CoroutineDispatcher,
     override val isSupported: Boolean = true,
     setupMocks: Boolean = true
 ) : BaseScanner(
     settings,
-    coroutineScope
+    coroutineScope,
+    scanningDispatcher
 ) {
 
     /**
@@ -114,8 +119,8 @@ class MockBaseScanner(
 
         init {
             if (setupMocks) {
-                createMock.on().doExecute { (settings, coroutineContext) ->
-                    MockBaseScanner(initialBluetoothEnabled, settings, coroutineContext, setupMocks).also {
+                createMock.on().doExecute { (settings, coroutineContext, coroutineDispatcher) ->
+                    MockBaseScanner(initialBluetoothEnabled, settings, coroutineContext, coroutineDispatcher, setupMocks).also {
                         createdScanners.add(it)
                     }
                 }
@@ -124,8 +129,9 @@ class MockBaseScanner(
 
         override fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
-        ): BaseScanner = createMock.call(settings, coroutineScope)
+            coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher
+        ): BaseScanner = createMock.call(settings, coroutineScope, scanningDispatcher)
     }
 
     /**

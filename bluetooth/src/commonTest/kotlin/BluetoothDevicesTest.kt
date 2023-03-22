@@ -59,9 +59,9 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
         mainAction {
             bluetooth.startScanning()
-            yieldMultiple(5)
-            scanner.didStartScanningMock.verify(eq(emptySet()))
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
+            yieldMultiple(10)
+            scanner.didStartScanningMock.verify(eq(emptySet()))
             bluetooth.startScanning(filter)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()
             scanner.didStopScanningMock.verify()

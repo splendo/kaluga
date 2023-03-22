@@ -132,14 +132,12 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
         level = DeprecationLevel.HIDDEN
     )
     override fun cancel(cause: Throwable?): Boolean {
-        println("Did cancel throwable")
         sendChannel.cancel(cause as? CancellationException)
         receiveChannel.cancel(cause as? CancellationException)
         return true
     }
 
     override fun cancel(cause: CancellationException?) {
-        println("Did cancel")
         sendChannel.cancel(cause)
         receiveChannel.cancel(cause)
     }

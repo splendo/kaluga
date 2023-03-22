@@ -67,7 +67,7 @@ import kotlin.coroutines.CoroutineContext
 
 typealias EnableSensorAction = suspend () -> Boolean
 
-private val scanningDispatcher: CoroutineDispatcher by lazy {
+internal val scanningDispatcher: CoroutineDispatcher by lazy {
     singleThreadDispatcher("Scanning for Devices")
 }
 
@@ -235,10 +235,12 @@ interface Scanner {
  * An abstract implementation for [Scanner]
  * @param settings the [Settings] to configure this scanner
  * @param coroutineScope the [CoroutineScope] this scanner runs on
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
 abstract class BaseScanner constructor(
     settings: Settings,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
 ) : Scanner, CoroutineScope by coroutineScope {
 
     companion object {
@@ -272,11 +274,13 @@ abstract class BaseScanner constructor(
          * Creates a [BaseScanner]
          * @param settings the [BaseScanner.Settings] to configure the scanner with
          * @param coroutineScope the [CoroutineScope] the scanner will run in
+         * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
          * @return the [BaseScanner] created
          */
         fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
         ): BaseScanner
     }
 

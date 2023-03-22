@@ -28,6 +28,7 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
@@ -50,12 +51,14 @@ import platform.darwin.dispatch_queue_create
  * @param settings the [BaseScanner.Settings] to configure this scanner
  * @param scanSettings the [ScanSettings] to configure this scanner
  * @param coroutineScope the [CoroutineScope] this scanner runs on
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
 actual class DefaultScanner internal constructor(
     settings: Settings,
     private val scanSettings: ScanSettings,
-    coroutineScope: CoroutineScope
-) : BaseScanner(settings, coroutineScope) {
+    coroutineScope: CoroutineScope,
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
      * Builder for creating a [DefaultScanner]
@@ -66,8 +69,9 @@ actual class DefaultScanner internal constructor(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher
         ): BaseScanner {
-            return DefaultScanner(settings, scanSettings, coroutineScope)
+            return DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
         }
     }
 

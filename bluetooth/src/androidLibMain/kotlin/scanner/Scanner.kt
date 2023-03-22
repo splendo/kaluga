@@ -43,6 +43,7 @@ import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.service.EnableServiceActivity
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -62,6 +63,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings
  * @param scanSettings the [ScanSettings] to apply to the scanner
  * @param settings the [BaseScanner.Settings] to configure this scanner
  * @param coroutineScope the [CoroutineScope] this scanner runs on
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
 actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
@@ -70,7 +72,8 @@ actual class DefaultScanner internal constructor(
     private val scanSettings: ScanSettings,
     settings: Settings,
     coroutineScope: CoroutineScope,
-) : BaseScanner(settings, coroutineScope) {
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
      * Builder for creating a [DefaultScanner]
@@ -89,8 +92,9 @@ actual class DefaultScanner internal constructor(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher
         ): BaseScanner {
-            return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope)
+            return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope, scanningDispatcher)
         }
     }
 

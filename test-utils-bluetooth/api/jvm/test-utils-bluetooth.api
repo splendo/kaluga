@@ -455,8 +455,8 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$NotC
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : com/splendo/kaluga/bluetooth/scanner/BaseScanner {
-	public fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;ZZ)V
-	public synthetic fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;ZZ)V
+	public synthetic fun <init> (ZLcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun getBluetoothEnabledMonitor ()Lcom/splendo/kaluga/bluetooth/BluetoothMonitor;
 	public fun getBluetoothEnabledMonitor ()Lcom/splendo/kaluga/test/bluetooth/MockBluetoothMonitor;
 	public final fun getDidStartScanningMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
@@ -480,7 +480,7 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : c
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner$Builder : com/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder {
 	public fun <init> (ZZ)V
 	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
+	public fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getCreatedScanners ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
 }

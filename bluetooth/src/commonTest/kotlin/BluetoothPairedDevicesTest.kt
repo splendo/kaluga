@@ -17,22 +17,28 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.Scanner
+import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.base.yieldUntil
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.createMockDevice
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Bluetooth, BluetoothFlowTest.BluetoothContext, List<Device>>() {
 
@@ -61,8 +67,17 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             val deviceWrapper = createDeviceWrapper(deviceName = name)
             val device = createMockDevice(deviceWrapper, coroutineScope) { deviceName = name }
             pairedDevicesTimer.tryEmit(Unit)
+            yieldMultiple(5)
+            yieldUntil(60.seconds) {
+                try {
+                    scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
+                    true
+                } catch (e: AssertionError) {
+                    false
+                }
+            }
             yieldMultiple(11)
-            scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
+
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
                     Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
@@ -71,8 +86,14 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
                 )
             )
             pairedDevicesTimer.tryEmit(Unit)
-            yieldMultiple(4)
-            scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
+            yieldUntil(60.seconds) {
+                try {
+                    scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
+                    true
+                } catch (e: AssertionError) {
+                    false
+                }
+            }
             completableDevice.complete(device)
         }
 
@@ -101,8 +122,13 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             }
             scannedDevice.complete(device)
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
-            bluetooth.scannedDevices().first() // trigger scanning
+            val job = launch {
+                bluetooth.scannedDevices().collect() // trigger scanning
+            }
+            bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
+            yieldMultiple(10)
             scanner.didStartScanningMock.verify(eq(emptySet()))
+            job.cancel()
         }
 
         val completablePairedDevice = CompletableDeferred<Device>()

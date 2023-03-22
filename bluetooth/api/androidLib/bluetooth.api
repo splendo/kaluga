@@ -753,7 +753,8 @@ public final class com/splendo/kaluga/bluetooth/device/SerializableIdentifier$Co
 
 public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/splendo/kaluga/bluetooth/scanner/Scanner, kotlinx/coroutines/CoroutineScope {
 	public static final field Companion Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Companion;
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected abstract fun didStartScanning (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun didStopScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun generateEnableSensorsActions ()Ljava/util/List;
@@ -781,7 +782,8 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/spl
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder {
-	public abstract fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
+	public abstract fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/BaseScanner$Companion {
@@ -844,7 +846,7 @@ public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner$Builder :
 	public fun <init> ()V
 	public fun <init> (Landroid/content/Context;Lno/nordicsemi/android/support/v18/scanner/BluetoothLeScannerCompat;Landroid/bluetooth/BluetoothAdapter;Lno/nordicsemi/android/support/v18/scanner/ScanSettings;)V
 	public synthetic fun <init> (Landroid/content/Context;Lno/nordicsemi/android/support/v18/scanner/BluetoothLeScannerCompat;Landroid/bluetooth/BluetoothAdapter;Lno/nordicsemi/android/support/v18/scanner/ScanSettings;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
+	public fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner$Companion {
