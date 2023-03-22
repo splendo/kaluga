@@ -16,6 +16,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":base"))
+                implementation(project(":logging"))
             }
         }
         commonTest {

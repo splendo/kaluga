@@ -18,6 +18,8 @@
 package com.splendo.kaluga.example.media
 
 import android.os.Bundle
+import com.google.android.material.slider.Slider
+import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityMediaBinding
 import com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel
@@ -32,6 +34,18 @@ class MediaActivity : KalugaViewModelActivity<MediaViewModel>() {
         val binding = ActivityMediaBinding.inflate(layoutInflater, null, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+        binding.playtimeProgress.addOnSliderTouchListener(object : OnSliderTouchListener {
+
+            override fun onStartTrackingTouch(slider: Slider) {
+                //
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                viewModel.seekTo(slider.value.toDouble())
+            }
+        })
+
         setContentView(binding.root)
     }
 }

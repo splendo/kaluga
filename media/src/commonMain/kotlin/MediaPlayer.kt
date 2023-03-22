@@ -19,6 +19,7 @@ package com.splendo.kaluga.media
 
 import com.splendo.kaluga.base.flow.collectUntilLast
 import com.splendo.kaluga.base.utils.firstInstance
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -26,12 +27,14 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -40,18 +43,22 @@ import kotlin.time.Duration
 
 interface MediaPlayer {
 
+    enum class Controls {
+        PLAY,
+        PAUSE,
+        STOP,
+        SEEK
+    }
+
     val playableMedia: Flow<PlayableMedia?>
 
-    val isPrepared: Flow<Boolean>
+    val availableControls: Flow<Set<Controls>>
 
-    val canStart: Flow<Boolean>
     suspend fun start(loopMode: PlaybackState.LoopMode = PlaybackState.LoopMode.NotLooping)
-
-    val canPause: Flow<Boolean>
     suspend fun pause()
-
-    val canStop: Flow<Boolean>
     suspend fun stop()
+
+    suspend fun seekTo(duration: Duration)
 
     suspend fun awaitCompletion()
 
@@ -80,6 +87,7 @@ class DefaultMediaPlayer(
         }
         launch {
             playbackStateRepo.collectUntilLast(false) { state ->
+                debug("Media", "State is now $state")
                 when (state) {
                     is PlaybackState.Uninitialized -> playbackStateRepo.takeAndChangeState(PlaybackState.Uninitialized::class) { it.initialize(url) }
                     is PlaybackState.Completed ->  playbackStateRepo.takeAndChangeState(PlaybackState.Completed::class) { it.restartIfLooping }
@@ -97,30 +105,19 @@ class DefaultMediaPlayer(
         (it as? PlaybackState.Prepared)?.playableMedia
     }.distinctUntilChanged()
 
-    override val isPrepared: Flow<Boolean> = playbackStateRepo.map { state ->
+    override val availableControls: Flow<Set<MediaPlayer.Controls>> = playbackStateRepo.map { state ->
         when (state) {
-            is PlaybackState.Prepared -> true
-            is PlaybackState.Error,
-            is PlaybackState.Ended,
-            is PlaybackState.Stopped,
-            is PlaybackState.Uninitialized,
-            is PlaybackState.Initialized -> false
-        }
-    }
-
-    override val canStart: Flow<Boolean> = playbackStateRepo.map { state ->
-        when (state) {
+            is PlaybackState.Idle -> setOf(MediaPlayer.Controls.PLAY, MediaPlayer.Controls.SEEK)
+            is PlaybackState.Started -> setOf(MediaPlayer.Controls.PAUSE, MediaPlayer.Controls.STOP, MediaPlayer.Controls.SEEK)
+            is PlaybackState.Paused -> setOf(MediaPlayer.Controls.PLAY, MediaPlayer.Controls.STOP, MediaPlayer.Controls.SEEK)
+            is PlaybackState.Completed -> setOf(MediaPlayer.Controls.PLAY, MediaPlayer.Controls.STOP, MediaPlayer.Controls.SEEK)
+            is PlaybackState.Stopped -> setOf(MediaPlayer.Controls.PLAY)
             is PlaybackState.Uninitialized,
             is PlaybackState.Initialized,
-            is PlaybackState.Started,
-            is PlaybackState.Error,
-            is PlaybackState.Ended -> false
-            is PlaybackState.Idle,
-            is PlaybackState.Paused,
-            is PlaybackState.Completed,
-            is PlaybackState.Stopped -> true
+            is PlaybackState.Ended,
+            is PlaybackState.Error -> emptySet()
         }
-    }
+    }.shareIn(this, SharingStarted.WhileSubscribed())
 
     override suspend fun start(loopMode: PlaybackState.LoopMode) = playbackStateRepo.transformLatest { state ->
         when (state) {
@@ -136,23 +133,15 @@ class DefaultMediaPlayer(
         }
     }.first()
 
-    override val canPause: Flow<Boolean> = playbackStateRepo.map { state ->
-        state is PlaybackState.Started
-    }
-
     override suspend fun pause() = playbackStateRepo.transformLatest { state ->
         when (state) {
-            is PlaybackState.Playing -> playbackStateRepo.takeAndChangeState(PlaybackState.Started::class) { it.pause }
+            is PlaybackState.Started -> playbackStateRepo.takeAndChangeState(PlaybackState.Started::class) { it.pause }
             is PlaybackState.Paused -> emit(Unit)
             is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
             is PlaybackState.Error -> throw state.error
             is PlaybackState.Active -> emit(Unit) // If not playing we should consider it paused
         }
     }.first()
-
-    override val canStop: Flow<Boolean> = playbackStateRepo.map { state ->
-        state is PlaybackState.Prepared
-    }
 
     override suspend fun stop() = playbackStateRepo.transformLatest { state ->
         when (state) {
@@ -163,6 +152,14 @@ class DefaultMediaPlayer(
             is PlaybackState.Active -> emit(Unit) // If not playing we should consider it stopped
         }
     }.first()
+
+    override suspend fun seekTo(duration: Duration) = playbackStateRepo.useState { state ->
+        when (state) {
+            is PlaybackState.Prepared -> state.seekTo(duration)
+            is PlaybackState.Active,
+            is PlaybackState.Ended -> {}
+        }
+    }
 
     override suspend fun awaitCompletion() = playbackStateRepo.transformLatest { state ->
         when (state) {

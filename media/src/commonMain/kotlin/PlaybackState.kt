@@ -175,13 +175,13 @@ internal class PlaybackStateImpl {
         }
     }
 
-    data class Stopped(override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Prepared(), PlaybackState.Stopped, HandleBeforeOldStateIsRemoved<PlaybackState> {
+    data class Stopped(private val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Active(), PlaybackState.Stopped, HandleBeforeOldStateIsRemoved<PlaybackState> {
 
         override val reset: suspend () -> PlaybackState.Initialized = { Initialized(playableMedia, mediaManager) }
 
         override suspend fun beforeOldStateIsRemoved(oldState: PlaybackState) {
             when (oldState) {
-                !is PlaybackState.Started -> mediaManager.play()
+                is PlaybackState.Prepared -> mediaManager.stop()
                 else -> {}
             }
         }

@@ -127,7 +127,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
             playableMedia.avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew, coroutineContext).collect { status ->
                 when (status) {
                     AVPlayerItemStatusUnknown -> {}
-                    AVPlayerItemStatusReadyToPlay -> handlePrepared(playableMedia)
+                    AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(avPlayer.currentItem!!))
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }

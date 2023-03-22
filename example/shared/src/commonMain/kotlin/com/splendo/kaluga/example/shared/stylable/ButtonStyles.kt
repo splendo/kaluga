@@ -18,7 +18,9 @@
 package com.splendo.kaluga.example.shared.stylable
 
 import com.splendo.kaluga.resources.DefaultColors
+import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
+import com.splendo.kaluga.resources.defaultMonospaceFont
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
@@ -245,6 +247,28 @@ object ButtonStyles {
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Rectangle()
                 )
+            )
+        )
+    }
+
+    val mediaButton by lazy {
+        KalugaButtonStyle(
+            defaultBoldFont,
+            12.0f,
+            defaultStyle = ButtonStateStyle(
+                DefaultColors.black,
+                DefaultColors.lightGray,
+                KalugaBackgroundStyle.Shape.Oval
+            ),
+            pressedStyle = ButtonStateStyle(
+                DefaultColors.black,
+                DefaultColors.dimGray,
+                KalugaBackgroundStyle.Shape.Oval
+            ),
+            disabledStyle = ButtonStateStyle(
+                DefaultColors.dimGray,
+                DefaultColors.gray,
+                KalugaBackgroundStyle.Shape.Oval
             )
         )
     }

@@ -14,23 +14,103 @@
      limitations under the License.
 
   -->
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{ viewModel.isLoaded.stateFlow ? View.GONE : View.VISIBLE }"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Hello world"
-            android:gravity="center"/>
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{ viewModel.isLoaded.stateFlow ? View.VISIBLE : View.GONE }">
+
+            <TextView
+                android:id="@+id/current_play_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.currentPlaytime.stateFlow}"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/playtime_progress"
+                app:layout_constraintTop_toTopOf="@id/playtime_progress"
+                app:layout_constraintBottom_toBottomOf="@id/playtime_progress"
+                tools:text="00:00:00"/>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/playtime_progress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:value="@{viewModel.progress.stateFlow}"
+                android:enabled="@{viewModel.isSeekEnabled.stateFlow}"
+                android:valueFrom="0.0"
+                android:valueTo="1.0"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/current_play_time"
+                app:layout_constraintEnd_toStartOf="@id/total_duration"/>
+
+            <TextView
+                android:id="@+id/total_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.totalDuration.stateFlow}"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintStart_toEndOf="@id/playtime_progress"
+                app:layout_constraintTop_toTopOf="@id/playtime_progress"
+                app:layout_constraintBottom_toBottomOf="@id/playtime_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="01:23:45"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/playtime_progress"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:paddingBottom="20dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/play_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:kalugaButton="@{viewModel.playButton.stateFlow}"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/pause_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:kalugaButton="@{viewModel.pauseButton.stateFlow}"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/stop_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:kalugaButton="@{viewModel.stopButton.stateFlow}"/>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

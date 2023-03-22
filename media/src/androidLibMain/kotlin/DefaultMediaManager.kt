@@ -73,7 +73,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     override fun initialize(playableMedia: PlayableMedia) {
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.setOnPreparedListener(null)
-            handlePrepared(playableMedia)
+            handlePrepared(PlayableMedia(it))
         }
         mediaPlayer.prepareAsync()
     }
