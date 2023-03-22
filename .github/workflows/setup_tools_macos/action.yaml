@@ -10,6 +10,10 @@ inputs:
   restore-workspace-cache:
     default: 'true'
     description: Whether to restore the workspace cache
+  project:
+    required: false
+    description: single project to run
+
 runs:
   using: "composite"
   steps:
@@ -45,4 +49,4 @@ runs:
         path: |
           ./*
           !/.gradle
-        key: build-iOS-${{ github.sha }}
+        key: build-iOS-${{ github.sha }}-${{ inputs.project }}

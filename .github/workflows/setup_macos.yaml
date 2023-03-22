@@ -46,6 +46,7 @@ jobs:
           gradle-cache-read-only: 'false'
           restore-workspace-cache: 'false'
           kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
+          project: ${{ inputs.project }}
 
       - name: generate file with projects for build matrix
         if: inputs.project == ''
@@ -53,7 +54,10 @@ jobs:
 
       - name: generate file with single requested project for build matrix
         if: inputs.project != ''
-        run: echo "projects=[\"${{ inputs.project }}\"]" > non_dependent_projects.properties
+        run: echo "projects=['${{ inputs.project }}']" > non_dependent_projects.properties
+
+      - name: show projects for Matrix
+        run: cat non_dependent_projects.properties
 
       - name: load projects for build matrix
         uses: cardinalby/export-env-action@v2
@@ -62,8 +66,13 @@ jobs:
           envFile: 'non_dependent_projects.properties'
           export: 'false'
 
-      - name: run custom Gradle task
+      - name: run custom Gradle task for all projects
+        if: inputs.project == ''
         run: ./gradlew ${{ inputs.gradleTask }}
+
+      - name: run custom Gradle task for single project
+        if: inputs.project != ''
+        run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
 
       - name: Make cache of workspace
         uses: actions/cache/save@v3
@@ -72,5 +81,4 @@ jobs:
           path: |
             ./*
             !/.gradle
-          key: build-iOS-${{ github.sha }}-{{ inputs.project }}
-
+          key: build-iOS-${{ github.sha }}-${{ inputs.project }}
