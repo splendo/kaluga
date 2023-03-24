@@ -54,6 +54,8 @@ interface MediaPlayer {
 
     val availableControls: Flow<Set<Controls>>
 
+    suspend fun initializeFor(url: String)
+
     suspend fun start(loopMode: PlaybackState.LoopMode = PlaybackState.LoopMode.NotLooping)
     suspend fun pause()
     suspend fun stop()
@@ -66,10 +68,9 @@ interface MediaPlayer {
 }
 
 class DefaultMediaPlayer(
-    private val url: String,
     mediaManagerBuilder: BaseMediaManager.Builder,
     coroutineContext: CoroutineContext
-) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer for $url")) {
+) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer")) {
 
     private val mediaManager = mediaManagerBuilder.create(coroutineContext)
     private val playbackStateRepo = PlaybackStateRepo(mediaManager, coroutineContext)
@@ -89,7 +90,6 @@ class DefaultMediaPlayer(
             playbackStateRepo.collectUntilLast(false) { state ->
                 debug("Media", "State is now $state")
                 when (state) {
-                    is PlaybackState.Uninitialized -> playbackStateRepo.takeAndChangeState(PlaybackState.Uninitialized::class) { it.initialize(url) }
                     is PlaybackState.Completed ->  playbackStateRepo.takeAndChangeState(PlaybackState.Completed::class) { it.restartIfLooping }
                     else -> {}
                 }
@@ -118,6 +118,27 @@ class DefaultMediaPlayer(
             is PlaybackState.Error -> emptySet()
         }
     }.shareIn(this, SharingStarted.WhileSubscribed())
+
+    override suspend fun initializeFor(url: String) {
+        var resetOnError = true
+        playbackStateRepo.transformLatest { state ->
+            when (state) {
+                is PlaybackState.Uninitialized -> playbackStateRepo.takeAndChangeState(PlaybackState.Uninitialized::class) {
+                    resetOnError = false
+                    it.initialize(
+                        url
+                    )
+                }
+                is PlaybackState.Initialized -> emit(Unit)
+                is PlaybackState.Idle -> if (state.playableMedia.url == url) emit(Unit) else playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
+                is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
+                is PlaybackState.Error -> if (resetOnError) {
+                    playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
+                } else throw state.error
+                is PlaybackState.Active -> playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
+            }
+        }.first()
+    }
 
     override suspend fun start(loopMode: PlaybackState.LoopMode) = playbackStateRepo.transformLatest { state ->
         when (state) {

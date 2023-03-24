@@ -64,11 +64,13 @@ import platform.Foundation.NSURL
 import platform.Foundation.NSURLErrorDomain
 import platform.darwin.NSObjectProtocol
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-actual class PlayableMedia(internal val avPlayerItem: AVPlayerItem) {
+actual class PlayableMedia(actual val url: String, internal val avPlayerItem: AVPlayerItem) {
     actual val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
     actual val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
 }
@@ -118,7 +120,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     override fun createPlayableMedia(url: String): PlayableMedia? = NSURL.URLWithString(url)?.let {
-        PlayableMedia(AVPlayerItem(it))
+        PlayableMedia(url, AVPlayerItem(it))
     }
 
     override fun initialize(playableMedia: PlayableMedia) {
@@ -127,7 +129,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
             playableMedia.avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew, coroutineContext).collect { status ->
                 when (status) {
                     AVPlayerItemStatusUnknown -> {}
-                    AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(avPlayer.currentItem!!))
+                    AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(playableMedia.url, avPlayer.currentItem!!))
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }
@@ -151,14 +153,17 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         cancel()
     }
 
-    override fun seekTo(duration: Duration) {
-        avPlayer.seekToTime(CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1))
+    override fun startSeek(duration: Duration) = avPlayer.seekToTime(CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1)) {
+        handleSeekCompleted(it)
+    }
+
+    override fun reset() {
+        avPlayer.replaceCurrentItemWithPlayerItem(null)
     }
 
     private fun NSError.handleError() {
-        val playbackError = avPlayer.error?.let { error ->
-            when (error.domain) {
-                AVFoundationErrorDomain -> when (error.code) {
+        val playbackError = when (domain) {
+                AVFoundationErrorDomain -> when (code) {
                     AVErrorFormatUnsupported,
                     AVErrorContentIsNotAuthorized,
                     AVErrorContentIsProtected,
@@ -170,7 +175,6 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
                     else -> null
                 }
                 else -> null
-            }
         } ?: PlaybackError.Unknown
         handleError(playbackError)
     }

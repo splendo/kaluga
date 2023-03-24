@@ -20,7 +20,7 @@ package com.splendo.kaluga.media
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
-actual class PlayableMedia(val url: String) {
+actual class PlayableMedia(actual val url: String) {
     actual val duration: Duration get() = Duration.ZERO
     actual val currentPlayTime: Duration get() = Duration.ZERO
 }
@@ -49,11 +49,15 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         TODO("Not yet implemented")
     }
 
-    override fun seekTo(duration: Duration) {
+    override fun startSeek(duration: Duration) {
         TODO("Not yet implemented")
     }
 
     override fun cleanUp() {
+        TODO("Not yet implemented")
+    }
+
+    override fun reset() {
         TODO("Not yet implemented")
     }
 }

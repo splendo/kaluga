@@ -41,6 +41,7 @@ sealed interface PlaybackState : KalugaState {
     }
 
     sealed interface Active : PlaybackState {
+        val reset: suspend  () -> Uninitialized
         val end: suspend () -> Ended
         fun failWithError(error: PlaybackError): suspend () -> Error
     }
@@ -60,7 +61,7 @@ sealed interface PlaybackState : KalugaState {
         val playableMedia: PlayableMedia
 
         val stop: suspend () -> Stopped
-        fun seekTo(duration: Duration)
+        suspend fun seekTo(duration: Duration): Boolean
     }
 
     interface Idle : Prepared {
@@ -82,7 +83,7 @@ sealed interface PlaybackState : KalugaState {
     }
 
     interface Stopped : Active {
-        val reset: suspend () -> Initialized
+        val reinitialize: suspend () -> Initialized
     }
 
     interface Completed : Prepared {
@@ -98,19 +99,27 @@ sealed interface PlaybackState : KalugaState {
     interface Ended : PlaybackState, SpecialFlowValue.Last
 }
 
-internal class PlaybackStateImpl {
+internal sealed class PlaybackStateImpl {
 
-    sealed class Active {
+    sealed class Active : PlaybackStateImpl() {
         internal abstract val mediaManager: MediaManager
 
+        val reset: suspend  () -> PlaybackState.Uninitialized = { Uninitialized(mediaManager) }
         val end: suspend () -> PlaybackState.Ended = { Ended }
         fun failWithError(error: PlaybackError) = suspend { Error(error, mediaManager) }
     }
 
-    data class Uninitialized(override val mediaManager: MediaManager) : Active(), PlaybackState.Uninitialized {
+    data class Uninitialized(override val mediaManager: MediaManager) : Active(), PlaybackState.Uninitialized, HandleBeforeOldStateIsRemoved<PlaybackState> {
         override fun initialize(url: String): suspend () -> PlaybackState.InitializedOrError = mediaManager.createPlayableMedia(url)?.let {
             { Initialized(it, mediaManager) }
             } ?: failWithError(PlaybackError.MalformedMediaSource)
+
+        override suspend fun beforeOldStateIsRemoved(oldState: PlaybackState) {
+            when (oldState) {
+                !is Uninitialized -> mediaManager.reset()
+                else -> {}
+            }
+        }
     }
 
     data class Initialized(private val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Active(), PlaybackState.Initialized, HandleAfterOldStateIsRemoved<PlaybackState> {
@@ -130,7 +139,7 @@ internal class PlaybackStateImpl {
         abstract val playableMedia: PlayableMedia
 
         val stop: suspend () -> PlaybackState.Stopped = { Stopped(playableMedia, mediaManager) }
-        fun seekTo(duration: Duration) = mediaManager.seekTo(duration)
+        suspend fun seekTo(duration: Duration) = mediaManager.seekTo(duration)
     }
 
     data class Idle(override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Prepared(), PlaybackState.Idle {
@@ -177,7 +186,7 @@ internal class PlaybackStateImpl {
 
     data class Stopped(private val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Active(), PlaybackState.Stopped, HandleBeforeOldStateIsRemoved<PlaybackState> {
 
-        override val reset: suspend () -> PlaybackState.Initialized = { Initialized(playableMedia, mediaManager) }
+        override val reinitialize: suspend () -> PlaybackState.Initialized = { Initialized(playableMedia, mediaManager) }
 
         override suspend fun beforeOldStateIsRemoved(oldState: PlaybackState) {
             when (oldState) {
@@ -208,5 +217,5 @@ internal class PlaybackStateImpl {
 
     data class Error(override val error: PlaybackError, override val mediaManager: MediaManager) : Active(), PlaybackState.Error
 
-    object Ended : PlaybackState.Ended
+    object Ended : PlaybackStateImpl(), PlaybackState.Ended
 }

@@ -41,7 +41,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class MediaViewModel(builder: BaseMediaManager.Builder) : BaseLifecycleViewModel() {
 
-    private val mediaPlayer = DefaultMediaPlayer("https://www.orangefreesounds.com/wp-content/uploads/2016/01/Waves-mp3.mp3", builder, coroutineScope.coroutineContext)
+    private val mediaPlayer = DefaultMediaPlayer(builder, coroutineScope.coroutineContext)
 
     val isLoaded = mediaPlayer.availableControls.map { it.isNotEmpty() }.toInitializedObservable(false, coroutineScope)
     private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
@@ -87,9 +87,19 @@ class MediaViewModel(builder: BaseMediaManager.Builder) : BaseLifecycleViewModel
         }
     }
 
+    init {
+        initialize()
+    }
+
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.end()
+    }
+
+    private fun initialize() {
+        coroutineScope.launch {
+            mediaPlayer.initializeFor("https://www.orangefreesounds.com/wp-content/uploads/2016/01/Waves-mp3.mp3")
+        }
     }
 
     private fun Duration.format() = toComponents { hours, minutes, seconds, _ ->

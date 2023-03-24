@@ -17,16 +17,21 @@
 
 package com.splendo.kaluga.media
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 expect class PlayableMedia {
+    val url: String
     val duration: Duration
     val currentPlayTime: Duration
 }
@@ -48,7 +53,8 @@ interface MediaManager {
     fun play()
     fun pause()
     fun stop()
-    fun seekTo(duration: Duration)
+    suspend fun seekTo(duration: Duration): Boolean
+    fun reset()
     fun end()
 }
 
@@ -60,6 +66,10 @@ abstract class BaseMediaManager(coroutineContext: CoroutineContext) : MediaManag
 
     private val _events = Channel<MediaManager.Event>(UNLIMITED)
     override val events: Flow<MediaManager.Event> = _events.receiveAsFlow()
+
+    private val seekMutex = Mutex()
+    private var activeSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
+    private var queuedSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
 
     protected fun handlePrepared(playableMedia: PlayableMedia) {
         _events.trySend(MediaManager.Event.DidPrepare(playableMedia))
@@ -73,10 +83,50 @@ abstract class BaseMediaManager(coroutineContext: CoroutineContext) : MediaManag
         _events.trySend(MediaManager.Event.DidComplete)
     }
 
+    final override suspend fun seekTo(duration: Duration): Boolean {
+        val result = CompletableDeferred<Boolean>()
+        return seekMutex.withLock {
+            val queuedSeek = queuedSeek
+            when {
+                activeSeek == null -> {
+                    activeSeek = duration to result
+                    startSeek(duration)
+                    result
+                }
+                queuedSeek != null && queuedSeek.first == duration -> queuedSeek.second
+                else -> {
+                    this.queuedSeek?.second?.complete(false)
+                    this.queuedSeek = duration to result
+                    result
+                }
+            }
+        }.await()
+    }
+
     override fun end() {
         cleanUp()
         _events.trySend(MediaManager.Event.DidEnd)
     }
+
+    protected fun handleSeekCompleted(success: Boolean) {
+        launch {
+            seekMutex.withLock {
+                activeSeek?.second?.complete(success)
+                val queuedSeek = queuedSeek
+                activeSeek = when {
+                    queuedSeek == null -> null
+                    activeSeek?.first == queuedSeek.first -> {
+                        queuedSeek.second.complete(success)
+                        null
+                    }
+                    else -> queuedSeek
+                }
+                activeSeek?.let { startSeek(it.first) }
+            }
+        }
+    }
+
+    protected abstract fun startSeek(duration: Duration)
 
     protected abstract fun cleanUp()
 }
