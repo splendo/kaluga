@@ -37,7 +37,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         handlePrepared(playableMedia)
     }
 
-    override fun play() {
+    override fun play(rate: Float) {
         TODO("Not yet implemented")
     }
 

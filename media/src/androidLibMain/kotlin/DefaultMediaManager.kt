@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.media
 
+import android.media.PlaybackParams
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.sync.Mutex
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -39,9 +38,13 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     private val mediaPlayer = AndroidMediaPlayer()
-    private val seekMutex = Mutex()
-    private var activeSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
-    private var queuedSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
+    private var _volume: Float = 1.0f
+    override var volume: Float
+        get() = _volume
+        set(value) {
+            mediaPlayer.setVolume(value, value)
+            _volume = volume
+        }
 
     init {
         mediaPlayer.setOnSeekCompleteListener {
@@ -89,10 +92,17 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         mediaPlayer.prepareAsync()
     }
 
-    override fun play() = try {
-        mediaPlayer.start()
-    } catch (e: IllegalStateException) {
-        handleError(PlaybackError.Unknown)
+    override fun play(rate: Float) {
+        try {
+            mediaPlayer.playbackParams = PlaybackParams().apply {
+                speed = rate
+            }
+            if (!mediaPlayer.isPlaying) {
+                mediaPlayer.start()
+            }
+        } catch (e: IllegalStateException) {
+            handleError(PlaybackError.Unknown)
+        }
     }
 
     override fun pause() = try {

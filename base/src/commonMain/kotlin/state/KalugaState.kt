@@ -22,8 +22,6 @@ import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
 import com.splendo.kaluga.base.flow.onCollectionEvent
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
@@ -211,14 +209,14 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      *
      * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
      */
-    suspend fun useState(action: suspend (State) -> Unit) = coroutineScope {
+    suspend fun <Result> useState(action: suspend (State) -> Result) = coroutineScope {
         initialize()
         stateMutex.withPermit {
-            val result = EmptyCompletableDeferred()
+            val result = CompletableDeferred<Result>()
             launch {
                 try {
-                    action(state())
-                    result.complete()
+                    val actionResult = action(state())
+                    result.complete(actionResult)
                 } catch (e: Throwable) {
                     result.completeExceptionally(e)
                 }
@@ -235,9 +233,9 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      * @param action The action to execute on the current [State]
      * @see [useState]
      */
-    fun launchUseState(
+    fun <Result> launchUseState(
         context: CoroutineContext = coroutineContext,
-        action: suspend(State) -> Unit
+        action: suspend (State) -> Result
     ) = launch(context) {
         useState(action)
     }

@@ -46,11 +46,12 @@ interface MediaManager {
     }
 
     val events: Flow<Event>
+    var volume: Float
 
     fun createPlayableMedia(url: String): PlayableMedia?
     fun initialize(playableMedia: PlayableMedia)
 
-    fun play()
+    fun play(rate: Float)
     fun pause()
     fun stop()
     suspend fun seekTo(duration: Duration): Boolean

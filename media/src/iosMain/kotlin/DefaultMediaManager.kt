@@ -50,8 +50,10 @@ import platform.AVFoundation.currentTime
 import platform.AVFoundation.duration
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
+import platform.AVFoundation.rate
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
+import platform.AVFoundation.volume
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.Foundation.NSError
@@ -82,6 +84,11 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     private val avPlayer = AVPlayer(null)
+
+    override var volume: Float
+        get() = avPlayer.volume
+        set(value) { avPlayer.volume = value }
+
     private val observers = atomic<List<NSObjectProtocol>>(emptyList())
 
     private var itemJob: Job? = null
@@ -139,7 +146,11 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         }
     }
 
-    override fun play() = avPlayer.play()
+    override fun play(rate: Float) {
+        avPlayer.rate = rate
+        avPlayer.play()
+    }
+
     override fun pause() = avPlayer.pause()
     override fun stop() {
         avPlayer.replaceCurrentItemWithPlayerItem(null)
