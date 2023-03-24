@@ -20,7 +20,6 @@ package com.splendo.kaluga.example.shared.di
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.logging.Logger
@@ -64,8 +63,7 @@ private fun sharedModule(
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
         }.create(
-            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
-            connectionSettings = ConnectionSettings(logger = get())
+            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) }
         )
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }

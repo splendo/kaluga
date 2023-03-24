@@ -90,7 +90,6 @@
     <string name="bluetooth_connecting">Connecting</string>
     <string name="bluetooth_disconnected">Disconnected</string>
     <string name="bluetooth_disconneting">Disconnecting</string>
-    <string name="bluetooth_reconnecting">Reconnecting</string>
     <string name="bluetooth_discovering">Discovering</string>
 
     <string name="bluetooth_service_uuids">Service UUIDs: %s</string>

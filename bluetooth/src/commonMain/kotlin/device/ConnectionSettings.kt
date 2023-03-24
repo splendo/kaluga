@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
@@ -43,10 +44,5 @@ data class ConnectionSettings(
          * Should never try to reconnect when an unexpected disconnect occurs
          */
         object Never : ReconnectionSettings()
-        /**
-         * Should try to reconnect a given amount of times when an unexpected disconnect occurs
-         * @param attempts the number of reconnection attempts that should take place before giving up
-         */
-        data class Limited(val attempts: Int) : ReconnectionSettings()
     }
 }

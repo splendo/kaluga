@@ -125,7 +125,7 @@ class DefaultBeacons(
         _beacons.value = emptySet()
         bluetooth.startScanning()
         monitoringJob.value = this@DefaultBeacons.launch {
-            bluetooth.devices().collect { list ->
+            bluetooth.scannedDevices().collect { list ->
                 logger.debug(TAG, "Total Bluetooth devices discovered: ${list.size}")
                 updateBeacons(list.mapNotNull { createBeaconWith(it) })
             }

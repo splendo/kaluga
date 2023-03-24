@@ -75,7 +75,7 @@ object BeaconMock {
     )
 
     private val settings = ConnectionSettings(
-        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(2)
+        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always
     )
 
     private fun makeDeviceInfo(name: String, serviceData: ServiceData) = DeviceInfoImpl(

@@ -1,6 +1,5 @@
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
 import com.splendo.kaluga.permissions.base.Permissions
@@ -26,13 +25,11 @@ actual class BluetoothBuilder(
 
     override fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
-        connectionSettings: ConnectionSettings,
         coroutineContext: CoroutineContext
     ): Bluetooth = Bluetooth(
         { scannerContext ->
             scannerSettingsBuilder(permissionsBuilder(scannerContext))
         },
-        connectionSettings,
         DefaultScanner.Builder(),
         coroutineContext
     )

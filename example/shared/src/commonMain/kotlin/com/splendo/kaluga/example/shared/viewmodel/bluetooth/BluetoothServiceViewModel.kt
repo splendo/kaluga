@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID) : BaseLifecycleViewModel() {
 
-    private val service: Flow<Service?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID]
+    private val service: Flow<Service?> get() = bluetooth.scannedDevices()[deviceIdentifier].services()[serviceUUID]
 
     val uuid = serviceUUID.uuidString
     private val _characteristics = MutableStateFlow(emptyList<BluetoothCharacteristicViewModel>())

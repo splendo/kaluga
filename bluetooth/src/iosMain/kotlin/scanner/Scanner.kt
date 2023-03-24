@@ -23,10 +23,12 @@ import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
@@ -49,12 +51,14 @@ import platform.darwin.dispatch_queue_create
  * @param settings the [BaseScanner.Settings] to configure this scanner
  * @param scanSettings the [ScanSettings] to configure this scanner
  * @param coroutineScope the [CoroutineScope] this scanner runs on
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
 actual class DefaultScanner internal constructor(
     settings: Settings,
     private val scanSettings: ScanSettings,
-    coroutineScope: CoroutineScope
-) : BaseScanner(settings, coroutineScope) {
+    coroutineScope: CoroutineScope,
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
      * Builder for creating a [DefaultScanner]
@@ -65,8 +69,9 @@ actual class DefaultScanner internal constructor(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher
         ): BaseScanner {
-            return DefaultScanner(settings, scanSettings, coroutineScope)
+            return DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
         }
     }
 
@@ -84,13 +89,11 @@ actual class DefaultScanner internal constructor(
             internal val defaultScanOptions = Builder().build()
         }
 
-        internal fun parse(): Map<Any?, *> {
-            val result: MutableMap<String, Any> =
-                mutableMapOf(CBCentralManagerScanOptionAllowDuplicatesKey to allowDuplicateKeys)
-            solicitedServiceUUIDsKey?.let {
-                result[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = it
+        internal fun parse(): Map<Any?, *> = buildMap {
+            this[CBCentralManagerScanOptionAllowDuplicatesKey] = allowDuplicateKeys
+            if (solicitedServiceUUIDsKey?.isNotEmpty() == true) {
+                this[CBCentralManagerScanOptionSolicitedServiceUUIDsKey] = solicitedServiceUUIDsKey
             }
-            return result.toMap()
         }
 
         /**
@@ -184,6 +187,7 @@ actual class DefaultScanner internal constructor(
     private var centralManager: CBCentralManager? = null
     private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
     private val centralManagerMutex = Mutex()
+
     private suspend fun getOrCreateCentralManager(): CBCentralManager {
         return centralManager ?: centralManagerMutex.withLock {
             centralManager ?: createCentralManager().also {
@@ -201,20 +205,16 @@ actual class DefaultScanner internal constructor(
         return manager
     }
 
-    private suspend fun scan(filter: UUID? = null) {
+    private suspend fun scan(filter: Filter) {
         val centralManager = getOrCreateCentralManager()
         centralManager.scanForPeripheralsWithServices(
-            filter?.let { listOf(filter) },
+            filter.takeIf { it.isNotEmpty() }?.toList(),
             scanSettings.parse()
         )
     }
 
-    override suspend fun didStartScanning(filter: Set<UUID>) {
-        if (filter.isEmpty()) {
-            scan()
-        } else {
-            filter.forEach { scan(it) }
-        }
+    override suspend fun didStartScanning(filter: Filter) {
+        scan(filter)
     }
 
     override suspend fun didStopScanning() {
@@ -235,29 +235,36 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(
+        withServices: Filter,
+        connectionSettings: ConnectionSettings?
+    ): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())
             .filterIsInstance<CBPeripheral>()
             .map { peripheral ->
                 val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-                val deviceCreator: DeviceCreator = {
-                    deviceWrapper to DefaultDeviceConnectionManager.Builder(
-                        centralManager,
-                        peripheral
-                    )
-                }
                 val serviceUUIDs: List<UUID> = peripheral.services
                     ?.filterIsInstance<CBService>()
                     ?.map { it.UUID }
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
+                val advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs)
 
-                Scanner.Event.DeviceDiscovered(
+                Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
-                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
-                    deviceCreator = deviceCreator
+                    advertisementData = advertisementData,
+                    deviceCreator = getDeviceBuilder(
+                        deviceWrapper,
+                        Int.MIN_VALUE,
+                        advertisementData,
+                        DefaultDeviceConnectionManager.Builder(
+                            centralManager,
+                            peripheral
+                        ),
+                        connectionSettings
+                    )
                 )
             }
     }
@@ -265,8 +272,6 @@ actual class DefaultScanner internal constructor(
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
-        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
-            deviceWrapper to DefaultDeviceConnectionManager.Builder(central, peripheral)
-        }
+        handleDeviceDiscovered(deviceWrapper, rssi, advertisementData, DefaultDeviceConnectionManager.Builder(central, peripheral))
     }
 }

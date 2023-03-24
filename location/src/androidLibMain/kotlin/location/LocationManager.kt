@@ -125,7 +125,7 @@ actual class DefaultLocationManager(
     override suspend fun stopMonitoringLocation() {
         monitoringMutex.withLock {
             monitoringLocationJob?.let {
-                monitoringLocationJob = it
+                monitoringLocationJob = null
                 locationProvider.stopMonitoringLocation(locationPermission)
                 it.cancel()
             }
