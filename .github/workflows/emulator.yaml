@@ -23,6 +23,7 @@ jobs:
     with:
       gradleTask: bundleLibRuntimeToJarDebug
       project: ${{ inputs.project }}
+      projectBlacklist: hud
 
   test:
     needs: build

@@ -13,6 +13,10 @@ on:
       project:
         required: false
         type: string
+      projectBlacklist:
+        required: false
+        type: string
+
     outputs:
       kotlinVersion:
         description: "kaluga.kotlinVersion property from gradle.propertoes"
@@ -50,7 +54,7 @@ jobs:
 
       - name: generate file with projects for build matrix
         if: inputs.project == ''
-        run: ./gradlew generateNonDependentProjectsFile
+        run: ./gradlew generateNonDependentProjectsFile -PgenerateNonDependentProjectsFile.blacklist=${{ inputs.projectBlacklist }}
 
       - name: generate file with single requested project for build matrix
         if: inputs.project != ''
