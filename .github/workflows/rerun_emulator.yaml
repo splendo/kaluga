@@ -1,6 +1,6 @@
 on:
   workflow_run:
-    workflows: [Android Emulator tests]
+    workflows: ["Android Emulator tests"]
     types:
       - completed
 
