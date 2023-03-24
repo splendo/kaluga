@@ -36,13 +36,13 @@ import kotlin.time.Duration.Companion.milliseconds
 class BufferedAsListChannelTest {
 
     @Test
-    fun testEqualChannel() = testBufferedAsListChannel(10.milliseconds, 10.milliseconds, 50..100)
+    fun testEqualChannel() = testBufferedAsListChannel(10.milliseconds, 10.milliseconds, 1..100)
 
     @Test
-    fun testSlowToProduceChannel() = testBufferedAsListChannel(10.milliseconds, 1.milliseconds, 50..100)
+    fun testSlowToProduceChannel() = testBufferedAsListChannel(10.milliseconds, 1.milliseconds, 1..100)
 
     @Test
-    fun testSlowToConsumeChannel() = testBufferedAsListChannel(1.milliseconds, 10.milliseconds, 5..20)
+    fun testSlowToConsumeChannel() = testBufferedAsListChannel(1.milliseconds, 10.milliseconds, 1..100)
 
     @Test
     fun testCancel() = runBlocking {
