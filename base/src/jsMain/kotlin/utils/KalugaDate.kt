@@ -27,67 +27,67 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
         actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offsetInMilliseconds))
     }
 
-    override var timeZone: TimeZone
+    override var timeZone: TimeZone // TODO
         get() = TimeZone()
         set(value) { }
 
-    override var era: Int
-        get() = 0
+    override var era: Int // TODO
+        get() = 1
         set(value) { }
     override var year: Int
-        get() = date.getFullYear()
-        set(value) { }
+        get() = date.getUTCFullYear()
+        set(value) { date.asDynamic().setUTCFullYear(value) }
     override var month: Int
-        get() = date.getMonth()
-        set(value) { }
-    override val daysInMonth: Int = 0
-    override var weekOfYear: Int
+        get() = date.getUTCMonth() + 1
+        set(value) { date.asDynamic().setUTCMonth(value - 1) }
+    override val daysInMonth: Int get() = kotlin.js.Date(kotlin.js.Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate()
+    override var weekOfYear: Int // TODO
         get() = 0
         set(value) { }
-    override var weekOfMonth: Int
+    override var weekOfMonth: Int // TODO
         get() = 0
         set(value) { }
     override var day: Int
+        get() = date.getUTCDate()
+        set(value) { date.asDynamic().setUTCDate(value) }
+    override var dayOfYear: Int // TODO
         get() = 0
         set(value) { }
-    override var dayOfYear: Int
-        get() = date.getDay()
+    override var weekDay: Int // TODO
+        get() = date.getUTCDay() + 1
         set(value) { }
-    override var weekDay: Int
-        get() = date.getDate() + 1
-        set(value) { }
-    override var firstWeekDay: Int
-        get() = 1
+    override var firstWeekDay: Int // TODO
+        get() = 2
         set(value) { }
 
     override var hour: Int
-        get() = date.getHours()
-        set(value) { }
+        get() = date.getUTCHours()
+        set(value) { date.asDynamic().setUTCHours(value) }
     override var minute: Int
-        get() = date.getMinutes()
-        set(value) { }
+        get() = date.getUTCMinutes()
+        set(value) { date.asDynamic().setUTCMinutes(value) }
     override var second: Int
-        get() = date.getSeconds()
-        set(value) { }
+        get() = date.getUTCSeconds()
+        set(value) { date.asDynamic().setUTCSeconds(value) }
     override var millisecond: Int
-        get() = date.getMilliseconds()
-        set(value) { }
+        get() = date.getUTCMilliseconds()
+        set(value) { date.asDynamic().setUTCMilliseconds(value) }
     override var millisecondSinceEpoch: Long
         get() = date.getTime().toLong()
-        set(value) { }
+        set(value) { date.asDynamic().setTime(value) }
 
-    override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getMilliseconds()))
+    override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getTime()))
 
     override fun equals(other: Any?): Boolean {
         return (other as? KalugaDate)?.let {
-            timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
+            millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
     override fun compareTo(other: KalugaDate): Int {
         return when {
-            date.getMilliseconds() < other.millisecond -> -1
-            date.getMilliseconds() == other.millisecond -> 0
+            millisecondSinceEpoch < other.millisecondSinceEpoch -> -1
+            millisecondSinceEpoch == other.millisecondSinceEpoch -> 0
             else -> 1
         }
     }
