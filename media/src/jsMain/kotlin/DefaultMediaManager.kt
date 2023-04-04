@@ -31,6 +31,8 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
     }
 
+    override var volume: Float = 0.0f
+
     override fun createPlayableMedia(url: String): PlayableMedia? = PlayableMedia(url)
 
     override fun initialize(playableMedia: PlayableMedia) {

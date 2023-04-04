@@ -116,6 +116,9 @@
     <string name="bottom_sheet_sheet_content">This is a bottom sheet</string>
     <string name="bottom_sheet_sheet_sub_page_title">Sheet Sub Page</string>
 
+    <string name="media_playback_rate">Set playback rate</string>
+    <string name="media_error_title">An error occurred playing this media</string>
+
     <string name="android_ui_compose">Compose Implementation</string>
     <string name="android_ui_xml">XML Implementation</string>
 </resources>

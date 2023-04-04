@@ -272,4 +272,26 @@ object ButtonStyles {
             )
         )
     }
+
+    val mediaButtonFocus by lazy {
+        KalugaButtonStyle(
+            defaultBoldFont,
+            12.0f,
+            defaultStyle = ButtonStateStyle(
+                DefaultColors.azure,
+                DefaultColors.lightGray,
+                KalugaBackgroundStyle.Shape.Oval
+            ),
+            pressedStyle = ButtonStateStyle(
+                DefaultColors.azure,
+                DefaultColors.dimGray,
+                KalugaBackgroundStyle.Shape.Oval
+            ),
+            disabledStyle = ButtonStateStyle(
+                DefaultColors.dimGray,
+                DefaultColors.gray,
+                KalugaBackgroundStyle.Shape.Oval
+            )
+        )
+    }
 }

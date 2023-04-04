@@ -108,6 +108,18 @@
                     android:layout_height="wrap_content"
                     app:kalugaButton="@{viewModel.stopButton.stateFlow}"/>
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/loop_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:kalugaButton="@{viewModel.loopButton.stateFlow}"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/rate_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:kalugaButton="@{viewModel.rateButton.stateFlow}"/>
+
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

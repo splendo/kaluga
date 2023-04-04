@@ -164,7 +164,7 @@ internal val androidModule = module {
     }
 
     viewModel {
-        MediaViewModel(DefaultMediaManager.Builder())
+        MediaViewModel(DefaultMediaManager.Builder(), AlertPresenter.Builder())
     }
 
     viewModel { (navigator: Navigator<SystemNavigationActions>) ->
