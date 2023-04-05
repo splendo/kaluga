@@ -20,10 +20,14 @@ package com.splendo.kaluga.media
 import com.splendo.kaluga.base.kvo.observeKeyValueAsFlow
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import platform.AVFoundation.AVErrorContentIsNotAuthorized
 import platform.AVFoundation.AVErrorContentIsProtected
@@ -55,6 +59,7 @@ import platform.AVFoundation.rate
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.AVFoundation.volume
+import platform.CoreGraphics.CGSize
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.CoreMedia.kCMTimeZero
@@ -66,6 +71,7 @@ import platform.Foundation.NSOperationQueue.Companion.currentQueue
 import platform.Foundation.NSOperationQueue.Companion.mainQueue
 import platform.darwin.NSObjectProtocol
 import kotlin.coroutines.CoroutineContext
+import kotlin.properties.Delegates
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -73,6 +79,9 @@ import kotlin.time.DurationUnit
 actual class PlayableMedia(actual val source: MediaSource, internal val avPlayerItem: AVPlayerItem) {
     actual val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
     actual val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
+    actual val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<CValue<CGSize>>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { size ->
+        size.useContents { Resolution(width.toInt(), height.toInt()) }
+    }
 }
 
 actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
@@ -82,6 +91,10 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     private val avPlayer = AVPlayer(null)
+    private var surface: MediaSurface? by Delegates.observable(null) { _, old, new ->
+        old?.layer?.player = null
+        new?.layer?.player = avPlayer
+    }
 
     override var volume: Float
         get() = avPlayer.volume
@@ -93,7 +106,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
 
     init {
         launch {
-            avPlayer.observeKeyValueAsFlow<AVPlayerStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew, coroutineContext).collect { status ->
+            avPlayer.observeKeyValueAsFlow<AVPlayerStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
                 when (status) {
                     AVPlayerStatusUnknown,
                     AVPlayerStatusReadyToPlay -> {}
@@ -135,7 +148,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     override fun initialize(playableMedia: PlayableMedia) {
         avPlayer.replaceCurrentItemWithPlayerItem(playableMedia.avPlayerItem)
         itemJob = launch {
-            playableMedia.avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew, coroutineContext).collect { status ->
+            playableMedia.avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
                 when (status) {
                     AVPlayerItemStatusUnknown -> {}
                     AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(playableMedia.source, avPlayer.currentItem!!))
@@ -146,6 +159,10 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
                 }
             }
         }
+    }
+
+    override fun renderVideoOnSurface(surface: MediaSurface?) {
+        this.surface = surface
     }
 
     override fun play(rate: Float) {
@@ -159,6 +176,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     override fun cleanUp() {
+        surface = null
         avPlayer.replaceCurrentItemWithPlayerItem(null)
         observers.getAndUpdate { emptyList() }.forEach { observer ->
             NSNotificationCenter.defaultCenter.removeObserver(observer)

@@ -76,6 +76,7 @@ interface MediaPlayer {
     val availableControls: Flow<Controls>
 
     suspend fun initializeFor(source: MediaSource)
+    fun renderVideoOnSurface(surface: MediaSurface?)
 
     suspend fun forceStart(playbackParameters: PlaybackState.PlaybackParameters, restartIfStarted: Boolean = false)
     suspend fun awaitCompletion()
@@ -172,6 +173,10 @@ class DefaultMediaPlayer(
                 is PlaybackState.Active -> playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
             }
         }.first()
+    }
+
+    override fun renderVideoOnSurface(surface: MediaSurface?) {
+        mediaManager.renderVideoOnSurface(surface)
     }
 
     private suspend fun start(playbackParameters: PlaybackState.PlaybackParameters) = try {

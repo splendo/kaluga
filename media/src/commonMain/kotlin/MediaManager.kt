@@ -34,7 +34,10 @@ expect class PlayableMedia {
     val source: MediaSource
     val duration: Duration
     val currentPlayTime: Duration
+    val resolution: Flow<Resolution>
 }
+
+data class Resolution(val width: Int, val height: Int)
 
 interface MediaManager {
 
@@ -50,6 +53,7 @@ interface MediaManager {
 
     fun createPlayableMedia(source: MediaSource): PlayableMedia?
     fun initialize(playableMedia: PlayableMedia)
+    fun renderVideoOnSurface(surface: MediaSurface?)
 
     fun play(rate: Float)
     fun pause()

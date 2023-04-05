@@ -17,27 +17,43 @@
 
 package com.splendo.kaluga.base.kvo
 
-import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent
-import com.splendo.kaluga.base.flow.onCollectionEvent
 import kotlinx.cinterop.COpaquePointer
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onSubscription
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import platform.Foundation.NSKeyValueObservingOptionNew
 import platform.Foundation.NSKeyValueObservingOptions
 import platform.Foundation.addObserver
 import platform.Foundation.removeObserver
 import platform.Foundation.valueForKeyPath
 import platform.darwin.NSObject
-import kotlin.coroutines.CoroutineContext
 
 @Suppress("UNCHECKED_CAST")
-private class KVOObserver<T> : NSObject(), NSObjectObserverProtocol {
+private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew) : NSObject(), NSObjectObserverProtocol {
 
-    val observedValue = MutableSharedFlow<T>(1)
+    private var isAdded: Boolean = false
+    private val mutex = Mutex()
+    private val _observedValue = MutableSharedFlow<T>(1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val observedValue = _observedValue.asSharedFlow().onSubscription {
+        mutex.withLock {
+            if (_observedValue.subscriptionCount.value > 0 && !isAdded) {
+                nsObject.addObserver(this@KVOObserver, keyPath, options, null)
+                isAdded = true
+            }
+        }
+    }.onCompletion {
+        mutex.withLock {
+            if (_observedValue.subscriptionCount.value == 0 && isAdded) {
+                nsObject.removeObserver(this@KVOObserver, keyPath)
+                isAdded = false
+            }
+        }
+    }
 
     override fun observeValueForKeyPath(
         keyPath: String?,
@@ -46,24 +62,14 @@ private class KVOObserver<T> : NSObject(), NSObjectObserverProtocol {
         context: COpaquePointer?
     ) {
         val value = (ofObject as NSObject).valueForKeyPath(keyPath!!)
-        observedValue.tryEmit(value as T)
+        _observedValue.tryEmit(value as T)
     }
 }
 
 fun <T> NSObject.observeKeyValueAsFlow(
     keyPath: String,
-    options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew,
-    coroutineContext: CoroutineContext
+    options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew
 ): Flow<T> {
-    val observer = KVOObserver<T>()
-    CoroutineScope(coroutineContext + CoroutineName("Observing $keyPath")).launch {
-        observer.observedValue.onCollectionEvent { event ->
-            when (event) {
-                SharedFlowCollectionEvent.NoMoreCollections -> removeObserver(observer, keyPath)
-                SharedFlowCollectionEvent.FirstCollection -> addObserver(observer, keyPath, options, null)
-                SharedFlowCollectionEvent.LaterCollections -> {}
-            }
-        }
-    }
-    return observer.observedValue.asSharedFlow()
+    val observer = KVOObserver<T>(this, keyPath, options)
+    return observer.observedValue
 }

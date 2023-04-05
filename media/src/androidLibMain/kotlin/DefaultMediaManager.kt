@@ -17,8 +17,16 @@
 
 package com.splendo.kaluga.media
 
+import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.os.Build
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onSubscription
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -29,6 +37,25 @@ typealias AndroidMediaPlayer = android.media.MediaPlayer
 actual class PlayableMedia(actual val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) {
     actual val duration: Duration get() = mediaPlayer.duration.milliseconds
     actual val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
+    private val mutex = Mutex()
+    private var videoSizeListener: android.media.MediaPlayer.OnVideoSizeChangedListener? = null
+    private val _resolution = MutableStateFlow(Resolution(0, 0))
+    actual val resolution: Flow<Resolution> = _resolution.asSharedFlow().onSubscription {
+        mutex.withLock {
+            if (_resolution.subscriptionCount.value > 0 && videoSizeListener == null) {
+                videoSizeListener = MediaPlayer.OnVideoSizeChangedListener { _, width, height ->
+                    _resolution.value = Resolution(width, height)
+                }
+                mediaPlayer.setOnVideoSizeChangedListener(videoSizeListener)
+            }
+        }
+    }.onCompletion {
+        mutex.withLock {
+            if (_resolution.subscriptionCount.value == 0) {
+                mediaPlayer.setOnVideoSizeChangedListener(null)
+            }
+        }
+    }
 }
 
 actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
@@ -101,6 +128,10 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
             handlePrepared(PlayableMedia(playableMedia.source, it))
         }
         mediaPlayer.prepareAsync()
+    }
+
+    override fun renderVideoOnSurface(surface: MediaSurface?) {
+        mediaPlayer.setDisplay(surface?.holder)
     }
 
     override fun play(rate: Float) {

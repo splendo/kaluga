@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.media
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 actual class PlayableMedia(actual val source: MediaSource) {
     actual val duration: Duration get() = Duration.ZERO
     actual val currentPlayTime: Duration get() = Duration.ZERO
+    actual val resolution: Flow<Resolution> = flowOf(Resolution(0, 0))
 }
 
 actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
@@ -31,12 +34,17 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
     }
 
+    private var mediaSurface: MediaSurface? = null
     override var volume: Float = 0.0f
 
     override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source)
 
     override fun initialize(playableMedia: PlayableMedia) {
         handlePrepared(playableMedia)
+    }
+
+    override fun renderVideoOnSurface(surface: MediaSurface?) {
+        this.mediaSurface = surface
     }
 
     override fun play(rate: Float) {
