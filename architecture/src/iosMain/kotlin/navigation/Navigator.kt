@@ -227,7 +227,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
     }
 
     private fun presentMediaPicker(mediaPickerSpec: NavigationSpec.MediaPicker) {
-        val mediaPickerController = MPMediaPickerController(mediaPickerSpec.types.fold(0UL) { acc, type -> acc or type.mediaType} )
+        val mediaPickerController = MPMediaPickerController(mediaPickerSpec.types.fold(0UL) { acc, type -> acc or type.mediaType })
 
         mediaPickerController.delegate = mediaPickerSpec.delegate
         mediaPickerController.allowsPickingMultipleItems = mediaPickerSpec.settings.allowsPickingMultipleItems

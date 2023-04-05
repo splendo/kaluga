@@ -42,7 +42,7 @@ interface MediaPlayer {
     data class Controls(
         val play: Play? = null,
         val pause: Pause? = null,
-        val unpause : Unpause? = null,
+        val unpause: Unpause? = null,
         val stop: Stop? = null,
         val seek: Seek? = null,
         val setRate: SetRate? = null,
@@ -133,7 +133,7 @@ class DefaultMediaPlayer(
                 setLoopMode = MediaPlayer.Controls.SetLoopMode(state.playbackParameters.loopMode) { newLoopMode -> updateLoopMode(newLoopMode) }
             )
             is PlaybackState.Paused -> MediaPlayer.Controls(
-                play  = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) },
+                play = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) },
                 unpause = MediaPlayer.Controls.Unpause { unpause() },
                 stop = MediaPlayer.Controls.Stop { stop() },
                 seek = MediaPlayer.Controls.Seek { duration -> seekTo(duration) },

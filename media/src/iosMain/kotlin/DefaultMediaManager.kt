@@ -20,6 +20,7 @@ package com.splendo.kaluga.media
 import com.splendo.kaluga.base.kvo.observeKeyValueAsFlow
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
+import kotlinx.cinterop.readValue
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
@@ -56,6 +57,7 @@ import platform.AVFoundation.seekToTime
 import platform.AVFoundation.volume
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
+import platform.CoreMedia.kCMTimeZero
 import platform.Foundation.NSError
 import platform.Foundation.NSKeyValueObservingOptionInitial
 import platform.Foundation.NSKeyValueObservingOptionNew
@@ -122,7 +124,8 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         )
     }
 
-    override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source,
+    override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(
+        source,
         when (source) {
             is MediaSource.Asset -> AVPlayerItem(source.asset)
             is MediaSource.URL -> AVPlayerItem(source.url)
@@ -163,7 +166,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         cancel()
     }
 
-    override fun startSeek(duration: Duration) = avPlayer.seekToTime(CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1)) {
+    override fun startSeek(duration: Duration) = avPlayer.seekToTime(CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1000), kCMTimeZero.readValue(), kCMTimeZero.readValue()) {
         handleSeekCompleted(it)
     }
 
@@ -173,18 +176,18 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
 
     private fun NSError.handleError() {
         val playbackError = when (domain) {
-                AVFoundationErrorDomain -> when (code) {
-                    AVErrorFormatUnsupported,
-                    AVErrorContentIsNotAuthorized,
-                    AVErrorContentIsProtected,
-                    AVErrorContentIsUnavailable -> PlaybackError.Unsupported
-                    AVErrorDecodeFailed,
-                    AVErrorFailedToParse -> PlaybackError.MalformedMediaSource
-                    AVErrorNoLongerPlayable -> PlaybackError.IO
-                    AVErrorContentNotUpdated -> PlaybackError.TimedOut
-                    else -> null
-                }
+            AVFoundationErrorDomain -> when (code) {
+                AVErrorFormatUnsupported,
+                AVErrorContentIsNotAuthorized,
+                AVErrorContentIsProtected,
+                AVErrorContentIsUnavailable -> PlaybackError.Unsupported
+                AVErrorDecodeFailed,
+                AVErrorFailedToParse -> PlaybackError.MalformedMediaSource
+                AVErrorNoLongerPlayable -> PlaybackError.IO
+                AVErrorContentNotUpdated -> PlaybackError.TimedOut
                 else -> null
+            }
+            else -> null
         } ?: PlaybackError.Unknown
         handleError(playbackError)
     }

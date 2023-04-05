@@ -64,7 +64,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
             false
         }
     }
-    
+
     override fun cleanUp() {
         mediaPlayer.release()
     }

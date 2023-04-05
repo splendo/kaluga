@@ -52,6 +52,6 @@ open class PlaybackStateRepo(
 ) : BasePlaybackStateRepo(
     createInitialState = {
         PlaybackStateImpl.Uninitialized(mediaManager = mediaManager)
-     },
+    },
     coroutineContext = coroutineContext
 )

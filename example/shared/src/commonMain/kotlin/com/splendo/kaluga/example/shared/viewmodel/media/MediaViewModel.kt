@@ -79,8 +79,10 @@ class MediaViewModel(
         it.format()
     }.toInitializedObservable(ZERO.format(), coroutineScope)
 
-    val currentPlaytime = mediaPlayer.playTime(100.milliseconds).map { it.format() }.toInitializedObservable(
-        ZERO.format(), coroutineScope)
+    val currentPlaytime = mediaPlayer.playTime(100.milliseconds).map {
+        it.format()
+    }.toInitializedObservable(ZERO.format(), coroutineScope)
+
     val progress = combine(mediaPlayer.playTime(100.milliseconds), _totalDuration) { playTime, totalDuration ->
         if (totalDuration > ZERO) {
             playTime / totalDuration
@@ -154,7 +156,7 @@ class MediaViewModel(
                     setRate.perform(selectedRate)
                 }
             }
-        } ?: KalugaButton.Plain("1x", ButtonStyles.mediaButton, false) {}
+        } ?: KalugaButton.Plain(playbackFormatter.format(1), ButtonStyles.mediaButton, false) {}
     }.toUninitializedObservable(coroutineScope)
 
     fun seekTo(progress: Double) {
@@ -163,15 +165,15 @@ class MediaViewModel(
         }
     }
 
-    val selectMediaButton = KalugaButton.Plain("Select Media", ButtonStyles.default) {
+    val selectMediaButton = KalugaButton.Plain("media_select_media_button".localized(), ButtonStyles.default) {
         coroutineScope.launch {
-            val defaultAudio = Alert.Action("Play Default Audio")
-            val selectLocalFile = Alert.Action("Media File on Device")
-            val selectRemoteFile = Alert.Action("Media File from Web")
-            val confirm = Alert.Action("Confirm", Alert.Action.Style.POSITIVE)
-            val cancel = Alert.Action("Cancel", Alert.Action.Style.CANCEL)
+            val defaultAudio = Alert.Action("media_select_default_audio".localized())
+            val selectLocalFile = Alert.Action("media_select_file_on_device".localized())
+            val selectRemoteFile = Alert.Action("media_select_file_from_web".localized())
+            val confirm = Alert.Action("confirm_selection".localized(), Alert.Action.Style.POSITIVE)
+            val cancel = Alert.Action("cancel_selection".localized(), Alert.Action.Style.CANCEL)
             val actionSelected = alertPresenterBuilder.buildActionSheet(coroutineScope) {
-                setTitle("Select Media Provider")
+                setTitle("media_select_title".localized())
                 addActions(defaultAudio, selectLocalFile, selectRemoteFile, cancel)
             }.show()
 
@@ -181,9 +183,9 @@ class MediaViewModel(
                 selectRemoteFile -> {
                     var input = ""
                     val remoteActionSelected = alertPresenterBuilder.buildAlertWithInput(coroutineScope) {
-                        setTitle("Select Media")
+                        setTitle("media_select_from_web_title".localized())
                         addActions(confirm, cancel)
-                        setTextInput("Url", "Url to remote media file") {
+                        setTextInput(input, "media_select_from_web_hint".localized()) {
                             input = it
                         }
                     }.show()
@@ -230,5 +232,4 @@ class MediaViewModel(
     private fun Duration.format() = toComponents { hours, minutes, seconds, _ ->
         if (hours > 0) "%02d:%02d:%02d".format(hours, minutes, seconds) else "%02d:%02d".format(minutes, seconds)
     }
-
 }

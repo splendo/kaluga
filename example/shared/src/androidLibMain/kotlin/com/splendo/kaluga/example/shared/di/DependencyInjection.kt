@@ -78,7 +78,6 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.DefaultLocationManager
 import com.splendo.kaluga.location.GoogleLocationProvider
 import com.splendo.kaluga.media.DefaultMediaManager
-import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.resources.StyledStringBuilder

@@ -20,7 +20,6 @@ package com.splendo.kaluga.example.shared.stylable
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
-import com.splendo.kaluga.resources.defaultMonospaceFont
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle

@@ -116,6 +116,13 @@
     <string name="bottom_sheet_sheet_content">This is a bottom sheet</string>
     <string name="bottom_sheet_sheet_sub_page_title">Sheet Sub Page</string>
 
+    <string name="media_select_media_button">Select Media</string>
+    <string name="media_select_title">Select Media Provider</string>
+    <string name="media_select_default_audio">Play Default Audio</string>
+    <string name="media_select_file_on_device">Media File on Device</string>
+    <string name="media_select_file_from_web">Media File from Web</string>
+    <string name="media_select_from_web_title">Provide Media URL</string>
+    <string name="media_select_from_web_hint">Url to remote media file</string>
     <string name="media_playback_rate">Set playback rate</string>
     <string name="media_error_title">An error occurred playing this media</string>
 

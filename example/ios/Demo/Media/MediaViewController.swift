@@ -31,9 +31,8 @@ class MediaViewController: UIViewController {
                 prompt: nil,
                 showsItemsWithProtectedAssets: false
             ),
-            animated: true,
-            completion: nil
-        )
+            animated: true) {
+        }
         default: fatalError("Unknown action")
         }
     }
