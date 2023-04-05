@@ -17,23 +17,15 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.base.flow.collectUntilLast
 import com.splendo.kaluga.base.flow.takeUntilLast
-import com.splendo.kaluga.base.utils.firstInstance
-import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
@@ -83,11 +75,12 @@ interface MediaPlayer {
 
     val availableControls: Flow<Controls>
 
-    suspend fun initializeFor(url: String)
+    suspend fun initializeFor(source: MediaSource)
 
     suspend fun forceStart(playbackParameters: PlaybackState.PlaybackParameters, restartIfStarted: Boolean = false)
     suspend fun awaitCompletion()
 
+    suspend fun reset()
     fun end()
 }
 
@@ -160,18 +153,18 @@ class DefaultMediaPlayer(
         }
     }.shareIn(this, SharingStarted.WhileSubscribed())
 
-    override suspend fun initializeFor(url: String) {
+    override suspend fun initializeFor(source: MediaSource) {
         var resetOnError = true
         playbackStateRepo.transformLatest { state ->
             when (state) {
                 is PlaybackState.Uninitialized -> playbackStateRepo.takeAndChangeState(PlaybackState.Uninitialized::class) {
                     resetOnError = false
                     it.initialize(
-                        url
+                        source
                     )
                 }
                 is PlaybackState.Initialized -> emit(Unit)
-                is PlaybackState.Idle -> if (state.playableMedia.url == url) emit(Unit) else playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
+                is PlaybackState.Idle -> if (state.playableMedia.source == source) emit(Unit) else playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
                 is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
                 is PlaybackState.Error -> if (resetOnError) {
                     playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
@@ -249,6 +242,17 @@ class DefaultMediaPlayer(
             is PlaybackState.Active -> {} // Wait until completed
         }
     }.first()
+
+    override suspend fun reset() {
+        playbackStateRepo.transformLatest { state ->
+            when (state) {
+                is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
+                is PlaybackState.Uninitialized -> emit(Unit)
+                is PlaybackState.Active -> playbackStateRepo.takeAndChangeState(remainIfStateNot = PlaybackState.Active::class) { it.reset }
+                is PlaybackState.Error -> playbackStateRepo.takeAndChangeState(remainIfStateNot = PlaybackState.Error::class) { it.reset }
+            }
+        }.first()
+    }
 
     override fun end() {
         launch {

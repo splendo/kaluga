@@ -31,7 +31,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 expect class PlayableMedia {
-    val url: String
+    val source: MediaSource
     val duration: Duration
     val currentPlayTime: Duration
 }
@@ -48,7 +48,7 @@ interface MediaManager {
     val events: Flow<Event>
     var volume: Float
 
-    fun createPlayableMedia(url: String): PlayableMedia?
+    fun createPlayableMedia(source: MediaSource): PlayableMedia?
     fun initialize(playableMedia: PlayableMedia)
 
     fun play(rate: Float)

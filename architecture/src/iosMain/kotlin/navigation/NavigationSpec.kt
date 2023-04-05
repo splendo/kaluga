@@ -17,11 +17,33 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelector.DocumentSelectorAppearance
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelector.DocumentSelectorSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Email.EmailSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Message.MessageSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Nested.Type
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdParty.OpenMode
 import platform.CoreFoundation.CFStringRef
 import platform.CoreServices.kUTTypeImage
 import platform.CoreServices.kUTTypeMovie
 import platform.Foundation.NSData
 import platform.Foundation.NSURL
+import platform.MediaPlayer.MPMediaPickerControllerDelegateProtocol
+import platform.MediaPlayer.MPMediaType
+import platform.MediaPlayer.MPMediaTypeAny
+import platform.MediaPlayer.MPMediaTypeAnyAudio
+import platform.MediaPlayer.MPMediaTypeAnyVideo
+import platform.MediaPlayer.MPMediaTypeAudioBook
+import platform.MediaPlayer.MPMediaTypeAudioITunesU
+import platform.MediaPlayer.MPMediaTypeHomeVideo
+import platform.MediaPlayer.MPMediaTypeMovie
+import platform.MediaPlayer.MPMediaTypeMusic
+import platform.MediaPlayer.MPMediaTypeMusicVideo
+import platform.MediaPlayer.MPMediaTypePodcast
+import platform.MediaPlayer.MPMediaTypeTVShow
+import platform.MediaPlayer.MPMediaTypeVideoITunesU
+import platform.MediaPlayer.MPMediaTypeVideoPodcast
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMailComposeViewControllerDelegateProtocol
 import platform.MessageUI.MFMessageComposeViewController
@@ -152,7 +174,7 @@ sealed class NavigationSpec {
      */
     data class ImagePicker(
         val sourceType: UIImagePickerControllerSourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary,
-        val mediaType: Set<MediaType> = setOf(MediaType.Image),
+        val mediaType: Set<MediaType> = setOf(MediaType.IMAGE),
         val navigationDelegate: UINavigationControllerDelegateProtocol,
         val imagePickerDelegate: UIImagePickerControllerDelegateProtocol,
         val animated: Boolean = false,
@@ -210,13 +232,41 @@ sealed class NavigationSpec {
         /**
          * The type of media that can be picked
          */
-        sealed class MediaType {
-
-            abstract val typeString: CFStringRef?
-
-            object Image : MediaType() { override val typeString = kUTTypeImage }
-            object Movie : MediaType() { override val typeString = kUTTypeMovie }
+        enum class MediaType(val typeString: CFStringRef?) {
+            IMAGE(kUTTypeImage),
+            MOVIE(kUTTypeMovie)
         }
+    }
+
+    data class MediaPicker(
+        val types: Set<Type>,
+        val delegate: MPMediaPickerControllerDelegateProtocol? = null,
+        val settings: Settings = Settings(),
+        val animated: Boolean = false,
+        val completion: (() -> Unit)? = null
+    ) : NavigationSpec() {
+        enum class Type(val mediaType: MPMediaType) {
+            MUSIC(MPMediaTypeMusic),
+            PODCAST(MPMediaTypePodcast),
+            AUDIOBOOK(MPMediaTypeAudioBook),
+            AUDIO_ITUNES_U(MPMediaTypeAudioITunesU),
+            ANY_AUDIO(MPMediaTypeAnyAudio),
+            MOVIE(MPMediaTypeMovie),
+            TV_SHOW(MPMediaTypeTVShow),
+            VIDEO_PODCAST(MPMediaTypeVideoPodcast),
+            MUSIC_VIDEO(MPMediaTypeMusicVideo),
+            VIDEO_ITUNES_U(MPMediaTypeVideoITunesU),
+            HOME_VIDEO(MPMediaTypeHomeVideo),
+            ANY_VIDEO(MPMediaTypeAnyVideo),
+            ANY(MPMediaTypeAny)
+        }
+
+        data class Settings(
+            val allowsPickingMultipleItems: Boolean = false,
+            val showsCloudItems: Boolean = true,
+            val prompt: String? = null,
+            val showsItemsWithProtectedAssets: Boolean = true
+        )
     }
 
     /**

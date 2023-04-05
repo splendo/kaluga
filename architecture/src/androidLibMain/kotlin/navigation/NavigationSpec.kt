@@ -41,6 +41,11 @@ sealed class NavigationSpec {
             flags: Set<IntentFlag> = emptySet(),
             launchType: Activity.LaunchType = Activity.LaunchType.NoResult
         ) = Activity(A::class.java, flags, launchType)
+
+        inline fun <reified A : android.app.Activity, Input> Contract(
+            input: Input,
+            noinline provideResultLauncher: A.() -> ActivityResultLauncher<Input>
+        ) = Contract(A::class, input, provideResultLauncher)
     }
 
     /**
@@ -96,6 +101,14 @@ sealed class NavigationSpec {
             flags: Set<IntentFlag> = emptySet(),
             requestCode: Int?
         ) : this(activityClass, flags, requestCode?.let { LaunchType.ActivityResult(it) } ?: LaunchType.NoResult)
+    }
+
+    data class Contract<Input, A : android.app.Activity>(
+        val activityClass: KClass<A>,
+        val input: Input,
+        val provideResultLauncher: A.() -> ActivityResultLauncher<Input>
+    ) : NavigationSpec() {
+        fun tryAndLaunch(activity: android.app.Activity) = activityClass.safeCast(activity)?.provideResultLauncher()?.launch(input)
     }
 
     /**

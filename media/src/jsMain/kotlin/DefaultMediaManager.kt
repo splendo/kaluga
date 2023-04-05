@@ -20,7 +20,7 @@ package com.splendo.kaluga.media
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
-actual class PlayableMedia(actual val url: String) {
+actual class PlayableMedia(actual val source: MediaSource) {
     actual val duration: Duration get() = Duration.ZERO
     actual val currentPlayTime: Duration get() = Duration.ZERO
 }
@@ -33,7 +33,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
 
     override var volume: Float = 0.0f
 
-    override fun createPlayableMedia(url: String): PlayableMedia? = PlayableMedia(url)
+    override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source)
 
     override fun initialize(playableMedia: PlayableMedia) {
         handlePrepared(playableMedia)

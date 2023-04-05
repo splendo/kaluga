@@ -18,7 +18,7 @@
 package com.splendo.kaluga.media
 
 import android.media.PlaybackParams
-import com.splendo.kaluga.logging.debug
+import android.os.Build
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -26,7 +26,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 typealias AndroidMediaPlayer = android.media.MediaPlayer
 
-actual class PlayableMedia(actual val url: String, private val mediaPlayer: AndroidMediaPlayer) {
+actual class PlayableMedia(actual val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) {
     actual val duration: Duration get() = mediaPlayer.duration.milliseconds
     actual val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
 }
@@ -52,7 +52,6 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         }
         mediaPlayer.setOnCompletionListener { handleCompleted() }
         mediaPlayer.setOnErrorListener { _, _, extra ->
-            debug("Media Player", "Received error $extra")
             val error = when (extra) {
                 AndroidMediaPlayer.MEDIA_ERROR_IO -> PlaybackError.IO
                 AndroidMediaPlayer.MEDIA_ERROR_MALFORMED -> PlaybackError.MalformedMediaSource
@@ -70,11 +69,23 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         mediaPlayer.release()
     }
 
-    override fun createPlayableMedia(url: String): PlayableMedia? = try {
-        mediaPlayer.setDataSource(url)
-        PlayableMedia(url, mediaPlayer)
+    override fun createPlayableMedia(source: MediaSource): PlayableMedia? = try {
+        when (source) {
+            is MediaSource.Asset -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mediaPlayer.setDataSource(source.descriptor)
+            } else {
+                mediaPlayer.setDataSource(source.descriptor.fileDescriptor)
+            }
+            is MediaSource.File -> mediaPlayer.setDataSource(source.descriptor)
+            is MediaSource.Url -> mediaPlayer.setDataSource(source.url.path)
+            is MediaSource.Content -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mediaPlayer.setDataSource(source.context, source.uri, source.headers, source.cookies)
+            } else {
+                mediaPlayer.setDataSource(source.context, source.uri, source.headers)
+            }
+        }
+        PlayableMedia(source, mediaPlayer)
     } catch (e: Throwable) {
-        debug("Media Player", "Create error $e")
         when (e) {
             is IllegalStateException -> null
             is IOException -> null
@@ -87,7 +98,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     override fun initialize(playableMedia: PlayableMedia) {
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.setOnPreparedListener(null)
-            handlePrepared(PlayableMedia(playableMedia.url, it))
+            handlePrepared(PlayableMedia(playableMedia.source, it))
         }
         mediaPlayer.prepareAsync()
     }

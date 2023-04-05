@@ -21,9 +21,14 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
+import com.splendo.kaluga.alerts.buildAlertWithInput
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
@@ -31,12 +36,14 @@ import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.media.MediaPlayer
+import com.splendo.kaluga.media.MediaSource
+import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.duration
+import com.splendo.kaluga.media.mediaSourceFromUrl
 import com.splendo.kaluga.media.playTime
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -45,18 +52,24 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.milliseconds
+
+sealed class MediaNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
+    object SelectLocal : MediaNavigationAction()
+}
 
 class MediaViewModel(
     builder: BaseMediaManager.Builder,
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder
-) : BaseLifecycleViewModel(alertPresenterBuilder) {
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
+    navigator: Navigator<MediaNavigationAction>
+) : NavigatingViewModel<MediaNavigationAction>(navigator, alertPresenterBuilder) {
 
     private companion object {
         val playbackFormatter = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U)).apply { positiveSuffix = "x" }
     }
 
-    private val mediaPlayer = DefaultMediaPlayer(builder, coroutineScope.coroutineContext)
+    private val mediaPlayerDispatcher = singleThreadDispatcher("MediaPlayer")
+    private val mediaPlayer = DefaultMediaPlayer(builder, coroutineScope.coroutineContext + mediaPlayerDispatcher)
 
     val isLoaded = mediaPlayer.availableControls.map { it.controlTypes.isNotEmpty() }.toInitializedObservable(false, coroutineScope)
     private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
@@ -66,10 +79,10 @@ class MediaViewModel(
         it.format()
     }.toInitializedObservable(ZERO.format(), coroutineScope)
 
-    val currentPlaytime = mediaPlayer.playTime(1.seconds).map { it.format() }.toInitializedObservable(
+    val currentPlaytime = mediaPlayer.playTime(100.milliseconds).map { it.format() }.toInitializedObservable(
         ZERO.format(), coroutineScope)
-    val progress = combine(mediaPlayer.playTime(1.seconds), _totalDuration, _availableControls) { playTime, totalDuration, availableControls ->
-        if (totalDuration > ZERO && availableControls.seek != null) {
+    val progress = combine(mediaPlayer.playTime(100.milliseconds), _totalDuration) { playTime, totalDuration ->
+        if (totalDuration > ZERO) {
             playTime / totalDuration
         } else {
             0.0
@@ -150,6 +163,40 @@ class MediaViewModel(
         }
     }
 
+    val selectMediaButton = KalugaButton.Plain("Select Media", ButtonStyles.default) {
+        coroutineScope.launch {
+            val defaultAudio = Alert.Action("Play Default Audio")
+            val selectLocalFile = Alert.Action("Media File on Device")
+            val selectRemoteFile = Alert.Action("Media File from Web")
+            val confirm = Alert.Action("Confirm", Alert.Action.Style.POSITIVE)
+            val cancel = Alert.Action("Cancel", Alert.Action.Style.CANCEL)
+            val actionSelected = alertPresenterBuilder.buildActionSheet(coroutineScope) {
+                setTitle("Select Media Provider")
+                addActions(defaultAudio, selectLocalFile, selectRemoteFile, cancel)
+            }.show()
+
+            when (actionSelected) {
+                defaultAudio -> didSelectFileAt(mediaSourceFromUrl("https://cdn.freesound.org/previews/459/459992_6253486-lq.mp3"))
+                selectLocalFile -> navigator.navigate(MediaNavigationAction.SelectLocal)
+                selectRemoteFile -> {
+                    var input = ""
+                    val remoteActionSelected = alertPresenterBuilder.buildAlertWithInput(coroutineScope) {
+                        setTitle("Select Media")
+                        addActions(confirm, cancel)
+                        setTextInput("Url", "Url to remote media file") {
+                            input = it
+                        }
+                    }.show()
+                    when (remoteActionSelected) {
+                        confirm -> didSelectFileAt(mediaSourceFromUrl(input))
+                        else -> {}
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
     init {
         coroutineScope.launch {
             _availableControls.mapNotNull { it.displayError }.collect { error ->
@@ -160,17 +207,23 @@ class MediaViewModel(
                 }.show()
             }
         }
-        initialize()
     }
 
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.end()
+        mediaPlayerDispatcher.close()
     }
 
-    private fun initialize() {
+    fun didSelectFileAt(source: MediaSource?) {
         coroutineScope.launch {
-            mediaPlayer.initializeFor("https://www.orangefreesounds.com/wp-content/uploads/2016/01/Waves-mp3.mp3")
+            try {
+                source?.let {
+                    mediaPlayer.initializeFor(it)
+                } ?: mediaPlayer.reset()
+            } catch (e: PlaybackError) {
+                // Will be displayed automatically
+            }
         }
     }
 

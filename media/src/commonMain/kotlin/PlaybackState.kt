@@ -52,7 +52,7 @@ sealed interface PlaybackState : KalugaState {
     }
 
     interface Uninitialized : Active {
-        fun initialize(url: String): suspend () -> InitializedOrError
+        fun initialize(source: MediaSource): suspend () -> InitializedOrError
     }
 
     sealed interface InitializedOrError : Active
@@ -115,7 +115,7 @@ internal sealed class PlaybackStateImpl {
     }
 
     data class Uninitialized(override val mediaManager: MediaManager) : Active(), PlaybackState.Uninitialized, HandleBeforeOldStateIsRemoved<PlaybackState> {
-        override fun initialize(url: String): suspend () -> PlaybackState.InitializedOrError = mediaManager.createPlayableMedia(url)?.let {
+        override fun initialize(source: MediaSource): suspend () -> PlaybackState.InitializedOrError = mediaManager.createPlayableMedia(source)?.let {
             { Initialized(it, mediaManager) }
             } ?: failWithError(PlaybackError.MalformedMediaSource)
 

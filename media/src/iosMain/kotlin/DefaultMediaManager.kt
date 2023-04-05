@@ -62,17 +62,13 @@ import platform.Foundation.NSKeyValueObservingOptionNew
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue.Companion.currentQueue
 import platform.Foundation.NSOperationQueue.Companion.mainQueue
-import platform.Foundation.NSURL
-import platform.Foundation.NSURLErrorDomain
 import platform.darwin.NSObjectProtocol
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-actual class PlayableMedia(actual val url: String, internal val avPlayerItem: AVPlayerItem) {
+actual class PlayableMedia(actual val source: MediaSource, internal val avPlayerItem: AVPlayerItem) {
     actual val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
     actual val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
 }
@@ -126,9 +122,12 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         )
     }
 
-    override fun createPlayableMedia(url: String): PlayableMedia? = NSURL.URLWithString(url)?.let {
-        PlayableMedia(url, AVPlayerItem(it))
-    }
+    override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source,
+        when (source) {
+            is MediaSource.Asset -> AVPlayerItem(source.asset)
+            is MediaSource.URL -> AVPlayerItem(source.url)
+        }
+    )
 
     override fun initialize(playableMedia: PlayableMedia) {
         avPlayer.replaceCurrentItemWithPlayerItem(playableMedia.avPlayerItem)
@@ -136,7 +135,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
             playableMedia.avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew, coroutineContext).collect { status ->
                 when (status) {
                     AVPlayerItemStatusUnknown -> {}
-                    AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(playableMedia.url, avPlayer.currentItem!!))
+                    AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(playableMedia.source, avPlayer.currentItem!!))
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }

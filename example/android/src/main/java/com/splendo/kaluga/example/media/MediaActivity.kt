@@ -18,16 +18,37 @@
 package com.splendo.kaluga.example.media
 
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
+import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityMediaBinding
+import com.splendo.kaluga.example.shared.viewmodel.media.MediaNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel
+import com.splendo.kaluga.media.MediaSource
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MediaActivity : KalugaViewModelActivity<MediaViewModel>() {
 
-    override val viewModel: MediaViewModel by viewModel()
+    override val viewModel: MediaViewModel by viewModel {
+        parametersOf(
+            ActivityNavigator<MediaNavigationAction> { action ->
+                when (action) {
+                    is MediaNavigationAction.SelectLocal -> NavigationSpec.Contract<MediaActivity, Array<String>>(
+                        arrayOf("audio/*")
+                    ) { contract }
+                }
+            }
+        )
+    }
+
+    private val contract = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        viewModel.didSelectFileAt(uri?.let { MediaSource.Content(uri = it) })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
