@@ -20,7 +20,6 @@ package com.splendo.kaluga.media
 import com.splendo.kaluga.base.kvo.observeKeyValueAsFlow
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.Job
@@ -71,7 +70,6 @@ import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.AVFoundation.tracks
 import platform.AVFoundation.volume
-import platform.CoreGraphics.CGSize
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.CoreMedia.kCMTimeZero

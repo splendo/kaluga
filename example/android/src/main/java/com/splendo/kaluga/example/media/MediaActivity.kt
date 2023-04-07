@@ -18,12 +18,9 @@
 package com.splendo.kaluga.example.media
 
 import android.os.Bundle
-import android.util.Log
 import android.view.SurfaceView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.updateLayoutParams
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
@@ -34,7 +31,6 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityMediaBinding
 import com.splendo.kaluga.example.shared.viewmodel.media.MediaNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.media.ActivityMediaSurfaceProvider
 import com.splendo.kaluga.media.MediaSource
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -33,7 +33,6 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.media.MediaPlayer
@@ -49,7 +48,6 @@ import com.splendo.kaluga.media.playTime
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -211,8 +209,9 @@ class MediaViewModel(
     }
 
     val isShowingVideo = mediaPlayer.playableMedia.map { it?.isVideo ?: false }.toInitializedObservable(false, coroutineScope)
-    val resolution = mediaPlayer.playableMedia.flatMapLatest { playableMedia -> playableMedia?.resolution ?: flowOf(Resolution.ZERO) }.toInitializedObservable(
-        Resolution.ZERO, coroutineScope)
+    val resolution = mediaPlayer.playableMedia.flatMapLatest { playableMedia ->
+        playableMedia?.resolution ?: flowOf(Resolution.ZERO)
+    }.toInitializedObservable(Resolution.ZERO, coroutineScope)
 
     init {
         coroutineScope.launch {
