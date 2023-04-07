@@ -18,7 +18,6 @@
 package com.splendo.kaluga.media
 
 import com.splendo.kaluga.base.flow.takeUntilLast
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -158,7 +157,7 @@ class DefaultMediaPlayer(
             is PlaybackState.Error -> MediaPlayer.Controls(displayError = MediaPlayer.Controls.DisplayError(state.error))
             is PlaybackState.Ended -> MediaPlayer.Controls(displayError = MediaPlayer.Controls.DisplayError(PlaybackError.PlaybackHasEnded))
             is PlaybackState.Uninitialized -> MediaPlayer.Controls()
-            is PlaybackState.Initialized  -> MediaPlayer.Controls(awaitPreparation = MediaPlayer.Controls.AwaitPreparation)
+            is PlaybackState.Initialized -> MediaPlayer.Controls(awaitPreparation = MediaPlayer.Controls.AwaitPreparation)
         }
     }.shareIn(this, SharingStarted.WhileSubscribed())
 
@@ -268,9 +267,7 @@ class DefaultMediaPlayer(
     }
 
     override fun end() {
-        debug("---- End Media Player")
         launch {
-            debug("---- Launch End Media Player")
             playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.end }
         }
     }

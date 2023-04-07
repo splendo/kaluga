@@ -78,10 +78,10 @@ class MediaActivity : KalugaViewModelActivity<MediaViewModel>() {
             }
         })
 
-        viewModel.aspectRatio.observeOnLifecycle(this) {
+        viewModel.resolution.observeOnLifecycle(this) {
             val set = ConstraintSet()
             set.clone(binding.contraintLayout)
-            set.setDimensionRatio(R.id.video_surface, it)
+            set.setDimensionRatio(R.id.video_surface, it.aspectRatio)
             set.applyTo(binding.contraintLayout)
         }
 

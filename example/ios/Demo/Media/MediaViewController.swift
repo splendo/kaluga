@@ -15,11 +15,18 @@
 //
 
 import UIKit
+import AVKit
 import KalugaExampleShared
 import MediaPlayer
 
+/// A view that displays the visual contents of a player object.
+class PlayerView: UIView {
+    override static var layerClass: AnyClass { AVPlayerLayer.self }
+}
+
 class MediaViewController: UIViewController {
     
+    private let mediaSurfaceProvider = UIViewMediaSurfaceProvider(initialView: nil)
     private lazy var navigator: ViewControllerNavigator<MediaNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
         switch action {
         case is MediaNavigationAction.SelectLocal: return NavigationSpec.MediaPicker(
@@ -38,6 +45,7 @@ class MediaViewController: UIViewController {
     }
     
     private lazy var viewModel = MediaViewModel(
+        mediaSurfaceProvider: mediaSurfaceProvider,
         builder: DefaultMediaManager.Builder(),
         alertPresenterBuilder: AlertPresenter.Builder(viewController: self),
         navigator: navigator
@@ -46,6 +54,8 @@ class MediaViewController: UIViewController {
     
     @IBOutlet var selectMediaButton: UIButton!
     @IBOutlet var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet var playerView: PlayerView!
+    @IBOutlet var playerAspectRatio: NSLayoutConstraint!
     @IBOutlet var containerView: UIView!
     @IBOutlet var currentPlayTimeLabel: UILabel!
     @IBOutlet var playtimeProgress: UISlider!
@@ -72,15 +82,45 @@ class MediaViewController: UIViewController {
         
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [unowned self] in
             [
-                self.viewModel.isLoaded.observe { isLoaded in
-                    let isLoaded = isLoaded?.boolValue ?? false
-                    self.loadingIndicator.isHidden = isLoaded
-                    self.containerView.isHidden = !isLoaded
-                    if isLoaded {
-                        self.loadingIndicator.stopAnimating()
-                    } else {
+                self.viewModel.hasControls.observe { hasControls in
+                    let hasControls = hasControls?.boolValue ?? false
+                    self.containerView.isHidden = !hasControls
+                },
+                self.viewModel.isPreparing.observe { isPreparing in
+                    let isPreparing = isPreparing?.boolValue ?? false
+                    self.loadingIndicator.isHidden = !isPreparing
+                    if isPreparing {
                         self.loadingIndicator.startAnimating()
+                    } else {
+                        self.loadingIndicator.stopAnimating()
                     }
+                },
+                self.viewModel.isShowingVideo.observe { isShowingVideo in
+                    let isShowingVideo = isShowingVideo?.boolValue ?? false
+                    self.playerView.isHidden = !isShowingVideo
+                    if isShowingVideo {
+                        self.mediaSurfaceProvider.update(value: self.playerView)
+                    } else {
+                        self.mediaSurfaceProvider.update(value: nil)
+                    }
+                },
+                self.viewModel.resolution.observe { resolution in
+                    let resolution = resolution ?? Resolution.companion.ZERO
+                    self.playerAspectRatio.isActive = false
+                    var ratio = CGFloat(1.0)
+                    if resolution.height != 0 {
+                        ratio = CGFloat(Float(resolution.width) / Float(resolution.height))
+                    }
+                    self.playerAspectRatio = NSLayoutConstraint(
+                        item: self.playerView as Any,
+                        attribute: .width,
+                        relatedBy: .equal,
+                        toItem: self.playerView,
+                        attribute: .height,
+                        multiplier: ratio,
+                        constant: 0
+                    )
+                    self.playerAspectRatio.isActive = true
                 },
                 self.viewModel.currentPlaytime.observe { currentPlayTime in
                     self.currentPlayTimeLabel.text = currentPlayTime as? String

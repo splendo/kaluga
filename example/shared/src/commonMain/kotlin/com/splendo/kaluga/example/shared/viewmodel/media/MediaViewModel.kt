@@ -211,8 +211,8 @@ class MediaViewModel(
     }
 
     val isShowingVideo = mediaPlayer.playableMedia.map { it?.isVideo ?: false }.toInitializedObservable(false, coroutineScope)
-    val aspectRatio = mediaPlayer.playableMedia.flatMapLatest { playableMedia -> playableMedia?.resolution?.map { it.aspectRatio } ?: flowOf("1:1") }.toInitializedObservable(
-        "1:1", coroutineScope)
+    val resolution = mediaPlayer.playableMedia.flatMapLatest { playableMedia -> playableMedia?.resolution ?: flowOf(Resolution.ZERO) }.toInitializedObservable(
+        Resolution.ZERO, coroutineScope)
 
     init {
         coroutineScope.launch {

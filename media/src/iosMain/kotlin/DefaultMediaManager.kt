@@ -40,7 +40,6 @@ import platform.AVFoundation.AVErrorNoLongerPlayable
 import platform.AVFoundation.AVFoundationErrorDomain
 import platform.AVFoundation.AVMediaTypeAudio
 import platform.AVFoundation.AVMediaTypeClosedCaption
-import platform.AVFoundation.AVMediaTypeDepthData
 import platform.AVFoundation.AVMediaTypeMetadata
 import platform.AVFoundation.AVMediaTypeMetadataObject
 import platform.AVFoundation.AVMediaTypeSubtitle
@@ -59,7 +58,6 @@ import platform.AVFoundation.AVPlayerStatus
 import platform.AVFoundation.AVPlayerStatusFailed
 import platform.AVFoundation.AVPlayerStatusReadyToPlay
 import platform.AVFoundation.AVPlayerStatusUnknown
-import platform.AVFoundation.asset
 import platform.AVFoundation.currentItem
 import platform.AVFoundation.currentTime
 import platform.AVFoundation.duration
@@ -67,6 +65,7 @@ import platform.AVFoundation.languageCode
 import platform.AVFoundation.mediaType
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
+import platform.AVFoundation.presentationSize
 import platform.AVFoundation.rate
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
@@ -93,8 +92,9 @@ actual class PlayableMedia(actual val source: MediaSource, internal val avPlayer
     actual val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
     actual val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
     actual val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
-    actual val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<CValue<CGSize>>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { size ->
-        size.useContents { Resolution(width.toInt(), height.toInt()) }
+    actual val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { size ->
+        // Mapping from typealias NSSize seems to fail so we'll just grab the value ourselves
+        avPlayerItem.presentationSize.useContents { Resolution(width.toInt(), height.toInt()) }
     }
 }
 
@@ -107,7 +107,7 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
             AVMediaTypeMetadata -> TrackInfo.Type.METADATA
             AVMediaTypeMetadataObject -> TrackInfo.Type.METADATA
             AVMediaTypeSubtitle -> TrackInfo.Type.SUBTITLE
-            AVMediaTypeText-> TrackInfo.Type.TIMED_TEXT
+            AVMediaTypeText -> TrackInfo.Type.TIMED_TEXT
             AVMediaTypeVideo -> TrackInfo.Type.VIDEO
             else -> TrackInfo.Type.UNKNOWN
         },
@@ -123,8 +123,8 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
 
     private val avPlayer = AVPlayer(null)
     private var surface: MediaSurface? by Delegates.observable(null) { _, old, new ->
-        old?.layer?.player = null
-        new?.layer?.player = avPlayer
+        old?.bind?.invoke(null)
+        new?.bind?.invoke(avPlayer)
     }
 
     override var volume: Float
@@ -197,12 +197,13 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     }
 
     override fun play(rate: Float) {
-        avPlayer.rate = rate
         avPlayer.play()
+        avPlayer.rate = rate
     }
 
     override fun pause() = avPlayer.pause()
     override fun stop() {
+        avPlayer.seekToTime(kCMTimeZero.readValue(), kCMTimeZero.readValue(), kCMTimeZero.readValue()) {}
         avPlayer.replaceCurrentItemWithPlayerItem(null)
     }
 

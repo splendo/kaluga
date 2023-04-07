@@ -17,6 +17,22 @@
 
 package com.splendo.kaluga.media
 
+import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerLayer
+import platform.AVKit.AVPlayerViewController
 
-actual data class MediaSurface(val layer: AVPlayerLayer)
+typealias MediaSurfaceBinding = (AVPlayer?) -> Unit
+actual data class MediaSurface(val bind: MediaSurfaceBinding) {
+
+    constructor(avPlayerLayer: AVPlayerLayer) : this(
+        {
+            avPlayerLayer.player = it
+        }
+    )
+
+    constructor(vc: AVPlayerViewController) : this(
+        {
+            vc.player = it
+        }
+    )
+}

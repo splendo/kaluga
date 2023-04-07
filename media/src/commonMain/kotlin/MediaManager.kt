@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -78,7 +77,6 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
             mediaSurfaceJob = mediaSurfaceProvider?.let {
                 launch {
                     mediaSurfaceProvider.surface.onCompletion {
-                        debug("Complete media surface job")
                         renderVideoOnSurface(null)
                     }.collect {
                         renderVideoOnSurface(it)
