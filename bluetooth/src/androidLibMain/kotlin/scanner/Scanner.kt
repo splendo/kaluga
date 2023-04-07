@@ -33,8 +33,8 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
@@ -43,6 +43,7 @@ import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.service.EnableServiceActivity
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -62,6 +63,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings
  * @param scanSettings the [ScanSettings] to apply to the scanner
  * @param settings the [BaseScanner.Settings] to configure this scanner
  * @param coroutineScope the [CoroutineScope] this scanner runs on
+ * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  */
 actual class DefaultScanner internal constructor(
     private val applicationContext: Context,
@@ -70,7 +72,8 @@ actual class DefaultScanner internal constructor(
     private val scanSettings: ScanSettings,
     settings: Settings,
     coroutineScope: CoroutineScope,
-) : BaseScanner(settings, coroutineScope) {
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
      * Builder for creating a [DefaultScanner]
@@ -89,8 +92,9 @@ actual class DefaultScanner internal constructor(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
+            scanningDispatcher: CoroutineDispatcher
         ): BaseScanner {
-            return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope)
+            return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope, scanningDispatcher)
         }
     }
 
@@ -144,9 +148,7 @@ actual class DefaultScanner internal constructor(
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
-            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
-                deviceWrapper to deviceConnectionManagerBuilder
-            }
+            handleDeviceDiscovered(deviceWrapper, scanResult.rssi, advertisementData, deviceConnectionManagerBuilder)
         }
     }
 
@@ -164,7 +166,7 @@ actual class DefaultScanner internal constructor(
         listOf(bluetoothEnabled, locationEnabled)
     }
 
-    override suspend fun didStartScanning(filter: Set<UUID>) {
+    override suspend fun didStartScanning(filter: Filter) {
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -218,7 +220,10 @@ actual class DefaultScanner internal constructor(
     }
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
-    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Set<UUID>): List<Scanner.Event.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(
+        withServices: Filter,
+        connectionSettings: ConnectionSettings?
+    ): List<Scanner.DeviceDiscovered> {
         if (!isSupported) return emptyList()
         val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
             Manifest.permission.BLUETOOTH_CONNECT
@@ -237,18 +242,16 @@ actual class DefaultScanner internal constructor(
             }
             ?.map { device ->
                 val deviceWrapper = DefaultDeviceWrapper(device)
-                val deviceCreator: DeviceCreator = {
-                    deviceWrapper to deviceConnectionManagerBuilder
-                }
                 val serviceUUIDs = device.uuids
                     ?.map(ParcelUuid::getUuid)
                     ?: withServices.toList() // fallback to filter, as it *must* contain one of them
 
-                Scanner.Event.DeviceDiscovered(
+                val advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs)
+                Scanner.DeviceDiscovered(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
-                    advertisementData = PairedAdvertisementData(deviceWrapper.name, serviceUUIDs),
-                    deviceCreator = deviceCreator
+                    advertisementData = advertisementData,
+                    deviceCreator = getDeviceBuilder(deviceWrapper, Int.MIN_VALUE, advertisementData, deviceConnectionManagerBuilder, connectionSettings)
                 )
             } ?: emptyList()
     }

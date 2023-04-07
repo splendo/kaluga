@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.device
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.bluetooth.BluetoothGattCallback
@@ -29,6 +28,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
@@ -53,7 +53,7 @@ internal actual class DefaultDeviceConnectionManager(
         val CLIENT_CONFIGURATION: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
-    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
+    class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
@@ -65,7 +65,6 @@ internal actual class DefaultDeviceConnectionManager(
 
     override val coroutineContext: CoroutineContext = coroutineScope.coroutineContext
 
-    private val device: BluetoothDevice = deviceWrapper.device
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
     private val callback = object : BluetoothGattCallback() {
 
@@ -169,7 +168,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun connect() {
+    override fun connect() {
         if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
             if (gatt.isCompleted) {
                 if (!gatt.getCompleted().connect()) {
@@ -178,8 +177,7 @@ internal actual class DefaultDeviceConnectionManager(
                     handleConnect()
                 }
             } else {
-                val gattService = device.connectGatt(context, false, callback)
-                gatt.complete(DefaultBluetoothGattWrapper(gattService))
+                gatt.complete(deviceWrapper.connectGatt(context, false, callback))
             }
         } else {
             handleConnect()
@@ -190,9 +188,10 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().discoverServices()
     }
 
-    override suspend fun disconnect() {
-        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
-            gatt.await().disconnect()
+    override fun disconnect() {
+        val gatt = gatt.getCompletedOrNull()
+        if (gatt != null && lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
+            gatt.disconnect()
         } else {
             handleDisconnect {
                 closeGatt()
@@ -201,9 +200,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun closeGatt() {
-        if (gatt.isCompleted) {
-            gatt.getCompleted().close()
-        }
+        gatt.getCompletedOrNull()?.close()
         gatt = CompletableDeferred()
     }
 
@@ -234,14 +231,14 @@ internal actual class DefaultDeviceConnectionManager(
 
     @SuppressLint("MissingPermission")
     override suspend fun requestStartPairing() {
-        if (device.bondState == BluetoothDevice.BOND_NONE) {
+        if (deviceWrapper.bondState == DeviceWrapper.BondState.NONE) {
             deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
     override suspend fun requestStartUnpairing() {
-        if (device.bondState != BluetoothDevice.BOND_NONE) {
+        if (deviceWrapper.bondState != DeviceWrapper.BondState.NONE) {
             deviceWrapper.removeBond()
         }
     }

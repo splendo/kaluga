@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 
 class BluetoothCharacteristicViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID) : BaseLifecycleViewModel() {
 
-    private val characteristic: Flow<Characteristic?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID]
+    private val characteristic: Flow<Characteristic?> get() = bluetooth.scannedDevices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID]
 
     val uuid = characteristicUUID.uuidString
     val value = characteristic.value().map { it?.toHexString() ?: "" }.toUninitializedObservable(coroutineScope)

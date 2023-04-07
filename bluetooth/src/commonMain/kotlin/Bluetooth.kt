@@ -17,25 +17,29 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
+import com.splendo.kaluga.base.text.lowerCased
+import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.base.Permissions
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,6 +55,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.seconds
@@ -80,26 +85,66 @@ typealias MTU = Int
 interface BluetoothService {
 
     /**
-     * Starts scanning for [Device].
-     * To receive the devices, use [devices]
-     * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+     * Specifies the behaviour of cleaning up the list of [Device] discovered by a [BluetoothService]
      */
-    fun startScanning(filter: Set<UUID> = emptySet())
+    enum class CleanMode {
+
+        /**
+         * Retains all [Device] previously scanned, regardless of [Filter]
+         */
+        RETAIN_ALL,
+
+        /**
+         * Removes all [Device] previously scanned, regardless of [Filter]
+         */
+        REMOVE_ALL,
+
+        /**
+         * Removes only the [Device] previously scanned with the [Filter] used for scanning
+         */
+        ONLY_PROVIDED_FILTER
+    }
+
+    /**
+     * Starts scanning for [Device].
+     * To receive the devices, use [scannedDevices] or [allDevices]
+     * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
+     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to [filter]
+     * @param connectionSettings the [ConnectionSettings] to apply to scanned [Device]. If `null` the default will be used
+     * Note that if a [Device] was previously scanned (and not cleaned by [cleanMode]) the old [ConnectionSettings] will still apply.
+     */
+    fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.REMOVE_ALL, connectionSettings: ConnectionSettings? = null)
 
     /**
      * Stops scanning for [Device]
+     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to the [Filter] last passed to [startScanning]
      */
-    fun stopScanning()
+    fun stopScanning(cleanMode: CleanMode = CleanMode.REMOVE_ALL)
 
     /**
      * Gets a [Flow] of the list of [Device] that have been paired to the system
      * @param filter filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
+     * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
-    fun pairedDevices(filter: Set<UUID>): Flow<List<Device>>
+    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null): Flow<List<Device>>
 
     /**
-     * Gets a [Flow] containing a list of [Device] scanned by the service.
+     * Gets a [Flow] containing a list of all [Device] scanned by the service.
      * Requires that [startScanning] has been called, otherwise no devices will be found
+     */
+    fun allDevices(): Flow<List<Device>>
+
+    /**
+     * Gets a [Flow] containing a list of all [Device] scanned by the service for a given [Filter].
+     * Requires that [startScanning] has been called with [filter], otherwise no devices will be found
+     * @param filter the [Filter] to get the devices for
+     */
+    fun scannedDevices(filter: Filter = emptySet()): Flow<List<Device>>
+
+    /**
+     * Gets a [Flow] containing a list of all [Device] scanned by the service for the last [Filter] passed to [startScanning].
+     * Requires that [startScanning] has been called with [filter], otherwise no devices will be found
      */
     fun devices(): Flow<List<Device>>
 
@@ -115,45 +160,43 @@ interface BluetoothService {
 }
 
 /**
- * A [BluetoothService] that builds a [BaseScanner] for scanning.
- * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
- * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned
- * @param scannerBuilder the [BaseScanner.Builder] to use to create a [BaseScanner] responsible for scanning.
+ * A [BluetoothService] that uses a [ScanningStateFlowRepo] to manage the [ScanningState]
  * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+ * @param scanningStateRepoBuilder method for creating a the [ScanningStateFlowRepo] to contain the [ScanningState] of the Bluetooth service
  */
-class Bluetooth internal constructor(
-    scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
-    connectionSettings: ConnectionSettings,
-    scannerBuilder: BaseScanner.Builder,
+class Bluetooth constructor(
     coroutineContext: CoroutineContext,
+    scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo,
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
-    internal val scanningStateRepo = ScanningStateRepo(
-        scannerSettingsBuilder,
-        scannerBuilder,
-        { identifier, deviceInfo, deviceWrapper, connectionManagerBuilder ->
-            DeviceImpl(
-                identifier,
-                deviceInfo,
-                connectionSettings,
-                { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${identifier.stringValue}"))) },
-                CoroutineScope(coroutineContext + CoroutineName("Device ${identifier.stringValue}"))
-            ) { connectionManager, coroutineContext ->
-                ConnectableDeviceStateImplRepo(
-                    connectionManager,
-                    coroutineContext
-                )
-            }
-        },
-        coroutineContext + CoroutineName("Scanning State Repo")
+    internal constructor(
+        scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
+        scannerBuilder: BaseScanner.Builder,
+        coroutineContext: CoroutineContext,
+    ) : this(
+        coroutineContext,
+        { context ->
+            ScanningStateRepo(
+                scannerSettingsBuilder,
+                scannerBuilder,
+                { identifier -> context + CoroutineName("Device ${identifier.stringValue}") },
+                context + CoroutineName("Scanning State Repo")
+            )
+        }
     )
 
+    internal val scanningStateRepo = scanningStateRepoBuilder(coroutineContext + CoroutineName("Scanning State Repo"))
+
     private sealed class ScanMode {
-        object Stopped : ScanMode()
-        class Scan(val filter: Set<UUID>) : ScanMode()
+        data class Stopped(val cleanMode: BluetoothService.CleanMode) : ScanMode()
+        data class Scan(
+            val filter: Filter,
+            val cleanMode: BluetoothService.CleanMode,
+            val connectionSettings: ConnectionSettings?
+        ) : ScanMode()
     }
 
-    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
+    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped(BluetoothService.CleanMode.REMOVE_ALL))
 
     private companion object {
         val PAIRED_DEVICES_REFRESH_RATE = 15.seconds
@@ -165,65 +208,72 @@ class Bluetooth internal constructor(
             delay(PAIRED_DEVICES_REFRESH_RATE)
         }
     }
-    override fun pairedDevices(filter: Set<UUID>): Flow<List<Device>> = pairedDevices(filter, timer)
-    internal fun pairedDevices(filter: Set<UUID>, timer: Flow<Unit>): Flow<List<Device>> =
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
+    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> =
         combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
             .transform { state ->
-                com.splendo.kaluga.logging.debug("State $state")
                 if (state is ScanningState.Enabled) {
                     // trigger retrieve paired devices list
-                    com.splendo.kaluga.logging.debug("Retrieve paired devices")
-                    state.retrievePairedDevices(filter)
-                    emit(state.paired.devices)
+                    state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
+                    emit(state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)))
                 } else {
                     emit(emptyList())
                 }
             }
             .distinctUntilChanged()
 
-    override fun devices(): Flow<List<Device>> = combine(scanningStateRepo.filterOnlyImportant(), scanMode) { scanState, scanMode ->
+    private fun devicesForScanMode(): Flow<ScanningState.Devices> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
             is ScanningState.Enabled.Idle -> when (scanMode) {
                 is ScanMode.Scan -> {
                     scanningStateRepo.takeAndChangeState(
                         remainIfStateNot = ScanningState.Enabled.Idle::class
-                    ) { it.startScanning(scanMode.filter) }
-                    if (scanState.discovered.filter == scanMode.filter) {
-                        scanState.discovered.devices
-                    } else {
-                        emptyList()
-                    }
+                    ) { it.startScanning(scanMode.filter, scanMode.cleanMode, scanMode.connectionSettings) }
+                    scanState.devices
                 }
-                is ScanMode.Stopped -> emptyList()
+                is ScanMode.Stopped -> scanState.devices
             }
             is ScanningState.Enabled.Scanning -> when (scanMode) {
                 is ScanMode.Scan -> {
-                    if (scanState.discovered.filter == scanMode.filter) {
-                        scanState.discovered.devices
+                    if (scanState.devices.currentScanFilter.filter == scanMode.filter) {
+                        scanState.devices
                     } else {
                         scanningStateRepo.takeAndChangeState(
                             remainIfStateNot = ScanningState.Enabled.Scanning::class
-                        ) { it.stopScanning }
-                        emptyList()
+                        ) {
+                            // Cleaning should happen when the new scan is started to ensure the proper clean mode is applied
+                            it.stopScanning(BluetoothService.CleanMode.RETAIN_ALL)
+                        }
+                        scanState.devices
                     }
                 }
                 is ScanMode.Stopped -> {
                     scanningStateRepo.takeAndChangeState(
                         remainIfStateNot = ScanningState.Enabled.Scanning::class
-                    ) { it.stopScanning }
-                    scanState.discovered.devices
+                    ) { it.stopScanning(scanMode.cleanMode) }
+                    scanState.devices
                 }
             }
-            is ScanningState.NoBluetooth, is ScanningState.NoHardware, is ScanningState.Inactive, is ScanningState.Initializing -> emptyList()
+            is ScanningState.Deinitialized -> scanState.previousDevices
+            is ScanningState.NoBluetooth, is ScanningState.NoHardware, is ScanningState.Inactive, is ScanningState.Initializing -> scanState.nothingFound
         }
     }.distinctUntilChanged()
 
-    override fun startScanning(filter: Set<UUID>) {
-        scanMode.value = ScanMode.Scan(filter)
+    override fun allDevices(): Flow<List<Device>> = devicesForScanMode().map { it.allDevices.values.toList() }.distinctUntilChanged()
+    override fun scannedDevices(filter: Filter): Flow<List<Device>> = devicesForScanMode().map {
+        it.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Scanning(filter))
+    }.distinctUntilChanged()
+
+    override fun devices(): Flow<List<Device>> = devicesForScanMode().map {
+        it.devicesForCurrentScanFilter()
     }
 
-    override fun stopScanning() {
-        scanMode.value = ScanMode.Stopped
+    override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings?) {
+        scanMode.value = ScanMode.Scan(filter, cleanMode, connectionSettings)
+    }
+
+    override fun stopScanning(cleanMode: BluetoothService.CleanMode) {
+        scanMode.value = ScanMode.Stopped(cleanMode)
     }
 
     override suspend fun isScanning() = scanMode.flatMapLatest { scanMode ->
@@ -245,13 +295,11 @@ interface BaseBluetoothBuilder {
     /**
      * Creates a [Bluetooth] object
      * @param scannerSettingsBuilder a method for getting the [BaseScanner.Settings] to be used while scanning from a [CoroutineContext]
-     * @param connectionSettings the [ConnectionSettings] to apply to [Device] scanned by the [Bluetooth] service.
      * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
      * @return the created [Bluetooth]
      */
     fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-        connectionSettings: ConnectionSettings = ConnectionSettings(),
         coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
     ): Bluetooth
 }
@@ -268,8 +316,8 @@ expect class BluetoothBuilder : BaseBluetoothBuilder
  */
 operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
     return this.map { devices ->
-        devices.firstOrNull { it.identifier == identifier }
-    }
+        devices.firstOrNull { it.identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) == identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) }
+    }.distinctUntilChanged()
 }
 
 /**
@@ -311,11 +359,20 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 /**
  * Attempts to connect to the [Device] from a [Flow] of [Device]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
+ * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [Device] disconnects after connecting. If `null` the default will be used.
+ * @return `true` if connection was successful
  */
-suspend fun Flow<Device?>.connect() {
+suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null) {
     transformLatest { device ->
         device?.let {
-            emit(it.connect())
+            try {
+                emit(it.connect(reconnectionSettings))
+            } catch (e: CancellationException) {
+                withContext(NonCancellable) {
+                    it.disconnect()
+                }
+                throw e
+            }
         }
     }.first()
 }
@@ -431,7 +488,7 @@ operator fun Flow<List<Service>>.get(uuid: UUID): Flow<Service?> {
         services.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
-    }
+    }.distinctUntilChanged()
 }
 
 /**
@@ -464,7 +521,7 @@ operator fun <AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : D
         attribute.firstOrNull {
             it.uuid.uuidString == uuid.uuidString
         }
-    }
+    }.distinctUntilChanged()
 }
 
 /**

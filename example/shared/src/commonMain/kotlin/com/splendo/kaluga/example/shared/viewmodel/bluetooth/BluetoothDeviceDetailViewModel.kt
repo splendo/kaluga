@@ -55,7 +55,7 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
     }
 
     private val bluetooth: Bluetooth by inject()
-    private val device = bluetooth.devices()[identifier]
+    private val device = bluetooth.scannedDevices()[identifier]
 
     val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toUninitializedObservable(coroutineScope)
     val identifierString = identifier.stringValue
@@ -69,7 +69,6 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
             is ConnectableDeviceState.Connected.Discovering -> "bluetooth_discovering"
             is ConnectableDeviceState.Connected -> "bluetooth_connected"
             is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
-            is ConnectableDeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
     }.toUninitializedObservable(coroutineScope)
     private val _services = MutableStateFlow(

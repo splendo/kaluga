@@ -172,7 +172,6 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                     configuration.autoEnableBluetooth
                 )
             },
-            ConnectionSettings(),
             scannerBuilder,
             coroutineScope.coroutineContext
         )
@@ -193,8 +192,9 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                 connectionSettings,
                 deviceConnectionManagerBuilder,
                 coroutineScope,
-                ::ConnectableDeviceStateImplRepo
-            )
+            ) { connectionManager, context ->
+                ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
+            }
         }
 
         private suspend fun awaitScanDevice(
@@ -204,13 +204,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             advertisementData: BaseAdvertisementData
         ) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
-            bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Enabled.Scanning::class) { state ->
-                state.discoverDevice(
-                    deviceWrapper.identifier,
-                    rssi,
-                    advertisementData
-                ) { device }
-            }
+            scanner.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { device }
         }
 
         fun scanDevice(
@@ -225,21 +219,17 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         }
 
         suspend fun connectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
-            connectionManager.connectMock.on().doExecuteSuspended {
-                coroutineScope.launch {
-                    connectionManager.handleConnect()
-                }
+            connectionManager.connectMock.on().doExecute {
+                connectionManager.handleConnect()
             }
-            bluetooth.devices()[device.identifier].connect()
+            bluetooth.allDevices()[device.identifier].connect()
         }
 
         suspend fun disconnectDevice(device: Device, connectionManager: MockDeviceConnectionManager) {
-            connectionManager.disconnectMock.on().doExecuteSuspended {
-                coroutineScope.launch {
-                    connectionManager.handleDisconnect()
-                }
+            connectionManager.disconnectMock.on().doExecute {
+                connectionManager.handleDisconnect()
             }
-            bluetooth.devices()[device.identifier].disconnect()
+            bluetooth.allDevices()[device.identifier].disconnect()
         }
 
         suspend fun discoverService(service: Service, device: Device, connectionManager: MockDeviceConnectionManager) {
@@ -260,7 +250,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         fun createDevice(
             deviceWrapper: DeviceWrapper = this.deviceWrapper,
             deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder
-        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, ConnectionSettings(), coroutineScope) }
+        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, configuration.connectionSettings, coroutineScope) }
 
         fun scanDevice(
             rssi: RSSI = configuration.rssi,

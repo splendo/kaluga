@@ -79,7 +79,6 @@
 "bluetooth_connecting" = "Connecting";
 "bluetooth_disconnected" = "Disconnected";
 "bluetooth_disconneting" = "Disconnecting";
-"bluetooth_reconnecting" = "Reconnecting";
 "bluetooth_discovering" = "Discovering";
 
 "bluetooth_service_uuids" = "Service UUIDs: %s";

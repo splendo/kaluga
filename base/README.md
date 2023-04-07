@@ -86,6 +86,11 @@ The initializer will be called if the number of flows observing changes from 0 t
 The deinitializer will be called when the number of flows observing changes drops to 0.
 Use `ColdStateRepo` for this behaviour.
 
+### BufferedAsListChannel
+Consuming a flow may often take longer than producing it. Kotlin Flows can handle this using `buffer` but this progressively increase the time between data being produced and data being consumed.
+Kaluga offers a `BufferedAsListChannel` to buffer all data produced between consumption into a list. This allows the consumer to deal with groups of data and ideally prevent increasing delays.
+The `BufferedAsListChannel` is a `Channel` that always buffers an unlimited amount of data points.
+
 ## Date
 Kaluga includes a `Date` class to manage and compare time.
 Dates can be created using either `Date.now()` or `Date.epoch()`.

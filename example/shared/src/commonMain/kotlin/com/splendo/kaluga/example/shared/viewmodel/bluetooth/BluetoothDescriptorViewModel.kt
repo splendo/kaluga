@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 class BluetoothDescriptorViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID, private val descriptorUUID: UUID) : BaseLifecycleViewModel() {
 
-    private val descriptor: Flow<Descriptor?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID].descriptors()[descriptorUUID]
+    private val descriptor: Flow<Descriptor?> get() = bluetooth.scannedDevices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID].descriptors()[descriptorUUID]
 
     val uuid = descriptorUUID.uuidString
     val value = descriptor.value().map { it?.toHexString() ?: "" }.toUninitializedObservable(coroutineScope)
