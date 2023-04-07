@@ -20,6 +20,7 @@ package com.splendo.kaluga.media
 import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.os.Build
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -33,13 +34,15 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 typealias AndroidMediaPlayer = android.media.MediaPlayer
+typealias AndroidTrackInfo = android.media.MediaPlayer.TrackInfo
 
 actual class PlayableMedia(actual val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) {
     actual val duration: Duration get() = mediaPlayer.duration.milliseconds
     actual val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
+    actual val tracks get() = mediaPlayer.trackInfo.mapIndexed { index, trackInfo -> trackInfo.asTrackInfo(index) }
     private val mutex = Mutex()
     private var videoSizeListener: android.media.MediaPlayer.OnVideoSizeChangedListener? = null
-    private val _resolution = MutableStateFlow(Resolution(0, 0))
+    private val _resolution = MutableStateFlow(Resolution.ZERO)
     actual val resolution: Flow<Resolution> = _resolution.asSharedFlow().onSubscription {
         mutex.withLock {
             if (_resolution.subscriptionCount.value > 0 && videoSizeListener == null) {
@@ -58,10 +61,23 @@ actual class PlayableMedia(actual val source: MediaSource, private val mediaPlay
     }
 }
 
-actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
+private fun AndroidTrackInfo.asTrackInfo(identifier: Int): TrackInfo = TrackInfo(
+    identifier,
+    when (trackType) {
+        AndroidTrackInfo.MEDIA_TRACK_TYPE_VIDEO -> TrackInfo.Type.VIDEO
+        AndroidTrackInfo.MEDIA_TRACK_TYPE_AUDIO -> TrackInfo.Type.AUDIO
+        AndroidTrackInfo.MEDIA_TRACK_TYPE_METADATA -> TrackInfo.Type.METADATA
+        AndroidTrackInfo.MEDIA_TRACK_TYPE_SUBTITLE -> TrackInfo.Type.SUBTITLE
+        AndroidTrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT -> TrackInfo.Type.TIMED_TEXT
+        else -> TrackInfo.Type.UNKNOWN
+    },
+    language
+)
+
+actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
     class Builder : BaseMediaManager.Builder {
-        override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
     }
 
     private val mediaPlayer = AndroidMediaPlayer()
@@ -96,7 +112,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         mediaPlayer.release()
     }
 
-    override fun createPlayableMedia(source: MediaSource): PlayableMedia? = try {
+    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia? = try {
         when (source) {
             is MediaSource.Asset -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 mediaPlayer.setDataSource(source.descriptor)
@@ -104,7 +120,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
                 mediaPlayer.setDataSource(source.descriptor.fileDescriptor)
             }
             is MediaSource.File -> mediaPlayer.setDataSource(source.descriptor)
-            is MediaSource.Url -> mediaPlayer.setDataSource(source.url.path)
+            is MediaSource.Url -> mediaPlayer.setDataSource(source.url.toExternalForm())
             is MediaSource.Content -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mediaPlayer.setDataSource(source.context, source.uri, source.headers, source.cookies)
             } else {
@@ -131,7 +147,11 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
     }
 
     override fun renderVideoOnSurface(surface: MediaSurface?) {
-        mediaPlayer.setDisplay(surface?.holder)
+        try {
+            mediaPlayer.setDisplay(surface?.holder)
+        } catch (e: IllegalStateException) {
+            //
+        }
     }
 
     override fun play(rate: Float) {
@@ -165,7 +185,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         handleSeekCompleted(false)
     }
 
-    override fun reset() {
+    override fun handleReset() {
         mediaPlayer.reset()
     }
 }

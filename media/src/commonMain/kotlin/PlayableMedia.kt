@@ -17,11 +17,38 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Duration
 
-expect class MediaSurface
+expect class PlayableMedia {
+    val source: MediaSource
+    val duration: Duration
+    val currentPlayTime: Duration
+    val resolution: Flow<Resolution>
+    val tracks: List<TrackInfo>
+}
 
-interface MediaSurfaceProvider : LifecycleSubscribable {
-    val surface: Flow<MediaSurface?>
+val PlayableMedia.isVideo: Boolean get() = tracks.any { it.type == TrackInfo.Type.VIDEO }
+
+data class TrackInfo(
+    val id: Int,
+    val type: Type,
+    val language: String
+) {
+    enum class Type {
+        AUDIO,
+        METADATA,
+        SUBTITLE,
+        TIMED_TEXT,
+        VIDEO,
+        UNKNOWN
+    }
+}
+
+data class Resolution(val width: Int, val height: Int) {
+    companion object {
+        val ZERO = Resolution(0, 0)
+    }
+
+    val aspectRatio = "$width:$height"
 }

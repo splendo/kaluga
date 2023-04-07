@@ -38,6 +38,14 @@ import platform.AVFoundation.AVErrorFailedToParse
 import platform.AVFoundation.AVErrorFormatUnsupported
 import platform.AVFoundation.AVErrorNoLongerPlayable
 import platform.AVFoundation.AVFoundationErrorDomain
+import platform.AVFoundation.AVMediaTypeAudio
+import platform.AVFoundation.AVMediaTypeClosedCaption
+import platform.AVFoundation.AVMediaTypeDepthData
+import platform.AVFoundation.AVMediaTypeMetadata
+import platform.AVFoundation.AVMediaTypeMetadataObject
+import platform.AVFoundation.AVMediaTypeSubtitle
+import platform.AVFoundation.AVMediaTypeText
+import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
 import platform.AVFoundation.AVPlayerItemDidPlayToEndTimeNotification
@@ -46,18 +54,23 @@ import platform.AVFoundation.AVPlayerItemFailedToPlayToEndTimeNotification
 import platform.AVFoundation.AVPlayerItemStatus
 import platform.AVFoundation.AVPlayerItemStatusReadyToPlay
 import platform.AVFoundation.AVPlayerItemStatusUnknown
+import platform.AVFoundation.AVPlayerItemTrack
 import platform.AVFoundation.AVPlayerStatus
 import platform.AVFoundation.AVPlayerStatusFailed
 import platform.AVFoundation.AVPlayerStatusReadyToPlay
 import platform.AVFoundation.AVPlayerStatusUnknown
+import platform.AVFoundation.asset
 import platform.AVFoundation.currentItem
 import platform.AVFoundation.currentTime
 import platform.AVFoundation.duration
+import platform.AVFoundation.languageCode
+import platform.AVFoundation.mediaType
 import platform.AVFoundation.pause
 import platform.AVFoundation.play
 import platform.AVFoundation.rate
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
+import platform.AVFoundation.tracks
 import platform.AVFoundation.volume
 import platform.CoreGraphics.CGSize
 import platform.CoreMedia.CMTimeGetSeconds
@@ -79,15 +92,33 @@ import kotlin.time.DurationUnit
 actual class PlayableMedia(actual val source: MediaSource, internal val avPlayerItem: AVPlayerItem) {
     actual val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
     actual val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
+    actual val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
     actual val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<CValue<CGSize>>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { size ->
         size.useContents { Resolution(width.toInt(), height.toInt()) }
     }
 }
 
-actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
+private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let {
+    TrackInfo(
+        it.trackID,
+        when (it.mediaType) {
+            AVMediaTypeAudio -> TrackInfo.Type.AUDIO
+            AVMediaTypeClosedCaption -> TrackInfo.Type.SUBTITLE
+            AVMediaTypeMetadata -> TrackInfo.Type.METADATA
+            AVMediaTypeMetadataObject -> TrackInfo.Type.METADATA
+            AVMediaTypeSubtitle -> TrackInfo.Type.SUBTITLE
+            AVMediaTypeText-> TrackInfo.Type.TIMED_TEXT
+            AVMediaTypeVideo -> TrackInfo.Type.VIDEO
+            else -> TrackInfo.Type.UNKNOWN
+        },
+        it.languageCode.orEmpty()
+    )
+}
+
+actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
     class Builder : BaseMediaManager.Builder {
-        override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
     }
 
     private val avPlayer = AVPlayer(null)
@@ -137,7 +168,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         )
     }
 
-    override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(
+    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(
         source,
         when (source) {
             is MediaSource.Asset -> AVPlayerItem(source.asset)
@@ -188,7 +219,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         handleSeekCompleted(it)
     }
 
-    override fun reset() {
+    override fun handleReset() {
         avPlayer.replaceCurrentItemWithPlayerItem(null)
     }
 

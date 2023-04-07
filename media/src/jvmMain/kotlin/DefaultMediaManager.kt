@@ -23,21 +23,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 actual class PlayableMedia(actual val source: MediaSource) {
-    actual val duration: Duration get() = Duration.ZERO
-    actual val currentPlayTime: Duration get() = Duration.ZERO
-    actual val resolution: Flow<Resolution> = flowOf(Resolution(0, 0))
+    actual val duration: Duration = Duration.ZERO
+    actual val currentPlayTime: Duration = Duration.ZERO
+    actual val tracks: List<TrackInfo> = emptyList()
+    actual val resolution: Flow<Resolution> = flowOf(Resolution.ZERO)
 }
 
-actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMediaManager(coroutineContext) {
+actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
     class Builder : BaseMediaManager.Builder {
-        override fun create(coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
     }
 
     private var mediaSurface: MediaSurface? = null
     override var volume: Float = 0.0f
 
-    override fun createPlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source)
+    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source)
 
     override fun initialize(playableMedia: PlayableMedia) {
         handlePrepared(playableMedia)
@@ -67,7 +68,7 @@ actual class DefaultMediaManager(coroutineContext: CoroutineContext) : BaseMedia
         TODO("Not yet implemented")
     }
 
-    override fun reset() {
+    override fun handleReset() {
         TODO("Not yet implemented")
     }
 }

@@ -15,6 +15,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":architecture"))
                 implementation(project(":base"))
                 implementation(project(":logging"))
             }

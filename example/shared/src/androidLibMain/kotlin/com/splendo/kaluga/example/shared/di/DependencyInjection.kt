@@ -78,6 +78,7 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.DefaultLocationManager
 import com.splendo.kaluga.location.GoogleLocationProvider
 import com.splendo.kaluga.media.DefaultMediaManager
+import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.resources.StyledStringBuilder
@@ -163,8 +164,8 @@ internal val androidModule = module {
         )
     }
 
-    viewModel { (navigator: Navigator<MediaNavigationAction>) ->
-        MediaViewModel(DefaultMediaManager.Builder(), AlertPresenter.Builder(), navigator)
+    viewModel { (mediaSurfaceProvider: MediaSurfaceProvider, navigator: Navigator<MediaNavigationAction>) ->
+        MediaViewModel(mediaSurfaceProvider, DefaultMediaManager.Builder(), AlertPresenter.Builder(), navigator)
     }
 
     viewModel { (navigator: Navigator<SystemNavigationActions>) ->

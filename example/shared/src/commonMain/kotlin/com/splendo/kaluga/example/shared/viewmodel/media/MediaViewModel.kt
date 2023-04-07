@@ -33,19 +33,26 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaSource
+import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
+import com.splendo.kaluga.media.Resolution
 import com.splendo.kaluga.media.duration
+import com.splendo.kaluga.media.isVideo
 import com.splendo.kaluga.media.mediaSourceFromUrl
 import com.splendo.kaluga.media.playTime
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -59,19 +66,21 @@ sealed class MediaNavigationAction : SingleValueNavigationAction<Unit>(Unit, Nav
 }
 
 class MediaViewModel(
+    mediaSurfaceProvider: MediaSurfaceProvider,
     builder: BaseMediaManager.Builder,
     private val alertPresenterBuilder: BaseAlertPresenter.Builder,
     navigator: Navigator<MediaNavigationAction>
-) : NavigatingViewModel<MediaNavigationAction>(navigator, alertPresenterBuilder) {
+) : NavigatingViewModel<MediaNavigationAction>(navigator, mediaSurfaceProvider, alertPresenterBuilder) {
 
     private companion object {
         val playbackFormatter = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U)).apply { positiveSuffix = "x" }
     }
 
     private val mediaPlayerDispatcher = singleThreadDispatcher("MediaPlayer")
-    private val mediaPlayer = DefaultMediaPlayer(builder, coroutineScope.coroutineContext + mediaPlayerDispatcher)
+    private val mediaPlayer = DefaultMediaPlayer(mediaSurfaceProvider, builder, coroutineScope.coroutineContext + mediaPlayerDispatcher)
 
-    val isLoaded = mediaPlayer.availableControls.map { it.controlTypes.isNotEmpty() }.toInitializedObservable(false, coroutineScope)
+    val isPreparing = mediaPlayer.availableControls.map { it.getControlType<MediaPlayer.Controls.AwaitPreparation>() != null }.toInitializedObservable(false, coroutineScope)
+    val hasControls = mediaPlayer.availableControls.map { it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null }.toInitializedObservable(false, coroutineScope)
     private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
     private val _availableControls = mediaPlayer.availableControls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
 
@@ -85,7 +94,7 @@ class MediaViewModel(
 
     val progress = combine(mediaPlayer.playTime(100.milliseconds), _totalDuration) { playTime, totalDuration ->
         if (totalDuration > ZERO) {
-            playTime / totalDuration
+            maxOf(0.0, minOf(1.0, playTime / totalDuration))
         } else {
             0.0
         }.toFloat()
@@ -168,17 +177,19 @@ class MediaViewModel(
     val selectMediaButton = KalugaButton.Plain("media_select_media_button".localized(), ButtonStyles.default) {
         coroutineScope.launch {
             val defaultAudio = Alert.Action("media_select_default_audio".localized())
+            val defaultVideo = Alert.Action("media_select_default_video".localized())
             val selectLocalFile = Alert.Action("media_select_file_on_device".localized())
             val selectRemoteFile = Alert.Action("media_select_file_from_web".localized())
             val confirm = Alert.Action("confirm_selection".localized(), Alert.Action.Style.POSITIVE)
             val cancel = Alert.Action("cancel_selection".localized(), Alert.Action.Style.CANCEL)
             val actionSelected = alertPresenterBuilder.buildActionSheet(coroutineScope) {
                 setTitle("media_select_title".localized())
-                addActions(defaultAudio, selectLocalFile, selectRemoteFile, cancel)
+                addActions(defaultAudio, defaultVideo, selectLocalFile, selectRemoteFile, cancel)
             }.show()
 
             when (actionSelected) {
                 defaultAudio -> didSelectFileAt(mediaSourceFromUrl("https://cdn.freesound.org/previews/459/459992_6253486-lq.mp3"))
+                defaultVideo -> didSelectFileAt(mediaSourceFromUrl("https://joy1.videvo.net/videvo_files/video/free/2019-04/large_watermarked/190408_07_GulfSturgeon_03_preview.mp4"))
                 selectLocalFile -> navigator.navigate(MediaNavigationAction.SelectLocal)
                 selectRemoteFile -> {
                     var input = ""
@@ -198,6 +209,10 @@ class MediaViewModel(
             }
         }
     }
+
+    val isShowingVideo = mediaPlayer.playableMedia.map { it?.isVideo ?: false }.toInitializedObservable(false, coroutineScope)
+    val aspectRatio = mediaPlayer.playableMedia.flatMapLatest { playableMedia -> playableMedia?.resolution?.map { it.aspectRatio } ?: flowOf("1:1") }.toInitializedObservable(
+        "1:1", coroutineScope)
 
     init {
         coroutineScope.launch {

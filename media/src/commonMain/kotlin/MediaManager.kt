@@ -17,27 +17,21 @@
 
 package com.splendo.kaluga.media
 
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
-
-expect class PlayableMedia {
-    val source: MediaSource
-    val duration: Duration
-    val currentPlayTime: Duration
-    val resolution: Flow<Resolution>
-}
-
-data class Resolution(val width: Int, val height: Int)
 
 interface MediaManager {
 
@@ -63,18 +57,38 @@ interface MediaManager {
     fun end()
 }
 
-abstract class BaseMediaManager(coroutineContext: CoroutineContext) : MediaManager, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
+abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : MediaManager, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
 
     interface Builder {
-        fun create(coroutineContext: CoroutineContext): BaseMediaManager
+        fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager
     }
 
     private val _events = Channel<MediaManager.Event>(UNLIMITED)
     override val events: Flow<MediaManager.Event> = _events.receiveAsFlow()
 
+    private var mediaSurfaceJob: Job? = null
+
     private val seekMutex = Mutex()
     private var activeSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
     private var queuedSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
+
+    final override fun createPlayableMedia(source: MediaSource): PlayableMedia? {
+        return handleCreatePlayableMedia(source).also {
+            mediaSurfaceJob?.cancel()
+            mediaSurfaceJob = mediaSurfaceProvider?.let {
+                launch {
+                    mediaSurfaceProvider.surface.onCompletion {
+                        debug("Complete media surface job")
+                        renderVideoOnSurface(null)
+                    }.collect {
+                        renderVideoOnSurface(it)
+                    }
+                }
+            }
+        }
+    }
+
+    protected abstract fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia?
 
     protected fun handlePrepared(playableMedia: PlayableMedia) {
         _events.trySend(MediaManager.Event.DidPrepare(playableMedia))
@@ -107,6 +121,13 @@ abstract class BaseMediaManager(coroutineContext: CoroutineContext) : MediaManag
             }
         }.await()
     }
+
+    final override fun reset() {
+        mediaSurfaceJob?.cancel()
+        handleReset()
+    }
+
+    protected abstract fun handleReset()
 
     override fun end() {
         cleanUp()

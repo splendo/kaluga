@@ -18,6 +18,7 @@
 package com.splendo.kaluga.media
 
 import com.splendo.kaluga.base.flow.takeUntilLast
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -47,6 +48,7 @@ interface MediaPlayer {
         val seek: Seek? = null,
         val setRate: SetRate? = null,
         val setLoopMode: SetLoopMode? = null,
+        val awaitPreparation: AwaitPreparation? = null,
         val displayError: DisplayError? = null
     ) {
 
@@ -64,9 +66,10 @@ interface MediaPlayer {
         class Seek(val perform: suspend (Duration) -> Boolean) : ControlType()
         class SetRate(val currentRate: Float, val perform: suspend (Float) -> Unit) : ControlType()
         class SetLoopMode(val currentLoopMode: PlaybackState.LoopMode, val perform: suspend (PlaybackState.LoopMode) -> Unit) : ControlType()
+        object AwaitPreparation : ControlType()
         class DisplayError(val error: PlaybackError) : ControlType()
 
-        val controlTypes: Set<ControlType> = setOfNotNull(play, pause, unpause, stop, seek, setRate, setLoopMode, displayError)
+        val controlTypes: Set<ControlType> = setOfNotNull(play, pause, unpause, stop, seek, setRate, setLoopMode, awaitPreparation, displayError)
         inline fun <reified T : ControlType> getControlType(): T? = controlTypes.filterIsInstance<T>().firstOrNull()
     }
 
@@ -86,11 +89,16 @@ interface MediaPlayer {
 }
 
 class DefaultMediaPlayer(
-    mediaManagerBuilder: BaseMediaManager.Builder,
+    private val mediaManager: MediaManager,
     coroutineContext: CoroutineContext
 ) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer")) {
 
-    private val mediaManager = mediaManagerBuilder.create(coroutineContext)
+    constructor(
+        mediaSurfaceProvider: MediaSurfaceProvider?,
+        mediaManagerBuilder: BaseMediaManager.Builder,
+        coroutineContext: CoroutineContext
+    ) : this(mediaManagerBuilder.create(mediaSurfaceProvider, coroutineContext), coroutineContext)
+
     private val playbackStateRepo = PlaybackStateRepo(mediaManager, coroutineContext)
 
     init {
@@ -149,8 +157,8 @@ class DefaultMediaPlayer(
             is PlaybackState.Stopped -> MediaPlayer.Controls(play = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) })
             is PlaybackState.Error -> MediaPlayer.Controls(displayError = MediaPlayer.Controls.DisplayError(state.error))
             is PlaybackState.Ended -> MediaPlayer.Controls(displayError = MediaPlayer.Controls.DisplayError(PlaybackError.PlaybackHasEnded))
-            is PlaybackState.Uninitialized,
-            is PlaybackState.Initialized -> MediaPlayer.Controls()
+            is PlaybackState.Uninitialized -> MediaPlayer.Controls()
+            is PlaybackState.Initialized  -> MediaPlayer.Controls(awaitPreparation = MediaPlayer.Controls.AwaitPreparation)
         }
     }.shareIn(this, SharingStarted.WhileSubscribed())
 
@@ -260,7 +268,9 @@ class DefaultMediaPlayer(
     }
 
     override fun end() {
+        debug("---- End Media Player")
         launch {
+            debug("---- Launch End Media Player")
             playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.end }
         }
     }
