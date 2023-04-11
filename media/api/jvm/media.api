@@ -37,7 +37,8 @@ public final class com/splendo/kaluga/media/DefaultMediaManager : com/splendo/ka
 
 public final class com/splendo/kaluga/media/DefaultMediaManager$Builder : com/splendo/kaluga/media/BaseMediaManager$Builder {
 	public fun <init> ()V
-	public fun create (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/media/BaseMediaManager;
+	public synthetic fun create (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/media/BaseMediaManager;
+	public fun create (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/media/DefaultMediaManager;
 }
 
 public final class com/splendo/kaluga/media/DefaultMediaPlayer : com/splendo/kaluga/media/MediaPlayer, kotlinx/coroutines/CoroutineScope {
@@ -46,7 +47,7 @@ public final class com/splendo/kaluga/media/DefaultMediaPlayer : com/splendo/kal
 	public fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun end ()V
 	public fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getAvailableControls ()Lkotlinx/coroutines/flow/Flow;
+	public fun getControls ()Lkotlinx/coroutines/flow/Flow;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getPlayableMedia ()Lkotlinx/coroutines/flow/Flow;
 	public fun getVolume ()F
@@ -108,7 +109,7 @@ public abstract interface class com/splendo/kaluga/media/MediaPlayer {
 	public abstract fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun end ()V
 	public abstract fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getAvailableControls ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getControls ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getPlayableMedia ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getVolume ()F
 	public abstract fun initializeFor (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -203,8 +204,8 @@ public final class com/splendo/kaluga/media/MediaPlayer$DefaultImpls {
 
 public final class com/splendo/kaluga/media/MediaPlayerKt {
 	public static final fun getDuration (Lcom/splendo/kaluga/media/MediaPlayer;)Lkotlinx/coroutines/flow/Flow;
-	public static final fun play (Lcom/splendo/kaluga/media/MediaPlayer;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun play$default (Lcom/splendo/kaluga/media/MediaPlayer;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun play (Lcom/splendo/kaluga/media/MediaPlayer;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun play$default (Lcom/splendo/kaluga/media/MediaPlayer;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun playTime-HG0u8IE (Lcom/splendo/kaluga/media/MediaPlayer;J)Lkotlinx/coroutines/flow/Flow;
 }
 
@@ -287,7 +288,7 @@ public final class com/splendo/kaluga/media/PlaybackState$Active$DefaultImpls {
 	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$Active;)Lkotlin/jvm/functions/Function1;
 }
 
-public abstract interface class com/splendo/kaluga/media/PlaybackState$Completed : com/splendo/kaluga/media/PlaybackState$StartedOrCompleted {
+public abstract interface class com/splendo/kaluga/media/PlaybackState$Completed : com/splendo/kaluga/media/PlaybackState$PlayingOrCompleted {
 	public abstract fun start (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -316,12 +317,12 @@ public final class com/splendo/kaluga/media/PlaybackState$Error$DefaultImpls {
 }
 
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Idle : com/splendo/kaluga/media/PlaybackState$Prepared {
-	public abstract fun start (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
+	public abstract fun play (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/media/PlaybackState$Idle$DefaultImpls {
+	public static synthetic fun play$default (Lcom/splendo/kaluga/media/PlaybackState$Idle;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
 	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$Idle;)Lkotlin/jvm/functions/Function1;
-	public static synthetic fun start$default (Lcom/splendo/kaluga/media/PlaybackState$Idle;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Initialized : com/splendo/kaluga/media/PlaybackState$InitializedOrError {
@@ -361,8 +362,8 @@ public final class com/splendo/kaluga/media/PlaybackState$LoopMode$NotLooping : 
 	public static final field INSTANCE Lcom/splendo/kaluga/media/PlaybackState$LoopMode$NotLooping;
 }
 
-public abstract interface class com/splendo/kaluga/media/PlaybackState$Paused : com/splendo/kaluga/media/PlaybackState$Playing {
-	public abstract fun getStart ()Lkotlin/jvm/functions/Function1;
+public abstract interface class com/splendo/kaluga/media/PlaybackState$Paused : com/splendo/kaluga/media/PlaybackState$Started {
+	public abstract fun getPlay ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/media/PlaybackState$Paused$DefaultImpls {
@@ -384,13 +385,20 @@ public final class com/splendo/kaluga/media/PlaybackState$PlaybackParameters {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/media/PlaybackState$Playing : com/splendo/kaluga/media/PlaybackState$Prepared {
-	public abstract fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
-	public abstract fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
+public abstract interface class com/splendo/kaluga/media/PlaybackState$Playing : com/splendo/kaluga/media/PlaybackState$PlayingOrCompleted, com/splendo/kaluga/media/PlaybackState$Started {
+	public abstract fun getCompletedLoop ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getPause ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/media/PlaybackState$Playing$DefaultImpls {
 	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$Playing;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/splendo/kaluga/media/PlaybackState$PlayingOrCompleted : com/splendo/kaluga/media/PlaybackState$Prepared {
+}
+
+public final class com/splendo/kaluga/media/PlaybackState$PlayingOrCompleted$DefaultImpls {
+	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$PlayingOrCompleted;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Prepared : com/splendo/kaluga/media/PlaybackState$Active {
@@ -403,20 +411,13 @@ public final class com/splendo/kaluga/media/PlaybackState$Prepared$DefaultImpls 
 	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$Prepared;)Lkotlin/jvm/functions/Function1;
 }
 
-public abstract interface class com/splendo/kaluga/media/PlaybackState$Started : com/splendo/kaluga/media/PlaybackState$Playing, com/splendo/kaluga/media/PlaybackState$StartedOrCompleted {
-	public abstract fun getCompletedLoop ()Lkotlin/jvm/functions/Function1;
-	public abstract fun getPause ()Lkotlin/jvm/functions/Function1;
+public abstract interface class com/splendo/kaluga/media/PlaybackState$Started : com/splendo/kaluga/media/PlaybackState$Prepared {
+	public abstract fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
+	public abstract fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/media/PlaybackState$Started$DefaultImpls {
 	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$Started;)Lkotlin/jvm/functions/Function1;
-}
-
-public abstract interface class com/splendo/kaluga/media/PlaybackState$StartedOrCompleted : com/splendo/kaluga/media/PlaybackState$Prepared {
-}
-
-public final class com/splendo/kaluga/media/PlaybackState$StartedOrCompleted$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/media/PlaybackState$StartedOrCompleted;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Stopped : com/splendo/kaluga/media/PlaybackState$Active {

@@ -22,6 +22,14 @@ import kotlinx.coroutines.flow.flowOf
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
+/**
+ * A media that can be played by a [MediaPlayer]
+ * @property source the [MediaSource] on which the media is found
+ * @property duration the [Duration] of the media
+ * @property currentPlayTime gets the [Duration] of playtime at the time this property is requested
+ * @property resolution a [Flow] of the [Resolution] of the media. Note that if no [MediaSurface] has been bound to the media, this will be [Resolution.ZERO]
+ * @property tracks a list of [TrackInfo] of the media
+ */
 actual class PlayableMedia(actual val source: MediaSource) {
     actual val duration: Duration = Duration.ZERO
     actual val currentPlayTime: Duration = Duration.ZERO
@@ -29,10 +37,18 @@ actual class PlayableMedia(actual val source: MediaSource) {
     actual val resolution: Flow<Resolution> = flowOf(Resolution.ZERO)
 }
 
+/**
+ * Default implementation of [BaseMediaManager]
+ * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param coroutineContext the [CoroutineContext] on which the media will be managed
+ */
 actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
+    /**
+     * Builder for creating a [DefaultMediaManager]
+     */
     class Builder : BaseMediaManager.Builder {
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
     }
 
     private var mediaSurface: MediaSurface? = null

@@ -27,6 +27,13 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Companion.Activity
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.FileSelector.FileSelectorSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.AnimationSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.BackStackSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.TextMessenger.TextMessengerSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdPartyApp.OpenMode
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -37,21 +44,37 @@ import kotlin.reflect.safeCast
 sealed class NavigationSpec {
 
     companion object {
+
+        /**
+         * Creates an [Activity]
+         * @param A the type of [android.app.Activity] to navigate to
+         * @param flags Set of [IntentFlag] to add to the navigation [Intent]
+         * @param launchType The [LaunchType] to determine how the [Activity] should be launched
+         */
         inline fun <reified A : android.app.Activity> Activity(
             flags: Set<IntentFlag> = emptySet(),
-            launchType: Activity.LaunchType = Activity.LaunchType.NoResult
+            launchType: LaunchType = LaunchType.NoResult
         ) = Activity(A::class.java, flags, launchType)
 
-        inline fun <reified A : android.app.Activity, Input> Contract(
+        /**
+         * Navigates using an [ActivityResultLauncher]
+         * @param Input the type of input to provide to the [ActivityResultLauncher]
+         * @param Activity the type of [android.app.Activity] to provide the [ActivityResultLauncher]
+         * @param input the [Input] to provide to the [ActivityResultLauncher]
+         * @param provideResultLauncher A callback method called on an instance of [Activity] to provide an [ActivityResultLauncher] to launch with [input].
+         * Note that this method may be called after the instance of [Activity] has been created.
+         */
+        inline fun <reified Activity : android.app.Activity, Input> Contract(
             input: Input,
-            noinline provideResultLauncher: A.() -> ActivityResultLauncher<Input>
-        ) = Contract(A::class, input, provideResultLauncher)
+            noinline provideResultLauncher: Activity.() -> ActivityResultLauncher<Input>
+        ) = Contract(Activity::class, input, provideResultLauncher)
     }
 
     /**
      * Navigates to a new [android.app.Activity]
      * The [Navigator] automatically adds the [NavigationBundle] of the [NavigationAction] as a [Bundle] to its [Intent]
-     * @param activityClass [Class] of the Activity to navigate to
+     * @param A the type of [android.app.Activity] to navigate to
+     * @param activityClass [Class] of the [A] to navigate to
      * @param flags Set of [IntentFlag] to add to the navigation [Intent]
      * @param launchType The [LaunchType] to determine how the [Activity] should be launched
      */
@@ -67,7 +90,14 @@ sealed class NavigationSpec {
         sealed class LaunchType {
 
             companion object {
-                inline fun <reified A : android.app.Activity> ActivityContract(noinline contract: A.() -> ActivityResultLauncher<Intent>) = ActivityContract(A::class, contract)
+
+                /**
+                 * Creates an [ActivityContract]
+                 * @param Activity the type of [android.app.Activity] to provide the [ActivityResultLauncher]
+                 * @param provideResultLauncher A callback method called on an instance of [activityClass] to provide an [ActivityResultLauncher] to launch the new activity with.
+                 * Note that this method may be called after the instance of [activityClass] has been created.
+                 */
+                inline fun <reified Activity : android.app.Activity> ActivityContract(noinline provideResultLauncher: Activity.() -> ActivityResultLauncher<Intent>) = ActivityContract(Activity::class, provideResultLauncher)
             }
 
             /**
@@ -82,14 +112,15 @@ sealed class NavigationSpec {
             data class ActivityResult(val requestCode: Int) : LaunchType()
 
             /**
-             * [Activity] will launch using an [ActivityResultLauncher] generated for an instance of [activityClass]
-             * @param activityClass The [KClass] of the activity to generate the [ActivityResultLauncher] for
+             * [android.app.Activity] will launch using an [ActivityResultLauncher] generated for an instance of [activityClass]
+             * @param Activity the type of [android.app.Activity] to provide the [ActivityResultLauncher]
+             * @param activityClass The [KClass] of the [Activity] to generate the [ActivityResultLauncher] for
              * @param provideResultLauncher A callback method called on an instance of [activityClass] to provide an [ActivityResultLauncher] to launch the new activity with.
              * Note that this method may be called after the instance of [activityClass] has been created.
              */
-            class ActivityContract<A : android.app.Activity>(
-                val activityClass: KClass<A>,
-                val provideResultLauncher: A.() -> ActivityResultLauncher<Intent>
+            class ActivityContract<Activity : android.app.Activity>(
+                val activityClass: KClass<Activity>,
+                val provideResultLauncher: Activity.() -> ActivityResultLauncher<Intent>
             ) : LaunchType() {
                 fun tryAndGetContract(activity: android.app.Activity): ActivityResultLauncher<Intent>? = activityClass.safeCast(activity)?.provideResultLauncher()
             }
@@ -103,10 +134,19 @@ sealed class NavigationSpec {
         ) : this(activityClass, flags, requestCode?.let { LaunchType.ActivityResult(it) } ?: LaunchType.NoResult)
     }
 
-    data class Contract<Input, A : android.app.Activity>(
-        val activityClass: KClass<A>,
+    /**
+     * Navigates using an [ActivityResultLauncher]
+     * @param Input the type of input to provide to the [ActivityResultLauncher]
+     * @param Activity the type of [android.app.Activity] to provide the [ActivityResultLauncher]
+     * @param activityClass The [KClass] of the [Activity] to generate the [ActivityResultLauncher] for
+     * @param input the [Input] to provide to the [ActivityResultLauncher]
+     * @param provideResultLauncher A callback method called on an instance of [activityClass] to provide an [ActivityResultLauncher] to launch with [input].
+     * Note that this method may be called after the instance of [activityClass] has been created.
+     */
+    data class Contract<Input, Activity : android.app.Activity>(
+        val activityClass: KClass<Activity>,
         val input: Input,
-        val provideResultLauncher: A.() -> ActivityResultLauncher<Input>
+        val provideResultLauncher: Activity.() -> ActivityResultLauncher<Input>
     ) : NavigationSpec() {
         fun tryAndLaunch(activity: android.app.Activity) = activityClass.safeCast(activity)?.provideResultLauncher()?.launch(input)
     }
@@ -120,7 +160,7 @@ sealed class NavigationSpec {
     /**
      * Shows a [androidx.fragment.app.Fragment]
      * @param containerId The identifier of the View containing the fragment
-     * @param type The [Type] of transaction. Defaults to [Type.Replace]
+     * @param type The [Fragment.Type] of transaction. Defaults to [Fragment.Type.Replace]
      * @param tag Optional tag of the fragment transaction
      * @param backStackSettings The [BackStackSettings] of the transaction. Defaults to [BackStackSettings.DontAdd]
      * @param animationSettings Optional [AnimationSettings] for the transaction
@@ -247,7 +287,7 @@ sealed class NavigationSpec {
 
     /**
      * Shows the Camera
-     * @param type The [Type] of media to capture
+     * @param type The [Camera.Type] of media to capture
      * @param requestCode The request code added to the intent
      * @param uri Optional [Uri] indicating where the result should be stored
      */
@@ -278,7 +318,7 @@ sealed class NavigationSpec {
 
         /**
          * Settings for the email
-         * @param type The [Type] of formatting to be used
+         * @param type The [Email.Type] of formatting to be used
          * @param to The list of recipent emails
          * @param cc The list of cc emails
          * @param bcc The list of bcc emails
@@ -352,7 +392,7 @@ sealed class NavigationSpec {
 
     /**
      * Opens up the Phone screen
-     * @param type The [Type] of phone screen to show
+     * @param type The [Phone.Type] of phone screen to show
      * @param phoneNumber The phone number to dial
      */
     data class Phone(val type: Type, val phoneNumber: String) : NavigationSpec() {
@@ -374,7 +414,7 @@ sealed class NavigationSpec {
 
     /**
      * Opens the Settings screen
-     * @param type [Type] of settings screen to open
+     * @param type [Settings.Type] of settings screen to open
      */
     data class Settings(val type: Type) : NavigationSpec() {
         sealed class Type {
@@ -444,7 +484,7 @@ sealed class NavigationSpec {
     }
 
     /**
-     * Opens the Text messaeger screen
+     * Opens the Text messenger screen
      * @param settings The [TextMessengerSettings] to configure the message
      */
     data class TextMessenger(val settings: TextMessengerSettings) : NavigationSpec() {
@@ -459,7 +499,7 @@ sealed class NavigationSpec {
 
         /**
          * Settings for the text message
-         * @param type [Type] of text message to send
+         * @param type [TextMessenger.Type] of text message to send
          * @param recipients List of recipients
          * @param subject Optional subject of the message
          * @param body Optional body of the message

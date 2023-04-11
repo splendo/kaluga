@@ -32,6 +32,13 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
+/**
+ * A [MediaSurfaceProvider] that provides a [SurfaceHolder] from a given [Activity]
+ * @param Activity the type of [android.app.Activity] that provides the [SurfaceHolder]
+ * @param activityClass the [KClass] of [Activity]
+ * @param activitySurfaceHolder method for getting a [SurfaceHolder] from an instance of [Activity]
+ * @param observer the [LifecycleManagerObserver] to observe the lifecycle
+ */
 class ActivityMediaSurfaceProvider<Activity : android.app.Activity>(
     private val activityClass: KClass<Activity>,
     private val activitySurfaceHolder: Activity.() -> SurfaceHolder?,
@@ -78,4 +85,11 @@ private fun SurfaceHolder.flowMediaSurface(): Flow<MediaSurface?> {
     }
 }
 
-inline fun <reified Activity : android.app.Activity> ActivityMediaSurfaceProvider(noinline activitySurfaceHolder: Activity.() -> SurfaceHolder?) = ActivityMediaSurfaceProvider(Activity::class, activitySurfaceHolder)
+/**
+ * Creates an [ActivityMediaSurfaceProvider]
+ * @param Activity the type of [android.app.Activity] that provides the [SurfaceHolder]
+ * @param activitySurfaceHolder method for getting a [SurfaceHolder] from an instance of [Activity]
+ */
+inline fun <reified Activity : android.app.Activity> ActivityMediaSurfaceProvider(
+    noinline activitySurfaceHolder: Activity.() -> SurfaceHolder?
+) = ActivityMediaSurfaceProvider(Activity::class, activitySurfaceHolder)

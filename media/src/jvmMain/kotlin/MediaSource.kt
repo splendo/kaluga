@@ -17,8 +17,21 @@
 
 package com.splendo.kaluga.media
 
+/**
+ * The source at which [PlayableMedia] can be found
+ */
 actual sealed class MediaSource {
+
+    /**
+     * A [MediaSource] for a url string
+     * @property url the url string of the media source
+     */
     data class URL(val url: String) : MediaSource()
 }
 
+/**
+ * Attempts to create a [MediaSource] from a url string
+ * @param url the url String of the media source
+ * @return the [MediaSource] associated with [url] or `null` if none could be created
+ */
 actual fun mediaSourceFromUrl(url: String): MediaSource? = MediaSource.URL(url)

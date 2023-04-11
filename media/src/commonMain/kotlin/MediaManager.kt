@@ -32,33 +32,120 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
+/**
+ * Manages media playback
+ */
 interface MediaManager {
 
+    /**
+     * Events detected by [MediaManager]
+     */
     sealed class Event {
+
+        /**
+         * An [Event] indicating preparation for a [PlayableMedia] has completed successfully
+         * @property playableMedia the [PlayableMedia] that was prepared
+         */
         data class DidPrepare(val playableMedia: PlayableMedia) : Event()
+
+        /**
+         * An [Event] indicating an unrecoverable failure occurred
+         * @property error the [PlaybackError] that occurred
+         */
         data class DidFailWithError(val error: PlaybackError) : Event()
+
+        /**
+         * An [Event] indicating playback completed
+         */
         object DidComplete : Event()
+
+        /**
+         * An [Event] indicating the manager was ended
+         */
         object DidEnd : Event()
     }
 
+    /**
+     * A [Flow] of all the [Event] detected by the media manager
+     */
     val events: Flow<Event>
+
+    /**
+     * The volume of the audio playback. A value of `0.0` indicates silence; a value of `1.0` (the default) indicates full audio volume for the player instance.
+     */
     var volume: Float
 
+    /**
+     * Attempts to create a [PlayableMedia] for a given [MediaSource]
+     * @param source the [MediaSource] for which to create the [PlayableMedia]
+     * @return the [PlayableMedia] associated with [source] or `null` if no media could be created1
+     */
     fun createPlayableMedia(source: MediaSource): PlayableMedia?
+
+    /**
+     * Initializes to manage for a given [PlayableMedia]
+     * @param playableMedia the [PlayableMedia] for which to initialize
+     */
     fun initialize(playableMedia: PlayableMedia)
+
+    /**
+     * Renders the video component of any initialized [PlayableMedia] on a [MediaSurface]
+     */
     fun renderVideoOnSurface(surface: MediaSurface?)
 
+    /**
+     * Starts playback at a given rate
+     * @param rate the rate at which playback should occur
+     */
     fun play(rate: Float)
+
+    /**
+     * Pauses playback
+     */
     fun pause()
+
+    /**
+     * Stops playback
+     */
     fun stop()
+
+    /**
+     * Seeks to a specified time position. Will suspend until seek has completed
+     * @param duration the [Duration] of the position to seek to
+     * @return `true` if the seek was successful
+     */
     suspend fun seekTo(duration: Duration): Boolean
+
+    /**
+     * Resets the media manager to an uninitialized state. After calling this [initialize] will have to be called again.
+     */
     fun reset()
+
+    /**
+     * Releases all resources associated with the media manager.
+     * This method should be called when done with the media manager.
+     * After calling this playback is disabled. Any subsequent calls will result in a [PlaybackError.PlaybackHasEnded]
+     */
     fun end()
 }
 
+/**
+ * An abstract implementation for [MediaManager]
+ * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param coroutineContext the [CoroutineContext] on which the media will be managed
+ */
 abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : MediaManager, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
 
+    /**
+     * Builder for creating a [BaseMediaManager]
+     */
     interface Builder {
+
+        /**
+         * Creates a [BaseMediaManager]
+         * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+         * @param coroutineContext the [CoroutineContext] on which the media will be managed
+         */
         fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager
     }
 
@@ -155,4 +242,7 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
     protected abstract fun cleanUp()
 }
 
+/**
+ * Default implementation of [BaseMediaManager]
+ */
 expect class DefaultMediaManager : BaseMediaManager

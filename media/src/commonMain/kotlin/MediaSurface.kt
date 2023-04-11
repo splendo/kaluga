@@ -20,8 +20,18 @@ package com.splendo.kaluga.media
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * A surface on which the video component of a [PlayableMedia] can be rendered
+ */
 expect class MediaSurface
 
+/**
+ * A [LifecycleSubscribable] that provides a [MediaSurface]
+ */
 interface MediaSurfaceProvider : LifecycleSubscribable {
+
+    /**
+     * A [Flow] of the [MediaSurface] currently associated with the lifecycle
+     */
     val surface: Flow<MediaSurface?>
 }

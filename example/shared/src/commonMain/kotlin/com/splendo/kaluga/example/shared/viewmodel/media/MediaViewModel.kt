@@ -77,10 +77,10 @@ class MediaViewModel(
     private val mediaPlayerDispatcher = singleThreadDispatcher("MediaPlayer")
     private val mediaPlayer = DefaultMediaPlayer(mediaSurfaceProvider, builder, coroutineScope.coroutineContext + mediaPlayerDispatcher)
 
-    val isPreparing = mediaPlayer.availableControls.map { it.getControlType<MediaPlayer.Controls.AwaitPreparation>() != null }.toInitializedObservable(false, coroutineScope)
-    val hasControls = mediaPlayer.availableControls.map { it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null }.toInitializedObservable(false, coroutineScope)
+    val isPreparing = mediaPlayer.controls.map { it.getControlType<MediaPlayer.Controls.AwaitPreparation>() != null }.toInitializedObservable(false, coroutineScope)
+    val hasControls = mediaPlayer.controls.map { it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null }.toInitializedObservable(false, coroutineScope)
     private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
-    private val _availableControls = mediaPlayer.availableControls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
+    private val _controls = mediaPlayer.controls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
 
     val totalDuration = _totalDuration.map {
         it.format()
@@ -98,9 +98,9 @@ class MediaViewModel(
         }.toFloat()
     }.toInitializedObservable(0.0f, coroutineScope)
 
-    val isSeekEnabled = _availableControls.map { it.seek != null }.toInitializedObservable(false, coroutineScope)
+    val isSeekEnabled = _controls.map { it.seek != null }.toInitializedObservable(false, coroutineScope)
 
-    val playButton = _availableControls.map { controls ->
+    val playButton = _controls.map { controls ->
         KalugaButton.Plain("\u23F5", ButtonStyles.mediaButton, controls.play != null || controls.unpause != null) {
             coroutineScope.launch {
                 when {
@@ -112,19 +112,19 @@ class MediaViewModel(
         }
     }.toUninitializedObservable(coroutineScope)
 
-    val pauseButton = _availableControls.map {
+    val pauseButton = _controls.map {
         KalugaButton.Plain("\u23F8", ButtonStyles.mediaButton, it.pause != null) {
             coroutineScope.launch { it.pause?.perform?.invoke() }
         }
     }.toUninitializedObservable(coroutineScope)
 
-    val stopButton = _availableControls.map {
+    val stopButton = _controls.map {
         KalugaButton.Plain("\u23F9", ButtonStyles.mediaButton, it.stop != null) {
             coroutineScope.launch { it.stop?.perform?.invoke() }
         }
     }.toUninitializedObservable(coroutineScope)
 
-    val loopButton = _availableControls.map { controls ->
+    val loopButton = _controls.map { controls ->
         controls.setLoopMode?.let { setLoopMode ->
             when (val loopMode = setLoopMode.currentLoopMode) {
                 PlaybackState.LoopMode.NotLooping -> KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButton, true) {
@@ -146,7 +146,7 @@ class MediaViewModel(
         } ?: KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButton, false) {}
     }.toUninitializedObservable(coroutineScope)
 
-    val rateButton = _availableControls.map { controls ->
+    val rateButton = _controls.map { controls ->
         controls.setRate?.let { setRate ->
             KalugaButton.Plain(playbackFormatter.format(setRate.currentRate), ButtonStyles.mediaButton, true) {
                 coroutineScope.launch {
@@ -168,7 +168,7 @@ class MediaViewModel(
 
     fun seekTo(progress: Double) {
         coroutineScope.launch {
-            _availableControls.value.seek?.perform?.invoke(_totalDuration.value * progress)
+            _controls.value.seek?.perform?.invoke(_totalDuration.value * progress)
         }
     }
 
@@ -215,7 +215,7 @@ class MediaViewModel(
 
     init {
         coroutineScope.launch {
-            _availableControls.mapNotNull { it.displayError }.collect { error ->
+            _controls.mapNotNull { it.displayError }.collect { error ->
                 alertPresenterBuilder.buildAlert(coroutineScope) {
                     setTitle("media_error_title".localized())
                     setMessage(error.error.message ?: error.error::class.simpleName.orEmpty())

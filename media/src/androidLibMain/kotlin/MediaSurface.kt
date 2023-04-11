@@ -19,4 +19,9 @@ package com.splendo.kaluga.media
 
 import android.view.SurfaceHolder
 
+/**
+ * A surface on which the video component of a [PlayableMedia] can be rendered.
+ * Exposes a [SurfaceHolder] to bind to
+ * @property holder the [SurfaceHolder] to bind to
+ */
 actual data class MediaSurface(val holder: SurfaceHolder)

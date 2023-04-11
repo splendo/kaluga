@@ -207,7 +207,9 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      *
      * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself (however a different state might be current at that point).
      *
+     * @param Result the type of the result to be returned
      * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
+     * @return the [Result] returned by [action] for the [State]
      */
     suspend fun <Result> useState(action: suspend (State) -> Result) = coroutineScope {
         initialize()
@@ -229,6 +231,7 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      * Launches in a given [CoroutineContext] and calls [action] on the current [State]. The state is guaranteed not to change during the execution of [action].
      * This operation ensures atomic state observations, so the state will not change while the [action] is being executed.
      *
+     * @param Result the type of the result to be returned
      * @param context The [CoroutineContext] in which to use the state.
      * @param action The action to execute on the current [State]
      * @see [useState]

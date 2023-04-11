@@ -66,6 +66,13 @@ private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKey
     }
 }
 
+/**
+ * Starts observing the value of a property using Key-Value observation and returns any updates in a [Flow]
+ * @param T the type of the property to be observed
+ * @param keyPath the key path, relative to the object receiving this message, of the property to observe.
+ * @param options A combination of the [NSKeyValueObservingOptions] values that specifies what is included in observation notifications.
+ * @return a [Flow] containing the [T] observed at [keyPath]
+ */
 fun <T> NSObject.observeKeyValueAsFlow(
     keyPath: String,
     options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew

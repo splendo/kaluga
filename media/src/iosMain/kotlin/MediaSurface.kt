@@ -22,17 +22,30 @@ import platform.AVFoundation.AVPlayerLayer
 import platform.AVKit.AVPlayerViewController
 
 typealias MediaSurfaceBinding = (AVPlayer?) -> Unit
+
+/**
+ * A surface on which the video component of a [PlayableMedia] can be rendered.
+ * @property bind the [MediaSurfaceBinding] method to bind to an [AVPlayer]
+ */
 actual data class MediaSurface(val bind: MediaSurfaceBinding) {
 
+    /**
+     * Constructor to create a [MediaSurface] that binds the [AVPlayer] of a [MediaManager] to an [AVPlayerLayer]
+     * @param avPlayerLayer the [AVPlayerLayer] to bind to
+     */
     constructor(avPlayerLayer: AVPlayerLayer) : this(
         {
             avPlayerLayer.player = it
         }
     )
 
-    constructor(vc: AVPlayerViewController) : this(
+    /**
+     * Constructor to create a [MediaSurface] that binds the [AVPlayer] of a [MediaManager] to an [AVPlayerViewController]
+     * @param viewController the [AVPlayerViewController] to bind to
+     */
+    constructor(viewController: AVPlayerViewController) : this(
         {
-            vc.player = it
+            viewController.player = it
         }
     )
 }

@@ -20,9 +20,27 @@ package com.splendo.kaluga.media
 import platform.AVFoundation.AVAsset
 import platform.Foundation.NSURL
 
+/**
+ * The source at which [PlayableMedia] can be found
+ */
 actual sealed class MediaSource {
+
+    /**
+     * A [MediaSource] that has an associated [AVAsset]
+     * @property asset the [AVAsset] associated with the media source
+     */
     data class Asset(val asset: AVAsset) : MediaSource()
+
+    /**
+     * A [MediaSource] that is located at a [NSURL]
+     * @property url the [NSURL] at which the media is located
+     */
     data class URL(val url: NSURL) : MediaSource()
 }
 
+/**
+ * Attempts to create a [MediaSource] from a url string
+ * @param url the url String of the media source
+ * @return the [MediaSource] associated with [url] or `null` if none could be created
+ */
 actual fun mediaSourceFromUrl(url: String): MediaSource? = NSURL.URLWithString(url)?.let { MediaSource.URL(it) }

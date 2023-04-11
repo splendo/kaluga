@@ -20,6 +20,14 @@ package com.splendo.kaluga.media
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration
 
+/**
+ * A media that can be played by a [MediaPlayer]
+ * @property source the [MediaSource] on which the media is found
+ * @property duration the [Duration] of the media
+ * @property currentPlayTime gets the [Duration] of playtime at the time this property is requested
+ * @property resolution a [Flow] of the [Resolution] of the media. Note that if no [MediaSurface] has been bound to the media, this will be [Resolution.ZERO]
+ * @property tracks a list of [TrackInfo] of the media
+ */
 expect class PlayableMedia {
     val source: MediaSource
     val duration: Duration
@@ -28,13 +36,25 @@ expect class PlayableMedia {
     val tracks: List<TrackInfo>
 }
 
+/**
+ * If `true` this [PlayableMedia] has a video component
+ */
 val PlayableMedia.isVideo: Boolean get() = tracks.any { it.type == TrackInfo.Type.VIDEO }
 
+/**
+ * Info of the track of a [PlayableMedia]
+ * @property id identifier of the track
+ * @property type the [TrackInfo.Type] of the track
+ * @property language the language code of the track
+ */
 data class TrackInfo(
     val id: Int,
     val type: Type,
     val language: String
 ) {
+    /**
+     * The type of the track
+     */
     enum class Type {
         AUDIO,
         METADATA,
@@ -45,10 +65,22 @@ data class TrackInfo(
     }
 }
 
+/**
+ * The screen resolution of a video
+ * @property width the width in pixels of the video
+ * @property height the height in pixels of the video
+ */
 data class Resolution(val width: Int, val height: Int) {
     companion object {
+
+        /**
+         * A [Resolution] of 0 by 0 pixels
+         */
         val ZERO = Resolution(0, 0)
     }
 
+    /**
+     * The aspect ratio
+     */
     val aspectRatio = "$width:$height"
 }

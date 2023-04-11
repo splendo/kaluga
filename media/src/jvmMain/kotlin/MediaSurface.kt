@@ -17,4 +17,7 @@
 
 package com.splendo.kaluga.media
 
+/**
+ * A surface on which the video component of a [PlayableMedia] can be rendered
+ */
 actual class MediaSurface
