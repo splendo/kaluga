@@ -15,12 +15,11 @@
 
  */
 
-package com.splendo.kaluga.architecture.lifecycle
+package com.splendo.kaluga.test.media
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.media.MediaSurface
 
 /**
- * This interface can be provided to a [BaseLifecycleViewModel] to bind to platform specific lifecycle.
- * Extend this on classes that need to have some setup during lifecycle events.
+ * Creates a Mock implementation of [MediaSurface]
  */
-actual interface LifecycleSubscribable
+actual fun createMockMediaSurface(): MediaSurface = MediaSurface()

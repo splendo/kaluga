@@ -9,20 +9,16 @@ plugins {
 
 publishableComponent()
 
-dependencies { }
-
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":base"))
-                implementation(project(":architecture"))
-                implementation(project(":logging"))
+                api(project(":media"))
+                api(project(":test-utils-architecture"))
             }
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils-media"))
             }
         }
     }

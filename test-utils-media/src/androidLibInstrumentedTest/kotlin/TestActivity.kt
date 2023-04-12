@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
- */
+*/
 
-package com.splendo.kaluga.architecture.lifecycle
+package com.splendo.kaluga.test.media
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import androidx.appcompat.app.AppCompatActivity
 
-/**
- * This interface can be provided to a [BaseLifecycleViewModel] to bind to platform specific lifecycle.
- * Extend this on classes that need to have some setup during lifecycle events.
- */
-interface LifecycleSubscribable
+class TestActivity : AppCompatActivity()
+
+class CorrectlySetupTest {
+    @kotlin.test.Test
+    fun testSetup() = assert(true)
+}

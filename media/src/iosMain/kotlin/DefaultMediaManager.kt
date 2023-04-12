@@ -87,18 +87,15 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
 /**
- * A media that can be played by a [MediaPlayer]
- * @property source the [MediaSource] on which the media is found
- * @property duration the [Duration] of the media
- * @property currentPlayTime gets the [Duration] of playtime at the time this property is requested
- * @property resolution a [Flow] of the [Resolution] of the media. Note that if no [MediaSurface] has been bound to the media, this will be [Resolution.ZERO]
- * @property tracks a list of [TrackInfo] of the media
+ * Default implementation of [PlayableMedia]
+ * @param source the [MediaSource] on which the media is found
+ * @param avPlayerItem the [AVPlayerItem] associated with the media
  */
-actual class PlayableMedia(actual val source: MediaSource, internal val avPlayerItem: AVPlayerItem) {
-    actual val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
-    actual val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
-    actual val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
-    actual val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { size ->
+actual class DefaultPlayableMedia(override val source: MediaSource, internal val avPlayerItem: AVPlayerItem) : PlayableMedia {
+    override val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
+    override val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
+    override val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
+    override val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { _ ->
         // Mapping from typealias NSSize seems to fail so we'll just grab the value ourselves
         avPlayerItem.presentationSize.useContents { Resolution(width.toInt(), height.toInt()) }
     }
@@ -182,21 +179,19 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         )
     }
 
-    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(
+    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = DefaultPlayableMedia(
         source,
-        when (source) {
-            is MediaSource.Asset -> AVPlayerItem(source.asset)
-            is MediaSource.URL -> AVPlayerItem(source.url)
-        }
+        source.avPlayerItem
     )
 
     override fun initialize(playableMedia: PlayableMedia) {
-        avPlayer.replaceCurrentItemWithPlayerItem(playableMedia.avPlayerItem)
+        val avPlayerItem = playableMedia.source.avPlayerItem
+        avPlayer.replaceCurrentItemWithPlayerItem(avPlayerItem)
         itemJob = launch {
-            playableMedia.avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
+            avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
                 when (status) {
                     AVPlayerItemStatusUnknown -> {}
-                    AVPlayerItemStatusReadyToPlay -> handlePrepared(PlayableMedia(playableMedia.source, avPlayer.currentItem!!))
+                    AVPlayerItemStatusReadyToPlay -> handlePrepared(DefaultPlayableMedia(playableMedia.source, avPlayer.currentItem!!))
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }
@@ -204,6 +199,11 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
                 }
             }
         }
+    }
+
+    private val MediaSource.avPlayerItem: AVPlayerItem get() = when (this) {
+        is MediaSource.Asset -> AVPlayerItem(asset)
+        is MediaSource.URL -> AVPlayerItem(url)
     }
 
     override fun renderVideoOnSurface(surface: MediaSurface?) {

@@ -66,6 +66,15 @@ public final class com/splendo/kaluga/media/DefaultMediaPlayer : com/splendo/kal
 	public fun setVolume (F)V
 }
 
+public final class com/splendo/kaluga/media/DefaultPlayableMedia : com/splendo/kaluga/media/PlayableMedia {
+	public fun <init> (Lcom/splendo/kaluga/media/MediaSource;Landroid/media/MediaPlayer;)V
+	public fun getCurrentPlayTime-UwyO8pc ()J
+	public fun getDuration-UwyO8pc ()J
+	public fun getResolution ()Lkotlinx/coroutines/flow/Flow;
+	public fun getSource ()Lcom/splendo/kaluga/media/MediaSource;
+	public fun getTracks ()Ljava/util/List;
+}
+
 public abstract interface class com/splendo/kaluga/media/MediaManager {
 	public abstract fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;)Lcom/splendo/kaluga/media/PlayableMedia;
 	public abstract fun end ()V
@@ -288,13 +297,12 @@ public abstract interface class com/splendo/kaluga/media/MediaSurfaceProvider : 
 	public abstract fun getSurface ()Lkotlinx/coroutines/flow/Flow;
 }
 
-public final class com/splendo/kaluga/media/PlayableMedia {
-	public fun <init> (Lcom/splendo/kaluga/media/MediaSource;Landroid/media/MediaPlayer;)V
-	public final fun getCurrentPlayTime-UwyO8pc ()J
-	public final fun getDuration-UwyO8pc ()J
-	public final fun getResolution ()Lkotlinx/coroutines/flow/Flow;
-	public final fun getSource ()Lcom/splendo/kaluga/media/MediaSource;
-	public final fun getTracks ()Ljava/util/List;
+public abstract interface class com/splendo/kaluga/media/PlayableMedia {
+	public abstract fun getCurrentPlayTime-UwyO8pc ()J
+	public abstract fun getDuration-UwyO8pc ()J
+	public abstract fun getResolution ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getSource ()Lcom/splendo/kaluga/media/MediaSource;
+	public abstract fun getTracks ()Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/media/PlayableMediaKt {

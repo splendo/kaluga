@@ -23,18 +23,14 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * A media that can be played by a [MediaPlayer]
- * @property source the [MediaSource] on which the media is found
- * @property duration the [Duration] of the media
- * @property currentPlayTime gets the [Duration] of playtime at the time this property is requested
- * @property resolution a [Flow] of the [Resolution] of the media. Note that if no [MediaSurface] has been bound to the media, this will be [Resolution.ZERO]
- * @property tracks a list of [TrackInfo] of the media
+ * Default implementation of [PlayableMedia]
+ * @param source the [MediaSource] on which the media is found
  */
-actual class PlayableMedia(actual val source: MediaSource) {
-    actual val duration: Duration = Duration.ZERO
-    actual val currentPlayTime: Duration = Duration.ZERO
-    actual val tracks: List<TrackInfo> = emptyList()
-    actual val resolution: Flow<Resolution> = flowOf(Resolution.ZERO)
+actual class DefaultPlayableMedia(override val source: MediaSource) : PlayableMedia {
+    override val duration: Duration = Duration.ZERO
+    override val currentPlayTime: Duration = Duration.ZERO
+    override val tracks: List<TrackInfo> = emptyList()
+    override val resolution: Flow<Resolution> = flowOf(Resolution.ZERO)
 }
 
 /**
@@ -54,7 +50,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     private var mediaSurface: MediaSurface? = null
     override var volume: Float = 0.0f
 
-    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = PlayableMedia(source)
+    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = DefaultPlayableMedia(source)
 
     override fun initialize(playableMedia: PlayableMedia) {
         handlePrepared(playableMedia)

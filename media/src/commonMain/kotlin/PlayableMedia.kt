@@ -28,13 +28,18 @@ import kotlin.time.Duration
  * @property resolution a [Flow] of the [Resolution] of the media. Note that if no [MediaSurface] has been bound to the media, this will be [Resolution.ZERO]
  * @property tracks a list of [TrackInfo] of the media
  */
-expect class PlayableMedia {
+interface PlayableMedia {
     val source: MediaSource
     val duration: Duration
     val currentPlayTime: Duration
     val resolution: Flow<Resolution>
     val tracks: List<TrackInfo>
 }
+
+/**
+ * Default implementation of [PlayableMedia]
+ */
+expect class DefaultPlayableMedia : PlayableMedia
 
 /**
  * If `true` this [PlayableMedia] has a video component

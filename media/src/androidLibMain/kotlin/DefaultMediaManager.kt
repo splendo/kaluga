@@ -36,21 +36,18 @@ typealias AndroidMediaPlayer = android.media.MediaPlayer
 typealias AndroidTrackInfo = android.media.MediaPlayer.TrackInfo
 
 /**
- * A media that can be played by a [MediaPlayer]
- * @property source the [MediaSource] on which the media is found
- * @property duration the [Duration] of the media
- * @property currentPlayTime gets the [Duration] of playtime at the time this property is requested
- * @property resolution a [Flow] of the [Resolution] of the media. Note that if no [MediaSurface] has been bound to the media, this will be [Resolution.ZERO]
- * @property tracks a list of [TrackInfo] of the media
+ * Default implementation of [PlayableMedia]
+ * @param source the [MediaSource] on which the media is found
+ * @param mediaPlayer the [android.media.MediaPlayer] playing the media
  */
-actual class PlayableMedia(actual val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) {
-    actual val duration: Duration get() = mediaPlayer.duration.milliseconds
-    actual val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
-    actual val tracks get() = mediaPlayer.trackInfo.mapIndexed { index, trackInfo -> trackInfo.asTrackInfo(index) }
+actual class DefaultPlayableMedia(override val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) : PlayableMedia {
+    override val duration: Duration get() = mediaPlayer.duration.milliseconds
+    override val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
+    override val tracks get() = mediaPlayer.trackInfo.mapIndexed { index, trackInfo -> trackInfo.asTrackInfo(index) }
     private val mutex = Mutex()
     private var videoSizeListener: android.media.MediaPlayer.OnVideoSizeChangedListener? = null
     private val _resolution = MutableStateFlow(Resolution.ZERO)
-    actual val resolution: Flow<Resolution> = _resolution.asSharedFlow().onSubscription {
+    override val resolution: Flow<Resolution> = _resolution.asSharedFlow().onSubscription {
         mutex.withLock {
             if (_resolution.subscriptionCount.value > 0 && videoSizeListener == null) {
                 videoSizeListener = MediaPlayer.OnVideoSizeChangedListener { _, width, height ->
@@ -142,7 +139,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
                 mediaPlayer.setDataSource(source.context, source.uri, source.headers)
             }
         }
-        PlayableMedia(source, mediaPlayer)
+        DefaultPlayableMedia(source, mediaPlayer)
     } catch (e: Throwable) {
         when (e) {
             is IllegalStateException -> null
@@ -156,7 +153,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     override fun initialize(playableMedia: PlayableMedia) {
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.setOnPreparedListener(null)
-            handlePrepared(PlayableMedia(playableMedia.source, it))
+            handlePrepared(DefaultPlayableMedia(playableMedia.source, it))
         }
         mediaPlayer.prepareAsync()
     }

@@ -1,0 +1,260 @@
+public final class com/splendo/kaluga/test/media/MockBaseMediaManager : com/splendo/kaluga/media/BaseMediaManager {
+	public fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;Z)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCleanUpMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getHandleCreatePlayableMediaMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getHandleResetMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getInitializeMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getPauseMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getPlayMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getRenderVideoOnSurfaceMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStartSeekMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStopMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public fun getVolume ()F
+	public fun initialize (Lcom/splendo/kaluga/media/PlayableMedia;)V
+	public fun pause ()V
+	public fun play (F)V
+	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
+	public fun setVolume (F)V
+	public fun stop ()V
+}
+
+public final class com/splendo/kaluga/test/media/MockMediaManager : com/splendo/kaluga/media/MediaManager {
+	public fun <init> (Lkotlinx/coroutines/flow/MutableSharedFlow;)V
+	public fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;)Lcom/splendo/kaluga/media/PlayableMedia;
+	public fun end ()V
+	public final fun getCreatePlayableMediaMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getEndMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public synthetic fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public fun getEvents ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+	public final fun getInitializeMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getPauseMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getPlayMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getRenderVideoOnSurfaceMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getResetMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getStopMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public fun getVolume ()F
+	public fun initialize (Lcom/splendo/kaluga/media/PlayableMedia;)V
+	public fun pause ()V
+	public fun play (F)V
+	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
+	public fun reset ()V
+	public fun seekTo-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun setVolume (F)V
+	public fun stop ()V
+}
+
+public final class com/splendo/kaluga/test/media/MockMediaPlayer : com/splendo/kaluga/media/MediaPlayer {
+	public fun <init> (Lkotlinx/coroutines/flow/MutableStateFlow;Lkotlinx/coroutines/flow/MutableStateFlow;)V
+	public fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun end ()V
+	public fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getAwaitCompletionMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public synthetic fun getControls ()Lkotlinx/coroutines/flow/Flow;
+	public fun getControls ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public final fun getEndMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getForceStartMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun getInitializeForMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public synthetic fun getPlayableMedia ()Lkotlinx/coroutines/flow/Flow;
+	public fun getPlayableMedia ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public final fun getRenderVideoOnSurfaceMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getResetMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun getVolume ()F
+	public fun initializeFor (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
+	public fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun setVolume (F)V
+}
+
+public final class com/splendo/kaluga/test/media/MockMediaSurfaceKt {
+	public static final fun createMockMediaSurface ()Lcom/splendo/kaluga/media/MediaSurface;
+}
+
+public final class com/splendo/kaluga/test/media/MockMediaSurfaceProvider : com/splendo/kaluga/media/MediaSurfaceProvider {
+	public fun <init> (Lkotlinx/coroutines/flow/MutableSharedFlow;)V
+	public synthetic fun getSurface ()Lkotlinx/coroutines/flow/Flow;
+	public fun getSurface ()Lkotlinx/coroutines/flow/MutableSharedFlow;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlayableMedia : com/splendo/kaluga/media/PlayableMedia {
+	public synthetic fun <init> (Lcom/splendo/kaluga/media/MediaSource;JJLkotlinx/coroutines/flow/MutableStateFlow;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/media/MediaSource;JJLkotlinx/coroutines/flow/MutableStateFlow;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCurrentPlayTime-UwyO8pc ()J
+	public fun getDuration-UwyO8pc ()J
+	public synthetic fun getResolution ()Lkotlinx/coroutines/flow/Flow;
+	public fun getResolution ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public fun getSource ()Lcom/splendo/kaluga/media/MediaSource;
+	public fun getTracks ()Ljava/util/List;
+	public fun setCurrentPlayTime-LRDsOJo (J)V
+}
+
+public abstract class com/splendo/kaluga/test/media/MockPlaybackState {
+	public static final field Companion Lcom/splendo/kaluga/test/media/MockPlaybackState$Companion;
+}
+
+public abstract class com/splendo/kaluga/test/media/MockPlaybackState$Active : com/splendo/kaluga/test/media/MockPlaybackState {
+	public final fun failWithError (Lcom/splendo/kaluga/media/PlaybackError;)Lkotlin/jvm/functions/Function1;
+	public final fun getEnd ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public final fun getReset ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Companion {
+	public final fun createSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Completed : com/splendo/kaluga/test/media/MockPlaybackState$Prepared, com/splendo/kaluga/media/PlaybackState$Completed {
+	public fun <init> (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component1 ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Completed;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Completed;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Completed;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getPlayableMedia ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun start (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Ended : com/splendo/kaluga/test/media/MockPlaybackState, com/splendo/kaluga/media/PlaybackState$Ended {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/media/MockPlaybackState$Ended;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Error : com/splendo/kaluga/test/media/MockPlaybackState$Active, com/splendo/kaluga/media/PlaybackState$Error {
+	public fun <init> (Lcom/splendo/kaluga/media/PlaybackError;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component1 ()Lcom/splendo/kaluga/media/PlaybackError;
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlaybackError;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Error;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Error;Lcom/splendo/kaluga/media/PlaybackError;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Error;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getError ()Lcom/splendo/kaluga/media/PlaybackError;
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Idle : com/splendo/kaluga/test/media/MockPlaybackState$Prepared, com/splendo/kaluga/media/PlaybackState$Idle {
+	public fun <init> (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component1 ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Idle;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Idle;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Idle;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getPlayableMedia ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun play (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Initialized : com/splendo/kaluga/test/media/MockPlaybackState$Active, com/splendo/kaluga/media/PlaybackState$Initialized {
+	public fun <init> (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Initialized;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Initialized;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Initialized;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun prepared (Lcom/splendo/kaluga/media/PlayableMedia;)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Paused : com/splendo/kaluga/test/media/MockPlaybackState$Prepared, com/splendo/kaluga/media/PlaybackState$Paused {
+	public fun <init> (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component1 ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
+	public final fun component2 ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun component4 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Paused;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Paused;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Paused;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getPlay ()Lkotlin/jvm/functions/Function1;
+	public fun getPlayableMedia ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+	public fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Playing : com/splendo/kaluga/test/media/MockPlaybackState$Prepared, com/splendo/kaluga/media/PlaybackState$Playing {
+	public fun <init> (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component1 ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
+	public final fun component2 ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun component4 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Playing;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Playing;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Playing;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCompletedLoop ()Lkotlin/jvm/functions/Function1;
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getPause ()Lkotlin/jvm/functions/Function1;
+	public fun getPlayableMedia ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+	public fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract class com/splendo/kaluga/test/media/MockPlaybackState$Prepared : com/splendo/kaluga/test/media/MockPlaybackState$Active {
+	public abstract fun getPlayableMedia ()Lcom/splendo/kaluga/media/PlayableMedia;
+	public final fun getStop ()Lkotlin/jvm/functions/Function1;
+	public final fun seekTo-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Stopped : com/splendo/kaluga/test/media/MockPlaybackState$Active, com/splendo/kaluga/media/PlaybackState$Stopped {
+	public fun <init> (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun component3 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Stopped;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Stopped;Lcom/splendo/kaluga/media/PlayableMedia;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Stopped;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackState$Uninitialized : com/splendo/kaluga/test/media/MockPlaybackState$Active, com/splendo/kaluga/media/PlaybackState$Uninitialized {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)V
+	public final fun component1 ()Lkotlin/jvm/functions/Function1;
+	public final fun component2 ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public final fun copy (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Uninitialized;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/media/MockPlaybackState$Uninitialized;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;ILjava/lang/Object;)Lcom/splendo/kaluga/test/media/MockPlaybackState$Uninitialized;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMediaProvider ()Lkotlin/jvm/functions/Function1;
+	public fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public fun hashCode ()I
+	public fun initialize (Lcom/splendo/kaluga/media/MediaSource;)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/media/MockPlaybackStateRepo : com/splendo/kaluga/media/BasePlaybackStateRepo {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Lkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getSeekToMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+}
+
