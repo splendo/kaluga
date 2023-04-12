@@ -20,9 +20,10 @@ package com.splendo.kaluga.test.media
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaPlayer.Controls
 import com.splendo.kaluga.media.MediaSource
-import com.splendo.kaluga.media.MediaSurface
+import com.splendo.kaluga.media.MediaSurfaceController
 import com.splendo.kaluga.media.PlayableMedia
 import com.splendo.kaluga.media.PlaybackState
+import com.splendo.kaluga.media.VolumeController
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,36 +32,34 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * Mock implementation of [MediaPlayer]
  * @property playableMedia A [MutableStateFlow] of the [PlayableMedia] for which the player is controlling playback
  * @property controls A [MutableStateFlow] of the [Controls] available for playback
+ * @param volumeController a [MockVolumeController] to act as the [VolumeController]
+ * @param mediaSurfaceController a [MockMediaSurfaceController] to act as the [MediaSurfaceController]
+
  */
 class MockMediaPlayer(
     override val playableMedia: MutableStateFlow<PlayableMedia?>,
-    override val controls: MutableStateFlow<MediaPlayer.Controls>
-) : MediaPlayer {
-
-    override var volume: Float = 1.0f
+    override val controls: MutableStateFlow<MediaPlayer.Controls>,
+    val volumeController: MockVolumeController,
+    val mediaSurfaceController: MockMediaSurfaceController
+) : MediaPlayer, VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [initializeFor]
+     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [initializeFor]
      */
     val initializeForMock = this::initializeFor.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [renderVideoOnSurface]
-     */
-    val renderVideoOnSurfaceMock = this::renderVideoOnSurface.mock()
-
-    /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [forceStart]
+     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [forceStart]
      */
     val forceStartMock = this::forceStart.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [awaitCompletion]
+     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [awaitCompletion]
      */
     val awaitCompletionMock = this::awaitCompletion.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [reset]
+     * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [reset]
      */
     val resetMock = this::reset.mock()
 
@@ -70,7 +69,6 @@ class MockMediaPlayer(
     val endMock = this::end.mock()
 
     override suspend fun initializeFor(source: MediaSource): Unit = initializeForMock.call(source)
-    override fun renderVideoOnSurface(surface: MediaSurface?): Unit = renderVideoOnSurfaceMock.call(surface)
 
     override suspend fun forceStart(
         playbackParameters: PlaybackState.PlaybackParameters,

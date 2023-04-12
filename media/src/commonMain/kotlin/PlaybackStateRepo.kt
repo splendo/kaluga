@@ -17,10 +17,13 @@
 
 package com.splendo.kaluga.media
 
+import com.splendo.kaluga.base.flow.takeUntilLast
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.HotStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -30,11 +33,11 @@ typealias PlaybackStateFlowRepo = StateRepo<PlaybackState, MutableStateFlow<Play
 
 /**
  * An abstract [ColdStateFlowRepo] for managing [PlaybackState]
- * @param createInitialState method for creating the initial [PlaybackState.Uninitialized] given an implementation of this [HotStateFlowRepo]
+ * @param createInitialState method for creating the initial [PlaybackState] given an implementation of this [HotStateFlowRepo]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
 abstract class BasePlaybackStateRepo(
-    createInitialState: HotStateFlowRepo<PlaybackState>.() -> PlaybackState.Uninitialized,
+    createInitialState: HotStateFlowRepo<PlaybackState>.() -> PlaybackState,
     coroutineContext: CoroutineContext
 ) : HotStateFlowRepo<PlaybackState>(
     coroutineContext = coroutineContext,
@@ -54,4 +57,24 @@ open class PlaybackStateRepo(
         PlaybackStateImpl.Uninitialized(mediaManager = mediaManager)
     },
     coroutineContext = coroutineContext
-)
+) {
+    init {
+        launch {
+            mediaManager.events.collect { event ->
+                when (event) {
+                    is MediaManager.Event.DidPrepare -> takeAndChangeState(PlaybackState.Initialized::class) { it.prepared(event.playableMedia) }
+                    is MediaManager.Event.DidFailWithError -> takeAndChangeState(PlaybackState.Active::class) { it.failWithError(event.error) }
+                    is MediaManager.Event.DidComplete -> takeAndChangeState(PlaybackState.Playing::class) { it.completedLoop }
+                    is MediaManager.Event.DidEnd -> takeAndChangeState(PlaybackState.Active::class) { it.end }
+                }
+            }
+        }
+        launch {
+            takeUntilLast(false).last()
+        }.invokeOnCompletion {
+            if (it != null) {
+                mediaManager.end()
+            }
+        }
+    }
+}

@@ -21,6 +21,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
@@ -33,9 +34,35 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
+ * Controller for adjusting the volume
+ */
+interface VolumeController {
+    /**
+     * The volume of the audio playback. A value of `0.0` indicates silence; a value of `1.0` (the default) indicates full audio volume for the player instance.
+     */
+    val currentVolume: Flow<Float>
+
+    /**
+     * Updates the [currentVolume]
+     * @param volume the new volume to set. Should be between `0.` and `1.0`.
+     */
+    suspend fun updateVolume(volume: Float)
+}
+
+/**
+ * Controller for rendering a [PlayableMedia] to a [MediaSurface]
+ */
+interface MediaSurfaceController {
+    /**
+     * Renders the video component of any initialized [PlayableMedia] on a [MediaSurface]
+     */
+    suspend fun renderVideoOnSurface(surface: MediaSurface?)
+}
+
+/**
  * Manages media playback
  */
-interface MediaManager {
+interface MediaManager : VolumeController, MediaSurfaceController {
 
     /**
      * Events detected by [MediaManager]
@@ -71,27 +98,17 @@ interface MediaManager {
     val events: Flow<Event>
 
     /**
-     * The volume of the audio playback. A value of `0.0` indicates silence; a value of `1.0` (the default) indicates full audio volume for the player instance.
-     */
-    var volume: Float
-
-    /**
      * Attempts to create a [PlayableMedia] for a given [MediaSource]
      * @param source the [MediaSource] for which to create the [PlayableMedia]
      * @return the [PlayableMedia] associated with [source] or `null` if no media could be created1
      */
-    fun createPlayableMedia(source: MediaSource): PlayableMedia?
+    suspend fun createPlayableMedia(source: MediaSource): PlayableMedia?
 
     /**
      * Initializes to manage for a given [PlayableMedia]
      * @param playableMedia the [PlayableMedia] for which to initialize
      */
     fun initialize(playableMedia: PlayableMedia)
-
-    /**
-     * Renders the video component of any initialized [PlayableMedia] on a [MediaSurface]
-     */
-    fun renderVideoOnSurface(surface: MediaSurface?)
 
     /**
      * Starts playback at a given rate
@@ -152,17 +169,18 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
     private val _events = Channel<MediaManager.Event>(UNLIMITED)
     override val events: Flow<MediaManager.Event> = _events.receiveAsFlow()
 
+    private val mediaMutex = Mutex()
     private var mediaSurfaceJob: Job? = null
 
     private val seekMutex = Mutex()
     private var activeSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
     private var queuedSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
 
-    final override fun createPlayableMedia(source: MediaSource): PlayableMedia? {
-        return handleCreatePlayableMedia(source).also {
-            mediaSurfaceJob?.cancel()
+    final override suspend fun createPlayableMedia(source: MediaSource): PlayableMedia? = mediaMutex.withLock {
+        handleCreatePlayableMedia(source).also {
+            mediaSurfaceJob?.cancelAndJoin()
             mediaSurfaceJob = mediaSurfaceProvider?.let {
-                launch {
+                this@BaseMediaManager.launch {
                     mediaSurfaceProvider.surface.onCompletion {
                         renderVideoOnSurface(null)
                     }.collect {
@@ -175,15 +193,15 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
 
     protected abstract fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia?
 
-    protected fun handlePrepared(playableMedia: PlayableMedia) {
+    protected open fun handlePrepared(playableMedia: PlayableMedia) {
         _events.trySend(MediaManager.Event.DidPrepare(playableMedia))
     }
 
-    protected fun handleError(error: PlaybackError) {
+    protected open fun handleError(error: PlaybackError) {
         _events.trySend(MediaManager.Event.DidFailWithError(error))
     }
 
-    protected fun handleCompleted() {
+    protected open fun handleCompleted() {
         _events.trySend(MediaManager.Event.DidComplete)
     }
 
@@ -219,7 +237,7 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
         _events.trySend(MediaManager.Event.DidEnd)
     }
 
-    protected fun handleSeekCompleted(success: Boolean) {
+    protected open fun handleSeekCompleted(success: Boolean) {
         launch {
             seekMutex.withLock {
                 activeSeek?.second?.complete(success)

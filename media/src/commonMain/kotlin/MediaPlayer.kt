@@ -17,7 +17,15 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.base.flow.takeUntilLast
+import com.splendo.kaluga.media.MediaPlayer.Controls.AwaitPreparation
+import com.splendo.kaluga.media.MediaPlayer.Controls.DisplayError
+import com.splendo.kaluga.media.MediaPlayer.Controls.Pause
+import com.splendo.kaluga.media.MediaPlayer.Controls.Play
+import com.splendo.kaluga.media.MediaPlayer.Controls.Seek
+import com.splendo.kaluga.media.MediaPlayer.Controls.SetLoopMode
+import com.splendo.kaluga.media.MediaPlayer.Controls.SetRate
+import com.splendo.kaluga.media.MediaPlayer.Controls.Stop
+import com.splendo.kaluga.media.MediaPlayer.Controls.Unpause
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -25,8 +33,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.transformLatest
@@ -40,7 +49,7 @@ import kotlin.time.Duration
 /**
  * Plays a [MediaSource]
  */
-interface MediaPlayer {
+interface MediaPlayer : VolumeController, MediaSurfaceController {
 
     /**
      * The controls available to manage playback on a [MediaPlayer]
@@ -148,11 +157,6 @@ interface MediaPlayer {
     }
 
     /**
-     * The volume of the audio playback. A value of `0.0` indicates silence; a value of `1.0` (the default) indicates full audio volume for the player instance.
-     */
-    var volume: Float
-
-    /**
      * A [Flow] of the [PlayableMedia] for which the player is controlling playback
      */
     val playableMedia: Flow<PlayableMedia?>
@@ -166,11 +170,6 @@ interface MediaPlayer {
      * Loads a [MediaSource] into a [PlayableMedia] to control playback for
      */
     suspend fun initializeFor(source: MediaSource)
-
-    /**
-     * Renders the video component of the [PlayableMedia] on a [MediaSurface]
-     */
-    fun renderVideoOnSurface(surface: MediaSurface?)
 
     /**
      * Suspends until playback has started.
@@ -202,11 +201,11 @@ interface MediaPlayer {
 
 /**
  * A default implementation of [MediaPlayer]
- * @param mediaManager the [MediaManager] to manage media playback
+ * @param createPlaybackStateRepo method for creating a [BasePlaybackStateRepo] to manage the [PlaybackState] of this player
  * @param coroutineContext the [CoroutineContext] on which to run the media player
  */
 class DefaultMediaPlayer(
-    private val mediaManager: MediaManager,
+    createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo,
     coroutineContext: CoroutineContext
 ) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer")) {
 
@@ -220,36 +219,35 @@ class DefaultMediaPlayer(
         mediaSurfaceProvider: MediaSurfaceProvider?,
         mediaManagerBuilder: BaseMediaManager.Builder,
         coroutineContext: CoroutineContext
-    ) : this(mediaManagerBuilder.create(mediaSurfaceProvider, coroutineContext), coroutineContext)
+    ) : this(
+        { context ->
+            val mediaManager = mediaManagerBuilder.create(mediaSurfaceProvider, context)
+            PlaybackStateRepo(mediaManager, context)
+        },
+        coroutineContext
+    )
 
-    private val playbackStateRepo = PlaybackStateRepo(mediaManager, coroutineContext)
-
-    init {
-        launch {
-            mediaManager.events.collect { event ->
-                when (event) {
-                    is MediaManager.Event.DidPrepare -> playbackStateRepo.takeAndChangeState(PlaybackState.Initialized::class) { it.prepared(event.playableMedia) }
-                    is MediaManager.Event.DidFailWithError -> playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.failWithError(event.error) }
-                    is MediaManager.Event.DidComplete -> playbackStateRepo.takeAndChangeState(PlaybackState.Playing::class) { it.completedLoop }
-                    is MediaManager.Event.DidEnd -> playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.end }
-                }
-            }
-        }
-        launch {
-            playbackStateRepo.takeUntilLast(false).last()
-        }.invokeOnCompletion {
-            if (it != null) {
-                mediaManager.end()
-            }
-        }
-    }
+    val playbackStateRepo = createPlaybackStateRepo(coroutineContext)
 
     override val playableMedia: Flow<PlayableMedia?> = playbackStateRepo.map {
         (it as? PlaybackState.Prepared)?.playableMedia
     }.distinctUntilChanged()
-    override var volume: Float
-        get() = mediaManager.volume
-        set(value) { mediaManager.volume = value }
+
+    override val currentVolume: Flow<Float> = playbackStateRepo.flatMapLatest { state ->
+        when (state) {
+            is PlaybackState.Active -> state.volumeController.currentVolume
+            is PlaybackState.Ended -> emptyFlow()
+        }
+    }
+
+    override suspend fun updateVolume(volume: Float) {
+        playbackStateRepo.useState { state ->
+            when (state) {
+                is PlaybackState.Active -> state.volumeController.updateVolume(volume)
+                is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
+            }
+        }
+    }
 
     override val controls: Flow<MediaPlayer.Controls> = playbackStateRepo.map { state ->
         when (state) {
@@ -306,8 +304,13 @@ class DefaultMediaPlayer(
         }.first()
     }
 
-    override fun renderVideoOnSurface(surface: MediaSurface?) {
-        mediaManager.renderVideoOnSurface(surface)
+    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
+        playbackStateRepo.useState { state ->
+            when (state) {
+                is PlaybackState.Active -> state.mediaSurfaceController.renderVideoOnSurface(surface)
+                is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
+            }
+        }
     }
 
     private suspend fun start(playbackParameters: PlaybackState.PlaybackParameters) = try {

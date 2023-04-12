@@ -18,6 +18,8 @@
 package com.splendo.kaluga.media
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -48,7 +50,11 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     }
 
     private var mediaSurface: MediaSurface? = null
-    override var volume: Float = 0.0f
+    private val volume = MutableStateFlow(1.0f)
+    override val currentVolume: Flow<Float> = volume.asSharedFlow()
+    override suspend fun updateVolume(volume: Float) {
+        this.volume.value = volume
+    }
 
     override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = DefaultPlayableMedia(source)
 
@@ -56,7 +62,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         handlePrepared(playableMedia)
     }
 
-    override fun renderVideoOnSurface(surface: MediaSurface?) {
+    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
         this.mediaSurface = surface
     }
 

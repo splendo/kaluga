@@ -35,8 +35,8 @@ import kotlin.time.Duration
  */
 class MockPlayableMedia(
     override val source: MediaSource,
-    override val duration: Duration,
-    override var currentPlayTime: Duration,
+    override val duration: Duration = Duration.ZERO,
+    override var currentPlayTime: Duration = Duration.ZERO,
     override val resolution: MutableStateFlow<Resolution> = MutableStateFlow(Resolution.ZERO),
     override val tracks: List<TrackInfo> = emptyList()
 ) : PlayableMedia

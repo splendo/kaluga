@@ -1,16 +1,16 @@
 public abstract class com/splendo/kaluga/media/BaseMediaManager : com/splendo/kaluga/media/MediaManager, kotlinx/coroutines/CoroutineScope {
 	public fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;)V
 	protected abstract fun cleanUp ()V
-	public final fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;)Lcom/splendo/kaluga/media/PlayableMedia;
+	public final fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun end ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
-	protected final fun handleCompleted ()V
+	protected fun handleCompleted ()V
 	protected abstract fun handleCreatePlayableMedia (Lcom/splendo/kaluga/media/MediaSource;)Lcom/splendo/kaluga/media/PlayableMedia;
-	protected final fun handleError (Lcom/splendo/kaluga/media/PlaybackError;)V
-	protected final fun handlePrepared (Lcom/splendo/kaluga/media/PlayableMedia;)V
+	protected fun handleError (Lcom/splendo/kaluga/media/PlaybackError;)V
+	protected fun handlePrepared (Lcom/splendo/kaluga/media/PlayableMedia;)V
 	protected abstract fun handleReset ()V
-	protected final fun handleSeekCompleted (Z)V
+	protected fun handleSeekCompleted (Z)V
 	public final fun reset ()V
 	public final fun seekTo-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun startSeek-LRDsOJo (J)V
@@ -26,13 +26,13 @@ public abstract class com/splendo/kaluga/media/BasePlaybackStateRepo : com/splen
 
 public final class com/splendo/kaluga/media/DefaultMediaManager : com/splendo/kaluga/media/BaseMediaManager {
 	public fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;)V
-	public fun getVolume ()F
+	public fun getCurrentVolume ()Lkotlinx/coroutines/flow/Flow;
 	public fun initialize (Lcom/splendo/kaluga/media/PlayableMedia;)V
 	public fun pause ()V
 	public fun play (F)V
-	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
-	public fun setVolume (F)V
+	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun stop ()V
+	public fun updateVolume (FLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/media/DefaultMediaManager$Builder : com/splendo/kaluga/media/BaseMediaManager$Builder {
@@ -42,19 +42,20 @@ public final class com/splendo/kaluga/media/DefaultMediaManager$Builder : com/sp
 }
 
 public final class com/splendo/kaluga/media/DefaultMediaPlayer : com/splendo/kaluga/media/MediaPlayer, kotlinx/coroutines/CoroutineScope {
-	public fun <init> (Lcom/splendo/kaluga/media/MediaManager;Lkotlin/coroutines/CoroutineContext;)V
 	public fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lcom/splendo/kaluga/media/BaseMediaManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)V
 	public fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun end ()V
 	public fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getControls ()Lkotlinx/coroutines/flow/Flow;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getCurrentVolume ()Lkotlinx/coroutines/flow/Flow;
 	public fun getPlayableMedia ()Lkotlinx/coroutines/flow/Flow;
-	public fun getVolume ()F
+	public final fun getPlaybackStateRepo ()Lcom/splendo/kaluga/media/BasePlaybackStateRepo;
 	public fun initializeFor (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
+	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun setVolume (F)V
+	public fun updateVolume (FLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/media/DefaultPlayableMedia : com/splendo/kaluga/media/PlayableMedia {
@@ -66,18 +67,15 @@ public final class com/splendo/kaluga/media/DefaultPlayableMedia : com/splendo/k
 	public fun getTracks ()Ljava/util/List;
 }
 
-public abstract interface class com/splendo/kaluga/media/MediaManager {
-	public abstract fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;)Lcom/splendo/kaluga/media/PlayableMedia;
+public abstract interface class com/splendo/kaluga/media/MediaManager : com/splendo/kaluga/media/MediaSurfaceController, com/splendo/kaluga/media/VolumeController {
+	public abstract fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun end ()V
 	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun getVolume ()F
 	public abstract fun initialize (Lcom/splendo/kaluga/media/PlayableMedia;)V
 	public abstract fun pause ()V
 	public abstract fun play (F)V
-	public abstract fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
 	public abstract fun reset ()V
 	public abstract fun seekTo-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun setVolume (F)V
 	public abstract fun stop ()V
 }
 
@@ -114,17 +112,14 @@ public final class com/splendo/kaluga/media/MediaManager$Event$DidPrepare : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/splendo/kaluga/media/MediaPlayer {
+public abstract interface class com/splendo/kaluga/media/MediaPlayer : com/splendo/kaluga/media/MediaSurfaceController, com/splendo/kaluga/media/VolumeController {
 	public abstract fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun end ()V
 	public abstract fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getControls ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getPlayableMedia ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun getVolume ()F
 	public abstract fun initializeFor (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;)V
 	public abstract fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun setVolume (F)V
 }
 
 public final class com/splendo/kaluga/media/MediaPlayer$Controls {
@@ -240,6 +235,10 @@ public final class com/splendo/kaluga/media/MediaSurface {
 	public fun <init> ()V
 }
 
+public abstract interface class com/splendo/kaluga/media/MediaSurfaceController {
+	public abstract fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract interface class com/splendo/kaluga/media/MediaSurfaceProvider : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public abstract fun getSurface ()Lkotlinx/coroutines/flow/Flow;
 }
@@ -289,7 +288,9 @@ public abstract interface class com/splendo/kaluga/media/PlaybackState : com/spl
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Active : com/splendo/kaluga/media/PlaybackState {
 	public abstract fun failWithError (Lcom/splendo/kaluga/media/PlaybackError;)Lkotlin/jvm/functions/Function1;
 	public abstract fun getEnd ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getMediaSurfaceController ()Lcom/splendo/kaluga/media/MediaSurfaceController;
 	public abstract fun getReset ()Lkotlin/jvm/functions/Function1;
+	public abstract fun getVolumeController ()Lcom/splendo/kaluga/media/VolumeController;
 }
 
 public final class com/splendo/kaluga/media/PlaybackState$Active$DefaultImpls {
@@ -491,5 +492,10 @@ public final class com/splendo/kaluga/media/TrackInfo$Type : java/lang/Enum {
 	public static final field VIDEO Lcom/splendo/kaluga/media/TrackInfo$Type;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/media/TrackInfo$Type;
 	public static fun values ()[Lcom/splendo/kaluga/media/TrackInfo$Type;
+}
+
+public abstract interface class com/splendo/kaluga/media/VolumeController {
+	public abstract fun getCurrentVolume ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun updateVolume (FLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

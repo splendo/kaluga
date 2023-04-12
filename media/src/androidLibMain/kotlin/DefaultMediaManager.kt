@@ -93,13 +93,12 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     }
 
     private val mediaPlayer = AndroidMediaPlayer()
-    private var _volume: Float = 1.0f
-    override var volume: Float
-        get() = _volume
-        set(value) {
-            mediaPlayer.setVolume(value, value)
-            _volume = volume
-        }
+    private val volume = MutableStateFlow(1.0f)
+    override val currentVolume: Flow<Float> = volume.asSharedFlow()
+    override suspend fun updateVolume(volume: Float) {
+        mediaPlayer.setVolume(volume, volume)
+        this.volume.value = volume
+    }
 
     init {
         mediaPlayer.setOnSeekCompleteListener {
@@ -158,7 +157,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         mediaPlayer.prepareAsync()
     }
 
-    override fun renderVideoOnSurface(surface: MediaSurface?) {
+    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
         try {
             mediaPlayer.setDisplay(surface?.holder)
         } catch (e: IllegalStateException) {

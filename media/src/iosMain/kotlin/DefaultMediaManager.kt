@@ -138,9 +138,10 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         new?.bind?.invoke(avPlayer)
     }
 
-    override var volume: Float
-        get() = avPlayer.volume
-        set(value) { avPlayer.volume = value }
+    override val currentVolume: Flow<Float> = avPlayer.observeKeyValueAsFlow<Float>("volume", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew)
+    override suspend fun updateVolume(volume: Float) {
+        avPlayer.volume = volume
+    }
 
     private val observers = atomic<List<NSObjectProtocol>>(emptyList())
 
@@ -206,7 +207,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         is MediaSource.URL -> AVPlayerItem(url)
     }
 
-    override fun renderVideoOnSurface(surface: MediaSurface?) {
+    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
         this.surface = surface
     }
 
