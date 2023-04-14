@@ -97,7 +97,7 @@ object Dependencies {
             val Json = Dependency(group, "kotlinx-serialization-json", version)
         }
 
-        val AtomicFu = Dependency(group, "atomicfu", "0.19.0")
+        val AtomicFu = Dependency(group, "atomicfu", "0.20.2")
     }
 
     object Accompanist {
