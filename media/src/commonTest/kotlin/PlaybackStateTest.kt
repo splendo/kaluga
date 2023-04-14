@@ -28,7 +28,6 @@ import com.splendo.kaluga.test.media.MockMediaSurfaceController
 import com.splendo.kaluga.test.media.MockVolumeController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -45,7 +44,7 @@ class PlaybackStateTest : BaseFlowTest<Unit, PlaybackStateTest.Context, Playback
     class Context(coroutineScope: CoroutineScope) : TestContext {
 
         val events = MutableSharedFlow<MediaManager.Event>(1)
-        val volumeController = MockVolumeController(MutableStateFlow(1.0f))
+        val volumeController = MockVolumeController()
         val mediaSurfaceController = MockMediaSurfaceController()
 
         val mediaManager = MockMediaManager(events, volumeController, mediaSurfaceController)

@@ -26,6 +26,7 @@ import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.VolumeController
 import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
 import kotlin.time.Duration
 
@@ -38,7 +39,9 @@ typealias SeekToMock = SuspendMethodMock<SingleParameters.Matchers<Duration>, Si
 sealed class MockPlaybackState {
 
     companion object {
-        fun createSeekToMock(): SeekToMock = SuspendMethodMock(SingleParameters())
+        fun createSeekToMock(): SeekToMock = SuspendMethodMock<SingleParameters.Matchers<Duration>, SingleParameters.MatchersOrCaptor<Duration>, SingleParameters.Values<Duration>, SingleParameters<Duration>, Boolean>(SingleParameters()).also {
+            it.on().doReturn(true)
+        }
     }
 
     /**
@@ -49,9 +52,9 @@ sealed class MockPlaybackState {
      * @property seekToMock a [SuspendMethodMock] to be called when [PlaybackState.Prepared.seekTo] is called
      */
     data class Configuration(
-        val mediaProvider: PlayableMediaProvider,
-        val volumeController: VolumeController,
-        val mediaSurfaceController: MediaSurfaceController,
+        val mediaProvider: PlayableMediaProvider = { MockPlayableMedia(it) },
+        val volumeController: VolumeController = MockVolumeController(),
+        val mediaSurfaceController: MediaSurfaceController = MockMediaSurfaceController(),
         val seekToMock: SeekToMock = createSeekToMock()
     )
 
@@ -96,6 +99,7 @@ sealed class MockPlaybackState {
         private val playableMedia: PlayableMedia,
         override val configuration: Configuration
     ) : Active(), PlaybackState.Initialized {
+        override val source: MediaSource get() = playableMedia.source
         override val playbackState: PlaybackState = this
         override fun prepared(media: PlayableMedia): suspend () -> PlaybackState.Idle =
             { Idle(media, configuration) }

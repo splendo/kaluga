@@ -152,6 +152,8 @@ sealed interface PlaybackState : KalugaState {
      */
     interface Initialized : InitializedOrError {
 
+        val source: MediaSource
+
         /**
          * Transitions into an [Idle] state
          * @param media the [PlayableMedia] that was prepared
@@ -315,6 +317,9 @@ internal sealed class PlaybackStateImpl {
     }
 
     data class Initialized(private val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Active(), PlaybackState.Initialized, HandleAfterOldStateIsRemoved<PlaybackState> {
+
+        override val source: MediaSource get() = playableMedia.source
+
         override fun prepared(media: PlayableMedia): suspend () -> PlaybackState.Idle = { Idle(media, mediaManager) }
 
         override suspend fun afterOldStateIsRemoved(oldState: PlaybackState) {

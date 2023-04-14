@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.media
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.MediaManager
 import com.splendo.kaluga.media.MediaManager.Event
@@ -37,14 +38,13 @@ import kotlin.time.Duration
 
 /**
  * Mock implementation of [VolumeController]
- * @param currentVolume The volume of the audio playback. A value of `0.0` indicates silence; a value of `1.0` (the default) indicates full audio volume for the player instance.
  * @param setupMocks If `true` this will automatically set up some mocking
  */
 class MockVolumeController(
-    override val currentVolume: MutableStateFlow<Float>,
     setupMocks: Boolean = true
 ) : VolumeController {
 
+    override val currentVolume = MutableStateFlow(1.0f)
     /**
      * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [updateVolumeMock]
      * If `setupMocks` was set to `true` on construction this will automatically update [currentVolume]
@@ -157,19 +157,59 @@ class MockMediaManager(
  */
 class MockBaseMediaManager(
     mediaSurfaceProvider: MediaSurfaceProvider?,
-    val volumeController: MockVolumeController,
-    val mediaSurfaceController: MockMediaSurfaceController,
+    val volumeController: MockVolumeController = MockVolumeController(),
+    val mediaSurfaceController: MockMediaSurfaceController = MockMediaSurfaceController(),
     coroutineContext: CoroutineContext,
     setupMocks: Boolean = true
 ) : BaseMediaManager(mediaSurfaceProvider, coroutineContext), VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
 
     /**
+     * Mock implementation of [BaseMediaManager.Builder] that builds a [MockBaseMediaManager]
+     * @param volumeController the default [MockVolumeController] to use for the created [MockBaseMediaManager]
+     * @param mediaSurfaceController the default [MockMediaSurfaceController] to use for the created [MockBaseMediaManager]
+     * @param setupMocks If `true` this will automatically ensure that calls to [create] add a new [MockBaseMediaManager] to [builtMediaManagers]
+     */
+    class Builder(
+        val volumeController: MockVolumeController = MockVolumeController(),
+        val mediaSurfaceController: MockMediaSurfaceController = MockMediaSurfaceController(),
+        setupMocks: Boolean = true
+    ) : BaseMediaManager.Builder {
+
+        /**
+         * Ths list of built [MockBaseMediaManager]
+         */
+        val builtMediaManagers = concurrentMutableListOf<MockBaseMediaManager>()
+
+        /**
+         * A [com.splendo.kaluga.test.base.mock.MethodMock] for [create]
+         */
+        val createMock = this::create.mock()
+
+        init {
+            if (setupMocks) {
+                createMock.on().doExecute { (mediaSurfaceProvider, coroutineContext) ->
+                    MockBaseMediaManager(mediaSurfaceProvider, volumeController, mediaSurfaceController, coroutineContext).also {
+                        builtMediaManagers.add(it)
+                    }
+                }
+            }
+        }
+
+        override fun create(
+            mediaSurfaceProvider: MediaSurfaceProvider?,
+            coroutineContext: CoroutineContext
+        ): BaseMediaManager = createMock.call(mediaSurfaceProvider, coroutineContext)
+    }
+
+    /**
      * A [com.splendo.kaluga.test.base.mock.MethodMock] for [handleCreatePlayableMediaMock]
+     * If `setupMocks` was set to `true` on construction, this will automatically return a [MockPlayableMedia] for the provided [MediaSource]
      */
     val handleCreatePlayableMediaMock = this::handleCreatePlayableMedia.mock()
 
     /**
      * A [com.splendo.kaluga.test.base.mock.MethodMock] for [initialize]
+     * If `setupMocks` was set to `true` on construction, this will automatically cause [handlePrepared] to be called immediately after [initialize] has been called
      */
     val initializeMock = this::initialize.mock()
 
@@ -206,6 +246,8 @@ class MockBaseMediaManager(
 
     init {
         if (setupMocks) {
+            handleCreatePlayableMediaMock.on().doExecute { (source) -> MockPlayableMedia(source) }
+            initializeMock.on().doExecute { (playableMedia) -> handlePrepared(playableMedia) }
             startSeekMock.on().doExecute { handleSeekCompleted(true) }
         }
     }

@@ -227,7 +227,7 @@ class DefaultMediaPlayer(
         coroutineContext
     )
 
-    val playbackStateRepo = createPlaybackStateRepo(coroutineContext)
+    private val playbackStateRepo = createPlaybackStateRepo(coroutineContext)
 
     override val playableMedia: Flow<PlayableMedia?> = playbackStateRepo.map {
         (it as? PlaybackState.Prepared)?.playableMedia
@@ -252,36 +252,43 @@ class DefaultMediaPlayer(
     override val controls: Flow<MediaPlayer.Controls> = playbackStateRepo.map { state ->
         when (state) {
             is PlaybackState.Idle -> MediaPlayer.Controls(
-                play = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) },
-                seek = MediaPlayer.Controls.Seek { duration -> seekTo(duration) }
+                play = playControl,
+                seek = seekControl
             )
             is PlaybackState.Playing -> MediaPlayer.Controls(
-                pause = MediaPlayer.Controls.Pause { pause() },
-                stop = MediaPlayer.Controls.Stop { stop() },
-                seek = MediaPlayer.Controls.Seek { duration -> seekTo(duration) },
-                setRate = MediaPlayer.Controls.SetRate(state.playbackParameters.rate) { newRate -> updateRate(newRate) },
-                setLoopMode = MediaPlayer.Controls.SetLoopMode(state.playbackParameters.loopMode) { newLoopMode -> updateLoopMode(newLoopMode) }
+                pause = pauseControl,
+                stop = stopControl,
+                seek = seekControl,
+                setRate = state.createSetRateControls(),
+                setLoopMode = state.createSetLoopModeControls()
             )
             is PlaybackState.Paused -> MediaPlayer.Controls(
-                play = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) },
-                unpause = MediaPlayer.Controls.Unpause { unpause() },
-                stop = MediaPlayer.Controls.Stop { stop() },
-                seek = MediaPlayer.Controls.Seek { duration -> seekTo(duration) },
-                setRate = MediaPlayer.Controls.SetRate(state.playbackParameters.rate) { newRate -> updateRate(newRate) },
-                setLoopMode = MediaPlayer.Controls.SetLoopMode(state.playbackParameters.loopMode) { newLoopMode -> updateLoopMode(newLoopMode) }
+                play = Play { parameters -> forceStart(parameters, true) },
+                unpause = Unpause { unpause() },
+                stop = stopControl,
+                seek = seekControl,
+                setRate = state.createSetRateControls(),
+                setLoopMode = state.createSetLoopModeControls()
             )
             is PlaybackState.Completed -> MediaPlayer.Controls(
-                play = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) },
-                stop = MediaPlayer.Controls.Stop { stop() },
-                seek = MediaPlayer.Controls.Seek { duration -> seekTo(duration) }
+                play = playControl,
+                stop = stopControl,
+                seek = seekControl
             )
-            is PlaybackState.Stopped -> MediaPlayer.Controls(play = MediaPlayer.Controls.Play { parameters -> forceStart(parameters) })
-            is PlaybackState.Error -> MediaPlayer.Controls(displayError = MediaPlayer.Controls.DisplayError(state.error))
-            is PlaybackState.Ended -> MediaPlayer.Controls(displayError = MediaPlayer.Controls.DisplayError(PlaybackError.PlaybackHasEnded))
+            is PlaybackState.Stopped -> MediaPlayer.Controls(play = playControl)
+            is PlaybackState.Error -> MediaPlayer.Controls(displayError = DisplayError(state.error))
+            is PlaybackState.Ended -> MediaPlayer.Controls(displayError = DisplayError(PlaybackError.PlaybackHasEnded))
             is PlaybackState.Uninitialized -> MediaPlayer.Controls()
-            is PlaybackState.Initialized -> MediaPlayer.Controls(awaitPreparation = MediaPlayer.Controls.AwaitPreparation)
+            is PlaybackState.Initialized -> MediaPlayer.Controls(awaitPreparation = AwaitPreparation)
         }
     }.shareIn(this, SharingStarted.WhileSubscribed())
+
+    private val playControl: Play = Play { parameters -> forceStart(parameters) }
+    private val pauseControl: Pause = Pause { pause() }
+    private val stopControl: Stop = Stop { stop() }
+    private val seekControl: Seek = Seek { duration -> seekTo(duration) }
+    private fun PlaybackState.Started.createSetRateControls(): SetRate = SetRate(playbackParameters.rate) { newRate -> updateRate(newRate) }
+    private fun PlaybackState.Started.createSetLoopModeControls(): SetLoopMode = SetLoopMode(playbackParameters.loopMode) { newLoopMode -> updateLoopMode(newLoopMode) }
 
     override suspend fun initializeFor(source: MediaSource) {
         var resetOnError = true
@@ -293,7 +300,7 @@ class DefaultMediaPlayer(
                         source
                     )
                 }
-                is PlaybackState.Initialized -> emit(Unit)
+                is PlaybackState.Initialized -> if (state.source == source) emit(Unit) else playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
                 is PlaybackState.Idle -> if (state.playableMedia.source == source) emit(Unit) else playbackStateRepo.takeAndChangeState(PlaybackState.Active::class) { it.reset }
                 is PlaybackState.Ended -> throw PlaybackError.PlaybackHasEnded
                 is PlaybackState.Error -> if (resetOnError) {
@@ -327,10 +334,16 @@ class DefaultMediaPlayer(
             is PlaybackState.Completed -> playbackStateRepo.takeAndChangeState(PlaybackState.Completed::class) { it.start(playbackParameters) }
             is PlaybackState.Stopped -> playbackStateRepo.takeAndChangeState(PlaybackState.Stopped::class) { it.reinitialize }
             is PlaybackState.Playing -> {
-                if (restartIfStarted) {
-                    seekTo(Duration.ZERO)
+                if (state.playbackParameters != playbackParameters) {
+                    playbackStateRepo.takeAndChangeState(PlaybackState.Playing::class) {
+                        it.updatePlaybackParameters(playbackParameters)
+                    }
+                } else {
+                    if (restartIfStarted) {
+                        state.seekTo(Duration.ZERO)
+                    }
+                    emit(Unit)
                 }
-                emit(Unit)
             }
             is PlaybackState.Paused -> {
                 playbackStateRepo.takeAndChangeState(PlaybackState.Paused::class) {
@@ -338,7 +351,7 @@ class DefaultMediaPlayer(
                         it.updatePlaybackParameters(playbackParameters)
                     } else {
                         if (restartIfStarted) {
-                            seekTo(Duration.ZERO)
+                            state.seekTo(Duration.ZERO)
                         }
                         it.play
                     }

@@ -60,7 +60,6 @@ public final class com/splendo/kaluga/media/DefaultMediaPlayer : com/splendo/kal
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getCurrentVolume ()Lkotlinx/coroutines/flow/Flow;
 	public fun getPlayableMedia ()Lkotlinx/coroutines/flow/Flow;
-	public final fun getPlaybackStateRepo ()Lcom/splendo/kaluga/media/BasePlaybackStateRepo;
 	public fun initializeFor (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun renderVideoOnSurface (Lcom/splendo/kaluga/media/MediaSurface;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -364,6 +363,7 @@ public abstract interface class com/splendo/kaluga/media/PlaybackState$Idle : co
 }
 
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Initialized : com/splendo/kaluga/media/PlaybackState$InitializedOrError {
+	public abstract fun getSource ()Lcom/splendo/kaluga/media/MediaSource;
 	public abstract fun prepared (Lcom/splendo/kaluga/media/PlayableMedia;)Lkotlin/jvm/functions/Function1;
 }
 

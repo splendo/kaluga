@@ -72,9 +72,7 @@ open class PlaybackStateRepo(
         launch {
             takeUntilLast(false).last()
         }.invokeOnCompletion {
-            if (it != null) {
-                mediaManager.end()
-            }
+            mediaManager.end()
         }
     }
 }

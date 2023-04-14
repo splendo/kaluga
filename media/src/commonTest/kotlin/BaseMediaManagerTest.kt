@@ -28,12 +28,10 @@ import com.splendo.kaluga.test.media.MockBaseMediaManager
 import com.splendo.kaluga.test.media.MockMediaSurfaceController
 import com.splendo.kaluga.test.media.MockMediaSurfaceProvider
 import com.splendo.kaluga.test.media.MockPlayableMedia
-import com.splendo.kaluga.test.media.MockVolumeController
 import com.splendo.kaluga.test.media.createMockMediaSurface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,9 +44,7 @@ class BaseMediaManagerTest {
 
     @Test
     fun testEvents() = runBlocking {
-        val volumeController = MockVolumeController(MutableStateFlow(1.0f))
-        val mediaSurfaceController = MockMediaSurfaceController()
-        val mediaManager = MockBaseMediaManager(null, volumeController, mediaSurfaceController, coroutineContext)
+        val mediaManager = MockBaseMediaManager(null, coroutineContext = coroutineContext)
         val mockSource = mediaSourceFromUrl("https://example.com")!!
         val mockPlayableMedia = MockPlayableMedia(mockSource)
         mediaManager.handlePrepared(mockPlayableMedia)
@@ -65,10 +61,9 @@ class BaseMediaManagerTest {
     @Test
     fun testCreatePlayableMedia() = runBlocking {
         val mediaSurfaceProvider = MockMediaSurfaceProvider(MutableSharedFlow(1))
-        val volumeController = MockVolumeController(MutableStateFlow(1.0f))
         val mediaSurfaceController = MockMediaSurfaceController()
         val surface = createMockMediaSurface()
-        val mediaManager = MockBaseMediaManager(mediaSurfaceProvider, volumeController, mediaSurfaceController, coroutineContext)
+        val mediaManager = MockBaseMediaManager(mediaSurfaceProvider, mediaSurfaceController = mediaSurfaceController, coroutineContext = coroutineContext)
         mediaSurfaceProvider.surface.tryEmit(surface)
         yieldMultiple(4)
         mediaSurfaceController.renderVideoOnSurfaceMock.verify(rule = VerificationRule.never())
@@ -97,9 +92,7 @@ class BaseMediaManagerTest {
 
     @Test
     fun testSeekTo() = runBlocking {
-        val volumeController = MockVolumeController(MutableStateFlow(1.0f))
-        val mediaSurfaceController = MockMediaSurfaceController()
-        val mediaManager = MockBaseMediaManager(null, volumeController, mediaSurfaceController, coroutineContext)
+        val mediaManager = MockBaseMediaManager(null, coroutineContext = coroutineContext)
         mediaManager.startSeekMock.on().doReturn(Unit)
         val seek1 = async { mediaManager.seekTo(100.seconds) }
         val seek2 = async { mediaManager.seekTo(10.seconds) }
