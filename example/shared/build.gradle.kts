@@ -27,7 +27,7 @@ val modules = listOf(
     "permissions" to true
 )
 
-commonComponent {
+commonComponent("example.shared") {
     logger.lifecycle("Configure framework")
     baseName = "KalugaExampleShared"
     isStatic = false

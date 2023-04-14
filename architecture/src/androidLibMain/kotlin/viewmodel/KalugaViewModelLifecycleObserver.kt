@@ -20,13 +20,16 @@ package com.splendo.kaluga.architecture.viewmodel
 import android.app.Activity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.flowWithLifecycle
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.launch
 
 /**
  * [LifecycleObserver] used to manage the lifecycle of a [BaseLifecycleViewModel]
@@ -67,10 +70,10 @@ class LifecycleSubscribableManager<ViewModel : BaseLifecycleViewModel>(
     private val childFragmentManager: FragmentManager? = null
 ) {
     fun onCreate(owner: LifecycleOwner) {
-        owner.lifecycle.coroutineScope.launchWhenCreated {
+        owner.lifecycle.coroutineScope.launch {
             viewModel.activeLifecycleSubscribables.runningFold(emptySet<LifecycleSubscribable>() to emptySet<LifecycleSubscribable>()) { (_, previous), next ->
                 previous to next.toSet()
-            }.collect { (previous, next) ->
+            }.flowWithLifecycle(owner.lifecycle, Lifecycle.State.CREATED).collect { (previous, next) ->
                 val toDelete = previous - next
                 val toAdd = next - previous
                 toDelete.forEach { it.onUnsubscribe() }

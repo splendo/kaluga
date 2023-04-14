@@ -84,7 +84,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
     targets {
         configureEach {
             compilations.configureEach {
-                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "1.8"
+                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
             }
         }
     }

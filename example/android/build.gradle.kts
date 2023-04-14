@@ -41,7 +41,7 @@ androidApp {
         }
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             listOf(
                 "META-INF/kotlinx-coroutines-core.kotlin_module",
@@ -101,4 +101,8 @@ dependencies {
     implementationDependency(Dependencies.KotlinX.Serialization.Json)
 
     implementationDependency(Dependencies.Koin.AndroidXCompose)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "11"
 }

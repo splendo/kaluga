@@ -28,13 +28,17 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.launch
 
 class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
@@ -54,24 +58,32 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
     override fun onCreate() {
         super.onCreate()
 
-        lifecycleScope.launchWhenCreated {
-            combine(viewModel.location.stateFlow, notificationsViewModel.hasPermission.stateFlow) { message, hasNotificationsPermission ->
+        lifecycleScope.launch {
+            combine(
+                viewModel.location.stateFlow,
+                notificationsViewModel.hasPermission.stateFlow
+            ) { message, hasNotificationsPermission ->
                 if (hasNotificationsPermission) message else null
-            }.collect { message ->
+            }.flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
+                .collect { message ->
                 if (message != null && ActivityCompat.checkSelfPermission(
                         this@LocationBackgroundService,
                         Manifest.permission.POST_NOTIFICATIONS
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
+                    NotificationManagerCompat.from(applicationContext)
+                        .notify(notificationId, getNotification(message))
                 }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            notificationsViewModel.hasPermission.stateFlow.filterNot { it }.collect {
-                notificationsViewModel.requestPermission()
-            }
+        lifecycleScope.launch {
+            notificationsViewModel.hasPermission.stateFlow.
+            filterNot { it }
+                .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
+                .collect {
+                    notificationsViewModel.requestPermission()
+                }
         }
 
         startForeground(notificationId, getNotification(""))
