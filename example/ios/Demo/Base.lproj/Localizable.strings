@@ -122,6 +122,8 @@ That query will be deserialized into a object and shown in an alert.";
 "media_select_file_from_web" = "Media File from Web";
 "media_select_from_web_title" = "Provide Media URL";
 "media_select_from_web_hint" = "Url to remote media file";
+"media_playback_volume" = "Volume: %s";
+"media_playback_update_volume" = "Update Volume";
 "media_playback_rate" = "Set playback rate";
 "media_error_title" = "An error occurred playing this media";
 

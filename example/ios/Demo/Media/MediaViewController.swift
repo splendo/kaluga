@@ -53,6 +53,7 @@ class MediaViewController: UIViewController {
     private var lifecycleManager: LifecycleManager!
     
     @IBOutlet var selectMediaButton: UIButton!
+    @IBOutlet var volumeButton: UIButton!
     @IBOutlet var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet var playerView: PlayerView!
     @IBOutlet var playerAspectRatio: NSLayoutConstraint!
@@ -155,6 +156,11 @@ class MediaViewController: UIViewController {
                 self.viewModel.rateButton.observe { rateButton in
                     if let rateButton = rateButton {
                         ButtonStyleKt.bindButton(self.rateButton, button: rateButton)
+                    }
+                },
+                self.viewModel.volumeButton.observe { volumeButton in
+                    if let volumeButton = volumeButton {
+                        ButtonStyleKt.bindButton(self.volumeButton, button: volumeButton)
                     }
                 }
             ]

@@ -47,6 +47,7 @@ import com.splendo.kaluga.media.mediaSourceFromUrl
 import com.splendo.kaluga.media.playTime
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -72,6 +73,7 @@ class MediaViewModel(
 
     private companion object {
         val playbackFormatter = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U)).apply { positiveSuffix = "x" }
+        val volumeFormatter = NumberFormatter(style = NumberFormatStyle.Percentage(maxFractionDigits = 0U))
     }
 
     private val mediaPlayerDispatcher = singleThreadDispatcher("MediaPlayer")
@@ -166,9 +168,37 @@ class MediaViewModel(
         } ?: KalugaButton.Plain(playbackFormatter.format(1), ButtonStyles.mediaButton, false) {}
     }.toUninitializedObservable(coroutineScope)
 
+    val volumeButton = mediaPlayer.currentVolume.map {
+        KalugaButton.Plain(
+            "media_playback_volume".localized().format(volumeFormatter.format(it)),
+            ButtonStyles.default
+        ) {
+            updateVolume()
+        }
+    }.toUninitializedObservable(coroutineScope)
+
     fun seekTo(progress: Double) {
         coroutineScope.launch {
             _controls.value.seek?.perform?.invoke(_totalDuration.value * progress)
+        }
+    }
+
+    private fun updateVolume() {
+        coroutineScope.launch {
+            val selectedVolume = CompletableDeferred<Float>()
+            alertPresenterBuilder.buildActionSheet(coroutineScope) {
+                setTitle("media_playback_update_volume".localized())
+                addActions(
+                    (0..100).map {
+                        val asPercentage = it.toFloat() / 100.0f
+                        Alert.Action(volumeFormatter.format(asPercentage)) {
+                            selectedVolume.complete(asPercentage)
+                        }
+                    }
+                )
+            }.show()
+
+            mediaPlayer.updateVolume(selectedVolume.await())
         }
     }
 

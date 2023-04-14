@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.on
-import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.media.MockBaseMediaManager
@@ -45,7 +44,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
@@ -62,7 +60,7 @@ class MediaPlayerTest {
         val didPlay = async {
             mediaPlayer.play(PlaybackState.PlaybackParameters(1.0f, PlaybackState.LoopMode.NotLooping))
         }
-        mediaManager.playMock.verify(rule = VerificationRule.never())
+        mediaManager.playMock.verify(rule = never())
         val source = mediaSourceFromUrl("https://example.com")!!
         mediaPlayer.initializeFor(source)
         assertEquals(1.0f, hasStartedPlaying.await())
@@ -87,7 +85,7 @@ class MediaPlayerTest {
         val didPlay = async {
             mediaPlayer.play(PlaybackState.PlaybackParameters(1.0f, PlaybackState.LoopMode.NotLooping))
         }
-        mediaManager.playMock.verify(rule = VerificationRule.never())
+        mediaManager.playMock.verify(rule = never())
         val source = mediaSourceFromUrl("https://example.com")!!
         mediaPlayer.initializeFor(source)
         assertEquals(1.0f, hasStartedInitialPlaying.await())
@@ -95,12 +93,12 @@ class MediaPlayerTest {
         mediaManager.playMock.on().doExecute { (rate) -> secondPlay.complete(rate) }
         mediaPlayer.forceStart(PlaybackState.PlaybackParameters(2.0f, PlaybackState.LoopMode.LoopingForFixedNumber(1U)), true)
         assertEquals(2.0f, secondPlay.await())
-        mediaManager.startSeekMock.verify(eq(Duration.ZERO))
+        mediaManager.startSeekMock.verify(eq(ZERO))
         val finalPlay = CompletableDeferred<Float>()
         mediaManager.playMock.on().doExecute { (rate) -> finalPlay.complete(rate) }
         mediaManager.handleCompleted()
         assertEquals(2.0f, finalPlay.await())
-        mediaManager.startSeekMock.verify(eq(Duration.ZERO), times = 2)
+        mediaManager.startSeekMock.verify(eq(ZERO), times = 2)
         assertFalse(didPlay.isCompleted)
         mediaManager.handleCompleted()
 
@@ -126,7 +124,7 @@ class MediaPlayerTest {
                         )
                     )
                 }
-                mediaManager.playMock.verify(rule = VerificationRule.never())
+                mediaManager.playMock.verify(rule = never())
                 val source = mediaSourceFromUrl("https://example.com")!!
                 mediaPlayer.initializeFor(source)
                 assertEquals(1.0f, hasStartedPlaying.await())
