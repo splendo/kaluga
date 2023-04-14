@@ -7,7 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-composeAndroidComponent()
+composeAndroidComponent("keyboard.compose")
 
 dependencies {
     implementation(project(":base"))

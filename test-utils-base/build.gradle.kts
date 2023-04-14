@@ -8,7 +8,7 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent("test.base")
 
 kotlin {
     sourceSets {

@@ -41,22 +41,7 @@ import platform.UIKit.UIView
 import platform.UIKit.UIViewAutoresizingFlexibleHeight
 import platform.UIKit.UIViewAutoresizingFlexibleWidth
 import platform.UIKit.UIViewController
-import platform.UIKit.addSubview
-import platform.UIKit.autoresizingMask
-import platform.UIKit.backgroundColor
-import platform.UIKit.bottomAnchor
-import platform.UIKit.centerXAnchor
-import platform.UIKit.centerYAnchor
 import platform.UIKit.colorNamed
-import platform.UIKit.heightAnchor
-import platform.UIKit.hidden
-import platform.UIKit.leadingAnchor
-import platform.UIKit.setBackgroundColor
-import platform.UIKit.topAnchor
-import platform.UIKit.trailingAnchor
-import platform.UIKit.translatesAutoresizingMaskIntoConstraints
-import platform.UIKit.widthAnchor
-import platform.UIKit.window
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -99,7 +84,7 @@ actual class HUD private constructor(private val containerView: ContainerView, p
 
         private val titleLabel: UILabel
 
-        private val backgroundColor: UIColor
+        private val hudBackgroundColor: UIColor
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
                 HUDStyle.SYSTEM ->
@@ -118,7 +103,7 @@ actual class HUD private constructor(private val containerView: ContainerView, p
             // Rotation support
             autoresizingMask = UIViewAutoresizingFlexibleWidth or UIViewAutoresizingFlexibleHeight
             // Dimmed background
-            setBackgroundColor(UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat))
+            backgroundColor = UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat)
             // Main HUD view is stack view
             val stackView = UIStackView().apply {
                 axis = UILayoutConstraintAxisVertical
@@ -131,7 +116,7 @@ actual class HUD private constructor(private val containerView: ContainerView, p
 
             // Stack view background view
             val contentView = UIView().apply {
-                backgroundColor = this@ContainerView.backgroundColor
+                backgroundColor = this@ContainerView.hudBackgroundColor
                 layer.cornerRadius = 14.0 as CGFloat
                 translatesAutoresizingMaskIntoConstraints = false
             }

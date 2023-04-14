@@ -366,7 +366,7 @@ public final class com/splendo/kaluga/resources/HSLColor {
 	public final fun getSaturation ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/splendo/kaluga/resources/HSLColor;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/resources/HSLColor;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/splendo/kaluga/resources/HSLColor$$serializer : kotlinx/serialization/internal/GeneratedSerializer {

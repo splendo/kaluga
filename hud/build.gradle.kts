@@ -7,7 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("hud")
 
 dependencies {
     implementationDependency(Dependencies.AndroidX.Fragment)

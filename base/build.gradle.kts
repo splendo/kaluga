@@ -8,7 +8,7 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent("base")
 
 dependencies {
     implementationDependency(Dependencies.KotlinX.AtomicFu)

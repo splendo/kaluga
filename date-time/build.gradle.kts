@@ -7,7 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("datetime.timer")
 
 kotlin {
     sourceSets {

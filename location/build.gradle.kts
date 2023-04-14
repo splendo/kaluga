@@ -8,7 +8,7 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent("location")
 
 dependencies {
     implementationDependency(Dependencies.Android.PlayServices.Location)

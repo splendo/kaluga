@@ -24,7 +24,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-composeAndroidComponent()
+composeAndroidComponent("resources.compose")
 
 dependencies {
     implementation(project(":base"))

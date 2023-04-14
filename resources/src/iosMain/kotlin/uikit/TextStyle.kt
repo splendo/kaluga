@@ -30,7 +30,6 @@ import platform.UIKit.UILabel
 import platform.UIKit.UITapGestureRecognizer
 import platform.UIKit.UITextField
 import platform.UIKit.UITextView
-import platform.UIKit.addGestureRecognizer
 import platform.darwin.sel_registerName
 
 /**

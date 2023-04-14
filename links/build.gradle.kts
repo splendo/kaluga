@@ -25,7 +25,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("links")
 
 kotlin {
     sourceSets {

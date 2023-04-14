@@ -25,7 +25,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-composeAndroidComponent()
+composeAndroidComponent("architecture.compose")
 
 dependencies {
     api(project(":base"))

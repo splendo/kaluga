@@ -48,14 +48,10 @@ import platform.UIKit.UIDocumentBrowserViewController
 import platform.UIKit.UIImagePickerController
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
-import platform.UIKit.addConstraint
-import platform.UIKit.addSubview
 import platform.UIKit.childViewControllers
 import platform.UIKit.didMoveToParentViewController
 import platform.UIKit.navigationController
 import platform.UIKit.removeFromParentViewController
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSObject
 import kotlin.native.ref.WeakReference

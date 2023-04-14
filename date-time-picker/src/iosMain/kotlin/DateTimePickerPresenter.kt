@@ -37,17 +37,7 @@ import platform.UIKit.UILabel
 import platform.UIKit.UIModalPresentationBlurOverFullScreen
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
-import platform.UIKit.addSubview
-import platform.UIKit.backgroundColor
-import platform.UIKit.bottomAnchor
-import platform.UIKit.centerXAnchor
-import platform.UIKit.centerYAnchor
-import platform.UIKit.insertSubview
-import platform.UIKit.leadingAnchor
 import platform.UIKit.systemBackgroundColor
-import platform.UIKit.topAnchor
-import platform.UIKit.trailingAnchor
-import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.objc.sel_registerName
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit

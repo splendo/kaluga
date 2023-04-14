@@ -7,8 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-/* Multiplatform component */
-publishableComponent()
+publishableComponent("test.service")
 
 dependencies { }
 

@@ -25,7 +25,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-databindingAndroidComponent()
+databindingAndroidComponent("resources.databinding")
 
 dependencies {
     implementation(project(":base"))

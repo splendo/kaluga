@@ -9,7 +9,7 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent("bluetooth")
 
 dependencies {
     implementationDependency(Dependencies.BLEScanner)

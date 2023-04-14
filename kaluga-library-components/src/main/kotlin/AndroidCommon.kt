@@ -19,9 +19,9 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.kotlin.dsl.dependencies
 
-fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default) {
+fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default, packageName: String) {
     androidLibrary {
-        androidCommon(this@commonAndroidComponent, type)
+        androidCommon(this@commonAndroidComponent, type, packageName)
     }
 
     dependencies {
@@ -51,9 +51,10 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
     }
 }
 
-fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default) {
+fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default, packageName: String) {
     compileSdk = LibraryImpl.Android.compileSdk
     buildToolsVersion = LibraryImpl.Android.buildTools
+    namespace = "${project.Library.group}.$packageName"
 
     defaultConfig {
         minSdk = LibraryImpl.Android.minSdk

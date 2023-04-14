@@ -17,7 +17,7 @@
 
 import org.gradle.api.Project
 
-fun Project.publishableComponent() {
-    commonComponent()
+fun Project.publishableComponent(packageName: String) {
+    commonComponent(packageName)
     publish()
 }

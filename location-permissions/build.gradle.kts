@@ -7,7 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("permissions.location")
 
 dependencies {
     implementationDependency(Dependencies.Android.PlayServices.Location)

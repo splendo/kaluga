@@ -7,7 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("datetimepicker")
 
 dependencies {
     androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)

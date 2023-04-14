@@ -8,7 +8,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("resources")
 
 kotlin {
     sourceSets {

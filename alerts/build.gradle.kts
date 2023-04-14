@@ -13,7 +13,7 @@ dependencies {
     androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
 }
 
-publishableComponent()
+publishableComponent("alerts")
 
 kotlin {
     sourceSets {

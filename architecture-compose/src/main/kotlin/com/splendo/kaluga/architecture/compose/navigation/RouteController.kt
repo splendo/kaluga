@@ -18,7 +18,6 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -176,7 +175,7 @@ class BottomSheetSheetContentRouteController(
         bottomSheetNavigatorState.value?.let { (_, _, sheetState) ->
             if (!sheetState.isVisible) {
                 coroutineScope.value?.launch {
-                    sheetState.animateTo(ModalBottomSheetValue.Expanded)
+                    sheetState.show()
                 }
             }
         }

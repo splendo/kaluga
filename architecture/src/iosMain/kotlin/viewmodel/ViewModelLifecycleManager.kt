@@ -21,10 +21,8 @@ import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
-import platform.UIKit.addSubview
 import platform.UIKit.didMoveToParentViewController
 import platform.UIKit.removeFromParentViewController
-import platform.UIKit.removeFromSuperview
 import platform.UIKit.willMoveToParentViewController
 
 /**

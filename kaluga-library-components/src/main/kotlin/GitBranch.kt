@@ -16,6 +16,7 @@
  */
 
 import org.gradle.api.Project
+import java.util.Locale
 
 data class GitBranch(val branch: String, val kalugaBranchPostfix: String)
 
@@ -23,7 +24,7 @@ val Project.GitBranch: GitBranch get() {
  val GITHUB_GIT_BRANCH = java.lang.System.getenv("GITHUB_REF_NAME") // could also be a tag name
  val kaluga_branch = System.getProperty("kaluga_branch")
  val MAVEN_CENTRAL_RELEASE = System.getenv("MAVEN_CENTRAL_RELEASE")
- val release = MAVEN_CENTRAL_RELEASE?.toLowerCase()?.trim() == "true"
+ val release = MAVEN_CENTRAL_RELEASE?.lowercase(Locale.ENGLISH)?.trim() == "true"
  val branchFromGit = run {
   try {
    val process = ProcessBuilder().command("git rev-parse --abbrev-ref HEAD".split(" ")).start()
@@ -37,7 +38,7 @@ val Project.GitBranch: GitBranch get() {
  // favour user definition of kaluga_branch (if present), otherwise take it from GIT branch:
  // - if running on CI: favour github's branch detection
  // - else: try to get it via the `git` CLI.
- val branch = (kaluga_branch ?: GITHUB_GIT_BRANCH ?: branchFromGit ).replace('/', '-').trim().toLowerCase().also {
+ val branch = (kaluga_branch ?: GITHUB_GIT_BRANCH ?: branchFromGit ).replace('/', '-').trim().lowercase(Locale.ENGLISH).also {
   if (it == "HEAD") {
    logger.warn("Unable to determine current branch: Project is checked out with detached head!")
   }

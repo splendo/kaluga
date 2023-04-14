@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.dependencies
-
 /*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
 
@@ -17,12 +15,10 @@ import org.gradle.kotlin.dsl.dependencies
 
  */
 
-fun org.gradle.api.Project.databindingAndroidComponent() {
+fun org.gradle.api.Project.databindingAndroidComponent(packageName: String) {
     group = Library.group
     version = Library.version
-    commonAndroidComponent(ComponentType.DataBinding)
-
-    ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
+    commonAndroidComponent(ComponentType.DataBinding, packageName)
 
     publish(ComponentType.DataBinding)
 }

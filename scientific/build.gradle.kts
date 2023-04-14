@@ -8,7 +8,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-publishableComponent()
+publishableComponent("scientific")
 
 kotlin {
     sourceSets {

@@ -9,7 +9,7 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent("architecture")
 
 dependencies {
     apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)

@@ -57,7 +57,8 @@ fun <T> LiveData<T>.observeOnCoroutine(
 ) {
     // Live Data mutations should only ever be done from the main thread, so we don't (any longer) allow passing a context
     coroutineScope.launch(Dispatchers.Main.immediate) {
-        if (value != null) observer.onChanged(value) // due to slight delay in launch we could miss value changes
+        val currentValue = value
+        if (currentValue != null) observer.onChanged(currentValue) // due to slight delay in launch we could miss value changes
         observeForever(observer)
         awaitCancellation()
     }.invokeOnCompletion {

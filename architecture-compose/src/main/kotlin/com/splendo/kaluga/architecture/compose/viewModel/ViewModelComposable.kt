@@ -149,8 +149,9 @@ private fun <ViewModel : BaseLifecycleViewModel> handleLocalViewModelStore(viewM
 @Composable
 private fun rememberComposableViewModelStoreOwner(viewModel: BaseLifecycleViewModel): ViewModelStoreOwner {
     val viewModelStoreOwner = remember(viewModel) {
-        val viewModelStore = ViewModelStore()
-        ViewModelStoreOwner { viewModelStore }
+        object : ViewModelStoreOwner {
+            override val viewModelStore: ViewModelStore = ViewModelStore()
+        }
     }
     DisposableEffect(Unit) {
         onDispose {
