@@ -40,6 +40,7 @@ data class ConnectionSettings(
          * Should always try to reconnect when an unexpected disconnect occurs
          */
         object Always : ReconnectionSettings()
+
         /**
          * Should never try to reconnect when an unexpected disconnect occurs
          */

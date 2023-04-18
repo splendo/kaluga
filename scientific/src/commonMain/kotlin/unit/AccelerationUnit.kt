@@ -103,6 +103,7 @@ data class ImperialAcceleration(
  * @return the [MetricAcceleration] represented by the units
  */
 infix fun MetricSpeed.per(time: Time) = MetricAcceleration(this, time)
+
 /**
  * Gets an [ImperialAcceleration] from an [ImperialSpeed] and a [Time]
  * @param time the [Time] component

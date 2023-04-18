@@ -55,10 +55,11 @@ sealed class Decimal : Comparable<Decimal> {
         override fun toString(): String = finiteDecimal.toString()
     }
 
-    override fun compareTo(other: Decimal): Int = if (this is Finite && other is Finite)
+    override fun compareTo(other: Decimal): Int = if (this is Finite && other is Finite) {
         finiteDecimal.compareTo(other.finiteDecimal)
-    else
+    } else {
         toDouble().compareTo(other.toDouble())
+    }
 }
 
 /**

@@ -48,7 +48,6 @@ class GetOrPutAndRemoveOnDestroyFromCacheTest : BaseTest() {
 
     @Test
     fun testGetOrPutAndRemoveOnDestroyFromCache() = runBlocking(Dispatchers.Main) {
-
         val onCreated = EmptyCompletableDeferred()
         val onDestroyed = EmptyCompletableDeferred()
         val mutableList = mutableListOf("first")

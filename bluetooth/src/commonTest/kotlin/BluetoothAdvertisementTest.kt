@@ -38,7 +38,6 @@ class BluetoothAdvertisementTest : BluetoothFlowTest<BluetoothFlowTest.Configura
     fun testAdvertisementData() = testWithFlowAndTestContext(
         Configuration.DeviceWithoutService()
     ) {
-
         mainAction {
             bluetooth.startScanning()
             scanDevice()

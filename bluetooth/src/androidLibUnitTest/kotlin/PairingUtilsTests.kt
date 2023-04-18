@@ -81,7 +81,6 @@ class PairingUtilsTests : BaseTest() {
 
     @Test
     fun unpairTest(): Unit = testBlockingAndCancelScope {
-
         val device = mocks.device(this)
         val flow = flowOf(device)
         flow.unpair()

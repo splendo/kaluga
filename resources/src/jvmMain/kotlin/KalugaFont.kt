@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("JvmFont")
+
 package com.splendo.kaluga.resources
 
 /**

@@ -20,7 +20,6 @@ plugins {
     id("kaluga-library-components")
     id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
-    id("org.jlleitschuh.gradle.ktlint-idea")
     id("org.jetbrains.dokka")
     id("org.jetbrains.kotlin.multiplatform") apply false
     id("org.jetbrains.kotlinx.binary-compatibility-validator")

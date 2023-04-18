@@ -48,7 +48,7 @@ class LinksManagerTest {
     enum class Languages {
         ITALIAN,
         ENGLISH,
-        DUTCH,
+        DUTCH
     }
 
     private val handler = MockLinksHandler()

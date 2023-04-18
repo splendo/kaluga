@@ -27,7 +27,7 @@ import kotlin.properties.ReadWriteProperty
 
 private class ReadWritePropertyObservableHelper<R : T, T>(
     readWriteProperty: ReadWriteProperty<Any?, T>,
-    private val observation: Observation<R, T, Value<R>>,
+    private val observation: Observation<R, T, Value<R>>
 ) : SuspendableSetter<T> {
 
     private var readWriteValue by readWriteProperty
@@ -147,5 +147,5 @@ fun <R : T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(
         defaultValue = defaultValue,
         readWriteProperty = this,
         coroutineScope = coroutineScope,
-        context = context,
+        context = context
     )

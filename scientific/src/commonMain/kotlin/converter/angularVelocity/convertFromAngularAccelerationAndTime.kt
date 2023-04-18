@@ -29,7 +29,7 @@ import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityFromAngularAccelerationAndTimeDefault")
 fun <
-    TimeUnit : Time,
+    TimeUnit : Time
     > AngularVelocity.velocity(
     acceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>

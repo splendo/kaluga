@@ -26,8 +26,10 @@ import kotlin.time.Duration
 interface Timer {
     /** Timer [Duration]. */
     val duration: Duration
+
     /** Flow of [State] of the timer. */
     val state: Flow<State>
+
     /** The current [State] of the timer. */
     val currentState: State
 
@@ -67,6 +69,7 @@ interface Timer {
 interface ControllableTimer : Timer {
     /** Starts the timer. */
     suspend fun start()
+
     /** Stops the timer. */
     suspend fun pause()
 }

@@ -295,7 +295,7 @@ fun <
     Unit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>
     > List<ScientificValue<Quantity, Unit>>.toScientificArray(
-    unit: TargetUnit,
+    unit: TargetUnit
 ) = toScientificArray(unit, ::DefaultScientificArray)
 
 /**
@@ -332,6 +332,7 @@ fun <
     Unit : ScientificUnit<Quantity>,
     NumberType : Number
     > ScientificArray<NumberType, Quantity, Unit>.split() = split(unit, ::DefaultScientificValue)
+
 /**
  * Splits a [ScientificArray] into a list of [DefaultScientificValue] in [TargetUnit] of all the values in the array
  * @param Quantity the type of [PhysicalQuantity] of the unit
@@ -766,7 +767,7 @@ infix operator fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    RightUnit : ScientificUnit<Quantity>,
+    RightUnit : ScientificUnit<Quantity>
     > ScientificArray<*, Quantity, Unit>.concat(
     right: ScientificArray<*, Quantity, RightUnit>
 ) = concat(right, unit)

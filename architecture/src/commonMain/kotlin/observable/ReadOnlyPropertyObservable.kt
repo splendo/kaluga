@@ -21,11 +21,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.properties.ReadOnlyProperty
 
 private fun <R : T, T> readOnlyPropertyObservableHelper(readOnlyProperty: ReadOnlyProperty<Any?, T>, observation: Observation<R, T, ObservableOptional.Value<R>>) {
-
     val readOnlyValue by readOnlyProperty
 
     observation.beforeObservedValueGet = { current ->
-        @Suppress("UnnecessaryVariable") val new = readOnlyValue // variable actually needed due to delegation
+        @Suppress("UnnecessaryVariable")
+        val new = readOnlyValue // variable actually needed due to delegation
         if (new != current.valueOrNull) {
             ObservableOptional.Value(new)
         } else {

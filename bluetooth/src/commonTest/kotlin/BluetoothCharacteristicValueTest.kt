@@ -39,7 +39,6 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
     fun testGetCharacteristicValue() = testWithFlowAndTestContext(
         Configuration.DeviceWithCharacteristic()
     ) {
-
         val newValue = "Test".encodeToByteArray()
 
         mainAction {

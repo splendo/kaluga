@@ -27,7 +27,6 @@ pluginManagement {
                 "com.android.application",
                 -> useVersion("$kalugaAndroidGradlePluginVersion")
                 "org.jlleitschuh.gradle.ktlint",
-                "org.jlleitschuh.gradle.ktlint-idea",
                 -> useVersion("$kalugaKtLintGradlePluginVersion")
                 "com.google.gms:google-services"
                 -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")

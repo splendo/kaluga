@@ -36,7 +36,6 @@ class BluetoothDescriptorsTest : BluetoothFlowTest<BluetoothFlowTest.Configurati
     fun testGetDescriptors() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor()
     ) {
-
         mainAction {
             bluetooth.startScanning()
             scanDevice()

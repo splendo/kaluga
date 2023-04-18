@@ -131,7 +131,7 @@ class RecurringTimerTest {
         suspend fun delay(delay: Duration) {
             if (index < 0) {
                 // capture timer finish delay
-                index ++
+                index++
                 timerFinish.await()
             } else {
                 if (index < delays.size) {
@@ -168,7 +168,7 @@ class RecurringTimerTest {
             // -7ms delivery lag, -4ms af undershoot spot on, correction for 4ms
             Timings(393, 396, 104),
             // last interval: no delivery lag, 5 ms processing lag, no correction
-            Timings(500, 505, 0),
+            Timings(500, 505, 0)
         )
 
         val timeSource = PredefinedTimeSource(

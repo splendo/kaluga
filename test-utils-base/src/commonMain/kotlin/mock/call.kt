@@ -28,7 +28,7 @@ import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
  * Calls a [MethodMock] without any parameters
  */
 fun <
-    Result,
+    Result
     > MethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
@@ -43,7 +43,7 @@ fun <
  * Calls a [SuspendMethodMock] without any parameters
  */
 suspend fun <
-    Result,
+    Result
     > SuspendMethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
@@ -60,7 +60,7 @@ suspend fun <
  */
 fun <
     Value,
-    Result,
+    Result
     > MethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
@@ -77,7 +77,7 @@ fun <
  */
 suspend fun <
     Value,
-    Result,
+    Result
     > SuspendMethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
@@ -96,7 +96,7 @@ suspend fun <
 fun <
     T0,
     T1,
-    Result,
+    Result
     > MethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,
@@ -115,7 +115,7 @@ fun <
 suspend fun <
     T0,
     T1,
-    Result,
+    Result
     > SuspendMethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,

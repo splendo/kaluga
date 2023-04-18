@@ -76,8 +76,11 @@ class GoogleLocationProvider(
                 .setMinUpdateIntervalMillis(settings.minUpdateInterval.inWholeMilliseconds)
                 .setMinUpdateDistanceMeters(minUpdateDistanceMeters)
                 .setPriority(
-                    if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY
-                    else Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                    if (permission.precise) {
+                        Priority.PRIORITY_HIGH_ACCURACY
+                    } else {
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                    }
                 )
                 .build()
         protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> =

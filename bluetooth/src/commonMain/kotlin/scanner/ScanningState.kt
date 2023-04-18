@@ -541,7 +541,9 @@ internal sealed class ScanningStateImpl {
             filter: Filter,
             removeForAllPairedFilters: Boolean
         ) = this.devices.copyAndSetPaired(
-            devices, filter, removeForAllPairedFilters
+            devices,
+            filter,
+            removeForAllPairedFilters
         )
 
         suspend fun retrievePairedDevices(
@@ -692,8 +694,11 @@ internal sealed class ScanningStateImpl {
         ) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(lastDevices, scanner)
-                else Disabled(lastDevices, scanner)
+                if (enabled) {
+                    Enabled.Idle(lastDevices, scanner)
+                } else {
+                    Disabled(lastDevices, scanner)
+                }
             }
         }
     }

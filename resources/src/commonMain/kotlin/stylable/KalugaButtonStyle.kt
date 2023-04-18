@@ -18,8 +18,8 @@
 package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.DefaultColors
-import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaColor
+import com.splendo.kaluga.resources.KalugaFont
 
 /**
  * The style to apply to a button
@@ -109,7 +109,7 @@ data class KalugaButtonStyle(
  */
 data class ButtonStateStyle(
     val textColor: KalugaColor,
-    val backgroundStyle: KalugaBackgroundStyle,
+    val backgroundStyle: KalugaBackgroundStyle
 ) {
 
     /**

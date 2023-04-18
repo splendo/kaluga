@@ -27,6 +27,16 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Camera.Type
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.FileSelector.FileSelectorSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.AnimationSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.BackStackSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.Type
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Phone.Type
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Settings.Type
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.TextMessenger.TextMessengerSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdPartyApp.OpenMode
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -163,10 +173,18 @@ sealed class NavigationSpec {
          * @param popExit Pop Exit Animation
          */
         data class AnimationSettings(
-            @AnimatorRes @AnimRes val enter: Int = 0,
-            @AnimatorRes @AnimRes val exit: Int = 0,
-            @AnimatorRes @AnimRes val popEnter: Int = 0,
-            @AnimatorRes @AnimRes val popExit: Int = 0
+            @AnimatorRes
+            @AnimRes
+            val enter: Int = 0,
+            @AnimatorRes
+            @AnimRes
+            val exit: Int = 0,
+            @AnimatorRes
+            @AnimRes
+            val popEnter: Int = 0,
+            @AnimatorRes
+            @AnimRes
+            val popExit: Int = 0
         )
     }
 

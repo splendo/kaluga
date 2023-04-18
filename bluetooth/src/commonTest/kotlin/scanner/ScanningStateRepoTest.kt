@@ -236,7 +236,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
 
         mainAction {
-
             val deviceWrapper = deviceWrapper
             val device = device
             val scanningStateRepo = scanningStateRepo

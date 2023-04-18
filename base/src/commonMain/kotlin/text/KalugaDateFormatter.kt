@@ -79,6 +79,7 @@ interface BaseDateFormatter {
      * A list containing the names of all weekdays used by this date formatter.
      */
     var weekdays: List<String>
+
     /**
      * A list containing the shortened names of all weekdays used by this date formatter.
      */

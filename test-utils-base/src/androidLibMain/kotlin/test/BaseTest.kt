@@ -73,7 +73,6 @@ actual open class BaseTest {
 
     @BeforeTest
     actual open fun beforeTest() {
-
         if (isUnitTest) {
             // Disabled as it gives issues as of Kotlin 1.8
             // DebugProbes.install() // coroutine debugging

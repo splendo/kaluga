@@ -29,8 +29,11 @@ actual val UUID.uuidString: String
     get() = toString()
 
 internal actual fun unsafeUUIDFrom(uuidString: String): UUID =
-    if (uuidString.isShortUUID()) uuidFromShort(uuidString)
-    else UUID.fromString(uuidString)
+    if (uuidString.isShortUUID()) {
+        uuidFromShort(uuidString)
+    } else {
+        UUID.fromString(uuidString)
+    }
 
 /**
  * Gets a random [UUID]

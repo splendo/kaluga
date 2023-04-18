@@ -234,10 +234,14 @@ class DeviceImpl(
 
     private fun createDeviceStateRepoIfNotCreated(): ConnectableDeviceStateFlowRepo? =
         deviceStateRepo.updateAndGet { repo ->
-            repo ?: if (sharedInfo.value.advertisementData.isConnectable) createDeviceStateFlow(
-                createConnectionManagerIfNotCreated(),
-                coroutineScope.coroutineContext
-            ) else null
+            repo ?: if (sharedInfo.value.advertisementData.isConnectable) {
+                createDeviceStateFlow(
+                    createConnectionManagerIfNotCreated(),
+                    coroutineScope.coroutineContext
+                )
+            } else {
+                null
+            }
         }
 
     private suspend fun DeviceConnectionManager.Event.stateTransition(state: ConnectableDeviceState): suspend () -> ConnectableDeviceState =
@@ -311,7 +315,7 @@ class DeviceImpl(
             is ConnectableDeviceState.Connected.Discovering,
             is ConnectableDeviceState.Connecting,
             is ConnectableDeviceState.Disconnected,
-            is ConnectableDeviceState.Disconnecting,
+            is ConnectableDeviceState.Disconnecting
             -> {
                 state.remain() // TODO consider an optional buffer
             }

@@ -103,6 +103,7 @@ actual class DefaultScanner internal constructor(
 
             // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionallowduplicateskey
             private var allowDuplicateKeys: Boolean = true
+
             // https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerscanoptionsolicitedserviceuuidskey
             private var solicitedServiceUUIDsKey: List<UUID>? = null
 
@@ -231,7 +232,9 @@ actual class DefaultScanner internal constructor(
                     CBCentralManager(null, scanQueue, options)
                     bluetoothEnabledMonitor.isEnabled.first { it }
                 }
-            } else null
+            } else {
+                null
+            }
         )
     }
 

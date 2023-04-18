@@ -163,7 +163,7 @@ data class DeviceInfoImpl(
         name = wrapper.name,
         identifier = wrapper.identifier,
         rssi = rssi,
-        advertisementData = advertisementData,
+        advertisementData = advertisementData
     )
     override val updatedAt = DefaultKalugaDate.now()
 }

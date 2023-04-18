@@ -191,7 +191,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                 DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
                 connectionSettings,
                 deviceConnectionManagerBuilder,
-                coroutineScope,
+                coroutineScope
             ) { connectionManager, context ->
                 ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
             }

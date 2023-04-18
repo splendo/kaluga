@@ -26,6 +26,7 @@ import kotlin.test.assertEquals
 class LogTest {
 
     private val mockLogger = LoggerMock()
+
     @BeforeTest
     fun setMockLogger() {
         logger = mockLogger
@@ -215,7 +216,7 @@ class LogTest {
         method4: (throwable: Throwable) -> Unit,
         method5: (tag: String?, message: () -> String) -> Unit,
         method6: (message: () -> String) -> Unit,
-        method7: (tag: String?, throwable: Throwable?, message: () -> String) -> Unit,
+        method7: (tag: String?, throwable: Throwable?, message: () -> String) -> Unit
     ) {
         val tag = logLevel.name.lowercase()
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }

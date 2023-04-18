@@ -62,8 +62,9 @@ actual class DefaultMicrophonePermissionManager(
     }
 
     override fun monitoringDidStop() {
-        if (supported)
+        if (supported) {
             permissionsManager.stopMonitoring()
+        }
     }
 }
 

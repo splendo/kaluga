@@ -59,7 +59,7 @@ open class StateFlowInitializedSubject<T>(
         ObservableOptional.Value(
             observedStateFlow.value
         )
-    ),
+    )
 ) : BaseInitializedSubject<T>(observation),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
         coroutineScope,
@@ -96,7 +96,7 @@ open class StateFlowDefaultSubject<R : T?, T>(
     observation: ObservationDefault<R, T?> = ObservationDefault(
         defaultValue,
         ObservableOptional.Value(observedStateFlow.value)
-    ),
+    )
 ) : BaseDefaultSubject<R, T?>(observation),
     SuspendableSetter<T?> by MutableFlowSubjectHelper(
         coroutineScope,
@@ -200,7 +200,7 @@ open class SharedFlowDefaultSubject<R : T?, T>(
     observation: ObservationDefault<R, T?> = ObservationDefault(
         defaultValue,
         ObservableOptional.Value(initialValue)
-    ),
+    )
 ) : BaseDefaultSubject<R, T?>(
     observation
 ),

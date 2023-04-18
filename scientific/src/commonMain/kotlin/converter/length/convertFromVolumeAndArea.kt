@@ -60,7 +60,7 @@ fun <
     > HeightUnit.height(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
+    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>
 ) = height(volume, length, width, ::DefaultScientificValue)
 
 @JvmName("heightFromVolumeLengthAndWidth")

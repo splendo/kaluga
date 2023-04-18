@@ -275,12 +275,12 @@ sealed class BlendMode {
  */
 private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor {
     val alphaCompose = {
-        backdropAlpha: Double,
-        sourceAlpha: Double,
-        compositeAlpha: Double,
-        backdropColor: Double,
-        sourceColor: Double,
-        compositeColor: Double ->
+            backdropAlpha: Double,
+            sourceAlpha: Double,
+            compositeAlpha: Double,
+            backdropColor: Double,
+            sourceColor: Double,
+            compositeColor: Double ->
         Double
         (1.0 - sourceAlpha / compositeAlpha) * backdropColor +
             (sourceAlpha / compositeAlpha) * ((1 - backdropAlpha) * sourceColor + backdropAlpha * compositeColor)

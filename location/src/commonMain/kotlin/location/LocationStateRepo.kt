@@ -153,7 +153,7 @@ class LocationStateRepo(
             CoroutineScope(coroutineContext + CoroutineName("LocationManager"))
         )
     },
-    coroutineContext = coroutineContext,
+    coroutineContext = coroutineContext
 )
 
 /**

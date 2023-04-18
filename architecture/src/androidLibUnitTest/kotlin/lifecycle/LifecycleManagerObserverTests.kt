@@ -36,8 +36,10 @@ class LifecycleManagerObserverTests : BaseTest() {
 
     @Mock
     private lateinit var activity: Activity
+
     @Mock
     private lateinit var lifecycleOwner: LifecycleOwner
+
     @Mock
     private lateinit var fragmentManager: FragmentManager
 

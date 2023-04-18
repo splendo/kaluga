@@ -103,7 +103,6 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
     @Test
     fun indicatorDismiss() = testOnUIThread(cancelScopeAfterTest = true) {
-
         val indicator = builder.build(this) {
             setTitle(LOADING)
         }

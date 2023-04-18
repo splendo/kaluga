@@ -97,14 +97,17 @@ abstract class BaseLocale {
      * The Character(s) used for indicating the start of a quote
      */
     abstract val quotationStart: String
+
     /**
      * The Character(s) used for indicating the end of a quote
      */
     abstract val quotationEnd: String
+
     /**
      * The alternative Character(s) used for indicating the start of a quote
      */
     abstract val alternateQuotationStart: String
+
     /**
      * The alternative Character(s) used for indicating the end of a quote
      */

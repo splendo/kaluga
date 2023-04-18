@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("ColorCommonKt")
+
 package com.splendo.kaluga.resources
 
 import kotlinx.serialization.KSerializer

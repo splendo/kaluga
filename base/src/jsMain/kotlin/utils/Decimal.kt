@@ -26,6 +26,7 @@ import kotlin.math.pow
 
 // 34 digits of the IEEE 754R Decimal128 format
 private const val DECIMAL_128_SIGNIFICANT_DIGITS = 34
+
 // Max decimal digits + 1 for intermediate division
 private const val DIV_DECIMAL_128_SIGNIFICANT_DIGITS = DECIMAL_128_SIGNIFICANT_DIGITS + 1
 

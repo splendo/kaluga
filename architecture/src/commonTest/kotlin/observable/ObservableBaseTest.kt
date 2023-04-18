@@ -129,8 +129,9 @@ abstract class ObservableBaseTest : BaseTest() {
             (it as? SuspendableSetter<V>)?.let {
                 runBlocking { it.set(this@asUpdate.first) }
             } ?: throw Exception("Could not set value")
-        } else
+        } else {
             (it as? Postable<V>)?.post(this.first) ?: throw Exception("Could not post value")
+        }
 
         Value(this.second)
     }
@@ -248,10 +249,12 @@ abstract class ObservableBaseTest : BaseTest() {
                 assertEquals(expected.value, property)
             }
 
-            if (lastUpdate || expected !is Value<*>) // TODO <-- sus
+            if (lastUpdate || expected !is Value<*>) {
+                // TODO <-- sus
                 assertEquals(observedBefore, observedValue)
-            else
+            } else {
                 assertEquals(expected.value, observedValue)
+            }
 
             if (!lastUpdate && observedInitializedValue != null) {
                 assertTrue(expected is Value<*>)

@@ -29,15 +29,14 @@ pluginManagement {
                 "org.jetbrains.kotlin.multiplatform",
                 "org.jetbrains.kotlin.plugin.serialization",
                 "org.jetbrains.kotlin.android",
-                "org.jetbrains.kotlin.kapt",
+                "org.jetbrains.kotlin.kapt"
                 -> useVersion("$kalugaKotlinVersion")
                 "org.jetbrains.dokka"
                 -> useVersion("$kalugaDokkaVersion")
                 "com.android.library",
-                "com.android.application",
+                "com.android.application"
                 -> useVersion("$kalugaAndroidGradlePluginVersion")
-                "org.jlleitschuh.gradle.ktlint",
-                "org.jlleitschuh.gradle.ktlint-idea",
+                "org.jlleitschuh.gradle.ktlint"
                 -> useVersion("$kalugaKtLintGradlePluginVersion")
                 "com.google.gms:google-services"
                 -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")

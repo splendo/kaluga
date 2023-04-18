@@ -82,7 +82,7 @@ class DefaultFlowObservable<R : T?, T>(
     observation: ObservationDefault<R, T?> = ObservationDefault(
         defaultValue,
         ObservableOptional.Value(initialValue)
-    ),
+    )
 ) : BaseDefaultObservable<R, T?>(observation) {
     init {
         observeFlow(observation, coroutineScope, context, flow)
@@ -132,5 +132,5 @@ fun <R : T, T> Flow<T?>.toDefaultObservable(
     defaultValue: R,
     initialValue: T? = defaultValue,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
+    context: CoroutineContext = coroutineScope.coroutineContext
 ) = DefaultFlowObservable(defaultValue, initialValue, coroutineScope, context, this)

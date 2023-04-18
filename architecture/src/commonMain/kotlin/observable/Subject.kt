@@ -139,7 +139,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
      * @param initialValue The [Value] to use as the initial value.
      */
     constructor(
-        initialValue: Value<T>,
+        initialValue: Value<T>
     ) : this(ObservationInitialized(initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =

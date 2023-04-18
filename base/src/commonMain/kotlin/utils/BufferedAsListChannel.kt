@@ -67,7 +67,7 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
 ) : BufferedAsListChannel<T>, SendChannel<T> by sendChannel, ReceiveChannel<List<T>> by receiveChannel {
 
     constructor(
-        coroutineContext: CoroutineContext,
+        coroutineContext: CoroutineContext
     ) : this(coroutineContext, singleThreadDispatcher("GroupingChannel"), true)
 
     constructor(

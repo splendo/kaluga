@@ -23,37 +23,37 @@ import kotlin.test.assertEquals
 
 class ByOrdinalOrDefaultTest {
     enum class Numbers {
-        one, two
+        ONE, TWO
     }
 
     @Test
     fun test() {
         assertEquals(
-            Numbers.one,
+            Numbers.ONE,
             Enum.byOrdinalOrDefault(
                 0,
-                Numbers.two
+                Numbers.TWO
             )
         )
         assertEquals(
-            Numbers.two,
+            Numbers.TWO,
             Enum.byOrdinalOrDefault(
                 1,
-                Numbers.one
+                Numbers.ONE
             )
         )
         assertEquals(
-            Numbers.two,
+            Numbers.TWO,
             Enum.byOrdinalOrDefault(
                 -1,
-                Numbers.two
+                Numbers.TWO
             )
         )
         assertEquals(
-            Numbers.one,
+            Numbers.ONE,
             Enum.byOrdinalOrDefault(
                 2,
-                Numbers.one
+                Numbers.ONE
             )
         )
     }

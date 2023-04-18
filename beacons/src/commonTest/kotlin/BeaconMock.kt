@@ -39,7 +39,8 @@ object BeaconMock {
         instance.decodeHex()!!
 
     fun mockGenericDevice(name: String, coroutineScope: CoroutineScope) = makeDevice(
-        createDeviceWrapper(name), coroutineScope = coroutineScope
+        createDeviceWrapper(name),
+        coroutineScope = coroutineScope
     )
 
     fun mockBeaconDevice(id: String, coroutineScope: CoroutineScope): Device {

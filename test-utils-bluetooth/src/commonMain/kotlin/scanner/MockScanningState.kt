@@ -85,7 +85,7 @@ sealed class MockScanningState {
         protected fun devicesForPairedDevices(
             devices: Map<Identifier, () -> Device>,
             filter: Filter,
-            removeForAllPairedFilters: Boolean,
+            removeForAllPairedFilters: Boolean
         ) = this.devices.copyAndSetPaired(devices, filter, removeForAllPairedFilters)
 
         class Idle(
@@ -150,7 +150,7 @@ sealed class MockScanningState {
             override fun pairedDevices(
                 devices: Map<Identifier, () -> Device>,
                 filter: Filter,
-                removeForAllPairedFilters: Boolean,
+                removeForAllPairedFilters: Boolean
             ): suspend () -> ScanningState.Enabled = {
                 Scanning(
                     devicesForPairedDevices(devices, filter, removeForAllPairedFilters)

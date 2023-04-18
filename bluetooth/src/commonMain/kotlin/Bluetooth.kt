@@ -166,13 +166,13 @@ interface BluetoothService {
  */
 class Bluetooth constructor(
     coroutineContext: CoroutineContext,
-    scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo,
+    scanningStateRepoBuilder: (CoroutineContext) -> ScanningStateFlowRepo
 ) : BluetoothService, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Bluetooth")) {
 
     internal constructor(
         scannerSettingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
         scannerBuilder: BaseScanner.Builder,
-        coroutineContext: CoroutineContext,
+        coroutineContext: CoroutineContext
     ) : this(
         coroutineContext,
         { context ->
@@ -300,7 +300,7 @@ interface BaseBluetoothBuilder {
      */
     fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-        coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
+        coroutineContext: CoroutineContext = defaultBluetoothDispatcher
     ): Bluetooth
 }
 

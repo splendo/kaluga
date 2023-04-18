@@ -88,6 +88,7 @@ sealed class MassFlowRate : AbstractScientificUnit<PhysicalQuantity.MassFlowRate
 data class MetricMassFlowRate(override val weight: MetricWeight, override val per: Time) : MassFlowRate(), MetricScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.Metric
 }
+
 /**
  * A [MassFlowRate] for [MeasurementSystem.Imperial]
  * @param weight the [ImperialWeight] component

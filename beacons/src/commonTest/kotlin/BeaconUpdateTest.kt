@@ -26,7 +26,6 @@ class BeaconUpdateTest : BeaconFlowTest() {
 
     @Test
     fun testBeaconUpdatedTimestamp() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }

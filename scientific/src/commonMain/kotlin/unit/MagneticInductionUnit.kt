@@ -63,24 +63,34 @@ sealed class TeslaMultiple : MagneticInduction(), MetricMultipleUnit<Measurement
 
 @Serializable
 object Nanotesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Nano(Tesla)
+
 @Serializable
 object Microtesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Micro(Tesla)
+
 @Serializable
 object Millitesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Milli(Tesla)
+
 @Serializable
 object Centitesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Centi(Tesla)
+
 @Serializable
 object Decitesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Deci(Tesla)
+
 @Serializable
 object Decatesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Deca(Tesla)
+
 @Serializable
 object Hectotesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Hecto(Tesla)
+
 @Serializable
 object Kilotesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Kilo(Tesla)
+
 @Serializable
 object Megatesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Mega(Tesla)
+
 @Serializable
 object Gigatesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Giga(Tesla)
+
 @Serializable
 object Gauss : MagneticInduction() {
     private const val GAUSS_IN_TESLA = 10000.0

@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("StyledStringAndroidkt")
+
 package com.splendo.kaluga.resources
 
 import android.content.Context

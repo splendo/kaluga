@@ -676,7 +676,6 @@ class LocationStateTest :
         locationEnabled: Boolean,
         test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit
     ) {
-
         testWithFlowAndTestContext(
             Configuration(
                 locationPermission,

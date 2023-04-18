@@ -488,7 +488,7 @@ open class ColdStateFlowRepo<State : KalugaState>(
     val firstState: () -> State
 ) : StateFlowRepo<State>,
     BaseColdStateRepo<State, MutableStateFlow<State>>(
-        context = coroutineContext,
+        context = coroutineContext
     ) {
 
     /**

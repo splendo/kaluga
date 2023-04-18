@@ -74,7 +74,7 @@ abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
 ) : BasicObservable<R, T, OO>,
     Initial<R, T> by observation {
     constructor(
-        initialValue: ObservableOptional<T>,
+        initialValue: ObservableOptional<T>
     ) : this(Observation(initialValue))
 }
 

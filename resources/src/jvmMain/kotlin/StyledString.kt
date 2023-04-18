@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("StyledStringJVMkt")
+
 package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.resources.stylable.KalugaTextStyle

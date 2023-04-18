@@ -72,6 +72,7 @@ sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<Pa
          * This is stronger than [any] but weaker than [isInstance].
          */
         fun <T : Any> notNull(): ParameterMatcher<T?> = AnyNotNullMatcher()
+
         /**
          * Creates a [ParameterMatcher] that matches anything
          * This is the weakest [ParameterMatcher].

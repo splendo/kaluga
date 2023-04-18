@@ -29,7 +29,7 @@ import kotlin.jvm.JvmName
 @JvmName("dimensionlessTimesDimensionlessDefault")
 infix operator fun <
     LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
+    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.times(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
 ) = modify(modifier, ::DefaultScientificValue)
@@ -37,7 +37,7 @@ infix operator fun <
 @JvmName("dimensionlessDivDimensionlessDefault")
 infix operator fun <
     LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
+    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.div(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
 ) = unit.byDividing(this, modifier, ::DefaultScientificValue)

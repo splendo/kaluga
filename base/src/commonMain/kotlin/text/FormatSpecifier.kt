@@ -156,8 +156,12 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         (arg as? Formattable)?.let {
             out.append(it.formatFor(locale, flags, width, precision))
         } ?: run {
-            if (flags.contains(Flag.ALTERNATE))
-                throw StringFormatterException.FormatFlagsConversionMismatchException(Flag.ALTERNATE.toString(), 's')
+            if (flags.contains(Flag.ALTERNATE)) {
+                throw StringFormatterException.FormatFlagsConversionMismatchException(
+                    Flag.ALTERNATE.toString(),
+                    's'
+                )
+            }
 
             print(arg?.toString() ?: "null", locale)
         }
@@ -304,8 +308,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 number.append(mantissa)
                 addZeros(number, prec, locale)
 
-                if (flags.contains(Flag.ALTERNATE) && prec == 0)
+                if (flags.contains(Flag.ALTERNATE) && prec == 0) {
                     number.append(formatter.decimalSeparator)
+                }
 
                 var newW = width
                 if (width != -1) {
@@ -328,10 +333,13 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 number.append(formatter.format(value))
                 addZeros(number, prec, locale)
 
-                if (flags.contains(Flag.ALTERNATE) && prec == 0)
+                if (flags.contains(Flag.ALTERNATE) && prec == 0) {
                     number.append(formatter.decimalSeparator)
+                }
                 var newW = width
-                if (width != -1) newW = adjustWidth(width, flags, neg)
+                if (width != -1) {
+                    newW = adjustWidth(width, flags, neg)
+                }
 
                 localizedMagnitude(sb, number, 0, flags, newW, locale)
             }
@@ -369,10 +377,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 // 'l' (1 - 12) -- like I
                 var i: Int = time.hour
                 if (currentChar.dateTime == DateTime.HOUR_0 || currentChar.dateTime == DateTime.HOUR) i = if (i == 0 || i == 12) 12 else i % 12
-                val flags = if (currentChar.dateTime == DateTime.HOUR_OF_DAY_0 || currentChar.dateTime == DateTime.HOUR_0)
+                val flags = if (currentChar.dateTime == DateTime.HOUR_OF_DAY_0 || currentChar.dateTime == DateTime.HOUR_0) {
                     setOf(Flag.ZERO_PAD)
-                else
+                } else {
                     emptySet()
+                }
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.MINUTE -> {
@@ -528,7 +537,6 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
 
     private fun addZeros(sb: StringBuilder, prec: Int, locale: KalugaLocale) {
-
         // Look for the dot.  If we don't find one, the we'll need to add
 
         // it before we add the zeros.
@@ -844,8 +852,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
 
         // bad combination
-        if (flags.contains(Flag.PLUS) && flags.contains(Flag.LEADING_SPACE) || flags.contains(Flag.LEFT_JUSTIFY) && flags.contains(Flag.ZERO_PAD))
+        if (flags.contains(Flag.PLUS) && flags.contains(Flag.LEADING_SPACE) || flags.contains(Flag.LEFT_JUSTIFY) && flags.contains(Flag.ZERO_PAD)) {
             throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
+        }
     }
 
     private fun checkText(currentChar: ParsingCharacter.RegularCharacter) {

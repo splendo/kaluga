@@ -1,11 +1,15 @@
-root=true
+root = true
 
 [*.{kt,kts}]
 ktlint_code_style = ktlint_official
 ktlint_ignore_back_ticked_identifier = true
 
 ktlint_standard = enabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_filename = disabled
+ktlint_standard_import-ordering = disabled
 
 # Experimental rules run by default run on the ktlint code base itself. Experimental rules should not be released if
 # we are not pleased ourselves with the results on the ktlint code base.
 ktlint_experimental = enabled
+

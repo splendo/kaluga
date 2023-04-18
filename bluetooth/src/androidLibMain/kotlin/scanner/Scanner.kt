@@ -86,7 +86,7 @@ actual class DefaultScanner internal constructor(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
         private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter,
-        private val scanSettings: ScanSettings = defaultScanSettings,
+        private val scanSettings: ScanSettings = defaultScanSettings
     ) : BaseScanner.Builder {
 
         override fun create(
@@ -142,9 +142,7 @@ actual class DefaultScanner internal constructor(
 
         @SuppressLint("MissingPermission") // Lint complains even with permissions
         private fun handleScanResult(scanResult: ScanResult) {
-            if (!settings.discoverBondedDevices && scanResult.device.bondState != BOND_NONE)
-                return // ignore bonded devices
-
+            if (!settings.discoverBondedDevices && scanResult.device.bondState != BOND_NONE) return // ignore bonded devices
             val advertisementData = AdvertisementData(scanResult)
             val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
@@ -196,26 +194,32 @@ actual class DefaultScanner internal constructor(
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
         return listOfNotNull(
-            if (bluetoothAdapter?.isEnabled != true) suspend {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                    EnableServiceActivity.showEnableServiceActivity(
-                        applicationContext,
-                        hashCode().toString(),
-                        Intent(ACTION_BLUETOOTH_SETTINGS)
-                    ).await()
-                } else {
-                    @Suppress("DEPRECATION")
-                    bluetoothAdapter?.enable()
+            if (bluetoothAdapter?.isEnabled != true) {
+                suspend {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        EnableServiceActivity.showEnableServiceActivity(
+                            applicationContext,
+                            hashCode().toString(),
+                            Intent(ACTION_BLUETOOTH_SETTINGS)
+                        ).await()
+                    } else {
+                        @Suppress("DEPRECATION")
+                        bluetoothAdapter?.enable()
+                    }
+                    bluetoothEnabledMonitor!!.isEnabled.first { it }
                 }
-                bluetoothEnabledMonitor!!.isEnabled.first { it }
-            } else null,
+            } else {
+                null
+            },
             if (!locationEnabledMonitor.isServiceEnabled) {
                 EnableServiceActivity.showEnableServiceActivity(
                     applicationContext,
                     hashCode().toString(),
                     Intent(ACTION_LOCATION_SOURCE_SETTINGS)
                 )::await
-            } else null
+            } else {
+                null
+            }
         )
     }
 
@@ -224,16 +228,21 @@ actual class DefaultScanner internal constructor(
         withServices: Filter,
         connectionSettings: ConnectionSettings?
     ): List<Scanner.DeviceDiscovered> {
-        if (!isSupported) return emptyList()
-        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+        if (!isSupported) {
+            return emptyList()
+        }
+        val permission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             Manifest.permission.BLUETOOTH_CONNECT
-        else
+        } else {
             Manifest.permission.BLUETOOTH
+        }
         val result = ActivityCompat.checkSelfPermission(
             applicationContext,
             permission
         )
-        if (result != PackageManager.PERMISSION_GRANTED) return emptyList()
+        if (result != PackageManager.PERMISSION_GRANTED) {
+            return emptyList()
+        }
         return bluetoothAdapter?.bondedDevices
             ?.filter {
                 // If no uuids available return this device

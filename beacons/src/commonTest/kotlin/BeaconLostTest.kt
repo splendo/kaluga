@@ -27,7 +27,6 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
 
     @Test
     fun testLostOnTimeout() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -56,7 +55,6 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
 
     @Test
     fun testLostOneByOneTimeout() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }

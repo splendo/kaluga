@@ -246,14 +246,17 @@ interface BaseNumberFormatter {
      * Text to be added in front of the number when positive
      */
     var positivePrefix: String
+
     /**
      * Text to be added behind the number when positive
      */
     var positiveSuffix: String
+
     /**
      * Text to be added in front of the number when negative
      */
     var negativePrefix: String
+
     /**
      * Text to be added behind the number when negative
      */

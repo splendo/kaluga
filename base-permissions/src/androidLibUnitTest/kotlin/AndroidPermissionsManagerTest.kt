@@ -55,8 +55,10 @@ class AndroidPermissionsManagerTest : BaseTest() {
 
     @Mock
     lateinit var context: Context
+
     @Mock
     lateinit var packageManager: PackageManager
+
     @Mock
     lateinit var packageInfo: PackageInfo
 

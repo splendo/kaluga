@@ -45,7 +45,6 @@ class MockAlertPresenterTest : UIThreadViewModelTest<MockAlertPresenterTest.Test
 
     @Test
     fun testMockAlertPresenter() = testOnUIThread {
-
         val done = EmptyCompletableDeferred()
         withTimeout(2.seconds) {
             // we can use alertBuilder from our viewModel

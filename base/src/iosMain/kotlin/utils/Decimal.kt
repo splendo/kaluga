@@ -209,6 +209,7 @@ actual fun String.toFiniteDecimal(): FiniteDecimal? = when (val decimal = NSDeci
 actual fun FiniteDecimal.toDouble() = nsDecimal.toString().toDouble()
 actual fun FiniteDecimal.toInt() = nsDecimal.intValue
 actual fun FiniteDecimal.toLong() = nsDecimal.longValue
+
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun FiniteDecimal.toString() = nsDecimal.stringValue
 

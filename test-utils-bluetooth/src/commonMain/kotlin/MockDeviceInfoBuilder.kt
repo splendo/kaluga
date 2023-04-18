@@ -95,5 +95,5 @@ fun createMockDevice(
     ),
     connectionManagerBuilder: MockDeviceConnectionManager.Builder = MockDeviceConnectionManager.Builder(),
     createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { manager, coroutineContext -> ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, manager, coroutineContext) },
-    builder: MockDeviceInfoBuilder.() -> Unit,
+    builder: MockDeviceInfoBuilder.() -> Unit
 ) = createMockDevice(wrapper.identifier, connectionSettings, { connectionManagerBuilder.create(wrapper, it, coroutineScope) }, builder, createDeviceStateFlow, coroutineScope)

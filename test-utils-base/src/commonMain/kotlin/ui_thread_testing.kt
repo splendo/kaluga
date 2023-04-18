@@ -126,7 +126,6 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
      */
     fun testOnUIThread(configuration: Configuration, cancelScopeAfterTest: Boolean = false, block: suspend Context.() -> Unit) {
         try {
-
             val createTestContextWithConfiguration = createTestContextWithConfiguration
             val test: suspend (CoroutineScope) -> Unit = {
                 val testContext = createTestContextWithConfiguration(configuration, it)
@@ -144,8 +143,9 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
                 runBlocking(Dispatchers.Main) { test(this) }
             }
         } catch (c: CancellationException) {
-            if (!cancelScopeAfterTest || c !== cancellationException)
+            if (!cancelScopeAfterTest || c !== cancellationException) {
                 throw c
+            }
         }
     }
 }

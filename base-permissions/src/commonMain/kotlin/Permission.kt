@@ -264,7 +264,7 @@ private val defaultPermissionDispatcher by lazy {
  */
 class Permissions(
     private val builder: PermissionsBuilder,
-    private val coroutineContext: CoroutineContext = defaultPermissionDispatcher,
+    private val coroutineContext: CoroutineContext = defaultPermissionDispatcher
 ) {
 
     private val permissionStateRepos = concurrentMutableMapOf<Permission, BasePermissionStateRepo<*>>()

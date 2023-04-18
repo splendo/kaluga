@@ -31,7 +31,7 @@ fun <
     ResistanceUnit : ElectricResistance,
     ConductanceUnit : ElectricConductance
     > ResistanceUnit.resistance(
-    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>
 ) = resistance(conductance, ::DefaultScientificValue)
 
 @JvmName("electricResistanceFromInvertedConductance")

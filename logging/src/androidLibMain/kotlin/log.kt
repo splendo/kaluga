@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("AndroidLogKT")
+
 package com.splendo.kaluga.logging
 
 import android.os.Build

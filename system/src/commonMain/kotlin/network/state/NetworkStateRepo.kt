@@ -132,7 +132,7 @@ open class NetworkStateImplRepo(
  */
 class NetworkStateRepo(
     private val networkManagerBuilder: NetworkManager.Builder,
-    coroutineContext: CoroutineContext,
+    coroutineContext: CoroutineContext
 ) : NetworkStateImplRepo(
     createNetworkManager = {
         networkManagerBuilder.create()

@@ -19,6 +19,7 @@ package com.splendo.kaluga.datetime.timer
 import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.HotStateFlowRepo
+import com.splendo.kaluga.base.state.KalugaState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
@@ -34,10 +35,10 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
-import com.splendo.kaluga.base.state.KalugaState as KalugaState
 
 /** A coroutine delay function. */
 typealias DelayFunction = suspend (Duration) -> Unit
+
 /**
  * [Timer] based on the system clock.
  * @property duration timer duration
@@ -118,6 +119,7 @@ private class TimerStateRepo(
         /** Timer is not running. */
         sealed class NotRunning(protected val elapsedSoFar: Duration) : State() {
             val elapsed = flowOf(elapsedSoFar)
+
             /** Timer is paused. */
             class Paused(
                 elapsedSoFar: Duration,
@@ -199,7 +201,7 @@ private fun tickProvider(
     max: Duration,
     interval: Duration,
     timeSource: TimeSource,
-    delayFunction: suspend (Duration) -> Unit,
+    delayFunction: suspend (Duration) -> Unit
 ): Flow<Duration> {
     val mark = timeSource.markNow()
 

@@ -48,7 +48,7 @@ internal actual class DefaultDeviceConnectionManager(
     private val peripheral: CBPeripheral,
     deviceWrapper: DeviceWrapper,
     settings: ConnectionSettings,
-    coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : DeviceConnectionManager.Builder {

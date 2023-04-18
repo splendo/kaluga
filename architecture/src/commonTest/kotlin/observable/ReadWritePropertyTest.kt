@@ -50,11 +50,11 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadWritePropertyDefaultObservable() = testReadWritePropertyDefaultObservableWithInitialValue("something", true)
+
     @Test
     fun testReadWritePropertyDefaultObservableWithInitialNull() = testReadWritePropertyDefaultObservableWithInitialValue(null, false)
 
     private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean) = runBlocking {
-
         nullableReadWritePropertyValue.value = initialValue
 
         val subject = nullableReadWriteProperty.toDefaultSubject(
@@ -75,7 +75,6 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadWritePropertyObservable() = runBlocking {
-
         val subject = readWriteProperty.toInitializedSubject(context = Dispatchers.Unconfined)
 
         testStringSubject(
@@ -90,7 +89,6 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadWriteNullablePropertyObservableWithInitialValue() = runBlocking {
-
         nullableReadWritePropertyValue.value = "initial"
 
         testStringSubject(

@@ -64,6 +64,8 @@ class Eddystone {
                 txPower.toInt(),
                 UID(namespace.toHexString(), instance.toHexString())
             )
-        } else null
+        } else {
+            null
+        }
     }
 }

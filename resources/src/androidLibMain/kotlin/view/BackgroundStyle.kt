@@ -24,8 +24,8 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.view.View
 import com.splendo.kaluga.resources.dpToPixel
-import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 
 /**
  * Creates a [Drawable] for a [KalugaBackgroundStyle]
@@ -53,7 +53,7 @@ private fun GradientDrawable.applyShape(shape: KalugaBackgroundStyle.Shape, cont
                 if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusX else 0.0f,
                 if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusY else 0.0f,
                 if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusX else 0.0f,
-                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusY else 0.0f,
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusY else 0.0f
             )
             GradientDrawable.RECTANGLE
         }

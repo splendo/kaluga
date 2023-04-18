@@ -116,8 +116,8 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
         val locationOfTouchInLabel = gesture.locationInView(label)
         val textBoundingBox = layoutManager.usedRectForTextContainer(textContainer)
         val textContainerOffset = CGPointMake(
-            (- textBoundingBox.useContents { origin.x }),
-            (- textBoundingBox.useContents { origin.y })
+            (-textBoundingBox.useContents { origin.x }),
+            (-textBoundingBox.useContents { origin.y })
         ).useContents { this }
         val locationOfTouchInTextContainer = CGPointMake(
             locationOfTouchInLabel.useContents { x } - textContainerOffset.x,
@@ -133,18 +133,26 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
 
         val boundingRectOfPreviousCharacter = if (index > 0u) {
             boundingRectForCharacterAtIndex(index - 1u, textContainer)
-        } else null
+        } else {
+            null
+        }
 
         val boundingRectOfNextCharacter = if (index < stringLength - 1u) {
             boundingRectForCharacterAtIndex(index + 1u, textContainer)
-        } else null
+        } else {
+            null
+        }
 
         val xStart = if (boundingRectOfPreviousCharacter != null && boundingRectOfPreviousCharacter.isOnSameLine(boundingRectForCharacter)) {
             min(boundingRectForCharacter.useContents { origin.x + size.width }, boundingRectForCharacter.useContents { origin.x })
-        } else boundingRectForCharacter.useContents { origin.x }
+        } else {
+            boundingRectForCharacter.useContents { origin.x }
+        }
         val xEnd = if (boundingRectOfNextCharacter != null && boundingRectOfNextCharacter.isOnSameLine(boundingRectForCharacter)) {
             max(boundingRectOfNextCharacter.useContents { origin.x }, boundingRectForCharacter.useContents { origin.x + size.width })
-        } else boundingRectForCharacter.useContents { origin.x + size.width }
+        } else {
+            boundingRectForCharacter.useContents { origin.x + size.width }
+        }
 
         val (yStart, yEnd) = listOfNotNull(boundingRectOfPreviousCharacter, boundingRectOfNextCharacter)
             .filter { it.isOnSameLine(boundingRectForCharacter) }

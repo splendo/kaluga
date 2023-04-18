@@ -67,7 +67,6 @@ open class Characteristic(
      * @see [isNotifying]
      */
     suspend fun enableNotification(): DeviceAction? {
-
         do {
             isBusy.first { !it }
             if (isNotifying) return null
@@ -96,7 +95,6 @@ open class Characteristic(
      * @see [isNotifying]
      */
     suspend fun disableNotification(): DeviceAction? {
-
         do {
             isBusy.first { !it }
             if (!isNotifying) return null

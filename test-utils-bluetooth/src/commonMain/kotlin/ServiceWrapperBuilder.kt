@@ -22,7 +22,8 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.randomUUID
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPEALIAS)
-@DslMarker annotation class MockBuilderDsl
+@DslMarker
+annotation class MockBuilderDsl
 
 @MockBuilderDsl
 typealias CharacteristicList = ArrayList<ServiceWrapperBuilder.Characteristic>

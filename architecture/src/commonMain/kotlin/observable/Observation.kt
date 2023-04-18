@@ -74,10 +74,11 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     @Suppress("SENSELESS_COMPARISON") // if not initialized this can still happen
     private var backingInternalValue: ObservableOptional<R>? = null
         get() =
-            field ?: if (initialValue == null) // "lazy" var
+            field ?: if (initialValue == null) {
                 throw RuntimeException("Observing before class is initialized. Are you observing from the constructor of your observable?")
-            else
+            } else {
                 initialValue.asResult(defaultValue)
+            }
         set(value) {
             checkNotNull(value) { "internal value can not be set to null" }
             field = value
@@ -89,8 +90,10 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> =
         if (isOnMainThread) {
             setValueUnconfined(value)
-        } else withContext(Dispatchers.Main) {
-            setValueUnconfined(value)
+        } else {
+            withContext(Dispatchers.Main) {
+                setValueUnconfined(value)
+            }
         }
 
     @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
@@ -170,11 +173,14 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
             beforeObservedValueGet?.let { beforeObservedValueGet ->
                 val current = getValue()
                 val new = beforeObservedValueGet(current)
-                return if (new != current) // state not events
+                return if (new != current) {
+                    // state not events
                     handleOnMain {
                         setValueUnconfined(new)
                     }
-                else new
+                } else {
+                    new
+                }
             }
             return getValue() as ObservableOptional<T>
         }
@@ -325,7 +331,6 @@ fun <R : T, T, OO : ObservableOptional<R>> observeFlow(
     context: CoroutineContext = coroutineScope.coroutineContext,
     flow: Flow<T>
 ) {
-
     observation.onFirstObservation = {
         coroutineScope.launch(context) {
             flow.collect {

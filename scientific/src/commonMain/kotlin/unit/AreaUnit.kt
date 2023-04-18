@@ -62,6 +62,7 @@ val AreaUnits: Set<Area> get() = MetricAreaUnits + ImperialAreaUnits
  */
 @Serializable
 sealed class Area : AbstractScientificUnit<PhysicalQuantity.Area>()
+
 /**
  * An [Area] for [MeasurementSystem.Metric]
  */

@@ -303,7 +303,6 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
                 )
             }
             NavigationSpec.Browser.Type.Normal -> {
-
                 val uri = Uri.parse(browserSpec.url.toURI().toString())
                 val intent = Intent(Intent.ACTION_VIEW, uri)
 

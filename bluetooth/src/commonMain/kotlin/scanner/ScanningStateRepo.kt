@@ -141,10 +141,11 @@ open class ScanningStateImplRepo(
                 state.initialized(event.hasPermission, scanner.isHardwareEnabled())
             }
             is ScanningState.Permitted -> {
-                if (event.hasPermission)
+                if (event.hasPermission) {
                     state.remain()
-                else
+                } else {
                     state.revokePermission
+                }
             }
             is ScanningState.NoBluetooth.MissingPermissions -> if (event.hasPermission) state.permit(scanner.isHardwareEnabled()) else state.remain()
             else -> { state.remain() }
@@ -174,10 +175,11 @@ open class ScanningStateImplRepo(
     private suspend fun handleDeviceConnectionChanged(identifier: Identifier, connected: Boolean) = useState { state ->
         if (state is ScanningState.Enabled) {
             state.devices.allDevices[identifier]?.let { device ->
-                if (connected)
+                if (connected) {
                     device.handleConnected()
-                else
+                } else {
                     device.handleDisconnected()
+                }
             }
         }
     }
@@ -194,7 +196,7 @@ class ScanningStateRepo(
     settingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     contextForIdentifier: (Identifier) -> CoroutineContext,
-    coroutineContext: CoroutineContext,
+    coroutineContext: CoroutineContext
 ) : ScanningStateImplRepo(
     createScanner = {
         builder.create(
@@ -203,5 +205,5 @@ class ScanningStateRepo(
         )
     },
     contextForIdentifier = contextForIdentifier,
-    coroutineContext = coroutineContext,
+    coroutineContext = coroutineContext
 )

@@ -17,6 +17,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 */
 
 @file:JvmName("AndroidHUD")
+
 package com.splendo.kaluga.hud
 
 import android.content.Context

@@ -26,7 +26,6 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
     @Test
     fun testOneDiscoveredBeacon() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -51,7 +50,6 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
     @Test
     fun testTwoDiscoveredBeacons() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }

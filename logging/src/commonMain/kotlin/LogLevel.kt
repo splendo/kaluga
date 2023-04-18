@@ -40,5 +40,5 @@ enum class LogLevel {
     /**
      * Error Log Level. Should be used to log some errors.
      */
-    ERROR,
+    ERROR
 }

@@ -35,7 +35,7 @@ import kotlin.jvm.JvmName
 @JvmName("timeFromInvertedFrequencyDefault")
 fun <
     TimeUnit : Time,
-    FrequencyUnit : Frequency,
+    FrequencyUnit : Frequency
     > TimeUnit.time(
     frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
 ) = time(frequency, ::DefaultScientificValue)

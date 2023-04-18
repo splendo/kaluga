@@ -67,6 +67,13 @@ fun Project.commonComponent(packageName: String, iosExport: (Framework.() -> Uni
         }
     }
 
+    ktlint {
+        // Should be replaced by using .editorconfig but this seems to be broken
+        // Therefore using older version of ktlint for now
+        version.set("0.48.2")
+        disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering"))
+    }
+
     if (Library.connectCheckExpansion) {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")

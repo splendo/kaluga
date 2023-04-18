@@ -71,14 +71,17 @@ interface DeviceConnectionManager {
          * Device is disconnected
          */
         DISCONNECTED,
+
         /**
          * Device is disconnecting
          */
         DISCONNECTING,
+
         /**
          * Device is connected
          */
         CONNECTED,
+
         /**
          * Device is connecting
          */
@@ -376,12 +379,16 @@ abstract class BaseDeviceConnectionManager(
             is DeviceAction.Read.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
-                } else null
+                } else {
+                    null
+                }
             }
             is DeviceAction.Write.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
-                } else null
+                } else {
+                    null
+                }
             }
             else -> null
         }
@@ -398,14 +405,20 @@ abstract class BaseDeviceConnectionManager(
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
-                } else null
+                } else {
+                    null
+                }
             }
             is DeviceAction.Write.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
-                } else null
+                } else {
+                    null
+                }
             }
-            else -> null
+            else -> {
+                null
+            }
         }
 
         descriptorToUpdate?.let {

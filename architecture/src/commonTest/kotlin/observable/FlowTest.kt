@@ -81,7 +81,6 @@ class FlowTest : ObservableBaseTest() {
 
     @Test
     fun testInitializedFlow() = runBlocking(Dispatchers.Default) {
-
         val flow = flowOfWithDelays("1", "2", "3")
         val o = flow.toInitializedObservable("initial", this)
 
@@ -97,7 +96,6 @@ class FlowTest : ObservableBaseTest() {
 
     @Test
     fun testNullableFlow() = runBlocking {
-
         val flow = flowOfWithDelays("1", null, "3")
         val o = flow.toUninitializedObservable(this)
 
@@ -112,7 +110,6 @@ class FlowTest : ObservableBaseTest() {
 
     @Test
     fun testNullableDefaultFlow() = runBlocking {
-
         val flow = flowOfWithDelays("1", null, "3")
         val o = flow.toDefaultObservable("default", "initial", this)
 

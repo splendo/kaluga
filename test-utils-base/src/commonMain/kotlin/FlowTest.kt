@@ -117,7 +117,6 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
     protected val waitForTestToSucceed = 60.seconds
 
     private suspend fun awaitTestBlocks() {
-
         val tests = this.tests
 
         if (tests.size == 0) {
@@ -144,7 +143,6 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
         retainContextAfterTest: Boolean = false,
         blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>
     ) {
-
         runBlocking {
             try {
                 testChannel = Channel(Channel.UNLIMITED)

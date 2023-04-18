@@ -61,7 +61,7 @@ actual class DefaultLocationManager(
     }
 
     private class Delegate(
-        private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>,
+        private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>
     ) : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
             val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
